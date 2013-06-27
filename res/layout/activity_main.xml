@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="Login"
+            android:id="@+id/login"
+            android:layout_gravity="left|center_vertical"
+            android:layout_weight="1"/>
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="Login with Widget"
+            android:id="@+id/login_widget"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.46"
+        android:height="200dp"
+        android:maxLines="15"
+        android:scrollbars="vertical"
+        android:text="user attributes" />
+
+</LinearLayout>
