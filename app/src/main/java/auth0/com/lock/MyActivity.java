@@ -1,9 +1,12 @@
 package auth0.com.lock;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.auth0.lock.LockActivity;
 
 
 public class MyActivity extends ActionBarActivity {
@@ -12,6 +15,7 @@ public class MyActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        startActivity(new Intent(this, LockActivity.class));
     }
 
 
