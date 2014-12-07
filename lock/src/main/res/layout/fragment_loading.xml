@@ -12,6 +12,8 @@
                 android:background="#ffffff"
                 >
 
+    <include layout="@layout/title_lock"/>
+
     <ProgressBar
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
@@ -20,18 +22,4 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
 
-    <ImageView
-        android:layout_width="60dip"
-        android:layout_height="60dip"
-        android:id="@+id/imageView"
-        android:layout_marginTop="36dp"
-        android:src="@drawable/ic_people"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/icon_background"
-        android:cropToPadding="false"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="17dp"
-        android:paddingTop="17dp"/>
 </RelativeLayout>
