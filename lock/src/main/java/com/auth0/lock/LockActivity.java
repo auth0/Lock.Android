@@ -1,12 +1,13 @@
 package com.auth0.lock;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 import com.auth0.lock.fragments.LoadingFragment;
 
+import roboguice.activity.RoboFragmentActivity;
 
-public class LockActivity extends FragmentActivity {
+
+public class LockActivity extends RoboFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
