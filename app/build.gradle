@@ -5,11 +5,11 @@ android {
     buildToolsVersion "21.1.1"
 
     defaultConfig {
-        applicationId "auth0.com.lock"
+        applicationId "com.auth0.app.Lock"
         minSdkVersion 9
         targetSdkVersion 21
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
     }
     buildTypes {
         release {
