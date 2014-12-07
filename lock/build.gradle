@@ -39,4 +39,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile 'com.auth0:auth0-android:0.0.1-SNAPSHOT'
+    compile 'org.roboguice:roboguice:3.0.1'
+    provided 'org.roboguice:roboblender:3.0.1'
 }
