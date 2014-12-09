@@ -1,5 +1,5 @@
 /*
- * Lock.java
+ * BusProvider.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,48 +22,25 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock;
+package com.auth0.lock.provider;
 
-import android.app.Application;
-import android.content.Context;
-
-import com.auth0.api.APIClient;
-import com.auth0.lock.provider.APIClientProvider;
-import com.google.inject.Binder;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import com.squareup.otto.Bus;
 
-import roboguice.RoboGuice;
 import roboguice.inject.ContextSingleton;
 
 /**
  * Created by hernan on 12/7/14.
  */
-public class Lock implements Module {
+@ContextSingleton
+public class BusProvider {
 
-    private String clientId;
-    private String tenant;
+    private final Bus bus;
 
-    public Lock(String clientId, String tenant) {
-        this.clientId = clientId;
-        this.tenant = tenant;
+    public BusProvider() {
+        this.bus = new Bus("Lock");
     }
 
-    public void registerForApplication(Application application) {
-        RoboGuice.getOrCreateBaseApplicationInjector(
-                application,
-                RoboGuice.DEFAULT_STAGE,
-                RoboGuice.newDefaultRoboModule(application),
-                this);
-    }
-
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(APIClient.class).toProvider(new APIClientProvider(clientId, tenant)).in(Singleton.class);
-    }
-
-    public static APIClient getAPIClient(Context context) {
-        return RoboGuice.getInjector(context).getInstance(APIClient.class);
+    public Bus getBus() {
+        return bus;
     }
 }

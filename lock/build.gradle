@@ -15,7 +15,6 @@ android {
     buildToolsVersion "21.1.1"
 
     defaultConfig {
-        applicationId "com.auth0.lock"
         minSdkVersion 9
         targetSdkVersion 21
         versionCode 1
@@ -24,7 +23,7 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,7 +37,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.2'
+
     compile 'com.auth0:auth0-android:0.0.1-SNAPSHOT'
+
     compile 'org.roboguice:roboguice:3.0.1'
     provided 'org.roboguice:roboblender:3.0.1'
+
+    compile 'com.squareup:otto:1.3.5'
 }

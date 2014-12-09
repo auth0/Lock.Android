@@ -5,7 +5,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/title_imageView"
         android:layout_marginTop="36dp"
         android:src="@drawable/ic_people"
         android:layout_alignParentTop="true"
@@ -17,4 +17,14 @@
         android:paddingBottom="17dp"
         android:paddingTop="17dp"/>
 
+    <TextView
+        android:id="@+id/title_textView"
+        android:text="@string/app_name"
+        android:fontFamily="sans-serif-light"
+        android:textSize="24sp"
+        android:layout_below="@+id/title_imageView"
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </merge>

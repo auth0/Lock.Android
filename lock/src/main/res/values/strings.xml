@@ -2,7 +2,11 @@
 <resources>
 
     <string name="app_name">Lock</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 
+    <string name="loading_title"/>
+    <string name="database_login_title">Login</string>
+
+    <string name="email_placeholder">Email</string>
+    <string name="password_placeholder">Password</string>
+    <string name="login_btn_text">ACCESS</string>
 </resources>
