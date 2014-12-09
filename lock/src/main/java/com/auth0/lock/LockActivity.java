@@ -52,6 +52,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onAuthentication(AuthenticationEvent event) {
         UserProfile profile = event.getProfile();
         Log.i(LockActivity.class.getName(), "Authenticated user " + profile.getName());
+        finish();
     }
 
     @Subscribe public void onThrowable(Throwable throwable) {

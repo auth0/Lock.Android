@@ -3,6 +3,7 @@ package com.auth0.app;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,13 +14,15 @@ import static com.auth0.app.R.*;
 
 public class MyActivity extends ActionBarActivity {
 
+    private static final int AUTHENTICATION_REQUEST = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_my);
         Intent loginIntent = new Intent(this, LockActivity.class);
         loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(loginIntent);
+        startActivityForResult(loginIntent, AUTHENTICATION_REQUEST);
     }
 
 
@@ -40,5 +43,14 @@ public class MyActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTHENTICATION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Log.d(MyActivity.class.getName(), "User authenticated");
+            }
+        }
     }
 }
