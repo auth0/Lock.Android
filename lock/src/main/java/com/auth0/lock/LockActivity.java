@@ -1,9 +1,11 @@
 package com.auth0.lock;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.auth0.core.Application;
+import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
@@ -51,7 +53,12 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onAuthentication(AuthenticationEvent event) {
         UserProfile profile = event.getProfile();
+        Token token = event.getToken();
         Log.i(LockActivity.class.getName(), "Authenticated user " + profile.getName());
+        Intent result = new Intent();
+        result.putExtra("profile", profile);
+        result.putExtra("token", token);
+        setResult(RESULT_OK, result);
         finish();
     }
 

@@ -9,8 +9,15 @@
     tools:context=".MyActivity">
 
     <TextView
+        android:id="@+id/welcome_label"
         android:text="@string/hello_world"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/welcome_label"
+        android:text="@string/native_login_btn_text"/>
 </RelativeLayout>
