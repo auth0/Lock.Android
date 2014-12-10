@@ -1,5 +1,7 @@
 package com.auth0.lock;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +9,7 @@ import android.util.Log;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.LoadingFragment;
@@ -62,7 +65,20 @@ public class LockActivity extends RoboFragmentActivity {
         finish();
     }
 
-    @Subscribe public void onThrowable(Throwable throwable) {
-        Log.e(LockActivity.class.getName(), "Failed to authenticate user", throwable);
+    @Subscribe public void onAuthenticationError(AuthenticationError error) {
+        Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setTitle(error.getTitle(this))
+                .setMessage(error.getMessage(this))
+                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.show();
     }
 }

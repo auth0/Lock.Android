@@ -9,4 +9,8 @@
     <string name="email_placeholder">Email</string>
     <string name="password_placeholder">Password</string>
     <string name="login_btn_text">ACCESS</string>
+    
+    <string name="ok_btn_text">OK</string>
+    <string name="db_login_error_title">There was an error logging in</string>
+    <string name="db_login_error_message">There was an error processing the sign in.</string>
 </resources>

@@ -37,6 +37,7 @@ import com.auth0.api.AuthenticationCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
@@ -81,7 +82,8 @@ public class DatabaseLoginFragment extends RoboFragment {
 
             @Override
             public void onFailure(Throwable throwable) {
-                provider.getBus().post(throwable);
+                AuthenticationError error = new AuthenticationError(R.string.db_login_error_title, R.string.db_login_error_message, throwable);
+                provider.getBus().post(error);
             }
         });
     }
