@@ -32,6 +32,7 @@ import com.auth0.lock.event.AuthenticationError;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.SelfDescribing;
 import org.robolectric.Robolectric;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -44,8 +45,16 @@ public class AuthenticationErrorDefaultMatcher extends BaseMatcher<Authenticatio
     private final Matcher<String> titleMatcher;
 
     private AuthenticationErrorDefaultMatcher() {
-        messageMatcher = equalTo(Robolectric.application.getString(R.string.db_login_error_message));
-        titleMatcher = equalTo(Robolectric.application.getString(R.string.db_login_error_title));
+        this(R.string.db_login_error_title, R.string.db_login_error_message);
+    }
+
+    private AuthenticationErrorDefaultMatcher(int messageResource) {
+        this(R.string.db_login_error_title, messageResource);
+    }
+
+    private AuthenticationErrorDefaultMatcher(int titleResource, int messageResource) {
+        messageMatcher = equalTo(Robolectric.application.getString(messageResource));
+        titleMatcher = equalTo(Robolectric.application.getString(titleResource));
     }
 
     @Override
@@ -59,11 +68,17 @@ public class AuthenticationErrorDefaultMatcher extends BaseMatcher<Authenticatio
     @Override
     public void describeTo(Description description) {
         description
+                .appendText("String resources: ")
                 .appendDescriptionOf(messageMatcher)
+                .appendText(" & ")
                 .appendDescriptionOf(titleMatcher);
     }
 
-    public static AuthenticationErrorDefaultMatcher hasDefaultTitleAndMessage() {
+    public static Matcher<AuthenticationError> hasDefaultTitleAndMessage() {
         return new AuthenticationErrorDefaultMatcher();
+    }
+
+    public static Matcher<AuthenticationError> hasMessage(int messageResource) {
+        return new AuthenticationErrorDefaultMatcher(messageResource);
     }
 }

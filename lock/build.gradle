@@ -9,7 +9,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'robolectric'
 
 android {
     compileSdkVersion 21
@@ -34,12 +33,9 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
-    sourceSets {
-        androidTest {
-            setRoot('src/test')
-        }
-    }
 }
+
+apply plugin: 'android-unit-test'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -52,15 +48,15 @@ dependencies {
 
     compile 'com.squareup:otto:1.3.5'
 
-    androidTestCompile('junit:junit:4.11') {
+    testCompile('junit:junit:4.11') {
         exclude module: 'hamcrest-core'
     }
-    androidTestCompile 'com.google.guava:guava:14.0.1'
-    androidTestCompile 'com.squareup.dagger:dagger:1.1.0'
-    androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
-    androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
-    androidTestCompile('org.robolectric:robolectric:2.4') {
+    testCompile 'com.google.guava:guava:14.0.1'
+    testCompile 'com.squareup.dagger:dagger:1.1.0'
+    testCompile 'org.hamcrest:hamcrest-integration:1.1'
+    testCompile 'org.hamcrest:hamcrest-core:1.1'
+    testCompile 'org.hamcrest:hamcrest-library:1.1'
+    testCompile('org.robolectric:robolectric:2.4') {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
         exclude module: 'httpclient'
@@ -77,28 +73,8 @@ dependencies {
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
     }
-    androidTestCompile ('com.squareup:fest-android:1.0.+') {
+    testCompile ('com.squareup:fest-android:1.0.+') {
         exclude group: 'com.android.support', module: 'support-v4'
     }
-    androidTestCompile 'org.mockito:mockito-core:1.+'
-}
-
-robolectric {
-    // configure the set of classes for JUnit tests
-    include '**/*Test.class'
-    exclude '**/espresso/**/*.class'
-
-    // configure max heap size of the test JVM
-    maxHeapSize = '2048m'
-
-    // configure the test JVM arguments
-    jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
-
-    // configure whether failing tests should fail the build
-    ignoreFailures false
-
-    // use afterTest to listen to the test execution results
-    afterTest { descriptor, result ->
-        println "Executing test for {$descriptor.className#$descriptor.name} with result: ${result.resultType}"
-    }
+    testCompile 'org.mockito:mockito-core:1.+'
 }

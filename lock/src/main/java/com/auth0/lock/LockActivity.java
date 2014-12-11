@@ -11,6 +11,7 @@ import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.provider.BusProvider;
@@ -80,5 +81,9 @@ public class LockActivity extends RoboFragmentActivity {
                 });
 
         AlertDialog dialog = builder.show();
+    }
+
+    @Subscribe public void onNavigationEvent(NavigationEvent event) {
+        Log.v(LockActivity.class.getName(), "About to display " + event);
     }
 }

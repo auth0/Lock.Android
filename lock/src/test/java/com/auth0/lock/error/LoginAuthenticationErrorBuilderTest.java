@@ -24,6 +24,8 @@
 
 package com.auth0.lock.error;
 
+import com.auth0.api.APIClientException;
+import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 
 import org.junit.Before;
@@ -32,7 +34,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasDefaultTitleAndMessage;
+import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasMessage;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -69,4 +75,13 @@ public class LoginAuthenticationErrorBuilderTest {
         assertThat(error, hasDefaultTitleAndMessage());
     }
 
+    @Test
+    public void shouldReturnInvalidCredentialsMessage() throws Exception {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "invalid_user_password");
+        Throwable exception = new APIClientException("error", 400, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error, hasMessage(R.string.db_login_invalid_credentials_error_message));
+        assertThat(error.getThrowable(), equalTo(exception));
+    }
 }
