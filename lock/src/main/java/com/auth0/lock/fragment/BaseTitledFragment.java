@@ -1,5 +1,5 @@
 /*
- * NavigationEvent.java
+ * BaseTitledFragment.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,14 +22,33 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.lock.fragment;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+import com.auth0.api.APIClient;
+import com.auth0.lock.R;
+import com.auth0.lock.provider.BusProvider;
+import com.google.inject.Inject;
+
+import roboguice.fragment.RoboFragment;
 
 /**
  * Created by hernan on 12/11/14.
  */
-public enum NavigationEvent {
-    ROOT,
-    BACK,
-    SIGN_UP,
-    RESET_PASSWORD
+public abstract class BaseTitledFragment extends RoboFragment {
+
+    @Inject APIClient client;
+    @Inject BusProvider provider;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView titleView = (TextView) view.findViewById(R.id.title_textView);
+        titleView.setText(getTitleResource());
+    }
+
+    protected abstract int getTitleResource();
 }

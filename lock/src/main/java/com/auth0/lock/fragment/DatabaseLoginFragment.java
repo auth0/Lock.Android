@@ -34,28 +34,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
-import com.auth0.api.APIClientException;
 import com.auth0.api.AuthenticationCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
-import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
 
-import java.util.Map;
-
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
-public class DatabaseLoginFragment extends RoboFragment {
+public class DatabaseLoginFragment extends BaseTitledFragment {
 
-    @Inject private APIClient client;
-    @Inject private BusProvider provider;
-    @Inject private LoginAuthenticationErrorBuilder errorBuilder;
+    @Inject LoginAuthenticationErrorBuilder errorBuilder;
 
     @InjectView(tag = "db_login_username_field") EditText usernameField;
     @InjectView(tag = "db_login_password_field") EditText passwordField;
@@ -66,10 +60,12 @@ public class DatabaseLoginFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_database_login, container, false);
-        TextView titleView = (TextView) rootView.findViewById(R.id.title_textView);
-        titleView.setText(R.string.database_login_title);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_database_login, container, false);
+    }
+
+    @Override
+    protected int getTitleResource() {
+        return R.string.database_login_title;
     }
 
     @Override
@@ -109,7 +105,7 @@ public class DatabaseLoginFragment extends RoboFragment {
             public void onSuccess(UserProfile userProfile, Token token) {
                 provider.getBus().post(new AuthenticationEvent(userProfile, token));
                 accessButton.setEnabled(true);
-                accessButton.setText(R.string.login_btn_text);
+                accessButton.setText(R.string.db_login_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -117,7 +113,7 @@ public class DatabaseLoginFragment extends RoboFragment {
             public void onFailure(Throwable throwable) {
                 provider.getBus().post(errorBuilder.buildFrom(throwable));
                 accessButton.setEnabled(true);
-                accessButton.setText(R.string.login_btn_text);
+                accessButton.setText(R.string.db_login_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });

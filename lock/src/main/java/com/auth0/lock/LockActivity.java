@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.auth0.core.Application;
@@ -13,6 +14,8 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
+import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
+import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
@@ -84,6 +87,27 @@ public class LockActivity extends RoboFragmentActivity {
     }
 
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
-        Log.v(LockActivity.class.getName(), "About to display " + event);
+        Log.v(LockActivity.class.getName(), "About to handle navigation " + event);
+        if (NavigationEvent.BACK.equals(event)) {
+            getSupportFragmentManager().popBackStack();
+            return;
+        }
+
+        Fragment fragment = null;
+        switch (event) {
+            case SIGN_UP:
+                fragment = new DatabaseSignUpFragment();
+                break;
+            case RESET_PASSWORD:
+                fragment = new DatabaseResetPasswordFragment();
+                break;
+        }
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, fragment)
+                    .addToBackStack(event.name())
+                    .commit();
+        }
     }
 }
