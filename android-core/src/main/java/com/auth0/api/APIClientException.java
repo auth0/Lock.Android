@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * APIClientException.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,39 +22,40 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.api;
 
-import android.content.Context;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by hernan on 12/10/14.
  */
-public class AuthenticationError {
+public class APIClientException extends RuntimeException {
 
-    private int title;
-    private int message;
-    private Throwable throwable;
+    private int statusCode;
 
-    public AuthenticationError(int title, int message) {
-        this.title = title;
-        this.message = message;
+    private Map responseError;
+
+    public APIClientException(String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+        this.statusCode = -1;
+        this.responseError = new HashMap();
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        this.title = title;
-        this.message = message;
-        this.throwable = throwable;
+    public APIClientException(String detailMessage, int statusCode, Map responseError) {
+        super(detailMessage);
+        this.statusCode = statusCode;
+        this.responseError = responseError != null ? responseError : new HashMap();
     }
 
-    public String getMessage(Context context) {
-        return context.getString(this.message);
+    public APIClientException(String detailMessage, Throwable throwable, int statusCode, Map responseError) {
+        super(detailMessage, throwable);
+        this.statusCode = statusCode;
+        this.responseError = responseError != null ? responseError : new HashMap();
     }
 
-    public String getTitle(Context context) {
-        return context.getString(this.title);
+    public Map getResponseError() {
+        return responseError;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
-    }
 }

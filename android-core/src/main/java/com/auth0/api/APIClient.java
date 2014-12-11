@@ -113,7 +113,17 @@ public class APIClient {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     Log.e(APIClient.class.getName(), "Failed login user with username " + username, error);
-                    callback.onFailure(error);
+                    Map errorResponse = null;
+                    Throwable throwable = error;
+                    if (statusCode == 400 || statusCode == 401) {
+                        try {
+                            errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
+                            Log.e(APIClient.class.getName(), "Login error " + errorResponse);
+                        } catch (IOException e) {
+                           Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
+                        }
+                    }
+                    callback.onFailure(new APIClientException("Failed to perform login", error, statusCode, errorResponse));
                 }
             });
         } catch (JsonEntityBuildException e) {

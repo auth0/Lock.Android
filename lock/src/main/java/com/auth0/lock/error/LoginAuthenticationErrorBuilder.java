@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * LoginAuthenticationErrorBuilder.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,39 +22,31 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.lock.error;
 
-import android.content.Context;
+import com.auth0.api.APIClientException;
+import com.auth0.lock.R;
+import com.auth0.lock.event.AuthenticationError;
+
+import java.util.Map;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/11/14.
  */
-public class AuthenticationError {
+public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuilder {
 
-    private int title;
-    private int message;
-    private Throwable throwable;
+    private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
 
-    public AuthenticationError(int title, int message) {
-        this.title = title;
-        this.message = message;
-    }
-
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        this.title = title;
-        this.message = message;
-        this.throwable = throwable;
-    }
-
-    public String getMessage(Context context) {
-        return context.getString(this.message);
-    }
-
-    public String getTitle(Context context) {
-        return context.getString(this.title);
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
+    @Override
+    public AuthenticationError buildFrom(Throwable throwable) {
+        int messageResource = R.string.db_login_error_message;
+        if (throwable instanceof APIClientException) {
+            APIClientException exception = (APIClientException) throwable;
+            Map errorResponse = exception.getResponseError();
+            if (INVALID_USER_PASSWORD_ERROR.equalsIgnoreCase((String) errorResponse.get(ERROR_KEY))) {
+                messageResource = R.string.db_login_invalid_credentials_error_message;
+            }
+        }
+        return new AuthenticationError(R.string.db_login_error_title, messageResource, throwable);
     }
 }

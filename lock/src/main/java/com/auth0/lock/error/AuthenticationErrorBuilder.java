@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * AuthenticationErrorBuilder.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,39 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.lock.error;
 
-import android.content.Context;
+import com.auth0.lock.event.AuthenticationError;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/11/14.
  */
-public class AuthenticationError {
+public interface AuthenticationErrorBuilder {
 
-    private int title;
-    private int message;
-    private Throwable throwable;
+    String ERROR_KEY = "error";
 
-    public AuthenticationError(int title, int message) {
-        this.title = title;
-        this.message = message;
-    }
+    AuthenticationError buildFrom(Throwable throwable);
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        this.title = title;
-        this.message = message;
-        this.throwable = throwable;
-    }
-
-    public String getMessage(Context context) {
-        return context.getString(this.message);
-    }
-
-    public String getTitle(Context context) {
-        return context.getString(this.title);
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
 }

@@ -33,14 +33,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.APIClientException;
 import com.auth0.api.AuthenticationCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
+import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
+
+import java.util.Map;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
@@ -49,6 +53,7 @@ public class DatabaseLoginFragment extends RoboFragment {
 
     @Inject private APIClient client;
     @Inject private BusProvider provider;
+    @Inject private LoginAuthenticationErrorBuilder errorBuilder;
 
     @InjectView(tag = "db_login_username_field") private EditText usernameField;
     @InjectView(tag = "db_login_password_field") private EditText passwordField;
@@ -61,7 +66,6 @@ public class DatabaseLoginFragment extends RoboFragment {
         titleView.setText(R.string.database_login_title);
         Button accessButton = (Button) rootView.findViewById(R.id.db_access_button);
         accessButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 performLogin();
@@ -82,8 +86,7 @@ public class DatabaseLoginFragment extends RoboFragment {
 
             @Override
             public void onFailure(Throwable throwable) {
-                AuthenticationError error = new AuthenticationError(R.string.db_login_error_title, R.string.db_login_error_message, throwable);
-                provider.getBus().post(error);
+                provider.getBus().post(errorBuilder.buildFrom(throwable));
             }
         });
     }
