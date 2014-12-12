@@ -117,8 +117,8 @@
         android:fontFamily="sans-serif-medium"/>
 
     <ProgressBar
-        android:id="@+id/db_login_progress_indicator"
-        android:tag="db_login_progress_indicator"
+        android:id="@+id/db_signup_progress_indicator"
+        android:tag="db_signup_progress_indicator"
         android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -129,7 +129,7 @@
     <Button
         android:id="@+id/db_signup_cancel_button"
         android:tag="db_signup_cancel_button"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"

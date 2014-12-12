@@ -37,8 +37,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.AuthenticationCallback;
+import com.auth0.core.Token;
+import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
@@ -47,6 +51,14 @@ import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 public class DatabaseSignUpFragment extends BaseTitledFragment {
+
+    @Inject LoginAuthenticationErrorBuilder errorBuilder;
+
+    @InjectView(tag = "db_signup_username_field") EditText usernameField;
+    @InjectView(tag = "db_signup_password_field") EditText passwordField;
+
+    @InjectView(tag = "db_access_button") Button accessButton;
+    @InjectView(tag = "db_signup_progress_indicator") ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,10 +76,41 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
                 provider.getBus().post(NavigationEvent.BACK);
             }
         });
+        accessButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performSignUp();
+            }
+        });
     }
 
     @Override
     protected int getTitleResource() {
         return R.string.database_signup_title;
+    }
+
+    private void performSignUp() {
+        accessButton.setEnabled(false);
+        accessButton.setText("");
+        progressBar.setVisibility(View.VISIBLE);
+        String username = usernameField.getText().toString();
+        String password = passwordField.getText().toString();
+        client.signUp(username, password, null, new AuthenticationCallback() {
+            @Override
+            public void onSuccess(UserProfile profile, Token token) {
+                provider.getBus().post(new AuthenticationEvent(profile, token));
+                accessButton.setEnabled(true);
+                accessButton.setText(R.string.db_login_btn_text);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                provider.getBus().post(errorBuilder.buildFrom(error));
+                accessButton.setEnabled(true);
+                accessButton.setText(R.string.db_login_btn_text);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 }
