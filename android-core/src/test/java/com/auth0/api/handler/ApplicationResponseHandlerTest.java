@@ -1,4 +1,4 @@
-package com.auth0.api.handlers;
+package com.auth0.api.handler;
 
 import com.auth0.BaseTestCase;
 import com.auth0.core.Application;

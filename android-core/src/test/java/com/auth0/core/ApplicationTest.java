@@ -2,14 +2,12 @@ package com.auth0.core;
 
 import com.auth0.BaseTestCase;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.junit.Test;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static com.auth0.core.Strategies.*;
 import static org.hamcrest.Matchers.equalTo;

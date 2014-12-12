@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
-import com.auth0.api.BaseCallback;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.lock.R;
 import com.auth0.lock.provider.BusProvider;

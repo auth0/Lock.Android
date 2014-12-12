@@ -3,7 +3,9 @@ package com.auth0.api;
 import android.os.Build;
 import android.util.Log;
 
-import com.auth0.api.handlers.ApplicationResponseHandler;
+import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.api.callback.BaseCallback;
+import com.auth0.api.handler.ApplicationResponseHandler;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
@@ -35,6 +37,8 @@ public class APIClient {
 
     private static final String BASE_URL_FORMAT = "https://%s.auth0.com";
     private static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com/client/%s.js";
+    private static final String EMAIL_KEY = "email";
+    private static final String TENANT_KEY = "tenant";
 
     private final String clientID;
     private final String tenantName;
@@ -132,44 +136,75 @@ public class APIClient {
     }
 
     public void signUp(final String email, final String password, final Map<String, String> parameters, final AuthenticationCallback callback) {
+        AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d(APIClient.class.getName(), "Signed up username " + email);
+                APIClient.this.login(email, password, parameters, callback);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
+                Map errorResponse = null;
+                if (statusCode == 400 || statusCode == 401) {
+                    try {
+                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
+                        Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
+                    } catch (IOException e) {
+                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
+                    }
+                }
+                callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
+            }
+        };
+        signUp(email, password, parameters, handler);
+    }
+
+    public void createUser(final String email, final String password, final Map<String, String> parameters, final BaseCallback<Void> callback) {
+        AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d(APIClient.class.getName(), "Signed up username " + email);
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
+                Map errorResponse = null;
+                if (statusCode == 400 || statusCode == 401) {
+                    try {
+                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
+                        Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
+                    } catch (IOException e) {
+                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
+                    }
+                }
+                callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
+            }
+        };
+        signUp(email, password, parameters, handler);
+    }
+
+    private void signUp(String email, String password, Map<String, String> parameters, AsyncHttpResponseHandler callback) {
         String signUpUrl = this.baseURL + "/dbconnections/signup";
 
         Map<String, String> request = ParameterBuilder.newBuilder()
-                .set("email", email)
+                .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
                 .setClientId(this.clientID)
-                .set("tenant", getTenant())
+                .set(TENANT_KEY, getTenant())
                 .setConnection(getDBConnectionName())
                 .asDictionary();
 
         Log.v(APIClient.class.getName(), "Performing signup with parameters " + request);
         try {
             HttpEntity entity = entityBuilder.newEntityFrom(request);
-            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    Log.d(APIClient.class.getName(), "Signed up username " + email);
-                    APIClient.this.login(email, password, parameters, callback);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
-                    Map errorResponse = null;
-                    if (statusCode == 400 || statusCode == 401) {
-                        try {
-                            errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
-                            Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
-                        } catch (IOException e) {
-                            Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                        }
-                    }
-                    callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
-                }
-            });
+            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, callback);
         } catch (JsonEntityBuildException e) {
             Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
+            callback.onFailure(0, null, null, e);
         }
     }
 

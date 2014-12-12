@@ -1,4 +1,4 @@
-package com.auth0.api;
+package com.auth0.api.callback;
 
 /**
  * Created by hernan on 11/28/14.

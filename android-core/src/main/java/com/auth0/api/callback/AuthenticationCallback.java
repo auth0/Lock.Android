@@ -1,4 +1,4 @@
-package com.auth0.api;
+package com.auth0.api.callback;
 
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;

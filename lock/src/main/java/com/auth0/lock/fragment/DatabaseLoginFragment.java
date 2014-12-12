@@ -31,20 +31,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.auth0.api.APIClient;
-import com.auth0.api.AuthenticationCallback;
+import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
 
-import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 public class DatabaseLoginFragment extends BaseTitledFragment {

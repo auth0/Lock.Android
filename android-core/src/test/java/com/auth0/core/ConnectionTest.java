@@ -3,7 +3,6 @@ package com.auth0.core;
 import com.auth0.BaseTestCase;
 import com.google.common.collect.Maps;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.robolectric.annotation.Config;
 

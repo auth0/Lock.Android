@@ -1,8 +1,8 @@
-package com.auth0.api.handlers;
+package com.auth0.api.handler;
 
 import android.util.Log;
 
-import com.auth0.api.BaseCallback;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
