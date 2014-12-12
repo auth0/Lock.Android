@@ -30,11 +30,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.R;
+import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.NavigationEvent;
+import com.google.inject.Inject;
+
+import roboguice.inject.InjectView;
 
 public class DatabaseResetPasswordFragment extends BaseTitledFragment {
+
+    @Inject LoginAuthenticationErrorBuilder errorBuilder;
+
+    @InjectView(tag = "db_reset_password_username_field") EditText usernameField;
+    @InjectView(tag = "db_reset_password_password_field") EditText passwordField;
+    @InjectView(tag = "db_reset_password_repeat_password_field") EditText repeatPasswordField;
+
+    @InjectView(tag = "db_reset_button") Button sendButton;
+    @InjectView(tag = "db_reset_password_progress_indicator") ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,10 +67,42 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
                 provider.getBus().post(NavigationEvent.BACK);
             }
         });
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performChange();
+            }
+        });
     }
 
     @Override
     protected int getTitleResource() {
         return R.string.database_reset_password_title;
     }
+
+    private void performChange() {
+        sendButton.setEnabled(false);
+        sendButton.setText("");
+        progressBar.setVisibility(View.VISIBLE);
+        String username = usernameField.getText().toString();
+        String password = passwordField.getText().toString();
+        client.changePassword(username, password, null, new BaseCallback<Void>() {
+            @Override
+            public void onSuccess(Void payload) {
+                provider.getBus().post(NavigationEvent.BACK);
+                sendButton.setEnabled(true);
+                sendButton.setText(R.string.db_reset_password_btn_text);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                provider.getBus().post(errorBuilder.buildFrom(error));
+                sendButton.setEnabled(true);
+                sendButton.setText(R.string.db_reset_password_btn_text);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
 }

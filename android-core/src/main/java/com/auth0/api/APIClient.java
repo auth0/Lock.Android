@@ -189,6 +189,7 @@ public class APIClient {
                 .set(PASSWORD_KEY, newPassword)
                 .setClientId(this.clientID)
                 .set(TENANT_KEY, getTenant())
+                .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
 
