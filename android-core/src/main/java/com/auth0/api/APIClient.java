@@ -99,6 +99,7 @@ public class APIClient {
                 .setConnection(getDBConnectionName())
                 .addAll(params)
                 .asDictionary();
+
         Log.v(APIClient.class.getName(), "Performing login with parameters " + request);
         try {
             HttpEntity entity = this.entityBuilder.newEntityFrom(request);
@@ -167,6 +168,7 @@ public class APIClient {
                 .setClientId(this.clientID)
                 .set(TENANT_KEY, getTenant())
                 .setConnection(getDBConnectionName())
+                .addAll(parameters)
                 .asDictionary();
 
         Log.v(APIClient.class.getName(), "Performing signup with parameters " + request);
@@ -176,6 +178,32 @@ public class APIClient {
         } catch (JsonEntityBuildException e) {
             Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
             callback.onFailure(0, null, null, e);
+        }
+    }
+
+    public void changePassword(final String email, String newPassword, Map<String, String> parameters, BaseCallback<Void> callback) {
+        String changePasswordUrl = this.baseURL + "/dbconnections/change_password";
+
+        Map<String, String> request = ParameterBuilder.newBuilder()
+                .set(EMAIL_KEY, email)
+                .set(PASSWORD_KEY, newPassword)
+                .setClientId(this.clientID)
+                .set(TENANT_KEY, getTenant())
+                .addAll(parameters)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing change password with parameters " + request);
+        try {
+            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
+            this.client.post(null, changePasswordUrl, entity, APPLICATION_JSON, new APIResponseHandler<BaseCallback<Void>>(callback) {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    callback.onSuccess(null);
+                }
+            });
+        } catch (JsonEntityBuildException e) {
+            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
+            callback.onFailure(e);
         }
     }
 
