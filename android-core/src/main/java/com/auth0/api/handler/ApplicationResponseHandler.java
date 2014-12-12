@@ -37,13 +37,7 @@ public abstract class ApplicationResponseHandler extends AsyncHttpResponseHandle
             Log.d(ApplicationResponseHandler.class.getName(), "Obtained JSON object from JSONP: " + jsonObject);
             Application app = this.mapper.readValue(jsonObject.toString(), Application.class);
             this.onSuccess(app);
-        } catch (JSONException e) {
-            this.onFailure(statusCode, headers, responseBody, e);
-        } catch (JsonMappingException e) {
-            this.onFailure(statusCode, headers, responseBody, e);
-        } catch (JsonParseException e) {
-            this.onFailure(statusCode, headers, responseBody, e);
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             this.onFailure(statusCode, headers, responseBody, e);
         }
     }

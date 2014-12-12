@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
+import com.auth0.api.handler.APIResponseHandler;
 import com.auth0.api.handler.ApplicationResponseHandler;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
@@ -136,52 +137,22 @@ public class APIClient {
     }
 
     public void signUp(final String email, final String password, final Map<String, String> parameters, final AuthenticationCallback callback) {
-        AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+        AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.d(APIClient.class.getName(), "Signed up username " + email);
-                APIClient.this.login(email, password, parameters, callback);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
-                Map errorResponse = null;
-                if (statusCode == 400 || statusCode == 401) {
-                    try {
-                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
-                        Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
-                    } catch (IOException e) {
-                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                    }
-                }
-                callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
+                APIClient.this.login(email, password, parameters, this.callback);
             }
         };
         signUp(email, password, parameters, handler);
     }
 
     public void createUser(final String email, final String password, final Map<String, String> parameters, final BaseCallback<Void> callback) {
-        AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.d(APIClient.class.getName(), "Signed up username " + email);
-                callback.onSuccess(null);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
-                Map errorResponse = null;
-                if (statusCode == 400 || statusCode == 401) {
-                    try {
-                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
-                        Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
-                    } catch (IOException e) {
-                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                    }
-                }
-                callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
+                this.callback.onSuccess(null);
             }
         };
         signUp(email, password, parameters, handler);
