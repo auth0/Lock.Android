@@ -26,12 +26,15 @@ package com.auth0.lock.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.R;
@@ -71,6 +74,15 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
             @Override
             public void onClick(View v) {
                 performChange();
+            }
+        });
+        repeatPasswordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    performChange();
+                }
+                return false;
             }
         });
     }
