@@ -20,4 +20,9 @@
     <string name="database_signup_title">Sign Up</string>
     <string name="database_reset_password_title">Reset Password</string>
     <string name="db_cancel_button_text">CANCEL</string>
+    <string name="db_signup_title_message">Please enter your email and password</string>
+    <string name="db_signup_btn_text">SIGN UP</string>
+    <string name="repeat_password_placeholder">Confirm New Password</string>
+    <string name="db_reset_password_title_message">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
+    <string name="db_reset_password_btn_text">SEND</string>
 </resources>

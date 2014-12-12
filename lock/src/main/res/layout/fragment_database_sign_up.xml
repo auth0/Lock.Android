@@ -35,6 +35,97 @@
 
     <include layout="@layout/title_lock"/>
 
+    <LinearLayout
+        android:id="@+id/db_signup_credentials"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/box_credential_background">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_person"/>
+            <EditText
+                android:id="@+id/db_signup_username_field"
+                android:tag="db_signup_username_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="14sp"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/email_placeholder"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_lock"/>
+            <EditText
+                android:id="@+id/db_signup_password_field"
+                android:tag="db_signup_password_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="14sp"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/password_placeholder"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/db_signup_credentials"
+        android:layout_marginBottom="5dp"
+        android:text="@string/db_signup_title_message"/>
+
+    <Button
+        android:id="@+id/db_access_button"
+        android:tag="db_access_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/db_signup_credentials"
+        android:layout_marginTop="5dp"
+        android:text="@string/db_signup_btn_text"
+        android:textColor="@android:color/white"
+        android:background="@drawable/btn_primary_background"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif-medium"/>
+
+    <ProgressBar
+        android:id="@+id/db_login_progress_indicator"
+        android:tag="db_login_progress_indicator"
+        android:visibility="gone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@id/db_access_button"
+        android:layout_alignBottom="@id/db_access_button"
+        android:layout_centerHorizontal="true"/>
+
     <Button
         android:id="@+id/db_signup_cancel_button"
         android:tag="db_signup_cancel_button"

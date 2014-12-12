@@ -32,10 +32,8 @@ import com.auth0.lock.provider.APIClientProvider;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.squareup.otto.Bus;
 
 import roboguice.RoboGuice;
-import roboguice.inject.ContextSingleton;
 
 /**
  * Created by hernan on 12/7/14.
