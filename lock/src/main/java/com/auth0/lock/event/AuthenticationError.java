@@ -29,29 +29,17 @@ import android.content.Context;
 /**
  * Created by hernan on 12/10/14.
  */
-public class AuthenticationError {
+public class AuthenticationError extends AlertDialogEvent {
 
-    private int title;
-    private int message;
     private Throwable throwable;
 
     public AuthenticationError(int title, int message) {
-        this.title = title;
-        this.message = message;
+        this(title, message, null);
     }
 
     public AuthenticationError(int title, int message, Throwable throwable) {
-        this.title = title;
-        this.message = message;
+        super(title, message);
         this.throwable = throwable;
-    }
-
-    public String getMessage(Context context) {
-        return context.getString(this.message);
-    }
-
-    public String getTitle(Context context) {
-        return context.getString(this.title);
     }
 
     public Throwable getThrowable() {

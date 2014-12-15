@@ -10,6 +10,7 @@ import android.util.Log;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.event.AlertDialogEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
@@ -72,36 +73,13 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onResetPassword(ResetPasswordEvent event) {
         Log.d(LockActivity.class.getName(), "Changed password");
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder
-                .setTitle(event.getTitle(this))
-                .setMessage(event.getMessage(this))
-                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog dialog = builder.show();
+        showAlertDialog(event);
         getSupportFragmentManager().popBackStack();
     }
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder
-                .setTitle(error.getTitle(this))
-                .setMessage(error.getMessage(this))
-                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog dialog = builder.show();
+        showAlertDialog(error);
     }
 
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
@@ -127,5 +105,20 @@ public class LockActivity extends RoboFragmentActivity {
                     .addToBackStack(event.name())
                     .commit();
         }
+    }
+
+    private void showAlertDialog(AlertDialogEvent event) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setTitle(event.getTitle(this))
+                .setMessage(event.getMessage(this))
+                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.show();
     }
 }

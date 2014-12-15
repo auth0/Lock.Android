@@ -1,5 +1,5 @@
 /*
- * ResetPasswordEvent.java
+ * AlertDialogEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -24,15 +24,27 @@
 
 package com.auth0.lock.event;
 
-import com.auth0.lock.R;
+import android.content.Context;
 
 /**
  * Created by hernan on 12/15/14.
  */
-public class ResetPasswordEvent extends AlertDialogEvent {
+public class AlertDialogEvent {
 
-    public ResetPasswordEvent() {
-        super(R.string.db_reset_password_title_success, R.string.db_reset_password_message_success);
+    private final int title;
+    private final int message;
+
+    public AlertDialogEvent(int title, int message) {
+        this.title = title;
+        this.message = message;
+    }
+
+    public String getMessage(Context context) {
+        return context.getString(this.message);
+    }
+
+    public String getTitle(Context context) {
+        return context.getString(this.title);
     }
 
 }

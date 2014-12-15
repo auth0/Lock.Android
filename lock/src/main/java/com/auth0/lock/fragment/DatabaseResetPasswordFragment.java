@@ -127,7 +127,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(new AuthenticationError(R.string.database_reset_password_title, R.string.db_reset_password_error_message, error));
+                provider.getBus().post(new AuthenticationError(R.string.db_reset_password_error_title, R.string.db_reset_password_error_message, error));
                 sendButton.setEnabled(true);
                 sendButton.setText(R.string.db_reset_password_btn_text);
                 progressBar.setVisibility(View.GONE);

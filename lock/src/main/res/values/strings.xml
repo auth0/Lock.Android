@@ -28,7 +28,7 @@
     <string name="database_reset_password_title">Reset Password</string>
     <string name="db_reset_password_title_message">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
     <string name="db_reset_password_btn_text">SEND</string>
-    <string name="db_reset_password_error_title">Could not change your password</string>
+    <string name="db_reset_password_error_title">Could\'nt change your password</string>
     <string name="db_reset_password_error_message">There was an error processing the reset password.</string>
     <string name="db_reset_password_error_credentials_title">Invalid credentials</string>
     <string name="db_reset_password_invalid_email_message">The email you entered is invalid. Please try again.</string>
