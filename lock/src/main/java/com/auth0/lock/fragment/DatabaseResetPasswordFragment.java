@@ -39,7 +39,11 @@ import android.widget.TextView;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.validation.EmailValidator;
+import com.auth0.lock.validation.ResetPasswordValidator;
+import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
 import com.google.inject.Inject;
 
@@ -55,6 +59,8 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
     @InjectView(tag = "db_reset_button") Button sendButton;
     @InjectView(tag = "db_reset_password_progress_indicator") ProgressBar progressBar;
+
+    private Validator validator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -74,18 +80,19 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performChange();
+                changePassword();
             }
         });
         repeatPasswordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    performChange();
+                    changePassword();
                 }
                 return false;
             }
         });
+        validator = new ResetPasswordValidator();
     }
 
     @Override
@@ -93,6 +100,15 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         return R.string.database_reset_password_title;
     }
 
+    private void changePassword() {
+        AuthenticationError error = validator.validateFrom(this);
+        boolean valid = error == null;
+        if (valid) {
+            performChange();
+        } else {
+            provider.getBus().post(error);
+        }
+    }
     private void performChange() {
         sendButton.setEnabled(false);
         sendButton.setText("");
@@ -110,7 +126,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
+                provider.getBus().post(new AuthenticationError(R.string.database_reset_password_title, R.string.db_reset_password_error_message, error));
                 sendButton.setEnabled(true);
                 sendButton.setText(R.string.db_reset_password_btn_text);
                 progressBar.setVisibility(View.GONE);

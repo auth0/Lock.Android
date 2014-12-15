@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * PasswordValidator.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,40 +22,20 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
-
-import android.content.Context;
+package com.auth0.lock.validation;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/15/14.
  */
-public class AuthenticationError {
+public class PasswordValidator extends BaseFragmentValidator {
 
-    private int title;
-    private int message;
-    private Throwable throwable;
-
-    public AuthenticationError(int title, int message) {
-        this.title = title;
-        this.message = message;
+    public PasswordValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {
+        super(fieldResource, errorTitleResource, errorMessageResource);
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        this.title = title;
-        this.message = message;
-        this.throwable = throwable;
-    }
-
-    public String getMessage(Context context) {
-        return context.getString(this.message);
-    }
-
-    public String getTitle(Context context) {
-        return context.getString(this.title);
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
+    @Override
+    protected boolean doValidate(String value) {
+        return value.length() > 0;
     }
 
 }

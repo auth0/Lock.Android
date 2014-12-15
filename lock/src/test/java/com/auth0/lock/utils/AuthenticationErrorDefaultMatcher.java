@@ -52,7 +52,7 @@ public class AuthenticationErrorDefaultMatcher extends BaseMatcher<Authenticatio
         this(R.string.db_login_error_title, messageResource);
     }
 
-    private AuthenticationErrorDefaultMatcher(int titleResource, int messageResource) {
+    public AuthenticationErrorDefaultMatcher(int titleResource, int messageResource) {
         messageMatcher = equalTo(Robolectric.application.getString(messageResource));
         titleMatcher = equalTo(Robolectric.application.getString(titleResource));
     }
@@ -81,4 +81,9 @@ public class AuthenticationErrorDefaultMatcher extends BaseMatcher<Authenticatio
     public static Matcher<AuthenticationError> hasMessage(int messageResource) {
         return new AuthenticationErrorDefaultMatcher(messageResource);
     }
+
+    public static Matcher<AuthenticationError> hasError(int titleResource, int messageResource) {
+        return new AuthenticationErrorDefaultMatcher(titleResource, messageResource);
+    }
+
 }

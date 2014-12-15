@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * BaseValidator.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,40 +22,37 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.lock.validation;
 
-import android.content.Context;
+import android.support.v4.app.Fragment;
+
+import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.widget.CredentialField;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/15/14.
  */
-public class AuthenticationError {
+public abstract class BaseFragmentValidator implements Validator {
 
-    private int title;
-    private int message;
-    private Throwable throwable;
+    private final int fieldResource;
+    private final int errorTitleResource;
+    private final int errorMessageResource;
 
-    public AuthenticationError(int title, int message) {
-        this.title = title;
-        this.message = message;
+    public BaseFragmentValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {
+        this.fieldResource = fieldResource;
+        this.errorTitleResource = errorTitleResource;
+        this.errorMessageResource = errorMessageResource;
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        this.title = title;
-        this.message = message;
-        this.throwable = throwable;
+    @Override
+    public AuthenticationError validateFrom(Fragment fragment) {
+        CredentialField field = (CredentialField) fragment.getView().findViewById(fieldResource);
+        String value = field.getText().toString();
+        boolean valid = doValidate(value);
+        field.markAsInvalid(!valid);
+        return valid ? null : new AuthenticationError(errorTitleResource, errorMessageResource);
     }
 
-    public String getMessage(Context context) {
-        return context.getString(this.message);
-    }
-
-    public String getTitle(Context context) {
-        return context.getString(this.title);
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
+    protected abstract boolean doValidate(String value);
 
 }

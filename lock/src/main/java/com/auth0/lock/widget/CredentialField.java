@@ -40,6 +40,7 @@ public class CredentialField extends EditText {
     private final int iconResource;
     private final int errorIconResource;
     private final int colorResource;
+    private final int hintColorResource;
     private final int errorColorResource;
 
     public CredentialField(Context context) {
@@ -58,6 +59,7 @@ public class CredentialField extends EditText {
             errorIconResource = a.getResourceId(R.styleable.CredentialField_errorIconDrawable, -1);
             errorColorResource = a.getResourceId(R.styleable.CredentialField_errorColor, R.color.credential_field_error);
             colorResource = getTextColors().getDefaultColor();
+            hintColorResource = getHintTextColors().getDefaultColor();
             setCompoundDrawablesWithIntrinsicBounds(iconResource, 0, 0, 0);
         } finally {
             a.recycle();
@@ -68,9 +70,11 @@ public class CredentialField extends EditText {
         if (invalid) {
             setCompoundDrawablesWithIntrinsicBounds(errorIconResource, 0, 0, 0);
             setTextColor(getResources().getColor(errorColorResource));
+            setHintTextColor(getResources().getColor(errorColorResource));
         } else {
             setCompoundDrawablesWithIntrinsicBounds(iconResource, 0, 0, 0);
             setTextColor(colorResource);
+            setHintTextColor(hintColorResource);
         }
     }
 }
