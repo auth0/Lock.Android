@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.auth0.lock.R;
+import com.auth0.lock.widget.CredentialField;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +56,8 @@ public class RepeatPasswordValidatorTest {
     private Validator validator;
     private Fragment fragment;
     private View view;
-    private EditText field;
-    private EditText passwordField;
+    private CredentialField field;
+    private CredentialField passwordField;
     private Editable editable;
 
     @Before
@@ -64,9 +65,9 @@ public class RepeatPasswordValidatorTest {
         validator = new RepeatPasswordValidator(R.id.db_reset_password_repeat_password_field, R.id.db_reset_password_password_field, R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_repeat_password_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
-        field = mock(EditText.class);
+        field = mock(CredentialField.class);
         editable = mock(Editable.class);
-        passwordField = mock(EditText.class);
+        passwordField = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.db_reset_password_repeat_password_field))).thenReturn(field);
         when(view.findViewById(eq(R.id.db_reset_password_password_field))).thenReturn(passwordField);

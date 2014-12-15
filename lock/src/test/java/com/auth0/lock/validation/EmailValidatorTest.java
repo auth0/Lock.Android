@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.auth0.lock.R;
+import com.auth0.lock.widget.CredentialField;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class EmailValidatorTest {
     private Validator validator;
     private Fragment fragment;
     private View view;
-    private EditText field;
+    private CredentialField field;
     private Editable editable;
 
     @Before
@@ -64,7 +65,7 @@ public class EmailValidatorTest {
         validator = new EmailValidator(R.id.db_reset_password_username_field, R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_email_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
-        field = mock(EditText.class);
+        field = mock(CredentialField.class);
         editable = mock(Editable.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.db_reset_password_username_field))).thenReturn(field);
