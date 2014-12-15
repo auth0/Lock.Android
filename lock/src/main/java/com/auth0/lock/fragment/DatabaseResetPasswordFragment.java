@@ -40,6 +40,7 @@ import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.widget.CredentialField;
 import com.google.inject.Inject;
 
 import roboguice.inject.InjectView;
@@ -48,8 +49,8 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
     @Inject LoginAuthenticationErrorBuilder errorBuilder;
 
-    @InjectView(tag = "db_reset_password_username_field") EditText usernameField;
-    @InjectView(tag = "db_reset_password_password_field") EditText passwordField;
+    @InjectView(tag = "db_reset_password_username_field") CredentialField usernameField;
+    @InjectView(tag = "db_reset_password_password_field") CredentialField passwordField;
     @InjectView(tag = "db_reset_password_repeat_password_field") EditText repeatPasswordField;
 
     @InjectView(tag = "db_reset_button") Button sendButton;
