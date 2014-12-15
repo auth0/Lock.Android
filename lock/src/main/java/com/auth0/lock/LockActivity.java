@@ -13,6 +13,7 @@ import com.auth0.core.UserProfile;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
@@ -67,6 +68,23 @@ public class LockActivity extends RoboFragmentActivity {
         result.putExtra("token", token);
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    @Subscribe public void onResetPassword(ResetPasswordEvent event) {
+        Log.d(LockActivity.class.getName(), "Changed password");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setTitle(event.getTitle(this))
+                .setMessage(event.getMessage(this))
+                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.show();
+        getSupportFragmentManager().popBackStack();
     }
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {

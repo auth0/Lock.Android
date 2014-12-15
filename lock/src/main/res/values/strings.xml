@@ -35,4 +35,6 @@
     <string name="db_reset_password_invalid_password_message">The password you entered is invalid. Please try again.</string>
     <string name="db_reset_password_invalid_repeat_password_message">The passwords you entered must match. Please try again.</string>
     <string name="db_reset_password_invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
+    <string name="db_reset_password_title_success">Reset Password</string>
+    <string name="db_reset_password_message_success">We\'ve just sent you an email to reset your password.</string>
 </resources>

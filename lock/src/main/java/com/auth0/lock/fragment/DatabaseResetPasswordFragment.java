@@ -41,6 +41,7 @@ import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.validation.EmailValidator;
 import com.auth0.lock.validation.ResetPasswordValidator;
 import com.auth0.lock.validation.Validator;
@@ -118,7 +119,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         client.changePassword(username, password, null, new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
-                provider.getBus().post(NavigationEvent.BACK);
+                provider.getBus().post(new ResetPasswordEvent());
                 sendButton.setEnabled(true);
                 sendButton.setText(R.string.db_reset_password_btn_text);
                 progressBar.setVisibility(View.GONE);
