@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.auth0.app.Lock"
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
         versionName "1.0.0"

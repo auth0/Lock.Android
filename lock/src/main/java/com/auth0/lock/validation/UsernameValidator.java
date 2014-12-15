@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * UsernameValidator.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,28 +22,19 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
-
-import android.content.Context;
+package com.auth0.lock.validation;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/15/14.
  */
-public class AuthenticationError extends AlertDialogEvent {
+public class UsernameValidator extends BaseFragmentValidator {
 
-    private Throwable throwable;
-
-    public AuthenticationError(int title, int message) {
-        this(title, message, null);
+    public UsernameValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {
+        super(fieldResource, errorTitleResource, errorMessageResource);
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        super(title, message);
-        this.throwable = throwable;
+    @Override
+    protected boolean doValidate(String value) {
+        return value.trim().length() > 0;
     }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
-
 }

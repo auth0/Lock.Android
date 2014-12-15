@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * BaseValidator.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,28 +22,37 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.lock.validation;
 
-import android.content.Context;
+import android.support.v4.app.Fragment;
+
+import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.widget.CredentialField;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/15/14.
  */
-public class AuthenticationError extends AlertDialogEvent {
+public abstract class BaseFragmentValidator implements Validator {
 
-    private Throwable throwable;
+    private final int fieldResource;
+    private final int errorTitleResource;
+    private final int errorMessageResource;
 
-    public AuthenticationError(int title, int message) {
-        this(title, message, null);
+    public BaseFragmentValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {
+        this.fieldResource = fieldResource;
+        this.errorTitleResource = errorTitleResource;
+        this.errorMessageResource = errorMessageResource;
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        super(title, message);
-        this.throwable = throwable;
+    @Override
+    public AuthenticationError validateFrom(Fragment fragment) {
+        CredentialField field = (CredentialField) fragment.getView().findViewById(fieldResource);
+        String value = field.getText().toString();
+        boolean valid = doValidate(value);
+        field.markAsInvalid(!valid);
+        return valid ? null : new AuthenticationError(errorTitleResource, errorMessageResource);
     }
 
-    public Throwable getThrowable() {
-        return throwable;
-    }
+    protected abstract boolean doValidate(String value);
 
 }

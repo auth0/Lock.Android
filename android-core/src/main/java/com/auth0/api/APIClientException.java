@@ -26,6 +26,7 @@ package com.auth0.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by hernan on 12/10/14.
@@ -34,7 +35,7 @@ public class APIClientException extends RuntimeException {
 
     private int statusCode;
 
-    private Map responseError;
+    private Map<String, Object> responseError;
 
     public APIClientException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
@@ -42,20 +43,23 @@ public class APIClientException extends RuntimeException {
         this.responseError = new HashMap();
     }
 
-    public APIClientException(String detailMessage, int statusCode, Map responseError) {
+    public APIClientException(String detailMessage, int statusCode, Map<String, Object> responseError) {
         super(detailMessage);
         this.statusCode = statusCode;
-        this.responseError = responseError != null ? responseError : new HashMap();
+        this.responseError = responseError != null ? responseError : new HashMap<String, Object>();
     }
 
-    public APIClientException(String detailMessage, Throwable throwable, int statusCode, Map responseError) {
+    public APIClientException(String detailMessage, Throwable throwable, int statusCode, Map<String, Object> responseError) {
         super(detailMessage, throwable);
         this.statusCode = statusCode;
-        this.responseError = responseError != null ? responseError : new HashMap();
+        this.responseError = responseError != null ? responseError : new HashMap<String, Object>();
     }
 
-    public Map getResponseError() {
+    public Map<String, Object> getResponseError() {
         return responseError;
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
 }

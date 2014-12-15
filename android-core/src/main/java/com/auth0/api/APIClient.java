@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
+import com.auth0.api.handler.APIResponseHandler;
 import com.auth0.api.handler.ApplicationResponseHandler;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
@@ -98,6 +99,7 @@ public class APIClient {
                 .setConnection(getDBConnectionName())
                 .addAll(params)
                 .asDictionary();
+
         Log.v(APIClient.class.getName(), "Performing login with parameters " + request);
         try {
             HttpEntity entity = this.entityBuilder.newEntityFrom(request);
@@ -136,52 +138,22 @@ public class APIClient {
     }
 
     public void signUp(final String email, final String password, final Map<String, String> parameters, final AuthenticationCallback callback) {
-        AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+        AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.d(APIClient.class.getName(), "Signed up username " + email);
-                APIClient.this.login(email, password, parameters, callback);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
-                Map errorResponse = null;
-                if (statusCode == 400 || statusCode == 401) {
-                    try {
-                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
-                        Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
-                    } catch (IOException e) {
-                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                    }
-                }
-                callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
+                APIClient.this.login(email, password, parameters, this.callback);
             }
         };
         signUp(email, password, parameters, handler);
     }
 
     public void createUser(final String email, final String password, final Map<String, String> parameters, final BaseCallback<Void> callback) {
-        AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.d(APIClient.class.getName(), "Signed up username " + email);
-                callback.onSuccess(null);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.e(APIClient.class.getName(), "Failed sign up user with username " + email, error);
-                Map errorResponse = null;
-                if (statusCode == 400 || statusCode == 401) {
-                    try {
-                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
-                        Log.e(APIClient.class.getName(), "Sign up error " + errorResponse);
-                    } catch (IOException e) {
-                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                    }
-                }
-                callback.onFailure(new APIClientException("Failed to perform sign up", error, statusCode, errorResponse));
+                this.callback.onSuccess(null);
             }
         };
         signUp(email, password, parameters, handler);
@@ -196,6 +168,7 @@ public class APIClient {
                 .setClientId(this.clientID)
                 .set(TENANT_KEY, getTenant())
                 .setConnection(getDBConnectionName())
+                .addAll(parameters)
                 .asDictionary();
 
         Log.v(APIClient.class.getName(), "Performing signup with parameters " + request);
@@ -205,6 +178,33 @@ public class APIClient {
         } catch (JsonEntityBuildException e) {
             Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
             callback.onFailure(0, null, null, e);
+        }
+    }
+
+    public void changePassword(final String email, String newPassword, Map<String, String> parameters, BaseCallback<Void> callback) {
+        String changePasswordUrl = this.baseURL + "/dbconnections/change_password";
+
+        Map<String, String> request = ParameterBuilder.newBuilder()
+                .set(EMAIL_KEY, email)
+                .set(PASSWORD_KEY, newPassword)
+                .setClientId(this.clientID)
+                .set(TENANT_KEY, getTenant())
+                .setConnection(getDBConnectionName())
+                .addAll(parameters)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing change password with parameters " + request);
+        try {
+            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
+            this.client.post(null, changePasswordUrl, entity, APPLICATION_JSON, new APIResponseHandler<BaseCallback<Void>>(callback) {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    callback.onSuccess(null);
+                }
+            });
+        } catch (JsonEntityBuildException e) {
+            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
+            callback.onFailure(e);
         }
     }
 

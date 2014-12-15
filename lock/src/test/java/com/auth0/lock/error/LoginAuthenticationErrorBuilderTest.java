@@ -77,7 +77,7 @@ public class LoginAuthenticationErrorBuilderTest {
 
     @Test
     public void shouldReturnInvalidCredentialsMessage() throws Exception {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, Object> errors = new HashMap<>();
         errors.put(AuthenticationErrorBuilder.ERROR_KEY, "invalid_user_password");
         Throwable exception = new APIClientException("error", 400, errors);
         AuthenticationError error = builder.buildFrom(exception);

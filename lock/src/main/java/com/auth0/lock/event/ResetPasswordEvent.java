@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * ResetPasswordEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -24,26 +24,15 @@
 
 package com.auth0.lock.event;
 
-import android.content.Context;
+import com.auth0.lock.R;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/15/14.
  */
-public class AuthenticationError extends AlertDialogEvent {
+public class ResetPasswordEvent extends AlertDialogEvent {
 
-    private Throwable throwable;
-
-    public AuthenticationError(int title, int message) {
-        this(title, message, null);
-    }
-
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        super(title, message);
-        this.throwable = throwable;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
+    public ResetPasswordEvent() {
+        super(R.string.db_reset_password_title_success, R.string.db_reset_password_message_success);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Error.java
+ * AlertDialogEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -27,23 +27,24 @@ package com.auth0.lock.event;
 import android.content.Context;
 
 /**
- * Created by hernan on 12/10/14.
+ * Created by hernan on 12/15/14.
  */
-public class AuthenticationError extends AlertDialogEvent {
+public class AlertDialogEvent {
 
-    private Throwable throwable;
+    private final int title;
+    private final int message;
 
-    public AuthenticationError(int title, int message) {
-        this(title, message, null);
+    public AlertDialogEvent(int title, int message) {
+        this.title = title;
+        this.message = message;
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
-        super(title, message);
-        this.throwable = throwable;
+    public String getMessage(Context context) {
+        return context.getString(this.message);
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public String getTitle(Context context) {
+        return context.getString(this.title);
     }
 
 }
