@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="icon_background">#fff0f0f0</color>
-    <color name="credential_field_error">#ffcc0000</color>
+    <color name="lock_background">#ffffffff</color>
+
+    <color name="credential_box_background">@android:color/transparent</color>
+    <color name="credential_box_border">#ccc</color>
+    <color name="credential_field_error">#c00</color>
+    <color name="credential_field_hint">#ccc</color>
+    <color name="credential_field_background">@android:color/transparent</color>
+
+    <color name="primary_button_text">@android:color/white</color>
+    <color name="primary_button_normal_background">#15204D</color>
+    <color name="primary_button_highlighted_background">#0A1024</color>
+    <color name="primary_button_disabled_background">#153a4d</color>
+
+    <color name="secondary_button_text">#4d4d4d</color>
+    <color name="secondary_button_border">#f0f0f0</color>
+    <color name="secondary_button_normal_background">@android:color/transparent</color>
+    <color name="secondary_button_highlighted_background">#f0f0f0</color>
+    <color name="secondary_button_disabled_background">@android:color/transparent</color>
+
+    <color name="title_lock_icon_background">#f0f0f0</color>
 </resources>
