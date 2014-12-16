@@ -25,20 +25,25 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.validation.LoginValidator;
 import com.google.inject.Inject;
 
 import roboguice.inject.InjectView;
@@ -46,6 +51,7 @@ import roboguice.inject.InjectView;
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
     @Inject LoginAuthenticationErrorBuilder errorBuilder;
+    @Inject LoginValidator validator;
 
     @InjectView(tag = "db_login_username_field") EditText usernameField;
     @InjectView(tag = "db_login_password_field") EditText passwordField;
@@ -70,9 +76,19 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performLogin();
+                login();
             }
         });
+        passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    login();
+                }
+                return false;
+            }
+        });
+
         Button signUpButton = (Button) view.findViewById(R.id.db_signup_button);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +103,16 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
                 provider.getBus().post(NavigationEvent.RESET_PASSWORD);
             }
         });
+    }
+
+    private void login() {
+        AuthenticationError error = validator.validateFrom(this);
+        boolean valid = error == null;
+        if (valid) {
+            performLogin();
+        } else {
+            provider.getBus().post(error);
+        }
     }
 
     private void performLogin() {
