@@ -1,5 +1,5 @@
 /*
- * PasswordValidatorTest.java
+ * SignUpValidatorTest.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -25,60 +25,75 @@
 package com.auth0.lock.validation;
 
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.view.View;
 
 import com.auth0.lock.R;
-import com.auth0.lock.widget.CredentialField;
+import com.auth0.lock.event.AuthenticationError;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasError;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
- * Created by hernan on 12/15/14.
+ * Created by hernan on 12/16/14.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class PasswordValidatorTest {
+public class SignUpValidatorTest {
+
     private Validator validator;
+
+    @Mock
+    private Validator emailValidator;
+    @Mock
+    private Validator passwordValidator;
+    @Mock
     private Fragment fragment;
-    private View view;
-    private CredentialField field;
-    private Editable editable;
+    @Mock
+    private AuthenticationError emailError;
+    @Mock
+    private AuthenticationError passwordError;
 
     @Before
     public void setUp() throws Exception {
-        validator = new PasswordValidator(R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
-        fragment = mock(Fragment.class);
-        view = mock(View.class);
-        field = mock(CredentialField.class);
-        editable = mock(Editable.class);
-        when(fragment.getView()).thenReturn(view);
-        when(view.findViewById(eq(R.id.db_reset_password_password_field))).thenReturn(field);
-        when(field.getText()).thenReturn(editable);
+        MockitoAnnotations.initMocks(this);
+        validator = new SignUpValidator(emailValidator, passwordValidator);
+        when(emailValidator.validateFrom(eq(fragment))).thenReturn(null);
+        when(passwordValidator.validateFrom(eq(fragment))).thenReturn(null);
     }
 
     @Test
-    public void shouldReturnNullWithValidPassword() throws Exception {
-        when(editable.toString()).thenReturn("a very long long long password");
+    public void shouldReturnNullOnSuccess() throws Exception {
         assertThat(validator.validateFrom(fragment), is(nullValue()));
     }
 
     @Test
-    public void shouldFailWithEmptyPassword() throws Exception {
-        when(editable.toString()).thenReturn("");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_password_message));
+    public void shouldReturnEmailErrorOnly() throws Exception {
+        when(emailValidator.validateFrom(eq(fragment))).thenReturn(emailError);
+        assertThat(validator.validateFrom(fragment), equalTo(emailError));
     }
 
+    @Test
+    public void shouldReturnPasswordErrorOnly() throws Exception {
+        when(passwordValidator.validateFrom(eq(fragment))).thenReturn(passwordError);
+        assertThat(validator.validateFrom(fragment), equalTo(passwordError));
+    }
+
+    @Test
+    public void shouldReturnCredentialErrorWhenBothFails() throws Exception {
+        when(emailValidator.validateFrom(eq(fragment))).thenReturn(emailError);
+        when(passwordValidator.validateFrom(eq(fragment))).thenReturn(passwordError);
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+    }
 }

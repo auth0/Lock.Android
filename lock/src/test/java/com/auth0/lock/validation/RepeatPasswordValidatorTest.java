@@ -27,7 +27,6 @@ package com.auth0.lock.validation;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.View;
-import android.widget.EditText;
 
 import com.auth0.lock.R;
 import com.auth0.lock.widget.CredentialField;
@@ -62,7 +61,7 @@ public class RepeatPasswordValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new RepeatPasswordValidator(R.id.db_reset_password_repeat_password_field, R.id.db_reset_password_password_field, R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_repeat_password_message);
+        validator = new RepeatPasswordValidator(R.id.db_reset_password_repeat_password_field, R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
@@ -84,7 +83,7 @@ public class RepeatPasswordValidatorTest {
     @Test
     public void shouldFailWithEmptyPassword() throws Exception {
         when(editable.toString()).thenReturn("");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_repeat_password_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message));
     }
 
     @Test
@@ -93,7 +92,7 @@ public class RepeatPasswordValidatorTest {
         when(field.getText()).thenReturn(otherEditable);
         when(editable.toString()).thenReturn("1234567890");
         when(otherEditable.toString()).thenReturn("qwertyuiop");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_repeat_password_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message));
     }
 
 }
