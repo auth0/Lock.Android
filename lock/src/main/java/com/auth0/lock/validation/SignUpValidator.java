@@ -1,5 +1,5 @@
 /*
- * ResetPasswordValidator.java
+ * SignUpValidator.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -30,39 +30,30 @@ import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 
 /**
- * Created by hernan on 12/15/14.
+ * Created by hernan on 12/16/14.
  */
-public class ResetPasswordValidator implements Validator {
+public class SignUpValidator implements Validator {
 
-    private Validator emailValidator;
-    private Validator passwordValidator;
-    private Validator repeatPasswordValidator;
+    private final Validator usernameValidator;
+    private final Validator passwordValidator;
 
-    public ResetPasswordValidator(Validator emailValidator, Validator passwordValidator, Validator repeatPasswordValidator) {
-        this.emailValidator = emailValidator;
+    public SignUpValidator(Validator usernameValidator, Validator passwordValidator) {
+        this.usernameValidator = usernameValidator;
         this.passwordValidator = passwordValidator;
-        this.repeatPasswordValidator = repeatPasswordValidator;
     }
 
-    public ResetPasswordValidator() {
-        this(
-            new EmailValidator(R.id.db_reset_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message),
-            new PasswordValidator(R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message),
-            new RepeatPasswordValidator(R.id.db_reset_password_repeat_password_field, R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message)
-        );
+    public SignUpValidator() {
+        this(new EmailValidator(R.id.db_signup_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message),
+                new PasswordValidator(R.id.db_signup_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message));
     }
 
     @Override
     public AuthenticationError validateFrom(Fragment fragment) {
-        AuthenticationError emailError = emailValidator.validateFrom(fragment);
-        AuthenticationError passwordError = passwordValidator.validateFrom(fragment);
-        AuthenticationError repeatError = repeatPasswordValidator.validateFrom(fragment);
-        if (emailError != null && (passwordError != null || repeatError != null)) {
+        final AuthenticationError usernameError = usernameValidator.validateFrom(fragment);
+        final AuthenticationError passwordError = passwordValidator.validateFrom(fragment);
+        if (usernameError != null && passwordError != null) {
             return new AuthenticationError(R.string.invalid_credentials_title, R.string.invalid_credentials_message);
         }
-        if (repeatError != null) {
-            return repeatError;
-        }
-        return passwordError != null ? passwordError : emailError;
+        return usernameError != null ? usernameError : passwordError;
     }
 }

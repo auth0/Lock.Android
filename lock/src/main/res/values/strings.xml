@@ -18,23 +18,26 @@
     <string name="db_login_error_message">There was an error processing the sign in.</string>
     <string name="db_login_invalid_credentials_error_message">Wrong email or password.</string>
 
-
     <string name="db_cancel_button_text">CANCEL</string>
 
+    <!--Validation Errors-->
+    <string name="invalid_credentials_title">Invalid credentials</string>
+    <string name="invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
+    <string name="invalid_email_message">The email you entered is invalid. Please try again.</string>
+    <string name="invalid_password_message">The password you entered is invalid. Please try again.</string>
+    <string name="db_reset_password_invalid_repeat_password_message">The passwords you entered must match. Please try again.</string>
+
+    <!--Sign Up-->
     <string name="database_signup_title">Sign Up</string>
     <string name="db_signup_title_message">Please enter your email and password</string>
     <string name="db_signup_btn_text">SIGN UP</string>
 
+    <!--Reset Password-->
     <string name="database_reset_password_title">Reset Password</string>
     <string name="db_reset_password_title_message">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
     <string name="db_reset_password_btn_text">SEND</string>
     <string name="db_reset_password_error_title">Could\'nt change your password</string>
     <string name="db_reset_password_error_message">There was an error processing the reset password.</string>
-    <string name="db_reset_password_error_credentials_title">Invalid credentials</string>
-    <string name="db_reset_password_invalid_email_message">The email you entered is invalid. Please try again.</string>
-    <string name="db_reset_password_invalid_password_message">The password you entered is invalid. Please try again.</string>
-    <string name="db_reset_password_invalid_repeat_password_message">The passwords you entered must match. Please try again.</string>
-    <string name="db_reset_password_invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
     <string name="db_reset_password_title_success">Reset Password</string>
     <string name="db_reset_password_message_success">We\'ve just sent you an email to reset your password.</string>
 </resources>

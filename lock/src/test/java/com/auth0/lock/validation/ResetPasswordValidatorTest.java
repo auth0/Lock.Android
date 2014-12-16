@@ -109,14 +109,14 @@ public class ResetPasswordValidatorTest {
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
         when(repeatValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
-        assertThat(validator.validateFrom(fragment), hasError(R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_credentials_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
     }
 
     @Test
     public void shouldReturnInvalidCredentialsErrorWhenEmailAdnPasswordFails() throws Exception {
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
-        assertThat(validator.validateFrom(fragment), hasError(R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_credentials_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
     }
 
 }

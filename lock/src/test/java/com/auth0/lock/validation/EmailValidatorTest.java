@@ -27,7 +27,6 @@ package com.auth0.lock.validation;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.View;
-import android.widget.EditText;
 
 import com.auth0.lock.R;
 import com.auth0.lock.widget.CredentialField;
@@ -62,7 +61,7 @@ public class EmailValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new EmailValidator(R.id.db_reset_password_username_field, R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_email_message);
+        validator = new EmailValidator(R.id.db_reset_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
@@ -81,13 +80,13 @@ public class EmailValidatorTest {
     @Test
     public void shouldFailWithEmptyEmail() throws Exception {
         when(editable.toString()).thenReturn("");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_email_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_email_message));
     }
 
     @Test
     public void shouldFailWithInvalidEmail() throws Exception {
         when(editable.toString()).thenReturn("pepe@p");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.db_reset_password_error_credentials_title, R.string.db_reset_password_invalid_email_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_email_message));
     }
 
 }
