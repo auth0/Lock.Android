@@ -25,12 +25,15 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Token;
@@ -76,6 +79,16 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
                 login();
             }
         });
+        passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    login();
+                }
+                return false;
+            }
+        });
+
         Button signUpButton = (Button) view.findViewById(R.id.db_signup_button);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
