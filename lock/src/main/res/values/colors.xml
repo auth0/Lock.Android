@@ -20,4 +20,13 @@
     <color name="secondary_button_disabled_background">@android:color/transparent</color>
 
     <color name="title_lock_icon_background">#f0f0f0</color>
+
+    <!--Social-->
+    <color name="social_button_icon_background">#46000000</color>
+    <color name="social_button_text">@android:color/white</color>
+    <color name="social_facebook">#4863AE</color>
+    <color name="social_google_oauth2">#dd4b39</color>
+    <color name="social_instagram">#38537A</color>
+    <color name="social_linkedin">#0083a8</color>
+    <color name="social_twitter">#46c0fb</color>
 </resources>

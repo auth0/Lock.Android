@@ -25,20 +25,42 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.auth0.lock.R;
+import com.auth0.lock.adapter.SocialListAdapter;
+import com.google.inject.Inject;
+
+import java.util.List;
 
 import roboguice.fragment.RoboFragment;
+import roboguice.inject.InjectView;
 
 public class SocialFragment extends BaseTitledFragment {
+
+    public static final String SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT = "strategies";
+
+    @InjectView(tag = "social_button_list") ListView listView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_social, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle bundle = getArguments();
+        List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
+        Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
+        final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]));
+        listView.setAdapter(adapter);
     }
 
     @Override

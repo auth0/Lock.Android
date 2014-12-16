@@ -40,4 +40,9 @@
 
     <!--Social-->
     <string name="social_only_title">Login</string>
+    <string name="social_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="social_google_oauth2">LOGIN WITH GOOGLE</string>
+    <string name="social_instagram">LOGIN WITH INSTAGRAM</string>
+    <string name="social_linkedin">LOGIN WITH LINKEDIN</string>
+    <string name="social_twitter">LOGIN WITH TWITTER</string>
 </resources>

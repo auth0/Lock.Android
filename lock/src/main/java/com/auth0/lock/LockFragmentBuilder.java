@@ -24,13 +24,17 @@
 
 package com.auth0.lock;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.auth0.core.Application;
+import com.auth0.core.Strategy;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.SocialFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by hernan on 12/16/14.
@@ -52,7 +56,13 @@ public class LockFragmentBuilder {
     }
 
     public Fragment social() {
-        return new SocialFragment();
+        final SocialFragment fragment = new SocialFragment();
+        if (application != null) {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList(SocialFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
+            fragment.setArguments(bundle);
+        }
+        return fragment;
     }
 
     public Fragment root() {
@@ -69,5 +79,13 @@ public class LockFragmentBuilder {
 
     public void setApplication(Application application) {
         this.application = application;
+    }
+
+    private ArrayList<String> activeSocialStrategies() {
+        ArrayList<String> strategies = new ArrayList<>(application.getSocialStrategies().size());
+        for (Strategy strategy : application.getSocialStrategies()) {
+            strategies.add(strategy.getName());
+        }
+        return strategies;
     }
 }
