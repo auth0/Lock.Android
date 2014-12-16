@@ -19,6 +19,7 @@ import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.LoadingFragment;
+import com.auth0.lock.fragment.SocialFragment;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
@@ -28,7 +29,8 @@ import roboguice.activity.RoboFragmentActivity;
 
 public class LockActivity extends RoboFragmentActivity {
 
-    @Inject private BusProvider provider;
+    @Inject BusProvider provider;
+    @Inject LockFragmentBuilder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +57,9 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(LockActivity.class.getName(), "Application configuration loaded for id " + application.getId());
+        builder.setApplication(application);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, new DatabaseLoginFragment())
+                .replace(R.id.container, builder.root())
                 .commit();
     }
 
@@ -92,10 +95,10 @@ public class LockActivity extends RoboFragmentActivity {
         Fragment fragment = null;
         switch (event) {
             case SIGN_UP:
-                fragment = new DatabaseSignUpFragment();
+                fragment = builder.signUp();
                 break;
             case RESET_PASSWORD:
-                fragment = new DatabaseResetPasswordFragment();
+                fragment = builder.resetPassword();
                 break;
         }
         if (fragment != null) {
