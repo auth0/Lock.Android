@@ -45,4 +45,11 @@
     <string name="social_instagram">LOGIN WITH INSTAGRAM</string>
     <string name="social_linkedin">LOGIN WITH LINKEDIN</string>
     <string name="social_twitter">LOGIN WITH TWITTER</string>
+
+    <string name="social_icon_facebook">f</string>
+    <string name="social_icon_google_oauth2">+</string>
+    <string name="social_icon_instagram">i</string>
+    <string name="social_icon_linkedin">L</string>
+    <string name="social_icon_twitter">T</string>
+
 </resources>

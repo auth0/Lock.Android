@@ -27,6 +27,7 @@ package com.auth0.lock.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -56,7 +57,9 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         }
 
         TextView iconLabel = (TextView) convertView.findViewById(R.id.social_icon_label);
-        iconLabel.setText(social.substring(0, 1));
+        iconLabel.setText(iconForSocialService(social));
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "z-social.ttf");
+        iconLabel.setTypeface(font);
 
         TextView textLabel = (TextView) convertView.findViewById(R.id.social_title_label);
         textLabel.setText(titleForSocialService(social));
@@ -78,6 +81,12 @@ public class SocialListAdapter extends ArrayAdapter<String> {
 
     private int titleForSocialService(String service) {
         String titleIdentifier = "social_" + service.replace('-', '_');
+        int resId = getContext().getResources().getIdentifier(titleIdentifier, "string", getContext().getPackageName());
+        return resId;
+    }
+
+    private int iconForSocialService(String service) {
+        String titleIdentifier = "social_icon_" + service.replace('-', '_');
         int resId = getContext().getResources().getIdentifier(titleIdentifier, "string", getContext().getPackageName());
         return resId;
     }
