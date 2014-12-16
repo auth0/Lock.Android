@@ -25,20 +25,25 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.validation.SignUpValidator;
 import com.google.inject.Inject;
 
 import roboguice.inject.InjectView;
@@ -46,6 +51,7 @@ import roboguice.inject.InjectView;
 public class DatabaseSignUpFragment extends BaseTitledFragment {
 
     @Inject LoginAuthenticationErrorBuilder errorBuilder;
+    @Inject SignUpValidator validator;
 
     @InjectView(tag = "db_signup_username_field") EditText usernameField;
     @InjectView(tag = "db_signup_password_field") EditText passwordField;
@@ -69,10 +75,21 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
                 provider.getBus().post(NavigationEvent.BACK);
             }
         });
+
+        passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    signUp();
+                }
+                return false;
+            }
+        });
+
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performSignUp();
+                signUp();
             }
         });
     }
@@ -80,6 +97,16 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     @Override
     protected int getTitleResource() {
         return R.string.database_signup_title;
+    }
+
+    private void signUp() {
+        AuthenticationError error = validator.validateFrom(this);
+        boolean valid = error == null;
+        if (valid) {
+            performSignUp();
+        } else {
+            provider.getBus().post(error);
+        }
     }
 
     private void performSignUp() {
