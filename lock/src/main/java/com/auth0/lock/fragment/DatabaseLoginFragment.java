@@ -37,8 +37,10 @@ import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.validation.LoginValidator;
 import com.google.inject.Inject;
 
 import roboguice.inject.InjectView;
@@ -46,6 +48,7 @@ import roboguice.inject.InjectView;
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
     @Inject LoginAuthenticationErrorBuilder errorBuilder;
+    @Inject LoginValidator validator;
 
     @InjectView(tag = "db_login_username_field") EditText usernameField;
     @InjectView(tag = "db_login_password_field") EditText passwordField;
@@ -70,7 +73,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performLogin();
+                login();
             }
         });
         Button signUpButton = (Button) view.findViewById(R.id.db_signup_button);
@@ -87,6 +90,16 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
                 provider.getBus().post(NavigationEvent.RESET_PASSWORD);
             }
         });
+    }
+
+    private void login() {
+        AuthenticationError error = validator.validateFrom(this);
+        boolean valid = error == null;
+        if (valid) {
+            performLogin();
+        } else {
+            provider.getBus().post(error);
+        }
     }
 
     private void performLogin() {

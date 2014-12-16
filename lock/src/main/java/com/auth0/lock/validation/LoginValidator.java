@@ -43,8 +43,8 @@ public class LoginValidator implements Validator {
     }
 
     public LoginValidator() {
-        this(new EmailValidator(R.id.db_signup_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message),
-                new PasswordValidator(R.id.db_signup_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message));
+        this(new EmailValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message),
+                new PasswordValidator(R.id.db_login_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message));
     }
 
     @Override
