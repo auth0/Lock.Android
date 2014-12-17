@@ -20,8 +20,11 @@ import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.provider.BusProvider;
+import com.auth0.lock.web.CallbackParser;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
+
+import java.util.Map;
 
 import roboguice.activity.RoboFragmentActivity;
 
@@ -30,6 +33,7 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
+    @Inject CallbackParser parser;
 
     private Application application;
     private ProgressDialog progressDialog;
@@ -48,9 +52,21 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v(LockActivity.class.getName(), "Resuming activity with data " + getIntent().getData());
         this.provider.getBus().register(this);
-        dismissProgressDialog();
+        final Uri uri = getIntent().getData();
+        Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
+        if (uri != null) {
+            final Map<String, String> values = parser.getValuesFromUri(uri);
+            if (values.containsKey("error")) {
+                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
+                final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
+                provider.getBus().post(error);
+                dismissProgressDialog();
+            }
+            dismissProgressDialog(); //Remove Later
+        } else {
+            dismissProgressDialog();
+        }
     }
 
     @Override
