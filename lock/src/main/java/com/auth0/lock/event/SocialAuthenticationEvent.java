@@ -24,6 +24,10 @@
 
 package com.auth0.lock.event;
 
+import android.net.Uri;
+
+import com.auth0.core.Application;
+
 /**
  * Created by hernan on 12/17/14.
  */
@@ -37,5 +41,14 @@ public class SocialAuthenticationEvent {
 
     public String getServiceName() {
         return serviceName;
+    }
+
+    public Uri getAuthenticationUri(Application application) {
+        return Uri.parse(application.getAuthorizeURL()).buildUpon()
+                .appendQueryParameter("response_type", "token")
+                .appendQueryParameter("connection", serviceName)
+                .appendQueryParameter("client_id", application.getId())
+                .appendQueryParameter("redirect_uri", "http://localhost/mobile")
+                .build();
     }
 }
