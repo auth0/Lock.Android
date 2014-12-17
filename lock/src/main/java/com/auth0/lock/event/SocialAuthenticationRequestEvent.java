@@ -1,5 +1,5 @@
 /*
- * SocialAuthentication.java
+ * SocialAuthenticationEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -24,22 +24,34 @@
 
 package com.auth0.lock.event;
 
-import com.auth0.core.Token;
+import android.net.Uri;
 
-import java.util.Map;
+import com.auth0.core.Application;
 
 /**
  * Created by hernan on 12/17/14.
  */
-public class SocialAuthenticationEvent {
+public class SocialAuthenticationRequestEvent {
 
-    private final Token token;
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";
 
-    public SocialAuthenticationEvent(Map<String, String> values) {
-        this.token = new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token"));
+    private final String serviceName;
+
+    public SocialAuthenticationRequestEvent(String serviceName) {
+        this.serviceName = serviceName;
     }
 
-    public Token getToken() {
-        return token;
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public Uri getAuthenticationUri(Application application) {
+        return Uri.parse(application.getAuthorizeURL()).buildUpon()
+                .appendQueryParameter("response_type", "token")
+                .appendQueryParameter("connection", serviceName)
+                .appendQueryParameter("client_id", application.getId())
+                .appendQueryParameter("scope", "openid")
+                .appendQueryParameter("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), application.getTenant()))
+                .build();
     }
 }

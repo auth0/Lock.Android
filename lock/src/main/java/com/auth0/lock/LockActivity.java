@@ -18,6 +18,7 @@ import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.event.SocialAuthenticationEvent;
+import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.provider.BusProvider;
 import com.auth0.lock.web.CallbackParser;
@@ -62,8 +63,11 @@ public class LockActivity extends RoboFragmentActivity {
                 final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
                 provider.getBus().post(error);
                 dismissProgressDialog();
+            } else if(values.size() > 0) {
+                provider.getBus().post(new SocialAuthenticationEvent(values));
+            } else {
+                dismissProgressDialog();
             }
-            dismissProgressDialog(); //Remove Later
         } else {
             dismissProgressDialog();
         }
@@ -106,6 +110,7 @@ public class LockActivity extends RoboFragmentActivity {
         result.putExtra("profile", profile);
         result.putExtra("token", token);
         setResult(RESULT_OK, result);
+        dismissProgressDialog();
         finish();
     }
 
@@ -117,6 +122,7 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
+        dismissProgressDialog();
         showAlertDialog(error);
     }
 
@@ -145,7 +151,7 @@ public class LockActivity extends RoboFragmentActivity {
         }
     }
 
-    @Subscribe public void onSocialAuthentication(SocialAuthenticationEvent event) {
+    @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
         Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
         final Uri url = event.getAuthenticationUri(application);
         final Intent intent = new Intent(Intent.ACTION_VIEW, url);
