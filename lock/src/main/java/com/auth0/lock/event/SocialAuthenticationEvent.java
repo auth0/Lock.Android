@@ -33,6 +33,8 @@ import com.auth0.core.Application;
  */
 public class SocialAuthenticationEvent {
 
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";
+
     private final String serviceName;
 
     public SocialAuthenticationEvent(String serviceName) {
@@ -48,7 +50,7 @@ public class SocialAuthenticationEvent {
                 .appendQueryParameter("response_type", "token")
                 .appendQueryParameter("connection", serviceName)
                 .appendQueryParameter("client_id", application.getId())
-                .appendQueryParameter("redirect_uri", "http://localhost/mobile")
+                .appendQueryParameter("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), application.getTenant()))
                 .build();
     }
 }

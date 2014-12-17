@@ -55,6 +55,12 @@ public class LockActivity extends RoboFragmentActivity {
         this.provider.getBus().unregister(this);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.v(LockActivity.class.getName(), "Received new Intent with URI " + intent.getData());
+    }
+
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(LockActivity.class.getName(), "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);

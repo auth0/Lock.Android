@@ -35,7 +35,6 @@ public class MyActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent loginIntent = new Intent(MyActivity.this, LockActivity.class);
-                loginIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(loginIntent, AUTHENTICATION_REQUEST);
             }
         });
