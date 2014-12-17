@@ -30,11 +30,12 @@ public class MyActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_my);
-        Button loginButton = (Button) findViewById(id.login_button);
+        final Button loginButton = (Button) findViewById(id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent loginIntent = new Intent(MyActivity.this, LockActivity.class);
+                loginIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(loginIntent, AUTHENTICATION_REQUEST);
             }
         });
