@@ -44,6 +44,12 @@ import com.auth0.lock.R;
  */
 public class SocialListAdapter extends ArrayAdapter<String> {
 
+    private static final String TEXT_COLOR_KEY_FORMAT = "color/social_%s_text";
+    private static final String COLOR_KEY_FORMAT = "color/social_%s";
+    private static final String TEXT_KEY_FORMAT = "string/social_%s";
+    private static final String ICON_KEY_FORMAT = "string/social_icon_%s";
+    private static final String SOCIAL_FONT_FILE_NAME = "z-social.ttf";
+
     public SocialListAdapter(Context context, String[] objects) {
         super(context, 0, objects);
     }
@@ -59,7 +65,7 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         int textColor = textColorForSocialService(social);
         TextView iconLabel = (TextView) convertView.findViewById(R.id.social_icon_label);
         iconLabel.setText(iconForSocialService(social));
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "z-social.ttf");
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), SOCIAL_FONT_FILE_NAME);
         iconLabel.setTypeface(font);
         iconLabel.setTextColor(textColor);
 
@@ -77,27 +83,32 @@ public class SocialListAdapter extends ArrayAdapter<String> {
     }
 
     private int textColorForSocialService(String service) {
-        String colorIdentifier = "social_" + service.replace('-', '_') + "_text";
-        int resId = getContext().getResources().getIdentifier(colorIdentifier, "color", getContext().getPackageName());
-        return getContext().getResources().getColor(resId);
+        String colorIdentifier = String.format(TEXT_COLOR_KEY_FORMAT, normalizeServiceName(service));
+        int resId = resourceFromIdentifier(colorIdentifier);
+        return resId == 0 ? Color.BLACK : getContext().getResources().getColor(resId);
     }
 
     private int colorForSocialService(String service) {
-        String colorIdentifier = "social_" + service.replace('-', '_');
-        int resId = getContext().getResources().getIdentifier(colorIdentifier, "color", getContext().getPackageName());
-        return getContext().getResources().getColor(resId);
+        String colorIdentifier = String.format(COLOR_KEY_FORMAT, normalizeServiceName(service));
+        int resId = resourceFromIdentifier(colorIdentifier);
+        return resId == 0 ? Color.BLACK : getContext().getResources().getColor(resId);
     }
 
     private int titleForSocialService(String service) {
-        String titleIdentifier = "social_" + service.replace('-', '_');
-        int resId = getContext().getResources().getIdentifier(titleIdentifier, "string", getContext().getPackageName());
-        return resId;
+        String titleIdentifier = String.format(TEXT_KEY_FORMAT, normalizeServiceName(service));
+        return resourceFromIdentifier(titleIdentifier);
     }
 
     private int iconForSocialService(String service) {
-        String titleIdentifier = "social_icon_" + service.replace('-', '_');
-        int resId = getContext().getResources().getIdentifier(titleIdentifier, "string", getContext().getPackageName());
-        return resId;
+        String iconIdentifier = String.format(ICON_KEY_FORMAT, normalizeServiceName(service));
+        return resourceFromIdentifier(iconIdentifier);
     }
 
+    private String normalizeServiceName(String name) {
+        return name.replace('-', '_');
+    }
+
+    private int resourceFromIdentifier(String identifier) {
+        return getContext().getResources().getIdentifier(identifier, null, getContext().getPackageName());
+    }
 }
