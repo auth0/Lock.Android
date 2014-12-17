@@ -81,6 +81,10 @@ public class LockFragmentBuilder {
         this.application = application;
     }
 
+    public Application getApplication() {
+        return application;
+    }
+
     private ArrayList<String> activeSocialStrategies() {
         ArrayList<String> strategies = new ArrayList<>(application.getSocialStrategies().size());
         for (Strategy strategy : application.getSocialStrategies()) {

@@ -29,10 +29,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
+import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.google.inject.Inject;
 
 import java.util.List;
@@ -61,6 +63,14 @@ public class SocialFragment extends BaseTitledFragment {
         Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]));
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String serviceName = (String) parent.getItemAtPosition(position);
+                Log.d(SocialFragment.class.getName(), "Selected service " + serviceName);
+                provider.getBus().post(new SocialAuthenticationEvent(serviceName));
+            }
+        });
     }
 
     @Override

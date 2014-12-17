@@ -3,10 +3,12 @@ package com.auth0.lock;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.auth0.api.APIClient;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -15,6 +17,7 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
+import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
@@ -108,6 +111,18 @@ public class LockActivity extends RoboFragmentActivity {
                     .addToBackStack(event.name())
                     .commit();
         }
+    }
+
+    @Subscribe public void onSocialAuthentication(SocialAuthenticationEvent event) {
+        Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
+        final Uri url = Uri.parse(builder.getApplication().getAuthorizeURL()).buildUpon()
+                .appendQueryParameter("response_type", "token")
+                .appendQueryParameter("connection", event.getServiceName())
+                .appendQueryParameter("client_id", builder.getApplication().getId())
+                .appendQueryParameter("redirect_uri", "http://localhost/mobile")
+                .build();
+        final Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(intent);
     }
 
     private void showAlertDialog(AlertDialogEvent event) {
