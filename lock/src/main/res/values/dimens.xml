@@ -35,4 +35,12 @@
     <dimen name="secondary_button_text_size">10sp</dimen>
     <dimen name="secondary_button_border_width">1dp</dimen>
     <dimen name="secondary_button_corner_radius">15dp</dimen>
+
+    <dimen name="social_list_padding_top">25dp</dimen>
+    <dimen name="social_button_icon_label_size">55dp</dimen>
+    <dimen name="social_button_corner_radius">5dp</dimen>
+    <dimen name="social_button_text_padding_left">10dp</dimen>
+    <dimen name="social_button_text_size">13sp</dimen>
+    <dimen name="social_button_icon_size">16sp</dimen>
+    <dimen name="social_list_item_interspace">5dp</dimen>
 </resources>

@@ -32,7 +32,6 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
-
 }
 
 apply plugin: 'android-unit-test'
