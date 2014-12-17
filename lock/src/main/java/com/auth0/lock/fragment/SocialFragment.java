@@ -29,20 +29,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.auth0.api.callback.BaseCallback;
+import com.auth0.core.Token;
+import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
+import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.SocialAuthenticationEvent;
+import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.google.inject.Inject;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 public class SocialFragment extends BaseTitledFragment {
 
     public static final String SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT = "strategies";
+
+    @Inject LoginAuthenticationErrorBuilder errorBuilder;
 
     @InjectView(tag = "social_button_list") ListView listView;
 
@@ -61,10 +71,45 @@ public class SocialFragment extends BaseTitledFragment {
         Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]));
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String serviceName = (String) parent.getItemAtPosition(position);
+                Log.d(SocialFragment.class.getName(), "Selected service " + serviceName);
+                provider.getBus().post(new SocialAuthenticationRequestEvent(serviceName));
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onResume();
+        provider.getBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onPause();
+        provider.getBus().unregister(this);
     }
 
     @Override
     protected int getTitleResource() {
         return R.string.social_only_title;
+    }
+
+    @Subscribe public void onSocialAuthentication(SocialAuthenticationEvent event) {
+        final Token token = event.getToken();
+        client.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile userProfile) {
+                provider.getBus().post(new AuthenticationEvent(userProfile, token));
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                provider.getBus().post(errorBuilder.buildFrom(error));
+            }
+        });
     }
 }

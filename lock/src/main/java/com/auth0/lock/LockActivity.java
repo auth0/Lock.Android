@@ -1,8 +1,10 @@
 package com.auth0.lock;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,14 +17,15 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
-import com.auth0.lock.fragment.DatabaseLoginFragment;
-import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
-import com.auth0.lock.fragment.DatabaseSignUpFragment;
+import com.auth0.lock.event.SocialAuthenticationEvent;
+import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.fragment.LoadingFragment;
-import com.auth0.lock.fragment.SocialFragment;
 import com.auth0.lock.provider.BusProvider;
+import com.auth0.lock.web.CallbackParser;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
+
+import java.util.Map;
 
 import roboguice.activity.RoboFragmentActivity;
 
@@ -31,6 +34,10 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
+    @Inject CallbackParser parser;
+
+    private Application application;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +54,49 @@ public class LockActivity extends RoboFragmentActivity {
     protected void onResume() {
         super.onResume();
         this.provider.getBus().register(this);
+        final Uri uri = getIntent().getData();
+        Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
+        if (uri != null) {
+            final Map<String, String> values = parser.getValuesFromUri(uri);
+            if (values.containsKey("error")) {
+                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
+                final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
+                provider.getBus().post(error);
+                dismissProgressDialog();
+            } else if(values.size() > 0) {
+                provider.getBus().post(new SocialAuthenticationEvent(values));
+            } else {
+                dismissProgressDialog();
+            }
+        } else {
+            dismissProgressDialog();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         this.provider.getBus().unregister(this);
+        getIntent().setData(null);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.v(LockActivity.class.getName(), "Received new Intent with URI " + intent.getData());
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        dismissProgressDialog();
+        super.onDestroy();
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(LockActivity.class.getName(), "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);
+        this.application = application;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, builder.root())
                 .commit();
@@ -71,6 +110,7 @@ public class LockActivity extends RoboFragmentActivity {
         result.putExtra("profile", profile);
         result.putExtra("token", token);
         setResult(RESULT_OK, result);
+        dismissProgressDialog();
         finish();
     }
 
@@ -82,6 +122,7 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
+        dismissProgressDialog();
         showAlertDialog(error);
     }
 
@@ -110,6 +151,17 @@ public class LockActivity extends RoboFragmentActivity {
         }
     }
 
+    @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
+        Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
+        final Uri url = event.getAuthenticationUri(application);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(intent);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
     private void showAlertDialog(AlertDialogEvent event) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder
@@ -123,5 +175,12 @@ public class LockActivity extends RoboFragmentActivity {
                 });
 
         AlertDialog dialog = builder.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 }
