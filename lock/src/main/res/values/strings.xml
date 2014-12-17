@@ -38,7 +38,7 @@
     <string name="db_reset_password_message_success">We\'ve just sent you an email to reset your password.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!--Social -->
+    <!-- Social -->
     <string name="social_yahoo">LOGIN WITH YAHOO!</string>
     <string name="social_linkedin">LOGIN WITH LINKEDIN</string>
     <string name="social_google_oauth2">LOGIN WITH GOOGLE</string>
@@ -71,7 +71,6 @@
     <string name="social_yandex">LOGIN WITH YANDEX</string>
     <string name="social_shopify">LOGIN WITH SHOPIFY</string>
     <string name="social_dwolla">LOGIN WITH DWOLLA</string>
-
     <string name="social_icon_yahoo">Y</string>
     <string name="social_icon_linkedin">L</string>
     <string name="social_icon_google_oauth2">+</string>
@@ -105,10 +104,10 @@
     <string name="social_icon_shopify">s</string>
     <string name="social_icon_dwolla">D</string>
 
-    <!--Social Authentication-->
+    <!-- Social Authentication -->
     <string name="social_only_title">Login</string>
-
     <string name="social_error_title">There was an error during authentication</string>
     <string name="social_access_denied_message">Permissions were not granted. Try again.</string>
     <string name="social_error_message">The application isn\'t configured properly for the social connection. Please check your Auth0\'s application configuration</string>
+
 </resources>

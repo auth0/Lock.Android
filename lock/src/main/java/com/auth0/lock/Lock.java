@@ -31,6 +31,7 @@ import com.auth0.api.APIClient;
 import com.auth0.lock.provider.APIClientProvider;
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import roboguice.RoboGuice;
@@ -38,14 +39,17 @@ import roboguice.RoboGuice;
 /**
  * Created by hernan on 12/7/14.
  */
-public class Lock implements Module {
+public class Lock {
 
-    private String clientId;
-    private String tenant;
+    private final String clientId;
+    private final String tenant;
+
+    private boolean useWebView;
 
     public Lock(String clientId, String tenant) {
         this.clientId = clientId;
         this.tenant = tenant;
+        this.useWebView = false;
     }
 
     public void registerForApplication(Application application) {
@@ -53,15 +57,36 @@ public class Lock implements Module {
                 application,
                 RoboGuice.DEFAULT_STAGE,
                 RoboGuice.newDefaultRoboModule(application),
-                this);
+                new LockModule(new APIClientProvider(clientId, tenant), this));
     }
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(APIClient.class).toProvider(new APIClientProvider(clientId, tenant)).in(Singleton.class);
-    }
-
-    public static APIClient getAPIClient(Context context) {
+    public APIClient getAPIClient(Context context) {
         return RoboGuice.getInjector(context).getInstance(APIClient.class);
+    }
+
+    public void setUseWebView(boolean useWebView) {
+        this.useWebView = useWebView;
+    }
+
+    public boolean isUseWebView() {
+        return useWebView;
+    }
+
+    private static class LockModule implements Module {
+
+        private final Provider<APIClient> provider;
+        private final Lock lock;
+
+        private LockModule(Provider<APIClient> provider, Lock lock) {
+            this.provider = provider;
+            this.lock = lock;
+        }
+
+        @Override
+        public void configure(Binder binder) {
+            binder.bind(APIClient.class).toProvider(provider).in(Singleton.class);
+            binder.bind(Lock.class).toInstance(lock);
+        }
+
     }
 }
