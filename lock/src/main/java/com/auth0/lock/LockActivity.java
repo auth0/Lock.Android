@@ -1,6 +1,7 @@
 package com.auth0.lock;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,6 +32,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Inject LockFragmentBuilder builder;
 
     private Application application;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +48,29 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.v(LockActivity.class.getName(), "Resuming activity with data " + getIntent().getData());
         this.provider.getBus().register(this);
+        dismissProgressDialog();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         this.provider.getBus().unregister(this);
+        getIntent().setData(null);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.v(LockActivity.class.getName(), "Received new Intent with URI " + intent.getData());
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        dismissProgressDialog();
+        super.onDestroy();
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
@@ -122,6 +134,10 @@ public class LockActivity extends RoboFragmentActivity {
         final Uri url = event.getAuthenticationUri(application);
         final Intent intent = new Intent(Intent.ACTION_VIEW, url);
         startActivity(intent);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     private void showAlertDialog(AlertDialogEvent event) {
@@ -137,5 +153,12 @@ public class LockActivity extends RoboFragmentActivity {
                 });
 
         AlertDialog dialog = builder.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 }
