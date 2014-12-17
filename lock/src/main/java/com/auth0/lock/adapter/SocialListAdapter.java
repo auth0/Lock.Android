@@ -56,13 +56,16 @@ public class SocialListAdapter extends ArrayAdapter<String> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_social_big, parent, false);
         }
 
+        int textColor = textColorForSocialService(social);
         TextView iconLabel = (TextView) convertView.findViewById(R.id.social_icon_label);
         iconLabel.setText(iconForSocialService(social));
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "z-social.ttf");
         iconLabel.setTypeface(font);
+        iconLabel.setTextColor(textColor);
 
         TextView textLabel = (TextView) convertView.findViewById(R.id.social_title_label);
         textLabel.setText(titleForSocialService(social));
+        textLabel.setTextColor(textColor);
 
         final float scale = getContext().getResources().getDisplayMetrics().density;
         GradientDrawable normalState = new GradientDrawable();
@@ -71,6 +74,12 @@ public class SocialListAdapter extends ArrayAdapter<String> {
 
         convertView.setBackgroundDrawable(normalState);
         return convertView;
+    }
+
+    private int textColorForSocialService(String service) {
+        String colorIdentifier = "social_" + service.replace('-', '_') + "_text";
+        int resId = getContext().getResources().getIdentifier(colorIdentifier, "color", getContext().getPackageName());
+        return getContext().getResources().getColor(resId);
     }
 
     private int colorForSocialService(String service) {

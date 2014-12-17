@@ -40,16 +40,70 @@
 
     <!--Social-->
     <string name="social_only_title">Login</string>
-    <string name="social_facebook">LOGIN WITH FACEBOOK</string>
-    <string name="social_google_oauth2">LOGIN WITH GOOGLE</string>
-    <string name="social_instagram">LOGIN WITH INSTAGRAM</string>
+
+    <string name="social_yahoo">LOGIN WITH YAHOO!</string>
     <string name="social_linkedin">LOGIN WITH LINKEDIN</string>
+    <string name="social_google_oauth2">LOGIN WITH GOOGLE</string>
     <string name="social_twitter">LOGIN WITH TWITTER</string>
+    <string name="social_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="social_amazon">LOGIN WITH AMAZON</string>
+    <string name="social_aol">LOGIN WITH AOL</string>
+    <string name="social_box">LOGIN WITH BOX</string>
+    <string name="social_evernote">LOGIN WITH EVERNOTE</string>
+    <string name="social_evernote_sandbox">LOGIN WITH EVERNOTE (SANBOX)</string>
+    <string name="social_github">LOGIN WITH GITHUB</string>
+    <string name="social_instagram">LOGIN WITH INSTAGRAM</string>
+    <string name="social_miicard">LOGIN WITH MIICARD</string>
+    <string name="social_paypal">LOGIN WITH PAYPAL</string>
+    <string name="social_salesforce">LOGIN WITH SALESFORCE</string>
+    <string name="social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
+    <string name="social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
+    <string name="social_windowslive">LOGIN WITH MICROSOFT ACCOUNT</string>
+    <string name="social_yammer">LOGIN WITH YAMMER</string>
+    <string name="social_baidu">LOGIN WITH 百度</string>
+    <string name="social_fitbit">LOGIN WITH FITBIT</string>
+    <string name="social_planningcenter">LOGIN WITH PLANNING CENTER</string>
+    <string name="social_renren">LOGIN WITH 人人</string>
+    <string name="social_thecity">LOGIN WITH THE CITY</string>
+    <string name="social_thecity_sandbox">LOGIN WITH THE CITY (SANDBOX)</string>
+    <string name="social_thirtysevensignals">LOGIN WITH 37 SIGNALS</string>
+    <string name="social_vkontakte">LOGIN WITH VKONTAKTE</string>
+    <string name="social_weibo">LOGIN WITH 新浪微博</string>
+    <string name="social_wordpress">LOGIN WITH WORDPRESS</string>
+    <string name="social_yandex">LOGIN WITH YANDEX</string>
+    <string name="social_shopify">LOGIN WITH SHOPIFY</string>
+    <string name="social_dwolla">LOGIN WITH DWOLLA</string>
 
-    <string name="social_icon_facebook">f</string>
-    <string name="social_icon_google_oauth2">+</string>
-    <string name="social_icon_instagram">i</string>
+    <string name="social_icon_yahoo">Y</string>
     <string name="social_icon_linkedin">L</string>
+    <string name="social_icon_google_oauth2">+</string>
     <string name="social_icon_twitter">T</string>
-
+    <string name="social_icon_facebook">f</string>
+    <string name="social_icon_amazon">a</string>
+    <string name="social_icon_aol">l</string>
+    <string name="social_icon_box">x</string>
+    <string name="social_icon_evernote">n</string>
+    <string name="social_icon_evernote_sandbox">n</string>
+    <string name="social_icon_github">è</string>
+    <string name="social_icon_instagram">i</string>
+    <string name="social_icon_miicard">m</string>
+    <string name="social_icon_paypal">$</string>
+    <string name="social_icon_salesforce">*</string>
+    <string name="social_icon_salesforce_sandbox">*</string>
+    <string name="social_icon_soundcloud">t</string>
+    <string name="social_icon_windowslive">W</string>
+    <string name="social_icon_yammer">!</string>
+    <string name="social_icon_baidu">u</string>
+    <string name="social_icon_fitbit">#</string>
+    <string name="social_icon_planningcenter">y</string>
+    <string name="social_icon_renren">r</string>
+    <string name="social_icon_thecity">c</string>
+    <string name="social_icon_thecity_sandbox">c</string>
+    <string name="social_icon_thirtysevensignals">b</string>
+    <string name="social_icon_vkontakte">N</string>
+    <string name="social_icon_weibo">S</string>
+    <string name="social_icon_wordpress">w</string>
+    <string name="social_icon_yandex">&amp;</string>
+    <string name="social_icon_shopify">s</string>
+    <string name="social_icon_dwolla">D</string>
 </resources>

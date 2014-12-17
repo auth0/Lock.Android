@@ -34,7 +34,6 @@
         android:layout_height="@dimen/social_button_icon_label_size"
         android:gravity="center"
         android:background="@drawable/social_icon_background"
-        android:textColor="@color/social_button_text"
         android:textSize="@dimen/social_button_icon_size"
         />
     <TextView
@@ -46,7 +45,6 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/social_button_text_padding_left"
         android:background="@drawable/social_text_background"
-        android:textColor="@color/social_button_text"
         android:textSize="@dimen/social_button_text_size"
         />
 </RelativeLayout>
