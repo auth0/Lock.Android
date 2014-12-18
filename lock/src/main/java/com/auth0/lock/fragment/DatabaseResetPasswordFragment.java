@@ -25,7 +25,6 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,15 +37,12 @@ import android.widget.TextView;
 
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.R;
-import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
-import com.auth0.lock.validation.EmailValidator;
 import com.auth0.lock.validation.ResetPasswordValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
-import com.google.inject.Inject;
 
 import roboguice.inject.InjectView;
 
@@ -62,7 +58,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
     private Validator validator;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_database_reset_password, container, false);
     }
 

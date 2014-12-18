@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.utils;
+package com.auth0.lock.util;
 
 import android.app.Application;
 
@@ -32,7 +32,6 @@ import com.auth0.lock.event.AuthenticationError;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
 import org.robolectric.Robolectric;
 
 import static org.hamcrest.Matchers.equalTo;

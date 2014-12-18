@@ -24,7 +24,7 @@
 
 package com.auth0.lock.validation;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
@@ -37,13 +37,13 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasError;
+import static com.auth0.lock.util.AuthenticationErrorDefaultMatcher.hasError;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by hernan on 12/16/14.

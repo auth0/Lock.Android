@@ -24,7 +24,7 @@
 
 package com.auth0.lock.validation;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.view.View;
 
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasError;
+import static com.auth0.lock.util.AuthenticationErrorDefaultMatcher.hasError;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;

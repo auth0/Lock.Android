@@ -1,12 +1,12 @@
 package com.auth0.lock;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.auth0.core.Application;
@@ -22,19 +22,22 @@ import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.provider.BusProvider;
 import com.auth0.lock.web.CallbackParser;
+import com.auth0.lock.web.WebViewActivity;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
 import java.util.Map;
 
-import roboguice.activity.RoboFragmentActivity;
+import roboguice.activity.RoboActivity;
 
 
-public class LockActivity extends RoboFragmentActivity {
+public class LockActivity extends RoboActivity {
 
+    private static final int WEBVIEW_AUTH_REQUEST_CODE = 1;
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
     @Inject CallbackParser parser;
+    @Inject Lock lock;
 
     private Application application;
     private ProgressDialog progressDialog;
@@ -44,7 +47,7 @@ public class LockActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.container, new LoadingFragment())
                     .commit();
         }
@@ -64,6 +67,7 @@ public class LockActivity extends RoboFragmentActivity {
                 provider.getBus().post(error);
                 dismissProgressDialog();
             } else if(values.size() > 0) {
+                Log.d(LockActivity.class.getName(), "Authenticated using web flow");
                 provider.getBus().post(new SocialAuthenticationEvent(values));
             } else {
                 dismissProgressDialog();
@@ -93,11 +97,19 @@ public class LockActivity extends RoboFragmentActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == RESULT_OK) {
+            setIntent(data);
+        }
+    }
+
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(LockActivity.class.getName(), "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);
         this.application = application;
-        getSupportFragmentManager().beginTransaction()
+        getFragmentManager().beginTransaction()
                 .replace(R.id.container, builder.root())
                 .commit();
     }
@@ -117,7 +129,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onResetPassword(ResetPasswordEvent event) {
         Log.d(LockActivity.class.getName(), "Changed password");
         showAlertDialog(event);
-        getSupportFragmentManager().popBackStack();
+        getFragmentManager().popBackStack();
     }
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
@@ -129,7 +141,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
         Log.v(LockActivity.class.getName(), "About to handle navigation " + event);
         if (NavigationEvent.BACK.equals(event)) {
-            getSupportFragmentManager().popBackStack();
+            getFragmentManager().popBackStack();
             return;
         }
 
@@ -143,7 +155,7 @@ public class LockActivity extends RoboFragmentActivity {
                 break;
         }
         if (fragment != null) {
-            getSupportFragmentManager()
+            getFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, fragment)
                     .addToBackStack(event.name())
@@ -154,8 +166,16 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
         Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
         final Uri url = event.getAuthenticationUri(application);
-        final Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
+        final Intent intent;
+        if (lock.isUseWebView()) {
+            intent = new Intent(this, WebViewActivity.class);
+            intent.setData(url);
+            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
+            startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
+        } else {
+            intent = new Intent(Intent.ACTION_VIEW, url);
+            startActivity(intent);
+        }
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
@@ -183,4 +203,5 @@ public class LockActivity extends RoboFragmentActivity {
         }
         progressDialog = null;
     }
+
 }

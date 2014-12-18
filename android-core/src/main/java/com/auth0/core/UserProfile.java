@@ -1,9 +1,7 @@
 package com.auth0.core;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -37,7 +34,7 @@ public class UserProfile implements Parcelable {
 
     @JsonCreator
     @SuppressWarnings("unchecked")
-    public UserProfile(@NonNull Map<String, Object> values) {
+    public UserProfile(Map<String, Object> values) {
         checkArgument(values != null, "must supply non-null values");
         HashMap<String, Object> info = new HashMap<String, Object>(values);
         String id = (String) info.remove("user_id");

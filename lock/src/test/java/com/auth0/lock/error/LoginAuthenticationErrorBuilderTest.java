@@ -37,8 +37,8 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasDefaultTitleAndMessage;
-import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasMessage;
+import static com.auth0.lock.util.AuthenticationErrorDefaultMatcher.hasDefaultTitleAndMessage;
+import static com.auth0.lock.util.AuthenticationErrorDefaultMatcher.hasMessage;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
