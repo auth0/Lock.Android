@@ -1,13 +1,14 @@
 package com.auth0.lock;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.auth0.core.Application;
 import com.auth0.core.Token;
@@ -28,12 +29,12 @@ import com.squareup.otto.Subscribe;
 
 import java.util.Map;
 
-import roboguice.activity.RoboActivity;
+import roboguice.activity.RoboFragmentActivity;
 
 
-public class LockActivity extends RoboActivity {
+public class LockActivity extends RoboFragmentActivity {
 
-    private static final int WEBVIEW_AUTH_REQUEST_CODE = 1;
+    private static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
     @Inject CallbackParser parser;
@@ -45,9 +46,10 @@ public class LockActivity extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_lock);
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new LoadingFragment())
                     .commit();
         }
@@ -109,7 +111,7 @@ public class LockActivity extends RoboActivity {
         Log.d(LockActivity.class.getName(), "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);
         this.application = application;
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, builder.root())
                 .commit();
     }
@@ -129,7 +131,7 @@ public class LockActivity extends RoboActivity {
     @Subscribe public void onResetPassword(ResetPasswordEvent event) {
         Log.d(LockActivity.class.getName(), "Changed password");
         showAlertDialog(event);
-        getFragmentManager().popBackStack();
+        getSupportFragmentManager().popBackStack();
     }
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
@@ -141,7 +143,7 @@ public class LockActivity extends RoboActivity {
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
         Log.v(LockActivity.class.getName(), "About to handle navigation " + event);
         if (NavigationEvent.BACK.equals(event)) {
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
             return;
         }
 
@@ -155,7 +157,7 @@ public class LockActivity extends RoboActivity {
                 break;
         }
         if (fragment != null) {
-            getFragmentManager()
+            getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, fragment)
                     .addToBackStack(event.name())

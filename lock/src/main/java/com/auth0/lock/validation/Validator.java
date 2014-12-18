@@ -24,7 +24,7 @@
 
 package com.auth0.lock.validation;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.auth0.lock.event.AuthenticationError;
 
