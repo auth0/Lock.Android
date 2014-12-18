@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
         <item name="spbStyle">@style/LockProgressBarHorizontal</item>
     </style>
 

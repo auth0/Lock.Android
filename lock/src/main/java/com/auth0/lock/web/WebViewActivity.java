@@ -24,12 +24,12 @@
 
 package com.auth0.lock.web;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
@@ -40,10 +40,10 @@ import com.auth0.lock.R;
 import com.auth0.lock.util.SocialResources;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import roboguice.activity.RoboActionBarActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
-public class WebViewActivity extends RoboActionBarActivity {
+public class WebViewActivity extends RoboActivity {
 
     public static final String SERVICE_NAME = "serviceName";
     @InjectView(tag = "lock_webview") WebView webView;
@@ -53,10 +53,11 @@ public class WebViewActivity extends RoboActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
-        final ActionBar bar = getSupportActionBar();
+        final ActionBar bar = getActionBar();
         if (bar != null) {
             String serviceName = getIntent().getStringExtra(SERVICE_NAME);
 
+            bar.setIcon(android.R.color.transparent);
             bar.setDisplayShowTitleEnabled(false);
             bar.setDisplayUseLogoEnabled(false);
             bar.setDisplayHomeAsUpEnabled(false);

@@ -33,7 +33,7 @@ import com.auth0.lock.R;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
 
-import roboguice.fragment.RoboFragment;
+import roboguice.fragment.provided.RoboFragment;
 
 /**
  * Created by hernan on 12/11/14.
