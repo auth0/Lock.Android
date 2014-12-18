@@ -26,13 +26,18 @@ package com.auth0.lock.web;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.auth0.lock.R;
+import com.auth0.lock.util.SocialResources;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import roboguice.activity.RoboActionBarActivity;
@@ -40,6 +45,7 @@ import roboguice.inject.InjectView;
 
 public class WebViewActivity extends RoboActionBarActivity {
 
+    public static final String SERVICE_NAME = "serviceName";
     @InjectView(tag = "lock_webview") WebView webView;
     @InjectView(tag = "lock_progressbar") SmoothProgressBar progressBar;
 
@@ -47,14 +53,28 @@ public class WebViewActivity extends RoboActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
+        final ActionBar bar = getSupportActionBar();
+        if (bar != null) {
+            String serviceName = getIntent().getStringExtra(SERVICE_NAME);
+
+            bar.setDisplayShowTitleEnabled(false);
+            bar.setDisplayUseLogoEnabled(false);
+            bar.setDisplayHomeAsUpEnabled(false);
+            bar.setDisplayShowCustomEnabled(true);
+            View view = LayoutInflater.from(this).inflate(R.layout.webview_action_bar, null);
+            final TextView iconLabel = (TextView) view.findViewById(R.id.social_icon_label);
+            iconLabel.setTypeface(SocialResources.socialFont(this));
+            iconLabel.setText(SocialResources.iconForSocialService(this, serviceName));
+            iconLabel.setTextColor(SocialResources.textColorForSocialService(this, serviceName));
+            bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
+            bar.setCustomView(view);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         final Intent intent = getIntent();
-
-        setTitle(null);
         final Uri uri = intent.getData();
         final String redirectUrl = uri.getQueryParameter("redirect_uri");
         webView.setWebViewClient(new WebViewClient() {

@@ -170,6 +170,7 @@ public class LockActivity extends RoboFragmentActivity {
         if (lock.isUseWebView()) {
             intent = new Intent(this, WebViewActivity.class);
             intent.setData(url);
+            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
             startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, url);

@@ -37,7 +37,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static com.auth0.lock.utils.AuthenticationErrorDefaultMatcher.hasError;
+import static com.auth0.lock.util.AuthenticationErrorDefaultMatcher.hasError;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
