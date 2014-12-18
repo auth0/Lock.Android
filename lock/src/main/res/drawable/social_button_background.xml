@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ item_social_small.xml
+  ~ social_button_background.xml
   ~
   ~ Copyright (c) 2014 Auth0 (http://auth0.com)
   ~
@@ -23,18 +23,7 @@
   ~ THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/social_icon_label"
-        android:layout_width="@dimen/social_button_icon_label_size"
-        android:layout_height="@dimen/social_button_icon_label_size"
-        android:gravity="center"
-        android:background="@drawable/social_button_background"
-        android:textSize="@dimen/social_button_icon_size"
-        />
-
-</RelativeLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/social_button_background_highlighted" android:state_pressed="true"/>
+    <item android:drawable="@drawable/social_button_background_normal"/>
+</selector>

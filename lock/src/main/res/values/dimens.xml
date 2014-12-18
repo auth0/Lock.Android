@@ -44,5 +44,7 @@
     <dimen name="social_button_icon_size">16sp</dimen>
     <dimen name="social_list_item_interspace">5dp</dimen>
     <dimen name="db_reset_password_secondary_padding">10dp</dimen>
-    <dimen name="social_db_form_padding_top">15dp</dimen>
+    <dimen name="social_db_form_padding_top">45dp</dimen>
+    <dimen name="social_grid_view_height">70dp</dimen>
+    <dimen name="social_grid_view_item_spacing_vertical">10dp</dimen>
 </resources>
