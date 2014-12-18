@@ -38,4 +38,36 @@
     <include layout="@layout/title_lock"/>
 
     <include layout="@layout/db_login_form"/>
+
+    <Button
+        android:id="@+id/db_signup_button"
+        android:tag="db_signup_button"
+        android:layout_width="@dimen/secondary_button_width"
+        android:layout_height="@dimen/secondary_button_height"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/secondary_button_text_size"
+        android:textStyle="bold"
+        android:textColor="@color/secondary_button_text"
+        android:background="@drawable/btn_secondary_background"
+        android:layout_marginBottom="@dimen/secondary_button_margin_bottom"
+        android:text="@string/db_signup_button_text"/>
+    <Button
+        android:id="@+id/db_reset_pass_button"
+        android:tag="db_reset_pass_button"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/secondary_button_height"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/secondary_button_text_size"
+        android:textStyle="bold"
+        android:textColor="@color/secondary_button_text"
+        android:background="@drawable/btn_secondary_background"
+        android:text="@string/db_reset_password_button_text"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginBottom="@dimen/secondary_button_margin_bottom"/>
+
 </RelativeLayout>
