@@ -30,6 +30,7 @@
                 <data android:scheme="a0u5mhurbyqhsvwjleqzstcbufablbjas3" android:host="overmind.auth0.com"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.auth0.lock.web.WebViewActivity"/>
     </application>
 
 </manifest>

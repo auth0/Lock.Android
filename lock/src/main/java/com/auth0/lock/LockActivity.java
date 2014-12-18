@@ -22,6 +22,7 @@ import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.provider.BusProvider;
 import com.auth0.lock.web.CallbackParser;
+import com.auth0.lock.web.WebViewActivity;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
@@ -32,9 +33,11 @@ import roboguice.activity.RoboFragmentActivity;
 
 public class LockActivity extends RoboFragmentActivity {
 
+    private static final int WEBVIEW_AUTH_REQUEST_CODE = 1;
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
     @Inject CallbackParser parser;
+    @Inject Lock lock;
 
     private Application application;
     private ProgressDialog progressDialog;
@@ -64,6 +67,7 @@ public class LockActivity extends RoboFragmentActivity {
                 provider.getBus().post(error);
                 dismissProgressDialog();
             } else if(values.size() > 0) {
+                Log.d(LockActivity.class.getName(), "Authenticated using web flow");
                 provider.getBus().post(new SocialAuthenticationEvent(values));
             } else {
                 dismissProgressDialog();
@@ -91,6 +95,14 @@ public class LockActivity extends RoboFragmentActivity {
     protected void onDestroy() {
         dismissProgressDialog();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == RESULT_OK) {
+            setIntent(data);
+        }
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
@@ -154,8 +166,15 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
         Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
         final Uri url = event.getAuthenticationUri(application);
-        final Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
+        final Intent intent;
+        if (lock.isUseWebView()) {
+            intent = new Intent(this, WebViewActivity.class);
+            intent.setData(url);
+            startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
+        } else {
+            intent = new Intent(Intent.ACTION_VIEW, url);
+            startActivity(intent);
+        }
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
@@ -183,4 +202,5 @@ public class LockActivity extends RoboFragmentActivity {
         }
         progressDialog = null;
     }
+
 }
