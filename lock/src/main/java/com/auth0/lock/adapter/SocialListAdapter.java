@@ -42,8 +42,15 @@ import com.auth0.lock.util.SocialResources;
 public class SocialListAdapter extends ArrayAdapter<String> {
 
 
+    private final boolean smallLayout;
+
     public SocialListAdapter(Context context, String[] objects) {
+        this(context, objects, false);
+    }
+
+    public SocialListAdapter(Context context, String[] objects, boolean smallLayout) {
         super(context, 0, objects);
+        this.smallLayout = smallLayout;
     }
 
     @Override
@@ -51,7 +58,8 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         String social = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_social_big, parent, false);
+            final int layout = smallLayout ? R.layout.item_social_small : R.layout.item_social_big;
+            convertView = LayoutInflater.from(getContext()).inflate(layout, parent, false);
         }
 
         int textColor = SocialResources.textColorForSocialService(getContext(), social);
@@ -60,16 +68,15 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         Typeface font = SocialResources.socialFont(getContext());
         iconLabel.setTypeface(font);
         iconLabel.setTextColor(textColor);
-
-        TextView textLabel = (TextView) convertView.findViewById(R.id.social_title_label);
-        textLabel.setText(SocialResources.titleForSocialService(getContext(), social));
-        textLabel.setTextColor(textColor);
-
+        if (!smallLayout) {
+            TextView textLabel = (TextView) convertView.findViewById(R.id.social_title_label);
+            textLabel.setText(SocialResources.titleForSocialService(getContext(), social));
+            textLabel.setTextColor(textColor);
+        }
         final float scale = getContext().getResources().getDisplayMetrics().density;
         GradientDrawable normalState = new GradientDrawable();
         normalState.setCornerRadius(5.0f * scale);
         normalState.setColor(SocialResources.colorForSocialService(getContext(), social));
-
         convertView.setBackgroundDrawable(normalState);
         return convertView;
     }

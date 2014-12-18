@@ -32,6 +32,7 @@ import com.auth0.core.Strategy;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
+import com.auth0.lock.fragment.SocialDBFragment;
 import com.auth0.lock.fragment.SocialFragment;
 
 import java.util.ArrayList;
@@ -55,6 +56,17 @@ public class LockFragmentBuilder {
         return new DatabaseLoginFragment();
     }
 
+
+    public Fragment socialLogin() {
+        final SocialDBFragment fragment = new SocialDBFragment();
+        if (application != null) {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList(SocialDBFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
+            fragment.setArguments(bundle);
+        }
+        return fragment;
+    }
+
     public Fragment social() {
         final SocialFragment fragment = new SocialFragment();
         if (application != null) {
@@ -72,6 +84,10 @@ public class LockFragmentBuilder {
 
         if (application.getDatabaseStrategy() == null && application.getSocialStrategies().size() > 0) {
             return social();
+        }
+
+        if (application.getDatabaseStrategy() != null && application.getSocialStrategies().size() > 0) {
+            return socialLogin();
         }
 
         return login();
