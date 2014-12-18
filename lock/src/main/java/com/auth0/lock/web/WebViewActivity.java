@@ -25,19 +25,23 @@
 package com.auth0.lock.web;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.auth0.lock.R;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.InjectView;
 
 public class WebViewActivity extends RoboActionBarActivity {
 
     @InjectView(tag = "lock_webview") WebView webView;
+    @InjectView(tag = "lock_progressbar") SmoothProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,10 @@ public class WebViewActivity extends RoboActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final Uri uri = getIntent().getData();
+        final Intent intent = getIntent();
+
+        setTitle(null);
+        final Uri uri = intent.getData();
         final String redirectUrl = uri.getQueryParameter("redirect_uri");
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -61,6 +68,18 @@ public class WebViewActivity extends RoboActionBarActivity {
                     return true;
                 }
                 return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
         webView.getSettings().setJavaScriptEnabled(true);
