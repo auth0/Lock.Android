@@ -14,7 +14,7 @@ import com.auth0.lock.R;
 import com.auth0.lock.provider.BusProvider;
 import com.google.inject.Inject;
 
-import roboguice.fragment.provided.RoboFragment;
+import roboguice.fragment.RoboFragment;
 
 /**
  * Created by hernan on 12/5/14.

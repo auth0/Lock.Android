@@ -24,7 +24,7 @@
 
 package com.auth0.lock.validation;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
@@ -41,8 +41,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by hernan on 12/15/14.

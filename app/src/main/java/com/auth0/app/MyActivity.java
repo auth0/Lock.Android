@@ -1,8 +1,8 @@
 package com.auth0.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +17,7 @@ import com.auth0.lock.LockActivity;
 import static com.auth0.app.R.id;
 import static com.auth0.app.R.layout;
 
-public class MyActivity extends Activity {
+public class MyActivity extends ActionBarActivity {
 
     private static final int AUTHENTICATION_REQUEST = 1234;
 
