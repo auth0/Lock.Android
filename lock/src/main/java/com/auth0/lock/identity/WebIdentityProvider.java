@@ -61,19 +61,24 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void authorize(int requestCode, int resultCode, Intent data) {
-        Uri uri = data.getData();
-        if (uri != null) {
-            final Map<String, String> values = parser.getValuesFromUri(uri);
-            if (values.containsKey("error")) {
-                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
-                final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
-                provider.getBus().post(error);
-            } else if(values.size() > 0) {
-                Log.d(LockActivity.class.getName(), "Authenticated using web flow");
-                provider.getBus().post(new SocialAuthenticationEvent(values));
+    public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
+        Log.v(WebIdentityProvider.class.getName(), "Authenticating with webflow with data " + data.getData());
+        boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK;
+        if (isValid) {
+            Uri uri = data.getData();
+            if (uri != null) {
+                final Map<String, String> values = parser.getValuesFromUri(uri);
+                if (values.containsKey("error")) {
+                    final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
+                    final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
+                    provider.getBus().post(error);
+                } else if(values.size() > 0) {
+                    Log.d(LockActivity.class.getName(), "Authenticated using web flow");
+                    provider.getBus().post(new SocialAuthenticationEvent(values));
+                }
             }
         }
+        return isValid;
     }
 
     @Override

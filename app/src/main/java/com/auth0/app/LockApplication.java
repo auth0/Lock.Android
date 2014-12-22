@@ -26,6 +26,7 @@ package com.auth0.app;
 
 import android.app.Application;
 
+import com.auth0.facebook.FacebookIdentityProvider;
 import com.auth0.lock.Lock;
 
 /**
@@ -37,6 +38,7 @@ public class LockApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Lock lock = new Lock("U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3", "overmind");
+        lock.setProvider("facebook", new FacebookIdentityProvider());
         lock.registerForApplication(this);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * IdentityProvider.java
+ * SocialCredentialEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,27 +22,26 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.identity;
-
-import android.app.Activity;
-import android.content.Intent;
-
-import com.auth0.core.Application;
-import com.auth0.lock.Lock;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.provider.BusProvider;
+package com.auth0.lock.event;
 
 /**
  * Created by hernan on 12/22/14.
  */
-public interface IdentityProvider {
+public class SocialCredentialEvent {
 
-    static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+    private final String accessToken;
+    private final String service;
 
-    void initialize(Lock lock, BusProvider provider);
+    public SocialCredentialEvent(String serviceName, String accessToken) {
+        this.service = serviceName;
+        this.accessToken = accessToken;
+    }
 
-    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+    public String getService() {
+        return service;
+    }
 
-    void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application);
-
+    public String getAccessToken() {
+        return accessToken;
+    }
 }

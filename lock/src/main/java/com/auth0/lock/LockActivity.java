@@ -18,17 +18,14 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
-import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
 import com.auth0.lock.web.CallbackParser;
-import com.auth0.lock.web.WebViewActivity;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
-
-import java.util.Map;
 
 import roboguice.activity.RoboFragmentActivity;
 
@@ -58,21 +55,34 @@ public class LockActivity extends RoboFragmentActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        this.provider.getBus().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.provider.getBus().unregister(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        this.provider.getBus().register(this);
         final Uri uri = getIntent().getData();
         Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
         if (identity != null) {
-            identity.authorize(0, 0, getIntent());
+            boolean valid = identity.authorize(this, WEBVIEW_AUTH_REQUEST_CODE, RESULT_OK, getIntent());
             identity = null;
+            if (!valid) {
+                dismissProgressDialog();
+            }
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        this.provider.getBus().unregister(this);
         getIntent().setData(null);
     }
 
@@ -93,10 +103,9 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == RESULT_OK) {
-            identity.authorize(requestCode, resultCode, data);
-            identity = null;
-        }
+        Log.v(LockActivity.class.getName(), "Child activity result obtained");
+        identity.authorize(this, requestCode, resultCode, data);
+        identity = null;
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
@@ -166,6 +175,11 @@ public class LockActivity extends RoboFragmentActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
+
+    @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
+        Log.v(LockActivity.class.getName(), "Received social accessToken " + event.getAccessToken());
+        dismissProgressDialog();
     }
 
     private void showAlertDialog(AlertDialogEvent event) {
