@@ -28,11 +28,17 @@ import android.app.Application;
 import android.content.Context;
 
 import com.auth0.api.APIClient;
+import com.auth0.lock.identity.IdentityProvider;
+import com.auth0.lock.identity.WebIdentityProvider;
 import com.auth0.lock.provider.APIClientProvider;
+import com.auth0.lock.web.CallbackParser;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import roboguice.RoboGuice;
 
@@ -45,11 +51,15 @@ public class Lock {
     private final String tenant;
 
     private boolean useWebView;
+    private IdentityProvider defaultProvider;
+    private Map<String, IdentityProvider> providers;
 
     public Lock(String clientId, String tenant) {
         this.clientId = clientId;
         this.tenant = tenant;
         this.useWebView = false;
+        this.defaultProvider = new WebIdentityProvider(new CallbackParser());
+        this.providers = new HashMap<>();
     }
 
     public void registerForApplication(Application application) {
@@ -70,6 +80,19 @@ public class Lock {
 
     public boolean isUseWebView() {
         return useWebView;
+    }
+
+    public void setProvider(String serviceName, IdentityProvider provider) {
+        providers.put(serviceName, provider);
+    }
+
+    public IdentityProvider providerForName(String serviceName) {
+        IdentityProvider provider = providers.get(serviceName);
+        return provider != null ? provider : defaultProvider;
+    }
+
+    public IdentityProvider getDefaultProvider() {
+        return defaultProvider;
     }
 
     private static class LockModule implements Module {
