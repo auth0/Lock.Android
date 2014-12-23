@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -41,6 +42,7 @@ import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.SocialCredentialEvent;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
@@ -107,6 +109,21 @@ public class SocialDBFragment extends DatabaseLoginFragment {
             @Override
             public void onSuccess(UserProfile userProfile) {
                 provider.getBus().post(new AuthenticationEvent(userProfile, token));
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                provider.getBus().post(errorBuilder.buildFrom(error));
+            }
+        });
+    }
+
+    @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
+        Log.v(SocialDBFragment.class.getName(), "Received social accessToken " + event.getAccessToken());
+        client.socialLogin(event.getService(), event.getAccessToken(), null, new AuthenticationCallback() {
+            @Override
+            public void onSuccess(UserProfile profile, Token token) {
+                provider.getBus().post(new AuthenticationEvent(profile, token));
             }
 
             @Override

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -32,7 +33,10 @@ import roboguice.activity.RoboFragmentActivity;
 
 public class LockActivity extends RoboFragmentActivity {
 
+    public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
+
     private static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
     @Inject CallbackParser parser;
@@ -77,6 +81,8 @@ public class LockActivity extends RoboFragmentActivity {
             if (!valid) {
                 dismissProgressDialog();
             }
+        } else {
+            dismissProgressDialog();
         }
     }
 
@@ -121,10 +127,10 @@ public class LockActivity extends RoboFragmentActivity {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(LockActivity.class.getName(), "Authenticated user " + profile.getName());
-        Intent result = new Intent();
+        Intent result = new Intent(AUTHENTICATION_ACTION);
         result.putExtra("profile", profile);
         result.putExtra("token", token);
-        setResult(RESULT_OK, result);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(result);
         dismissProgressDialog();
         finish();
     }
@@ -175,11 +181,6 @@ public class LockActivity extends RoboFragmentActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
-    }
-
-    @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
-        Log.v(LockActivity.class.getName(), "Received social accessToken " + event.getAccessToken());
-        dismissProgressDialog();
     }
 
     private void showAlertDialog(AlertDialogEvent event) {
