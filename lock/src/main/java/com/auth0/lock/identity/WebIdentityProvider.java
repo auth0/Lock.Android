@@ -94,4 +94,6 @@ public class WebIdentityProvider implements IdentityProvider {
         }
     }
 
+    @Override
+    public void clearSession() {}
 }

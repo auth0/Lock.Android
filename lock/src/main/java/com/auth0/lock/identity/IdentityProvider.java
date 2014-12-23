@@ -45,4 +45,5 @@ public interface IdentityProvider {
 
     void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application);
 
+    void clearSession();
 }

@@ -54,7 +54,8 @@ public class FacebookIdentityProvider implements IdentityProvider {
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
-        return Session.getActiveSession().onActivityResult(activity, requestCode, resultCode, data);
+        final Session session = Session.getActiveSession();
+        return session != null && session.onActivityResult(activity, requestCode, resultCode, data);
     }
 
     @Override
@@ -74,11 +75,22 @@ public class FacebookIdentityProvider implements IdentityProvider {
                             break;
                         case CLOSED_LOGIN_FAILED:
                             provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
+                            if (session != null) {
+                                session.closeAndClearTokenInformation();
+                            }
                             break;
                     }
                 }
             }
 
         });
+    }
+
+    @Override
+    public void clearSession() {
+        final Session session = Session.getActiveSession();
+        if (session != null) {
+            session.closeAndClearTokenInformation();
+        }
     }
 }

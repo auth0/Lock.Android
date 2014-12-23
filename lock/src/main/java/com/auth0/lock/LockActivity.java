@@ -78,8 +78,6 @@ public class LockActivity extends RoboFragmentActivity {
             if (!valid) {
                 dismissProgressDialog();
             }
-        } else {
-            dismissProgressDialog();
         }
     }
 
@@ -140,6 +138,9 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
+        if (identity != null) {
+            identity.clearSession();
+        }
         dismissProgressDialog();
         showAlertDialog(error);
     }
