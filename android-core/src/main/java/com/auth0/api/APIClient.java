@@ -115,7 +115,7 @@ public class APIClient {
         Map<String, String> request = ParameterBuilder.newBuilder()
                 .setClientId(this.clientID)
                 .setConnection(connectionName)
-                .set("access_token", accessToken)
+                .setAccessToken(accessToken)
                 .addAll(params)
                 .asDictionary();
 

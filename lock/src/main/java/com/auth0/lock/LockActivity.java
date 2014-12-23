@@ -35,11 +35,8 @@ public class LockActivity extends RoboFragmentActivity {
 
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
 
-    private static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
-
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
-    @Inject CallbackParser parser;
     @Inject Lock lock;
 
     private Application application;
@@ -76,7 +73,7 @@ public class LockActivity extends RoboFragmentActivity {
         final Uri uri = getIntent().getData();
         Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
         if (identity != null) {
-            boolean valid = identity.authorize(this, WEBVIEW_AUTH_REQUEST_CODE, RESULT_OK, getIntent());
+            boolean valid = identity.authorize(this, IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE, RESULT_OK, getIntent());
             identity = null;
             if (!valid) {
                 dismissProgressDialog();

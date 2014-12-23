@@ -15,6 +15,7 @@ public class ParameterBuilder {
     public static final String SCOPE_OPENID = "openid";
     public static final String SCOPE_OFFLINE_ACCESS = "openid offline_access";
     public static final String GRANT_TYPE_PASSWORD = "password";
+    public static final String ACCESS_TOKEN = "access_token";
 
     private Map<String, String> parameters;
 
@@ -51,6 +52,10 @@ public class ParameterBuilder {
 
     public ParameterBuilder setDevice(String device) {
         return set("device", device);
+    }
+
+    public ParameterBuilder setAccessToken(String accessToken) {
+        return set(ACCESS_TOKEN, accessToken);
     }
 
     public ParameterBuilder set(String key, String value) {
