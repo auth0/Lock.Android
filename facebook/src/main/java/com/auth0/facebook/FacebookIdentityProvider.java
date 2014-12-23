@@ -35,6 +35,7 @@ import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
 
@@ -66,7 +67,8 @@ public class FacebookIdentityProvider implements IdentityProvider {
                 Log.v(FacebookIdentityProvider.class.getName(), "Login FB callback with state " + sessionState + " and session " + session);
                 if (e != null) {
                     Log.e(FacebookIdentityProvider.class.getName(), "Failed to authenticate with FB", e);
-                    provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
+                    int messageResource = e instanceof FacebookOperationCanceledException ? R.string.facebook_cancelled_error_message : R.string.social_access_denied_message;
+                    provider.getBus().post(new AuthenticationError(R.string.facebook_error_title, messageResource, e));
                 } else {
                     switch (sessionState) {
                         case OPENED:
