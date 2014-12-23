@@ -1,5 +1,5 @@
 /*
- * Lock.java
+ * SocialCredentialEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,23 +22,26 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.app;
-
-import android.app.Application;
-
-import com.auth0.facebook.FacebookIdentityProvider;
-import com.auth0.lock.Lock;
+package com.auth0.lock.event;
 
 /**
- * Created by hernan on 12/7/14.
+ * Created by hernan on 12/22/14.
  */
-public class LockApplication extends Application {
+public class SocialCredentialEvent {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Lock lock = new Lock("U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3", "overmind");
-        lock.setProvider("facebook", new FacebookIdentityProvider());
-        lock.registerForApplication(this);
+    private final String accessToken;
+    private final String service;
+
+    public SocialCredentialEvent(String serviceName, String accessToken) {
+        this.service = serviceName;
+        this.accessToken = accessToken;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
     }
 }

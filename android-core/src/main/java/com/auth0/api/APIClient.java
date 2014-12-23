@@ -20,6 +20,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
@@ -101,14 +102,36 @@ public class APIClient {
                 .asDictionary();
 
         Log.v(APIClient.class.getName(), "Performing login with parameters " + request);
+        login(loginURL, request, callback);
+    }
+
+    public void socialLogin(final String connectionName, String accessToken, Map<String, String> parameters, final AuthenticationCallback callback) {
+        final String loginURL = this.baseURL + "/oauth/access_token";
+
+        Map<String, String> params = parameters != null ? new HashMap<>(parameters) : new HashMap<String, String>();
+        if (params.containsKey("access_token")) {
+            params.put("main_access_token", params.remove("access_token"));
+        }
+        Map<String, String> request = ParameterBuilder.newBuilder()
+                .setClientId(this.clientID)
+                .setConnection(connectionName)
+                .setAccessToken(accessToken)
+                .addAll(params)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing social login with parameters " + request);
+        login(loginURL, request, callback);
+    }
+
+    private void login(final String url, final Map<String, String> request, final AuthenticationCallback callback) {
         try {
             HttpEntity entity = this.entityBuilder.newEntityFrom(request);
-            this.client.post(null, loginURL, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
+            this.client.post(null, url, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     try {
                         final Token token = new ObjectMapper().readValue(responseBody, Token.class);
-                        Log.d(APIClient.class.getName(), "Logged in username " + username + " jwt " + token.getIdToken());
+                        Log.d(APIClient.class.getName(), "Logged in with " + url + " jwt " + token.getIdToken());
                         APIClient.this.fetchProfile(token, callback);
                     } catch (IOException e) {
                         Log.e(APIClient.class.getName(), "Failed to parse JSON of token info", e);
@@ -118,14 +141,14 @@ public class APIClient {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed login user with username " + username, error);
+                    Log.e(APIClient.class.getName(), "Failed login user with " + url, error);
                     Map errorResponse = null;
                     if (statusCode == 400 || statusCode == 401) {
                         try {
                             errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
                             Log.e(APIClient.class.getName(), "Login error " + errorResponse);
                         } catch (IOException e) {
-                           Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
+                            Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
                         }
                     }
                     callback.onFailure(new APIClientException("Failed to perform login", error, statusCode, errorResponse));

@@ -1,5 +1,5 @@
 /*
- * Lock.java
+ * IdentityProvider.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,23 +22,28 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.app;
+package com.auth0.lock.identity;
 
-import android.app.Application;
+import android.app.Activity;
+import android.content.Intent;
 
-import com.auth0.facebook.FacebookIdentityProvider;
+import com.auth0.core.Application;
 import com.auth0.lock.Lock;
+import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.provider.BusProvider;
 
 /**
- * Created by hernan on 12/7/14.
+ * Created by hernan on 12/22/14.
  */
-public class LockApplication extends Application {
+public interface IdentityProvider {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Lock lock = new Lock("U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3", "overmind");
-        lock.setProvider("facebook", new FacebookIdentityProvider());
-        lock.registerForApplication(this);
-    }
+    static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+
+    void initialize(Lock lock, BusProvider provider);
+
+    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+
+    void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application);
+
+    void clearSession();
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -18,30 +19,29 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
-import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.fragment.LoadingFragment;
+import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
 import com.auth0.lock.web.CallbackParser;
-import com.auth0.lock.web.WebViewActivity;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
-
-import java.util.Map;
 
 import roboguice.activity.RoboFragmentActivity;
 
 
 public class LockActivity extends RoboFragmentActivity {
 
-    private static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+    public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
+
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
-    @Inject CallbackParser parser;
     @Inject Lock lock;
 
     private Application application;
     private ProgressDialog progressDialog;
+    private IdentityProvider identity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,33 +56,34 @@ public class LockActivity extends RoboFragmentActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        this.provider.getBus().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.provider.getBus().unregister(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        this.provider.getBus().register(this);
         final Uri uri = getIntent().getData();
         Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
-        if (uri != null) {
-            final Map<String, String> values = parser.getValuesFromUri(uri);
-            if (values.containsKey("error")) {
-                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
-                final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
-                provider.getBus().post(error);
-                dismissProgressDialog();
-            } else if(values.size() > 0) {
-                Log.d(LockActivity.class.getName(), "Authenticated using web flow");
-                provider.getBus().post(new SocialAuthenticationEvent(values));
-            } else {
+        if (identity != null) {
+            boolean valid = identity.authorize(this, IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE, RESULT_OK, getIntent());
+            identity = null;
+            if (!valid) {
                 dismissProgressDialog();
             }
-        } else {
-            dismissProgressDialog();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        this.provider.getBus().unregister(this);
         getIntent().setData(null);
     }
 
@@ -90,6 +91,7 @@ public class LockActivity extends RoboFragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.v(LockActivity.class.getName(), "Received new Intent with URI " + intent.getData());
+        identity = lock.getDefaultProvider();
         setIntent(intent);
     }
 
@@ -102,9 +104,9 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == RESULT_OK) {
-            setIntent(data);
-        }
+        Log.v(LockActivity.class.getName(), "Child activity result obtained");
+        identity.authorize(this, requestCode, resultCode, data);
+        identity = null;
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
@@ -120,10 +122,10 @@ public class LockActivity extends RoboFragmentActivity {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(LockActivity.class.getName(), "Authenticated user " + profile.getName());
-        Intent result = new Intent();
+        Intent result = new Intent(AUTHENTICATION_ACTION);
         result.putExtra("profile", profile);
         result.putExtra("token", token);
-        setResult(RESULT_OK, result);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(result);
         dismissProgressDialog();
         finish();
     }
@@ -136,6 +138,9 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
+        if (identity != null) {
+            identity.clearSession();
+        }
         dismissProgressDialog();
         showAlertDialog(error);
     }
@@ -167,17 +172,9 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
         Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
-        final Uri url = event.getAuthenticationUri(application);
-        final Intent intent;
-        if (lock.isUseWebView()) {
-            intent = new Intent(this, WebViewActivity.class);
-            intent.setData(url);
-            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
-            startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
-        } else {
-            intent = new Intent(Intent.ACTION_VIEW, url);
-            startActivity(intent);
-        }
+        identity = lock.providerForName(event.getServiceName());
+        identity.initialize(lock, provider);
+        identity.authenticate(this, event, application);
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
