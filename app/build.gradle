@@ -28,5 +28,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
     compile project(':facebook')
+    compile project(':googleplus')
     compile 'com.android.support:appcompat-v7:21.+'
 }
