@@ -20,11 +20,9 @@ import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
-import com.auth0.lock.web.CallbackParser;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
@@ -173,7 +171,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
         Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
-        identity.initialize(lock, provider);
+        identity.start(this);
         identity.authenticate(this, event, application);
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);

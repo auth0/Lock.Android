@@ -25,6 +25,7 @@
 package com.auth0.facebook;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -39,19 +40,22 @@ import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
 
+import roboguice.RoboGuice;
+
 /**
  * Created by hernan on 12/22/14.
  */
 public class FacebookIdentityProvider implements IdentityProvider {
 
-    private Lock lock;
     private BusProvider provider;
 
     @Override
-    public void initialize(Lock lock, BusProvider provider) {
-        this.lock = lock;
-        this.provider = provider;
+    public void start(Context context) {
+        this.provider = RoboGuice.getInjector(context).getInstance(BusProvider.class);
     }
+
+    @Override
+    public void stop() {}
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {

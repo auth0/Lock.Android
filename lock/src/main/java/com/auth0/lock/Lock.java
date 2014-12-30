@@ -58,7 +58,7 @@ public class Lock {
         this.clientId = clientId;
         this.tenant = tenant;
         this.useWebView = false;
-        this.defaultProvider = new WebIdentityProvider(new CallbackParser());
+        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), this);
         this.providers = new HashMap<>();
     }
 
@@ -93,6 +93,13 @@ public class Lock {
 
     public IdentityProvider getDefaultProvider() {
         return defaultProvider;
+    }
+
+    public void resetAllProviders() {
+        for (IdentityProvider provider: this.providers.values()) {
+            provider.stop();
+        }
+        this.defaultProvider.stop();
     }
 
     private static class LockModule implements Module {

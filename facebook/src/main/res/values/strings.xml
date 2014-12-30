@@ -23,4 +23,6 @@
   -->
 
 <resources>
+    <string name="facebook_error_title">There was an error contacting Facebook</string>
+    <string name="facebook_cancelled_error_message">You need to authorize the application</string>
 </resources>

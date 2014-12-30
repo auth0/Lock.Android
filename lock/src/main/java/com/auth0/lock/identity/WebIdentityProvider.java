@@ -25,6 +25,7 @@
 package com.auth0.lock.identity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -42,23 +43,28 @@ import com.auth0.lock.web.WebViewActivity;
 
 import java.util.Map;
 
+import roboguice.RoboGuice;
+
 /**
  * Created by hernan on 12/22/14.
  */
 public class WebIdentityProvider implements IdentityProvider {
 
-    private Lock lock;
+    private final boolean useWebView;
     private BusProvider provider;
     private CallbackParser parser;
 
-    public WebIdentityProvider(CallbackParser parser) {
+    public WebIdentityProvider(CallbackParser parser, Lock lock) {
         this.parser = parser;
+        this.useWebView = lock.isUseWebView();
     }
 
-    public void initialize(Lock lock, BusProvider provider) {
-        this.lock = lock;
-        this.provider = provider;
+    public void start(Context context) {
+        this.provider = RoboGuice.getInjector(context).getInstance(BusProvider.class);
     }
+
+    @Override
+    public void stop() {}
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -83,7 +89,7 @@ public class WebIdentityProvider implements IdentityProvider {
     public void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
         final Uri url = event.getAuthenticationUri(application);
         final Intent intent;
-        if (lock.isUseWebView()) {
+        if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(url);
             intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());

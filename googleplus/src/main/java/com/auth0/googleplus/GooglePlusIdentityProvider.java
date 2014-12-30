@@ -1,5 +1,5 @@
 /*
- * IdentityProvider.java
+ * GooglePlusIdentityProvider.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,30 +22,43 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.identity;
+package com.auth0.googleplus;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import com.auth0.core.Application;
-import com.auth0.lock.Lock;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
 
 /**
- * Created by hernan on 12/22/14.
+ * Created by hernan on 12/30/14.
  */
-public interface IdentityProvider {
+public class GooglePlusIdentityProvider implements IdentityProvider {
+    @Override
+    public void start(Context context) {
 
-    static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+    }
 
-    void start(Context context);
-    void stop();
+    @Override
+    public void stop() {
 
-    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+    }
 
-    void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application);
+    @Override
+    public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
+        return false;
+    }
 
-    void clearSession();
+    @Override
+    public void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+
+    }
+
+    @Override
+    public void clearSession() {
+
+    }
 }
