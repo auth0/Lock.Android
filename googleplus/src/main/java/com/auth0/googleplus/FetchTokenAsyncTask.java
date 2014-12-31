@@ -29,6 +29,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import com.auth0.core.Strategies;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.identity.IdentityProvider;
@@ -64,7 +65,7 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
                     Plus.AccountApi.getAccountName(apiClient),
                     "oauth2:" + TextUtils.join(" ", params));
 
-            return new SocialCredentialEvent("google-oauth2", accessToken);
+            return new SocialCredentialEvent(Strategies.GooglePlus.getName(), accessToken);
         } catch (IOException transientEx) {
             return new AuthenticationError(R.string.social_error_title, R.string.social_error_message, transientEx);
         } catch (UserRecoverableAuthException e) {

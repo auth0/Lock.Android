@@ -39,8 +39,8 @@ public class LockApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Lock lock = new Lock("U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3", "overmind");
-        lock.setProvider("facebook", new FacebookIdentityProvider());
+        Lock lock = new Lock(getString(R.string.auth0_client_id), getString(R.string.auth0_tenant_name));
+        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider());
         lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));
         lock.registerForApplication(this);
     }
