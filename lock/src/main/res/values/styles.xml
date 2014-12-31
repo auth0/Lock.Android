@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ attrs.xml
+  ~ styles.xml
   ~
   ~ Copyright (c) 2014 Auth0 (http://auth0.com)
   ~
@@ -22,16 +22,23 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   ~ THE SOFTWARE.
   -->
-
 <resources>
-    <declare-styleable name="CredentialField">
-        <attr name="normalIconDrawable" format="reference"/>
-        <attr name="errorIconDrawable" format="reference"/>
-        <attr name="errorColor" format="color"/>
-    </declare-styleable>
 
-    <declare-styleable name="LockTheme">
-        <attr name="Auth0.PrimaryButtonStyle" format="reference"/>
-        <attr name="Auth0.SecondaryButtonStyle" format="reference"/>
-    </declare-styleable>
+    <style name="Lock.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="Auth0.PrimaryButtonStyle">@style/Lock.Theme.PrimaryButton</item>
+        <item name="Auth0.SecondaryButtonStyle">@style/Lock.Theme.SecondaryButton</item>
+    </style>
+
+    <style name="Lock.Theme.SecondaryButton" parent="@android:style/Widget.Button.Small">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/secondary_button_text</item>
+        <item name="android:layout_height">@dimen/secondary_button_height</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/secondary_button_text_size</item>
+        <item name="android:background">@drawable/btn_secondary_background</item>
+        <item name="android:layout_marginBottom">@dimen/secondary_button_margin_bottom</item>
+    </style>
+
+    <style name="Lock.Theme.PrimaryButton">
+    </style>
 </resources>

@@ -117,15 +117,9 @@
     <Button
         android:id="@+id/db_signup_cancel_button"
         android:tag="db_signup_cancel_button"
-        android:layout_width="@dimen/secondary_button_width"
-        android:layout_height="@dimen/secondary_button_height"
+        style="?attr/Auth0.SecondaryButtonStyle"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:textSize="@dimen/secondary_button_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/secondary_button_text"
-        android:background="@drawable/btn_secondary_background"
-        android:layout_marginBottom="@dimen/secondary_button_margin_bottom"
         android:text="@string/db_cancel_button_text"/>
 
 </RelativeLayout>
