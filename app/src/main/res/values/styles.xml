@@ -5,6 +5,9 @@
 
     </style>
 
+    <style name="MyLock.Theme" parent="Lock.Theme">
+    </style>
+
     <style name="Mindjet.Theme" parent="Lock.Theme">
         <item name="Auth0.Background">@drawable/mindjet_bg</item>
         <item name="Auth0.PrimaryButton.Color">#4cffffff</item>
