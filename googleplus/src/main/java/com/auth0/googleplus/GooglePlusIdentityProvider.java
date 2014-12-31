@@ -25,10 +25,13 @@
 package com.auth0.googleplus;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.auth0.core.Application;
 import com.auth0.lock.event.AuthenticationError;
@@ -40,8 +43,11 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 
 import java.io.IOException;
@@ -53,33 +59,35 @@ import roboguice.RoboGuice;
  */
 public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    public static final String TAG = GooglePlusIdentityProvider.class.getName();
+    private final GoogleApiClient apiClient;
     private boolean authenticating;
-    private GoogleApiClient apiClient;
     private Activity activity;
     private BusProvider provider;
+
+    public GooglePlusIdentityProvider(Context context) {
+        this.apiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
+    }
 
     @Override
     public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
         this.activity = activity;
         this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
-        if (apiClient == null) {
-            apiClient = new GoogleApiClient.Builder(activity)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(Plus.API)
-                    .addScope(Plus.SCOPE_PLUS_LOGIN)
-                    .build();
-
-        }
+        Log.v(TAG, "Starting G+ connection");
         apiClient.connect();
+        authenticating = true;
     }
 
     @Override
     public void stop() {
-        if (apiClient != null && apiClient.isConnected()) {
+        if (apiClient.isConnected()) {
             apiClient.disconnect();
         }
-        apiClient = null;
         activity = null;
     }
 
@@ -87,63 +95,58 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
         this.activity = activity;
         if (requestCode == GOOGLE_PLUS_REQUEST_CODE) {
-            authenticating = false;
+            Log.v(TAG, "Received activity result " + resultCode);
             if (!apiClient.isConnecting()) {
                 apiClient.connect();
             }
             return true;
+        } else if(requestCode == GOOGLE_PLUS_TOKEN_REQUEST_CODE) {
+            Log.v(TAG, "Received activity result " + resultCode);
+            apiClient.connect();
         }
         return false;
     }
 
     @Override
     public void clearSession() {
-        stop();
-        activity = null;
+        try {
+            Plus.AccountApi.clearDefaultAccount(apiClient);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Failed to clear G+ Session", e);
+        } finally {
+            stop();
+            activity = null;
+        }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        try {
-            String accessToken = GoogleAuthUtil.getToken(
-                    activity,
-                    Plus.AccountApi.getAccountName(apiClient),
-                    "oauth2:" + TextUtils.join(" " , new Object[] {"email", "profile"}));
-
-            provider.getBus().post(new SocialCredentialEvent("google-oauth2", accessToken));
-        } catch (IOException transientEx) {
-            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message, transientEx));
-        } catch (UserRecoverableAuthException e) {
-            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message, e));
-        } catch (GoogleAuthException authEx) {
-            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message, authEx));
-        } catch (Exception e) {
-            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message, e));
-        }
+        authenticating = false;
+        new FetchTokenAsyncTask(apiClient, activity, provider).execute("email", "profile");
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        apiClient.connect();
+    public void onConnectionSuspended(int code) {
+        Log.v(TAG, "Connection suspended with code: " + code);
+        authenticating = false;
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        if (!result.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity,
-                    0).show();
-            return;
-        }
-        if (!authenticating && result.hasResolution()) {
+        Log.v(TAG, "Connection failed with code " + result.getErrorCode());
+        if (result.getErrorCode() == ConnectionResult.SERVICE_MISSING) { // e.g. emulator without play services installed
+            Log.e(TAG, "service not available");
+        } else if (result.getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED && authenticating) {
+            authenticating = false;
+            Log.v(TAG, "G+ Sign in required");
+            final PendingIntent mSignInIntent = result.getResolution();
             try {
-                authenticating = true;
-                result.startResolutionForResult(activity, GOOGLE_PLUS_REQUEST_CODE);
-            } catch (IntentSender.SendIntentException e) {
-                // The intent was canceled before it was sent.  Return to the default
-                // state and attempt to connect to get an updated ConnectionResult.
-                authenticating = false;
+                activity.startIntentSenderForResult(mSignInIntent.getIntentSender(), GOOGLE_PLUS_REQUEST_CODE, null, 0, 0, 0);
+            } catch (IntentSender.SendIntentException ignore) {
                 apiClient.connect();
             }
+        } else {
+            Log.e(TAG, "Invalid Token");
         }
     }
 }

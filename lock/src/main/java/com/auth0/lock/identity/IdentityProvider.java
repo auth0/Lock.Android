@@ -40,6 +40,7 @@ public interface IdentityProvider {
 
     static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
     static final int GOOGLE_PLUS_REQUEST_CODE = 501;
+    static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
 
     void start(Activity activity, SocialAuthenticationRequestEvent event, Application application);
 
