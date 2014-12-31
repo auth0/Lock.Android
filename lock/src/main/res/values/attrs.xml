@@ -40,5 +40,9 @@
         <attr name="Auth0.Background" format="reference|color"/>
         <attr name="Auth0.Title.Text" format="reference"/>
         <attr name="Auth0.Title.Icon" format="reference"/>
+        <attr name="Auth0.PrimaryButton.Color" format="color"/>
+        <attr name="Auth0.PrimaryButton.Color.Highlighted" format="color"/>
+        <attr name="Auth0.PrimaryButton.Color.Disabled" format="color"/>
+        <attr name="Auth0.SecondaryButton.Border.Color" format="color"/>
     </declare-styleable>
 </resources>

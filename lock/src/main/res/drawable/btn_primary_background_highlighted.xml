@@ -24,6 +24,6 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/primary_button_highlighted_background"/>
+    <solid android:color="?attr/Auth0.PrimaryButton.Color.Highlighted"/>
     <corners android:radius="@dimen/primary_button_corner_radius"/>
 </shape>

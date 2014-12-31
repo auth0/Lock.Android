@@ -35,6 +35,10 @@
         <item name="Auth0.Background">@color/lock_background</item>
         <item name="Auth0.Title.Icon">@style/Lock.Theme.Title.Icon</item>
         <item name="Auth0.Title.Text">@style/Lock.Theme.Title.Text</item>
+        <item name="Auth0.PrimaryButton.Color">@color/primary_button_normal_background</item>
+        <item name="Auth0.PrimaryButton.Color.Highlighted">@color/primary_button_highlighted_background</item>
+        <item name="Auth0.PrimaryButton.Color.Disabled">@color/primary_button_disabled_background</item>
+        <item name="Auth0.SecondaryButton.Border.Color">@color/secondary_button_border</item>
     </style>
 
     <style name="Lock.Theme.SecondaryButton" parent="Widget.AppCompat.ActionButton">

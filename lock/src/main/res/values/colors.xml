@@ -21,7 +21,6 @@
     <color name="secondary_button_text">#4d4d4d</color>
     <color name="secondary_button_border">#f0f0f0</color>
     <color name="secondary_button_normal_background">@android:color/transparent</color>
-    <color name="secondary_button_highlighted_background">#f0f0f0</color>
     <color name="secondary_button_disabled_background">@android:color/transparent</color>
 
     <color name="title_lock_icon_background">#f0f0f0</color>
