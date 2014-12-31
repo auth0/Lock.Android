@@ -44,5 +44,6 @@
         <attr name="Auth0.PrimaryButton.Color.Highlighted" format="color"/>
         <attr name="Auth0.PrimaryButton.Color.Disabled" format="color"/>
         <attr name="Auth0.SecondaryButton.Border.Color" format="color"/>
+        <attr name="Auth0.Separator.Color" format="color"/>
     </declare-styleable>
 </resources>

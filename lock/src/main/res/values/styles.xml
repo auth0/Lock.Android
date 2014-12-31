@@ -39,6 +39,7 @@
         <item name="Auth0.PrimaryButton.Color.Highlighted">@color/primary_button_highlighted_background</item>
         <item name="Auth0.PrimaryButton.Color.Disabled">@color/primary_button_disabled_background</item>
         <item name="Auth0.SecondaryButton.Border.Color">@color/secondary_button_border</item>
+        <item name="Auth0.Separator.Color">@color/credential_box_border</item>
     </style>
 
     <style name="Lock.Theme.SecondaryButton" parent="Widget.AppCompat.ActionButton">

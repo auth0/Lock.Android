@@ -47,7 +47,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/credential_box_border_width"
-            android:background="@color/credential_box_border"/>
+            android:background="?attr/Auth0.Separator.Color"/>
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_login_password_field"
             android:tag="db_login_password_field"

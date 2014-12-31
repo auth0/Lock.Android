@@ -24,4 +24,5 @@
   -->
 
 <resources>
+    <color name="field_hint">#b2ffffff</color>
 </resources>

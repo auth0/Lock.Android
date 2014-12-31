@@ -30,7 +30,6 @@
                  android:paddingRight="@dimen/activity_horizontal_margin"
                  android:paddingTop="@dimen/activity_vertical_margin"
                  android:paddingBottom="@dimen/activity_vertical_margin"
-                 android:background="?attr/Auth0.Background"
                  tools:context="com.auth0.lock.fragment.DatabaseSignUpFragment">
 
     <include layout="@layout/title_lock"/>
@@ -54,7 +53,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/credential_box_border_width"
-            android:background="@color/credential_box_border"/>
+            android:background="?attr/Auth0.Separator.Color"/>
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_signup_password_field"
             android:tag="db_signup_password_field"
