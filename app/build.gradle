@@ -1,17 +1,6 @@
-def loadAuth0Properties(filename) {
-    Properties props = new Properties()
-    props.load(new FileInputStream(file(rootProject.file(filename))))
-    return props
-}
-
 apply plugin: 'com.android.application'
 
 android {
-
-    preBuild.doFirst {
-        assert file(rootProject.file("auth0.properties.debug")).exists()
-        assert file(rootProject.file("auth0.properties.release")).exists()
-    }
 
     compileSdkVersion 21
     buildToolsVersion "21.1.1"
@@ -27,15 +16,13 @@ android {
     buildTypes {
 
         debug {
-            def auth0 = loadAuth0Properties("auth0.properties.debug")
-            resValue "string", "auth0_client_id", auth0["clientId"]
-            resValue "string", "auth0_tenant_name", auth0["tenantName"]
+            resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
+            resValue "string", "auth0_tenant_name", "overmind"
         }
 
         release {
-            def auth0 = loadAuth0Properties("auth0.properties.release")
-            resValue "string", "auth0_client_id", auth0["clientId"]
-            resValue "string", "auth0_tenant_name", auth0["tenantName"]
+            resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
+            resValue "string", "auth0_tenant_name", "overmind"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

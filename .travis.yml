@@ -7,7 +7,8 @@ android:
   - extra-google-m2repository
   - extra-android-m2repository
   - addon-google_apis-google-21
-script: "./gradlew clean test"
+script:
+  - "./gradlew clean test"
 branches:
   only:
   - master
