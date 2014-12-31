@@ -50,7 +50,7 @@ public class LockActivity extends RoboFragmentActivity {
         setContentView(R.layout.activity_lock);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new LoadingFragment())
+                    .replace(R.id.container, new LoadingFragment())
                     .commit();
         }
     }
@@ -171,7 +171,7 @@ public class LockActivity extends RoboFragmentActivity {
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.container, fragment)
+                    .replace(R.id.container, fragment)
                     .addToBackStack(event.name())
                     .commit();
         }

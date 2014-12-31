@@ -24,14 +24,12 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                  xmlns:tools="http://schemas.android.com/tools"
-                 xmlns:custom="http://schemas.android.com/apk/res-auto"
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"
                  android:paddingLeft="@dimen/activity_horizontal_margin"
                  android:paddingRight="@dimen/activity_horizontal_margin"
                  android:paddingTop="@dimen/activity_vertical_margin"
                  android:paddingBottom="@dimen/activity_vertical_margin"
-                 android:background="@color/lock_background"
                  tools:context="com.auth0.lock.fragment.DatabaseSignUpFragment">
 
     <include layout="@layout/title_lock"/>
@@ -39,69 +37,47 @@
     <LinearLayout
         android:id="@+id/db_signup_credentials"
         android:orientation="vertical"
+        style="?attr/Auth0.CredentialBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:background="@drawable/box_credential_background">
+        android:layout_centerInParent="true">
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_signup_username_field"
             android:tag="db_signup_username_field"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/credential_field_height"
-            android:textSize="@dimen/credential_field_font_size"
-            android:textColorHint="@color/credential_field_hint"
+            style="?attr/Auth0.CredentialField.Email"
             android:inputType="textEmailAddress"
-            android:paddingLeft="@dimen/credential_field_padding"
-            android:paddingRight="@dimen/credential_field_padding"
-            android:drawablePadding="@dimen/credential_field_icon_right_padding"
-            android:background="@color/credential_field_background"
             android:hint="@string/email_placeholder"
-            custom:normalIconDrawable="@drawable/ic_email"
-            custom:errorIconDrawable="@drawable/ic_email_error"
             android:nextFocusDown="@+id/db_signup_password_field"
             />
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/credential_box_border_width"
-            android:background="@color/credential_box_border"/>
+            android:background="?attr/Auth0.Separator.Color"/>
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_signup_password_field"
             android:tag="db_signup_password_field"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/credential_field_height"
-            android:textSize="@dimen/credential_field_font_size"
-            android:textColorHint="@color/credential_field_hint"
+            style="?attr/Auth0.CredentialField.Password"
             android:inputType="textPassword"
-            android:paddingLeft="@dimen/credential_field_padding"
-            android:paddingRight="@dimen/credential_field_padding"
-            android:drawablePadding="@dimen/credential_field_icon_right_padding"
-            android:background="@color/credential_field_background"
             android:hint="@string/password_placeholder"
-            custom:normalIconDrawable="@drawable/ic_lock"
-            custom:errorIconDrawable="@drawable/ic_lock_error"
             />
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="?attr/Auth0.Message"
         android:layout_centerHorizontal="true"
-        android:layout_above="@id/db_signup_credentials"
-        android:layout_marginBottom="@dimen/lock_vertical_margin"
+        android:layout_above="@+id/db_signup_credentials"
         android:text="@string/db_signup_title_message"/>
 
     <Button
         android:id="@+id/db_access_button"
         android:tag="db_access_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/primary_button_height"
+        style="?attr/Auth0.PrimaryButtonStyle"
         android:layout_below="@id/db_signup_credentials"
         android:layout_marginTop="@dimen/lock_vertical_margin"
         android:text="@string/db_signup_btn_text"
-        android:textColor="@color/primary_button_text"
-        android:background="@drawable/btn_primary_background"
-        android:textSize="@dimen/primary_button_text_size"
         android:fontFamily="sans-serif-medium"/>
 
     <ProgressBar
@@ -117,15 +93,9 @@
     <Button
         android:id="@+id/db_signup_cancel_button"
         android:tag="db_signup_cancel_button"
-        android:layout_width="@dimen/secondary_button_width"
-        android:layout_height="@dimen/secondary_button_height"
+        style="?attr/Auth0.SecondaryButtonStyle"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:textSize="@dimen/secondary_button_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/secondary_button_text"
-        android:background="@drawable/btn_secondary_background"
-        android:layout_marginBottom="@dimen/secondary_button_margin_bottom"
         android:text="@string/db_cancel_button_text"/>
 
 </RelativeLayout>

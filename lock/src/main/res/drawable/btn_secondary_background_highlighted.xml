@@ -24,7 +24,7 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/secondary_button_highlighted_background"/>
+    <solid android:color="?attr/Auth0.SecondaryButton.Border.Color"/>
     <corners android:radius="@dimen/secondary_button_corner_radius"/>
-    <stroke android:color="@color/secondary_button_border" android:width="@dimen/secondary_button_border_width"/>
+    <stroke android:color="?attr/Auth0.SecondaryButton.Border.Color" android:width="@dimen/secondary_button_border_width"/>
 </shape>

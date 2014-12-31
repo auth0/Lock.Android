@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ styles.xml
+  ~
+  ~ Copyright (c) 2014 Auth0 (http://auth0.com)
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+<resources>
+
+    <style name="Lock.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="spbStyle">@style/Lock.Theme.ProgressBarHorizontal</item>
+        <item name="Auth0.PrimaryButtonStyle">@style/Lock.Theme.PrimaryButton</item>
+        <item name="Auth0.SecondaryButtonStyle">@style/Lock.Theme.SecondaryButton</item>
+        <item name="Auth0.CredentialField.Email">@style/Lock.Theme.CredentialField.Email</item>
+        <item name="Auth0.CredentialField.Password">@style/Lock.Theme.CredentialField.Password</item>
+        <item name="Auth0.CredentialBox">@style/Lock.Theme.CredentialBox</item>
+        <item name="Auth0.Message">@style/Lock.Theme.Message</item>
+        <item name="Auth0.Background">@color/lock_background</item>
+        <item name="Auth0.Title.Icon">@style/Lock.Theme.Title.Icon</item>
+        <item name="Auth0.Title.Text">@style/Lock.Theme.Title.Text</item>
+        <item name="Auth0.PrimaryButton.Color">@color/primary_button_normal_background</item>
+        <item name="Auth0.PrimaryButton.Color.Highlighted">@color/primary_button_highlighted_background</item>
+        <item name="Auth0.PrimaryButton.Color.Disabled">@color/primary_button_disabled_background</item>
+        <item name="Auth0.SecondaryButton.Border.Color">@color/secondary_button_border</item>
+        <item name="Auth0.Separator.Color">@color/credential_box_border</item>
+    </style>
+
+    <style name="Lock.Theme.SecondaryButton" parent="Widget.AppCompat.ActionButton">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/secondary_button_text</item>
+        <item name="android:layout_height">@dimen/secondary_button_height</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/secondary_button_text_size</item>
+        <item name="android:background">@drawable/btn_secondary_background</item>
+        <item name="android:layout_marginBottom">@dimen/secondary_button_margin_bottom</item>
+    </style>
+
+    <style name="Lock.Theme.PrimaryButton" parent="Widget.AppCompat.ActionButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/primary_button_height</item>
+        <item name="android:textColor">@color/primary_button_text</item>
+        <item name="android:background">@drawable/btn_primary_background</item>
+        <item name="android:textSize">@dimen/primary_button_text_size</item>
+    </style>
+
+    <style name="Lock.Theme.CredentialField.Email" parent="Lock.Theme.CredentialField">
+        <item name="normalIconDrawable">@drawable/ic_email</item>
+        <item name="errorIconDrawable">@drawable/ic_email_error</item>
+    </style>
+
+    <style name="Lock.Theme.CredentialField.Password" parent="Lock.Theme.CredentialField">
+        <item name="normalIconDrawable">@drawable/ic_lock</item>
+        <item name="errorIconDrawable">@drawable/ic_lock_error</item>
+    </style>
+
+    <style name="Lock.Theme.CredentialField" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/credential_field_height</item>
+        <item name="android:textSize">@dimen/credential_field_font_size</item>
+        <item name="android:textColorHint">@color/credential_field_hint</item>
+        <item name="android:paddingLeft">@dimen/credential_field_padding</item>
+        <item name="android:paddingRight">@dimen/credential_field_padding</item>
+        <item name="android:drawablePadding">@dimen/credential_field_icon_right_padding</item>
+        <item name="android:background">@color/credential_field_background</item>
+    </style>
+
+    <style name="Lock.Theme.ProgressBarHorizontal">
+        <item name="spb_color">@color/lock_blue_light</item>
+    </style>
+
+    <style name="Lock.Theme.CredentialBox">
+        <item name="android:background">@drawable/box_credential_background</item>
+    </style>
+
+    <style name="Lock.Theme.Message" parent="TextAppearance.AppCompat.Small">
+        <item name="android:layout_marginBottom">@dimen/lock_vertical_margin</item>
+    </style>
+
+    <style name="Lock.Theme.Title"/>
+
+    <style name="Lock.Theme.Title.Icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/title_lock_margin_top</item>
+        <item name="android:src">@drawable/ic_people</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:background">@drawable/icon_background</item>
+        <item name="android:cropToPadding">false</item>
+        <item name="android:paddingLeft">@dimen/title_lock_image_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/title_lock_image_horizontal_padding</item>
+        <item name="android:paddingBottom">@dimen/title_lock_image_vertical_padding</item>
+        <item name="android:paddingTop">@dimen/title_lock_image_vertical_padding</item>
+    </style>
+
+    <style name="Lock.Theme.Title.Text" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">@dimen/title_lock_text_size</item>
+        <item name="android:layout_marginTop">@dimen/title_lock_text_margin_top</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+</resources>

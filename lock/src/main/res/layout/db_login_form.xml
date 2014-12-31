@@ -24,7 +24,6 @@
   -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:custom="http://schemas.android.com/apk/res-auto"
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
@@ -33,60 +32,38 @@
     <LinearLayout
         android:id="@+id/db_login_credentials"
         android:orientation="vertical"
+        style="?attr/Auth0.CredentialBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:background="@drawable/box_credential_background">
+        android:layout_centerInParent="true">
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_login_username_field"
             android:tag="db_login_username_field"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/credential_field_height"
-            android:textSize="@dimen/credential_field_font_size"
-            android:textColorHint="@color/credential_field_hint"
+            style="?attr/Auth0.CredentialField.Email"
             android:inputType="textEmailAddress"
-            android:paddingLeft="@dimen/credential_field_padding"
-            android:paddingRight="@dimen/credential_field_padding"
-            android:drawablePadding="@dimen/credential_field_icon_right_padding"
-            android:background="@color/credential_field_background"
             android:hint="@string/email_placeholder"
-            custom:normalIconDrawable="@drawable/ic_email"
-            custom:errorIconDrawable="@drawable/ic_email_error"
             />
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/credential_box_border_width"
-            android:background="@color/credential_box_border"/>
+            android:background="?attr/Auth0.Separator.Color"/>
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_login_password_field"
             android:tag="db_login_password_field"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/credential_field_height"
-            android:textSize="@dimen/credential_field_font_size"
-            android:textColorHint="@color/credential_field_hint"
+            style="?attr/Auth0.CredentialField.Password"
             android:inputType="textPassword"
-            android:paddingLeft="@dimen/credential_field_padding"
-            android:paddingRight="@dimen/credential_field_padding"
-            android:drawablePadding="@dimen/credential_field_icon_right_padding"
-            android:background="@color/credential_field_background"
             android:hint="@string/password_placeholder"
-            custom:normalIconDrawable="@drawable/ic_lock"
-            custom:errorIconDrawable="@drawable/ic_lock_error"
             />
     </LinearLayout>
 
     <Button
         android:id="@+id/db_access_button"
         android:tag="db_access_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/primary_button_height"
+        style="?attr/Auth0.PrimaryButtonStyle"
         android:layout_below="@id/db_login_credentials"
         android:layout_marginTop="@dimen/lock_vertical_margin"
         android:text="@string/db_login_btn_text"
-        android:textColor="@color/primary_button_text"
-        android:background="@drawable/btn_primary_background"
-        android:textSize="@dimen/primary_button_text_size"
         android:fontFamily="sans-serif-medium"/>
 
     <ProgressBar
