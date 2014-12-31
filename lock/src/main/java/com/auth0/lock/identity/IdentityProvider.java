@@ -39,13 +39,13 @@ import com.auth0.lock.provider.BusProvider;
 public interface IdentityProvider {
 
     static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+    static final int GOOGLE_PLUS_REQUEST_CODE = 501;
 
-    void start(Context context);
+    void start(Activity activity, SocialAuthenticationRequestEvent event, Application application);
+
     void stop();
 
     boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
-
-    void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application);
 
     void clearSession();
 }

@@ -59,8 +59,19 @@ public class WebIdentityProvider implements IdentityProvider {
         this.useWebView = lock.isUseWebView();
     }
 
-    public void start(Context context) {
-        this.provider = RoboGuice.getInjector(context).getInstance(BusProvider.class);
+    public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+        this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
+        final Uri url = event.getAuthenticationUri(application);
+        final Intent intent;
+        if (this.useWebView) {
+            intent = new Intent(activity, WebViewActivity.class);
+            intent.setData(url);
+            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
+            activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
+        } else {
+            intent = new Intent(Intent.ACTION_VIEW, url);
+            activity.startActivity(intent);
+        }
     }
 
     @Override
@@ -83,21 +94,6 @@ public class WebIdentityProvider implements IdentityProvider {
             }
         }
         return isValid;
-    }
-
-    @Override
-    public void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
-        final Uri url = event.getAuthenticationUri(application);
-        final Intent intent;
-        if (this.useWebView) {
-            intent = new Intent(activity, WebViewActivity.class);
-            intent.setData(url);
-            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
-            activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
-        } else {
-            intent = new Intent(Intent.ACTION_VIEW, url);
-            activity.startActivity(intent);
-        }
     }
 
     @Override

@@ -50,21 +50,8 @@ public class FacebookIdentityProvider implements IdentityProvider {
     private BusProvider provider;
 
     @Override
-    public void start(Context context) {
-        this.provider = RoboGuice.getInjector(context).getInstance(BusProvider.class);
-    }
-
-    @Override
-    public void stop() {}
-
-    @Override
-    public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
-        final Session session = Session.getActiveSession();
-        return session != null && session.onActivityResult(activity, requestCode, resultCode, data);
-    }
-
-    @Override
-    public void authenticate(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+    public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+        this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
         Session.openActiveSession(activity, true, new Session.StatusCallback() {
             @Override
             public void call(Session session, SessionState sessionState, Exception e) {
@@ -90,6 +77,15 @@ public class FacebookIdentityProvider implements IdentityProvider {
             }
 
         });
+    }
+
+    @Override
+    public void stop() {}
+
+    @Override
+    public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
+        final Session session = Session.getActiveSession();
+        return session != null && session.onActivityResult(activity, requestCode, resultCode, data);
     }
 
     @Override

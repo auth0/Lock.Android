@@ -26,7 +26,9 @@ package com.auth0.app;
 
 import android.app.Application;
 
+import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
+import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
 
 /**
@@ -39,6 +41,7 @@ public class LockApplication extends Application {
         super.onCreate();
         Lock lock = new Lock("U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3", "overmind");
         lock.setProvider("facebook", new FacebookIdentityProvider());
+        lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider());
         lock.registerForApplication(this);
     }
 }

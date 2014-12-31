@@ -57,12 +57,14 @@ public class LockActivity extends RoboFragmentActivity {
     protected void onStart() {
         super.onStart();
         this.provider.getBus().register(this);
+        lock.resetAllProviders();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         this.provider.getBus().unregister(this);
+        lock.resetAllProviders();
     }
 
     @Override
@@ -72,7 +74,6 @@ public class LockActivity extends RoboFragmentActivity {
         Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
         if (identity != null) {
             boolean valid = identity.authorize(this, IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE, RESULT_OK, getIntent());
-            identity = null;
             if (!valid) {
                 dismissProgressDialog();
             }
@@ -95,6 +96,7 @@ public class LockActivity extends RoboFragmentActivity {
 
     @Override
     protected void onDestroy() {
+        identity = null;
         dismissProgressDialog();
         super.onDestroy();
     }
@@ -104,7 +106,6 @@ public class LockActivity extends RoboFragmentActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.v(LockActivity.class.getName(), "Child activity result obtained");
         identity.authorize(this, requestCode, resultCode, data);
-        identity = null;
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
@@ -171,8 +172,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
         Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
-        identity.start(this);
-        identity.authenticate(this, event, application);
+        identity.start(this, event, application);
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
