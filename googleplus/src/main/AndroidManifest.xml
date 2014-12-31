@@ -1,5 +1,5 @@
 <!--
-  ~ strings.xml
+  ~ AndroidManifest.xml
   ~
   ~ Copyright (c) 2014 Auth0 (http://auth0.com)
   ~
@@ -22,7 +22,7 @@
   ~ THE SOFTWARE.
   -->
 
-<resources>
-    <string name="facebook_error_title">There was an error contacting Facebook</string>
-    <string name="facebook_cancelled_error_message">You need to authorize the application</string>
-</resources>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.auth0.googleplus">
+
+</manifest>

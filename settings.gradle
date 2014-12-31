@@ -1,1 +1,1 @@
-include ':app', ':lock', ':android-core', ':facebook'
+include ':app', ':lock', ':android-core', ':facebook', ':googleplus'

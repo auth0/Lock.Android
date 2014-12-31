@@ -5,3 +5,4 @@
 /build
 /**/build
 *.iml
+/auth0.properties.*

@@ -54,7 +54,6 @@ dependencies {
         exclude module: 'hamcrest-core'
     }
     testCompile 'com.google.guava:guava:14.0.1'
-    testCompile 'com.squareup.dagger:dagger:1.1.0'
     testCompile 'org.hamcrest:hamcrest-integration:1.1'
     testCompile 'org.hamcrest:hamcrest-core:1.1'
     testCompile 'org.hamcrest:hamcrest-library:1.1'

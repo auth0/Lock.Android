@@ -20,11 +20,10 @@ import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.event.SocialCredentialEvent;
+import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
-import com.auth0.lock.web.CallbackParser;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
@@ -34,6 +33,7 @@ import roboguice.activity.RoboFragmentActivity;
 public class LockActivity extends RoboFragmentActivity {
 
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
+    public static final String TAG = LockActivity.class.getName();
 
     @Inject BusProvider provider;
     @Inject LockFragmentBuilder builder;
@@ -59,22 +59,23 @@ public class LockActivity extends RoboFragmentActivity {
     protected void onStart() {
         super.onStart();
         this.provider.getBus().register(this);
+        lock.resetAllProviders();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         this.provider.getBus().unregister(this);
+        lock.resetAllProviders();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         final Uri uri = getIntent().getData();
-        Log.v(LockActivity.class.getName(), "Resuming activity with data " + uri);
+        Log.v(TAG, "Resuming activity with data " + uri);
         if (identity != null) {
             boolean valid = identity.authorize(this, IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE, RESULT_OK, getIntent());
-            identity = null;
             if (!valid) {
                 dismissProgressDialog();
             }
@@ -90,13 +91,14 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.v(LockActivity.class.getName(), "Received new Intent with URI " + intent.getData());
+        Log.v(TAG, "Received new Intent with URI " + intent.getData());
         identity = lock.getDefaultProvider();
         setIntent(intent);
     }
 
     @Override
     protected void onDestroy() {
+        identity = null;
         dismissProgressDialog();
         super.onDestroy();
     }
@@ -104,13 +106,12 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v(LockActivity.class.getName(), "Child activity result obtained");
+        Log.v(TAG, "Child activity result obtained");
         identity.authorize(this, requestCode, resultCode, data);
-        identity = null;
     }
 
     @Subscribe public void onApplicationLoaded(Application application) {
-        Log.d(LockActivity.class.getName(), "Application configuration loaded for id " + application.getId());
+        Log.d(TAG, "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);
         this.application = application;
         getSupportFragmentManager().beginTransaction()
@@ -121,7 +122,7 @@ public class LockActivity extends RoboFragmentActivity {
     @Subscribe public void onAuthentication(AuthenticationEvent event) {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
-        Log.i(LockActivity.class.getName(), "Authenticated user " + profile.getName());
+        Log.i(TAG, "Authenticated user " + profile.getName());
         Intent result = new Intent(AUTHENTICATION_ACTION);
         result.putExtra("profile", profile);
         result.putExtra("token", token);
@@ -131,13 +132,13 @@ public class LockActivity extends RoboFragmentActivity {
     }
 
     @Subscribe public void onResetPassword(ResetPasswordEvent event) {
-        Log.d(LockActivity.class.getName(), "Changed password");
+        Log.d(TAG, "Changed password");
         showAlertDialog(event);
         getSupportFragmentManager().popBackStack();
     }
 
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
-        Log.e(LockActivity.class.getName(), "Failed to authenticate user", error.getThrowable());
+        Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         if (identity != null) {
             identity.clearSession();
         }
@@ -145,8 +146,14 @@ public class LockActivity extends RoboFragmentActivity {
         showAlertDialog(error);
     }
 
+    @Subscribe public void onSystemError(SystemErrorEvent event) {
+        Log.e(TAG, "Android System error", event.getError());
+        dismissProgressDialog();
+        event.getErrorDialog().show();
+    }
+
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
-        Log.v(LockActivity.class.getName(), "About to handle navigation " + event);
+        Log.v(TAG, "About to handle navigation " + event);
         if (NavigationEvent.BACK.equals(event)) {
             getSupportFragmentManager().popBackStack();
             return;
@@ -171,10 +178,9 @@ public class LockActivity extends RoboFragmentActivity {
     }
 
     @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
-        Log.v(LockActivity.class.getName(), "About to authenticate with service " + event.getServiceName());
+        Log.v(TAG, "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
-        identity.initialize(lock, provider);
-        identity.authenticate(this, event, application);
+        identity.start(this, event, application);
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);

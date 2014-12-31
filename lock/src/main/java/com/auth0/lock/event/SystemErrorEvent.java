@@ -1,5 +1,5 @@
 /*
- * IdentityProvider.java
+ * SystemErrorEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,31 +22,34 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.identity;
+package com.auth0.lock.event;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-
-import com.auth0.core.Application;
-import com.auth0.lock.Lock;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.provider.BusProvider;
+import android.app.Dialog;
 
 /**
- * Created by hernan on 12/22/14.
+ * Created by hernan on 12/31/14.
  */
-public interface IdentityProvider {
+public class SystemErrorEvent {
 
-    static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
-    static final int GOOGLE_PLUS_REQUEST_CODE = 501;
-    static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
+    private final Dialog errorDialog;
 
-    void start(Activity activity, SocialAuthenticationRequestEvent event, Application application);
+    private final Throwable error;
 
-    void stop();
+    public SystemErrorEvent(Dialog errorDialog, Throwable error) {
+        this.errorDialog = errorDialog;
+        this.error = error;
+    }
 
-    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+    public SystemErrorEvent(Dialog errorDialog) {
+        this.errorDialog = errorDialog;
+        this.error = null;
+    }
 
-    void clearSession();
+    public Dialog getErrorDialog() {
+        return errorDialog;
+    }
+
+    public Throwable getError() {
+        return error;
+    }
 }

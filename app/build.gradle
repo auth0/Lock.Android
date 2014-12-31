@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+
     compileSdkVersion 21
     buildToolsVersion "21.1.1"
 
@@ -11,8 +12,17 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
+
     buildTypes {
+
+        debug {
+            resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
+            resValue "string", "auth0_tenant_name", "overmind"
+        }
+
         release {
+            resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
+            resValue "string", "auth0_tenant_name", "overmind"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -28,5 +38,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
     compile project(':facebook')
+    compile project(':googleplus')
     compile 'com.android.support:appcompat-v7:21.+'
 }
