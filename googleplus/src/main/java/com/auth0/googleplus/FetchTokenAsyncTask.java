@@ -28,15 +28,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.auth0.core.Strategies;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialCredentialEvent;
+import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
@@ -47,6 +52,7 @@ import java.io.IOException;
  */
 public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
 
+    public static final String TAG = FetchTokenAsyncTask.class.getName();
     private final GoogleApiClient apiClient;
     private final Activity context;
     private final BusProvider provider;
@@ -67,8 +73,13 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
 
             return new SocialCredentialEvent(Strategies.GooglePlus.getName(), accessToken);
         } catch (IOException transientEx) {
-            return new AuthenticationError(R.string.social_error_title, R.string.social_error_message, transientEx);
+            Log.e(TAG, "Failed to fetch G+ token", transientEx);
+            return new AuthenticationError(R.string.social_error_title, R.string.social_access_denied_message, transientEx);
+        } catch (GooglePlayServicesAvailabilityException e) {
+            Log.w(TAG, "Google Play services not found or invalid", e);
+            return new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), context, 0), e);
         } catch (UserRecoverableAuthException e) {
+            Log.d(TAG, "User permission from the user required in order to fetch token", e);
             context.startActivityForResult(e.getIntent(), IdentityProvider.GOOGLE_PLUS_TOKEN_REQUEST_CODE);
             return null;
         } catch (GoogleAuthException authEx) {

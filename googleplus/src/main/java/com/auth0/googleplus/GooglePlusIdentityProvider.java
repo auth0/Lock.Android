@@ -34,9 +34,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.auth0.core.Application;
+import com.auth0.core.Connection;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
+import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.provider.BusProvider;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -79,6 +81,13 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
         this.activity = activity;
         this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
         Log.v(TAG, "Starting G+ connection");
+        final int availabilityStatus = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+        if (availabilityStatus != ConnectionResult.SUCCESS) {
+            Log.w(TAG, "Google services availability failed with status " + availabilityStatus);
+            provider.getBus().post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(availabilityStatus, activity, 0)));
+            stop();
+            return;
+        }
         apiClient.connect();
         authenticating = true;
     }
@@ -95,13 +104,13 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
         this.activity = activity;
         if (requestCode == GOOGLE_PLUS_REQUEST_CODE) {
-            Log.v(TAG, "Received activity result " + resultCode);
+            Log.v(TAG, "Received request activity result " + resultCode);
             if (!apiClient.isConnecting()) {
                 apiClient.connect();
             }
             return true;
         } else if(requestCode == GOOGLE_PLUS_TOKEN_REQUEST_CODE) {
-            Log.v(TAG, "Received activity result " + resultCode);
+            Log.v(TAG, "Received token request activity result " + resultCode);
             apiClient.connect();
         }
         return false;
@@ -134,8 +143,9 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.v(TAG, "Connection failed with code " + result.getErrorCode());
-        if (result.getErrorCode() == ConnectionResult.SERVICE_MISSING) { // e.g. emulator without play services installed
+        if (result.getErrorCode() == ConnectionResult.SERVICE_MISSING) {
             Log.e(TAG, "service not available");
+            provider.getBus().post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity, 0)));
         } else if (result.getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED && authenticating) {
             authenticating = false;
             Log.v(TAG, "G+ Sign in required");
@@ -144,9 +154,11 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
                 activity.startIntentSenderForResult(mSignInIntent.getIntentSender(), GOOGLE_PLUS_REQUEST_CODE, null, 0, 0, 0);
             } catch (IntentSender.SendIntentException ignore) {
                 apiClient.connect();
+                Log.w(TAG, "G+ pending intent cancelled", ignore);
             }
         } else {
-            Log.e(TAG, "Invalid Token");
+            Log.e(TAG, "Connection failed with unrecoverable error");
+            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
         }
     }
 }
