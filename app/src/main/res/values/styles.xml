@@ -2,15 +2,11 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="spbStyle">@style/LockProgressBarHorizontal</item>
+
     </style>
 
     <style name="MyLock.Theme" parent="Lock.Theme">
 
-    </style>
-
-    <style name="LockProgressBarHorizontal">
-        <item name="spb_color">@color/lock_blue_light</item>
     </style>
 
 </resources>

@@ -5,28 +5,15 @@
        tools:showIn="@layout/fragment_database_login">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/title_imageView"
-        android:layout_marginTop="@dimen/title_lock_margin_top"
-        android:src="@drawable/ic_people"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/icon_background"
-        android:cropToPadding="false"
-        android:paddingLeft="@dimen/title_lock_image_horizontal_padding"
-        android:paddingRight="@dimen/title_lock_image_horizontal_padding"
-        android:paddingBottom="@dimen/title_lock_image_vertical_padding"
-        android:paddingTop="@dimen/title_lock_image_vertical_padding"/>
+        style="?attr/Auth0.Title.Icon"
+    />
 
     <TextView
         android:id="@+id/title_textView"
+        style="?attr/Auth0.Title.Text"
         android:text="@string/app_name"
         android:fontFamily="sans-serif-light"
-        android:textSize="@dimen/title_lock_text_size"
         android:layout_below="@+id/title_imageView"
-        android:layout_marginTop="@dimen/title_lock_text_margin_top"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    />
 </merge>

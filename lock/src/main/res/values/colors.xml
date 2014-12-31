@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="lock_blue">#16214d</color>
+    <color name="lock_blue_light">#44c7f4</color>
+    <color name="lock_red">#eb5424</color>
+    <color name="lock_grey">#d0d2d3</color>
+
     <color name="lock_background">#ffffffff</color>
 
     <color name="credential_box_background">@android:color/transparent</color>
