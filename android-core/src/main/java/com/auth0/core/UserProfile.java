@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Created by hernan on 12/1/14.
