@@ -13,6 +13,15 @@ android {
         versionName "1.0.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file('keystore/release.keystore')
+            keyAlias 'LockReleaseKey'
+            storePassword System.getenv("LOCK_KSTOREPWD")
+            keyPassword System.getenv("LOCK_KEYPWD")
+        }
+    }
+
     buildTypes {
 
         debug {
@@ -23,8 +32,15 @@ android {
         release {
             resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
             resValue "string", "auth0_tenant_name", "overmind"
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFile 'proguard-android-async-http.pro'
+            proguardFile 'proguard-google-play-services.pro'
+            proguardFile 'proguard-jackson-2.pro'
+            proguardFile 'proguard-roboguice.pro'
+            proguardFile 'proguard-square-otto.pro'
+            proguardFile 'proguard-lock.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.pro'
+            signingConfig signingConfigs.release
         }
     }
 
