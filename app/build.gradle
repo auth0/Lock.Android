@@ -33,13 +33,15 @@ android {
             resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
             resValue "string", "auth0_tenant_name", "overmind"
             minifyEnabled true
-            proguardFile 'proguard-android-async-http.pro'
-            proguardFile 'proguard-google-play-services.pro'
-            proguardFile 'proguard-jackson-2.pro'
-            proguardFile 'proguard-roboguice.pro'
-            proguardFile 'proguard-square-otto.pro'
-            proguardFile 'proguard-lock.pro'
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.pro'
+            proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
+            proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
+            proguardFile '../proguard/proguard-android-async-http.pro' //Auth0 core
+            proguardFile '../proguard/proguard-jackson-2.pro' //Auth0 core
+            proguardFile '../proguard/proguard-roboguice.pro' //Lock
+            proguardFile '../proguard/proguard-square-otto.pro' //Lock
+            proguardFile '../proguard/proguard-lock.pro' //Lock
+            proguardFile 'proguard-project.pro'
+            proguardFile getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.release
         }
     }
