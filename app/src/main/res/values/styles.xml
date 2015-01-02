@@ -10,10 +10,10 @@
 
     <style name="Mindjet.Theme" parent="Lock.Theme">
         <item name="Auth0.Background">@drawable/mindjet_bg</item>
-        <item name="Auth0.PrimaryButton.Color">#4cffffff</item>
-        <item name="Auth0.PrimaryButton.Color.Highlighted">#4c7f7f7f</item>
-        <item name="Auth0.PrimaryButton.Color.Disabled">#1effffff</item>
-        <item name="Auth0.SecondaryButton.Border.Color">@android:color/transparent</item>
+        <!--<item name="Auth0.PrimaryButton.Color">#4cffffff</item>-->
+        <!--<item name="Auth0.PrimaryButton.Color.Highlighted">#4c7f7f7f</item>-->
+        <!--<item name="Auth0.PrimaryButton.Color.Disabled">#1effffff</item>-->
+        <!--<item name="Auth0.SecondaryButton.Border.Color">@android:color/transparent</item>-->
         <item name="Auth0.SecondaryButtonStyle">@style/Mindjet.Theme.SecondaryButton</item>
         <item name="Auth0.CredentialField.Email">@style/Mindjet.Theme.CredentialField.Email</item>
         <item name="Auth0.CredentialField.Password">@style/Mindjet.Theme.CredentialField.Password</item>
