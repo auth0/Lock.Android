@@ -10,13 +10,11 @@
 
     <style name="Mindjet.Theme" parent="Lock.Theme">
         <item name="Auth0.Background">@drawable/mindjet_bg</item>
-        <item name="Auth0.PrimaryButton.Color">#4cffffff</item>
-        <item name="Auth0.PrimaryButton.Color.Highlighted">#4c7f7f7f</item>
-        <item name="Auth0.PrimaryButton.Color.Disabled">#1effffff</item>
-        <item name="Auth0.SecondaryButton.Border.Color">@android:color/transparent</item>
+        <item name="Auth0.PrimaryButtonStyle">@style/Mindjet.Theme.PrimaryButton</item>
         <item name="Auth0.SecondaryButtonStyle">@style/Mindjet.Theme.SecondaryButton</item>
         <item name="Auth0.CredentialField.Email">@style/Mindjet.Theme.CredentialField.Email</item>
         <item name="Auth0.CredentialField.Password">@style/Mindjet.Theme.CredentialField.Password</item>
+        <item name="Auth0.CredentialBox">@style/Mindjet.Theme.CredentialBox</item>
         <item name="Auth0.Separator.Color">@android:color/white</item>
         <item name="Auth0.Title.Icon">@style/Mindjet.Theme.Title.Icon</item>
         <item name="Auth0.Title.Text">@style/Mindjet.Theme.Title.Text</item>
@@ -25,6 +23,7 @@
 
     <style name="Mindjet.Theme.SecondaryButton" parent="Lock.Theme.SecondaryButton">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/btn_mindjet_secondary_background</item>
     </style>
 
     <style name="Mindjet.Theme.CredentialField.Email" parent="Lock.Theme.CredentialField.Email">
@@ -47,6 +46,14 @@
 
     <style name="Mindjet.Theme.Message" parent="Lock.Theme.Message">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Mindjet.Theme.PrimaryButton" parent="Lock.Theme.PrimaryButton">
+        <item name="android:background">@drawable/btn_mindjet_primary_background</item>
+    </style>
+
+    <style name="Mindjet.Theme.CredentialBox" parent="Lock.Theme.CredentialBox">
+        <item name="android:background">@drawable/box_mindjet_credential_background</item>
     </style>
 
 </resources>

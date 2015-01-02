@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Created by hernan on 11/28/14.

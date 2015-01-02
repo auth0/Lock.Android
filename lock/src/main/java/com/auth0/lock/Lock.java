@@ -63,6 +63,7 @@ public class Lock {
     }
 
     public void registerForApplication(Application application) {
+        RoboGuice.setUseAnnotationDatabases(false);
         RoboGuice.getOrCreateBaseApplicationInjector(
                 application,
                 RoboGuice.DEFAULT_STAGE,

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ btn_secondary_background_highlighted.xml
+  ~ btn_mindjet_primary_background_normal.xml
   ~
-  ~ Copyright (c) 2014 Auth0 (http://auth0.com)
+  ~ Copyright (c) 2015 Auth0 (http://auth0.com)
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/secondary_button_border"/>
-    <corners android:radius="@dimen/secondary_button_corner_radius"/>
-    <stroke android:color="@color/secondary_button_border" android:width="@dimen/secondary_button_border_width"/>
+    <solid android:color="#4cffffff"/>
+    <corners android:radius="@dimen/primary_button_corner_radius"/>
 </shape>

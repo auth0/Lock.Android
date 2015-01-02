@@ -13,6 +13,15 @@ android {
         versionName "1.0.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file('keystore/release.keystore')
+            keyAlias 'LockReleaseKey'
+            storePassword System.getenv("LOCK_KSTOREPWD")
+            keyPassword System.getenv("LOCK_KEYPWD")
+        }
+    }
+
     buildTypes {
 
         debug {
@@ -23,8 +32,17 @@ android {
         release {
             resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
             resValue "string", "auth0_tenant_name", "overmind"
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
+            proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
+            proguardFile '../proguard/proguard-android-async-http.pro' //Auth0 core
+            proguardFile '../proguard/proguard-jackson-2.pro' //Auth0 core
+            proguardFile '../proguard/proguard-roboguice.pro' //Lock
+            proguardFile '../proguard/proguard-square-otto.pro' //Lock
+            proguardFile '../proguard/proguard-lock.pro' //Lock
+            proguardFile 'proguard-project.pro'
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            signingConfig signingConfigs.release
         }
     }
 

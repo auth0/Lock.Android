@@ -30,7 +30,7 @@
         <attr name="errorColor" format="color"/>
     </declare-styleable>
 
-    <declare-styleable name="LockTheme">
+    <declare-styleable name="Lock.Theme">
         <attr name="Auth0.PrimaryButtonStyle" format="reference"/>
         <attr name="Auth0.SecondaryButtonStyle" format="reference"/>
         <attr name="Auth0.CredentialField.Email" format="reference"/>
@@ -40,10 +40,6 @@
         <attr name="Auth0.Background" format="reference|color"/>
         <attr name="Auth0.Title.Text" format="reference"/>
         <attr name="Auth0.Title.Icon" format="reference"/>
-        <attr name="Auth0.PrimaryButton.Color" format="color"/>
-        <attr name="Auth0.PrimaryButton.Color.Highlighted" format="color"/>
-        <attr name="Auth0.PrimaryButton.Color.Disabled" format="color"/>
-        <attr name="Auth0.SecondaryButton.Border.Color" format="color"/>
         <attr name="Auth0.Separator.Color" format="color"/>
     </declare-styleable>
 </resources>

@@ -3,15 +3,11 @@ package com.auth0.core;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static com.auth0.core.Strategies.Type.ENTERPRISE;
-import static com.auth0.core.Strategies.Type.SOCIAL;
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Created by hernan on 11/27/14.

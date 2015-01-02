@@ -1,7 +1,7 @@
 /*
- * build.gradle
+ * Preconditions.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,16 @@
  * THE SOFTWARE.
  */
 
-apply plugin: 'com.android.library'
+package com.auth0.util;
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+/**
+ * Created by hernan on 1/2/15.
+ */
+public class CheckHelper {
 
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 21
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    public static void checkArgument(boolean expression, String message) {
+        if (!expression) {
+            throw new IllegalArgumentException(message);
         }
     }
-}
-
-apply plugin: 'com.github.dcendents.android-maven'
-
-group = 'com.auth0'
-version = '0.0.1-SNAPSHOT'
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile project(':lock')
-    compile 'com.facebook.android:facebook-android-sdk:3.21.1'
 }

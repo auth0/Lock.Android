@@ -5,7 +5,7 @@ import android.os.Build;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Created by hernan on 12/2/14.
