@@ -44,7 +44,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.+'
 
     compile 'org.roboguice:roboguice:3.0.1'
-    provided 'org.roboguice:roboblender:3.0.1'
 
     compile 'com.squareup:otto:1.3.5'
 
