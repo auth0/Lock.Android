@@ -24,6 +24,7 @@ import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.IdentityProvider;
+import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
 

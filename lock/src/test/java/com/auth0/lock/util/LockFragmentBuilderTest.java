@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock;
+package com.auth0.lock.util;
 
 import com.auth0.core.Application;
 import com.auth0.core.Strategy;
@@ -30,6 +30,7 @@ import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.SocialFragment;
+import com.auth0.lock.util.LockFragmentBuilder;
 
 import org.junit.Before;
 import org.junit.Test;

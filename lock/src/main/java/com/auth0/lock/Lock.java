@@ -38,24 +38,25 @@ import java.util.Map;
  */
 public class Lock {
 
-    private final String clientId;
-    private final String tenant;
-
     private boolean useWebView;
+    private boolean loginAfterSignUp;
+    private boolean closable;
+    private Map<String, String> authenticationParameters;
+
     private IdentityProvider defaultProvider;
     private Map<String, IdentityProvider> providers;
 
     private final Bus bus;
     private final APIClient apiClient;
 
-    public Lock(String clientId, String tenant) {
-        this.clientId = clientId;
-        this.tenant = tenant;
+    public Lock(APIClient apiClient) {
         this.useWebView = false;
+        this.closable = false;
+        this.loginAfterSignUp = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
-        this.apiClient = new APIClient(clientId, tenant);
         this.defaultProvider = new WebIdentityProvider(new CallbackParser(), this);
+        this.apiClient = apiClient;
     }
 
     public APIClient getAPIClient() {
@@ -72,6 +73,30 @@ public class Lock {
 
     public boolean isUseWebView() {
         return useWebView;
+    }
+
+    public void setLoginAfterSignUp(boolean loginAfterSignUp) {
+        this.loginAfterSignUp = loginAfterSignUp;
+    }
+
+    public boolean isLoginAfterSignUp() {
+        return loginAfterSignUp;
+    }
+
+    public boolean isClosable() {
+        return closable;
+    }
+
+    public void setClosable(boolean closable) {
+        this.closable = closable;
+    }
+
+    public Map<String, String> getAuthenticationParameters() {
+        return authenticationParameters;
+    }
+
+    public void setAuthenticationParameters(Map<String, String> authenticationParameters) {
+        this.authenticationParameters = authenticationParameters;
     }
 
     public void setProvider(String serviceName, IdentityProvider provider) {

@@ -1,5 +1,6 @@
 package com.auth0.api;
 
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -30,6 +31,9 @@ import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
  */
 public class APIClient {
 
+    public static final String BASE_URL_FORMAT = "https://%s.auth0.com";
+    public static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com/client/%s.js";
+
     private static final String APPLICATION_JSON = "application/json";
 
     private static final String USERNAME_KEY = "username";
@@ -37,25 +41,35 @@ public class APIClient {
     private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
     private static final String ID_TOKEN_KEY = "id_token";
 
-    private static final String BASE_URL_FORMAT = "https://%s.auth0.com";
-    private static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com/client/%s.js";
     private static final String EMAIL_KEY = "email";
     private static final String TENANT_KEY = "tenant";
 
     private final String clientID;
-    private final String tenantName;
-    private final AsyncHttpClient client;
+    private String tenantName;
     private final String baseURL;
+    private final String configurationURL;
+
+    private final AsyncHttpClient client;
     private final JsonEntityBuilder entityBuilder;
     private Application application;
 
-    public APIClient(String clientID, String tenantName) {
+    public APIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
         this.clientID = clientID;
-        this.tenantName = tenantName;
+        this.configurationURL = configurationURL;
+        this.baseURL = baseURL;
         this.client = new AsyncHttpClient();
+        if (tenantName == null) {
+            Uri uri = Uri.parse(baseURL);
+            this.tenantName = uri.getHost();
+        } else {
+            this.tenantName = tenantName;
+        }
         this.client.setUserAgent(String.format("%s (%s Android %s)", tenantName, Build.MODEL, Build.VERSION.RELEASE));
-        this.baseURL = String.format(BASE_URL_FORMAT, tenantName);
         this.entityBuilder = new JsonEntityBuilder(new ObjectMapper());
+    }
+
+    public APIClient(String clientID, String baseURL, String configurationURL) {
+        this(clientID, baseURL, configurationURL, null);
     }
 
     public Application getApplication() {
@@ -67,13 +81,20 @@ public class APIClient {
     }
 
     public String getTenantName() {
-        return tenantName;
+        return application != null && application.getTenant() != null ? application.getTenant(): tenantName;
+    }
+
+    public String getBaseURL() {
+        return baseURL;
+    }
+
+    public String getConfigurationURL() {
+        return configurationURL;
     }
 
     public void fetchApplicationInfo(final BaseCallback<Application> callback) {
-        final String appInfoURL = String.format(APP_INFO_CDN_URL_FORMAT, this.clientID);
-        Log.v(APIClient.class.getName(), "Fetching application info from " + appInfoURL);
-        this.client.get(appInfoURL, null, new ApplicationResponseHandler(new ObjectMapper()) {
+        Log.v(APIClient.class.getName(), "Fetching application info from " + configurationURL);
+        this.client.get(configurationURL, null, new ApplicationResponseHandler(new ObjectMapper()) {
             @Override
             public void onSuccess(Application app) {
                 Log.d(APIClient.class.getName(), "Obtained application with id " + app.getId() + " tenant " + app.getTenant());
@@ -189,7 +210,7 @@ public class APIClient {
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
                 .setClientId(this.clientID)
-                .set(TENANT_KEY, getTenant())
+                .set(TENANT_KEY, getTenantName())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
@@ -211,7 +232,7 @@ public class APIClient {
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, newPassword)
                 .setClientId(this.clientID)
-                .set(TENANT_KEY, getTenant())
+                .set(TENANT_KEY, getTenantName())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
@@ -287,7 +308,4 @@ public class APIClient {
         return db.getName();
     }
 
-    private String getTenant() {
-        return application.getTenant() != null ? application.getTenant(): tenantName;
-    }
 }

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock;
+package com.auth0.lock.util;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

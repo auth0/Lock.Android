@@ -30,6 +30,7 @@ import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
 import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockBuilder;
 import com.auth0.lock.LockProvider;
 
 /**
@@ -42,7 +43,10 @@ public class LockApplication extends Application implements LockProvider {
     @Override
     public void onCreate() {
         super.onCreate();
-        lock = new Lock(getString(R.string.auth0_client_id), getString(R.string.auth0_tenant_name));
+        lock = new LockBuilder()
+                .clientId(getString(R.string.auth0_client_id))
+                .tenant(getString(R.string.auth0_tenant_name))
+                .build();
         lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider(lock));
         lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(lock, this));
     }
