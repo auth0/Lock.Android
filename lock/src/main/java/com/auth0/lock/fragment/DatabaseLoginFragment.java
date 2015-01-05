@@ -123,7 +123,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         progressBar.setVisibility(View.VISIBLE);
         String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
-        client.login(username, password, null, new AuthenticationCallback() {
+        client.login(username, password, authenticationParameters, new AuthenticationCallback() {
 
             @Override
             public void onSuccess(UserProfile userProfile, Token token) {

@@ -35,13 +35,18 @@ import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 import com.squareup.otto.Bus;
 
+import java.util.Map;
+
 /**
  * Created by hernan on 12/11/14.
  */
 public abstract class BaseTitledFragment extends Fragment {
 
+    public static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";
+
     APIClient client;
     Bus bus;
+    Map<String, String> authenticationParameters;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,8 @@ public abstract class BaseTitledFragment extends Fragment {
         final Lock lock = getLock();
         client = lock.getAPIClient();
         bus = lock.getBus();
+        final Bundle arguments = getArguments();
+        authenticationParameters = arguments != null ? (Map<String, String>) arguments.getSerializable(AUTHENTICATION_PARAMETER_ARGUMENT) : null;
     }
 
     @Override

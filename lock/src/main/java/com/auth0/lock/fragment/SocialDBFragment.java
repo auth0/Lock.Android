@@ -123,7 +123,7 @@ public class SocialDBFragment extends DatabaseLoginFragment {
 
     @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
         Log.v(SocialDBFragment.class.getName(), "Received social accessToken " + event.getAccessToken());
-        client.socialLogin(event.getService(), event.getAccessToken(), null, new AuthenticationCallback() {
+        client.socialLogin(event.getService(), event.getAccessToken(), authenticationParameters, new AuthenticationCallback() {
             @Override
             public void onSuccess(UserProfile profile, Token token) {
                 bus.post(new AuthenticationEvent(profile, token));

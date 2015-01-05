@@ -67,7 +67,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new SignUpValidator();
         final Bundle arguments = getArguments();
-        loginAfterSignUp = arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
+        loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         final String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
-            client.signUp(username, password, null, new AuthenticationCallback() {
+            client.signUp(username, password, authenticationParameters, new AuthenticationCallback() {
                 @Override
                 public void onSuccess(UserProfile profile, Token token) {
                     bus.post(new AuthenticationEvent(profile, token));
@@ -149,7 +149,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
                 }
             });
         } else {
-            client.createUser(username, password, null, new BaseCallback<Void>() {
+            client.createUser(username, password, authenticationParameters, new BaseCallback<Void>() {
                 @Override
                 public void onSuccess(Void payload) {
                     bus.post(new SignUpEvent(username));

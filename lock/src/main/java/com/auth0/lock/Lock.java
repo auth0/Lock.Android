@@ -92,7 +92,7 @@ public class Lock {
     }
 
     public Map<String, String> getAuthenticationParameters() {
-        return authenticationParameters;
+        return authenticationParameters != null ? new HashMap<>(authenticationParameters) : new HashMap<String, String>();
     }
 
     public void setAuthenticationParameters(Map<String, String> authenticationParameters) {
