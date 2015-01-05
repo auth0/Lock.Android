@@ -30,31 +30,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.auth0.core.Application;
-import com.auth0.core.Connection;
+import com.auth0.lock.Lock;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.identity.IdentityProvider;
-import com.auth0.lock.provider.BusProvider;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
-
-import java.io.IOException;
-
-import roboguice.RoboGuice;
+import com.squareup.otto.Bus;
 
 /**
  * Created by hernan on 12/30/14.
@@ -65,26 +53,26 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     private final GoogleApiClient apiClient;
     private boolean authenticating;
     private Activity activity;
-    private BusProvider provider;
+    private final Bus bus;
 
-    public GooglePlusIdentityProvider(Context context) {
+    public GooglePlusIdentityProvider(Lock lock, Context context) {
         this.apiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
+        this.bus = lock.getBus();
     }
 
     @Override
     public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
         this.activity = activity;
-        this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
         Log.v(TAG, "Starting G+ connection");
         final int availabilityStatus = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
         if (availabilityStatus != ConnectionResult.SUCCESS) {
             Log.w(TAG, "Google services availability failed with status " + availabilityStatus);
-            provider.getBus().post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(availabilityStatus, activity, 0)));
+            bus.post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(availabilityStatus, activity, 0)));
             stop();
             return;
         }
@@ -131,7 +119,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     @Override
     public void onConnected(Bundle bundle) {
         authenticating = false;
-        new FetchTokenAsyncTask(apiClient, activity, provider).execute("email", "profile");
+        new FetchTokenAsyncTask(apiClient, activity, bus).execute("email", "profile");
     }
 
     @Override
@@ -145,7 +133,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
         Log.v(TAG, "Connection failed with code " + result.getErrorCode());
         if (result.getErrorCode() == ConnectionResult.SERVICE_MISSING) {
             Log.e(TAG, "service not available");
-            provider.getBus().post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity, 0)));
+            bus.post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity, 0)));
         } else if (result.getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED && authenticating) {
             authenticating = false;
             Log.v(TAG, "G+ Sign in required");
@@ -158,7 +146,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
             }
         } else {
             Log.e(TAG, "Connection failed with unrecoverable error");
-            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
+            bus.post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
         }
     }
 }

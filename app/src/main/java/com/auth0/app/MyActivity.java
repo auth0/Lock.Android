@@ -29,9 +29,13 @@ public class MyActivity extends ActionBarActivity {
         public void onReceive(Context context, Intent intent) {
             UserProfile profile = intent.getParcelableExtra("profile");
             Token token = intent.getParcelableExtra("token");
-            Log.d(MyActivity.class.getName(), "User " + profile.getName() + " with token " + token.getIdToken());
-            TextView welcomeLabel = (TextView) findViewById(id.welcome_label);
-            welcomeLabel.setText("Herzlich Willkommen " + profile.getName());
+            if (token != null) {
+                Log.d(MyActivity.class.getName(), "User " + profile.getName() + " with token " + token.getIdToken());
+                TextView welcomeLabel = (TextView) findViewById(id.welcome_label);
+                welcomeLabel.setText("Herzlich Willkommen " + profile.getName());
+            } else {
+                Log.i(MyActivity.class.getName(), "Signed Up user");
+            }
         }
     };
 

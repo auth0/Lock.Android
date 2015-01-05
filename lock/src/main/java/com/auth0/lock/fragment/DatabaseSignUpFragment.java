@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
@@ -43,21 +44,31 @@ import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.validation.SignUpValidator;
-import com.google.inject.Inject;
-
-import roboguice.inject.InjectView;
 
 public class DatabaseSignUpFragment extends BaseTitledFragment {
 
-    @Inject LoginAuthenticationErrorBuilder errorBuilder;
-    @Inject SignUpValidator validator;
+    public static final String LOGIN_AFTER_SIGNUP_ARGUMENT = "LOGIN_AFTER_SIGN_UP";
 
-    @InjectView(tag = "db_signup_username_field") EditText usernameField;
-    @InjectView(tag = "db_signup_password_field") EditText passwordField;
+    LoginAuthenticationErrorBuilder errorBuilder;
+    SignUpValidator validator;
 
-    @InjectView(tag = "db_access_button") Button accessButton;
-    @InjectView(tag = "db_signup_progress_indicator") ProgressBar progressBar;
+    EditText usernameField;
+    EditText passwordField;
+
+    Button accessButton;
+    ProgressBar progressBar;
+    private boolean loginAfterSignUp;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        errorBuilder = new LoginAuthenticationErrorBuilder();
+        validator = new SignUpValidator();
+        final Bundle arguments = getArguments();
+        loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,11 +79,15 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        usernameField = (EditText) view.findViewById(R.id.db_signup_username_field);
+        passwordField = (EditText) view.findViewById(R.id.db_signup_password_field);
+        accessButton = (Button) view.findViewById(R.id.db_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.db_signup_progress_indicator);
         Button cancelButton = (Button) view.findViewById(R.id.db_signup_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                provider.getBus().post(NavigationEvent.BACK);
+                bus.post(NavigationEvent.BACK);
             }
         });
 
@@ -105,7 +120,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         if (valid) {
             performSignUp();
         } else {
-            provider.getBus().post(error);
+            bus.post(error);
         }
     }
 
@@ -113,24 +128,44 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        String username = usernameField.getText().toString();
+        final String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
-        client.signUp(username, password, null, new AuthenticationCallback() {
-            @Override
-            public void onSuccess(UserProfile profile, Token token) {
-                provider.getBus().post(new AuthenticationEvent(profile, token));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.db_login_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
+        if (loginAfterSignUp) {
+            client.signUp(username, password, authenticationParameters, new AuthenticationCallback() {
+                @Override
+                public void onSuccess(UserProfile profile, Token token) {
+                    bus.post(new AuthenticationEvent(profile, token));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.db_login_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                @Override
+                public void onFailure(Throwable error) {
+                    bus.post(errorBuilder.buildFrom(error));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            client.createUser(username, password, authenticationParameters, new BaseCallback<Void>() {
+                @Override
+                public void onSuccess(Void payload) {
+                    bus.post(new SignUpEvent(username));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    bus.post(errorBuilder.buildFrom(error));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 }

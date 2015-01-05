@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
@@ -19,25 +20,23 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
+import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.IdentityProvider;
-import com.auth0.lock.provider.BusProvider;
-import com.google.inject.Inject;
+import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
-import roboguice.activity.RoboFragmentActivity;
 
-
-public class LockActivity extends RoboFragmentActivity {
+public class LockActivity extends FragmentActivity {
 
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
+
     public static final String TAG = LockActivity.class.getName();
 
-    @Inject BusProvider provider;
-    @Inject LockFragmentBuilder builder;
-    @Inject Lock lock;
+    LockFragmentBuilder builder;
+    Lock lock;
 
     private Application application;
     private ProgressDialog progressDialog;
@@ -48,6 +47,10 @@ public class LockActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_lock);
+
+        lock = getLock();
+        builder = new LockFragmentBuilder(getLock());
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, new LoadingFragment())
@@ -58,14 +61,14 @@ public class LockActivity extends RoboFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        this.provider.getBus().register(this);
+        this.lock.getBus().register(this);
         lock.resetAllProviders();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        this.provider.getBus().unregister(this);
+        this.lock.getBus().unregister(this);
         lock.resetAllProviders();
     }
 
@@ -110,6 +113,14 @@ public class LockActivity extends RoboFragmentActivity {
         identity.authorize(this, requestCode, resultCode, data);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if ((!lock.isClosable() && getSupportFragmentManager().getBackStackEntryCount() >= 1) || lock.isClosable()) {
+            super.onBackPressed();
+        }
+    }
+
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);
@@ -123,9 +134,17 @@ public class LockActivity extends RoboFragmentActivity {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
+        Intent result = new Intent(AUTHENTICATION_ACTION)
+                .putExtra("profile", profile)
+                .putExtra("token", token);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(result);
+        dismissProgressDialog();
+        finish();
+    }
+
+    @Subscribe public void onSignUpEvent(SignUpEvent event) {
+        Log.i(TAG, "Signed up user " + event.getUsername());
         Intent result = new Intent(AUTHENTICATION_ACTION);
-        result.putExtra("profile", profile);
-        result.putExtra("token", token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(result);
         dismissProgressDialog();
         finish();
@@ -209,4 +228,11 @@ public class LockActivity extends RoboFragmentActivity {
         progressDialog = null;
     }
 
+    private Lock getLock() {
+        if (lock != null) {
+            return lock;
+        }
+        LockProvider provider = (LockProvider) getApplication();
+        return provider.getLock();
+    }
 }

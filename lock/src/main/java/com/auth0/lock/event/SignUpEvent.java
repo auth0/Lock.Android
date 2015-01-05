@@ -1,7 +1,7 @@
 /*
- * APIClientProvider.java
+ * SignUpEvent.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,19 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.provider;
-
-import com.auth0.api.APIClient;
-import com.google.inject.Provider;
+package com.auth0.lock.event;
 
 /**
- * Created by hernan on 12/7/14.
+ * Created by hernan on 1/5/15.
  */
-public class APIClientProvider implements Provider<APIClient> {
+public class SignUpEvent {
+    private String username;
 
-    private final String clientId;
-    private final String tenant;
-
-    public APIClientProvider(String clientId, String tenant) {
-        this.clientId = clientId;
-        this.tenant = tenant;
+    public SignUpEvent(String username) {
+        this.username = username;
     }
 
-    @Override
-    public APIClient get() {
-        return new APIClient(clientId, tenant);
+    public String getUsername() {
+        return username;
     }
-
 }

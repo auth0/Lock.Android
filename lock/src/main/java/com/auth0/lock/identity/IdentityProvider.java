@@ -25,13 +25,10 @@
 package com.auth0.lock.identity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.auth0.core.Application;
-import com.auth0.lock.Lock;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.provider.BusProvider;
 
 /**
  * Created by hernan on 12/22/14.

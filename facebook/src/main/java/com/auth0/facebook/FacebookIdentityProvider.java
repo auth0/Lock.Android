@@ -25,7 +25,6 @@
 package com.auth0.facebook;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -35,23 +34,24 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.identity.IdentityProvider;
-import com.auth0.lock.provider.BusProvider;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
-
-import roboguice.RoboGuice;
+import com.squareup.otto.Bus;
 
 /**
  * Created by hernan on 12/22/14.
  */
 public class FacebookIdentityProvider implements IdentityProvider {
 
-    private BusProvider provider;
+    private Bus bus;
+
+    public FacebookIdentityProvider(Lock lock) {
+        this.bus = lock.getBus();
+    }
 
     @Override
     public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
-        this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
         Session.openActiveSession(activity, true, new Session.StatusCallback() {
             @Override
             public void call(Session session, SessionState sessionState, Exception e) {
@@ -59,15 +59,15 @@ public class FacebookIdentityProvider implements IdentityProvider {
                 if (e != null) {
                     Log.e(FacebookIdentityProvider.class.getName(), "Failed to authenticate with FB", e);
                     int messageResource = e instanceof FacebookOperationCanceledException ? R.string.facebook_cancelled_error_message : R.string.social_access_denied_message;
-                    provider.getBus().post(new AuthenticationError(R.string.facebook_error_title, messageResource, e));
+                    bus.post(new AuthenticationError(R.string.facebook_error_title, messageResource, e));
                 } else {
                     switch (sessionState) {
                         case OPENED:
                         case OPENED_TOKEN_UPDATED:
-                            provider.getBus().post(new SocialCredentialEvent("facebook", session.getAccessToken()));
+                            bus.post(new SocialCredentialEvent("facebook", session.getAccessToken()));
                             break;
                         case CLOSED_LOGIN_FAILED:
-                            provider.getBus().post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
+                            bus.post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
                             if (session != null) {
                                 session.closeAndClearTokenInformation();
                             }

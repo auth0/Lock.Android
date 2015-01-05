@@ -1,7 +1,7 @@
 /*
- * BusProvider.java
+ * LockProvider.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.provider;
-
-import com.squareup.otto.Bus;
-
-import roboguice.inject.ContextSingleton;
+package com.auth0.lock;
 
 /**
- * Created by hernan on 12/7/14.
+ * Created by hernan on 1/5/15.
  */
-@ContextSingleton
-public class BusProvider {
+public interface LockProvider {
 
-    private final Bus bus;
-
-    public BusProvider() {
-        this.bus = new Bus("Lock");
-    }
-
-    public Bus getBus() {
-        return bus;
-    }
+    Lock getLock();
 }

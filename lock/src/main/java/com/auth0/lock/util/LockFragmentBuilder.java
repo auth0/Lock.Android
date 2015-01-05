@@ -22,13 +22,15 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock;
+package com.auth0.lock.util;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.auth0.core.Application;
 import com.auth0.core.Strategy;
+import com.auth0.lock.Lock;
+import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
@@ -36,24 +38,43 @@ import com.auth0.lock.fragment.SocialDBFragment;
 import com.auth0.lock.fragment.SocialFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by hernan on 12/16/14.
  */
 public class LockFragmentBuilder {
 
+    private final Lock lock;
     private Application application;
 
+    public LockFragmentBuilder(Lock lock) {
+        this.lock = lock;
+    }
+
     public Fragment signUp() {
-        return new DatabaseSignUpFragment();
+        final DatabaseSignUpFragment fragment = new DatabaseSignUpFragment();
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(DatabaseSignUpFragment.LOGIN_AFTER_SIGNUP_ARGUMENT, lock.isLoginAfterSignUp());
+        arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     public Fragment resetPassword() {
-        return new DatabaseResetPasswordFragment();
+        final DatabaseResetPasswordFragment fragment = new DatabaseResetPasswordFragment();
+        Bundle arguments = new Bundle();
+        arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     public Fragment login() {
-        return new DatabaseLoginFragment();
+        final DatabaseLoginFragment fragment = new DatabaseLoginFragment();
+        Bundle arguments = new Bundle();
+        arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
 
@@ -62,6 +83,7 @@ public class LockFragmentBuilder {
         if (application != null) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(SocialDBFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
+            bundle.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
             fragment.setArguments(bundle);
         }
         return fragment;
@@ -72,6 +94,7 @@ public class LockFragmentBuilder {
         if (application != null) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(SocialFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
+            bundle.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
             fragment.setArguments(bundle);
         }
         return fragment;

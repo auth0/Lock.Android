@@ -43,21 +43,23 @@ import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
-import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
-
-import roboguice.inject.InjectView;
 
 public class SocialFragment extends BaseTitledFragment {
 
     public static final String SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT = "strategies";
 
-    @Inject LoginAuthenticationErrorBuilder errorBuilder;
+    LoginAuthenticationErrorBuilder errorBuilder;
 
-    @InjectView(tag = "social_button_list") ListView listView;
+    ListView listView;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        errorBuilder = new LoginAuthenticationErrorBuilder();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +80,7 @@ public class SocialFragment extends BaseTitledFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String serviceName = (String) parent.getItemAtPosition(position);
                 Log.d(SocialFragment.class.getName(), "Selected service " + serviceName);
-                provider.getBus().post(new SocialAuthenticationRequestEvent(serviceName));
+                bus.post(new SocialAuthenticationRequestEvent(serviceName));
             }
         });
     }
@@ -86,13 +88,13 @@ public class SocialFragment extends BaseTitledFragment {
     @Override
     public void onStart() {
         super.onResume();
-        provider.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     public void onStop() {
         super.onPause();
-        provider.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Override
@@ -105,27 +107,27 @@ public class SocialFragment extends BaseTitledFragment {
         client.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
             @Override
             public void onSuccess(UserProfile userProfile) {
-                provider.getBus().post(new AuthenticationEvent(userProfile, token));
+                bus.post(new AuthenticationEvent(userProfile, token));
             }
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
+                bus.post(errorBuilder.buildFrom(error));
             }
         });
     }
 
     @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
         Log.v(SocialDBFragment.class.getName(), "Received social accessToken " + event.getAccessToken());
-        client.socialLogin(event.getService(), event.getAccessToken(), null, new AuthenticationCallback() {
+        client.socialLogin(event.getService(), event.getAccessToken(), authenticationParameters, new AuthenticationCallback() {
             @Override
             public void onSuccess(UserProfile profile, Token token) {
-                provider.getBus().post(new AuthenticationEvent(profile, token));
+                bus.post(new AuthenticationEvent(profile, token));
             }
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
+                bus.post(errorBuilder.buildFrom(error));
             }
         });
     }
