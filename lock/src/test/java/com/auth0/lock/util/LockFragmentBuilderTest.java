@@ -26,6 +26,7 @@ package com.auth0.lock.util;
 
 import com.auth0.core.Application;
 import com.auth0.core.Strategy;
+import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
@@ -59,11 +60,13 @@ public class LockFragmentBuilderTest {
     private Application application;
     @Mock
     private Strategy socialStrategy;
+    @Mock
+    private Lock lock;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        builder = new LockFragmentBuilder();
+        builder = new LockFragmentBuilder(lock);
         builder.setApplication(application);
     }
 

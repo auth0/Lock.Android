@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 
 import com.auth0.core.Application;
 import com.auth0.core.Strategy;
+import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
@@ -42,10 +43,19 @@ import java.util.ArrayList;
  */
 public class LockFragmentBuilder {
 
+    private final Lock lock;
     private Application application;
 
+    public LockFragmentBuilder(Lock lock) {
+        this.lock = lock;
+    }
+
     public Fragment signUp() {
-        return new DatabaseSignUpFragment();
+        final DatabaseSignUpFragment fragment = new DatabaseSignUpFragment();
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(DatabaseSignUpFragment.LOGIN_AFTER_SIGNUP_ARGUMENT, lock.isLoginAfterSignUp());
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     public Fragment resetPassword() {

@@ -20,6 +20,7 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
+import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
@@ -47,8 +48,8 @@ public class LockActivity extends FragmentActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_lock);
 
-        builder = new LockFragmentBuilder();
         lock = getLock();
+        builder = new LockFragmentBuilder(getLock());
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -125,9 +126,17 @@ public class LockActivity extends FragmentActivity {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
+        Intent result = new Intent(AUTHENTICATION_ACTION)
+                .putExtra("profile", profile)
+                .putExtra("token", token);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(result);
+        dismissProgressDialog();
+        finish();
+    }
+
+    @Subscribe public void onSignUpEvent(SignUpEvent event) {
+        Log.i(TAG, "Signed up user " + event.getUsername());
         Intent result = new Intent(AUTHENTICATION_ACTION);
-        result.putExtra("profile", profile);
-        result.putExtra("token", token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(result);
         dismissProgressDialog();
         finish();
@@ -212,6 +221,9 @@ public class LockActivity extends FragmentActivity {
     }
 
     private Lock getLock() {
+        if (lock != null) {
+            return lock;
+        }
         LockProvider provider = (LockProvider) getApplication();
         return provider.getLock();
     }

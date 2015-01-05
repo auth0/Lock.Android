@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
@@ -43,9 +44,12 @@ import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.validation.SignUpValidator;
 
 public class DatabaseSignUpFragment extends BaseTitledFragment {
+
+    public static final String LOGIN_AFTER_SIGNUP_ARGUMENT = "LOGIN_AFTER_SIGN_UP";
 
     LoginAuthenticationErrorBuilder errorBuilder;
     SignUpValidator validator;
@@ -55,12 +59,15 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
 
     Button accessButton;
     ProgressBar progressBar;
+    private boolean loginAfterSignUp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new SignUpValidator();
+        final Bundle arguments = getArguments();
+        loginAfterSignUp = arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
     }
 
     @Override
@@ -121,24 +128,44 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        String username = usernameField.getText().toString();
+        final String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
-        client.signUp(username, password, null, new AuthenticationCallback() {
-            @Override
-            public void onSuccess(UserProfile profile, Token token) {
-                bus.post(new AuthenticationEvent(profile, token));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.db_login_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
+        if (loginAfterSignUp) {
+            client.signUp(username, password, null, new AuthenticationCallback() {
+                @Override
+                public void onSuccess(UserProfile profile, Token token) {
+                    bus.post(new AuthenticationEvent(profile, token));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(errorBuilder.buildFrom(error));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.db_login_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                @Override
+                public void onFailure(Throwable error) {
+                    bus.post(errorBuilder.buildFrom(error));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            client.createUser(username, password, null, new BaseCallback<Void>() {
+                @Override
+                public void onSuccess(Void payload) {
+                    bus.post(new SignUpEvent(username));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    bus.post(errorBuilder.buildFrom(error));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 }
