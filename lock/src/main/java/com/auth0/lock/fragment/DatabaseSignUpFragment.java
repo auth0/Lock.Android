@@ -44,20 +44,24 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.validation.SignUpValidator;
-import com.google.inject.Inject;
-
-import roboguice.inject.InjectView;
 
 public class DatabaseSignUpFragment extends BaseTitledFragment {
 
-    @Inject LoginAuthenticationErrorBuilder errorBuilder;
-    @Inject SignUpValidator validator;
+    LoginAuthenticationErrorBuilder errorBuilder;
+    SignUpValidator validator;
 
-    @InjectView(tag = "db_signup_username_field") EditText usernameField;
-    @InjectView(tag = "db_signup_password_field") EditText passwordField;
+    EditText usernameField;
+    EditText passwordField;
 
-    @InjectView(tag = "db_access_button") Button accessButton;
-    @InjectView(tag = "db_signup_progress_indicator") ProgressBar progressBar;
+    Button accessButton;
+    ProgressBar progressBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        errorBuilder = new LoginAuthenticationErrorBuilder();
+        validator = new SignUpValidator();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,11 +72,15 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        usernameField = (EditText) view.findViewById(R.id.db_signup_username_field);
+        passwordField = (EditText) view.findViewById(R.id.db_signup_password_field);
+        accessButton = (Button) view.findViewById(R.id.db_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.db_signup_progress_indicator);
         Button cancelButton = (Button) view.findViewById(R.id.db_signup_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                provider.getBus().post(NavigationEvent.BACK);
+                bus.post(NavigationEvent.BACK);
             }
         });
 
@@ -105,7 +113,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         if (valid) {
             performSignUp();
         } else {
-            provider.getBus().post(error);
+            bus.post(error);
         }
     }
 
@@ -118,7 +126,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         client.signUp(username, password, null, new AuthenticationCallback() {
             @Override
             public void onSuccess(UserProfile profile, Token token) {
-                provider.getBus().post(new AuthenticationEvent(profile, token));
+                bus.post(new AuthenticationEvent(profile, token));
                 accessButton.setEnabled(true);
                 accessButton.setText(R.string.db_login_btn_text);
                 progressBar.setVisibility(View.GONE);
@@ -126,7 +134,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
+                bus.post(errorBuilder.buildFrom(error));
                 accessButton.setEnabled(true);
                 accessButton.setText(R.string.db_login_btn_text);
                 progressBar.setVisibility(View.GONE);

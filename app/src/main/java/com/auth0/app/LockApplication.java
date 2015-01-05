@@ -30,18 +30,25 @@ import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
 import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockProvider;
 
 /**
  * Created by hernan on 12/7/14.
  */
-public class LockApplication extends Application {
+public class LockApplication extends Application implements LockProvider {
+
+    private Lock lock;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Lock lock = new Lock(getString(R.string.auth0_client_id), getString(R.string.auth0_tenant_name));
-        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider());
-        lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));
-        lock.registerForApplication(this);
+        lock = new Lock(getString(R.string.auth0_client_id), getString(R.string.auth0_tenant_name));
+        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider(lock));
+        lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(lock, this));
+    }
+
+    @Override
+    public Lock getLock() {
+        return lock;
     }
 }

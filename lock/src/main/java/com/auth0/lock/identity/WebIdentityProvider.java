@@ -25,7 +25,6 @@
 package com.auth0.lock.identity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -37,13 +36,11 @@ import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
-import com.auth0.lock.provider.BusProvider;
 import com.auth0.lock.web.CallbackParser;
 import com.auth0.lock.web.WebViewActivity;
+import com.squareup.otto.Bus;
 
 import java.util.Map;
-
-import roboguice.RoboGuice;
 
 /**
  * Created by hernan on 12/22/14.
@@ -51,16 +48,16 @@ import roboguice.RoboGuice;
 public class WebIdentityProvider implements IdentityProvider {
 
     private final boolean useWebView;
-    private BusProvider provider;
+    private Bus bus;
     private CallbackParser parser;
 
     public WebIdentityProvider(CallbackParser parser, Lock lock) {
         this.parser = parser;
         this.useWebView = lock.isUseWebView();
+        this.bus = lock.getBus();
     }
 
     public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
-        this.provider = RoboGuice.getInjector(activity).getInstance(BusProvider.class);
         final Uri url = event.getAuthenticationUri(application);
         final Intent intent;
         if (this.useWebView) {
@@ -87,10 +84,10 @@ public class WebIdentityProvider implements IdentityProvider {
             if (values.containsKey("error")) {
                 final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
                 final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
-                provider.getBus().post(error);
+                bus.post(error);
             } else if(values.size() > 0) {
                 Log.d(LockActivity.class.getName(), "Authenticated using web flow");
-                provider.getBus().post(new SocialAuthenticationEvent(values));
+                bus.post(new SocialAuthenticationEvent(values));
             }
         }
         return isValid;

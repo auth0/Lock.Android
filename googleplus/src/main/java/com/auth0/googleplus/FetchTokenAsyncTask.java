@@ -25,7 +25,6 @@
 package com.auth0.googleplus;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,15 +34,14 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.identity.IdentityProvider;
-import com.auth0.lock.provider.BusProvider;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
@@ -55,12 +53,12 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
     public static final String TAG = FetchTokenAsyncTask.class.getName();
     private final GoogleApiClient apiClient;
     private final Activity context;
-    private final BusProvider provider;
+    private final Bus bus;
 
-    public FetchTokenAsyncTask(GoogleApiClient apiClient, Activity context, BusProvider provider) {
+    public FetchTokenAsyncTask(GoogleApiClient apiClient, Activity context, Bus bus) {
         this.apiClient = apiClient;
         this.context = context;
-        this.provider = provider;
+        this.bus = bus;
     }
 
     @Override
@@ -92,7 +90,7 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
     @Override
     protected void onPostExecute(Object result) {
         if (result != null) {
-            provider.getBus().post(result);
+            bus.post(result);
         }
     }
 }

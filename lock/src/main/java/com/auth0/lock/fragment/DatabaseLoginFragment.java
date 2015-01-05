@@ -44,25 +44,23 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.validation.LoginValidator;
-import com.google.inject.Inject;
-
-import roboguice.inject.InjectView;
 
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
-    @Inject LoginAuthenticationErrorBuilder errorBuilder;
-    @Inject LoginValidator validator;
+    LoginAuthenticationErrorBuilder errorBuilder;
+    LoginValidator validator;
 
-    @InjectView(tag = "db_login_username_field") EditText usernameField;
-    @InjectView(tag = "db_login_password_field") EditText passwordField;
+    EditText usernameField;
+    EditText passwordField;
 
-    @InjectView(tag = "db_access_button") Button accessButton;
-    @InjectView(tag = "db_login_progress_indicator") ProgressBar progressBar;
+    Button accessButton;
+    ProgressBar progressBar;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_database_login, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        errorBuilder = new LoginAuthenticationErrorBuilder();
+        validator = new LoginValidator();
     }
 
     @Override
@@ -73,6 +71,10 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        usernameField = (EditText) view.findViewById(R.id.db_login_username_field);
+        passwordField = (EditText) view.findViewById(R.id.db_login_password_field);
+        accessButton = (Button) view.findViewById(R.id.db_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,14 +95,14 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                provider.getBus().post(NavigationEvent.SIGN_UP);
+                bus.post(NavigationEvent.SIGN_UP);
             }
         });
         Button resetPassword = (Button) view.findViewById(R.id.db_reset_pass_button);
         resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                provider.getBus().post(NavigationEvent.RESET_PASSWORD);
+                bus.post(NavigationEvent.RESET_PASSWORD);
             }
         });
     }
@@ -111,7 +113,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         if (valid) {
             performLogin();
         } else {
-            provider.getBus().post(error);
+            bus.post(error);
         }
     }
 
@@ -125,7 +127,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
             @Override
             public void onSuccess(UserProfile userProfile, Token token) {
-                provider.getBus().post(new AuthenticationEvent(userProfile, token));
+                bus.post(new AuthenticationEvent(userProfile, token));
                 accessButton.setEnabled(true);
                 accessButton.setText(R.string.db_login_btn_text);
                 progressBar.setVisibility(View.GONE);
@@ -133,7 +135,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
             @Override
             public void onFailure(Throwable throwable) {
-                provider.getBus().post(errorBuilder.buildFrom(throwable));
+                bus.post(errorBuilder.buildFrom(throwable));
                 accessButton.setEnabled(true);
                 accessButton.setText(R.string.db_login_btn_text);
                 progressBar.setVisibility(View.GONE);

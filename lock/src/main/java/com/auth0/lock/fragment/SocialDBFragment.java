@@ -43,21 +43,23 @@ import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationEvent;
 import com.auth0.lock.event.SocialAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
-import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
-
-import roboguice.inject.InjectView;
 
 public class SocialDBFragment extends DatabaseLoginFragment {
 
     public static final String SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT = "strategies";
 
-    @Inject
     LoginAuthenticationErrorBuilder errorBuilder;
 
-    @InjectView(tag = "social_grid_view") GridView gridView;
+    GridView gridView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        errorBuilder = new LoginAuthenticationErrorBuilder();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +70,7 @@ public class SocialDBFragment extends DatabaseLoginFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        gridView = (GridView) view.findViewById(R.id.social_grid_view);
         Bundle bundle = getArguments();
         List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
@@ -80,7 +83,7 @@ public class SocialDBFragment extends DatabaseLoginFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String serviceName = (String) parent.getItemAtPosition(position);
                 Log.d(SocialFragment.class.getName(), "Selected service " + serviceName);
-                provider.getBus().post(new SocialAuthenticationRequestEvent(serviceName));
+                bus.post(new SocialAuthenticationRequestEvent(serviceName));
             }
         });
     }
@@ -88,13 +91,13 @@ public class SocialDBFragment extends DatabaseLoginFragment {
     @Override
     public void onStart() {
         super.onResume();
-        provider.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     public void onStop() {
         super.onPause();
-        provider.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Override
@@ -108,12 +111,12 @@ public class SocialDBFragment extends DatabaseLoginFragment {
         client.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
             @Override
             public void onSuccess(UserProfile userProfile) {
-                provider.getBus().post(new AuthenticationEvent(userProfile, token));
+                bus.post(new AuthenticationEvent(userProfile, token));
             }
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
+                bus.post(errorBuilder.buildFrom(error));
             }
         });
     }
@@ -123,12 +126,12 @@ public class SocialDBFragment extends DatabaseLoginFragment {
         client.socialLogin(event.getService(), event.getAccessToken(), null, new AuthenticationCallback() {
             @Override
             public void onSuccess(UserProfile profile, Token token) {
-                provider.getBus().post(new AuthenticationEvent(profile, token));
+                bus.post(new AuthenticationEvent(profile, token));
             }
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(errorBuilder.buildFrom(error));
+                bus.post(errorBuilder.buildFrom(error));
             }
         });
     }

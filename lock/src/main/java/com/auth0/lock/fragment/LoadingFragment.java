@@ -1,6 +1,7 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +11,26 @@ import android.widget.TextView;
 import com.auth0.api.APIClient;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
+import com.auth0.lock.Lock;
+import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
-import com.auth0.lock.provider.BusProvider;
-import com.google.inject.Inject;
-
-import roboguice.fragment.RoboFragment;
+import com.squareup.otto.Bus;
 
 /**
  * Created by hernan on 12/5/14.
  */
-public class LoadingFragment extends RoboFragment {
+public class LoadingFragment extends Fragment {
 
-    @Inject private APIClient client;
-    @Inject private BusProvider provider;
+    private APIClient client;
+    private Bus bus;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Lock lock = getLock();
+        client = lock.getAPIClient();
+        bus = lock.getBus();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,12 +44,12 @@ public class LoadingFragment extends RoboFragment {
     @Override
     public void onResume() {
         super.onResume();
-        this.provider.getBus().register(this);
-        this.client.fetchApplicationInfo(new BaseCallback<Application>() {
+        bus.register(this);
+        client.fetchApplicationInfo(new BaseCallback<Application>() {
             @Override
             public void onSuccess(Application application) {
                 Log.i(LoadingFragment.class.getName(), "Fetched app info for tenant " + application.getTenant());
-                provider.getBus().post(application);
+                bus.post(application);
             }
 
             @Override
@@ -54,6 +62,12 @@ public class LoadingFragment extends RoboFragment {
     @Override
     public void onPause() {
         super.onPause();
-        this.provider.getBus().unregister(this);
+        bus.unregister(this);
     }
+
+    private Lock getLock() {
+        LockProvider provider = (LockProvider) getActivity().getApplication();
+        return provider.getLock();
+    }
+
 }

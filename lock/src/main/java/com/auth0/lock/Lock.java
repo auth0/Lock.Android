@@ -24,23 +24,14 @@
 
 package com.auth0.lock;
 
-import android.app.Application;
-import android.content.Context;
-
 import com.auth0.api.APIClient;
 import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.identity.WebIdentityProvider;
-import com.auth0.lock.provider.APIClientProvider;
 import com.auth0.lock.web.CallbackParser;
-import com.google.inject.Binder;
-import com.google.inject.Module;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
+import com.squareup.otto.Bus;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import roboguice.RoboGuice;
 
 /**
  * Created by hernan on 12/7/14.
@@ -54,25 +45,25 @@ public class Lock {
     private IdentityProvider defaultProvider;
     private Map<String, IdentityProvider> providers;
 
+    private final Bus bus;
+    private final APIClient apiClient;
+
     public Lock(String clientId, String tenant) {
         this.clientId = clientId;
         this.tenant = tenant;
         this.useWebView = false;
-        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), this);
         this.providers = new HashMap<>();
+        this.bus = new Bus("Lock");
+        this.apiClient = new APIClient(clientId, tenant);
+        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), this);
     }
 
-    public void registerForApplication(Application application) {
-        RoboGuice.setUseAnnotationDatabases(false);
-        RoboGuice.getOrCreateBaseApplicationInjector(
-                application,
-                RoboGuice.DEFAULT_STAGE,
-                RoboGuice.newDefaultRoboModule(application),
-                new LockModule(new APIClientProvider(clientId, tenant), this));
+    public APIClient getAPIClient() {
+        return apiClient;
     }
 
-    public APIClient getAPIClient(Context context) {
-        return RoboGuice.getInjector(context).getInstance(APIClient.class);
+    public Bus getBus() {
+        return bus;
     }
 
     public void setUseWebView(boolean useWebView) {
@@ -103,21 +94,4 @@ public class Lock {
         this.defaultProvider.stop();
     }
 
-    private static class LockModule implements Module {
-
-        private final Provider<APIClient> provider;
-        private final Lock lock;
-
-        private LockModule(Provider<APIClient> provider, Lock lock) {
-            this.provider = provider;
-            this.lock = lock;
-        }
-
-        @Override
-        public void configure(Binder binder) {
-            binder.bind(APIClient.class).toProvider(provider).in(Singleton.class);
-            binder.bind(Lock.class).toInstance(lock);
-        }
-
-    }
 }

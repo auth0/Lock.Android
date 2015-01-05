@@ -25,23 +25,31 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
+import com.auth0.lock.Lock;
+import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
-import com.auth0.lock.provider.BusProvider;
-import com.google.inject.Inject;
-
-import roboguice.fragment.RoboFragment;
+import com.squareup.otto.Bus;
 
 /**
  * Created by hernan on 12/11/14.
  */
-public abstract class BaseTitledFragment extends RoboFragment {
+public abstract class BaseTitledFragment extends Fragment {
 
-    @Inject APIClient client;
-    @Inject BusProvider provider;
+    APIClient client;
+    Bus bus;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Lock lock = getLock();
+        client = lock.getAPIClient();
+        bus = lock.getBus();
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -51,4 +59,10 @@ public abstract class BaseTitledFragment extends RoboFragment {
     }
 
     protected abstract int getTitleResource();
+
+    private Lock getLock() {
+        LockProvider provider = (LockProvider) getActivity().getApplication();
+        return provider.getLock();
+    }
+
 }

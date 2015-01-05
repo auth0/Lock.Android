@@ -30,6 +30,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
@@ -40,14 +41,12 @@ import com.auth0.lock.R;
 import com.auth0.lock.util.SocialResources;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import roboguice.activity.RoboActionBarActivity;
-import roboguice.inject.InjectView;
 
-public class WebViewActivity extends RoboActionBarActivity {
+public class WebViewActivity extends ActionBarActivity {
 
     public static final String SERVICE_NAME = "serviceName";
-    @InjectView(tag = "lock_webview") WebView webView;
-    @InjectView(tag = "lock_progressbar") SmoothProgressBar progressBar;
+    WebView webView;
+    SmoothProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +69,8 @@ public class WebViewActivity extends RoboActionBarActivity {
             bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
             bar.setCustomView(view);
         }
+        webView = (WebView) findViewById(R.id.lock_webview);
+        progressBar = (SmoothProgressBar) findViewById(R.id.lock_progressbar);
     }
 
     @Override

@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -44,16 +43,14 @@ import com.auth0.lock.validation.ResetPasswordValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
 
-import roboguice.inject.InjectView;
-
 public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
-    @InjectView(tag = "db_reset_password_username_field") CredentialField usernameField;
-    @InjectView(tag = "db_reset_password_password_field") CredentialField passwordField;
-    @InjectView(tag = "db_reset_password_repeat_password_field") EditText repeatPasswordField;
+    CredentialField usernameField;
+    CredentialField passwordField;
+    CredentialField repeatPasswordField;
 
-    @InjectView(tag = "db_reset_button") Button sendButton;
-    @InjectView(tag = "db_reset_password_progress_indicator") ProgressBar progressBar;
+    Button sendButton;
+    ProgressBar progressBar;
 
     private Validator validator;
 
@@ -65,11 +62,16 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        usernameField = (CredentialField) view.findViewById(R.id.db_reset_password_username_field);
+        passwordField = (CredentialField) view.findViewById(R.id.db_reset_password_password_field);
+        repeatPasswordField = (CredentialField) view.findViewById(R.id.db_reset_password_repeat_password_field);
+        sendButton = (Button) view.findViewById(R.id.db_reset_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.db_reset_password_progress_indicator);
         Button cancelButton = (Button) view.findViewById(R.id.db_reset_password_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                provider.getBus().post(NavigationEvent.BACK);
+                bus.post(NavigationEvent.BACK);
             }
         });
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +103,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         if (valid) {
             performChange();
         } else {
-            provider.getBus().post(error);
+            bus.post(error);
         }
     }
     private void performChange() {
@@ -113,7 +115,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         client.changePassword(username, password, null, new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
-                provider.getBus().post(new ResetPasswordEvent());
+                bus.post(new ResetPasswordEvent());
                 sendButton.setEnabled(true);
                 sendButton.setText(R.string.db_reset_password_btn_text);
                 progressBar.setVisibility(View.GONE);
@@ -121,7 +123,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
             @Override
             public void onFailure(Throwable error) {
-                provider.getBus().post(new AuthenticationError(R.string.db_reset_password_error_title, R.string.db_reset_password_error_message, error));
+                bus.post(new AuthenticationError(R.string.db_reset_password_error_title, R.string.db_reset_password_error_message, error));
                 sendButton.setEnabled(true);
                 sendButton.setText(R.string.db_reset_password_btn_text);
                 progressBar.setVisibility(View.GONE);
