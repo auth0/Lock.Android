@@ -24,7 +24,11 @@
 
 package com.auth0.lock;
 
+import android.app.Application;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 
 import com.auth0.api.APIClient;
 
@@ -35,6 +39,11 @@ import java.util.Map;
  * Created by hernan on 1/5/15.
  */
 public class LockBuilder {
+
+    public static final String CLIENT_ID_KEY = "com.auth0.client-id";
+    public static final String TENANT_KEY = "com.auth0.tenant";
+    public static final String DOMAIN_KEY = "com.auth0.domain";
+    public static final String CONFIGURATION_KEY = "com.auth0.configuration";
 
     private String clientId;
     private String tenant;
@@ -102,24 +111,43 @@ public class LockBuilder {
 
     private Lock buildLock() {
         Lock lock;
+        if (this.clientId == null) {
+            throw new IllegalArgumentException("Must supply a non-null ClientId");
+        }
         if (this.domain != null) {
             lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
-        } else {
+        } else if(this.tenant != null) {
             String baseURL = String.format(APIClient.BASE_URL_FORMAT, this.tenant);
             String configURL = String.format(APIClient.APP_INFO_CDN_URL_FORMAT, this.clientId);
             lock = new Lock(new APIClient(this.clientId, baseURL, configURL, this.tenant));
+        } else {
+            throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
         }
         return lock;
     }
 
     private void resolveConfiguration() {
-        if (configuration == null && domain != null) {
-            final Uri domainUri = Uri.parse(domain);
+        if (this.configuration == null && this.domain != null) {
+            final Uri domainUri = Uri.parse(this.domain);
             if (domainUri.getHost().endsWith("auth0.com")) {
                 this.configuration = String.format(APIClient.APP_INFO_CDN_URL_FORMAT, this.clientId);
             } else {
-                this.configuration = domain;
+                this.configuration = this.domain;
             }
         }
+    }
+
+    public LockBuilder loadFromApplication(Application application) {
+        try {
+            ApplicationInfo ai = application.getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            this.clientId = bundle.getString(CLIENT_ID_KEY);
+            this.tenant = bundle.getString(TENANT_KEY);
+            this.domain = bundle.getString(DOMAIN_KEY);
+            this.configuration = bundle.getString(CONFIGURATION_KEY);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new IllegalArgumentException("Failed to read info from AndroidManifest.xml", e);
+        }
+        return this;
     }
 }

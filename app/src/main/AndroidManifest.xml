@@ -21,6 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--Auth0 Lock-->
         <activity
             android:name="com.auth0.lock.LockActivity"
             android:theme="@style/MyLock.Theme"
@@ -35,10 +37,19 @@
             </intent-filter>
         </activity>
         <activity android:name="com.auth0.lock.web.WebViewActivity" android:theme="@style/MyLock.Theme"/>
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+        <meta-data android:name="com.auth0.client-id" android:value="@string/auth0_client_id"/>
+        <meta-data android:name="com.auth0.tenant" android:value="@string/auth0_tenant_name"/>
+
+        <!--Auth0 Lock End-->
+        <!--Facebook Native-->
         <activity android:name="com.facebook.LoginActivity"/>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <!--Facebook Native End-->
+        <!--G+ Native-->
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version" />
+        <!--G+ Native End-->
     </application>
 
 </manifest>

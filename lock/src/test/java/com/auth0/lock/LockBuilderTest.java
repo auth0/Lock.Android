@@ -27,7 +27,9 @@ package com.auth0.lock;
 import com.auth0.api.APIClient;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -36,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -52,9 +55,13 @@ public class LockBuilderTest {
     public static final String DOMAIN = "http://domain.com";
     public static final String CONFIGURATION = "https://config.com";
     public static final String AUTH0_SUBDOMAIN = "http://pepe.auth0.com";
+    
     private LockBuilder builder;
     private Lock lock;
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+    
     @Before
     public void setUp() throws Exception {
         builder = new LockBuilder();
@@ -175,9 +182,26 @@ public class LockBuilderTest {
         assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
     }
 
+    @Test
+    public void shouldFailWithInsufficientData() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage(equalToIgnoringCase("Must supply a non-null ClientId"));
+        builder.build();
+    }
+
+    @Test
+    public void shouldFailWithOnlyClientId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage(equalToIgnoringCase("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant."));
+        builder
+                .clientId(CLIENT_ID)
+                .build();
+    }
+
     private LockBuilder basicBuilder() {
         return builder
                 .clientId(CLIENT_ID)
                 .tenant(TENANT);
     }
+
 }
