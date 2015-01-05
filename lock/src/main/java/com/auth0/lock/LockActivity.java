@@ -113,6 +113,14 @@ public class LockActivity extends FragmentActivity {
         identity.authorize(this, requestCode, resultCode, data);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if ((!lock.isClosable() && getSupportFragmentManager().getBackStackEntryCount() >= 1) || lock.isClosable()) {
+            super.onBackPressed();
+        }
+    }
+
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
         builder.setApplication(application);
