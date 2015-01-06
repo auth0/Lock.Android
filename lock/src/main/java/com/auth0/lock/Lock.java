@@ -42,6 +42,7 @@ public class Lock {
     private boolean loginAfterSignUp;
     private boolean closable;
     private Map<String, String> authenticationParameters;
+    private boolean useEmail;
 
     private IdentityProvider defaultProvider;
     private Map<String, IdentityProvider> providers;
@@ -53,6 +54,7 @@ public class Lock {
         this.useWebView = false;
         this.closable = false;
         this.loginAfterSignUp = true;
+        this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
         this.defaultProvider = new WebIdentityProvider(new CallbackParser(), this);
@@ -91,6 +93,14 @@ public class Lock {
         this.closable = closable;
     }
 
+    public void setUseEmail(boolean useEmail) {
+        this.useEmail = useEmail;
+    }
+
+    public boolean isUseEmail() {
+        return useEmail;
+    }
+
     public Map<String, String> getAuthenticationParameters() {
         return authenticationParameters != null ? new HashMap<>(authenticationParameters) : new HashMap<String, String>();
     }
@@ -118,5 +128,4 @@ public class Lock {
         }
         this.defaultProvider.stop();
     }
-
 }
