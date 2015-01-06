@@ -23,6 +23,7 @@ import static com.auth0.app.R.layout;
 
 public class MyActivity extends ActionBarActivity {
 
+    public static final String TAG = MyActivity.class.getName();
     private LocalBroadcastManager broadcastManager;
     private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
         @Override
@@ -30,12 +31,19 @@ public class MyActivity extends ActionBarActivity {
             UserProfile profile = intent.getParcelableExtra("profile");
             Token token = intent.getParcelableExtra("token");
             if (token != null) {
-                Log.d(MyActivity.class.getName(), "User " + profile.getName() + " with token " + token.getIdToken());
+                Log.d(TAG, "User " + profile.getName() + " with token " + token.getIdToken());
                 TextView welcomeLabel = (TextView) findViewById(id.welcome_label);
                 welcomeLabel.setText("Herzlich Willkommen " + profile.getName());
             } else {
-                Log.i(MyActivity.class.getName(), "Signed Up user");
+                Log.i(TAG, "Signed Up user");
             }
+        }
+    };
+
+    private BroadcastReceiver cancelReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "User Cancelled");
         }
     };
 
@@ -53,12 +61,14 @@ public class MyActivity extends ActionBarActivity {
         });
         broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(LockActivity.AUTHENTICATION_ACTION));
+        broadcastManager.registerReceiver(cancelReceiver, new IntentFilter(LockActivity.CANCEL_ACTION));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         broadcastManager.unregisterReceiver(authenticationReceiver);
+        broadcastManager.unregisterReceiver(cancelReceiver);
     }
 
     @Override
