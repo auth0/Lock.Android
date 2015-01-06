@@ -32,6 +32,7 @@ import com.squareup.otto.Subscribe;
 public class LockActivity extends FragmentActivity {
 
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
+    public static final String CANCEL_ACTION = "Lock.Cancel";
 
     public static final String TAG = LockActivity.class.getName();
 
@@ -116,7 +117,12 @@ public class LockActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if ((!lock.isClosable() && getSupportFragmentManager().getBackStackEntryCount() >= 1) || lock.isClosable()) {
+        final double count = getSupportFragmentManager().getBackStackEntryCount();
+        if ((!lock.isClosable() && count >= 1) || lock.isClosable()) {
+            if (count == 0) {
+                Intent result = new Intent(CANCEL_ACTION);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(result);
+            }
             super.onBackPressed();
         }
     }
