@@ -33,6 +33,7 @@ public class LockActivity extends FragmentActivity {
 
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
     public static final String CANCEL_ACTION = "Lock.Cancel";
+    public static final String RESET_PASSWORD_ACTION = "Lock.ResetPassword";
 
     public static final String TAG = LockActivity.class.getName();
 
@@ -42,6 +43,7 @@ public class LockActivity extends FragmentActivity {
     private Application application;
     private ProgressDialog progressDialog;
     private IdentityProvider identity;
+    private LocalBroadcastManager broadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class LockActivity extends FragmentActivity {
                     .replace(R.id.container, new LoadingFragment())
                     .commit();
         }
+        broadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -120,8 +123,7 @@ public class LockActivity extends FragmentActivity {
         final double count = getSupportFragmentManager().getBackStackEntryCount();
         if ((!lock.isClosable() && count >= 1) || lock.isClosable()) {
             if (count == 0) {
-                Intent result = new Intent(CANCEL_ACTION);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(result);
+                broadcastManager.sendBroadcast(new Intent(CANCEL_ACTION));
             }
             super.onBackPressed();
         }
@@ -150,8 +152,7 @@ public class LockActivity extends FragmentActivity {
 
     @Subscribe public void onSignUpEvent(SignUpEvent event) {
         Log.i(TAG, "Signed up user " + event.getUsername());
-        Intent result = new Intent(AUTHENTICATION_ACTION);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(result);
+        broadcastManager.sendBroadcast(new Intent(AUTHENTICATION_ACTION));
         dismissProgressDialog();
         finish();
     }
@@ -159,6 +160,7 @@ public class LockActivity extends FragmentActivity {
     @Subscribe public void onResetPassword(ResetPasswordEvent event) {
         Log.d(TAG, "Changed password");
         showAlertDialog(event);
+        broadcastManager.sendBroadcast(new Intent(RESET_PASSWORD_ACTION));
         getSupportFragmentManager().popBackStack();
     }
 
