@@ -36,15 +36,18 @@ public class LoginValidator implements Validator {
 
     private final Validator usernameValidator;
     private final Validator passwordValidator;
+    private final int compositeErrorMessage;
 
-    public LoginValidator(Validator usernameValidator, Validator passwordValidator) {
+    public LoginValidator(Validator usernameValidator, Validator passwordValidator, int compositeErrorMessage) {
         this.usernameValidator = usernameValidator;
         this.passwordValidator = passwordValidator;
+        this.compositeErrorMessage = compositeErrorMessage;
     }
 
-    public LoginValidator() {
-        this(new EmailValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message),
-                new PasswordValidator(R.id.db_login_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message));
+    public LoginValidator(boolean useEmail) {
+        this(validatorThatUseEmail(useEmail),
+                new PasswordValidator(R.id.db_login_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message),
+                useEmail ? R.string.invalid_credentials_message : R.string.invalid_username_credentials_message);
     }
 
     @Override
@@ -52,9 +55,15 @@ public class LoginValidator implements Validator {
         final AuthenticationError usernameError = usernameValidator.validateFrom(fragment);
         final AuthenticationError passwordError = passwordValidator.validateFrom(fragment);
         if (usernameError != null && passwordError != null) {
-            return new AuthenticationError(R.string.invalid_credentials_title, R.string.invalid_credentials_message);
+            return new AuthenticationError(R.string.invalid_credentials_title, compositeErrorMessage);
         }
         return usernameError != null ? usernameError : passwordError;
     }
 
+    public static Validator validatorThatUseEmail(boolean useEmail) {
+        if (useEmail) {
+            return new EmailValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
+        }
+        return new UsernameValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+    }
 }

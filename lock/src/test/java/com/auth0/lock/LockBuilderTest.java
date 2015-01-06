@@ -114,6 +114,14 @@ public class LockBuilderTest {
     }
 
     @Test
+    public void shouldSetUseEmail() throws Exception {
+        lock = basicBuilder()
+                .useEmail(false)
+                .build();
+        assertThat(lock.isUseEmail(), is(false));
+    }
+
+    @Test
     public void shouldBuildWithDomainOnly() throws Exception {
         lock = builder
                 .clientId(CLIENT_ID)

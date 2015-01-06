@@ -56,6 +56,7 @@ public class LockFragmentBuilder {
         final DatabaseSignUpFragment fragment = new DatabaseSignUpFragment();
         Bundle arguments = new Bundle();
         arguments.putBoolean(DatabaseSignUpFragment.LOGIN_AFTER_SIGNUP_ARGUMENT, lock.isLoginAfterSignUp());
+        arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
         fragment.setArguments(arguments);
         return fragment;
@@ -65,6 +66,7 @@ public class LockFragmentBuilder {
         final DatabaseResetPasswordFragment fragment = new DatabaseResetPasswordFragment();
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
+        arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -73,6 +75,7 @@ public class LockFragmentBuilder {
         final DatabaseLoginFragment fragment = new DatabaseLoginFragment();
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
+        arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -83,6 +86,7 @@ public class LockFragmentBuilder {
         if (application != null) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(SocialDBFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
+            bundle.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());
             bundle.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
             fragment.setArguments(bundle);
         }

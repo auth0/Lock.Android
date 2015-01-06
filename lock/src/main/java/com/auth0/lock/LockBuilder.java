@@ -57,6 +57,7 @@ public class LockBuilder {
 
     public LockBuilder() {
         this.loginAfterSignUp = true;
+        this.useEmail = true;
         this.parameters = new HashMap<>();
     }
 

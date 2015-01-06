@@ -2,8 +2,9 @@
 <resources>
 
     <string name="app_name">Lock</string>
-    <string name="loading_title"></string>
+    <string name="loading_title"/>
     <string name="email_placeholder">Email</string>
+    <string name="username_placeholder">Username</string>
     <string name="password_placeholder">Password</string>
     <string name="repeat_password_placeholder">Confirm New Password</string>
     <string name="ok_btn_text">OK</string>
@@ -19,7 +20,9 @@
     <!-- Validation Errors -->
     <string name="invalid_credentials_title">Invalid credentials</string>
     <string name="invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
+    <string name="invalid_username_credentials_message">The username and password you entered are invalid. Please try again.</string>
     <string name="invalid_email_message">The email you entered is invalid. Please try again.</string>
+    <string name="invalid_username_message">The username you entered is invalid. Please try again.</string>
     <string name="invalid_password_message">The password you entered is invalid. Please try again.</string>
     <string name="db_reset_password_invalid_repeat_password_message">The passwords you entered must match. Please try again.</string>
 

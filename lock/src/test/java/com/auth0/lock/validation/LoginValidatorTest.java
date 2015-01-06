@@ -68,7 +68,7 @@ public class LoginValidatorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        validator = new SignUpValidator(emailValidator, passwordValidator);
+        validator = new LoginValidator(emailValidator, passwordValidator, R.string.invalid_credentials_message);
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(null);
     }
