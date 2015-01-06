@@ -46,6 +46,7 @@ import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.validation.SignUpValidator;
+import com.auth0.lock.widget.CredentialField;
 
 public class DatabaseSignUpFragment extends BaseTitledFragment {
 
@@ -54,8 +55,8 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     LoginAuthenticationErrorBuilder errorBuilder;
     SignUpValidator validator;
 
-    EditText usernameField;
-    EditText passwordField;
+    CredentialField usernameField;
+    CredentialField passwordField;
 
     Button accessButton;
     ProgressBar progressBar;
@@ -65,7 +66,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         errorBuilder = new LoginAuthenticationErrorBuilder();
-        validator = new SignUpValidator();
+        validator = new SignUpValidator(useEmail);
         final Bundle arguments = getArguments();
         loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
     }
@@ -79,8 +80,14 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameField = (EditText) view.findViewById(R.id.db_signup_username_field);
-        passwordField = (EditText) view.findViewById(R.id.db_signup_password_field);
+        usernameField = (CredentialField) view.findViewById(R.id.db_signup_username_field);
+        if (!useEmail) {
+            usernameField.setHint(R.string.username_placeholder);
+            usernameField.setIconResource(R.drawable.ic_person);
+            usernameField.setErrorIconResource(R.drawable.ic_person_error);
+            usernameField.refresh();
+        }
+        passwordField = (CredentialField) view.findViewById(R.id.db_signup_password_field);
         accessButton = (Button) view.findViewById(R.id.db_access_button);
         progressBar = (ProgressBar) view.findViewById(R.id.db_signup_progress_indicator);
         Button cancelButton = (Button) view.findViewById(R.id.db_signup_cancel_button);

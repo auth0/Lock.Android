@@ -62,7 +62,7 @@ public class ResetPasswordValidatorTest {
         emailValidator = mock(Validator.class);
         passwordValidator = mock(Validator.class);
         repeatValidator = mock(Validator.class);
-        validator = new ResetPasswordValidator(emailValidator, passwordValidator, repeatValidator);
+        validator = new ResetPasswordValidator(emailValidator, passwordValidator, repeatValidator, R.string.invalid_credentials_message);
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(repeatValidator.validateFrom(eq(fragment))).thenReturn(null);

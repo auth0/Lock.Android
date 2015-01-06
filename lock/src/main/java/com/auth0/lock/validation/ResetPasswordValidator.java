@@ -37,18 +37,21 @@ public class ResetPasswordValidator implements Validator {
     private Validator emailValidator;
     private Validator passwordValidator;
     private Validator repeatPasswordValidator;
+    private final int compositeErrorMessage;
 
-    public ResetPasswordValidator(Validator emailValidator, Validator passwordValidator, Validator repeatPasswordValidator) {
+    public ResetPasswordValidator(Validator emailValidator, Validator passwordValidator, Validator repeatPasswordValidator, int compositeErrorMessage) {
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
         this.repeatPasswordValidator = repeatPasswordValidator;
+        this.compositeErrorMessage = compositeErrorMessage;
     }
 
-    public ResetPasswordValidator() {
+    public ResetPasswordValidator(boolean useEmail) {
         this(
-            new EmailValidator(R.id.db_reset_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message),
+            validatorThatUseEmail(useEmail),
             new PasswordValidator(R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message),
-            new RepeatPasswordValidator(R.id.db_reset_password_repeat_password_field, R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message)
+            new RepeatPasswordValidator(R.id.db_reset_password_repeat_password_field, R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message),
+            useEmail ? R.string.invalid_credentials_message : R.string.invalid_username_credentials_message
         );
     }
 
@@ -58,11 +61,19 @@ public class ResetPasswordValidator implements Validator {
         AuthenticationError passwordError = passwordValidator.validateFrom(fragment);
         AuthenticationError repeatError = repeatPasswordValidator.validateFrom(fragment);
         if (emailError != null && (passwordError != null || repeatError != null)) {
-            return new AuthenticationError(R.string.invalid_credentials_title, R.string.invalid_credentials_message);
+            return new AuthenticationError(R.string.invalid_credentials_title, compositeErrorMessage);
         }
         if (repeatError != null) {
             return repeatError;
         }
         return passwordError != null ? passwordError : emailError;
     }
+
+    public static Validator validatorThatUseEmail(boolean useEmail) {
+        if (useEmail) {
+            return new EmailValidator(R.id.db_reset_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
+        }
+        return new UsernameValidator(R.id.db_reset_password_username_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+    }
+
 }

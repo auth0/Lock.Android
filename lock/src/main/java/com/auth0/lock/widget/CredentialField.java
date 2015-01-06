@@ -37,11 +37,12 @@ import com.auth0.lock.R;
  */
 public class CredentialField extends EditText {
 
-    private final int iconResource;
-    private final int errorIconResource;
+    private int iconResource;
+    private int errorIconResource;
     private final int colorResource;
     private final int hintColorResource;
     private final int errorColorResource;
+    private boolean invalid;
 
     public CredentialField(Context context) {
         this(context, null);
@@ -67,6 +68,7 @@ public class CredentialField extends EditText {
     }
 
     public void markAsInvalid(boolean invalid) {
+        this.invalid = invalid;
         if (invalid) {
             setCompoundDrawablesWithIntrinsicBounds(errorIconResource, 0, 0, 0);
             setTextColor(getResources().getColor(errorColorResource));
@@ -76,5 +78,17 @@ public class CredentialField extends EditText {
             setTextColor(colorResource);
             setHintTextColor(hintColorResource);
         }
+    }
+
+    public void setErrorIconResource(int errorIconResource) {
+        this.errorIconResource = errorIconResource;
+    }
+
+    public void setIconResource(int iconResource) {
+        this.iconResource = iconResource;
+    }
+
+    public void refresh() {
+        markAsInvalid(this.invalid);
     }
 }

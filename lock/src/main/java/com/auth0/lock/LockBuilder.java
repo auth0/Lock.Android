@@ -53,9 +53,11 @@ public class LockBuilder {
     private boolean closable;
     private boolean loginAfterSignUp;
     private Map<String, String> parameters;
+    private boolean useEmail;
 
     public LockBuilder() {
         this.loginAfterSignUp = true;
+        this.useEmail = true;
         this.parameters = new HashMap<>();
     }
 
@@ -106,6 +108,7 @@ public class LockBuilder {
         lock.setLoginAfterSignUp(this.loginAfterSignUp);
         lock.setClosable(this.closable);
         lock.setAuthenticationParameters(this.parameters);
+        lock.setUseEmail(this.useEmail);
         return lock;
     }
 
@@ -148,6 +151,11 @@ public class LockBuilder {
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalArgumentException("Failed to read info from AndroidManifest.xml", e);
         }
+        return this;
+    }
+
+    public LockBuilder useEmail(boolean useEmail) {
+        this.useEmail = useEmail;
         return this;
     }
 }

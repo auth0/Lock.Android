@@ -44,14 +44,15 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.validation.LoginValidator;
+import com.auth0.lock.widget.CredentialField;
 
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
     LoginAuthenticationErrorBuilder errorBuilder;
     LoginValidator validator;
 
-    EditText usernameField;
-    EditText passwordField;
+    CredentialField usernameField;
+    CredentialField passwordField;
 
     Button accessButton;
     ProgressBar progressBar;
@@ -60,7 +61,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         errorBuilder = new LoginAuthenticationErrorBuilder();
-        validator = new LoginValidator();
+        validator = new LoginValidator(useEmail);
     }
 
     @Override
@@ -71,8 +72,14 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameField = (EditText) view.findViewById(R.id.db_login_username_field);
-        passwordField = (EditText) view.findViewById(R.id.db_login_password_field);
+        usernameField = (CredentialField) view.findViewById(R.id.db_login_username_field);
+        if (!useEmail) {
+            usernameField.setHint(R.string.username_placeholder);
+            usernameField.setIconResource(R.drawable.ic_person);
+            usernameField.setErrorIconResource(R.drawable.ic_person_error);
+            usernameField.refresh();
+        }
+        passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);
         accessButton = (Button) view.findViewById(R.id.db_access_button);
         progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {

@@ -63,6 +63,12 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         usernameField = (CredentialField) view.findViewById(R.id.db_reset_password_username_field);
+        if (!useEmail) {
+            usernameField.setHint(R.string.username_placeholder);
+            usernameField.setIconResource(R.drawable.ic_person);
+            usernameField.setErrorIconResource(R.drawable.ic_person_error);
+            usernameField.refresh();
+        }
         passwordField = (CredentialField) view.findViewById(R.id.db_reset_password_password_field);
         repeatPasswordField = (CredentialField) view.findViewById(R.id.db_reset_password_repeat_password_field);
         sendButton = (Button) view.findViewById(R.id.db_reset_button);
@@ -89,7 +95,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
                 return false;
             }
         });
-        validator = new ResetPasswordValidator();
+        validator = new ResetPasswordValidator(useEmail);
     }
 
     @Override
