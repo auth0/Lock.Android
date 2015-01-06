@@ -3,7 +3,10 @@ package com.auth0.core;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.auth0.util.CheckHelper.checkArgument;
 
@@ -36,5 +39,18 @@ public class Connection {
 
     public <T> T getValueForKey(String key) {
         return (T) this.values.get(key);
+    }
+
+    public Set<String> getDomainSet() {
+        Set<String> domains = new HashSet<>();
+        String domain = getValueForKey("domain");
+        if (domain != null) {
+            domains.add(domain);
+            List<String> aliases = getValueForKey("domain_aliases");
+            if (aliases != null) {
+                domains.addAll(aliases);
+            }
+        }
+        return domains;
     }
 }

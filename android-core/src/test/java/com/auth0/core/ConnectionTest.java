@@ -6,11 +6,16 @@ import com.google.common.collect.Maps;
 import org.junit.Test;
 import org.robolectric.annotation.Config;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasValue;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -64,5 +69,32 @@ public class ConnectionTest extends BaseTestCase {
         Connection connection = new Connection(values);
         String value = connection.getValueForKey(KEY);
         assertThat(value, equalTo(VALUE));
+    }
+
+    @Test
+    public void shouldReturnDomainNameInSet() throws Exception {
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", CONNECTION_NAME);
+        values.put("domain", "domain.com");
+        Connection connection = new Connection(values);
+        assertThat(connection.getDomainSet(), hasItem("domain.com"));
+    }
+
+    @Test
+    public void shouldReturnAllDomainNamesAsSet() throws Exception {
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", CONNECTION_NAME);
+        values.put("domain", "domain.com");
+        values.put("domain_aliases", Arrays.asList("domain2.com", "domain3.com"));
+        Connection connection = new Connection(values);
+        assertThat(connection.getDomainSet(), hasItems("domain.com", "domain2.com", "domain3.com"));
+    }
+
+    @Test
+    public void shouldReturnEmptySetWithNoDomainName() throws Exception {
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", CONNECTION_NAME);
+        Connection connection = new Connection(values);
+        assertThat(connection.getDomainSet().isEmpty(), is(true));
     }
 }
