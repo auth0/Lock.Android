@@ -45,10 +45,10 @@ public class Connection {
         Set<String> domains = new HashSet<>();
         String domain = getValueForKey("domain");
         if (domain != null) {
-            domains.add(domain);
+            domains.add(domain.toLowerCase());
             List<String> aliases = getValueForKey("domain_aliases");
-            if (aliases != null) {
-                domains.addAll(aliases);
+            for (String alias: aliases) {
+                domains.add(alias.toLowerCase());
             }
         }
         return domains;
