@@ -21,6 +21,7 @@ import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AlertDialogEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.EnterpriseAuthenticationRequest;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
@@ -207,6 +208,15 @@ public class LockActivity extends FragmentActivity {
                     .addToBackStack(event.name())
                     .commit();
         }
+    }
+
+    @Subscribe public void onEnterpriseAuthenticationRequest(EnterpriseAuthenticationRequest event) {
+        Fragment fragment = builder.enterpriseLoginWithConnection(event.getConnection());
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(event.getConnection().getName())
+                .commit();
     }
 
     @Subscribe public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {

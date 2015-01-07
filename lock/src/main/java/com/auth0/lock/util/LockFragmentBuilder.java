@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.auth0.core.Application;
+import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.BaseTitledFragment;
@@ -128,6 +129,16 @@ public class LockFragmentBuilder {
         return application;
     }
 
+    public Fragment enterpriseLoginWithConnection(Connection connection) {
+        final DatabaseLoginFragment fragment = new DatabaseLoginFragment();
+        Bundle arguments = new Bundle();
+        arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
+        arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());
+        arguments.putParcelable(DatabaseLoginFragment.AD_ENTERPRISE_CONNECTION_ARGUMENT, connection);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
     private ArrayList<String> activeSocialStrategies() {
         ArrayList<String> strategies = new ArrayList<>(application.getSocialStrategies().size());
         for (Strategy strategy : application.getSocialStrategies()) {
@@ -135,4 +146,5 @@ public class LockFragmentBuilder {
         }
         return strategies;
     }
+
 }

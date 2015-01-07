@@ -25,6 +25,7 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,6 +39,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategies;
@@ -48,6 +50,7 @@ import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.EnterpriseAuthenticationRequest;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
@@ -57,6 +60,7 @@ import com.auth0.lock.widget.CredentialField;
 
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
+    public static final String AD_ENTERPRISE_CONNECTION_ARGUMENT = "AD_ENTERPRISE_CONNECTION_ARGUMENT";
     LoginAuthenticationErrorBuilder errorBuilder;
     LoginValidator validator;
     DomainMatcher matcher;
@@ -68,13 +72,29 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
     Button accessButton;
     ProgressBar progressBar;
+    boolean adLogin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
+            Connection enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
+            authenticationParameters.put(ParameterBuilder.CONNECTION, enterpriseConnection.getName());
+            adLogin = true;
+            useEmail = false;
+        }
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail);
         matcher = new DomainMatcher(client.getApplication().getEnterpriseStrategies());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (adLogin) {
+            return inflater.inflate(R.layout.fragment_enterprise_login, container, false);
+        }
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -92,44 +112,37 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             usernameField.setErrorIconResource(R.drawable.ic_person_error);
             usernameField.refresh();
         }
-        usernameField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                final boolean matches = matcher.matches(s.toString()    );
-                if (matches) {
-                    final Connection connection = matcher.getConnection();
-                    Log.i(DatabaseLoginFragment.class.getName(), "Matched with domain of connection " + connection.getName());
-                    final String domain = connection.getValueForKey("domain");
-                    String singleSignOnButtonText = String.format(getString(R.string.db_single_sign_on_button), domain.toUpperCase());
-                    accessButton.setText(singleSignOnButtonText);
-                } else {
-                    accessButton.setText(R.string.db_login_btn_text);
+        if (!adLogin) {
+            usernameField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
-                final int passwordVisibility = matches ? View.GONE : View.VISIBLE;
-                passwordField.setVisibility(passwordVisibility);
-                separator.setVisibility(passwordVisibility);
-                singleSignOnMessage.setVisibility(!matches ? View.GONE : View.VISIBLE);
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    final boolean matches = matcher.matches(s.toString());
+                    if (matches) {
+                        final Connection connection = matcher.getConnection();
+                        Log.i(DatabaseLoginFragment.class.getName(), "Matched with domain of connection " + connection.getName());
+                        final String domain = connection.getValueForKey("domain");
+                        String singleSignOnButtonText = String.format(getString(R.string.db_single_sign_on_button), domain.toUpperCase());
+                        accessButton.setText(singleSignOnButtonText);
+                    } else {
+                        accessButton.setText(R.string.db_login_btn_text);
+                    }
+                    final int passwordVisibility = matches ? View.GONE : View.VISIBLE;
+                    passwordField.setVisibility(passwordVisibility);
+                    separator.setVisibility(passwordVisibility);
+                    singleSignOnMessage.setVisibility(!matches ? View.GONE : View.VISIBLE);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }
         separator = view.findViewById(R.id.db_separator_view);
         passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);
-        singleSignOnMessage = view.findViewById(R.id.single_sign_on_view);
-        accessButton = (Button) view.findViewById(R.id.db_access_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
-        accessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
         passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -140,20 +153,46 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             }
         });
 
+        singleSignOnMessage = view.findViewById(R.id.single_sign_on_view);
+
+        accessButton = (Button) view.findViewById(R.id.db_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
+        accessButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
+
         Button signUpButton = (Button) view.findViewById(R.id.db_signup_button);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bus.post(NavigationEvent.SIGN_UP);
-            }
-        });
+        if (signUpButton != null) {
+            signUpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bus.post(NavigationEvent.SIGN_UP);
+                }
+            });
+        }
+
         Button resetPassword = (Button) view.findViewById(R.id.db_reset_pass_button);
-        resetPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bus.post(NavigationEvent.RESET_PASSWORD);
-            }
-        });
+        if (resetPassword != null) {
+            resetPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bus.post(NavigationEvent.RESET_PASSWORD);
+                }
+            });
+        }
+
+        Button cancelButton = (Button) view.findViewById(R.id.db_enterprise_cancel_button);
+        if (cancelButton != null) {
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bus.post(NavigationEvent.BACK);
+                }
+            });
+        }
     }
 
     private void login() {
@@ -161,7 +200,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         if (connection != null) {
             Strategy strategy = client.getApplication().strategyForConnection(connection);
             if (Strategies.ActiveDirectory.getName().equals(strategy.getName())) {
-                //Show DB Form for AD
+                bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));
             }
