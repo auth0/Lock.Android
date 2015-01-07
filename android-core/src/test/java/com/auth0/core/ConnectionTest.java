@@ -58,7 +58,8 @@ public class ConnectionTest extends BaseTestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldRaiseExceptionWhenNameIsNull() {
-        new Connection(null);
+        Map<String, Object> values = null;
+        new Connection(values);
     }
 
     @Test

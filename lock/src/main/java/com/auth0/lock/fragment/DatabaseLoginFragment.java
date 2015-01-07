@@ -35,7 +35,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -51,7 +50,6 @@ import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.EnterpriseAuthenticationRequest;
-import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.util.DomainMatcher;
@@ -61,6 +59,8 @@ import com.auth0.lock.widget.CredentialField;
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
     public static final String AD_ENTERPRISE_CONNECTION_ARGUMENT = "AD_ENTERPRISE_CONNECTION_ARGUMENT";
+    public static final String DEFAULT_CONNECTION_ARGUMENT = "DEFAULT_CONNECTION_ARGUMENT";
+
     LoginAuthenticationErrorBuilder errorBuilder;
     LoginValidator validator;
     DomainMatcher matcher;
@@ -72,8 +72,13 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
     Button accessButton;
     ProgressBar progressBar;
-    boolean adLogin;
+
+    private boolean showADForm;
+    private boolean hasDB;
+    private boolean showSignUp;
+    private boolean showResetPassword;
     private Connection enterpriseConnection;
+    private Connection defaultConnection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,9 +87,15 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         if (arguments != null && arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
             authenticationParameters.put(ParameterBuilder.CONNECTION, enterpriseConnection.getName());
-            adLogin = true;
+            showADForm = true;
             useEmail = false;
+        } else if (arguments != null && arguments.containsKey(DEFAULT_CONNECTION_ARGUMENT)) {
+            defaultConnection = arguments.getParcelable(DEFAULT_CONNECTION_ARGUMENT);
+            authenticationParameters.put(ParameterBuilder.CONNECTION, defaultConnection.getName());
         }
+        hasDB = client.getApplication().getDatabaseStrategy() != null;
+        useEmail = useEmail && hasDB;
+        showSignUp = showResetPassword = hasDB;
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail);
         matcher = new DomainMatcher(client.getApplication().getEnterpriseStrategies());
@@ -92,7 +103,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (adLogin) {
+        if (showADForm) {
             return inflater.inflate(R.layout.fragment_enterprise_login, container, false);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -113,7 +124,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             usernameField.setErrorIconResource(R.drawable.ic_person_error);
             usernameField.refresh();
         }
-        if (!adLogin) {
+        if (!showADForm) {
             usernameField.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -168,24 +179,36 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             }
         });
 
+        initNavButtons(view);
+    }
+
+    private void initNavButtons(View view) {
         Button signUpButton = (Button) view.findViewById(R.id.db_signup_button);
         if (signUpButton != null) {
-            signUpButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bus.post(NavigationEvent.SIGN_UP);
-                }
-            });
+            if (!showSignUp) {
+                signUpButton.setVisibility(View.GONE);
+            } else {
+                signUpButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bus.post(NavigationEvent.SIGN_UP);
+                    }
+                });
+            }
         }
 
         Button resetPassword = (Button) view.findViewById(R.id.db_reset_pass_button);
         if (resetPassword != null) {
-            resetPassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bus.post(NavigationEvent.RESET_PASSWORD);
-                }
-            });
+            if (!showResetPassword) {
+                resetPassword.setVisibility(View.GONE);
+            } else {
+                resetPassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bus.post(NavigationEvent.RESET_PASSWORD);
+                    }
+                });
+            }
         }
 
         Button cancelButton = (Button) view.findViewById(R.id.db_enterprise_cancel_button);
@@ -200,7 +223,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     }
 
     private void login() {
-        final Connection connection = matcher.getConnection();
+        final Connection connection = matcher.getConnection() != null ? matcher.getConnection() : defaultConnection;
         if (connection != null) {
             Strategy strategy = client.getApplication().strategyForConnection(connection);
             if (Strategies.ActiveDirectory.getName().equals(strategy.getName())) {
@@ -208,6 +231,11 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));
             }
+            return;
+        }
+
+        if (connection == null && !hasDB) {
+            bus.post(new AuthenticationError(R.string.db_login_error_title, R.string.enterprise_no_connection_message));
             return;
         }
 

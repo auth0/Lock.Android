@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
+import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.BaseTitledFragment;
@@ -82,7 +83,7 @@ public class LockFragmentBuilder {
     }
 
 
-    public Fragment socialLogin() {
+    public Fragment loginWithSocial() {
         final SocialDBFragment fragment = new SocialDBFragment();
         if (application != null) {
             Bundle bundle = new Bundle();
@@ -91,6 +92,14 @@ public class LockFragmentBuilder {
             bundle.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
             fragment.setArguments(bundle);
         }
+        return fragment;
+    }
+
+    public Fragment enterpriseLoginWithSocial(Connection connection) {
+        final Fragment fragment = loginWithSocial();
+        Bundle bundle = fragment.getArguments() == null ? new Bundle() : fragment.getArguments();
+        bundle.putParcelable(DatabaseLoginFragment.DEFAULT_CONNECTION_ARGUMENT, connection);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -110,12 +119,25 @@ public class LockFragmentBuilder {
             return login();
         }
 
-        if (application.getDatabaseStrategy() == null && application.getSocialStrategies().size() > 0) {
+        final int enterpriseCount = application.getEnterpriseStrategies().size();
+        final int socialCount = application.getSocialStrategies().size();
+        final boolean hasDB = application.getDatabaseStrategy() != null;
+        final Strategy ad = application.strategyForName(Strategies.ActiveDirectory.getName());
+
+        if (!hasDB && socialCount > 0 && enterpriseCount == 0) {
             return social();
         }
 
-        if (application.getDatabaseStrategy() != null && application.getSocialStrategies().size() > 0) {
-            return socialLogin();
+        if (!hasDB && socialCount > 0 && ad != null) {
+            return enterpriseLoginWithSocial(ad.getConnections().get(0));
+        }
+
+        if ((hasDB || enterpriseCount > 0) && socialCount > 0) {
+            return loginWithSocial();
+        }
+
+        if (!hasDB && ad != null) {
+            return enterpriseLoginWithConnection(ad.getConnections().get(0));
         }
 
         return login();
@@ -134,7 +156,9 @@ public class LockFragmentBuilder {
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
         arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());
-        arguments.putParcelable(DatabaseLoginFragment.AD_ENTERPRISE_CONNECTION_ARGUMENT, connection);
+        if (connection != null) {
+            arguments.putParcelable(DatabaseLoginFragment.AD_ENTERPRISE_CONNECTION_ARGUMENT, connection);
+        }
         fragment.setArguments(arguments);
         return fragment;
     }
