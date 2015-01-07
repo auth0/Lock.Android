@@ -1,5 +1,5 @@
 /*
- * SocialAuthentication.java
+ * IdentityProviderAuthenticationEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -31,11 +31,11 @@ import java.util.Map;
 /**
  * Created by hernan on 12/17/14.
  */
-public class SocialAuthenticationEvent {
+public class IdentityProviderAuthenticationEvent {
 
     private final Token token;
 
-    public SocialAuthenticationEvent(Map<String, String> values) {
+    public IdentityProviderAuthenticationEvent(Map<String, String> values) {
         this.token = new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token"));
     }
 

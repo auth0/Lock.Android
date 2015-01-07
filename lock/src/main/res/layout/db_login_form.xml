@@ -45,9 +45,11 @@
             android:hint="@string/email_placeholder"
             />
         <View
+            android:id="@+id/db_separator_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/credential_box_border_width"
-            android:background="?attr/Auth0.Separator.Color"/>
+            android:background="?attr/Auth0.Separator.Color"
+            />
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_login_password_field"
             android:tag="db_login_password_field"
@@ -56,12 +58,26 @@
             android:hint="@string/password_placeholder"
             />
     </LinearLayout>
+    <TextView
+        android:id="@+id/single_sign_on_view"
+        android:layout_below="@id/db_login_credentials"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/credential_field_height"
+        android:layout_marginTop="@dimen/lock_vertical_margin"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:drawableLeft="@drawable/ic_lock"
+        android:drawablePadding="@dimen/credential_field_icon_right_padding"
+        android:text="SINGLE SIGN-ON ENABLED"
+        android:textSize="13sp"
+        android:visibility="gone"
+        />
 
     <Button
         android:id="@+id/db_access_button"
         android:tag="db_access_button"
         style="?attr/Auth0.PrimaryButtonStyle"
-        android:layout_below="@id/db_login_credentials"
+        android:layout_below="@id/single_sign_on_view"
         android:layout_marginTop="@dimen/lock_vertical_margin"
         android:text="@string/db_login_btn_text"
         android:fontFamily="sans-serif-medium"/>

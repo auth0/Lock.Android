@@ -12,16 +12,21 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AlertDialogEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.event.SignUpEvent;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.IdentityProvider;
@@ -204,7 +209,7 @@ public class LockActivity extends FragmentActivity {
         }
     }
 
-    @Subscribe public void onSocialAuthentication(SocialAuthenticationRequestEvent event) {
+    @Subscribe public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {
         Log.v(TAG, "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
         identity.start(this, event, application);
@@ -212,6 +217,37 @@ public class LockActivity extends FragmentActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
+
+    @Subscribe
+    public void onSocialAuthentication(IdentityProviderAuthenticationEvent event) {
+        final Token token = event.getToken();
+        lock.getAPIClient().fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile userProfile) {
+                lock.getBus().post(new AuthenticationEvent(userProfile, token));
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
+            }
+        });
+    }
+
+    @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
+        Log.v(TAG, "Received social accessToken " + event.getAccessToken());
+        lock.getAPIClient().socialLogin(event.getService(), event.getAccessToken(), lock.getAuthenticationParameters(), new AuthenticationCallback() {
+            @Override
+            public void onSuccess(UserProfile profile, Token token) {
+                lock.getBus().post(new AuthenticationEvent(profile, token));
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
+            }
+        });
     }
 
     private void showAlertDialog(AlertDialogEvent event) {

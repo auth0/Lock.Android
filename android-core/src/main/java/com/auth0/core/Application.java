@@ -112,4 +112,13 @@ public class Application {
         }
         return null;
     }
+
+    public Strategy strategyForConnection(Connection connection) {
+        for (Strategy strategy: this.strategies) {
+            if (strategy.getConnections().contains(connection)) {
+                return strategy;
+            }
+        }
+        return null;
+    }
 }

@@ -16,6 +16,7 @@
     <string name="db_login_error_message">There was an error processing the sign in.</string>
     <string name="db_login_invalid_credentials_error_message">Wrong email or password.</string>
     <string name="db_cancel_button_text">CANCEL</string>
+    <string name="db_single_sign_on_button">LOGIN WITH %s</string>
 
     <!-- Validation Errors -->
     <string name="invalid_credentials_title">Invalid credentials</string>

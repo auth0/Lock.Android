@@ -39,12 +39,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.core.Connection;
+import com.auth0.core.Strategies;
+import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.util.DomainMatcher;
 import com.auth0.lock.validation.LoginValidator;
@@ -58,6 +63,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
     CredentialField usernameField;
     CredentialField passwordField;
+    View separator;
+    View singleSignOnMessage;
 
     Button accessButton;
     ProgressBar progressBar;
@@ -94,15 +101,27 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 final boolean matches = matcher.matches(s.toString()    );
                 if (matches) {
-                    Log.i(DatabaseLoginFragment.class.getName(), "Matched with domain of connection " + matcher.getConnection().getName());
+                    final Connection connection = matcher.getConnection();
+                    Log.i(DatabaseLoginFragment.class.getName(), "Matched with domain of connection " + connection.getName());
+                    final String domain = connection.getValueForKey("domain");
+                    String singleSignOnButtonText = String.format(getString(R.string.db_single_sign_on_button), domain.toUpperCase());
+                    accessButton.setText(singleSignOnButtonText);
+                } else {
+                    accessButton.setText(R.string.db_login_btn_text);
                 }
+                final int passwordVisibility = matches ? View.GONE : View.VISIBLE;
+                passwordField.setVisibility(passwordVisibility);
+                separator.setVisibility(passwordVisibility);
+                singleSignOnMessage.setVisibility(!matches ? View.GONE : View.VISIBLE);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
+        separator = view.findViewById(R.id.db_separator_view);
         passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);
+        singleSignOnMessage = view.findViewById(R.id.single_sign_on_view);
         accessButton = (Button) view.findViewById(R.id.db_access_button);
         progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +157,17 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     }
 
     private void login() {
+        final Connection connection = matcher.getConnection();
+        if (connection != null) {
+            Strategy strategy = client.getApplication().strategyForConnection(connection);
+            if (Strategies.ActiveDirectory.getName().equals(strategy.getName())) {
+                //Show DB Form for AD
+            } else {
+                bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));
+            }
+            return;
+        }
+
         AuthenticationError error = validator.validateFrom(this);
         boolean valid = error == null;
         if (valid) {

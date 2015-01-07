@@ -28,7 +28,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.auth0.core.Application;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 
 /**
  * Created by hernan on 12/22/14.
@@ -39,7 +39,7 @@ public interface IdentityProvider {
     static final int GOOGLE_PLUS_REQUEST_CODE = 501;
     static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
 
-    void start(Activity activity, SocialAuthenticationRequestEvent event, Application application);
+    void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application);
 
     void stop();
 

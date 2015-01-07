@@ -1,5 +1,5 @@
 /*
- * SocialAuthenticationEvent.java
+ * IdentityProviderAuthenticationRequestEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -31,13 +31,13 @@ import com.auth0.core.Application;
 /**
  * Created by hernan on 12/17/14.
  */
-public class SocialAuthenticationRequestEvent {
+public class IdentityProviderAuthenticationRequestEvent {
 
     private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";
 
     private final String serviceName;
 
-    public SocialAuthenticationRequestEvent(String serviceName) {
+    public IdentityProviderAuthenticationRequestEvent(String serviceName) {
         this.serviceName = serviceName;
     }
 

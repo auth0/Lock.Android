@@ -31,7 +31,7 @@ import android.util.Log;
 import com.auth0.core.Application;
 import com.auth0.lock.Lock;
 import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.identity.IdentityProvider;
 import com.facebook.FacebookOperationCanceledException;
@@ -51,7 +51,7 @@ public class FacebookIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+    public void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application) {
         Session.openActiveSession(activity, true, new Session.StatusCallback() {
             @Override
             public void call(Session session, SessionState sessionState, Exception e) {
