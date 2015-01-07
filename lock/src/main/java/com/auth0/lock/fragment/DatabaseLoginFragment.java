@@ -73,13 +73,14 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     Button accessButton;
     ProgressBar progressBar;
     boolean adLogin;
+    private Connection enterpriseConnection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
-            Connection enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
+            enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
             authenticationParameters.put(ParameterBuilder.CONNECTION, enterpriseConnection.getName());
             adLogin = true;
             useEmail = false;
@@ -140,6 +141,9 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
                 public void afterTextChanged(Editable s) {
                 }
             });
+        } else {
+            TextView message = (TextView) view.findViewById(R.id.db_enterprise_login_message);
+            message.setText(String.format(getString(R.string.db_enterprise_login_message), enterpriseConnection.getValueForKey("domain")));
         }
         separator = view.findViewById(R.id.db_separator_view);
         passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);
