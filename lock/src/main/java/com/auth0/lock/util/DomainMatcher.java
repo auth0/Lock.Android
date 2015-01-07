@@ -65,6 +65,10 @@ public class DomainMatcher {
             return false;
         }
         final String[] mailParts = email.split(AT_SYMBOL);
+        if (mailParts.length != 2) {
+            return false;
+        }
+
         String domain = mailParts[1].toLowerCase();
         for (Map.Entry<Connection, Set<String>> entry: domains.entrySet()) {
             if (entry.getValue().contains(domain)) {

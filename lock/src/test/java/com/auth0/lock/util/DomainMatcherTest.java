@@ -155,6 +155,7 @@ public class DomainMatcherTest {
     @Test
     public void shouldNotMatchInvalidEmail() throws Exception {
         assertThat(matcher.matches("pepe"), is(false));
+        assertThat(matcher.matches("pepe@"), is(false));
         assertThat(matcher.matches("pepe@1"), is(false));
         assertThat(matcher.matches("pepe@a."), is(false));
         assertThat(matcher.matches("pepe@a.co"), is(false));

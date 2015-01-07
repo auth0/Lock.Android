@@ -25,6 +25,9 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,7 @@ import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.util.DomainMatcher;
 import com.auth0.lock.validation.LoginValidator;
 import com.auth0.lock.widget.CredentialField;
 
@@ -50,6 +54,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
     LoginAuthenticationErrorBuilder errorBuilder;
     LoginValidator validator;
+    DomainMatcher matcher;
 
     CredentialField usernameField;
     CredentialField passwordField;
@@ -62,6 +67,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail);
+        matcher = new DomainMatcher(client.getApplication().getEnterpriseStrategies());
     }
 
     @Override
@@ -79,6 +85,23 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             usernameField.setErrorIconResource(R.drawable.ic_person_error);
             usernameField.refresh();
         }
+        usernameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                final boolean matches = matcher.matches(s.toString()    );
+                if (matches) {
+                    Log.i(DatabaseLoginFragment.class.getName(), "Matched with domain of connection " + matcher.getConnection().getName());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);
         accessButton = (Button) view.findViewById(R.id.db_access_button);
         progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
