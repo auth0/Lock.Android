@@ -99,6 +99,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail);
         matcher = new DomainMatcher(client.getApplication().getEnterpriseStrategies());
+        matcher.filterConnection(defaultConnection);
     }
 
     @Override
@@ -223,7 +224,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     }
 
     private void login() {
-        final Connection connection = matcher.getConnection() != null ? matcher.getConnection() : defaultConnection;
+        final Connection connection = matcher.getConnection();
         if (connection != null) {
             Strategy strategy = client.getApplication().strategyForConnection(connection);
             if (Strategies.ActiveDirectory.getName().equals(strategy.getName())) {
@@ -234,7 +235,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             return;
         }
 
-        if (connection == null && !hasDB) {
+        if (defaultConnection == null && !hasDB) {
             bus.post(new AuthenticationError(R.string.db_login_error_title, R.string.enterprise_no_connection_message));
             return;
         }

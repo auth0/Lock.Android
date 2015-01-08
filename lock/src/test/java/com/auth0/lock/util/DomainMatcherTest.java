@@ -171,6 +171,22 @@ public class DomainMatcherTest {
         assertThat(matcher.getConnection(), is(nullValue()));
     }
 
+    @Test
+    public void shouldFilterConnection() throws Exception {
+        matcher.filterConnection(azureConnection);
+        assertThat(matcher.matches("pepe@1.com"), is(false));
+    }
+
+    @Test
+    public void shouldDoNoFilterWithNullConnection() throws Exception {
+        matcher.filterConnection(null);
+        assertThat(matcher.matches("pepe@1.com"), is(true));
+        assertThat(matcher.matches("pepe@2.com"), is(true));
+        assertThat(matcher.matches("pepe@a.com"), is(true));
+        assertThat(matcher.matches("pepe@b.com"), is(true));
+        assertThat(matcher.matches("pepe@c.com"), is(true));
+    }
+
     private <T> Set<T> set(T... values) {
         return new HashSet<>(Arrays.asList(values));
     }

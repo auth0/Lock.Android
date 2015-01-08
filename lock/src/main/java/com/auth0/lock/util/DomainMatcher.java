@@ -79,6 +79,12 @@ public class DomainMatcher {
         return false;
     }
 
+    public void filterConnection(Connection connection) {
+        if (connection != null) {
+            this.domains.remove(connection);
+        }
+    }
+
     public Connection getConnection() {
         return connection;
     }
