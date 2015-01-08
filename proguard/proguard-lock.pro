@@ -8,3 +8,7 @@
 -dontwarn roboguice.activity.RoboSherlock*
 -dontwarn roboguice.activity.RoboMapActivity
 -dontwarn roboguice.activity.Sherlock*
+
+-keepnames class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}

@@ -1,5 +1,5 @@
 /*
- * IdentityProvider.java
+ * IdentityProviderAuthenticationRequestEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -22,28 +22,36 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.identity;
+package com.auth0.lock.event;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.net.Uri;
 
 import com.auth0.core.Application;
-import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 
 /**
- * Created by hernan on 12/22/14.
+ * Created by hernan on 12/17/14.
  */
-public interface IdentityProvider {
+public class IdentityProviderAuthenticationRequestEvent {
 
-    static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
-    static final int GOOGLE_PLUS_REQUEST_CODE = 501;
-    static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";
 
-    void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application);
+    private final String serviceName;
 
-    void stop();
+    public IdentityProviderAuthenticationRequestEvent(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
-    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+    public String getServiceName() {
+        return serviceName;
+    }
 
-    void clearSession();
+    public Uri getAuthenticationUri(Application application) {
+        return Uri.parse(application.getAuthorizeURL()).buildUpon()
+                .appendQueryParameter("response_type", "token")
+                .appendQueryParameter("connection", serviceName)
+                .appendQueryParameter("client_id", application.getId())
+                .appendQueryParameter("scope", "openid")
+                .appendQueryParameter("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), application.getTenant()))
+                .build();
+    }
 }

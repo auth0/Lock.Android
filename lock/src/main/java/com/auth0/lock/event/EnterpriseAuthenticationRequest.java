@@ -1,7 +1,7 @@
 /*
- * SocialAuthentication.java
+ * EnterpriseAuthenticationRequest.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,20 @@
 
 package com.auth0.lock.event;
 
-import com.auth0.core.Token;
-
-import java.util.Map;
+import com.auth0.core.Connection;
 
 /**
- * Created by hernan on 12/17/14.
+ * Created by hernan on 1/7/15.
  */
-public class SocialAuthenticationEvent {
+public class EnterpriseAuthenticationRequest {
 
-    private final Token token;
+    private final Connection connection;
 
-    public SocialAuthenticationEvent(Map<String, String> values) {
-        this.token = new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token"));
+    public EnterpriseAuthenticationRequest(Connection connection) {
+        this.connection = connection;
     }
 
-    public Token getToken() {
-        return token;
+    public Connection getConnection() {
+        return connection;
     }
 }

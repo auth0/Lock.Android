@@ -16,6 +16,7 @@ public class ParameterBuilder {
     public static final String SCOPE_OFFLINE_ACCESS = "openid offline_access";
     public static final String GRANT_TYPE_PASSWORD = "password";
     public static final String ACCESS_TOKEN = "access_token";
+    public static final String CONNECTION = "connection";
 
     private Map<String, String> parameters;
 
@@ -38,7 +39,7 @@ public class ParameterBuilder {
     }
 
     public ParameterBuilder setConnection(String connection) {
-        return set("connection", connection);
+        return set(CONNECTION, connection);
     }
 
     public ParameterBuilder setScope(String scope) {

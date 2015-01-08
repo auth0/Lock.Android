@@ -35,7 +35,7 @@ import android.util.Log;
 import com.auth0.core.Application;
 import com.auth0.lock.Lock;
 import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.identity.IdentityProvider;
 import com.google.android.gms.common.ConnectionResult;
@@ -66,7 +66,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     }
 
     @Override
-    public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+    public void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application) {
         this.activity = activity;
         Log.v(TAG, "Starting G+ connection");
         final int availabilityStatus = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);

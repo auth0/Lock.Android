@@ -34,8 +34,8 @@ import com.auth0.lock.Lock;
 import com.auth0.lock.LockActivity;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.SocialAuthenticationEvent;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.web.CallbackParser;
 import com.auth0.lock.web.WebViewActivity;
 import com.squareup.otto.Bus;
@@ -57,7 +57,7 @@ public class WebIdentityProvider implements IdentityProvider {
         this.bus = lock.getBus();
     }
 
-    public void start(Activity activity, SocialAuthenticationRequestEvent event, Application application) {
+    public void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application) {
         final Uri url = event.getAuthenticationUri(application);
         final Intent intent;
         if (this.useWebView) {
@@ -87,7 +87,7 @@ public class WebIdentityProvider implements IdentityProvider {
                 bus.post(error);
             } else if(values.size() > 0) {
                 Log.d(LockActivity.class.getName(), "Authenticated using web flow");
-                bus.post(new SocialAuthenticationEvent(values));
+                bus.post(new IdentityProviderAuthenticationEvent(values));
             }
         }
         return isValid;

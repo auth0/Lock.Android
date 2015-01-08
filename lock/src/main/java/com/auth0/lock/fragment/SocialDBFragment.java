@@ -40,8 +40,8 @@ import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.SocialAuthenticationEvent;
-import com.auth0.lock.event.SocialAuthenticationRequestEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
+import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.squareup.otto.Subscribe;
 
@@ -83,7 +83,7 @@ public class SocialDBFragment extends DatabaseLoginFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String serviceName = (String) parent.getItemAtPosition(position);
                 Log.d(SocialFragment.class.getName(), "Selected service " + serviceName);
-                bus.post(new SocialAuthenticationRequestEvent(serviceName));
+                bus.post(new IdentityProviderAuthenticationRequestEvent(serviceName));
             }
         });
     }
@@ -91,49 +91,16 @@ public class SocialDBFragment extends DatabaseLoginFragment {
     @Override
     public void onStart() {
         super.onResume();
-        bus.register(this);
     }
 
     @Override
     public void onStop() {
         super.onPause();
-        bus.unregister(this);
     }
 
     @Override
     protected int getTitleResource() {
         return R.string.social_db_title;
-    }
-
-    @Subscribe
-    public void onSocialAuthentication(SocialAuthenticationEvent event) {
-        final Token token = event.getToken();
-        client.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
-            @Override
-            public void onSuccess(UserProfile userProfile) {
-                bus.post(new AuthenticationEvent(userProfile, token));
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(errorBuilder.buildFrom(error));
-            }
-        });
-    }
-
-    @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
-        Log.v(SocialDBFragment.class.getName(), "Received social accessToken " + event.getAccessToken());
-        client.socialLogin(event.getService(), event.getAccessToken(), authenticationParameters, new AuthenticationCallback() {
-            @Override
-            public void onSuccess(UserProfile profile, Token token) {
-                bus.post(new AuthenticationEvent(profile, token));
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(errorBuilder.buildFrom(error));
-            }
-        });
     }
 
 }

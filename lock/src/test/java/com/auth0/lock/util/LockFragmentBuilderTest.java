@@ -24,15 +24,21 @@
 
 package com.auth0.lock.util;
 
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
+
 import com.auth0.core.Application;
+import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
+import com.auth0.lock.fragment.SocialDBFragment;
 import com.auth0.lock.fragment.SocialFragment;
 import com.auth0.lock.util.LockFragmentBuilder;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +47,13 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +71,14 @@ public class LockFragmentBuilderTest {
     @Mock
     private Strategy socialStrategy;
     @Mock
+    private Strategy enterpriseStrategy;
+    @Mock
+    private Strategy adStrategy;
+    @Mock
+    private Strategy databaseStrategy;
+    @Mock
+    private Connection adConnection;
+    @Mock
     private Lock lock;
 
     @Before
@@ -68,6 +86,7 @@ public class LockFragmentBuilderTest {
         MockitoAnnotations.initMocks(this);
         builder = new LockFragmentBuilder(lock);
         builder.setApplication(application);
+        when(adStrategy.getConnections()).thenReturn(Arrays.asList(adConnection));
     }
 
     @Test
@@ -76,9 +95,70 @@ public class LockFragmentBuilderTest {
     }
 
     @Test
+    public void shouldReturnDBLogin() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(databaseStrategy);
+        when(application.getEnterpriseStrategies()).thenReturn(new ArrayList<Strategy>());
+        when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
+        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+    }
+
+
+    @Test
+    public void shouldReturnDBLoginPlusEnterprise() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(databaseStrategy);
+        when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
+        when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
+        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+    }
+
+    @Test
+    public void shouldReturnEnterprise() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(null);
+        when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
+        when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
+        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+    }
+
+    @Test
     public void shouldReturnSocial() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(null);
+        when(application.getEnterpriseStrategies()).thenReturn(new ArrayList<Strategy>());
         when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
         assertThat(builder.root(), is(SocialFragment.class));
+    }
+
+    @Test
+    public void shouldReturnDBPlusSocial() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(databaseStrategy);
+        when(application.getEnterpriseStrategies()).thenReturn(new ArrayList<Strategy>());
+        when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
+        assertThat(builder.root(), is(SocialDBFragment.class));
+    }
+
+    @Test
+    public void shouldReturnEnterprisePlusSocial() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(null);
+        when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
+        when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
+        assertThat(builder.root(), is(SocialDBFragment.class));
+    }
+
+    public void shouldSetDefaultConnectionWithSocial() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(null);
+        when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy, adStrategy));
+        when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
+        final Fragment root = builder.root();
+        assertThat(root.getArguments(), is(notNullValue()));
+        assertThat(root.getArguments().getParcelable(DatabaseLoginFragment.DEFAULT_CONNECTION_ARGUMENT), Matchers.<Parcelable>equalTo(adConnection));
+    }
+
+    public void shouldSetDefaultConnectionWithoutSocial() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(null);
+        when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy, adStrategy));
+        when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
+        final Fragment root = builder.root();
+        assertThat(root.getArguments(), is(notNullValue()));
+        assertThat(root.getArguments().getParcelable(DatabaseLoginFragment.DEFAULT_CONNECTION_ARGUMENT), Matchers.<Parcelable>equalTo(adConnection));
     }
 
     @Test
