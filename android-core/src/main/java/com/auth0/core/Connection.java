@@ -41,6 +41,7 @@ public class Connection implements Parcelable {
         return name;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T getValueForKey(String key) {
         return (T) this.values.get(key);
     }
@@ -51,19 +52,22 @@ public class Connection implements Parcelable {
         if (domain != null) {
             domains.add(domain.toLowerCase());
             List<String> aliases = getValueForKey("domain_aliases");
-            for (String alias: aliases) {
-                domains.add(alias.toLowerCase());
+            if (aliases != null) {
+                for (String alias: aliases) {
+                    domains.add(alias.toLowerCase());
+                }
             }
         }
         return domains;
     }
 
+    @SuppressWarnings("unchecked")
     protected Connection(Parcel in) {
         name = in.readString();
         if (in.readByte() == 0x01) {
             values = (Map<String, Object>) in.readSerializable();
         } else {
-            values = new HashMap<String, Object>();
+            values = new HashMap<>();
         }
     }
 
