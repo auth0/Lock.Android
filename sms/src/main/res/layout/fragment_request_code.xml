@@ -26,9 +26,72 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.auth0.lock.sms.fragment.RequestCodeFragment">
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             android:paddingTop="@dimen/activity_vertical_margin"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             android:background="@android:color/transparent"
+             tools:context="com.auth0.lock.sms.fragment.RequestCodeFragment"
+    >
 
     <include layout="@layout/title_lock"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?attr/Auth0.Message"
+        android:text="@string/enter_phone_number"
+        android:layout_above="@+id/sms_login_credentials"
+        android:layout_centerHorizontal="true"
+        />
+    <LinearLayout
+        android:id="@+id/sms_login_credentials"
+        android:orientation="horizontal"
+        style="?attr/Auth0.CredentialBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_email"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/sms_icon_left_padding"
+            android:paddingRight="@dimen/sms_horizontal_padding"
+            />
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="+54 9"
+            style="?android:attr/borderlessButtonStyle"
+            />
+        <EditText
+            android:id="@+id/sms_login_username_field"
+            style="?attr/Auth0.CredentialField"
+            android:paddingLeft="@dimen/sms_horizontal_padding"
+            android:inputType="phone"
+            android:hint="@string/phone_placeholder"
+            />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/sms_access_button"
+        style="?attr/Auth0.PrimaryButtonStyle"
+        android:layout_below="@id/sms_login_credentials"
+        android:layout_marginTop="@dimen/sms_button_margin_top"
+        android:text="@string/send_passcode_btn_text"
+        android:fontFamily="sans-serif-medium"/>
+
+    <ProgressBar
+        android:id="@+id/sms_login_progress_indicator"
+        android:visibility="gone"
+        android:layout_width="@dimen/primary_button_progress_size"
+        android:layout_height="@dimen/primary_button_progress_size"
+        android:layout_alignTop="@id/db_access_button"
+        android:layout_alignBottom="@id/db_access_button"
+        android:layout_centerHorizontal="true"/>
 
 
 </RelativeLayout>

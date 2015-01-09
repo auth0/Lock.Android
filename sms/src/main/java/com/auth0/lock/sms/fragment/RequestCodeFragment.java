@@ -30,13 +30,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 
-public class RequestCodeFragment extends Fragment {
+public class RequestCodeFragment extends BaseTitledFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected int getTitleResource() {
+        return R.string.sms_title_send_passcode;
     }
 
     @Override

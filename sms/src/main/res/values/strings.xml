@@ -23,5 +23,8 @@
   ~ THE SOFTWARE.
 -->
 <resources>
-
+    <string name="sms_title_send_passcode">Send Passcode</string>
+    <string name="enter_phone_number">Please enter your phone number</string>
+    <string name="phone_placeholder">Phone Number</string>
+    <string name="send_passcode_btn_text">SEND</string>
 </resources>
