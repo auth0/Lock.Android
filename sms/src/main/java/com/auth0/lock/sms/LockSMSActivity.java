@@ -25,6 +25,7 @@
 package com.auth0.lock.sms;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -40,9 +41,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.auth0.lock.Lock;
+import com.auth0.lock.LockProvider;
+import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
+import com.auth0.lock.sms.event.SelectCountryCodeEvent;
+import com.auth0.lock.sms.fragment.CountryCodeActivity;
 import com.auth0.lock.sms.fragment.RequestCodeFragment;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -53,11 +60,15 @@ import java.util.Map;
 public class LockSMSActivity extends FragmentActivity {
 
     public static final String TAG = LockSMSActivity.class.getName();
+    private static final int REQUEST_CODE = 0;
+
+    Lock lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_sms);
+        lock = getLock();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new RequestCodeFragment())
@@ -66,8 +77,38 @@ public class LockSMSActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onStart() {
+        super.onStart();
+        lock.getBus().register(this);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        lock.getBus().unregister(this);
+    }
+
+    @Subscribe
+    public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
+        Intent intent = new Intent(this, CountryCodeActivity.class);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE);
+            String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE);
+            Log.d(TAG, "Picked country " + country);
+            lock.getBus().post(new CountryCodeSelectedEvent(country, dialCode));
+        }
+    }
+
+    private Lock getLock() {
+        if (lock != null) {
+            return lock;
+        }
+        LockProvider provider = (LockProvider) getApplication();
+        return provider.getLock();
+    }
 }

@@ -24,7 +24,6 @@
 
 package com.auth0.lock.sms.fragment;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +34,10 @@ import android.widget.Button;
 
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
+import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
+import com.auth0.lock.sms.event.SelectCountryCodeEvent;
 import com.auth0.lock.sms.task.LoadCountriesTask;
+import com.squareup.otto.Subscribe;
 
 import java.util.Locale;
 import java.util.Map;
@@ -44,7 +46,6 @@ public class RequestCodeFragment extends BaseTitledFragment {
 
     public static final String TAG = RequestCodeFragment.class.getName();
 
-    Map<String, String> codes;
     AsyncTask<String, Void, Map<String, String>> task;
 
     Button countryButton;
@@ -53,14 +54,21 @@ public class RequestCodeFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "Loading countries...");
+        bus.register(this);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (task != null) {
             task.cancel(true);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bus.unregister(this);
     }
 
     @Override
@@ -82,14 +90,12 @@ public class RequestCodeFragment extends BaseTitledFragment {
         countryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent smsIntent = new Intent(getActivity(), CountryCodeActivity.class);
-                startActivity(smsIntent);
+                bus.post(new SelectCountryCodeEvent());
             }
         });
         task = new LoadCountriesTask(getActivity()) {
             @Override
-            protected void onPostExecute(Map<String, String> result) {
-                codes = result;
+            protected void onPostExecute(Map<String, String> codes) {
                 task = null;
                 if (codes != null) {
                     Locale locale = Locale.getDefault();
@@ -103,4 +109,9 @@ public class RequestCodeFragment extends BaseTitledFragment {
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
     }
 
+    @Subscribe
+    public void onCountrySelected(CountryCodeSelectedEvent event) {
+        Log.d(TAG, "Received selected country " + event.getIsoCode() + " dial code " + event.getDialCode());
+        countryButton.setText(event.getDialCode());
+    }
 }

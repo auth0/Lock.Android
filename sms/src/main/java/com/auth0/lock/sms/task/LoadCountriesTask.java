@@ -65,4 +65,7 @@ public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<Stri
         return codes;
     }
 
+    public Context getContext() {
+        return context;
+    }
 }

@@ -63,7 +63,7 @@
             />
         <Button
             android:id="@+id/sms_country_code_button"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:text="@string/sms_default_code"
             style="?android:attr/borderlessButtonStyle"

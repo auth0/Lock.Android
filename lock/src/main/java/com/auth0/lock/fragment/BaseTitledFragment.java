@@ -45,9 +45,9 @@ public abstract class BaseTitledFragment extends Fragment {
     public static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";
     public static final String AUTHENTICATION_USES_EMAIL_ARGUMENT = "AUTHENTICATION_USES_EMAIL_ARGUMENT";
 
-    APIClient client;
-    Bus bus;
-    Map<String, String> authenticationParameters;
+    protected APIClient client;
+    protected Bus bus;
+    protected Map<String, String> authenticationParameters;
     boolean useEmail;
 
     @Override
