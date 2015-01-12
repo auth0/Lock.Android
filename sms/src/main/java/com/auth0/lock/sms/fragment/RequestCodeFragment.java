@@ -24,6 +24,7 @@
 
 package com.auth0.lock.sms.fragment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,6 +79,13 @@ public class RequestCodeFragment extends BaseTitledFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         countryButton = (Button) view.findViewById(R.id.sms_country_code_button);
+        countryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent smsIntent = new Intent(getActivity(), CountryCodeActivity.class);
+                startActivity(smsIntent);
+            }
+        });
         task = new LoadCountriesTask(getActivity()) {
             @Override
             protected void onPostExecute(Map<String, String> result) {
