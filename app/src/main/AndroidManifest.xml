@@ -50,7 +50,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
-        <activity android:name="com.auth0.lock.sms.fragment.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
+        <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock SMS End-->
 
         <!--Facebook Native-->

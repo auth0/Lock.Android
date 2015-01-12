@@ -24,37 +24,17 @@
 
 package com.auth0.lock.sms;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
-import com.auth0.lock.sms.fragment.CountryCodeActivity;
 import com.auth0.lock.sms.fragment.RequestCodeFragment;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Subscribe;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 
 public class LockSMSActivity extends FragmentActivity {

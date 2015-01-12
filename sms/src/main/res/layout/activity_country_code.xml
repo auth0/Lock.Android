@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ item_country_code.xml
+  ~ activity_country_code.xml
   ~
   ~ Copyright (c) 2015 Auth0 (http://auth0.com)
   ~
@@ -23,27 +23,16 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.auth0.lock.sms.CountryCodeActivity">
 
-    <TextView
-        android:id="@+id/sms_country_name_text_view"
-        style="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_weight="5"
-        android:paddingLeft="10dp"
-        android:gravity="center_vertical"
-        />
-    <TextView
-        android:id="@+id/sms_country_code_text_view"
-        style="@android:style/TextAppearance.DeviceDefault.Small"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:textStyle="italic"
-        />
-</LinearLayout>
+    <ListView
+        android:id="@+id/sms_country_code_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
+
+</RelativeLayout>
