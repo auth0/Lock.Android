@@ -62,9 +62,10 @@
             android:paddingRight="@dimen/sms_horizontal_padding"
             />
         <Button
+            android:id="@+id/sms_country_code_button"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="+54 9"
+            android:text="@string/sms_default_code"
             style="?android:attr/borderlessButtonStyle"
             />
         <EditText

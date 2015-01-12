@@ -24,20 +24,42 @@
 
 package com.auth0.lock.sms.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
+import com.auth0.lock.sms.task.LoadCountriesTask;
+
+import java.util.Locale;
+import java.util.Map;
 
 public class RequestCodeFragment extends BaseTitledFragment {
+
+    public static final String TAG = RequestCodeFragment.class.getName();
+
+    Map<String, String> codes;
+    AsyncTask<String, Void, Map<String, String>> task;
+
+    Button countryButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "Loading countries...");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (task != null) {
+            task.cancel(true);
+        }
     }
 
     @Override
@@ -50,6 +72,27 @@ public class RequestCodeFragment extends BaseTitledFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_request_code, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        countryButton = (Button) view.findViewById(R.id.sms_country_code_button);
+        task = new LoadCountriesTask(getActivity()) {
+            @Override
+            protected void onPostExecute(Map<String, String> result) {
+                codes = result;
+                task = null;
+                if (codes != null) {
+                    Locale locale = Locale.getDefault();
+                    String code = codes.get(locale.getCountry());
+                    if (code != null) {
+                        countryButton.setText(code);
+                    }
+                }
+            }
+        };
+        task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
     }
 
 }

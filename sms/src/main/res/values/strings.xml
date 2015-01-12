@@ -27,4 +27,5 @@
     <string name="enter_phone_number">Please enter your phone number</string>
     <string name="phone_placeholder">Phone Number</string>
     <string name="send_passcode_btn_text">SEND</string>
+    <string name="sms_default_code">+1</string>
 </resources>

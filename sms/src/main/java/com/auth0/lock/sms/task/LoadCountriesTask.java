@@ -1,5 +1,5 @@
 /*
- * LockSMSActivity.java
+ * LoadCountriesTask.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -22,23 +22,11 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.sms;
+package com.auth0.lock.sms.task;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 import com.auth0.lock.sms.fragment.RequestCodeFragment;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -46,28 +34,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
+/**
+* Created by hernan on 1/12/15.
+*/
+public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
 
-public class LockSMSActivity extends FragmentActivity {
+    public static final String TAG = LoadCountriesTask.class.getName();
+    public static final String COUNTRIES_JSON_FILE = "countries.json";
 
-    public static final String TAG = LockSMSActivity.class.getName();
+    private final Context context;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lock_sms);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new RequestCodeFragment())
-                    .commit();
-        }
+    public LoadCountriesTask(Context context) {
+        this.context = context;
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected Map<String, String> doInBackground(String... params) {
+
+        Map<String, String> codes;
+        try {
+            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+            codes = new ObjectMapper().readValue(context.getAssets().open(params[0]), typeRef);
+            Log.d(TAG, "Loaded " + codes.size() + " countries");
+        } catch (IOException e) {
+            codes = new HashMap<>();
+            Log.e(TAG, "Failed to load countries JSON file", e);
+        }
+        return codes;
     }
 
 }
