@@ -24,6 +24,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
+             xmlns:custom="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -44,6 +45,7 @@
         android:layout_above="@+id/sms_login_credentials"
         android:layout_centerHorizontal="true"
         />
+
     <LinearLayout
         android:id="@+id/sms_login_credentials"
         android:orientation="horizontal"
@@ -53,28 +55,14 @@
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
         >
-        <ImageView
+        <com.auth0.lock.sms.widget.PhoneField
+            android:id="@+id/sms_phone_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_email"
-            android:layout_gravity="center"
-            android:paddingLeft="@dimen/sms_icon_left_padding"
-            android:paddingRight="@dimen/sms_horizontal_padding"
-            />
-        <Button
-            android:id="@+id/sms_country_code_button"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:text="@string/sms_default_code"
-            style="?android:attr/borderlessButtonStyle"
-            />
-        <EditText
-            android:id="@+id/sms_login_username_field"
-            style="?attr/Auth0.CredentialField"
-            android:paddingLeft="@dimen/sms_horizontal_padding"
-            android:inputType="phone"
-            android:hint="@string/phone_placeholder"
-            />
+            custom:errorPhoneColor="@color/credential_field_error"
+            custom:normalPhoneIconDrawable="@drawable/ic_email"
+            custom:errorPhoneIconDrawable="@drawable/ic_email_error"
+        />
     </LinearLayout>
 
     <Button

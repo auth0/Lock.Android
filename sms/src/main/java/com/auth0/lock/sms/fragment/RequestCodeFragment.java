@@ -36,6 +36,7 @@ import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
+import com.auth0.lock.sms.widget.PhoneField;
 import com.auth0.lock.sms.task.LoadCountriesTask;
 import com.squareup.otto.Subscribe;
 
@@ -48,7 +49,8 @@ public class RequestCodeFragment extends BaseTitledFragment {
 
     AsyncTask<String, Void, Map<String, String>> task;
 
-    Button countryButton;
+    PhoneField phoneField;
+    Button sendButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,15 +81,14 @@ public class RequestCodeFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_request_code, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        countryButton = (Button) view.findViewById(R.id.sms_country_code_button);
-        countryButton.setOnClickListener(new View.OnClickListener() {
+        phoneField = (PhoneField) view.findViewById(R.id.sms_phone_field);
+        phoneField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bus.post(new SelectCountryCodeEvent());
@@ -101,17 +102,30 @@ public class RequestCodeFragment extends BaseTitledFragment {
                     Locale locale = Locale.getDefault();
                     String code = codes.get(locale.getCountry());
                     if (code != null) {
-                        countryButton.setText(code);
+                        phoneField.setDialCode(code);
                     }
                 }
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
+        sendButton = (Button) view.findViewById(R.id.sms_access_button);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestSmsCode();
+            }
+        });
+    }
+
+    private void requestSmsCode() {
+
     }
 
     @Subscribe
     public void onCountrySelected(CountryCodeSelectedEvent event) {
         Log.d(TAG, "Received selected country " + event.getIsoCode() + " dial code " + event.getDialCode());
-        countryButton.setText(event.getDialCode());
+        phoneField.setDialCode(event.getDialCode());
     }
+
+
 }

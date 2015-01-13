@@ -27,7 +27,6 @@ package com.auth0.lock.validation;
 import android.support.v4.app.Fragment;
 
 import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.widget.CredentialField;
 
 /**
  * Created by hernan on 12/15/14.
@@ -46,7 +45,7 @@ public abstract class BaseFragmentValidator implements Validator {
 
     @Override
     public AuthenticationError validateFrom(Fragment fragment) {
-        CredentialField field = (CredentialField) fragment.getView().findViewById(fieldResource);
+        ValidationEnabled field = (ValidationEnabled) fragment.getView().findViewById(fieldResource);
         String value = field.getText().toString();
         boolean valid = doValidate(value);
         field.markAsInvalid(!valid);
