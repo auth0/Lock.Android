@@ -24,7 +24,6 @@
 
 package com.auth0.lock.sms;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,14 +32,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.auth0.lock.sms.adapter.Country;
 import com.auth0.lock.sms.adapter.CountryAdapter;
@@ -79,18 +74,17 @@ public class CountryCodeActivity extends ActionBarActivity {
             searchText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    Log.v(TAG, "Filtering with string (" + s + ")");
                     CountryAdapter adapter = (CountryAdapter) listView.getAdapter();
                     adapter.getFilter().filter(s);
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    Log.v(TAG, "Filtering with string (" + s + ")");
                 }
             });
         }

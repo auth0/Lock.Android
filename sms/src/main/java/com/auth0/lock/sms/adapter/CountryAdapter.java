@@ -96,11 +96,11 @@ public class CountryAdapter extends BaseAdapter {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            String prefix = constraint.toString().toLowerCase();
+            String filter = constraint.toString().toLowerCase();
             FilterResults results = new FilterResults();
             List<Country> filtered = new ArrayList<>(countries.size());
             for (Country country : countries) {
-                if (country.getDisplayName().toLowerCase().contains(prefix)) {
+                if (country.getDisplayName().toLowerCase().contains(filter) || country.getIsoCode().toLowerCase().contains(filter)) {
                     filtered.add(country);
                 }
             }
