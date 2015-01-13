@@ -32,12 +32,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
+import com.auth0.lock.sms.validation.PhoneNumberValidator;
 import com.auth0.lock.sms.widget.PhoneField;
 import com.auth0.lock.sms.task.LoadCountriesTask;
+import com.auth0.lock.validation.Validator;
 import com.squareup.otto.Subscribe;
 
 import java.util.Locale;
@@ -48,6 +51,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
     public static final String TAG = RequestCodeFragment.class.getName();
 
     AsyncTask<String, Void, Map<String, String>> task;
+    Validator validator;
 
     PhoneField phoneField;
     Button sendButton;
@@ -87,6 +91,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        validator = new PhoneNumberValidator(R.id.sms_phone_field, R.string.sms_send_code_error_tile, R.string.sms_send_code_no_phone_message);
         phoneField = (PhoneField) view.findViewById(R.id.sms_phone_field);
         phoneField.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +123,13 @@ public class RequestCodeFragment extends BaseTitledFragment {
     }
 
     private void requestSmsCode() {
-
+        AuthenticationError error = validator.validateFrom(this);
+        boolean valid = error == null;
+        if (valid) {
+            //Send Request Code
+        } else {
+            bus.post(error);
+        }
     }
 
     @Subscribe

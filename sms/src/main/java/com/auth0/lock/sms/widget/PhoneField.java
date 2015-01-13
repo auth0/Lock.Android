@@ -25,6 +25,7 @@
 package com.auth0.lock.sms.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.text.Editable;
 import android.util.AttributeSet;
@@ -46,8 +47,8 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
     private int iconResource;
     private int errorIconResource;
     private int errorColorResource;
-    private int colorResource;
-    private int hintColorResource;
+    private ColorStateList colorResource;
+    private ColorStateList hintColorResource;
     private int codeColorResource;
 
     private ImageView iconView;
@@ -77,8 +78,8 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
             iconResource = a.getResourceId(R.styleable.PhoneField_normalPhoneIconDrawable, -1);
             errorIconResource = a.getResourceId(R.styleable.PhoneField_errorPhoneIconDrawable, -1);
             errorColorResource = a.getResourceId(R.styleable.PhoneField_errorPhoneColor, R.color.credential_field_error);
-            colorResource = phoneEditText.getTextColors().getDefaultColor();
-            hintColorResource = phoneEditText.getHintTextColors().getDefaultColor();
+            colorResource = phoneEditText.getTextColors();
+            hintColorResource = phoneEditText.getHintTextColors();
             codeColorResource = codeButton.getTextColors().getDefaultColor();
             iconView.setImageResource(iconResource);
         } finally {
@@ -92,10 +93,14 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
             phoneEditText.setTextColor(getResources().getColor(errorColorResource));
             phoneEditText.setHintTextColor(getResources().getColor(errorColorResource));
             iconView.setImageResource(errorIconResource);
-            codeButton.setTextColor(errorColorResource);
+            codeButton.setTextColor(getResources().getColor(errorColorResource));
         } else {
-            phoneEditText.setTextColor(getResources().getColor(colorResource));
-            phoneEditText.setHintTextColor(getResources().getColor(hintColorResource));
+            final Editable text = phoneEditText.getText();
+            phoneEditText.setText(null);
+            phoneEditText.setTextColor(colorResource);
+            phoneEditText.setHintTextColor(hintColorResource);
+            phoneEditText.setText(text);
+            phoneEditText.setSelection(text.length());
             iconView.setImageResource(iconResource);
             codeButton.setTextColor(codeColorResource);
         }
