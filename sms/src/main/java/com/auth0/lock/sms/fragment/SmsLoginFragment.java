@@ -29,7 +29,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 
@@ -43,6 +45,17 @@ public class SmsLoginFragment extends BaseTitledFragment {
         return inflater.inflate(R.layout.fragment_sms_login, container, false);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Button noCodeButton = (Button) view.findViewById(R.id.sms_no_code_button);
+        noCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bus.post(NavigationEvent.BACK);
+            }
+        });
+    }
 
     @Override
     protected int getTitleResource() {

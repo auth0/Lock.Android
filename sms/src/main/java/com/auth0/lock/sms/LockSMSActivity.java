@@ -31,6 +31,7 @@ import android.util.Log;
 
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
+import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
 import com.auth0.lock.sms.event.SmsPasscodeSentEvent;
@@ -93,6 +94,17 @@ public class LockSMSActivity extends FragmentActivity {
                 .replace(R.id.container, fragment)
                 .addToBackStack(SmsLoginFragment.class.getName())
                 .commit();
+    }
+
+    @Subscribe
+    public void onNavigationEvent(NavigationEvent event) {
+        switch (event) {
+            case BACK:
+                getSupportFragmentManager().popBackStack();
+                break;
+            default:
+                Log.v(TAG, "Invalid navigation event " + event);
+        }
     }
 
     @Override
