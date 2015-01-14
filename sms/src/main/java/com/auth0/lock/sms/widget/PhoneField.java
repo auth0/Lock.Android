@@ -57,7 +57,7 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
 
     public PhoneField(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs, -1);
+        init(context, attrs, android.R.attr.textViewStyle);
     }
 
     public PhoneField(Context context, AttributeSet attrs, int defStyleAttr) {

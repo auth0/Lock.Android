@@ -32,12 +32,14 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_email"
         android:layout_gravity="center"
+        android:focusable="false"
         android:paddingLeft="@dimen/sms_icon_left_padding"
         android:paddingRight="@dimen/sms_horizontal_padding"
         />
     <Button
         android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:focusable="false"
         android:text="@string/sms_default_code"
         style="?android:attr/borderlessButtonStyle"
         />
