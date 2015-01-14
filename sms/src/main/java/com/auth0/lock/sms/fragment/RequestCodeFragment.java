@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.auth0.api.AuthenticatedAPIClient;
 import com.auth0.api.callback.BaseCallback;
@@ -64,6 +65,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
 
     PhoneField phoneField;
     Button sendButton;
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,6 +143,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
                 requestSmsCode();
             }
         });
+        progressBar = (ProgressBar) view.findViewById(R.id.sms_send_code_progress_indicator);
     }
 
     private void requestSmsCode() {
@@ -149,28 +152,41 @@ public class RequestCodeFragment extends BaseTitledFragment {
         if (valid) {
             boolean hasClient = checkForAuthClient();
             if (hasClient) {
-                final String phoneNumber = phoneField.getCompletePhoneNumber();
-                authClient.requestSmsCode(phoneNumber, new BaseCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void payload) {
-                        Log.d(TAG, "SMS code sent to " + phoneNumber);
-                        final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
-                        editor.putString(LAST_PHONE_NUMBER_KEY, phoneField.getPhoneNumber());
-                        editor.putString(LAST_PHONE_DIAL_CODE_KEY, phoneField.getDialCode());
-                        editor.apply();
-                    }
-
-                    @Override
-                    public void onFailure(Throwable error) {
-                        bus.post(new AuthenticationError(R.string.sms_send_code_error_tile, R.string.sms_send_code_error_message, error));
-                    }
-                });
+                sendRequestCode();
             }
         } else {
             bus.post(error);
         }
     }
 
+    private void sendRequestCode() {
+        sendButton.setEnabled(false);
+        sendButton.setText("");
+        progressBar.setVisibility(View.VISIBLE);
+        final String phoneNumber = phoneField.getCompletePhoneNumber();
+        authClient.requestSmsCode(phoneNumber, new BaseCallback<Void>() {
+            @Override
+            public void onSuccess(Void payload) {
+                Log.d(TAG, "SMS code sent to " + phoneNumber);
+                final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+                editor.putString(LAST_PHONE_NUMBER_KEY, phoneField.getPhoneNumber());
+                editor.putString(LAST_PHONE_DIAL_CODE_KEY, phoneField.getDialCode());
+                editor.apply();
+                sendButton.setEnabled(true);
+                sendButton.setText(R.string.send_passcode_btn_text);
+                progressBar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                bus.post(new AuthenticationError(R.string.sms_send_code_error_tile, R.string.sms_send_code_error_message, error));
+                sendButton.setEnabled(true);
+                sendButton.setText(R.string.send_passcode_btn_text);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
     @Subscribe
     public void onCountrySelected(CountryCodeSelectedEvent event) {
         Log.d(TAG, "Received selected country " + event.getIsoCode() + " dial code " + event.getDialCode());

@@ -74,12 +74,12 @@
         android:fontFamily="sans-serif-medium"/>
 
     <ProgressBar
-        android:id="@+id/sms_login_progress_indicator"
+        android:id="@+id/sms_send_code_progress_indicator"
         android:visibility="gone"
         android:layout_width="@dimen/primary_button_progress_size"
         android:layout_height="@dimen/primary_button_progress_size"
-        android:layout_alignTop="@id/db_access_button"
-        android:layout_alignBottom="@id/db_access_button"
+        android:layout_alignTop="@id/sms_access_button"
+        android:layout_alignBottom="@id/sms_access_button"
         android:layout_centerHorizontal="true"/>
 
     <Button
