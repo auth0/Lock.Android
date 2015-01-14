@@ -33,7 +33,9 @@ import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
+import com.auth0.lock.sms.event.SmsPasscodeSentEvent;
 import com.auth0.lock.sms.fragment.RequestCodeFragment;
+import com.auth0.lock.sms.fragment.SmsLoginFragment;
 import com.squareup.otto.Subscribe;
 
 
@@ -79,6 +81,18 @@ public class LockSMSActivity extends FragmentActivity {
     public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Subscribe
+    public void onPasscodeSentEvent(SmsPasscodeSentEvent event) {
+        final SmsLoginFragment fragment = new SmsLoginFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString(SmsLoginFragment.PHONE_NUMBER_ARGUMENT, event.getPhoneNumber());
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(SmsLoginFragment.class.getName())
+                .commit();
     }
 
     @Override

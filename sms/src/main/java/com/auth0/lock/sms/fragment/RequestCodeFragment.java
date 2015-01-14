@@ -42,6 +42,7 @@ import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
+import com.auth0.lock.sms.event.SmsPasscodeSentEvent;
 import com.auth0.lock.sms.validation.PhoneNumberValidator;
 import com.auth0.lock.sms.widget.PhoneField;
 import com.auth0.lock.sms.task.LoadCountriesTask;
@@ -119,7 +120,8 @@ public class RequestCodeFragment extends BaseTitledFragment {
             }
         });
         final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        String phoneNumber = preferences.getString(LAST_PHONE_NUMBER_KEY, null);
+        final String phoneNumber = preferences.getString(LAST_PHONE_NUMBER_KEY, null);
+        final String dialCode = preferences.getString(LAST_PHONE_DIAL_CODE_KEY, null);
         phoneField.setPhoneNumber(phoneNumber);
         task = new LoadCountriesTask(getActivity()) {
             @Override
@@ -127,8 +129,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
                 task = null;
                 if (codes != null) {
                     Locale locale = Locale.getDefault();
-                    final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-                    String code = preferences.getString(LAST_PHONE_DIAL_CODE_KEY, codes.get(locale.getCountry()));
+                    String code = dialCode != null ? dialCode : codes.get(locale.getCountry());
                     if (code != null) {
                         phoneField.setDialCode(code);
                     }
@@ -144,6 +145,19 @@ public class RequestCodeFragment extends BaseTitledFragment {
             }
         });
         progressBar = (ProgressBar) view.findViewById(R.id.sms_send_code_progress_indicator);
+        final Button hasCodeButton = (Button) view.findViewById(R.id.sms_already_has_code_button);
+        hasCodeButton.setVisibility(phoneNumber != null && dialCode != null ? View.VISIBLE : View.GONE);
+        hasCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+                final String phoneNumber = preferences.getString(LAST_PHONE_NUMBER_KEY, null);
+                final String dialCode = preferences.getString(LAST_PHONE_DIAL_CODE_KEY, null);
+                if (phoneNumber != null && dialCode != null) {
+                    bus.post(new SmsPasscodeSentEvent(dialCode + phoneNumber));
+                }
+            }
+        });
     }
 
     private void requestSmsCode() {
@@ -175,7 +189,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
                 sendButton.setEnabled(true);
                 sendButton.setText(R.string.send_passcode_btn_text);
                 progressBar.setVisibility(View.GONE);
-
+                bus.post(new SmsPasscodeSentEvent(phoneNumber));
             }
 
             @Override

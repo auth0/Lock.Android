@@ -35,6 +35,8 @@ import com.auth0.lock.sms.R;
 
 public class SmsLoginFragment extends BaseTitledFragment {
 
+    public static final String PHONE_NUMBER_ARGUMENT = "PHONE_NUMBER_ARGUMENT";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
