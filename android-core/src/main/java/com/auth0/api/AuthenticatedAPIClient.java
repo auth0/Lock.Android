@@ -57,9 +57,10 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
 
     public void requestSmsCode(String phoneNumber, final BaseCallback<Void> callback) {
         String requestCodeUrl = getBaseURL() + "/api/v2/users";
-        Map<String, String> params = ParameterBuilder.newBuilder()
+        Map<String, Object> params = ParameterBuilder.newBuilder()
+                .clearAll()
                 .setConnection("sms")
-                .set("email_verified", "false")
+                .set("email_verified", false)
                 .set("phone_number", phoneNumber)
                 .asDictionary();
 

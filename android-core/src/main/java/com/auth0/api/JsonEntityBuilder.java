@@ -24,7 +24,7 @@ public class JsonEntityBuilder {
         this.mapper = mapper;
     }
 
-    public HttpEntity newEntityFrom(Map<String, String> values) throws JsonEntityBuildException {
+    public HttpEntity newEntityFrom(Map<String, Object> values) throws JsonEntityBuildException {
         try {
             byte[] bytes = mapper.writeValueAsBytes(values);
             ByteArrayEntity entity = new ByteArrayEntity(bytes);

@@ -78,7 +78,7 @@ public class APIClient extends BaseAPIClient {
     public void login(final String username, String password, Map<String, String> params, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/ro";
 
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(USERNAME_KEY, username)
                 .set(PASSWORD_KEY, password)
                 .setGrantType(GRANT_TYPE_PASSWORD)
@@ -98,7 +98,7 @@ public class APIClient extends BaseAPIClient {
         if (params.containsKey("access_token")) {
             params.put("main_access_token", params.remove("access_token"));
         }
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .setClientId(getClientID())
                 .setConnection(connectionName)
                 .setAccessToken(accessToken)
@@ -109,7 +109,7 @@ public class APIClient extends BaseAPIClient {
         login(loginURL, request, callback);
     }
 
-    private void login(final String url, final Map<String, String> request, final AuthenticationCallback callback) {
+    private void login(final String url, final Map<String, Object> request, final AuthenticationCallback callback) {
         try {
             HttpEntity entity = this.entityBuilder.newEntityFrom(request);
             this.client.post(null, url, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
@@ -171,7 +171,7 @@ public class APIClient extends BaseAPIClient {
     private void signUp(String email, String password, Map<String, String> parameters, AsyncHttpResponseHandler callback) {
         String signUpUrl = getBaseURL() + "/dbconnections/signup";
 
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
                 .setClientId(getClientID())
@@ -193,7 +193,7 @@ public class APIClient extends BaseAPIClient {
     public void changePassword(final String email, String newPassword, Map<String, String> parameters, BaseCallback<Void> callback) {
         String changePasswordUrl = getBaseURL() + "/dbconnections/change_password";
 
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, newPassword)
                 .setClientId(getClientID())
@@ -220,7 +220,7 @@ public class APIClient extends BaseAPIClient {
     public void fetchUserProfile(String idToken, final BaseCallback<UserProfile> callback) {
         Log.v(APIClient.class.getName(), "Fetching user profile with token " + idToken);
         final String profileURL = getBaseURL() + "/tokeninfo";
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(ID_TOKEN_KEY, idToken)
                 .asDictionary();
         try {
