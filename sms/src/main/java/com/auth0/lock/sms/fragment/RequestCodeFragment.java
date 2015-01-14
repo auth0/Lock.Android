@@ -24,6 +24,8 @@
 
 package com.auth0.lock.sms.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,6 +55,8 @@ public class RequestCodeFragment extends BaseTitledFragment {
     public static final String REQUEST_CODE_JWT_ARGUMENT = "REQUEST_CODE_JWT_ARGUMENT";
 
     private static final String TAG = RequestCodeFragment.class.getName();
+    private static final String LAST_PHONE_NUMBER_KEY = "LAST_PHONE_NUMBER";
+    private static final String LAST_PHONE_DIAL_CODE_KEY = "LAST_PHONE_DIAL_CODE_KEY";
 
     AsyncTask<String, Void, Map<String, String>> task;
     Validator validator;
@@ -112,13 +116,17 @@ public class RequestCodeFragment extends BaseTitledFragment {
                 bus.post(new SelectCountryCodeEvent());
             }
         });
+        final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String phoneNumber = preferences.getString(LAST_PHONE_NUMBER_KEY, null);
+        phoneField.setPhoneNumber(phoneNumber);
         task = new LoadCountriesTask(getActivity()) {
             @Override
             protected void onPostExecute(Map<String, String> codes) {
                 task = null;
                 if (codes != null) {
                     Locale locale = Locale.getDefault();
-                    String code = codes.get(locale.getCountry());
+                    final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    String code = preferences.getString(LAST_PHONE_DIAL_CODE_KEY, codes.get(locale.getCountry()));
                     if (code != null) {
                         phoneField.setDialCode(code);
                     }
@@ -146,6 +154,10 @@ public class RequestCodeFragment extends BaseTitledFragment {
                     @Override
                     public void onSuccess(Void payload) {
                         Log.d(TAG, "SMS code sent to " + phoneNumber);
+                        final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+                        editor.putString(LAST_PHONE_NUMBER_KEY, phoneField.getPhoneNumber());
+                        editor.putString(LAST_PHONE_DIAL_CODE_KEY, phoneField.getDialCode());
+                        editor.apply();
                     }
 
                     @Override

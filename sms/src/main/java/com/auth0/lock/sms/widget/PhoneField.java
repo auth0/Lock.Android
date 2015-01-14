@@ -131,4 +131,8 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
     public void setDialCode(String dialCode) {
         codeButton.setText(dialCode);
     }
+
+    public void setPhoneNumber(String phoneNumber) {
+        phoneEditText.setText(phoneNumber);
+    }
 }
