@@ -82,5 +82,13 @@
         android:layout_alignBottom="@id/db_access_button"
         android:layout_centerHorizontal="true"/>
 
+    <Button
+        android:id="@+id/sms_already_has_code_button"
+        style="?attr/Auth0.SecondaryButtonStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textAllCaps="true"
+        android:visibility="gone"
+        android:text="@string/sms_already_have_code_btn"/>
 
 </RelativeLayout>

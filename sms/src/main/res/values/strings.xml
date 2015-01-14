@@ -34,4 +34,5 @@
     <string name="sms_send_code_no_phone_message">You must enter a valid phone number</string>
     <string name="sms_no_jwt_found_title">There was an error with your configuration</string>
     <string name="sms_no_jwt_found_message">No JWT found for API v2. Please check that you provide one in the intent for LockSMSActivity</string>
+    <string name="sms_already_have_code_btn">Already have a code?</string>
 </resources>
