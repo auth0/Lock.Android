@@ -40,6 +40,7 @@
         android:id="@+id/sms_enter_code_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         style="?attr/Auth0.Message"
         android:layout_above="@+id/sms_login_credentials"
         android:layout_centerHorizontal="true"

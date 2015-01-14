@@ -26,10 +26,12 @@ package com.auth0.lock.sms.fragment;
 
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
@@ -38,6 +40,17 @@ import com.auth0.lock.sms.R;
 public class SmsLoginFragment extends BaseTitledFragment {
 
     public static final String PHONE_NUMBER_ARGUMENT = "PHONE_NUMBER_ARGUMENT";
+
+    private String phoneNumber;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle arguments = getArguments();
+        if (arguments != null) {
+            phoneNumber = arguments.getString(PHONE_NUMBER_ARGUMENT);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +68,9 @@ public class SmsLoginFragment extends BaseTitledFragment {
                 bus.post(NavigationEvent.BACK);
             }
         });
+        TextView messageTextView = (TextView) view.findViewById(R.id.sms_enter_code_message);
+        String messageFormat = getString(R.string.sms_login_message);
+        messageTextView.setText(Html.fromHtml(String.format(messageFormat, phoneNumber)));
     }
 
     @Override
