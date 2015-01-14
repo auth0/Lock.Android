@@ -39,7 +39,10 @@ import com.squareup.otto.Subscribe;
 
 public class LockSMSActivity extends FragmentActivity {
 
-    public static final String TAG = LockSMSActivity.class.getName();
+    public static final String REQUEST_SMS_CODE_JWT = "REQUEST_SMS_CODE_JWT";
+
+    private static final String TAG = LockSMSActivity.class.getName();
+
     private static final int REQUEST_CODE = 0;
 
     Lock lock;
@@ -50,8 +53,12 @@ public class LockSMSActivity extends FragmentActivity {
         setContentView(R.layout.activity_lock_sms);
         lock = getLock();
         if (savedInstanceState == null) {
+            final RequestCodeFragment fragment = new RequestCodeFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString(RequestCodeFragment.REQUEST_CODE_JWT_ARGUMENT, getIntent().getStringExtra(REQUEST_SMS_CODE_JWT));
+            fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new RequestCodeFragment())
+                    .add(R.id.container, fragment)
                     .commit();
         }
     }

@@ -32,6 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.auth0.api.AuthenticatedAPIClient;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
@@ -48,10 +50,13 @@ import java.util.Map;
 
 public class RequestCodeFragment extends BaseTitledFragment {
 
-    public static final String TAG = RequestCodeFragment.class.getName();
+    public static final String REQUEST_CODE_JWT_ARGUMENT = "REQUEST_CODE_JWT_ARGUMENT";
+
+    private static final String TAG = RequestCodeFragment.class.getName();
 
     AsyncTask<String, Void, Map<String, String>> task;
     Validator validator;
+    AuthenticatedAPIClient authClient;
 
     PhoneField phoneField;
     Button sendButton;
@@ -61,6 +66,14 @@ public class RequestCodeFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "Loading countries...");
         bus.register(this);
+        final Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey(REQUEST_CODE_JWT_ARGUMENT)) {
+
+            authClient = new AuthenticatedAPIClient(client.getClientID(), client.getBaseURL(), client.getConfigurationURL(), client.getTenantName());
+            authClient.setJWT(arguments.getString(REQUEST_CODE_JWT_ARGUMENT));
+        }
+
+        checkForAuthClient();
     }
 
     @Override
@@ -126,7 +139,21 @@ public class RequestCodeFragment extends BaseTitledFragment {
         AuthenticationError error = validator.validateFrom(this);
         boolean valid = error == null;
         if (valid) {
-            //Send Request Code
+            boolean hasClient = checkForAuthClient();
+            if (hasClient) {
+                final String phoneNumber = phoneField.getCompletePhoneNumber();
+                authClient.requestSmsCode(phoneNumber, new BaseCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void payload) {
+                        Log.d(TAG, "SMS code sent to " + phoneNumber);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable error) {
+                        bus.post(new AuthenticationError(R.string.sms_send_code_error_tile, R.string.sms_send_code_error_message, error));
+                    }
+                });
+            }
         } else {
             bus.post(error);
         }
@@ -138,5 +165,13 @@ public class RequestCodeFragment extends BaseTitledFragment {
         phoneField.setDialCode(event.getDialCode());
     }
 
+
+    private boolean checkForAuthClient() {
+        final boolean noJwt = authClient == null;
+        if (noJwt) {
+            bus.post(new AuthenticationError(R.string.sms_no_jwt_found_title, R.string.sms_no_jwt_found_message));
+        }
+        return !noJwt;
+    }
 
 }
