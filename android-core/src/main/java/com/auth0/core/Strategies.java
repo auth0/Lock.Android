@@ -3,7 +3,7 @@ package com.auth0.core;
 import static com.auth0.core.Strategies.Type.*;
 
 /**
- * Created by hernan on 12/1/14.
+ * An enum with all strategies available in Auth0
  */
 public enum Strategies {
     Auth0("auth0", DATABASE),

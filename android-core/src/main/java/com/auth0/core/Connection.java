@@ -15,7 +15,7 @@ import java.util.Set;
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
- * Created by hernan on 11/28/14.
+ * Class with a Auth0 connection info
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Connection implements Parcelable {
@@ -24,6 +24,10 @@ public class Connection implements Parcelable {
 
     private Map<String, Object> values;
 
+    /**
+     * Creates a new connection instance
+     * @param values Connection values
+     */
     @JsonCreator
     public Connection(Map<String, Object> values) {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
@@ -33,6 +37,10 @@ public class Connection implements Parcelable {
         this.values = values;
     }
 
+    /**
+     * Returns all the connection values
+     * @return connection values
+     */
     public Map<String, Object> getValues() {
         return values;
     }
@@ -41,11 +49,21 @@ public class Connection implements Parcelable {
         return name;
     }
 
+    /**
+     * Returns a value using its key
+     * @param key a key
+     * @param <T> type of value to return
+     * @return a value
+     */
     @SuppressWarnings("unchecked")
     public <T> T getValueForKey(String key) {
         return (T) this.values.get(key);
     }
 
+    /**
+     * Get set of domain if the connection is Enterprise
+     * @return a set with all domains configured
+     */
     public Set<String> getDomainSet() {
         Set<String> domains = new HashSet<>();
         String domain = getValueForKey("domain");

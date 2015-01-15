@@ -18,7 +18,7 @@ import java.util.TimeZone;
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
- * Created by hernan on 12/1/14.
+ * Class that holds the information of a user's profile
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserProfile implements Parcelable {
@@ -80,10 +80,18 @@ public class UserProfile implements Parcelable {
         return createdAt;
     }
 
+    /**
+     * Returns extra information of the profile.
+     * @return
+     */
     public Map<String, Object> getExtraInfo() {
         return new HashMap<String, Object>(extraInfo);
     }
 
+    /**
+     * List of the identities from a Identity Provider associated to the user.
+     * @return
+     */
     public List<UserIdentity> getIdentities() {
         return identities;
     }

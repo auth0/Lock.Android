@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by hernan on 12/2/14.
+ * Class that holds the information from a Identity Provider like Facebook or Twitter.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserIdentity implements Parcelable {

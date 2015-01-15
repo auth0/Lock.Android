@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by hernan on 12/1/14.
+ * Class that holds a user's token information.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Token implements Parcelable {
