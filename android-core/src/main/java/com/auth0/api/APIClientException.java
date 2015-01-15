@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Created by hernan on 12/10/14.
+ * Internal exception raised when a request to the API fails
  */
 public class APIClientException extends RuntimeException {
 
@@ -37,28 +37,54 @@ public class APIClientException extends RuntimeException {
 
     private Map<String, Object> responseError;
 
+    /**
+     * Creates a new instance of the exception
+     * @param detailMessage error message
+     * @param throwable the cause of the exception
+     */
     public APIClientException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
         this.statusCode = -1;
         this.responseError = new HashMap();
     }
 
+    /**
+     * Creates a new instance of the exception
+     * @param detailMessage error message
+     * @param statusCode status code returned by the server
+     * @param responseError payload of the error returned by the server
+     */
     public APIClientException(String detailMessage, int statusCode, Map<String, Object> responseError) {
         super(detailMessage);
         this.statusCode = statusCode;
         this.responseError = responseError != null ? responseError : new HashMap<String, Object>();
     }
 
+    /**
+     * Creates a new instance of the exception
+     * @param detailMessage error message
+     * @param throwable the cause of the exception
+     * @param statusCode status code returned by the server
+     * @param responseError payload of the error returned by the server
+     */
     public APIClientException(String detailMessage, Throwable throwable, int statusCode, Map<String, Object> responseError) {
         super(detailMessage, throwable);
         this.statusCode = statusCode;
         this.responseError = responseError != null ? responseError : new HashMap<String, Object>();
     }
 
+    /**
+     * Returns the server error response payload
+     * @return payload of the error response or null.
+     */
     public Map<String, Object> getResponseError() {
         return responseError;
     }
 
+    /**
+     * Returns the status code returned by the server
+     * @return HTTP status code
+     */
     public int getStatusCode() {
         return statusCode;
     }

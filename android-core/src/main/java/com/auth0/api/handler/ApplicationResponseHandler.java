@@ -17,16 +17,22 @@ import org.json.JSONTokener;
 import java.io.IOException;
 
 /**
- * Created by hernan on 12/1/14.
+ * Callback and response handler used when requesting Auth0's app info.
  */
 public abstract class ApplicationResponseHandler extends AsyncHttpResponseHandler implements BaseCallback<Application> {
 
+    /**
+     * JSON-POJO mapper (Jackson)
+     */
     private ObjectMapper mapper;
 
     protected ApplicationResponseHandler(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
+    /**
+     * @see com.loopj.android.http.AsyncHttpResponseHandler#onSuccess(int, org.apache.http.Header[], byte[])
+     */
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         try {
@@ -42,6 +48,9 @@ public abstract class ApplicationResponseHandler extends AsyncHttpResponseHandle
         }
     }
 
+    /**
+     * @see com.loopj.android.http.AsyncHttpResponseHandler#onFailure(int, org.apache.http.Header[], byte[], Throwable)
+     */
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         this.onFailure(error);

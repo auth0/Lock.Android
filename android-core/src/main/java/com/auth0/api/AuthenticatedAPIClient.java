@@ -37,24 +37,56 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Created by hernan on 1/14/15.
+ * API client for Auth0 API v2.
+ * @see <a href="https://auth0.com/docs/apiv2">API v2 docs</a>
  */
 public class AuthenticatedAPIClient extends BaseAPIClient {
 
     private static final String TAG = AuthenticatedAPIClient.class.getName();
 
+    /**
+     * Creates a new API client instance providing  API and Configuration Urls different than the default. (Useful for on premise deploys).
+     * @param clientID Your application clientID.
+     * @param baseURL Auth0's  API endpoint
+     * @param configurationURL Auth0's enpoint where App info can be retrieved.
+     * @param tenantName Name of the tenant. Can be null
+     */
     public AuthenticatedAPIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
         super(clientID, baseURL, configurationURL, tenantName);
     }
 
+    /**
+     * Creates a new API client instance providing API and Configuration Urls different than the default. (Useful for on premise deploys).
+     * @param clientID Your application clientID.
+     * @param baseURL Auth0's API endpoint
+     * @param configurationURL Auth0's endpoint where App info can be retrieved.
+     */
     public AuthenticatedAPIClient(String clientID, String baseURL, String configurationURL) {
         super(clientID, baseURL, configurationURL);
     }
 
+    /**
+     * Creates a new API client using clientID and tenant name.
+     * @param clientID Your application clientID.
+     * @param tenantName Name of the tenant.
+     */
+    public AuthenticatedAPIClient(String clientID, String tenantName) {
+        super(clientID, tenantName);
+    }
+
+    /**
+     * Adds the header 'Authorization' with a given JWT token.
+     * @param jwt a valid JWT token
+     */
     public void setJWT(String jwt) {
         this.client.addHeader("Authorization", "Bearer " + jwt);
     }
 
+    /**
+     * Creates a user and request a SMS code using a configured SMS connection
+     * @param phoneNumber phone number that will receive the SMS code.
+     * @param callback callback when the SMS is sent or with the failure reason.
+     */
     public void requestSmsCode(String phoneNumber, final BaseCallback<Void> callback) {
         String requestCodeUrl = getBaseURL() + "/api/v2/users";
         Map<String, Object> params = ParameterBuilder.newBuilder()

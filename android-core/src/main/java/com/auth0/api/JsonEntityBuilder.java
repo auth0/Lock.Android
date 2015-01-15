@@ -11,7 +11,7 @@ import java.util.Map;
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
- * Created by hernan on 12/2/14.
+ * Class that converts a {@link java.util.Map} to an {@link org.apache.http.HttpEntity}
  */
 public class JsonEntityBuilder {
 

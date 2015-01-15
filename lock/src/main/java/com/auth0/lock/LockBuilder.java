@@ -120,9 +120,7 @@ public class LockBuilder {
         if (this.domain != null) {
             lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
         } else if(this.tenant != null) {
-            String baseURL = String.format(APIClient.BASE_URL_FORMAT, this.tenant);
-            String configURL = String.format(APIClient.APP_INFO_CDN_URL_FORMAT, this.clientId);
-            lock = new Lock(new APIClient(this.clientId, baseURL, configURL, this.tenant));
+            lock = new Lock(new APIClient(this.clientId, this.tenant));
         } else {
             throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
         }
