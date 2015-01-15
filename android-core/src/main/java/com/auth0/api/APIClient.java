@@ -109,6 +109,22 @@ public class APIClient extends BaseAPIClient {
         login(loginURL, request, callback);
     }
 
+    public void smsLogin(String phoneNumber, String passcode, Map<String, String> params, final AuthenticationCallback callback) {
+        final String loginURL = getBaseURL() + "/oauth/ro";
+
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .set(USERNAME_KEY, phoneNumber)
+                .set(PASSWORD_KEY, passcode)
+                .setGrantType(GRANT_TYPE_PASSWORD)
+                .setClientId(getClientID())
+                .setConnection("sms")
+                .addAll(params)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing SMS login with parameters " + request);
+        login(loginURL, request, callback);
+    }
+
     private void login(final String url, final Map<String, Object> request, final AuthenticationCallback callback) {
         try {
             HttpEntity entity = this.entityBuilder.newEntityFrom(request);

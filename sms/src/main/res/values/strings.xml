@@ -37,7 +37,7 @@
     <string name="sms_no_jwt_found_message">No JWT found for API v2. Please check that you provide one in the intent for LockSMSActivity</string>
     <string name="sms_already_have_code_btn">Already have a code?</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="sms_login_btn_text">Login</string>
+    <string name="sms_login_access_btn_text">Login</string>
     <string name="sms_code_placeholder">SMS Code</string>
     <string name="sms_no_code_button">Didn\'t receive code</string>
     <string name="sms_login_message">
@@ -45,4 +45,8 @@
         Please check your phone <b>%s</b>.<br/>You&#39;ve received a message from us with your passcode
     ]]>
     </string>
+    <string name="sms_login_error_title">There was an error logging in</string>
+    <string name="sms_login_error_message">There was an error processing the sign in.</string>
+    <string name="sms_login_invalid_credentials_message">Wrong phone number or passcode.</string>
+    <string name="sms_login_invalid_passcode_message">You must enter a valid SMS code.</string>
 </resources>

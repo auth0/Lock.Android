@@ -37,16 +37,30 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
 
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
 
+    private final int titleResource;
+    private final int defaultMessageResource;
+    private final int invalidCredentialsResource;
+
+    public LoginAuthenticationErrorBuilder() {
+        this(R.string.db_login_error_title, R.string.db_login_error_message, R.string.db_login_invalid_credentials_error_message);
+    }
+
+    public LoginAuthenticationErrorBuilder(int titleResource, int defaultMessageResource, int invalidCredentialsResource) {
+        this.titleResource = titleResource;
+        this.defaultMessageResource = defaultMessageResource;
+        this.invalidCredentialsResource = invalidCredentialsResource;
+    }
+
     @Override
     public AuthenticationError buildFrom(Throwable throwable) {
-        int messageResource = R.string.db_login_error_message;
+        int messageResource = defaultMessageResource;
         if (throwable instanceof APIClientException) {
             APIClientException exception = (APIClientException) throwable;
             Map errorResponse = exception.getResponseError();
             if (INVALID_USER_PASSWORD_ERROR.equalsIgnoreCase((String) errorResponse.get(ERROR_KEY))) {
-                messageResource = R.string.db_login_invalid_credentials_error_message;
+                messageResource = invalidCredentialsResource;
             }
         }
-        return new AuthenticationError(R.string.db_login_error_title, messageResource, throwable);
+        return new AuthenticationError(titleResource, messageResource, throwable);
     }
 }

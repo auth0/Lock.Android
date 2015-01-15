@@ -58,7 +58,7 @@
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/sms_login_code_field"
             style="?attr/Auth0.CredentialField.Password"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:hint="@string/sms_code_placeholder"
             />
     </LinearLayout>
@@ -69,7 +69,7 @@
         android:layout_below="@id/sms_login_credentials"
         android:layout_marginTop="@dimen/sms_button_margin_top"
         android:textAllCaps="true"
-        android:text="@string/sms_login_btn_text"
+        android:text="@string/sms_login_access_btn_text"
         android:fontFamily="sans-serif-medium"/>
 
     <ProgressBar
@@ -77,8 +77,8 @@
         android:visibility="gone"
         android:layout_width="@dimen/primary_button_progress_size"
         android:layout_height="@dimen/primary_button_progress_size"
-        android:layout_alignTop="@id/db_access_button"
-        android:layout_alignBottom="@id/db_access_button"
+        android:layout_alignTop="@id/sms_access_button"
+        android:layout_alignBottom="@id/sms_access_button"
         android:layout_centerHorizontal="true"/>
 
     <Button

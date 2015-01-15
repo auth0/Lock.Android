@@ -4,6 +4,8 @@ import android.os.Build;
 
 import com.auth0.BaseTestCase;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -54,8 +55,8 @@ public class ParameterBuilderTest extends BaseTestCase {
 
     @Test
     public void shouldInstantiateWithArguments() throws Exception {
-        assertThat(new ParameterBuilder(new HashMap<String, String>()), is(notNullValue()));
-        assertThat(ParameterBuilder.newBuilder(new HashMap<String, String>()), is(notNullValue()));
+        assertThat(new ParameterBuilder(new HashMap<String, Object>()), is(notNullValue()));
+        assertThat(ParameterBuilder.newBuilder(new HashMap<String, Object>()), is(notNullValue()));
     }
 
     @Test
@@ -79,20 +80,20 @@ public class ParameterBuilderTest extends BaseTestCase {
 
     @Test
     public void shouldSetScope() throws Exception {
-        Map<String, String> parameters = builder.setScope(ParameterBuilder.SCOPE_OPENID).asDictionary();
+        Map<String, Object> parameters = builder.setScope(ParameterBuilder.SCOPE_OPENID).asDictionary();
         assertThat(parameters, hasEntry("scope", ParameterBuilder.SCOPE_OPENID));
         assertThat(parameters, not(hasEntry("device", Build.MODEL)));
     }
 
     @Test
     public void shouldSetDevice() throws Exception {
-        Map<String, String> parameters = builder.setDevice(DEVICE).asDictionary();
+        Map<String, Object> parameters = builder.setDevice(DEVICE).asDictionary();
         assertThat(parameters, hasEntry("device", DEVICE));
     }
 
     @Test
     public void shouldSetScopeWithOfflineAccess() throws Exception {
-        Map<String, String> parameters = builder.setScope(ParameterBuilder.SCOPE_OFFLINE_ACCESS).asDictionary();
+        Map<String, Object> parameters = builder.setScope(ParameterBuilder.SCOPE_OFFLINE_ACCESS).asDictionary();
         assertThat(parameters, hasEntry("scope", ParameterBuilder.SCOPE_OFFLINE_ACCESS));
         assertThat(parameters, hasEntry("device", Build.MODEL));
     }
@@ -126,8 +127,12 @@ public class ParameterBuilderTest extends BaseTestCase {
 
     @Test
     public void shouldProvideADictionaryCopy() throws Exception {
-        Map<String, String> parameters = builder.setClientId(CLIENT_ID).asDictionary();
+        Map<String, Object> parameters = builder.setClientId(CLIENT_ID).asDictionary();
         parameters.put("key", "value");
         assertThat(builder.asDictionary(), not(hasEntry("key", "value")));
+    }
+
+    private static Matcher<Map<String, Object>> hasEntry(String key, Object value) {
+        return Matchers.hasEntry(key, value);
     }
 }

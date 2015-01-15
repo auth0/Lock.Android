@@ -24,13 +24,22 @@
 
 package com.auth0.lock.sms;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.auth0.core.Token;
+import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockActivity;
 import com.auth0.lock.LockProvider;
+import com.auth0.lock.event.AlertDialogEvent;
+import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
@@ -107,6 +116,24 @@ public class LockSMSActivity extends FragmentActivity {
         }
     }
 
+    @Subscribe
+    public void onAuthenticationError(AuthenticationError error) {
+        Log.e(TAG, "Failed to authenticate user", error.getThrowable());
+        showAlertDialog(error);
+    }
+
+    @Subscribe
+    public void onAuthentication(AuthenticationEvent event) {
+        UserProfile profile = event.getProfile();
+        Token token = event.getToken();
+        Log.i(TAG, "Authenticated user " + profile.getName());
+        Intent result = new Intent(LockActivity.AUTHENTICATION_ACTION)
+                .putExtra("profile", profile)
+                .putExtra("token", token);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(result);
+        finish();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
@@ -123,5 +150,20 @@ public class LockSMSActivity extends FragmentActivity {
         }
         LockProvider provider = (LockProvider) getApplication();
         return provider.getLock();
+    }
+
+    private void showAlertDialog(AlertDialogEvent event) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setTitle(event.getTitle(this))
+                .setMessage(event.getMessage(this))
+                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.show();
     }
 }
