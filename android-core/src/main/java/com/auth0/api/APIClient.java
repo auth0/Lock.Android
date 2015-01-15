@@ -75,7 +75,7 @@ public class APIClient extends BaseAPIClient {
         });
     }
 
-    public void login(final String username, String password, Map<String, String> params, final AuthenticationCallback callback) {
+    public void login(final String username, String password, Map<String, Object> params, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/ro";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
@@ -91,10 +91,10 @@ public class APIClient extends BaseAPIClient {
         login(loginURL, request, callback);
     }
 
-    public void socialLogin(final String connectionName, String accessToken, Map<String, String> parameters, final AuthenticationCallback callback) {
+    public void socialLogin(final String connectionName, String accessToken, Map<String, Object> parameters, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/access_token";
 
-        Map<String, String> params = parameters != null ? new HashMap<>(parameters) : new HashMap<String, String>();
+        Map<String, Object> params = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
         if (params.containsKey("access_token")) {
             params.put("main_access_token", params.remove("access_token"));
         }
@@ -109,7 +109,7 @@ public class APIClient extends BaseAPIClient {
         login(loginURL, request, callback);
     }
 
-    public void smsLogin(String phoneNumber, String passcode, Map<String, String> params, final AuthenticationCallback callback) {
+    public void smsLogin(String phoneNumber, String passcode, Map<String, Object> params, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/ro";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
@@ -162,7 +162,7 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
-    public void signUp(final String email, final String password, final Map<String, String> parameters, final AuthenticationCallback callback) {
+    public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -173,7 +173,7 @@ public class APIClient extends BaseAPIClient {
         signUp(email, password, parameters, handler);
     }
 
-    public void createUser(final String email, final String password, final Map<String, String> parameters, final BaseCallback<Void> callback) {
+    public void createUser(final String email, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -184,7 +184,7 @@ public class APIClient extends BaseAPIClient {
         signUp(email, password, parameters, handler);
     }
 
-    private void signUp(String email, String password, Map<String, String> parameters, AsyncHttpResponseHandler callback) {
+    private void signUp(String email, String password, Map<String, Object> parameters, AsyncHttpResponseHandler callback) {
         String signUpUrl = getBaseURL() + "/dbconnections/signup";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
@@ -206,7 +206,7 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
-    public void changePassword(final String email, String newPassword, Map<String, String> parameters, BaseCallback<Void> callback) {
+    public void changePassword(final String email, String newPassword, Map<String, Object> parameters, BaseCallback<Void> callback) {
         String changePasswordUrl = getBaseURL() + "/dbconnections/change_password";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()

@@ -115,7 +115,7 @@ public class ParameterBuilderTest extends BaseTestCase {
 
     @Test
     public void shouldAddAllFromDictionary() throws Exception {
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("key", "value");
         assertThat(builder.addAll(parameters).asDictionary(), hasEntry("key", "value"));
     }

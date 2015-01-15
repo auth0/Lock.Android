@@ -32,6 +32,7 @@ import com.squareup.otto.Bus;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by hernan on 12/7/14.
@@ -41,7 +42,7 @@ public class Lock {
     private boolean useWebView;
     private boolean loginAfterSignUp;
     private boolean closable;
-    private Map<String, String> authenticationParameters;
+    private Map<String, Object> authenticationParameters;
     private boolean useEmail;
 
     private IdentityProvider defaultProvider;
@@ -101,11 +102,11 @@ public class Lock {
         return useEmail;
     }
 
-    public Map<String, String> getAuthenticationParameters() {
-        return authenticationParameters != null ? new HashMap<>(authenticationParameters) : new HashMap<String, String>();
+    public Map<String, Object> getAuthenticationParameters() {
+        return authenticationParameters != null ? new HashMap<>(authenticationParameters) : new HashMap<String, Object>();
     }
 
-    public void setAuthenticationParameters(Map<String, String> authenticationParameters) {
+    public void setAuthenticationParameters(Map<String, Object> authenticationParameters) {
         this.authenticationParameters = authenticationParameters;
     }
 

@@ -64,7 +64,7 @@ public class ParameterBuilder {
         return this;
     }
 
-    public ParameterBuilder addAll(Map<String, String> parameters) {
+    public ParameterBuilder addAll(Map<String, Object> parameters) {
         if (parameters != null) {
             this.parameters.putAll(parameters);
         }
