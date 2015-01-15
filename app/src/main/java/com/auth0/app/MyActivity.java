@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.Lock;
 import com.auth0.lock.LockActivity;
 import com.auth0.lock.sms.LockSMSActivity;
 
@@ -71,8 +72,8 @@ public class MyActivity extends ActionBarActivity {
             }
         });
         broadcastManager = LocalBroadcastManager.getInstance(this);
-        broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(LockActivity.AUTHENTICATION_ACTION));
-        broadcastManager.registerReceiver(cancelReceiver, new IntentFilter(LockActivity.CANCEL_ACTION));
+        broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
+        broadcastManager.registerReceiver(cancelReceiver, new IntentFilter(Lock.CANCEL_ACTION));
     }
 
     @Override

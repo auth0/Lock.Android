@@ -116,7 +116,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         sendButton.setEnabled(false);
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        String username = usernameField.getText().toString();
+        String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
         client.changePassword(username, password, authenticationParameters, new BaseCallback<Void>() {
             @Override

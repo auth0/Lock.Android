@@ -253,7 +253,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        String username = usernameField.getText().toString();
+        String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
         client.login(username, password, authenticationParameters, new AuthenticationCallback() {
 

@@ -1,8 +1,6 @@
 package com.auth0.lock;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,8 +15,8 @@ import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
-import com.auth0.lock.event.AlertDialogEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.EnterpriseAuthenticationRequest;
@@ -37,11 +35,7 @@ import com.squareup.otto.Subscribe;
 
 public class LockActivity extends FragmentActivity {
 
-    public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
-    public static final String CANCEL_ACTION = "Lock.Cancel";
-    public static final String RESET_PASSWORD_ACTION = "Lock.ResetPassword";
-
-    public static final String TAG = LockActivity.class.getName();
+    private static final String TAG = LockActivity.class.getName();
 
     LockFragmentBuilder builder;
     Lock lock;
@@ -129,7 +123,7 @@ public class LockActivity extends FragmentActivity {
         final double count = getSupportFragmentManager().getBackStackEntryCount();
         if ((!lock.isClosable() && count >= 1) || lock.isClosable()) {
             if (count == 0) {
-                broadcastManager.sendBroadcast(new Intent(CANCEL_ACTION));
+                broadcastManager.sendBroadcast(new Intent(Lock.CANCEL_ACTION));
             }
             super.onBackPressed();
         }
@@ -148,7 +142,7 @@ public class LockActivity extends FragmentActivity {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
-        Intent result = new Intent(AUTHENTICATION_ACTION)
+        Intent result = new Intent(Lock.AUTHENTICATION_ACTION)
                 .putExtra("profile", profile)
                 .putExtra("token", token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(result);
@@ -158,15 +152,15 @@ public class LockActivity extends FragmentActivity {
 
     @Subscribe public void onSignUpEvent(SignUpEvent event) {
         Log.i(TAG, "Signed up user " + event.getUsername());
-        broadcastManager.sendBroadcast(new Intent(AUTHENTICATION_ACTION));
+        broadcastManager.sendBroadcast(new Intent(Lock.AUTHENTICATION_ACTION));
         dismissProgressDialog();
         finish();
     }
 
     @Subscribe public void onResetPassword(ResetPasswordEvent event) {
         Log.d(TAG, "Changed password");
-        showAlertDialog(event);
-        broadcastManager.sendBroadcast(new Intent(RESET_PASSWORD_ACTION));
+        ErrorDialogBuilder.showAlertDialog(this, event);
+        broadcastManager.sendBroadcast(new Intent(Lock.RESET_PASSWORD_ACTION));
         getSupportFragmentManager().popBackStack();
     }
 
@@ -176,7 +170,7 @@ public class LockActivity extends FragmentActivity {
             identity.clearSession();
         }
         dismissProgressDialog();
-        showAlertDialog(error);
+        ErrorDialogBuilder.showAlertDialog(this, error);
     }
 
     @Subscribe public void onSystemError(SystemErrorEvent event) {
@@ -258,21 +252,6 @@ public class LockActivity extends FragmentActivity {
                 lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
             }
         });
-    }
-
-    private void showAlertDialog(AlertDialogEvent event) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder
-                .setTitle(event.getTitle(this))
-                .setMessage(event.getMessage(this))
-                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog dialog = builder.show();
     }
 
     private void dismissProgressDialog() {

@@ -35,8 +35,8 @@ import android.util.Log;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockActivity;
 import com.auth0.lock.LockProvider;
+import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.event.AlertDialogEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
@@ -119,7 +119,7 @@ public class LockSMSActivity extends FragmentActivity {
     @Subscribe
     public void onAuthenticationError(AuthenticationError error) {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
-        showAlertDialog(error);
+        ErrorDialogBuilder.showAlertDialog(this, error);
     }
 
     @Subscribe
@@ -127,7 +127,7 @@ public class LockSMSActivity extends FragmentActivity {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
-        Intent result = new Intent(LockActivity.AUTHENTICATION_ACTION)
+        Intent result = new Intent(Lock.AUTHENTICATION_ACTION)
                 .putExtra("profile", profile)
                 .putExtra("token", token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(result);
@@ -152,18 +152,4 @@ public class LockSMSActivity extends FragmentActivity {
         return provider.getLock();
     }
 
-    private void showAlertDialog(AlertDialogEvent event) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder
-                .setTitle(event.getTitle(this))
-                .setMessage(event.getMessage(this))
-                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog dialog = builder.show();
-    }
 }

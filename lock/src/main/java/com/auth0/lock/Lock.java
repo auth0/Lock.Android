@@ -39,6 +39,9 @@ import java.util.Objects;
  */
 public class Lock {
 
+    public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
+    public static final String CANCEL_ACTION = "Lock.Cancel";
+    public static final String RESET_PASSWORD_ACTION = "Lock.ResetPassword";
     private boolean useWebView;
     private boolean loginAfterSignUp;
     private boolean closable;

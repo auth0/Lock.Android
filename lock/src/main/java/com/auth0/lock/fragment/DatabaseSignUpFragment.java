@@ -135,7 +135,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        final String username = usernameField.getText().toString();
+        final String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
             client.signUp(username, password, authenticationParameters, new AuthenticationCallback() {
