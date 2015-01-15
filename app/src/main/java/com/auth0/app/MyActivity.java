@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.LockActivity;
+import com.auth0.lock.sms.LockSMSActivity;
 
 import static com.auth0.app.R.id;
 import static com.auth0.app.R.layout;
@@ -57,6 +58,16 @@ public class MyActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent loginIntent = new Intent(MyActivity.this, LockActivity.class);
                 startActivity(loginIntent);
+            }
+        });
+
+        final Button smsButton = (Button) findViewById(id.sms_button);
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent smsIntent = new Intent(MyActivity.this, LockSMSActivity.class);
+                smsIntent.putExtra(LockSMSActivity.REQUEST_SMS_CODE_JWT, getString(R.string.request_sms_code_jwt));
+                startActivity(smsIntent);
             }
         });
         broadcastManager = LocalBroadcastManager.getInstance(this);

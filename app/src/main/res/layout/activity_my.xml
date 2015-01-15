@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/welcome_label"
-        android:text="@string/hello_world"
+        android:text="@string/no_login_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -20,4 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/welcome_label"
         android:text="@string/native_login_btn_text"/>
+    <Button
+        android:id="@+id/sms_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:text="@string/sms_login_btn_text"/>
+
 </RelativeLayout>

@@ -31,11 +31,12 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 import com.auth0.lock.R;
+import com.auth0.lock.validation.ValidationEnabled;
 
 /**
  * Created by hernan on 12/15/14.
  */
-public class CredentialField extends EditText {
+public class CredentialField extends EditText implements ValidationEnabled {
 
     private int iconResource;
     private int errorIconResource;

@@ -45,9 +45,9 @@ public abstract class BaseTitledFragment extends Fragment {
     public static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";
     public static final String AUTHENTICATION_USES_EMAIL_ARGUMENT = "AUTHENTICATION_USES_EMAIL_ARGUMENT";
 
-    APIClient client;
-    Bus bus;
-    Map<String, String> authenticationParameters;
+    protected APIClient client;
+    protected Bus bus;
+    protected Map<String, Object> authenticationParameters;
     boolean useEmail;
 
     @Override
@@ -57,7 +57,7 @@ public abstract class BaseTitledFragment extends Fragment {
         client = lock.getAPIClient();
         bus = lock.getBus();
         final Bundle arguments = getArguments();
-        authenticationParameters = arguments != null ? (Map<String, String>) arguments.getSerializable(AUTHENTICATION_PARAMETER_ARGUMENT) : null;
+        authenticationParameters = arguments != null ? (Map<String, Object>) arguments.getSerializable(AUTHENTICATION_PARAMETER_ARGUMENT) : null;
         useEmail = arguments == null || arguments.getBoolean(AUTHENTICATION_USES_EMAIL_ARGUMENT);
     }
 

@@ -106,7 +106,7 @@ public class LockBuilderTest {
 
     @Test
     public void shouldSetAuthenticationParams() throws Exception {
-        Map<String, String> parameters = new HashMap<>();
+        Map<String, Object> parameters = new HashMap<>();
         lock = basicBuilder()
                 .authenticationParameters(parameters)
                 .build();

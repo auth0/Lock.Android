@@ -52,7 +52,7 @@ public class LockBuilder {
     private boolean useWebView;
     private boolean closable;
     private boolean loginAfterSignUp;
-    private Map<String, String> parameters;
+    private Map<String, Object> parameters;
     private boolean useEmail;
 
     public LockBuilder() {
@@ -96,7 +96,7 @@ public class LockBuilder {
         return this;
     }
 
-    public LockBuilder authenticationParameters(Map<String, String> parameters) {
+    public LockBuilder authenticationParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
         return this;
     }

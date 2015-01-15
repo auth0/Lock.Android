@@ -29,43 +29,19 @@ import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
 /**
  * Created by hernan on 11/27/14.
  */
-public class APIClient {
-
-    public static final String BASE_URL_FORMAT = "https://%s.auth0.com";
-    public static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com/client/%s.js";
-
-    private static final String APPLICATION_JSON = "application/json";
+public class APIClient extends BaseAPIClient {
 
     private static final String USERNAME_KEY = "username";
     private static final String PASSWORD_KEY = "password";
     private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
     private static final String ID_TOKEN_KEY = "id_token";
-
     private static final String EMAIL_KEY = "email";
     private static final String TENANT_KEY = "tenant";
 
-    private final String clientID;
-    private String tenantName;
-    private final String baseURL;
-    private final String configurationURL;
-
-    private final AsyncHttpClient client;
-    private final JsonEntityBuilder entityBuilder;
     private Application application;
 
     public APIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
-        this.clientID = clientID;
-        this.configurationURL = configurationURL;
-        this.baseURL = baseURL;
-        this.client = new AsyncHttpClient();
-        if (tenantName == null) {
-            Uri uri = Uri.parse(baseURL);
-            this.tenantName = uri.getHost();
-        } else {
-            this.tenantName = tenantName;
-        }
-        this.client.setUserAgent(String.format("%s (%s Android %s)", tenantName, Build.MODEL, Build.VERSION.RELEASE));
-        this.entityBuilder = new JsonEntityBuilder(new ObjectMapper());
+        super(clientID, baseURL, configurationURL, tenantName);
     }
 
     public APIClient(String clientID, String baseURL, String configurationURL) {
@@ -76,25 +52,14 @@ public class APIClient {
         return application;
     }
 
-    public String getClientID() {
-        return clientID;
-    }
-
+    @Override
     public String getTenantName() {
-        return application != null && application.getTenant() != null ? application.getTenant(): tenantName;
-    }
-
-    public String getBaseURL() {
-        return baseURL;
-    }
-
-    public String getConfigurationURL() {
-        return configurationURL;
+        return application != null && application.getTenant() != null ? application.getTenant(): super.getTenantName();
     }
 
     public void fetchApplicationInfo(final BaseCallback<Application> callback) {
-        Log.v(APIClient.class.getName(), "Fetching application info from " + configurationURL);
-        this.client.get(configurationURL, null, new ApplicationResponseHandler(new ObjectMapper()) {
+        Log.v(APIClient.class.getName(), "Fetching application info from " + getConfigurationURL());
+        this.client.get(getConfigurationURL(), null, new ApplicationResponseHandler(new ObjectMapper()) {
             @Override
             public void onSuccess(Application app) {
                 Log.d(APIClient.class.getName(), "Obtained application with id " + app.getId() + " tenant " + app.getTenant());
@@ -110,14 +75,14 @@ public class APIClient {
         });
     }
 
-    public void login(final String username, String password, Map<String, String> params, final AuthenticationCallback callback) {
-        final String loginURL = this.baseURL + "/oauth/ro";
+    public void login(final String username, String password, Map<String, Object> params, final AuthenticationCallback callback) {
+        final String loginURL = getBaseURL() + "/oauth/ro";
 
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(USERNAME_KEY, username)
                 .set(PASSWORD_KEY, password)
                 .setGrantType(GRANT_TYPE_PASSWORD)
-                .setClientId(this.clientID)
+                .setClientId(getClientID())
                 .setConnection(getDBConnectionName())
                 .addAll(params)
                 .asDictionary();
@@ -126,15 +91,15 @@ public class APIClient {
         login(loginURL, request, callback);
     }
 
-    public void socialLogin(final String connectionName, String accessToken, Map<String, String> parameters, final AuthenticationCallback callback) {
-        final String loginURL = this.baseURL + "/oauth/access_token";
+    public void socialLogin(final String connectionName, String accessToken, Map<String, Object> parameters, final AuthenticationCallback callback) {
+        final String loginURL = getBaseURL() + "/oauth/access_token";
 
-        Map<String, String> params = parameters != null ? new HashMap<>(parameters) : new HashMap<String, String>();
+        Map<String, Object> params = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
         if (params.containsKey("access_token")) {
             params.put("main_access_token", params.remove("access_token"));
         }
-        Map<String, String> request = ParameterBuilder.newBuilder()
-                .setClientId(this.clientID)
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .setClientId(getClientID())
                 .setConnection(connectionName)
                 .setAccessToken(accessToken)
                 .addAll(params)
@@ -144,7 +109,23 @@ public class APIClient {
         login(loginURL, request, callback);
     }
 
-    private void login(final String url, final Map<String, String> request, final AuthenticationCallback callback) {
+    public void smsLogin(String phoneNumber, String passcode, Map<String, Object> params, final AuthenticationCallback callback) {
+        final String loginURL = getBaseURL() + "/oauth/ro";
+
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .set(USERNAME_KEY, phoneNumber)
+                .set(PASSWORD_KEY, passcode)
+                .setGrantType(GRANT_TYPE_PASSWORD)
+                .setClientId(getClientID())
+                .setConnection("sms")
+                .addAll(params)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing SMS login with parameters " + request);
+        login(loginURL, request, callback);
+    }
+
+    private void login(final String url, final Map<String, Object> request, final AuthenticationCallback callback) {
         try {
             HttpEntity entity = this.entityBuilder.newEntityFrom(request);
             this.client.post(null, url, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
@@ -181,7 +162,7 @@ public class APIClient {
         }
     }
 
-    public void signUp(final String email, final String password, final Map<String, String> parameters, final AuthenticationCallback callback) {
+    public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -192,7 +173,7 @@ public class APIClient {
         signUp(email, password, parameters, handler);
     }
 
-    public void createUser(final String email, final String password, final Map<String, String> parameters, final BaseCallback<Void> callback) {
+    public void createUser(final String email, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -203,13 +184,13 @@ public class APIClient {
         signUp(email, password, parameters, handler);
     }
 
-    private void signUp(String email, String password, Map<String, String> parameters, AsyncHttpResponseHandler callback) {
-        String signUpUrl = this.baseURL + "/dbconnections/signup";
+    private void signUp(String email, String password, Map<String, Object> parameters, AsyncHttpResponseHandler callback) {
+        String signUpUrl = getBaseURL() + "/dbconnections/signup";
 
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
-                .setClientId(this.clientID)
+                .setClientId(getClientID())
                 .set(TENANT_KEY, getTenantName())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
@@ -225,13 +206,13 @@ public class APIClient {
         }
     }
 
-    public void changePassword(final String email, String newPassword, Map<String, String> parameters, BaseCallback<Void> callback) {
-        String changePasswordUrl = this.baseURL + "/dbconnections/change_password";
+    public void changePassword(final String email, String newPassword, Map<String, Object> parameters, BaseCallback<Void> callback) {
+        String changePasswordUrl = getBaseURL() + "/dbconnections/change_password";
 
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, newPassword)
-                .setClientId(this.clientID)
+                .setClientId(getClientID())
                 .set(TENANT_KEY, getTenantName())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
@@ -254,8 +235,8 @@ public class APIClient {
 
     public void fetchUserProfile(String idToken, final BaseCallback<UserProfile> callback) {
         Log.v(APIClient.class.getName(), "Fetching user profile with token " + idToken);
-        final String profileURL = this.baseURL + "/tokeninfo";
-        Map<String, String> request = ParameterBuilder.newBuilder()
+        final String profileURL = getBaseURL() + "/tokeninfo";
+        Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(ID_TOKEN_KEY, idToken)
                 .asDictionary();
         try {

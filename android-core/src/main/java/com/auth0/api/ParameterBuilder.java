@@ -18,16 +18,16 @@ public class ParameterBuilder {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String CONNECTION = "connection";
 
-    private Map<String, String> parameters;
+    private Map<String, Object> parameters;
 
     public ParameterBuilder() {
-        this.parameters = new HashMap<String, String>();
+        this.parameters = new HashMap<>();
         setScope(SCOPE_OFFLINE_ACCESS);
     }
 
-    public ParameterBuilder(Map<String, String> parameters) {
+    public ParameterBuilder(Map<String, Object> parameters) {
         checkArgument(parameters != null, "Must provide non-null parameters");
-        this.parameters = new HashMap<String, String>(parameters);
+        this.parameters = new HashMap<>(parameters);
     }
 
     public ParameterBuilder setClientId(String clientId) {
@@ -59,27 +59,32 @@ public class ParameterBuilder {
         return set(ACCESS_TOKEN, accessToken);
     }
 
-    public ParameterBuilder set(String key, String value) {
+    public ParameterBuilder set(String key, Object value) {
         this.parameters.put(key, value);
         return this;
     }
 
-    public ParameterBuilder addAll(Map<String, String> parameters) {
+    public ParameterBuilder addAll(Map<String, Object> parameters) {
         if (parameters != null) {
             this.parameters.putAll(parameters);
         }
         return this;
     }
 
-    public Map<String, String> asDictionary() {
-        return new HashMap<String, String>(this.parameters);
+    public ParameterBuilder clearAll() {
+        parameters.clear();
+        return this;
+    }
+
+    public Map<String, Object> asDictionary() {
+        return new HashMap<>(this.parameters);
     }
 
     public static ParameterBuilder newBuilder() {
         return new ParameterBuilder();
     }
 
-    public static ParameterBuilder newBuilder(Map<String, String> parameters) {
+    public static ParameterBuilder newBuilder(Map<String, Object> parameters) {
         return new ParameterBuilder(parameters);
     }
 
