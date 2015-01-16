@@ -5,13 +5,6 @@ Lock for Android
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
-Lock makes it easy to integrate SSO in your app. You won't have to worry about:
-
-* Having a professional looking login dialog that displays well on any device.
-* Finding the right icons for popular social providers.
-* Solving the home realm discovery challenge with enterprise users (i.e.: asking the enterprise user the email, and redirecting to the right enterprise identity provider).
-* Implementing a standard sign in protocol (OpenID Connect / OAuth2 Login)
-
 ## Key features
 
 * **Integrates** your Android app with **Auth0**.
@@ -21,7 +14,7 @@ Lock makes it easy to integrate SSO in your app. You won't have to worry about:
 
 ## Requierements
 
-Android API level 14+ in order to use Lock's UI. If you only need `android-core.aar`, the minimum API level required is 9.
+Android API level 14+ is required in order to use Lock's UI. If you'll create your own API and just call Auth0 API via the `android-core.aar`, the minimum required API level is 9.
 
 ##Install
 
@@ -31,7 +24,7 @@ Lock is available both in [Maven Central](http://search.maven.org) and [JCenter]
 compile 'com.auth0:lock:0.1.0'
 ```
 
-Then you'll need to add this in your `AndroidManifest.xml`, inside the `application` tag:
+Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
 
 ```xml
 <!--Auth0 Lock-->
@@ -44,7 +37,7 @@ Then you'll need to add this in your `AndroidManifest.xml`, inside the `applicat
     <action android:name="android.intent.action.VIEW"/>
     <category android:name="android.intent.category.DEFAULT"/>
     <category android:name="android.intent.category.BROWSABLE"/>
-    <data android:scheme="a0INSERT_YOUR_APP_CLIENT_ID" android:host="INSERT_YOUR_APP_DOMAIN"/>
+    <data android:scheme="a0INSERT_YOUR_APP_CLIENT_ID" android:host="YOUR_ACCOUNT_NAME.auth0.com"/>
   </intent-filter>
 </activity>
 <meta-data android:name="com.auth0.lock.client-id" android:value="@string/auth0_client_id"/>
@@ -54,23 +47,27 @@ Then you'll need to add this in your `AndroidManifest.xml`, inside the `applicat
 
 > The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_tenant_name` is the name of the account that owns the application.
 
-Then you need to create a class that extends from `android.app.Application` (if you haven't done it already), make it implement the interface `com.auth0.lock.LockProvider` and add the following code:
+Finally, Make your Application class (The one that extends from `android.app.Application`) implement the interface `com.auth0.lock.LockProvider` and add the following code:
 
 ```java
-@Override
-private Lock lock;
+public class MyApplication extends Application implements LockProvider {
 
-public void onCreate() {
-  super.onCreate();
-  lock = new LockBuilder()
-    .loadFromApplication(this)
-    .closable(true)
-    .build();
-}
-
-@Override
-public Lock getLock() {
-  return lock;
+  @Override
+  private Lock lock;
+  
+  public void onCreate() {
+    super.onCreate();
+    lock = new LockBuilder()
+      .loadFromApplication(this)
+      <!-- Other configuration goes here -->
+      .closable(true)
+      .build();
+  }
+  
+  @Override
+  public Lock getLock() {
+    return lock;
+  }
 }
 ```
 
@@ -80,33 +77,37 @@ public Lock getLock() {
 
 `LockActivity` will handle Email/Password, Enterprise & Social authentication based on your Application's connections enabled in your Auth0's Dashboard.
 
-Before starting the Activity, you'll need to register in your application's `LocalBroadcastManager` to receive the user's profile and token information. So in the Activity that will start `LockActivity` add the following:
+When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
-private LocalBroadcastManager broadcastManager;
-
-private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
+// This activity will show Lock
+public class HomeActivity extends Activity { 
+  
+  private LocalBroadcastManager broadcastManager;
+  
+  private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      UserProfile profile = intent.getParcelableExtra("profile");
+      Token token = intent.getParcelableExtra("token");
+      Log.i(TAG, "User " + profile.getName() + " logged in");
+    }
+  };
+  
   @Override
-  public void onReceive(Context context, Intent intent) {
-    UserProfile profile = intent.getParcelableExtra("profile");
-    Token token = intent.getParcelableExtra("token");
-    Log.i(TAG, "User " + profile.getName() + " logged in");
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    //Customize your activity
+  
+    broadcastManager = LocalBroadcastManager.getInstance(this);
+    broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
   }
-};
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-  super.onCreate(savedInstanceState);
-  //Customize your activity
-
-  broadcastManager = LocalBroadcastManager.getInstance(this);
-  broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
-}
-
-@Override
-protected void onDestroy() {
-  super.onDestroy();
-  broadcastManager.unregisterReceiver(authenticationReceiver);
+  
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    broadcastManager.unregisterReceiver(authenticationReceiver);
+  }
 }
 ```
 
@@ -124,40 +125,43 @@ And you'll see our native login screen
 
 ### SMS
 
-`LockSMSActivity` authenticates without using a password with SMS. In order to be able to authenticate the user, your application must have the SMS connection enabled and configured in your [dashboard](https://app.auth0.com/#/connections/passwordless).
+`LockSMSActivity` authenticates users by sending them an SMS (Similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
 `LockSMSActivity` is not included in `com.auth0:lock:aar` but you can add it with this line in your `build.gradle`:
 ```gradle
 compile 'com.auth0.lock-sms:0.1.0'
 ```
 
-Before starting the Activity, you'll need to register in your application's `LocalBroadcastManager` to receive the user's profile and token information. So in the Activity that will start `LockSMSActivity` add the following:
+When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
-private LocalBroadcastManager broadcastManager;
-
-private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
+// This activity will show Lock
+public class HomeActivity extends Activity { 
+  private LocalBroadcastManager broadcastManager;
+  
+  private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      UserProfile profile = intent.getParcelableExtra("profile");
+      Token token = intent.getParcelableExtra("token");
+      Log.i(TAG, "User " + profile.getName() + " logged in");
+    }
+  };
+  
   @Override
-  public void onReceive(Context context, Intent intent) {
-    UserProfile profile = intent.getParcelableExtra("profile");
-    Token token = intent.getParcelableExtra("token");
-    Log.i(TAG, "User " + profile.getName() + " logged in");
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    //Customize your activity
+  
+    broadcastManager = LocalBroadcastManager.getInstance(this);
+    broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
   }
-};
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-  super.onCreate(savedInstanceState);
-  //Customize your activity
-
-  broadcastManager = LocalBroadcastManager.getInstance(this);
-  broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
-}
-
-@Override
-protected void onDestroy() {
-  super.onDestroy();
-  broadcastManager.unregisterReceiver(authenticationReceiver);
+  
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    broadcastManager.unregisterReceiver(authenticationReceiver);
+  }
 }
 ```
 
