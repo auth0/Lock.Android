@@ -142,8 +142,8 @@ public class HomeActivity extends Activity {
   private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
-      UserProfile profile = intent.getParcelableExtra("profile");
-      Token token = intent.getParcelableExtra("token");
+      UserProfile profile = intent.getParcelableExtra(Lock.AUTHENTICATION_ACTION_PROFILE_PARAMETER);
+      Token token = intent.getParcelableExtra(Lock.AUTHENTICATION_ACTION_TOKEN_PARAMETER);
       Log.i(TAG, "User " + profile.getName() + " logged in");
     }
   };
