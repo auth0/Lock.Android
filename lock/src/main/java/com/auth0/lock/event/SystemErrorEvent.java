@@ -26,9 +26,6 @@ package com.auth0.lock.event;
 
 import android.app.Dialog;
 
-/**
- * Created by hernan on 12/31/14.
- */
 public class SystemErrorEvent {
 
     private final Dialog errorDialog;

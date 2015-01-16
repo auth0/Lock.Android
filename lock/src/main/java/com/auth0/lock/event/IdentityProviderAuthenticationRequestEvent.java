@@ -28,9 +28,6 @@ import android.net.Uri;
 
 import com.auth0.core.Application;
 
-/**
- * Created by hernan on 12/17/14.
- */
 public class IdentityProviderAuthenticationRequestEvent {
 
     private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";

@@ -24,9 +24,6 @@
 
 package com.auth0.lock.event;
 
-/**
- * Created by hernan on 12/11/14.
- */
 public enum NavigationEvent {
     ROOT,
     BACK,

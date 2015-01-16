@@ -19,9 +19,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by hernan on 12/2/14.
- */
 @Config(emulateSdk = 18)
 public class UserProfileTest extends BaseTestCase {
 

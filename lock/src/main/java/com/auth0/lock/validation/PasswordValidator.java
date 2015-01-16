@@ -24,9 +24,6 @@
 
 package com.auth0.lock.validation;
 
-/**
- * Created by hernan on 12/15/14.
- */
 public class PasswordValidator extends BaseFragmentValidator {
 
     public PasswordValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {

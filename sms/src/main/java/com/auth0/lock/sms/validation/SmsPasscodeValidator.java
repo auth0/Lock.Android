@@ -26,9 +26,6 @@ package com.auth0.lock.sms.validation;
 
 import com.auth0.lock.validation.BaseFragmentValidator;
 
-/**
- * Created by hernan on 1/15/15.
- */
 public class SmsPasscodeValidator extends BaseFragmentValidator {
 
     public SmsPasscodeValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {

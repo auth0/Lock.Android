@@ -20,9 +20,6 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by hernan on 11/28/14.
- */
 @Config(emulateSdk = 18)
 public class ConnectionTest extends BaseTestCase {
 

@@ -26,9 +26,6 @@ package com.auth0.lock.event;
 
 import android.content.Context;
 
-/**
- * Created by hernan on 12/15/14.
- */
 public class AlertDialogEvent {
 
     private final int title;

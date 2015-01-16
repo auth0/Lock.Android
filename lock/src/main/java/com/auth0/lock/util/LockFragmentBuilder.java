@@ -42,9 +42,6 @@ import com.auth0.lock.fragment.SocialFragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by hernan on 12/16/14.
- */
 public class LockFragmentBuilder {
 
     private final Lock lock;

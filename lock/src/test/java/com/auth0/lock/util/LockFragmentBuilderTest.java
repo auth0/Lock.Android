@@ -54,9 +54,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hernan on 12/16/14.
- */
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class LockFragmentBuilderTest {

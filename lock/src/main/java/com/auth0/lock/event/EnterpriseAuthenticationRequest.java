@@ -26,9 +26,6 @@ package com.auth0.lock.event;
 
 import com.auth0.core.Connection;
 
-/**
- * Created by hernan on 1/7/15.
- */
 public class EnterpriseAuthenticationRequest {
 
     private final Connection connection;

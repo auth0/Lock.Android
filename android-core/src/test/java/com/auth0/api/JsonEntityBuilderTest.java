@@ -23,9 +23,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by hernan on 12/2/14.
- */
 @Config(emulateSdk = 18)
 public class JsonEntityBuilderTest extends BaseTestCase {
 

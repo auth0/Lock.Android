@@ -24,9 +24,6 @@
 
 package com.auth0.lock.event;
 
-/**
- * Created by hernan on 1/5/15.
- */
 public class SignUpEvent {
     private String username;
 

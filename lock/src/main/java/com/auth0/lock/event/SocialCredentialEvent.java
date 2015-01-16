@@ -24,9 +24,6 @@
 
 package com.auth0.lock.event;
 
-/**
- * Created by hernan on 12/22/14.
- */
 public class SocialCredentialEvent {
 
     private final String accessToken;

@@ -30,9 +30,6 @@ import android.widget.EditText;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.widget.CredentialField;
 
-/**
- * Created by hernan on 12/15/14.
- */
 public class RepeatPasswordValidator implements Validator {
 
     private final int fieldResource;

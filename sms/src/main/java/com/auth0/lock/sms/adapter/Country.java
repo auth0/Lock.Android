@@ -26,9 +26,6 @@ package com.auth0.lock.sms.adapter;
 
 import java.util.Locale;
 
-/**
-* Created by hernan on 1/12/15.
-*/
 public class Country {
     private String isoCode;
     private String dialCode;

@@ -16,9 +16,6 @@ import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 import com.squareup.otto.Bus;
 
-/**
- * Created by hernan on 12/5/14.
- */
 public class LoadingFragment extends Fragment {
 
     private APIClient client;

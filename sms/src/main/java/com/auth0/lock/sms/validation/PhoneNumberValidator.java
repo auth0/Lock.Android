@@ -26,9 +26,6 @@ package com.auth0.lock.sms.validation;
 
 import com.auth0.lock.validation.BaseFragmentValidator;
 
-/**
- * Created by hernan on 1/13/15.
- */
 public class PhoneNumberValidator extends BaseFragmentValidator {
 
     public PhoneNumberValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {

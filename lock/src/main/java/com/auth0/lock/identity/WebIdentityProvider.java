@@ -42,9 +42,6 @@ import com.squareup.otto.Bus;
 
 import java.util.Map;
 
-/**
- * Created by hernan on 12/22/14.
- */
 public class WebIdentityProvider implements IdentityProvider {
 
     private final boolean useWebView;

@@ -30,9 +30,6 @@ import android.os.Build;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 
-/**
- * Created by hernan on 1/14/15.
- */
 public abstract class BaseAPIClient {
 
     public static final String BASE_URL_FORMAT = "https://%s.auth0.com";

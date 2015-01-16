@@ -24,11 +24,6 @@
 
 package com.auth0.lock.event;
 
-import android.content.Context;
-
-/**
- * Created by hernan on 12/10/14.
- */
 public class AuthenticationError extends AlertDialogEvent {
 
     private Throwable throwable;

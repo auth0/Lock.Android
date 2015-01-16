@@ -24,9 +24,6 @@
 
 package com.auth0.lock.sms.event;
 
-/**
- * Created by hernan on 1/12/15.
- */
 public class CountryCodeSelectedEvent {
 
     private final String isoCode;

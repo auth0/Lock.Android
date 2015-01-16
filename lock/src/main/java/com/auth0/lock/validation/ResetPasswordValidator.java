@@ -29,9 +29,6 @@ import android.support.v4.app.Fragment;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 
-/**
- * Created by hernan on 12/15/14.
- */
 public class ResetPasswordValidator implements Validator {
 
     private Validator emailValidator;

@@ -33,9 +33,6 @@ import com.auth0.lock.Lock;
 import com.auth0.lock.LockBuilder;
 import com.auth0.lock.LockProvider;
 
-/**
- * Created by hernan on 12/7/14.
- */
 public class LockApplication extends Application implements LockProvider {
 
     private Lock lock;

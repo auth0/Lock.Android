@@ -44,9 +44,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.squareup.otto.Bus;
 
-/**
- * Created by hernan on 12/30/14.
- */
 public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = GooglePlusIdentityProvider.class.getName();
