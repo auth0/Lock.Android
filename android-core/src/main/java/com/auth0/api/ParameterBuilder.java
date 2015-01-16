@@ -8,7 +8,7 @@ import java.util.Map;
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
- * Created by hernan on 12/2/14.
+ * Builder class for Auth API parameters.
  */
 public class ParameterBuilder {
 
@@ -20,28 +20,55 @@ public class ParameterBuilder {
 
     private Map<String, Object> parameters;
 
+    /**
+     * Creates a new builder
+     */
     public ParameterBuilder() {
         this.parameters = new HashMap<>();
         setScope(SCOPE_OFFLINE_ACCESS);
     }
 
+    /**
+     * Creates a new builder with default parameters
+     * @param parameters default parameters
+     */
     public ParameterBuilder(Map<String, Object> parameters) {
         checkArgument(parameters != null, "Must provide non-null parameters");
         this.parameters = new HashMap<>(parameters);
     }
 
+    /**
+     * Sets the 'client_id' parameter
+     * @param clientId clientID
+     * @return itself
+     */
     public ParameterBuilder setClientId(String clientId) {
         return set("client_id", clientId);
     }
 
+    /**
+     * Sets the 'grant_type' parameter
+     * @param grantType grant type
+     * @return itself
+     */
     public ParameterBuilder setGrantType(String grantType) {
         return set("grant_type", grantType);
     }
 
+    /**
+     * Sets the 'connection' parameter
+     * @param connection name of the connection
+     * @return itself
+     */
     public ParameterBuilder setConnection(String connection) {
         return set(CONNECTION, connection);
     }
 
+    /**
+     * Sets the 'scope' parameter. If the scope includes 'offline_access', it will set the 'device' parameter.
+     * @param scope a scope value
+     * @return itself
+     */
     public ParameterBuilder setScope(String scope) {
         if (scope.contains("offline_access")) {
             setDevice(Build.MODEL);
@@ -51,19 +78,40 @@ public class ParameterBuilder {
         return set("scope", scope);
     }
 
+    /**
+     * Sets the 'device' parameter
+     * @param device a device name
+     * @return itself
+     */
     public ParameterBuilder setDevice(String device) {
         return set("device", device);
     }
 
+    /**
+     * Sets the 'access_token' parameter
+     * @param accessToken a access token
+     * @return itself
+     */
     public ParameterBuilder setAccessToken(String accessToken) {
         return set(ACCESS_TOKEN, accessToken);
     }
 
+    /**
+     * Sets a parameter
+     * @param key parameter name
+     * @param value parameter value
+     * @return itself
+     */
     public ParameterBuilder set(String key, Object value) {
         this.parameters.put(key, value);
         return this;
     }
 
+    /**
+     * Adds all parameter from a map
+     * @param parameters map with parameters to add
+     * @return itself
+     */
     public ParameterBuilder addAll(Map<String, Object> parameters) {
         if (parameters != null) {
             this.parameters.putAll(parameters);
@@ -71,19 +119,36 @@ public class ParameterBuilder {
         return this;
     }
 
+    /**
+     * Clears all existing parameters
+     * @return itself
+     */
     public ParameterBuilder clearAll() {
         parameters.clear();
         return this;
     }
 
+    /**
+     * Create a {@link java.util.Map} with all the parameters
+     * @return a new map with the parameters
+     */
     public Map<String, Object> asDictionary() {
         return new HashMap<>(this.parameters);
     }
 
+    /**
+     * Creates a new instance of the builder
+     * @return a new builder
+     */
     public static ParameterBuilder newBuilder() {
         return new ParameterBuilder();
     }
 
+    /**
+     * Creates a new instance of the builder with parameters.
+     * @param parameters default parameters
+     * @return a new builder
+     */
     public static ParameterBuilder newBuilder(Map<String, Object> parameters) {
         return new ParameterBuilder(parameters);
     }

@@ -25,7 +25,7 @@
 package com.auth0.lock;
 
 /**
- * Created by hernan on 1/5/15.
+ * Interface for a object that returns a {@link com.auth0.lock.Lock} instance
  */
 public interface LockProvider {
 

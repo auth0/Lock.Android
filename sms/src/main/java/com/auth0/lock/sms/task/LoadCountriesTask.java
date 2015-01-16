@@ -36,9 +36,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
-* Created by hernan on 1/12/15.
-*/
 public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
 
     public static final String TAG = LoadCountriesTask.class.getName();

@@ -44,9 +44,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hernan on 12/17/14.
- */
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class CallbackParserTest {

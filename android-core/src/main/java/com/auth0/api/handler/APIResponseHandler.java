@@ -37,16 +37,27 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Created by hernan on 12/12/14.
+ * Default Response handler for all request performed with android-async-http client.
+ * It calls a {@link com.auth0.api.callback.Callback} on success/failure.
  */
 public abstract class APIResponseHandler<T extends Callback> extends AsyncHttpResponseHandler {
 
+    /**
+     * an instance of {@link com.auth0.api.callback.Callback}
+     */
     protected T callback;
 
+    /**
+     * Creates an instance with the callback to be called on success/failure
+     * @param callback
+     */
     protected APIResponseHandler(T callback) {
         this.callback = callback;
     }
 
+    /**
+     * @see com.loopj.android.http.AsyncHttpResponseHandler#onFailure(int, org.apache.http.Header[], byte[], Throwable)
+     */
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         Log.e(this.getClass().getName(), "Operation failed", error);

@@ -37,9 +37,6 @@ import com.auth0.lock.sms.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hernan on 1/12/15.
- */
 public class CountryAdapter extends BaseAdapter {
 
     private final Filter filter;

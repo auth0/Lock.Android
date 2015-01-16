@@ -7,9 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
- * Created by hernan on 11/28/14.
+ * Class with Auth0 authentication strategy info
  */
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Strategy {
 

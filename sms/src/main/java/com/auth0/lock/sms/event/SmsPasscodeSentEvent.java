@@ -24,9 +24,6 @@
 
 package com.auth0.lock.sms.event;
 
-/**
- * Created by hernan on 1/14/15.
- */
 public class SmsPasscodeSentEvent {
 
     private final String phoneNumber;

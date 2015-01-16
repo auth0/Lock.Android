@@ -37,9 +37,6 @@ import com.squareup.otto.Bus;
 
 import java.util.Map;
 
-/**
- * Created by hernan on 12/11/14.
- */
 public abstract class BaseTitledFragment extends Fragment {
 
     public static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";

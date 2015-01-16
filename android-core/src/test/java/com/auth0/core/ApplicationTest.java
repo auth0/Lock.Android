@@ -17,9 +17,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by hernan on 12/1/14.
- */
 @Config(emulateSdk = 18)
 public class ApplicationTest extends BaseTestCase {
 

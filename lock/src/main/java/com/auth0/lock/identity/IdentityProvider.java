@@ -30,9 +30,6 @@ import android.content.Intent;
 import com.auth0.core.Application;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 
-/**
- * Created by hernan on 12/22/14.
- */
 public interface IdentityProvider {
 
     static final int WEBVIEW_AUTH_REQUEST_CODE = 500;

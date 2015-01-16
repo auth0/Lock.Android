@@ -28,9 +28,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-/**
- * Created by hernan on 12/18/14.
- */
 public abstract class SocialResources {
     private static final String TEXT_COLOR_KEY_FORMAT = "color/social_%s_text";
     private static final String COLOR_KEY_FORMAT = "color/social_%s";

@@ -44,9 +44,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by hernan on 12/12/14.
- */
 @Config(emulateSdk = 18)
 public class APIResponseHandlerTest extends BaseTestCase {
 

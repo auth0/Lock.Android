@@ -27,9 +27,6 @@ package com.auth0.lock.event;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 
-/**
- * Created by hernan on 12/9/14.
- */
 public class AuthenticationEvent {
 
     private UserProfile profile;

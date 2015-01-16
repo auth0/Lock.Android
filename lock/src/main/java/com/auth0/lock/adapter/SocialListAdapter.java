@@ -36,9 +36,6 @@ import android.widget.TextView;
 import com.auth0.lock.R;
 import com.auth0.lock.util.SocialResources;
 
-/**
- * Created by hernan on 12/16/14.
- */
 public class SocialListAdapter extends ArrayAdapter<String> {
 
 

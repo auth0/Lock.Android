@@ -39,9 +39,6 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.squareup.otto.Bus;
 
-/**
- * Created by hernan on 12/22/14.
- */
 public class FacebookIdentityProvider implements IdentityProvider {
 
     private Bus bus;

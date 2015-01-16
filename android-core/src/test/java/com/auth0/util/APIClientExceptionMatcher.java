@@ -24,7 +24,6 @@
 
 package com.auth0.util;
 
-import com.auth0.api.APIClient;
 import com.auth0.api.APIClientException;
 
 import org.hamcrest.BaseMatcher;
@@ -37,12 +36,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.not;
 
-/**
- * Created by hernan on 12/12/14.
- */
 public class APIClientExceptionMatcher extends BaseMatcher<APIClientException> {
 
     private Matcher<Throwable> causeMatcher;

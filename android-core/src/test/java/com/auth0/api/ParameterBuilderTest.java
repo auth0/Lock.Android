@@ -21,9 +21,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by hernan on 12/2/14.
- */
 @Config(emulateSdk = 18)
 public class ParameterBuilderTest extends BaseTestCase {
 

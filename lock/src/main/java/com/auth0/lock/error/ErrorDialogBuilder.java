@@ -31,9 +31,6 @@ import android.content.DialogInterface;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AlertDialogEvent;
 
-/**
- * Created by hernan on 1/15/15.
- */
 public abstract class ErrorDialogBuilder {
 
     public static AlertDialog showAlertDialog(Context context, AlertDialogEvent event) {

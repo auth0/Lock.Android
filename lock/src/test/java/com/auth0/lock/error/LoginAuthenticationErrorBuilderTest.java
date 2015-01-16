@@ -44,9 +44,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by hernan on 12/11/14.
- */
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class LoginAuthenticationErrorBuilderTest {

@@ -1,7 +1,7 @@
 package com.auth0.api;
 
 /**
- * Created by hernan on 12/2/14.
+ * Exception that wraps errors when creating a {@link org.apache.http.HttpEntity}
  */
 public class JsonEntityBuildException extends RuntimeException {
 

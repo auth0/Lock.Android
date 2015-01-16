@@ -25,7 +25,7 @@
 package com.auth0.util;
 
 /**
- * Created by hernan on 1/2/15.
+ * A helper to check constructor arguments.
  */
 public class CheckHelper {
 

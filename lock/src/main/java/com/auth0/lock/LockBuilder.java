@@ -36,14 +36,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by hernan on 1/5/15.
+ * Builder for {@link com.auth0.lock.Lock}
  */
 public class LockBuilder {
 
-    public static final String CLIENT_ID_KEY = "com.auth0.client-id";
-    public static final String TENANT_KEY = "com.auth0.tenant";
-    public static final String DOMAIN_KEY = "com.auth0.domain";
-    public static final String CONFIGURATION_KEY = "com.auth0.configuration";
+    public static final String CLIENT_ID_KEY = "com.auth0.lock.client-id";
+    public static final String TENANT_KEY = "com.auth0.lock.tenant";
+    public static final String DOMAIN_KEY = "com.auth0.lock.domain-url";
+    public static final String CONFIGURATION_KEY = "com.auth0.lock.configuration-url";
 
     private String clientId;
     private String tenant;
@@ -61,46 +61,90 @@ public class LockBuilder {
         this.parameters = new HashMap<>();
     }
 
+    /**
+     * Set Auth0 application ClientID
+     * @param clientId clientId
+     * @return itself
+     */
     public LockBuilder clientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
 
+    /**
+     * Set Auth0 account tenant name
+     * @param tenant tenant name
+     * @return itself
+     */
     public LockBuilder tenant(String tenant) {
         this.tenant = tenant;
         return this;
     }
 
+    /**
+     * Set the default domain Url for Auth0 API
+     * @param domain url of the domain where Auth0 API is deployed
+     * @return itself
+     */
     public LockBuilder domain(String domain) {
         this.domain = domain;
         return this;
     }
 
+    /**
+     * Set the Url where the app information can be retrieved
+     * @param configuration Url that returns the app info.
+     * @return itself
+     */
     public LockBuilder configuration(String configuration) {
         this.configuration = configuration;
         return this;
     }
 
+    /**
+     * Use an embedded WebView instead of an external browser
+     * @param useWebView if Lock will use an embedded WebView or an external browser
+     * @return itself
+     */
     public LockBuilder useWebView(boolean useWebView) {
         this.useWebView = useWebView;
         return this;
     }
 
+    /**
+     * If the login screen can be closed/dismissed
+     * @param closable if Lock will allow the login screen to be closed
+     * @return itself
+     */
     public LockBuilder closable(boolean closable) {
         this.closable = closable;
         return this;
     }
 
+    /**
+     * If after a successful sign up, the user will be logged in too.
+     * @param loginAfterSignUp if Lock should login a user after sign up
+     * @return itself
+     */
     public LockBuilder loginAfterSignUp(boolean loginAfterSignUp) {
         this.loginAfterSignUp = loginAfterSignUp;
         return this;
     }
 
+    /**
+     * Extra authentication parameters to send to Auth0 Auth API.
+     * @param parameters a map with extra parameters for the API.
+     * @return itself
+     */
     public LockBuilder authenticationParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
         return this;
     }
 
+    /**
+     * Create a {@link com.auth0.lock.Lock} instance with the values stored.
+     * @return
+     */
     public Lock build() {
         resolveConfiguration();
         Lock lock = buildLock();
@@ -120,9 +164,7 @@ public class LockBuilder {
         if (this.domain != null) {
             lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
         } else if(this.tenant != null) {
-            String baseURL = String.format(APIClient.BASE_URL_FORMAT, this.tenant);
-            String configURL = String.format(APIClient.APP_INFO_CDN_URL_FORMAT, this.clientId);
-            lock = new Lock(new APIClient(this.clientId, baseURL, configURL, this.tenant));
+            lock = new Lock(new APIClient(this.clientId, this.tenant));
         } else {
             throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
         }
@@ -140,6 +182,18 @@ public class LockBuilder {
         }
     }
 
+    /**
+     * Load ClientID, Tenant name, Domain and configuration URLs from the Android app's metadata (if available).
+     * This are the values that can be defined and it's keys:
+     * <ul>
+     *     <li>{@link #CLIENT_ID_KEY}: Application's clientId in Auth0.</li>
+     *     <li>{@link #TENANT_KEY}: Application's owner tenant name. (Optional if you supply Domain and Configuration URLs)</li>
+     *     <li>{@link #DOMAIN_KEY}: URL where the Auth0 API is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
+     *     <li>{@link #CONFIGURATION_KEY}: URL where Auth0 apps information is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
+     * </ul>
+     * @param application an instance of {@link android.app.Application}
+     * @return itself
+     */
     public LockBuilder loadFromApplication(Application application) {
         try {
             ApplicationInfo ai = application.getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
@@ -154,6 +208,11 @@ public class LockBuilder {
         return this;
     }
 
+    /**
+     * If it should ask for email or username. By default is <code>true</code>
+     * @param useEmail if Lock ask for email or username.
+     * @return itself
+     */
     public LockBuilder useEmail(boolean useEmail) {
         this.useEmail = useEmail;
         return this;

@@ -28,9 +28,6 @@ import com.auth0.core.Token;
 
 import java.util.Map;
 
-/**
- * Created by hernan on 12/17/14.
- */
 public class IdentityProviderAuthenticationEvent {
 
     private final Token token;

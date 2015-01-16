@@ -43,9 +43,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by hernan on 1/5/15.
- */
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class LockBuilderTest {

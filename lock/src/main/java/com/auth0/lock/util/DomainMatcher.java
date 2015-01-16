@@ -33,9 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by hernan on 1/6/15.
- */
 public class DomainMatcher {
 
     private static final String AT_SYMBOL = "@";

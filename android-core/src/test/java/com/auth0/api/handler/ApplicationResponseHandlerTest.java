@@ -22,9 +22,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hernan on 12/1/14.
- */
 @Config(emulateSdk = 18)
 public class ApplicationResponseHandlerTest extends BaseTestCase {
 

@@ -29,9 +29,6 @@ import android.net.Uri;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by hernan on 12/17/14.
- */
 public class CallbackParser {
 
     public Map<String, String> getValuesFromUri(Uri uri) {

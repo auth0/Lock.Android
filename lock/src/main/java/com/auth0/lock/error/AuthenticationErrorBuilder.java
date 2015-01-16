@@ -26,9 +26,6 @@ package com.auth0.lock.error;
 
 import com.auth0.lock.event.AuthenticationError;
 
-/**
- * Created by hernan on 12/11/14.
- */
 public interface AuthenticationErrorBuilder {
 
     String ERROR_KEY = "error";

@@ -44,9 +44,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by hernan on 12/15/14.
- */
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class EmailValidatorTest {
@@ -59,13 +56,13 @@ public class EmailValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new EmailValidator(R.id.db_reset_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
+        validator = new EmailValidator(R.id.db_change_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
         editable = mock(Editable.class);
         when(fragment.getView()).thenReturn(view);
-        when(view.findViewById(eq(R.id.db_reset_password_username_field))).thenReturn(field);
+        when(view.findViewById(eq(R.id.db_change_password_username_field))).thenReturn(field);
         when(field.getText()).thenReturn(editable);
     }
 

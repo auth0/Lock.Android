@@ -26,9 +26,6 @@ package com.auth0.lock.validation;
 
 import java.util.regex.Pattern;
 
-/**
- * Created by hernan on 12/15/14.
- */
 public class EmailValidator extends BaseFragmentValidator {
 
     private final Pattern pattern;

@@ -39,9 +39,6 @@ import android.widget.LinearLayout;
 import com.auth0.lock.sms.R;
 import com.auth0.lock.validation.ValidationEnabled;
 
-/**
- * Created by hernan on 1/13/15.
- */
 public class PhoneField extends LinearLayout implements ValidationEnabled {
 
     private int iconResource;

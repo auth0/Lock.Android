@@ -1,7 +1,5 @@
 package com.auth0.api;
 
-import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 
 import com.auth0.api.callback.AuthenticationCallback;
@@ -14,7 +12,6 @@ import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -24,10 +21,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.api.BaseAPIClient.APP_INFO_CDN_URL_FORMAT;
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
 
 /**
- * Created by hernan on 11/27/14.
+ * API client for Auth0 Authentication API.
+ * @see <a href="https://auth0.com/docs/auth-api">Auth API docs</a>
  */
 public class APIClient extends BaseAPIClient {
 
@@ -40,23 +39,57 @@ public class APIClient extends BaseAPIClient {
 
     private Application application;
 
+    /**
+     * Creates a new API client instance providing Auth API and Configuration Urls different than the default. (Useful for on premise deploys).
+     * @param clientID Your application clientID.
+     * @param baseURL Auth0's auth API endpoint
+     * @param configurationURL Auth0's enpoint where App info can be retrieved.
+     * @param tenantName Name of the tenant. Can be null
+     */
     public APIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
         super(clientID, baseURL, configurationURL, tenantName);
     }
 
+    /**
+     * Creates a new API client instance providing Auth API and Configuration Urls different than the default. (Useful for on premise deploys).
+     * @param clientID Your application clientID.
+     * @param baseURL Auth0's auth API endpoint
+     * @param configurationURL Auth0's enpoint where App info can be retrieved.
+     */
     public APIClient(String clientID, String baseURL, String configurationURL) {
         this(clientID, baseURL, configurationURL, null);
     }
 
+    /**
+     * Creates a new API client using clientID and tenant name.
+     * @param clientID Your application clientID.
+     * @param tenantName Name of the tenant.
+     */
+    public APIClient(String clientID, String tenantName) {
+        super(clientID, tenantName);
+    }
+
+    /**
+     * Returns the Auth0 app info retrieved from {@link #getConfigurationURL()}
+     * @return an instance of {@link com.auth0.core.Application} or null.
+     */
     public Application getApplication() {
         return application;
     }
 
+    /**
+     * Returns the name of the tenant.
+     * @return name of the tenant or null.
+     */
     @Override
     public String getTenantName() {
         return application != null && application.getTenant() != null ? application.getTenant(): super.getTenantName();
     }
 
+    /**
+     * Fetch application information from {@link #getConfigurationURL()}
+     * @param callback called with the application info on success or with the failure reason.
+     */
     public void fetchApplicationInfo(final BaseCallback<Application> callback) {
         Log.v(APIClient.class.getName(), "Fetching application info from " + getConfigurationURL());
         this.client.get(getConfigurationURL(), null, new ApplicationResponseHandler(new ObjectMapper()) {
@@ -75,6 +108,13 @@ public class APIClient extends BaseAPIClient {
         });
     }
 
+    /**
+     * Performs a Database connection login with username/email and password.
+     * @param username email or username required to login. By default it should be an email
+     * @param password user's password
+     * @param params additional parameters sent to the API like 'scope'
+     * @param callback called with User's profile and tokens or failure reason
+     */
     public void login(final String username, String password, Map<String, Object> params, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/ro";
 
@@ -91,6 +131,13 @@ public class APIClient extends BaseAPIClient {
         login(loginURL, request, callback);
     }
 
+    /**
+     * Performs a Social connection login using Identity Provider (IdP) credentials.
+     * @param connectionName name of the social connection
+     * @param accessToken accessToken from the IdP.
+     * @param parameters additional parameters sent to the API like 'scope'
+     * @param callback called with User's profile and tokens or failure reason
+     */
     public void socialLogin(final String connectionName, String accessToken, Map<String, Object> parameters, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/access_token";
 
@@ -109,7 +156,14 @@ public class APIClient extends BaseAPIClient {
         login(loginURL, request, callback);
     }
 
-    public void smsLogin(String phoneNumber, String passcode, Map<String, Object> params, final AuthenticationCallback callback) {
+    /**
+     * Performs a SMS connection login with a phone number and a passcode.
+     * @param phoneNumber Phone number where the passcode was received.
+     * @param passcode passcode received by SMS.
+     * @param parameters additional parameters sent to the API like 'scope'
+     * @param callback called with User's profile and tokens or failure reason
+     */
+    public void smsLogin(String phoneNumber, String passcode, Map<String, Object> parameters, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/ro";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
@@ -118,7 +172,7 @@ public class APIClient extends BaseAPIClient {
                 .setGrantType(GRANT_TYPE_PASSWORD)
                 .setClientId(getClientID())
                 .setConnection("sms")
-                .addAll(params)
+                .addAll(parameters)
                 .asDictionary();
 
         Log.v(APIClient.class.getName(), "Performing SMS login with parameters " + request);
@@ -162,6 +216,13 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
+    /**
+     * Creates and logs in a new User using a Database connecion.
+     * @param email new user email
+     * @param password new user password
+     * @param parameters additional parameters additional parameters sent to the API like 'scope'
+     * @param callback called with User's profile and tokens or failure reason
+     */
     public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
             @Override
@@ -173,6 +234,13 @@ public class APIClient extends BaseAPIClient {
         signUp(email, password, parameters, handler);
     }
 
+    /**
+     * Creates a new user using a Database connection
+     * @param email new user email
+     * @param password new user password
+     * @param parameters additional parameters additional parameters sent to the API like 'scope'
+     * @param callback callback that will notify if the user was successfully created or not.
+     */
     public void createUser(final String email, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
             @Override
@@ -206,6 +274,13 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
+    /**
+     * Request a change for the user's password using a Database connection.
+     * @param email user's email
+     * @param newPassword new password for the user
+     * @param parameters additional parameters additional parameters sent to the API like 'scope'
+     * @param callback callback that will notify if the user password request was sent or not.
+     */
     public void changePassword(final String email, String newPassword, Map<String, Object> parameters, BaseCallback<Void> callback) {
         String changePasswordUrl = getBaseURL() + "/dbconnections/change_password";
 
@@ -233,6 +308,11 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
+    /**
+     * Fetches the user's profile with a valid 'id_token'
+     * @param idToken a JWT token associated to the user.
+     * @param callback called with the user's profile on success or with the failure reason
+     */
     public void fetchUserProfile(String idToken, final BaseCallback<UserProfile> callback) {
         Log.v(APIClient.class.getName(), "Fetching user profile with token " + idToken);
         final String profileURL = getBaseURL() + "/tokeninfo";

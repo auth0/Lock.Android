@@ -28,9 +28,6 @@ import android.support.v4.app.Fragment;
 
 import com.auth0.lock.event.AuthenticationError;
 
-/**
- * Created by hernan on 12/15/14.
- */
 public abstract class BaseFragmentValidator implements Validator {
 
     private final int fieldResource;

@@ -45,9 +45,6 @@ import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
-/**
- * Created by hernan on 12/31/14.
- */
 public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
 
     public static final String TAG = FetchTokenAsyncTask.class.getName();

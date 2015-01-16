@@ -36,9 +36,6 @@ import org.robolectric.Robolectric;
 
 import static org.hamcrest.Matchers.equalTo;
 
-/**
- * Created by hernan on 12/11/14.
- */
 public class AuthenticationErrorDefaultMatcher extends BaseMatcher<AuthenticationError> {
     private final Matcher<String> messageMatcher;
     private final Matcher<String> titleMatcher;

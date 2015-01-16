@@ -30,9 +30,6 @@ import com.auth0.lock.event.AuthenticationError;
 
 import java.util.Map;
 
-/**
- * Created by hernan on 12/11/14.
- */
 public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuilder {
 
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
