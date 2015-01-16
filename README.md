@@ -54,7 +54,7 @@ public class MyApplication extends Application implements LockProvider {
 
   @Override
   private Lock lock;
-  
+
   public void onCreate() {
     super.onCreate();
     lock = new LockBuilder()
@@ -63,7 +63,7 @@ public class MyApplication extends Application implements LockProvider {
       .closable(true)
       .build();
   }
-  
+
   @Override
   public Lock getLock() {
     return lock;
@@ -81,10 +81,10 @@ When a user authenticates successfully, LockActivity will send an Action using L
 
 ```java
 // This activity will show Lock
-public class HomeActivity extends Activity { 
-  
+public class HomeActivity extends Activity {
+
   private LocalBroadcastManager broadcastManager;
-  
+
   private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -93,16 +93,16 @@ public class HomeActivity extends Activity {
       Log.i(TAG, "User " + profile.getName() + " logged in");
     }
   };
-  
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     //Customize your activity
-  
+
     broadcastManager = LocalBroadcastManager.getInstance(this);
     broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
   }
-  
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -119,7 +119,7 @@ startActivity(lockIntent);
 ```
 And you'll see our native login screen
 
-[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-Widget-Screenshot.png)](https://auth0.com)
+[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-Widget-Android-Screenshot.png)](https://auth0.com)
 
 > By default all social authentication will be done using an external browser, if you want native integration please check this [wiki page](https://github.com/auth0/Lock.Android/wiki/Native-Social-Authentication).
 
@@ -136,9 +136,9 @@ When a user authenticates successfully, LockActivity will send an Action using L
 
 ```java
 // This activity will show Lock
-public class HomeActivity extends Activity { 
+public class HomeActivity extends Activity {
   private LocalBroadcastManager broadcastManager;
-  
+
   private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -147,16 +147,16 @@ public class HomeActivity extends Activity {
       Log.i(TAG, "User " + profile.getName() + " logged in");
     }
   };
-  
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     //Customize your activity
-  
+
     broadcastManager = LocalBroadcastManager.getInstance(this);
     broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
   }
-  
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -177,13 +177,13 @@ startActivity(smsIntent);
 
 And you'll see SMS login screen
 
-[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Screenshot.png)](https://auth0.com)
+[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 
 ##API
 
 ###Lock
 
-###Constants
+####Constants
 
 ```java
 public static final String AUTHENTICATION_ACTION;
@@ -200,7 +200,7 @@ public static final String CANCEL_ACTION;
 ```
 Action sent when the user change its password
 
-###Properties
+####Properties
 ```java
 public boolean shouldUseWebView();
 public void setUseWebView(boolean useWebView);
@@ -211,7 +211,7 @@ Forces Lock to use an embedded `android.webkit.WebView` and by  default is `fals
 public boolean shouldLoginAfterSignUp();
 public boolean setLoginAfterSignUp(boolean loginAfterSignUp);
 ```
-Tells Lock to login the user after a successful sign up. By default is `true`
+Lock will login the user after a successful sign up. By default is `true`
 
 ```java
 public boolean isClosable();
@@ -231,7 +231,7 @@ public void setAuthenticationParameters(Map<String, Object> authenticationParame
 ```
 Map with parameters that will be sent on every authentication request with Auth0 API.
 
-###Methods
+####Methods
 
 ```java
 public void setProvider(String serviceName, IdentityProvider provider);
@@ -242,6 +242,90 @@ Change the default identity provider handler for Social and Enterprise connectio
 public void resetAllProviders();
 ```
 Removes all session information the Identity Provider handlers might have.
+
+###LockBuilder
+A simple builder to help you create and configure Lock in your  application.
+
+####Constants
+
+```java
+public static final String CLIENT_ID_KEY = "com.auth0.lock.client-id";
+```
+Key value used by Lock to search in your application's meta-data for the ClientID.
+```java
+public static final String TENANT_KEY = "com.auth0.lock.tenant";
+```
+Key value used by Lock to search in your application's meta-data for tenant name.
+```java
+public static final String DOMAIN_URL_KEY = "com.auth0.lock.domain-url";
+```
+Key value used by Lock to search in your application's meta-data for domain Url.
+```java
+public static final String CONFIGURATION_URL_KEY = "com.auth0.lock.configuration-url";
+```
+Key value used by Lock to search in your application's meta-data for configuration Url.
+
+####Methods
+
+```java
+public LockBuilder clientId(String clientId);
+```
+Set the clientId of your application in Auth0. This value is mandatory.
+
+```java
+public LockBuilder tenant(String tenant);
+```
+Set the tenant name of your application. This value is optional if you supply a domain url.
+
+```java
+public LockBuilder domainUrl(String domain);
+```
+Set the domain Url for Auth0's API. This value is optional if you provide a tenant name, it will default to Auth0 cloud API `https://tenant_name.auth0.com`.
+
+```java
+public LockBuilder configurationUrl(String configuration);
+```
+Set the Url where Lock fetches the App configuration. By default it asks Auth0 for this info.
+
+```java
+public LockBuilder useWebView(boolean useWebView);
+```
+Make Lock use an embedded WebView for Social+Enterprise authentications.
+
+```java
+public LockBuilder closable(boolean closable);
+```
+Allow the user to close Lock's activity by pressing back button.
+
+```java
+public LockBuilder loginAfterSignUp(boolean loginAfterSignUp);
+```
+After a successful sign up of a user, sign him/her in too.
+
+```java
+public LockBuilder authenticationParameters(Map<String, Object> parameters);
+```
+Extra parameters sent to Auth0 Auth API during authentication. By default it has `scope` defined as `openid offline_access` and a device name stored in `device` parameter key.
+
+```java
+public LockBuilder useEmail(boolean useEmail);
+```
+Lock will ask for an email for authentication, otherwise it will ask for a username. By default is `true`.
+
+```java
+public LockBuilder loadFromApplication(Application application);
+```
+Load ClientID, Tenant name, Domain and configuration URLs from the Android app's metadata (if available).
+These are the values that can be defined and it's keys:
+* __com.auth0.lock.client-id__: Application's clientId in Auth0.
+* __com.auth0.lock.tenant__: Application's owner tenant name. (Optional if you supply Domain and Configuration URLs)
+* __com.auth0.lock.domain-url__: URL where the Auth0 API is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)
+* __com.auth0.lock.configuration-url__: URL where Auth0 apps information is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)
+
+```java
+public Lock build();
+```
+Creates a new instance of `Lock` and configure it with the values passed to the builder.
 
 ## Issue Reporting
 

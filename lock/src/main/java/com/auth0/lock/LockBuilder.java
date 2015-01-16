@@ -40,10 +40,22 @@ import java.util.Map;
  */
 public class LockBuilder {
 
+    /**
+     * Key for application meta-data where Lock checks for application's ClientId
+     */
     public static final String CLIENT_ID_KEY = "com.auth0.lock.client-id";
+    /**
+     * Key for application meta-data where Lock checks for tenant name
+     */
     public static final String TENANT_KEY = "com.auth0.lock.tenant";
-    public static final String DOMAIN_KEY = "com.auth0.lock.domain-url";
-    public static final String CONFIGURATION_KEY = "com.auth0.lock.configuration-url";
+    /**
+     * Key for application meta-data where Lock checks for domain Url
+     */
+    public static final String DOMAIN_URL_KEY = "com.auth0.lock.domain-url";
+    /**
+     * Key for application meta-data where Lock checks for configuration Url
+     */
+    public static final String CONFIGURATION_URL_KEY = "com.auth0.lock.configuration-url";
 
     private String clientId;
     private String tenant;
@@ -86,7 +98,7 @@ public class LockBuilder {
      * @param domain url of the domain where Auth0 API is deployed
      * @return itself
      */
-    public LockBuilder domain(String domain) {
+    public LockBuilder domainUrl(String domain) {
         this.domain = domain;
         return this;
     }
@@ -96,7 +108,7 @@ public class LockBuilder {
      * @param configuration Url that returns the app info.
      * @return itself
      */
-    public LockBuilder configuration(String configuration) {
+    public LockBuilder configurationUrl(String configuration) {
         this.configuration = configuration;
         return this;
     }
@@ -184,12 +196,12 @@ public class LockBuilder {
 
     /**
      * Load ClientID, Tenant name, Domain and configuration URLs from the Android app's metadata (if available).
-     * This are the values that can be defined and it's keys:
+     * These are the values that can be defined and it's keys:
      * <ul>
      *     <li>{@link #CLIENT_ID_KEY}: Application's clientId in Auth0.</li>
      *     <li>{@link #TENANT_KEY}: Application's owner tenant name. (Optional if you supply Domain and Configuration URLs)</li>
-     *     <li>{@link #DOMAIN_KEY}: URL where the Auth0 API is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
-     *     <li>{@link #CONFIGURATION_KEY}: URL where Auth0 apps information is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
+     *     <li>{@link #DOMAIN_URL_KEY}: URL where the Auth0 API is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
+     *     <li>{@link #CONFIGURATION_URL_KEY}: URL where Auth0 apps information is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
      * </ul>
      * @param application an instance of {@link android.app.Application}
      * @return itself
@@ -200,8 +212,8 @@ public class LockBuilder {
             Bundle bundle = ai.metaData;
             this.clientId = bundle.getString(CLIENT_ID_KEY);
             this.tenant = bundle.getString(TENANT_KEY);
-            this.domain = bundle.getString(DOMAIN_KEY);
-            this.configuration = bundle.getString(CONFIGURATION_KEY);
+            this.domain = bundle.getString(DOMAIN_URL_KEY);
+            this.configuration = bundle.getString(CONFIGURATION_URL_KEY);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalArgumentException("Failed to read info from AndroidManifest.xml", e);
         }

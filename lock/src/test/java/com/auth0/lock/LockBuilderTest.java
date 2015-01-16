@@ -122,7 +122,7 @@ public class LockBuilderTest {
     public void shouldBuildWithDomainOnly() throws Exception {
         lock = builder
                 .clientId(CLIENT_ID)
-                .domain(DOMAIN)
+                .domainUrl(DOMAIN)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
@@ -135,8 +135,8 @@ public class LockBuilderTest {
     public void shouldBuildWithDomainAndConfiguration() throws Exception {
         lock = builder
                 .clientId(CLIENT_ID)
-                .domain(DOMAIN)
-                .configuration(CONFIGURATION)
+                .domainUrl(DOMAIN)
+                .configurationUrl(CONFIGURATION)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
@@ -151,8 +151,8 @@ public class LockBuilderTest {
         lock = builder
                 .clientId(CLIENT_ID)
                 .tenant(TENANT)
-                .domain(DOMAIN)
-                .configuration(CONFIGURATION)
+                .domainUrl(DOMAIN)
+                .configurationUrl(CONFIGURATION)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
@@ -165,7 +165,7 @@ public class LockBuilderTest {
     public void shouldUseCDNWithAuth0Subdomain() throws Exception {
         lock = builder
                 .clientId(CLIENT_ID)
-                .domain(AUTH0_SUBDOMAIN)
+                .domainUrl(AUTH0_SUBDOMAIN)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
@@ -178,8 +178,8 @@ public class LockBuilderTest {
     public void shouldAlwaysUseProvidedConfig() throws Exception {
         lock = builder
                 .clientId(CLIENT_ID)
-                .domain(AUTH0_SUBDOMAIN)
-                .configuration(CONFIGURATION)
+                .domainUrl(AUTH0_SUBDOMAIN)
+                .configurationUrl(CONFIGURATION)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
