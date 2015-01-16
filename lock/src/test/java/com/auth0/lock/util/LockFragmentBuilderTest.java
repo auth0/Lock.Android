@@ -31,12 +31,11 @@ import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Lock;
+import com.auth0.lock.fragment.DatabaseChangePasswordFragment;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
-import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.SocialDBFragment;
 import com.auth0.lock.fragment.SocialFragment;
-import com.auth0.lock.util.LockFragmentBuilder;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -49,9 +48,7 @@ import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -168,6 +165,6 @@ public class LockFragmentBuilderTest {
 
     @Test
     public void shouldReturnResetPassword() throws Exception {
-        assertThat(builder.resetPassword(), is(DatabaseResetPasswordFragment.class));
+        assertThat(builder.resetPassword(), is(DatabaseChangePasswordFragment.class));
     }
 }

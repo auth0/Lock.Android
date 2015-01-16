@@ -1,5 +1,5 @@
 /*
- * DatabaseResetPasswordFragment.java
+ * DatabaseChangePasswordFragment.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -37,13 +37,13 @@ import android.widget.TextView;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.ChangePasswordEvent;
 import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.validation.ResetPasswordValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
 
-public class DatabaseResetPasswordFragment extends BaseTitledFragment {
+public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
     CredentialField usernameField;
     CredentialField passwordField;
@@ -56,24 +56,24 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_database_reset_password, container, false);
+        return inflater.inflate(R.layout.fragment_database_change_password, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameField = (CredentialField) view.findViewById(R.id.db_reset_password_username_field);
+        usernameField = (CredentialField) view.findViewById(R.id.db_change_password_username_field);
         if (!useEmail) {
             usernameField.setHint(R.string.username_placeholder);
             usernameField.setIconResource(R.drawable.ic_person);
             usernameField.setErrorIconResource(R.drawable.ic_person_error);
             usernameField.refresh();
         }
-        passwordField = (CredentialField) view.findViewById(R.id.db_reset_password_password_field);
-        repeatPasswordField = (CredentialField) view.findViewById(R.id.db_reset_password_repeat_password_field);
+        passwordField = (CredentialField) view.findViewById(R.id.db_change_password_password_field);
+        repeatPasswordField = (CredentialField) view.findViewById(R.id.db_change_password_repeat_password_field);
         sendButton = (Button) view.findViewById(R.id.db_reset_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.db_reset_password_progress_indicator);
-        Button cancelButton = (Button) view.findViewById(R.id.db_reset_password_cancel_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.db_change_password_progress_indicator);
+        Button cancelButton = (Button) view.findViewById(R.id.db_change_password_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +100,7 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
 
     @Override
     protected int getTitleResource() {
-        return R.string.database_reset_password_title;
+        return R.string.database_change_password_title;
     }
 
     private void changePassword() {
@@ -121,17 +121,17 @@ public class DatabaseResetPasswordFragment extends BaseTitledFragment {
         client.changePassword(username, password, authenticationParameters, new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
-                bus.post(new ResetPasswordEvent());
+                bus.post(new ChangePasswordEvent());
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.db_reset_password_btn_text);
+                sendButton.setText(R.string.db_change_password_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.db_reset_password_error_title, R.string.db_reset_password_error_message, error));
+                bus.post(new AuthenticationError(R.string.db_change_password_error_title, R.string.db_change_password_error_message, error));
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.db_reset_password_btn_text);
+                sendButton.setText(R.string.db_change_password_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });

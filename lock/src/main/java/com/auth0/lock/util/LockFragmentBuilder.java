@@ -33,8 +33,8 @@ import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.BaseTitledFragment;
+import com.auth0.lock.fragment.DatabaseChangePasswordFragment;
 import com.auth0.lock.fragment.DatabaseLoginFragment;
-import com.auth0.lock.fragment.DatabaseResetPasswordFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.SocialDBFragment;
 import com.auth0.lock.fragment.SocialFragment;
@@ -65,7 +65,7 @@ public class LockFragmentBuilder {
     }
 
     public Fragment resetPassword() {
-        final DatabaseResetPasswordFragment fragment = new DatabaseResetPasswordFragment();
+        final DatabaseChangePasswordFragment fragment = new DatabaseChangePasswordFragment();
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
         arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.isUseEmail());

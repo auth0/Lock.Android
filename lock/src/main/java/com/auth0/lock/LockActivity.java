@@ -19,11 +19,11 @@ import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
+import com.auth0.lock.event.ChangePasswordEvent;
 import com.auth0.lock.event.EnterpriseAuthenticationRequest;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.event.ResetPasswordEvent;
 import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
@@ -32,7 +32,41 @@ import com.auth0.lock.identity.IdentityProvider;
 import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
-
+/**
+ * Activity that handles DB, Social and Enterprise Authentication.
+ * You'll need to declare it in your app's {@code AndroidManifest.xml}:
+ * <pre>{@code
+ * <activity
+ *      android:name="com.auth0.lock.LockActivity"
+ *      android:theme="@style/Lock.Theme"
+ *      android:screenOrientation="portrait"
+ *      android:launchMode="singleTask">
+ *      <intent-filter>
+ *          <action android:name="android.intent.action.VIEW"/>
+ *          <category android:name="android.intent.category.DEFAULT"/>
+ *          <category android:name="android.intent.category.BROWSABLE"/>
+ *          <data android:scheme="a0YOUR_CLIENT_ID" android:host="YOUR_AUTH0_APP_DOMAIN"/>
+ *      </intent-filter>
+ * </activity>
+ * }</pre>
+ *
+ * Then just start it like any other Android activity:
+ * <pre>{@code
+ * Intent lockIntent = new Intent(this, LockActivity.class);
+ * startActivity(lockIntent);
+ * }
+ * </pre>
+ *
+ * And finally register listeners in {@link android.support.v4.content.LocalBroadcastManager} for these actions:
+ * <ul>
+ *     <li><b>Lock.Authentication</b>: Sent on a successful authentication with {@link com.auth0.core.UserProfile} and {@link com.auth0.core.Token}.
+ *     Or both {@code null} when {@link Lock#loginAfterSignUp} is {@code false} </li>
+ *     <li><b>Lock.Cancel</b>: Sent when the user's closes the activity by pressing the back button without authenticating. (Only if {@link Lock#closable} is {@code true}</li>
+ *     <li><b>Lock.ChangePassword</b>: Sent when the user changes the password successfully.</li>
+ * </ul>
+ *
+ * All these action names are defined in these constants: {@link Lock#AUTHENTICATION_ACTION}, {@link Lock#CANCEL_ACTION} and {@link com.auth0.lock.Lock#CHANGE_PASSWORD_ACTION}.
+ */
 public class LockActivity extends FragmentActivity {
 
     private static final String TAG = LockActivity.class.getName();
@@ -157,10 +191,10 @@ public class LockActivity extends FragmentActivity {
         finish();
     }
 
-    @Subscribe public void onResetPassword(ResetPasswordEvent event) {
+    @Subscribe public void onResetPassword(ChangePasswordEvent event) {
         Log.d(TAG, "Changed password");
         ErrorDialogBuilder.showAlertDialog(this, event);
-        broadcastManager.sendBroadcast(new Intent(Lock.RESET_PASSWORD_ACTION));
+        broadcastManager.sendBroadcast(new Intent(Lock.CHANGE_PASSWORD_ACTION));
         getSupportFragmentManager().popBackStack();
     }
 

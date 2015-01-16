@@ -1,5 +1,5 @@
 /*
- * ResetPasswordEvent.java
+ * ChangePasswordEvent.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -26,13 +26,10 @@ package com.auth0.lock.event;
 
 import com.auth0.lock.R;
 
-/**
- * Created by hernan on 12/15/14.
- */
-public class ResetPasswordEvent extends AlertDialogEvent {
+public class ChangePasswordEvent extends AlertDialogEvent {
 
-    public ResetPasswordEvent() {
-        super(R.string.db_reset_password_title_success, R.string.db_reset_password_message_success);
+    public ChangePasswordEvent() {
+        super(R.string.db_change_password_title_success, R.string.db_change_password_message_success);
     }
 
 }

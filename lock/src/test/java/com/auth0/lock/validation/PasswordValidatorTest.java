@@ -58,13 +58,13 @@ public class PasswordValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new PasswordValidator(R.id.db_reset_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+        validator = new PasswordValidator(R.id.db_change_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
         editable = mock(Editable.class);
         when(fragment.getView()).thenReturn(view);
-        when(view.findViewById(eq(R.id.db_reset_password_password_field))).thenReturn(field);
+        when(view.findViewById(eq(R.id.db_change_password_password_field))).thenReturn(field);
         when(field.getText()).thenReturn(editable);
     }
 
