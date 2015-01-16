@@ -50,7 +50,7 @@ public class WebIdentityProvider implements IdentityProvider {
 
     public WebIdentityProvider(CallbackParser parser, Lock lock) {
         this.parser = parser;
-        this.useWebView = lock.isUseWebView();
+        this.useWebView = lock.shouldUseWebView();
         this.bus = lock.getBus();
     }
 

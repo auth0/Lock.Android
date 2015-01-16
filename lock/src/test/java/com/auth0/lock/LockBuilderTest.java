@@ -82,7 +82,7 @@ public class LockBuilderTest {
         lock = basicBuilder()
                 .useWebView(true)
                 .build();
-        assertThat(lock.isUseWebView(), is(true));
+        assertThat(lock.shouldUseWebView(), is(true));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class LockBuilderTest {
         lock = basicBuilder()
                 .loginAfterSignUp(true)
                 .build();
-        assertThat(lock.isLoginAfterSignUp(), is(true));
+        assertThat(lock.shouldLoginAfterSignUp(), is(true));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class LockBuilderTest {
         lock = basicBuilder()
                 .useEmail(false)
                 .build();
-        assertThat(lock.isUseEmail(), is(false));
+        assertThat(lock.shouldUseEmail(), is(false));
     }
 
     @Test

@@ -175,6 +175,70 @@ And you'll see SMS login screen
 
 [![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Screenshot.png)](https://auth0.com)
 
+##API
+
+###Lock
+
+###Constants
+
+```java
+public static final String AUTHENTICATION_ACTION;
+```
+Action sent in `LocalBroadcastManager` when a user authenticates. It will include an instance of `UserProfile` and `Token`.
+
+```java
+public static final String CANCEL_ACTION;
+```
+Action sent when the user navigates back closing `LockActivity` or `LockSMSActivity`
+
+```java
+public static final String CANCEL_ACTION;
+```
+Action sent when the user change its password
+
+###Properties
+```java
+public boolean shouldUseWebView();
+public void setUseWebView(boolean useWebView);
+```
+Forces Lock to use an embedded `android.webkit.WebView` and by  default is `false`.
+
+```java
+public boolean shouldLoginAfterSignUp();
+public boolean setLoginAfterSignUp(boolean loginAfterSignUp);
+```
+Tells Lock to login the user after a successful sign up. By default is `true`
+
+```java
+public boolean isClosable();
+public boolean setClosable(boolean closable);
+```
+Allows Lock activities to be closed by pressing back button. Default is `false`
+
+```java
+public boolean shouldUseEmail();
+public void setUseEmail(boolean useEmail);
+```
+Lock will ask for the user's email instead of a username. By default is `true`.
+
+```java
+public Map<String, Object> getAuthenticationParameters();
+public void setAuthenticationParameters(Map<String, Object> authenticationParameters);
+```
+Map with parameters that will be sent on every authentication request with Auth0 API.
+
+###Methods
+
+```java
+public void setProvider(String serviceName, IdentityProvider provider);
+```
+Change the default identity provider handler for Social and Enterprise connections. By default all social/enterprise authentication are done using Web flow with a Browser.
+
+```java
+public void resetAllProviders();
+```
+Removes all session information the Identity Provider handlers might have.
+
 ## Issue Reporting
 
 If you have found a bug or if you have a feature request, please report them at this repository issues section. Please do not report security vulnerabilities on the public GitHub issue tracker. The [Responsible Disclosure Program](https://auth0.com/whitehat) details the procedure for disclosing security issues.

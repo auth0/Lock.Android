@@ -40,7 +40,7 @@ import java.util.Objects;
 public class Lock {
 
     /**
-     * Action sent when {@link android.support.v4.content.LocalBroadcastManager} when a user authenticates.
+     * Action sent in {@link android.support.v4.content.LocalBroadcastManager} when a user authenticates.
      */
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
     /**
@@ -107,7 +107,7 @@ public class Lock {
      * Flag that tells Lock to use an embedded {@link android.webkit.WebView}. Default is {@code false}
      * @return if Lock uses a {@link android.webkit.WebView}
      */
-    public boolean isUseWebView() {
+    public boolean shouldUseWebView() {
         return useWebView;
     }
 
@@ -123,12 +123,12 @@ public class Lock {
      * Make Lock login a newly created user. Default is {@code true}
      * @return If Lock performs signup + login
      */
-    public boolean isLoginAfterSignUp() {
+    public boolean shouldLoginAfterSignUp() {
         return loginAfterSignUp;
     }
 
     /**
-     * Allows Lock activity to be closed by pressing back button. Default is {@code false}
+     * Allows Lock activities to be closed by pressing back button. Default is {@code false}
      * @return if back button is enabled for Lock
      */
     public boolean isClosable() {
@@ -155,7 +155,7 @@ public class Lock {
      * Use Email to authenticate, otherwise use username. Default is {@code true}
      * @return use email or username
      */
-    public boolean isUseEmail() {
+    public boolean shouldUseEmail() {
         return useEmail;
     }
 
