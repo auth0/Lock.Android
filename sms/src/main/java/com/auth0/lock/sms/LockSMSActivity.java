@@ -125,8 +125,8 @@ public class LockSMSActivity extends FragmentActivity {
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
         Intent result = new Intent(Lock.AUTHENTICATION_ACTION)
-                .putExtra("profile", profile)
-                .putExtra("token", token);
+                .putExtra(Lock.AUTHENTICATION_ACTION_PROFILE_PARAMETER, profile)
+                .putExtra(Lock.AUTHENTICATION_ACTION_TOKEN_PARAMETER, token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(result);
         finish();
     }

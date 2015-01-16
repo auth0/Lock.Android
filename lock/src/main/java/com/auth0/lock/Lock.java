@@ -44,13 +44,21 @@ public class Lock {
      */
     public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
     /**
-     * Action sent when the user navigates back closing {@link com.auth0.lock.LockActivity}
+     * Action sent when the user navigates back closing {@link com.auth0.lock.LockActivity}.
      */
     public static final String CANCEL_ACTION = "Lock.Cancel";
     /**
-     * Action sent when the user change its password
+     * Action sent when the user change its password.
      */
     public static final String CHANGE_PASSWORD_ACTION = "Lock.ChangePassword";
+    /**
+     * Name of the parameter that will include user's profile.
+     */
+    public static final String AUTHENTICATION_ACTION_PROFILE_PARAMETER = "profile";
+    /**
+     * Name of the parameter that will include user's token information.
+     */
+    public static final String AUTHENTICATION_ACTION_TOKEN_PARAMETER = "token";
 
     private boolean useWebView;
     private boolean loginAfterSignUp;

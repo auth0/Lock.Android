@@ -191,6 +191,16 @@ public static final String AUTHENTICATION_ACTION;
 Action sent in `LocalBroadcastManager` when a user authenticates. It will include an instance of `UserProfile` and `Token`.
 
 ```java
+public static final String AUTHENTICATION_ACTION_PROFILE_PARAMETER;
+```
+Name of the parameter that will include user's profile
+
+```java
+public static final String AUTHENTICATION_ACTION_TOKEN_PARAMETER;
+```
+Name of the parameter that will include user's token information
+
+```java
 public static final String CANCEL_ACTION;
 ```
 Action sent when the user navigates back closing `LockActivity` or `LockSMSActivity`
