@@ -77,7 +77,7 @@ public class MyApplication extends Application implements LockProvider {
 
 `LockActivity` will handle Email/Password, Enterprise & Social authentication based on your Application's connections enabled in your Auth0's Dashboard.
 
-Before starting the Activity, you'll need to register in your application's `LocalBroadcastManager` to receive the user's profile and token information. So in the Activity that will start `LockActivity` add the following:
+When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
 // This activity will show Lock
@@ -132,7 +132,7 @@ And you'll see our native login screen
 compile 'com.auth0.lock-sms:0.1.0'
 ```
 
-Before starting the Activity, you'll need to register in your application's `LocalBroadcastManager` to receive the user's profile and token information. So in the Activity that will start `LockSMSActivity` add the following:
+When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
 // This activity will show Lock
