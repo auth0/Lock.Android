@@ -57,5 +57,5 @@ dependencies {
     compile project(':facebook')
     compile project(':googleplus')
     compile project(':sms')
-    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.android.support:appcompat-v7:21.0.2'
 }
