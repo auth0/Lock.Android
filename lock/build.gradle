@@ -34,11 +34,6 @@ android {
     }
 }
 
-apply plugin: 'com.github.dcendents.android-maven'
-
-group = 'com.auth0'
-version = '0.0.1-SNAPSHOT'
-
 apply plugin: 'android-unit-test'
 
 dependencies {
@@ -81,3 +76,5 @@ dependencies {
     }
     testCompile 'org.mockito:mockito-core:1.+'
 }
+
+apply from: '../maven_push.gradle'
