@@ -2,6 +2,7 @@ Lock for Android
 ============
 [![CI Status](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.auth0.android/lock/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.auth0.android/lock)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
@@ -14,7 +15,7 @@ Lock for Android
 
 ## Requierements
 
-Android API level 14+ is required in order to use Lock's UI. If you'll create your own API and just call Auth0 API via the `android-core.aar`, the minimum required API level is 9.
+Android API level 14+ is required in order to use Lock's UI. If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.0.0`, the minimum required API level is 9.
 
 ##Install
 
