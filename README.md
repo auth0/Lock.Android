@@ -57,14 +57,13 @@ Finally, Make your Application class (The one that extends from `android.app.App
 ```java
 public class MyApplication extends Application implements LockProvider {
 
-  @Override
   private Lock lock;
 
   public void onCreate() {
     super.onCreate();
     lock = new LockBuilder()
       .loadFromApplication(this)
-      <!-- Other configuration goes here -->
+      /** Other configuration goes here */
       .closable(true)
       .build();
   }
@@ -75,6 +74,8 @@ public class MyApplication extends Application implements LockProvider {
   }
 }
 ```
+
+> You can check [here](#lockbuilder) for more configuration options
 
 ## Usage
 
@@ -183,6 +184,27 @@ startActivity(smsIntent);
 And you'll see SMS login screen
 
 [![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
+
+##Proguard
+In the [proguard directory](https://github.com/auth0/Lock.Android/tree/master/proguard) you can find the *Proguard* configuration for Lock and its dependencies. 
+By default you should at least use the following files:
+* `proguard-android-async-http.pro`
+* `proguard-jackson-2.pro`
+* `proguard-square-otto.pro`
+* `proguard-lock.pro`
+
+and if you use Facebook or Google+ native integration, you'll need `proguard-facebook.pro` and `proguard-google-play-services.pro` respectively.
+
+You specify several files in you application's `build.gradle` like this:
+
+```gradle
+proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
+proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
+proguardFile '../proguard/proguard-android-async-http.pro' //Auth0 core
+proguardFile '../proguard/proguard-jackson-2.pro' //Auth0 core
+proguardFile '../proguard/proguard-square-otto.pro' //Lock
+proguardFile '../proguard/proguard-lock.pro' //Lock
+```
 
 ##API
 
