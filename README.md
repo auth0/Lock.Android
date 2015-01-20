@@ -21,7 +21,7 @@ Android API level 14+ is required in order to use Lock's UI. If you'll create yo
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0:lock:0.1.0'
+compile 'com.auth0.android:lock:0.1.0'
 ```
 
 Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
@@ -46,6 +46,11 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
 ```
 
 > The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_tenant_name` is the name of the account that owns the application.
+
+Also, you'll need to add *Internet* persmission to your application:
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+```
 
 Finally, Make your Application class (The one that extends from `android.app.Application`) implement the interface `com.auth0.lock.LockProvider` and add the following code:
 
@@ -129,7 +134,7 @@ And you'll see our native login screen
 
 `LockSMSActivity` is not included in `com.auth0:lock:aar` but you can add it with this line in your `build.gradle`:
 ```gradle
-compile 'com.auth0.lock-sms:0.1.0'
+compile 'com.auth0.android:lock-sms:0.1.0'
 ```
 
 When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
