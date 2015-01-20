@@ -199,12 +199,18 @@ and if you use Facebook or Google+ native integration, you'll need `proguard-fac
 You specify several files in you application's `build.gradle` like this:
 
 ```gradle
-proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
-proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
-proguardFile '../proguard/proguard-android-async-http.pro' //Auth0 core
-proguardFile '../proguard/proguard-jackson-2.pro' //Auth0 core
-proguardFile '../proguard/proguard-square-otto.pro' //Lock
-proguardFile '../proguard/proguard-lock.pro' //Lock
+buildTypes {
+  release {
+    minifyEnabled true
+    proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
+    proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
+    proguardFile '../proguard/proguard-android-async-http.pro' //Auth0 core
+    proguardFile '../proguard/proguard-jackson-2.pro' //Auth0 core
+    proguardFile '../proguard/proguard-square-otto.pro' //Lock
+    proguardFile '../proguard/proguard-lock.pro' //Lock
+    //Add your app's specific proguard rules
+  }  
+}
 ```
 
 ##API
