@@ -87,6 +87,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         if (arguments != null && arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
             authenticationParameters.put(ParameterBuilder.CONNECTION, enterpriseConnection.getName());
+            defaultConnection = enterpriseConnection;
             showADForm = true;
             useEmail = false;
         } else if (arguments != null && arguments.containsKey(DEFAULT_CONNECTION_ARGUMENT)) {
