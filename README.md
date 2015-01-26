@@ -349,7 +349,7 @@ After a successful sign up of a user, sign him/her in too.
 ```java
 public LockBuilder authenticationParameters(Map<String, Object> parameters);
 ```
-Extra parameters sent to Auth0 Auth API during authentication. By default it has `scope` defined as `openid offline_access` and a device name stored in `device` parameter key.
+Extra parameters sent to Auth0 Auth API during authentication. By default it has `scope` defined as `openid offline_access` and a device name stored in `device` parameter key.  For more information check out our [Wiki](https://github.com/auth0/Lock.Android/wiki/Sending-authentication-parameters)
 
 ```java
 public LockBuilder useEmail(boolean useEmail);
