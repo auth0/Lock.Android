@@ -26,7 +26,7 @@
 <resources>
     <string name="auth0_client_id">{CLIENT_ID}</string>
     <string name="auth0_tenant_name">{TENANT}</string>
-    <string name="auth0_scheme">a0{CLIENT_ID}</string>
-    <string name="auth0_domain">{TENANT}.auth0.com</string>
+    <string name="auth0_scheme">{MOBILE_CUSTOM_SCHEME}</string>
+    <string name="auth0_domain">{DOMAIN}</string>
     <string name="facebook_app_id">696506353719958</string>
 </resources>
