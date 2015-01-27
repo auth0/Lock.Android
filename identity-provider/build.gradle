@@ -1,7 +1,7 @@
 /*
  * build.gradle
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,6 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -41,11 +40,44 @@ android {
     }
 }
 
+apply plugin: 'android-unit-test'
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':identity-provider')
+    compile project(':android-core')
     compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.google.android.gms:play-services-plus:6.5.87'
+    compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
+
+    testCompile('junit:junit:4.11') {
+        exclude module: 'hamcrest-core'
+    }
+    testCompile 'com.google.guava:guava:18.0'
+    testCompile 'com.squareup.dagger:dagger:1.1.0'
+    testCompile 'org.hamcrest:hamcrest-integration:1.1'
+    testCompile 'org.hamcrest:hamcrest-core:1.1'
+    testCompile 'org.hamcrest:hamcrest-library:1.1'
+    testCompile('org.robolectric:robolectric:2.4') {
+        exclude module: 'classworlds'
+        exclude module: 'commons-logging'
+        exclude module: 'httpclient'
+        exclude module: 'maven-artifact'
+        exclude module: 'maven-artifact-manager'
+        exclude module: 'maven-error-diagnostics'
+        exclude module: 'maven-model'
+        exclude module: 'maven-project'
+        exclude module: 'maven-settings'
+        exclude module: 'plexus-container-default'
+        exclude module: 'plexus-interpolation'
+        exclude module: 'plexus-utils'
+        exclude module: 'wagon-file'
+        exclude module: 'wagon-http-lightweight'
+        exclude module: 'wagon-provider-api'
+    }
+    testCompile ('com.squareup:fest-android:1.0.+') {
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
+    testCompile 'org.mockito:mockito-core:1.10.19'
+
 }
 
 apply from: '../maven_push.gradle'

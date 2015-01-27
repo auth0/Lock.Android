@@ -27,8 +27,9 @@ package com.auth0.lock.event;
 import android.net.Uri;
 
 import com.auth0.core.Application;
+import com.auth0.identity.IdentityProviderRequest;
 
-public class IdentityProviderAuthenticationRequestEvent {
+public class IdentityProviderAuthenticationRequestEvent implements IdentityProviderRequest {
 
     private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";
 

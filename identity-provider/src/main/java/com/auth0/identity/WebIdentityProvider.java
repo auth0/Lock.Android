@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.identity;
+package com.auth0.identity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,37 +30,47 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.auth0.core.Application;
-import com.auth0.lock.Lock;
-import com.auth0.lock.LockActivity;
-import com.auth0.lock.R;
-import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
-import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
-import com.auth0.lock.web.CallbackParser;
-import com.auth0.lock.web.WebViewActivity;
-import com.squareup.otto.Bus;
+import com.auth0.core.Token;
+import com.auth0.identity.web.CallbackParser;
+import com.auth0.identity.web.WebViewActivity;
 
 import java.util.Map;
 
+/**
+ * Implementation of {@link com.auth0.identity.IdentityProvider} that handles authentication
+ * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link com.auth0.identity.web.WebViewActivity}.
+ * This behaviour is changed using {@link #setUseWebView(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
+ */
 public class WebIdentityProvider implements IdentityProvider {
 
-    private final boolean useWebView;
-    private Bus bus;
+    private boolean useWebView;
+    private IdentityProviderCallback callback;
     private CallbackParser parser;
 
-    public WebIdentityProvider(CallbackParser parser, Lock lock) {
+    public WebIdentityProvider(CallbackParser parser) {
         this.parser = parser;
-        this.useWebView = lock.shouldUseWebView();
-        this.bus = lock.getBus();
+        this.useWebView = false;
     }
 
-    public void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application) {
-        final Uri url = event.getAuthenticationUri(application);
+    /**
+     * If the class authenticates with an external browser or not.
+     * @param useWebView if the authentication is handled in a WebView.
+     */
+    public void setUseWebView(boolean useWebView) {
+        this.useWebView = useWebView;
+    }
+
+    public void setCallback(IdentityProviderCallback callback) {
+        this.callback = callback;
+    }
+
+    public void start(Activity activity, IdentityProviderRequest request, Application application) {
+        final Uri url = request.getAuthenticationUri(application);
         final Intent intent;
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(url);
-            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
+            intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, request.getServiceName());
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, url);
@@ -73,18 +83,17 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
-        Log.v(WebIdentityProvider.class.getName(), "Authenticating with webflow with data " + data.getData());
-        Uri uri = data.getData();
+        Uri uri = data != null ? data.getData() : null;
+        Log.v(WebIdentityProvider.class.getName(), "Authenticating with webflow with data " + uri);
         boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK && uri != null;
         if (isValid) {
             final Map<String, String> values = parser.getValuesFromUri(uri);
             if (values.containsKey("error")) {
                 final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
-                final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
-                bus.post(error);
+                callback.onFailure(R.string.social_error_title, message, null);
             } else if(values.size() > 0) {
-                Log.d(LockActivity.class.getName(), "Authenticated using web flow");
-                bus.post(new IdentityProviderAuthenticationEvent(values));
+                Log.d(WebIdentityProvider.class.getName(), "Authenticated using web flow");
+                callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
             }
         }
         return isValid;

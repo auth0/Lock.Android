@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ webview_action_bar.xml
+  ~ strings.xml
   ~
-  ~ Copyright (c) 2014 Auth0 (http://auth0.com)
+  ~ Copyright (c) 2015 Auth0 (http://auth0.com)
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -23,20 +22,8 @@
   ~ THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_gravity="start|center_vertical|fill_horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:background="@android:color/transparent">
-
-    <TextView
-        android:id="@+id/social_icon_label"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:gravity="center"
-        android:textSize="@dimen/social_button_icon_size"
-        />
-
-</RelativeLayout>
+<resources>
+    <string name="social_error_title">There was an error during authentication</string>
+    <string name="social_access_denied_message">Permissions were not granted. Try again.</string>
+    <string name="social_error_message">The application isn\'t configured properly for the social connection. Please check your Auth0\'s application configuration</string>
+</resources>

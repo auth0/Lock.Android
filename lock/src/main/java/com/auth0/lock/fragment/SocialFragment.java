@@ -32,18 +32,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.api.callback.BaseCallback;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
-import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
-import com.auth0.lock.event.SocialCredentialEvent;
-import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -74,6 +66,7 @@ public class SocialFragment extends BaseTitledFragment {
         List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]));
+        listView = (ListView) view.findViewById(R.id.social_button_list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

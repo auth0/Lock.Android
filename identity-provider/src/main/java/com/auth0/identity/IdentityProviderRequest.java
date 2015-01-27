@@ -1,7 +1,7 @@
 /*
- * IdentityProviderAuthenticationEvent.java
+ * IdentityProviderRequest.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,28 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.identity;
 
-import com.auth0.core.Token;
+import android.net.Uri;
 
-import java.util.Map;
+import com.auth0.core.Application;
 
-public class IdentityProviderAuthenticationEvent {
+/**
+ * Interface for a authentication request to a Identity Provider, e.g. Facebook, Instagram, etc.
+ */
+public interface IdentityProviderRequest {
 
-    private final Token token;
+    /**
+     * Returns the URL used to authenticate the user in the Identity Provider.
+     * @param application Auth0 application information
+     * @return a {@link android.net.Uri}
+     */
+    Uri getAuthenticationUri(Application application);
 
-    public IdentityProviderAuthenticationEvent(Token token) {
-        this.token = token;
-    }
+    /**
+     * Name of the Identity Provider
+     * @return a name
+     */
+    String getServiceName();
 
-    public Token getToken() {
-        return token;
-    }
 }

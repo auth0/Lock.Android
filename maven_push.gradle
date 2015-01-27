@@ -3,10 +3,10 @@ apply plugin: 'signing'
  
 def sonatypeRepositoryUrl
     if (isReleaseBuild()) {
-        println 'RELEASE BUILD'
+//        println 'RELEASE BUILD'
         sonatypeRepositoryUrl = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
     } else {
-        println 'SNAPSHOT BUILD'
+//        println 'SNAPSHOT BUILD'
         sonatypeRepositoryUrl = hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
  

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.util;
+package com.auth0.identity.util;
 
 import android.content.Context;
 import android.graphics.Color;

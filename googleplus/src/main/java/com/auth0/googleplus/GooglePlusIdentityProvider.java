@@ -33,16 +33,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.auth0.core.Application;
-import com.auth0.lock.Lock;
-import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
-import com.auth0.lock.event.SystemErrorEvent;
-import com.auth0.lock.identity.IdentityProvider;
+import com.auth0.identity.IdentityProvider;
+import com.auth0.identity.IdentityProviderCallback;
+import com.auth0.identity.IdentityProviderRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
-import com.squareup.otto.Bus;
 
 public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -50,26 +47,30 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     private final GoogleApiClient apiClient;
     private boolean authenticating;
     private Activity activity;
-    private final Bus bus;
+    private IdentityProviderCallback callback;
 
-    public GooglePlusIdentityProvider(Lock lock, Context context) {
+    public GooglePlusIdentityProvider(Context context) {
         this.apiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
-        this.bus = lock.getBus();
     }
 
     @Override
-    public void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application) {
+    public void setCallback(IdentityProviderCallback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public void start(Activity activity, IdentityProviderRequest event, Application application) {
         this.activity = activity;
         Log.v(TAG, "Starting G+ connection");
         final int availabilityStatus = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
         if (availabilityStatus != ConnectionResult.SUCCESS) {
             Log.w(TAG, "Google services availability failed with status " + availabilityStatus);
-            bus.post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(availabilityStatus, activity, 0)));
+            callback.onFailure(GooglePlayServicesUtil.getErrorDialog(availabilityStatus, activity, 0));
             stop();
             return;
         }
@@ -116,7 +117,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     @Override
     public void onConnected(Bundle bundle) {
         authenticating = false;
-        new FetchTokenAsyncTask(apiClient, activity, bus).execute("email", "profile");
+        new FetchTokenAsyncTask(apiClient, activity, callback).execute("email", "profile");
     }
 
     @Override
@@ -130,7 +131,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
         Log.v(TAG, "Connection failed with code " + result.getErrorCode());
         if (result.getErrorCode() == ConnectionResult.SERVICE_MISSING) {
             Log.e(TAG, "service not available");
-            bus.post(new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity, 0)));
+            callback.onFailure(GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity, 0));
         } else if (result.getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED && authenticating) {
             authenticating = false;
             Log.v(TAG, "G+ Sign in required");
@@ -143,7 +144,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
             }
         } else {
             Log.e(TAG, "Connection failed with unrecoverable error");
-            bus.post(new AuthenticationError(R.string.social_error_title, R.string.social_error_message));
+            callback.onFailure(R.string.social_error_title, R.string.social_error_message, null);
         }
     }
 }

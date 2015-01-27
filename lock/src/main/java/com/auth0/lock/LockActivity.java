@@ -15,6 +15,8 @@ import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.identity.IdentityProvider;
+import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -28,7 +30,7 @@ import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
-import com.auth0.lock.identity.IdentityProvider;
+import com.auth0.lock.identity.LockIdentityProviderCallback;
 import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
@@ -78,6 +80,7 @@ public class LockActivity extends FragmentActivity {
     private ProgressDialog progressDialog;
     private IdentityProvider identity;
     private LocalBroadcastManager broadcastManager;
+    private IdentityProviderCallback callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public class LockActivity extends FragmentActivity {
                     .commit();
         }
         broadcastManager = LocalBroadcastManager.getInstance(this);
+        callback = new LockIdentityProviderCallback(lock.getBus());
     }
 
     @Override
@@ -250,6 +254,7 @@ public class LockActivity extends FragmentActivity {
     @Subscribe public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {
         Log.v(TAG, "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
+        identity.setCallback(callback);
         identity.start(this, event, application);
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
