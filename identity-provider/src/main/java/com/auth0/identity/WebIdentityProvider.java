@@ -36,6 +36,11 @@ import com.auth0.identity.web.WebViewActivity;
 
 import java.util.Map;
 
+/**
+ * Implementation of {@link com.auth0.identity.IdentityProvider} that handles authentication
+ * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link com.auth0.identity.web.WebViewActivity}.
+ * This behaviour is changed using {@link #setUseWebView(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
+ */
 public class WebIdentityProvider implements IdentityProvider {
 
     private boolean useWebView;
@@ -47,6 +52,10 @@ public class WebIdentityProvider implements IdentityProvider {
         this.useWebView = false;
     }
 
+    /**
+     * If the class authenticates with an external browser or not.
+     * @param useWebView if the authentication is handled in a WebView.
+     */
     public void setUseWebView(boolean useWebView) {
         this.useWebView = useWebView;
     }

@@ -28,10 +28,22 @@ import android.net.Uri;
 
 import com.auth0.core.Application;
 
+/**
+ * Interface for a authentication request to a Identity Provider, e.g. Facebook, Instagram, etc.
+ */
 public interface IdentityProviderRequest {
 
+    /**
+     * Returns the URL used to authenticate the user in the Identity Provider.
+     * @param application Auth0 application information
+     * @return a {@link android.net.Uri}
+     */
     Uri getAuthenticationUri(Application application);
 
+    /**
+     * Name of the Identity Provider
+     * @return a name
+     */
     String getServiceName();
 
 }
