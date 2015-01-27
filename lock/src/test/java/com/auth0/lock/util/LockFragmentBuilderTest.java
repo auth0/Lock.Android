@@ -24,11 +24,13 @@
 
 package com.auth0.lock.util;
 
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
+import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.DatabaseChangePasswordFragment;
@@ -49,6 +51,7 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -111,6 +114,30 @@ public class LockFragmentBuilderTest {
         when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
         when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
         assertThat(builder.root(), is(DatabaseLoginFragment.class));
+    }
+
+    @Test
+    public void shouldSetArgumentsToMainEnterpriseLoginFragment() throws Exception {
+        when(application.getDatabaseStrategy()).thenReturn(null);
+        when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(adStrategy));
+        when(application.strategyForName(Strategies.ActiveDirectory.getName())).thenReturn(adStrategy);
+        when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
+        final Fragment root = builder.root();
+        final Bundle arguments = root.getArguments();
+        assertThat(arguments, is(notNullValue()));
+        Connection connection = arguments.getParcelable(DatabaseLoginFragment.AD_ENTERPRISE_CONNECTION_ARGUMENT);
+        assertThat(connection, equalTo(adConnection));
+        assertThat(arguments.getBoolean(DatabaseLoginFragment.IS_MAIN_LOGIN_ARGUMENT), is(true));
+    }
+
+    @Test
+    public void shouldSetArgumentsToEnterpriseLoginFragment() throws Exception {
+        final Fragment root = builder.enterpriseLoginWithConnection(adConnection);
+        final Bundle arguments = root.getArguments();
+        assertThat(arguments, is(notNullValue()));
+        Connection connection = arguments.getParcelable(DatabaseLoginFragment.AD_ENTERPRISE_CONNECTION_ARGUMENT);
+        assertThat(connection, equalTo(adConnection));
+        assertThat(arguments.getBoolean(DatabaseLoginFragment.IS_MAIN_LOGIN_ARGUMENT), is(false));
     }
 
     @Test

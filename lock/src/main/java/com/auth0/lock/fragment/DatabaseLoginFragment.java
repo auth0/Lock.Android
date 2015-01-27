@@ -60,6 +60,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
     public static final String AD_ENTERPRISE_CONNECTION_ARGUMENT = "AD_ENTERPRISE_CONNECTION_ARGUMENT";
     public static final String DEFAULT_CONNECTION_ARGUMENT = "DEFAULT_CONNECTION_ARGUMENT";
+    public static final String IS_MAIN_LOGIN_ARGUMENT = "IS_MAIN_LOGIN_ARGUMENT";
 
     LoginAuthenticationErrorBuilder errorBuilder;
     LoginValidator validator;
@@ -77,23 +78,27 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     private boolean hasDB;
     private boolean showSignUp;
     private boolean showResetPassword;
+    private boolean showCancel;
     private Connection enterpriseConnection;
     private Connection defaultConnection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Bundle arguments = getArguments();
-        if (arguments != null && arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
+        final Bundle arguments = getArguments() != null ? getArguments() : new Bundle();
+        if (arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
             authenticationParameters.put(ParameterBuilder.CONNECTION, enterpriseConnection.getName());
             defaultConnection = enterpriseConnection;
             showADForm = true;
             useEmail = false;
-        } else if (arguments != null && arguments.containsKey(DEFAULT_CONNECTION_ARGUMENT)) {
+        } else if (arguments.containsKey(DEFAULT_CONNECTION_ARGUMENT)) {
             defaultConnection = arguments.getParcelable(DEFAULT_CONNECTION_ARGUMENT);
             authenticationParameters.put(ParameterBuilder.CONNECTION, defaultConnection.getName());
         }
+
+        showCancel = !arguments.getBoolean(IS_MAIN_LOGIN_ARGUMENT);
+
         hasDB = client.getApplication().getDatabaseStrategy() != null;
         useEmail = useEmail && hasDB;
         showSignUp = showResetPassword = hasDB;
@@ -157,6 +162,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         } else {
             TextView message = (TextView) view.findViewById(R.id.db_enterprise_login_message);
             message.setText(String.format(getString(R.string.db_enterprise_login_message), enterpriseConnection.getValueForKey("domain")));
+            Button cancelButton = (Button) view.findViewById(R.id.db_enterprise_cancel_button);
+            cancelButton.setVisibility(showCancel ? View.VISIBLE : View.GONE);
         }
         separator = view.findViewById(R.id.db_separator_view);
         passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);

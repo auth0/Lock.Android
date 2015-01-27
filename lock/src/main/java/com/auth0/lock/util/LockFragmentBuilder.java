@@ -134,7 +134,7 @@ public class LockFragmentBuilder {
         }
 
         if (!hasDB && ad != null) {
-            return enterpriseLoginWithConnection(ad.getConnections().get(0));
+            return enterpriseLoginWithConnection(ad.getConnections().get(0), true);
         }
 
         return login();
@@ -149,6 +149,10 @@ public class LockFragmentBuilder {
     }
 
     public Fragment enterpriseLoginWithConnection(Connection connection) {
+        return enterpriseLoginWithConnection(connection, false);
+    }
+
+    private Fragment enterpriseLoginWithConnection(Connection connection, boolean isRoot) {
         final DatabaseLoginFragment fragment = new DatabaseLoginFragment();
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
@@ -156,6 +160,7 @@ public class LockFragmentBuilder {
         if (connection != null) {
             arguments.putParcelable(DatabaseLoginFragment.AD_ENTERPRISE_CONNECTION_ARGUMENT, connection);
         }
+        arguments.putBoolean(DatabaseLoginFragment.IS_MAIN_LOGIN_ARGUMENT, isRoot);
         fragment.setArguments(arguments);
         return fragment;
     }
