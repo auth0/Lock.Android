@@ -44,13 +44,17 @@ import java.util.Map;
 
 public class WebIdentityProvider implements IdentityProvider {
 
-    private final boolean useWebView;
+    private boolean useWebView;
     private IdentityProviderCallback callback;
     private CallbackParser parser;
 
-    public WebIdentityProvider(CallbackParser parser, Lock lock) {
+    public WebIdentityProvider(CallbackParser parser) {
         this.parser = parser;
-        this.useWebView = lock.shouldUseWebView();
+        this.useWebView = false;
+    }
+
+    public void setUseWebView(boolean useWebView) {
+        this.useWebView = useWebView;
     }
 
     public void setCallback(IdentityProviderCallback callback) {

@@ -36,7 +36,6 @@ import com.auth0.core.Application;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.identity.IdentityProviderRequest;
-import com.auth0.lock.Lock;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,7 +49,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
     private Activity activity;
     private IdentityProviderCallback callback;
 
-    public GooglePlusIdentityProvider(Lock lock, Context context) {
+    public GooglePlusIdentityProvider(Context context) {
         this.apiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

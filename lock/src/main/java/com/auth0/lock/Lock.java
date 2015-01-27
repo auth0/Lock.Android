@@ -65,7 +65,7 @@ public class Lock {
     private Map<String, Object> authenticationParameters;
     private boolean useEmail;
 
-    private IdentityProvider defaultProvider;
+    private WebIdentityProvider defaultProvider;
     private Map<String, IdentityProvider> providers;
 
     private final Bus bus;
@@ -78,7 +78,7 @@ public class Lock {
         this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
-        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), this);
+        this.defaultProvider = new WebIdentityProvider(new CallbackParser());
         this.apiClient = apiClient;
     }
 
@@ -108,6 +108,7 @@ public class Lock {
      */
     public void setUseWebView(boolean useWebView) {
         this.useWebView = useWebView;
+        this.defaultProvider.setUseWebView(useWebView);
     }
 
     /**
