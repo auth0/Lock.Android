@@ -1,7 +1,7 @@
 /*
- * IdentityProviderAuthenticationEvent.java
+ * SocialIdentityProviderCallback.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,13 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.identity;
 
-import com.auth0.core.Token;
+/**
+ * Created by hernan on 1/27/15.
+ */
+public interface SocialIdentityProviderCallback extends IdentityProviderCallback {
 
-import java.util.Map;
+    void onSuccess(String serviceName, String accessToken);
 
-public class IdentityProviderAuthenticationEvent {
-
-    private final Token token;
-
-    public IdentityProviderAuthenticationEvent(Token token) {
-        this.token = token;
-    }
-
-    public IdentityProviderAuthenticationEvent(Map<String, String> values) {
-        this.token = new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token"));
-    }
-
-    public Token getToken() {
-        return token;
-    }
 }

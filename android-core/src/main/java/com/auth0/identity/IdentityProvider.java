@@ -1,7 +1,7 @@
 /*
- * IdentityProviderAuthenticationEvent.java
+ * IdentityProvider.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,27 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.event;
+package com.auth0.identity;
 
-import com.auth0.core.Token;
+import android.app.Activity;
+import android.content.Intent;
 
-import java.util.Map;
+import com.auth0.core.Application;
 
-public class IdentityProviderAuthenticationEvent {
+public interface IdentityProvider {
 
-    private final Token token;
+    static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
+    static final int GOOGLE_PLUS_REQUEST_CODE = 501;
+    static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
 
-    public IdentityProviderAuthenticationEvent(Token token) {
-        this.token = token;
-    }
+    void setCallback(IdentityProviderCallback callback);
 
-    public IdentityProviderAuthenticationEvent(Map<String, String> values) {
-        this.token = new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token"));
-    }
+    void start(Activity activity, IdentityProviderRequest request, Application application);
 
-    public Token getToken() {
-        return token;
-    }
+    void stop();
+
+    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+
+    void clearSession();
+
 }
