@@ -27,15 +27,14 @@ package com.auth0.lock.identity;
 import android.app.Dialog;
 
 import com.auth0.core.Token;
-import com.auth0.identity.SocialIdentityProviderCallback;
-import com.auth0.identity.WebIdentityProviderCallback;
+import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.squareup.otto.Bus;
 
-public class LockIdentityProviderCallback implements WebIdentityProviderCallback, SocialIdentityProviderCallback {
+public class LockIdentityProviderCallback implements IdentityProviderCallback {
 
     private final Bus bus;
 

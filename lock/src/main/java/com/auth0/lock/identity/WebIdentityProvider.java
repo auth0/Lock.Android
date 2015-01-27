@@ -30,37 +30,40 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.auth0.core.Application;
+import com.auth0.core.Token;
+import com.auth0.identity.IdentityProvider;
+import com.auth0.identity.IdentityProviderCallback;
+import com.auth0.identity.IdentityProviderRequest;
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockActivity;
 import com.auth0.lock.R;
-import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
-import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.web.CallbackParser;
 import com.auth0.lock.web.WebViewActivity;
-import com.squareup.otto.Bus;
 
 import java.util.Map;
 
 public class WebIdentityProvider implements IdentityProvider {
 
     private final boolean useWebView;
-    private Bus bus;
+    private IdentityProviderCallback callback;
     private CallbackParser parser;
 
     public WebIdentityProvider(CallbackParser parser, Lock lock) {
         this.parser = parser;
         this.useWebView = lock.shouldUseWebView();
-        this.bus = lock.getBus();
     }
 
-    public void start(Activity activity, IdentityProviderAuthenticationRequestEvent event, Application application) {
-        final Uri url = event.getAuthenticationUri(application);
+    public void setCallback(IdentityProviderCallback callback) {
+        this.callback = callback;
+    }
+
+    public void start(Activity activity, IdentityProviderRequest request, Application application) {
+        final Uri url = request.getAuthenticationUri(application);
         final Intent intent;
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(url);
-            intent.putExtra(WebViewActivity.SERVICE_NAME, event.getServiceName());
+            intent.putExtra(WebViewActivity.SERVICE_NAME, request.getServiceName());
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, url);
@@ -80,11 +83,10 @@ public class WebIdentityProvider implements IdentityProvider {
             final Map<String, String> values = parser.getValuesFromUri(uri);
             if (values.containsKey("error")) {
                 final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
-                final AuthenticationError error = new AuthenticationError(R.string.social_error_title, message);
-                bus.post(error);
+                callback.onFailure(R.string.social_error_title, message, null);
             } else if(values.size() > 0) {
                 Log.d(LockActivity.class.getName(), "Authenticated using web flow");
-                bus.post(new IdentityProviderAuthenticationEvent(values));
+                callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
             }
         }
         return isValid;

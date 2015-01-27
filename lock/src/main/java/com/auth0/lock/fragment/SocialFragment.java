@@ -32,18 +32,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.api.callback.BaseCallback;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
-import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
-import com.auth0.lock.event.SocialCredentialEvent;
-import com.squareup.otto.Subscribe;
 
 import java.util.List;
 

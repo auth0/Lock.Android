@@ -24,9 +24,13 @@
 
 package com.auth0.identity;
 
+import android.net.Uri;
+
+import com.auth0.core.Application;
+
 public interface IdentityProviderRequest {
 
-    String getAuthorizationUri();
+    Uri getAuthenticationUri(Application application);
 
     String getServiceName();
 

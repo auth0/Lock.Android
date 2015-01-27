@@ -25,14 +25,13 @@
 package com.auth0.lock;
 
 import com.auth0.api.APIClient;
-import com.auth0.lock.identity.IdentityProvider;
+import com.auth0.identity.IdentityProvider;
 import com.auth0.lock.identity.WebIdentityProvider;
 import com.auth0.lock.web.CallbackParser;
 import com.squareup.otto.Bus;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class that allows to change the behaviour of Lock using its options.

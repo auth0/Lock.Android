@@ -25,15 +25,14 @@
 package com.auth0.googleplus;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.auth0.core.Strategies;
-import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.SocialCredentialEvent;
-import com.auth0.lock.event.SystemErrorEvent;
-import com.auth0.lock.identity.IdentityProvider;
+import com.auth0.identity.IdentityProvider;
+import com.auth0.identity.IdentityProviderCallback;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
@@ -41,7 +40,6 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
-import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
@@ -50,44 +48,96 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
     public static final String TAG = FetchTokenAsyncTask.class.getName();
     private final GoogleApiClient apiClient;
     private final Activity context;
-    private final Bus bus;
+    private final IdentityProviderCallback callback;
 
-    public FetchTokenAsyncTask(GoogleApiClient apiClient, Activity context, Bus bus) {
+    public FetchTokenAsyncTask(GoogleApiClient apiClient, Activity context, IdentityProviderCallback callback) {
         this.apiClient = apiClient;
         this.context = context;
-        this.bus = bus;
+        this.callback = callback;
     }
 
     @Override
     protected Object doInBackground(String... params) {
+        FetchTokenResultHolder holder = null;
         try {
             String accessToken = GoogleAuthUtil.getToken(
                     context,
                     Plus.AccountApi.getAccountName(apiClient),
                     "oauth2:" + TextUtils.join(" ", params));
 
-            return new SocialCredentialEvent(Strategies.GooglePlus.getName(), accessToken);
+            holder = new FetchTokenResultHolder(accessToken);
         } catch (IOException transientEx) {
             Log.e(TAG, "Failed to fetch G+ token", transientEx);
-            return new AuthenticationError(R.string.social_error_title, R.string.social_access_denied_message, transientEx);
+            holder = new FetchTokenResultHolder(R.string.social_error_title, R.string.social_access_denied_message, transientEx);
         } catch (GooglePlayServicesAvailabilityException e) {
             Log.w(TAG, "Google Play services not found or invalid", e);
-            return new SystemErrorEvent(GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), context, 0), e);
+            holder = new FetchTokenResultHolder(GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), context, 0));
         } catch (UserRecoverableAuthException e) {
             Log.d(TAG, "User permission from the user required in order to fetch token", e);
             context.startActivityForResult(e.getIntent(), IdentityProvider.GOOGLE_PLUS_TOKEN_REQUEST_CODE);
-            return null;
         } catch (GoogleAuthException authEx) {
-            return new AuthenticationError(R.string.social_error_title, R.string.social_error_message, authEx);
+            holder = new FetchTokenResultHolder(R.string.social_error_title, R.string.social_error_message, authEx);
         } catch (Exception e) {
-            return new AuthenticationError(R.string.social_error_title, R.string.social_error_message, e);
+            holder = new FetchTokenResultHolder(R.string.social_error_title, R.string.social_error_message, e);
         }
+        return holder;
     }
 
     @Override
     protected void onPostExecute(Object result) {
         if (result != null) {
-            bus.post(result);
+            FetchTokenResultHolder holder = (FetchTokenResultHolder) result;
+            if (holder.getToken() != null) {
+                callback.onSuccess(Strategies.GooglePlus.getName(), holder.getToken());
+            } else if (holder.getDialog() != null) {
+                callback.onFailure(holder.getDialog());
+            } else {
+                callback.onFailure(holder.getTitleError(), holder.getMessageError(), holder.getCause());
+            }
+        }
+    }
+
+    private class FetchTokenResultHolder {
+        private String token;
+
+        private int titleError;
+        private int messageError;
+        private Throwable cause;
+
+        private Dialog dialog;
+
+        private FetchTokenResultHolder(String token) {
+            this.token = token;
+        }
+
+        private FetchTokenResultHolder(int titleError, int messageError, Throwable cause) {
+            this.titleError = titleError;
+            this.messageError = messageError;
+            this.cause = cause;
+        }
+
+        private FetchTokenResultHolder(Dialog dialog) {
+            this.dialog = dialog;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public int getTitleError() {
+            return titleError;
+        }
+
+        public int getMessageError() {
+            return messageError;
+        }
+
+        public Throwable getCause() {
+            return cause;
+        }
+
+        public Dialog getDialog() {
+            return dialog;
         }
     }
 }

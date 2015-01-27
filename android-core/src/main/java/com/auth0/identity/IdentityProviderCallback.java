@@ -26,6 +26,8 @@ package com.auth0.identity;
 
 import android.app.Dialog;
 
+import com.auth0.core.Token;
+
 /**
  * Created by hernan on 1/27/15.
  */
@@ -34,4 +36,8 @@ public interface IdentityProviderCallback {
     void onFailure(Dialog dialog);
 
     void onFailure(int titleResource, int messageResource, Throwable cause);
+
+    void onSuccess(String serviceName, String accessToken);
+
+    void onSuccess(Token token);
 }

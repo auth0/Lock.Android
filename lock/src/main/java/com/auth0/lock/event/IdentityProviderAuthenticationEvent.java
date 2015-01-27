@@ -36,10 +36,6 @@ public class IdentityProviderAuthenticationEvent {
         this.token = token;
     }
 
-    public IdentityProviderAuthenticationEvent(Map<String, String> values) {
-        this.token = new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token"));
-    }
-
     public Token getToken() {
         return token;
     }
