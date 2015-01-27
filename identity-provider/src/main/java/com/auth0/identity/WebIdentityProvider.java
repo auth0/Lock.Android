@@ -61,7 +61,7 @@ public class WebIdentityProvider implements IdentityProvider {
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(url);
-            intent.putExtra(WebViewActivity.SERVICE_NAME, request.getServiceName());
+            intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, request.getServiceName());
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, url);
@@ -74,8 +74,8 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
-        Log.v(WebIdentityProvider.class.getName(), "Authenticating with webflow with data " + data.getData());
-        Uri uri = data.getData();
+        Uri uri = data != null ? data.getData() : null;
+        Log.v(WebIdentityProvider.class.getName(), "Authenticating with webflow with data " + uri);
         boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK && uri != null;
         if (isValid) {
             final Map<String, String> values = parser.getValuesFromUri(uri);
