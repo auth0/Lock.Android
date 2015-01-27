@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.web;
+package com.auth0.identity.web;
 
 import android.net.Uri;
 

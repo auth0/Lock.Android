@@ -41,7 +41,7 @@
         <!--Auth0 Lock End-->
 
         <!--Auth0 Lock Embedded WebView-->
-        <activity android:name="com.auth0.lock.web.WebViewActivity" android:theme="@style/MyLock.Theme"/>
+        <activity android:name="com.auth0.identity.web.WebViewActivity" android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock Embedded WebView End-->
 
         <!--Auth0 Lock SMS-->

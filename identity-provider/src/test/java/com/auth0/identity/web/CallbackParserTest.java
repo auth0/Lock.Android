@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.web;
+package com.auth0.identity.web;
 
 import android.net.Uri;
 
@@ -34,15 +34,12 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)

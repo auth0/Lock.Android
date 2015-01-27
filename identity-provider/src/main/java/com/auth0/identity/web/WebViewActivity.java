@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.web;
+package com.auth0.identity.web;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,14 +37,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
-import com.auth0.lock.R;
-import com.auth0.lock.util.SocialResources;
+import com.auth0.identity.R;
+import com.auth0.identity.util.SocialResources;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class WebViewActivity extends ActionBarActivity {
 
     public static final String SERVICE_NAME = "serviceName";
+
     WebView webView;
     SmoothProgressBar progressBar;
 

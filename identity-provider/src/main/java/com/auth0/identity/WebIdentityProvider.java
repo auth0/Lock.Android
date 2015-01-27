@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.identity;
+package com.auth0.identity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,14 +31,8 @@ import android.util.Log;
 
 import com.auth0.core.Application;
 import com.auth0.core.Token;
-import com.auth0.identity.IdentityProvider;
-import com.auth0.identity.IdentityProviderCallback;
-import com.auth0.identity.IdentityProviderRequest;
-import com.auth0.lock.Lock;
-import com.auth0.lock.LockActivity;
-import com.auth0.lock.R;
-import com.auth0.lock.web.CallbackParser;
-import com.auth0.lock.web.WebViewActivity;
+import com.auth0.identity.web.CallbackParser;
+import com.auth0.identity.web.WebViewActivity;
 
 import java.util.Map;
 
@@ -89,7 +83,7 @@ public class WebIdentityProvider implements IdentityProvider {
                 final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
                 callback.onFailure(R.string.social_error_title, message, null);
             } else if(values.size() > 0) {
-                Log.d(LockActivity.class.getName(), "Authenticated using web flow");
+                Log.d(WebIdentityProvider.class.getName(), "Authenticated using web flow");
                 callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
             }
         }

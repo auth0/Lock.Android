@@ -26,8 +26,8 @@ package com.auth0.lock;
 
 import com.auth0.api.APIClient;
 import com.auth0.identity.IdentityProvider;
-import com.auth0.lock.identity.WebIdentityProvider;
-import com.auth0.lock.web.CallbackParser;
+import com.auth0.identity.WebIdentityProvider;
+import com.auth0.identity.web.CallbackParser;
 import com.squareup.otto.Bus;
 
 import java.util.HashMap;
@@ -102,7 +102,7 @@ public class Lock {
      * Force Lock to use an embedded {@link android.webkit.WebView}. Default is {@code false}
      * You'll also need to declare the following activity in your {@code AndroidManifest.xml}
      * <pre>{@code
-     * <activity android:name="com.auth0.lock.web.WebViewActivity" android:theme="@style/Lock.Theme"/>
+     * <activity android:name="com.auth0.identity.web.WebViewActivity" android:theme="@style/Lock.Theme"/>
      * }</pre>
      * @param useWebView if Lock should use an embedded {@link android.webkit.WebView} or not
      */
