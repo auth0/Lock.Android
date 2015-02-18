@@ -9,9 +9,6 @@ All notable changes to this project will be documented in this file.
 - Fixed issue when AD login fragment is the main screen.
 - Fixed NPE when authentication using a `WebView` is cancelled by the user
 
-### Changed
-- Deprecated old delegation methods in `A0APIClient`
-
 ## 1.0.1 - 2015-01-26
 ### Changed
 - Fixed issue when application has only one connection and is AD. [#40](issues/40)
