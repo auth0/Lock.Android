@@ -113,7 +113,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         if (showADForm) {
             return inflater.inflate(R.layout.fragment_enterprise_login, container, false);
         }
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_database_login, container, false);
     }
 
     @Override
