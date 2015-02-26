@@ -3,7 +3,6 @@ Lock for Android
 [![CI Status](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.auth0.android/lock/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.auth0.android/lock)
-[![Support](http://chat.auth0.com/badge.svg)](http://chat.auth0.com)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
