@@ -137,11 +137,19 @@ public class ParameterBuilder {
     }
 
     /**
-     * Creates a new instance of the builder
+     * Creates a new instance of the builder with default values
      * @return a new builder
      */
     public static ParameterBuilder newBuilder() {
         return new ParameterBuilder();
+    }
+
+    /**
+     * Creates a new instance of the builder without any default values
+     * @return a new builder
+     */
+    public static ParameterBuilder newEmptyBuilder() {
+        return new ParameterBuilder(new HashMap<String, Object>());
     }
 
     /**

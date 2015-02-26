@@ -25,4 +25,9 @@
 
 <resources>
     <color name="field_hint">#b2ffffff</color>
+    <color name="auth0_blue">#16214D</color>
+    <color name="auth0_dark_blue">#ff090e1e</color>
+    <color name="auth0_light_blue">#44C7F4</color>
+    <color name="auth0_red">#EB5424</color>
+    <color name="auth0_grey">#D0D2D3</color>
 </resources>

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
+import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.api.handler.APIResponseHandler;
 import com.auth0.api.handler.ApplicationResponseHandler;
 import com.auth0.core.Application;
@@ -11,6 +12,7 @@ import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -36,6 +38,9 @@ public class APIClient extends BaseAPIClient {
     private static final String ID_TOKEN_KEY = "id_token";
     private static final String EMAIL_KEY = "email";
     private static final String TENANT_KEY = "tenant";
+    private static final String TOKEN_TYPE_KEY = "token_type";
+    private static final String EXPIRES_IN_KEY = "expires_in";
+    private static final String REFRESH_TOKEN_KEY = "refresh_token";
 
     private Application application;
 
@@ -337,6 +342,102 @@ public class APIClient extends BaseAPIClient {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     Log.e(APIClient.class.getName(), "Failed obtain user profile", error);
+                    callback.onFailure(error);
+                }
+            });
+        } catch (JsonEntityBuildException e) {
+            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
+            callback.onFailure(e);
+        }
+    }
+
+    /**
+     * Obtains a new id_token from Auth0 using another valid id_token
+     * @param idToken user's id_token
+     * @param parameters delegation api parameters
+     * @param callback called with new token in success or with the failure reason on error
+     */
+    public void fetchIdTokenWithIdToken(String idToken, Map<String, Object> parameters, final RefreshIdTokenCallback callback) {
+        Map<String, Object> request = ParameterBuilder.newEmptyBuilder()
+                .set(ID_TOKEN_KEY, idToken)
+                .addAll(parameters)
+                .asDictionary();
+        fetchDelegationToken(request, new BaseCallback<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> payload) {
+                final String id_token = (String) payload.get(ID_TOKEN_KEY);
+                final String token_type = (String) payload.get(TOKEN_TYPE_KEY);
+                final Integer expires_in = (Integer) payload.get(EXPIRES_IN_KEY);
+                callback.onSuccess(id_token, token_type, expires_in);
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                callback.onFailure(error);
+            }
+        });
+    }
+
+    /**
+     * Obtains a new id_token from Auth0 using a refresh_token obtained on login when the scope has 'offline_access'
+     * @param refreshToken user's refresh token
+     * @param parameters delegation api parameters
+     * @param callback called with new token in success or with the failure reason on error
+     */
+    public void fetchIdTokenWithRefreshToken(String refreshToken, Map<String, Object> parameters, final RefreshIdTokenCallback callback) {
+        Map<String, Object> request = ParameterBuilder.newEmptyBuilder()
+                .set(REFRESH_TOKEN_KEY, refreshToken)
+                .addAll(parameters)
+                .asDictionary();
+        fetchDelegationToken(request, new BaseCallback<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> payload) {
+                final String id_token = (String) payload.get(ID_TOKEN_KEY);
+                final String token_type = (String) payload.get(TOKEN_TYPE_KEY);
+                final Integer expires_in = (Integer) payload.get(EXPIRES_IN_KEY);
+                callback.onSuccess(id_token, token_type, expires_in);
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                callback.onFailure(error);
+            }
+        });
+    }
+
+    /**
+     * Calls Auth0 delegation API to perform a delegated authentication, e.g. fetch Firebase or AWS tokens to call their API.
+     * The response of this API call will return a different response based on 'api_type' parameters, that's why the callback only returns a {@link java.util.Map}.
+     * @param parameters delegation api parameters
+     * @param callback called with delegation api response in success or with the failure reason on error.
+     */
+    public void fetchDelegationToken(Map<String, Object> parameters, final BaseCallback<Map<String, Object>> callback) {
+        Log.v(APIClient.class.getName(), "Fetching delegation token");
+        final String delegationURL = getBaseURL() + "/delegation";
+        Map<String, Object> request = ParameterBuilder.newEmptyBuilder()
+                .setClientId(getClientID())
+                .setGrantType("urn:ietf:params:oauth:grant-type:jwt-bearer")
+                .addAll(parameters)
+                .asDictionary();
+        try {
+            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
+            this.client.post(null, delegationURL, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    try {
+                        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+                        final Map<String, Object> delegation = new ObjectMapper().readValue(responseBody, typeRef);
+                        Log.d(APIClient.class.getName(), "Obtained delegation token info: " + delegation);
+                        callback.onSuccess(delegation);
+                    } catch (IOException e) {
+                        Log.e(APIClient.class.getName(), "Failed to parse JSON of delegation token info", e);
+                        this.onFailure(statusCode, headers, responseBody, e);
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Log.e(APIClient.class.getName(), "Failed obtain delegation token info", error);
                     callback.onFailure(error);
                 }
             });
