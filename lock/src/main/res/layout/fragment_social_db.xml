@@ -40,7 +40,6 @@
         android:layout_below="@+id/title_textView"
         android:layout_above="@+id/db_signup_button"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/social_db_form_padding_top"
         android:layout_centerInParent="true">
         <GridView
             android:id="@+id/social_grid_view"
@@ -51,7 +50,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/social_grid_view_height"
             android:layout_above="@+id/social_separator"
-            android:layout_marginBottom="@dimen/lock_vertical_margin"
             android:gravity="center_horizontal"
             android:stretchMode="columnWidth"
             tools:listitem="@layout/item_social_small"
@@ -63,8 +61,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/lock_vertical_margin"
             android:layout_above="@+id/db_login_credentials"
+            android:layout_marginBottom="@dimen/lock_vertical_margin"
             android:textColor="?attr/Auth0.Separator.Color"
             android:text="OR"
         />
