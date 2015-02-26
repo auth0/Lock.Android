@@ -3,6 +3,7 @@ Lock for Android
 [![CI Status](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.auth0.android/lock/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.auth0.android/lock)
+[![Support](http://slackin.auth0-chat.com/badge.svg)](http://chat.auth0.com)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
@@ -16,14 +17,14 @@ Lock for Android
 ## Requierements
 
 Android API level 14+ is required in order to use Lock's UI.
-If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.1.+`, the minimum required API level is 9.
+If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.2.+`, the minimum required API level is 9.
 
 ##Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:1.1.+'
+compile 'com.auth0.android:lock:1.2.+'
 ```
 
 Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
@@ -137,7 +138,7 @@ And you'll see our native login screen
 
 `LockSMSActivity` is not included in `com.auth0:lock:aar` but you can add it with this line in your `build.gradle`:
 ```gradle
-compile 'com.auth0.android:lock-sms:1.1.+'
+compile 'com.auth0.android:lock-sms:1.2.+'
 ```
 
 When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:

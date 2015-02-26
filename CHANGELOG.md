@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ##master
 
+## 1.2.0 - 2015-02-26
+### Added
+- Delegation API methods in `APIClient`
+
+###Changed
+- Fixed issue when small social buttons were clipped in some devices [#44](issues/44)
+- Fixed UI issue in Lock when the application only has a single Enterprise Connection.
+
 ## 1.1.0 - 2015-01-27
 ### Changed
 - Extracted Identity Provider (IdP) logic to a independent module (only requires core lib).

@@ -17,8 +17,8 @@ android {
         release {
             storeFile file('keystore/release.keystore')
             keyAlias 'LockReleaseKey'
-            storePassword System.getenv("LOCK_KSTOREPWD")
-            keyPassword System.getenv("LOCK_KEYPWD")
+            storePassword getProperty("lock.keystore.password")
+            keyPassword getProperty("lock.key.password")
         }
     }
 
