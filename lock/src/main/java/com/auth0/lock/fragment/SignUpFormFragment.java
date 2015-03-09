@@ -44,7 +44,9 @@ import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
+import com.auth0.lock.error.AuthenticationErrorBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.error.SignUpAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
@@ -61,7 +63,7 @@ public class SignUpFormFragment extends Fragment {
     private static final String USE_EMAIL_SIGNUP_ARGUMENT = "USE_EMAIL";
     private static final String LOGIN_AFTER_SIGNUP_ARGUMENT = "LOGIN_AFTER_SIGN_UP";
 
-    LoginAuthenticationErrorBuilder errorBuilder;
+    AuthenticationErrorBuilder errorBuilder;
     SignUpValidator validator;
 
     CredentialField usernameField;
@@ -85,7 +87,7 @@ public class SignUpFormFragment extends Fragment {
         final Lock lock = getLock();
         client = lock.getAPIClient();
         bus = lock.getBus();
-        errorBuilder = new LoginAuthenticationErrorBuilder();
+        errorBuilder = new SignUpAuthenticationErrorBuilder();
         useEmail = arguments == null || arguments.getBoolean(USE_EMAIL_SIGNUP_ARGUMENT);
         loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
         authenticationParameters = arguments != null ? (Map<String, Object>) arguments.getSerializable(AUTHENTICATION_PARAMETER_ARGUMENT) : null;
