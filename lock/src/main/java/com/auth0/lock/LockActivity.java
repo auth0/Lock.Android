@@ -71,6 +71,8 @@ import com.squareup.otto.Subscribe;
  */
 public class LockActivity extends FragmentActivity {
 
+    public static final String SIGN_UP_MODE_ARGUMENT = "SIGN_UP_MODE";
+
     private static final String TAG = LockActivity.class.getName();
 
     LockFragmentBuilder builder;
@@ -87,9 +89,8 @@ public class LockActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_lock);
-
         lock = getLock();
-        builder = new LockFragmentBuilder(getLock());
+        builder = newFragmentBuilder(getLock());
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -291,6 +292,16 @@ public class LockActivity extends FragmentActivity {
                 lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
             }
         });
+    }
+
+    private LockFragmentBuilder newFragmentBuilder(Lock lock) {
+        final LockFragmentBuilder builder = new LockFragmentBuilder(getLock());
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle extras = intent.getExtras();
+            builder.setSignUpMode(extras != null && extras.getBoolean(SIGN_UP_MODE_ARGUMENT));
+        }
+        return builder;
     }
 
     private void dismissProgressDialog() {

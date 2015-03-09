@@ -41,21 +41,12 @@
         android:layout_above="@+id/db_signup_button"
         android:orientation="vertical"
         android:layout_centerInParent="true">
-        <GridView
-            android:id="@+id/social_grid_view"
-            android:tag="social_grid_view"
-            android:numColumns="5"
-            android:verticalSpacing="@dimen/social_grid_view_item_spacing_vertical"
-            android:background="@android:color/transparent"
+        <FrameLayout
+            android:id="@+id/social_list_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/social_grid_view_height"
-            android:layout_above="@+id/social_separator"
-            android:gravity="center_horizontal"
-            android:stretchMode="columnWidth"
-            tools:listitem="@layout/item_social_small"
-            android:listSelector="@android:color/transparent"
-            >
-        </GridView>
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/social_separator">
+        </FrameLayout>
         <TextView
             android:id="@+id/social_separator"
             android:layout_width="wrap_content"

@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -23,9 +22,6 @@ import com.auth0.lock.Lock;
 import com.auth0.lock.LockActivity;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.sms.LockSMSActivity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.auth0.app.R.id;
 import static com.auth0.app.R.layout;

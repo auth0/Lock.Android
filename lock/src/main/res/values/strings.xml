@@ -15,6 +15,9 @@
     <string name="db_login_error_title">There was an error logging in</string>
     <string name="db_login_error_message">There was an error processing the sign in.</string>
     <string name="db_login_invalid_credentials_error_message">Wrong email or password.</string>
+    <string name="db_signup_error_title">There was an error signing up</string>
+    <string name="db_signup_error_message">There was an error processing the sign up.</string>
+    <string name="db_signup_user_already_exists_error_message">The user already exists.</string>
     <string name="db_cancel_button_text">CANCEL</string>
     <string name="db_single_sign_on_button">LOGIN WITH %s</string>
     <string name="enterprise_no_connection_message">There was no connection configured for the domain</string>
@@ -112,4 +115,6 @@
     <string name="social_only_title">Login</string>
     <string name="social_db_title">Login</string>
     <string name="db_enterprise_login_message">Please enter your corporate credentials at %s</string>
+    <string name="social_signup_separator">Or please enter your email and password</string>
+
 </resources>
