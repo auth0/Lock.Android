@@ -45,57 +45,28 @@ import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SocialDBFragment extends DatabaseLoginFragment {
 
     public static final String SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT = "strategies";
 
-    LoginAuthenticationErrorBuilder errorBuilder;
-
-    GridView gridView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        errorBuilder = new LoginAuthenticationErrorBuilder();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_social_db, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        gridView = (GridView) view.findViewById(R.id.social_grid_view);
+        final View view = inflater.inflate(R.layout.fragment_social_db, container, false);
         Bundle bundle = getArguments();
-        List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
-        Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
-        final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]), true);
-        gridView.setAdapter(adapter);
-        int maxItemCount = getResources().getInteger(R.integer.social_grid_max_elements);
-        gridView.setNumColumns(services.size() > maxItemCount ? maxItemCount : services.size());
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String serviceName = (String) parent.getItemAtPosition(position);
-                Log.d(SocialFragment.class.getName(), "Selected service " + serviceName);
-                bus.post(new IdentityProviderAuthenticationRequestEvent(serviceName));
-            }
-        });
-    }
-
-    @Override
-    public void onStart() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onPause();
+        ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
+        getChildFragmentManager().beginTransaction()
+                .add(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
+                .commit();
+        return view;
     }
 
     @Override
