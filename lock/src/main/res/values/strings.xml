@@ -116,5 +116,6 @@
     <string name="social_db_title">Login</string>
     <string name="db_enterprise_login_message">Please enter your corporate credentials at %s</string>
     <string name="social_signup_separator">Or please enter your email and password</string>
+    <string name="social_separator">OR</string>
 
 </resources>

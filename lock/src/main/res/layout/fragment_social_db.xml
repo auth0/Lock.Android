@@ -55,7 +55,7 @@
             android:layout_above="@+id/db_login_credentials"
             android:layout_marginBottom="@dimen/lock_vertical_margin"
             android:textColor="?attr/Auth0.Separator.Color"
-            android:text="OR"
+            android:text="@string/social_separator"
         />
         <include layout="@layout/db_login_form"/>
     </RelativeLayout>
