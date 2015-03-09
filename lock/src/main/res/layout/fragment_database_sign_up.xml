@@ -34,6 +34,15 @@
 
     <include layout="@layout/title_lock"/>
 
+    <TextView
+        android:id="@+id/db_signup_title_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?attr/Auth0.Message"
+        android:layout_centerHorizontal="true"
+        android:text="@string/db_signup_title_message"
+        android:layout_above="@+id/db_signup_form_container"
+        />
     <FrameLayout
         android:id="@+id/db_signup_form_container"
         android:layout_width="match_parent"

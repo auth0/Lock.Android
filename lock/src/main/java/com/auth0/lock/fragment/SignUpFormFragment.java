@@ -142,6 +142,7 @@ public class SignUpFormFragment extends Fragment {
         fragment.setArguments(arguments);
         return fragment;
     }
+
     private Lock getLock() {
         LockProvider provider = (LockProvider) getActivity().getApplication();
         return provider.getLock();

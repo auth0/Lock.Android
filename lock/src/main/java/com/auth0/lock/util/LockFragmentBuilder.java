@@ -38,6 +38,7 @@ import com.auth0.lock.fragment.DatabaseLoginFragment;
 import com.auth0.lock.fragment.DatabaseSignUpFragment;
 import com.auth0.lock.fragment.SocialDBFragment;
 import com.auth0.lock.fragment.SocialFragment;
+import com.auth0.lock.fragment.SocialSignUpFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class LockFragmentBuilder {
 
     private final Lock lock;
     private Application application;
+    private boolean signUpMode;
 
     public LockFragmentBuilder(Lock lock) {
         this.lock = lock;
@@ -116,6 +118,10 @@ public class LockFragmentBuilder {
             return login();
         }
 
+        if (signUpMode) {
+            return SocialSignUpFragment.newFragment(activeSocialStrategies());
+        }
+
         final int enterpriseCount = application.getEnterpriseStrategies().size();
         final int socialCount = application.getSocialStrategies().size();
         final boolean hasDB = application.getDatabaseStrategy() != null;
@@ -150,6 +156,14 @@ public class LockFragmentBuilder {
 
     public Fragment enterpriseLoginWithConnection(Connection connection) {
         return enterpriseLoginWithConnection(connection, false);
+    }
+
+    public boolean isSignUpMode() {
+        return signUpMode;
+    }
+
+    public void setSignUpMode(boolean signUpMode) {
+        this.signUpMode = signUpMode;
     }
 
     private Fragment enterpriseLoginWithConnection(Connection connection, boolean isRoot) {

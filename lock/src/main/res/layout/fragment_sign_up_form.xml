@@ -34,7 +34,6 @@
         style="?attr/Auth0.CredentialBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/db_signup_title_message"
         android:layout_centerHorizontal="true">
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_signup_username_field"
@@ -56,14 +55,6 @@
             android:hint="@string/password_placeholder"
             />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/db_signup_title_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?attr/Auth0.Message"
-        android:layout_centerHorizontal="true"
-        android:text="@string/db_signup_title_message"/>
 
     <Button
         android:id="@+id/db_access_button"
