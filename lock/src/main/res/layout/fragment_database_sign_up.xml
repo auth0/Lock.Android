@@ -34,61 +34,13 @@
 
     <include layout="@layout/title_lock"/>
 
-    <LinearLayout
-        android:id="@+id/db_signup_credentials"
-        android:orientation="vertical"
-        style="?attr/Auth0.CredentialBox"
+    <FrameLayout
+        android:id="@+id/db_signup_form_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true">
-        <com.auth0.lock.widget.CredentialField
-            android:id="@+id/db_signup_username_field"
-            android:tag="db_signup_username_field"
-            style="?attr/Auth0.CredentialField.Email"
-            android:inputType="textEmailAddress"
-            android:hint="@string/email_placeholder"
-            android:nextFocusDown="@+id/db_signup_password_field"
-            />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/credential_box_border_width"
-            android:background="?attr/Auth0.Separator.Color"/>
-        <com.auth0.lock.widget.CredentialField
-            android:id="@+id/db_signup_password_field"
-            android:tag="db_signup_password_field"
-            style="?attr/Auth0.CredentialField.Password"
-            android:inputType="textPassword"
-            android:hint="@string/password_placeholder"
-            />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?attr/Auth0.Message"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/db_signup_credentials"
-        android:text="@string/db_signup_title_message"/>
-
-    <Button
-        android:id="@+id/db_access_button"
-        android:tag="db_access_button"
-        style="?attr/Auth0.PrimaryButtonStyle"
-        android:layout_below="@id/db_signup_credentials"
-        android:layout_marginTop="@dimen/lock_vertical_margin"
-        android:text="@string/db_signup_btn_text"
-        android:fontFamily="sans-serif-medium"/>
-
-    <ProgressBar
-        android:id="@+id/db_signup_progress_indicator"
-        android:tag="db_signup_progress_indicator"
-        android:visibility="gone"
-        android:layout_width="@dimen/primary_button_progress_size"
-        android:layout_height="@dimen/primary_button_progress_size"
-        android:layout_alignTop="@id/db_access_button"
-        android:layout_alignBottom="@id/db_access_button"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerVertical="true"
+        >
+    </FrameLayout>
 
     <Button
         android:id="@+id/db_signup_cancel_button"
