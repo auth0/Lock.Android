@@ -26,6 +26,7 @@ package com.auth0.lock;
 
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
+import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 
 import java.util.ArrayList;
@@ -50,10 +51,9 @@ public class Configuration {
 
     public Configuration(Application application, List<String> connections, String defaultDatabaseName) {
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
-        if (defaultDatabaseName != null) {
-            connectionSet.add(defaultDatabaseName);
-        }
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
+        this.activeDirectoryStrategy = filterADStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
+        this.defaultActiveDirectoryConnection = filteredDefaultADConnection();
     }
 
     public Connection getDefaultDatabaseConnection() {
@@ -81,9 +81,13 @@ public class Configuration {
         if (dbs == null) {
             return null;
         }
+        Set<String> set = new HashSet<>(connections);
+        if (defaultDatabaseName != null) {
+            set.add(defaultDatabaseName);
+        }
         Connection connection = null;
         for (Connection db: dbs) {
-            if (db.getName().equals(defaultDatabaseName) || shouldSelect(db, connections)) {
+            if (db.getName().equals(defaultDatabaseName) || shouldSelect(db, set)) {
                 connection = db;
                 break;
             }
@@ -91,7 +95,31 @@ public class Configuration {
         return connection;
     }
 
+    private Strategy filterADStrategy(Strategy strategy, Set<String> connections) {
+        if (strategy == null || connections.isEmpty()) {
+            return strategy;
+        }
+        List<Connection> filtered = new ArrayList<>(strategy.getConnections().size());
+        for (Connection connection : strategy.getConnections()) {
+            if (connections.contains(connection.getName())) {
+                filtered.add(connection);
+            }
+        }
+        if (filtered.isEmpty()) {
+            return null;
+        }
+        return new Strategy(strategy.getName(), filtered);
+    }
+
     private boolean shouldSelect(Connection connection, Set<String> connections) {
         return connections.isEmpty() || connections.contains(connection.getName());
+    }
+
+    private Connection filteredDefaultADConnection() {
+        if (this.activeDirectoryStrategy == null) {
+            return null;
+        }
+        final List<Connection> connections = this.activeDirectoryStrategy.getConnections();
+        return !connections.isEmpty() ? connections.get(0) : null;
     }
 }
