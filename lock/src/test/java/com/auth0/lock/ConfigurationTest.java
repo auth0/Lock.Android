@@ -26,6 +26,7 @@ package com.auth0.lock;
 
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
+import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,9 +39,21 @@ import org.robolectric.annotation.Config;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
+import static com.auth0.core.Strategies.Facebook;
+import static com.auth0.core.Strategies.GooglePlus;
+import static com.auth0.core.Strategies.Instagram;
+import static com.auth0.core.Strategies.Twitter;
+import static com.auth0.core.Strategies.Yahoo;
+import static com.auth0.core.Strategies.Yammer;
 import static com.auth0.lock.util.ConnectionMatcher.isConnection;
+import static com.auth0.lock.util.StrategyMatcher.isStrategy;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
@@ -122,7 +135,26 @@ public class ConfigurationTest {
         final Strategy strategy = configuration.getActiveDirectoryStrategy();
         assertThat(strategy, notNullValue());
         assertThat(configuration.getDefaultActiveDirectoryConnection(), isConnection(MY_AD));
-        assertThat(strategy.getConnections(), hasItems(isConnection(MY_AD), isConnection(MY_SECOND_AD)));
+        assertThat(strategy.getConnections(), containsInAnyOrder(isConnection(MY_AD), isConnection(MY_SECOND_AD)));
+    }
+
+    @Test
+    public void shouldReturnUnfilteredSocialStrategies() throws Exception {
+        configuration = unfilteredConfig();
+        final List<Strategy> strategies = configuration.getSocialStrategies();
+        assertThat(strategies, containsInAnyOrder(isStrategy(Facebook), isStrategy(Twitter), isStrategy(Instagram), isStrategy(GooglePlus)));
+    }
+
+    @Test
+    public void shouldReturnFilteredSocialStrategies() throws Exception {
+        configuration = filteredConfigBy(Facebook.getName(), Instagram.getName());
+        assertThat(configuration.getSocialStrategies(), containsInAnyOrder(isStrategy(Facebook), isStrategy(Instagram)));
+    }
+
+    @Test
+    public void shouldReturnEmptySocialStrategiesIfNoneMatch() throws Exception {
+        configuration = filteredConfigBy(Yammer.getName(), Yahoo.getName());
+        assertThat(configuration.getSocialStrategies(), hasSize(0));
     }
 
     private Configuration unfilteredConfig() {

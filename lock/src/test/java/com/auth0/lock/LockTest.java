@@ -29,6 +29,8 @@ import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
 
+import org.hamcrest.Matchers;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +41,8 @@ import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
@@ -75,6 +79,6 @@ public class LockTest {
 
     @Test
     public void shouldReturnDefaultWithUnknownProvider() throws Exception {
-        assertThat(lock.providerForName("UNKOWN"), is(WebIdentityProvider.class));
+        assertThat(lock.providerForName("UNKOWN"), instanceOf(WebIdentityProvider.class));
     }
 }

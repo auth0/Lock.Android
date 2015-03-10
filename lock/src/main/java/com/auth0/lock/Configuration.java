@@ -54,6 +54,7 @@ public class Configuration {
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
         this.activeDirectoryStrategy = filterADStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection();
+        this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
     }
 
     public Connection getDefaultDatabaseConnection() {
@@ -109,6 +110,19 @@ public class Configuration {
             return null;
         }
         return new Strategy(strategy.getName(), filtered);
+    }
+
+    private List<Strategy> filterSocialStrategies(List<Strategy> strategies, Set<String> connections) {
+        if (strategies == null || connections.isEmpty()) {
+            return strategies;
+        }
+        List<Strategy>filtered = new ArrayList<>(strategies.size());
+        for (Strategy strategy : strategies) {
+            if (connections.contains(strategy.getName())) {
+                filtered.add(strategy);
+            }
+        }
+        return filtered;
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {

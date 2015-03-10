@@ -54,6 +54,7 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -88,7 +89,7 @@ public class LockFragmentBuilderTest {
 
     @Test
     public void shouldReturnDefaultRootFragment() throws Exception {
-        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+        assertThat(builder.root(), instanceOf(DatabaseLoginFragment.class));
     }
 
     @Test
@@ -96,7 +97,7 @@ public class LockFragmentBuilderTest {
         when(application.getDatabaseStrategy()).thenReturn(databaseStrategy);
         when(application.getEnterpriseStrategies()).thenReturn(new ArrayList<Strategy>());
         when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
-        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+        assertThat(builder.root(), instanceOf(DatabaseLoginFragment.class));
     }
 
 
@@ -105,7 +106,7 @@ public class LockFragmentBuilderTest {
         when(application.getDatabaseStrategy()).thenReturn(databaseStrategy);
         when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
         when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
-        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+        assertThat(builder.root(), instanceOf(DatabaseLoginFragment.class));
     }
 
     @Test
@@ -113,7 +114,7 @@ public class LockFragmentBuilderTest {
         when(application.getDatabaseStrategy()).thenReturn(null);
         when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
         when(application.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
-        assertThat(builder.root(), is(DatabaseLoginFragment.class));
+        assertThat(builder.root(), instanceOf(DatabaseLoginFragment.class));
     }
 
     @Test
@@ -145,7 +146,7 @@ public class LockFragmentBuilderTest {
         when(application.getDatabaseStrategy()).thenReturn(null);
         when(application.getEnterpriseStrategies()).thenReturn(new ArrayList<Strategy>());
         when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
-        assertThat(builder.root(), is(SocialFragment.class));
+        assertThat(builder.root(), instanceOf(SocialFragment.class));
     }
 
     @Test
@@ -153,7 +154,7 @@ public class LockFragmentBuilderTest {
         when(application.getDatabaseStrategy()).thenReturn(databaseStrategy);
         when(application.getEnterpriseStrategies()).thenReturn(new ArrayList<Strategy>());
         when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
-        assertThat(builder.root(), is(SocialDBFragment.class));
+        assertThat(builder.root(), instanceOf(SocialDBFragment.class));
     }
 
     @Test
@@ -161,7 +162,7 @@ public class LockFragmentBuilderTest {
         when(application.getDatabaseStrategy()).thenReturn(null);
         when(application.getEnterpriseStrategies()).thenReturn(Arrays.asList(enterpriseStrategy));
         when(application.getSocialStrategies()).thenReturn(Arrays.asList(socialStrategy));
-        assertThat(builder.root(), is(SocialDBFragment.class));
+        assertThat(builder.root(), instanceOf(SocialDBFragment.class));
     }
 
     public void shouldSetDefaultConnectionWithSocial() throws Exception {
@@ -184,11 +185,11 @@ public class LockFragmentBuilderTest {
 
     @Test
     public void shouldReturnSignUp() throws Exception {
-        assertThat(builder.signUp(), is(DatabaseSignUpFragment.class));
+        assertThat(builder.signUp(), instanceOf(DatabaseSignUpFragment.class));
     }
 
     @Test
     public void shouldReturnResetPassword() throws Exception {
-        assertThat(builder.resetPassword(), is(DatabaseChangePasswordFragment.class));
+        assertThat(builder.resetPassword(), instanceOf(DatabaseChangePasswordFragment.class));
     }
 }

@@ -41,11 +41,11 @@ public class APIClientExceptionMatcher extends BaseMatcher<APIClientException> {
 
     private Matcher<Throwable> causeMatcher;
     private Matcher<Integer> statusCodeMatcher;
-    private Matcher<Map<String, Object>> errorMatcher;
+    private Matcher<Map<? extends String, ?>> errorMatcher;
 
     private APIClientExceptionMatcher() {}
 
-    private APIClientExceptionMatcher(Matcher<Throwable> causeMatcher, Matcher<Integer> statusCodeMatcher, Matcher<Map<String, Object>> errorMatcher) {
+    private APIClientExceptionMatcher(Matcher<Throwable> causeMatcher, Matcher<Integer> statusCodeMatcher, Matcher<Map<? extends String, ?>> errorMatcher) {
         this.causeMatcher = causeMatcher;
         this.statusCodeMatcher = statusCodeMatcher;
         this.errorMatcher = errorMatcher;
@@ -72,7 +72,7 @@ public class APIClientExceptionMatcher extends BaseMatcher<APIClientException> {
     }
 
     public static Matcher<APIClientException> hasGenericErrorWith(int statusCode, Throwable cause) {
-        return new APIClientExceptionMatcher(equalTo(cause), equalTo(statusCode), Matchers.<Map<String, Object>>equalTo(new HashMap<String, Object>()));
+        return new APIClientExceptionMatcher(equalTo(cause), equalTo(statusCode), Matchers.<Map<? extends String, ?>>equalTo(new HashMap<String, Object>()));
     }
 
     public static Matcher<APIClientException> hasErrorWith(int statusCode, Throwable cause, Object error) {
