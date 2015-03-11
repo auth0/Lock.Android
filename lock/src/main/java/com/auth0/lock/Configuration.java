@@ -30,14 +30,11 @@ import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Configuration {
-
-    private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
 
     private Connection defaultDatabaseConnection;
 
@@ -49,12 +46,16 @@ public class Configuration {
 
     private List<Strategy> enterpriseStrategies;
 
+    private Strategy smsStrategy;
+
     public Configuration(Application application, List<String> connections, String defaultDatabaseName) {
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
-        this.activeDirectoryStrategy = filterADStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
-        this.defaultActiveDirectoryConnection = filteredDefaultADConnection();
+        this.enterpriseStrategies = filterEnterpriseStrategies(application.getEnterpriseStrategies(), connectionSet);
+        this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
+        this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
+        this.smsStrategy = connectionSet.contains(Strategies.SMS.getName()) ? application.strategyForName(Strategies.SMS.getName()) : null;
     }
 
     public Connection getDefaultDatabaseConnection() {
@@ -77,6 +78,10 @@ public class Configuration {
         return enterpriseStrategies;
     }
 
+    public Strategy getSmsStrategy() {
+        return smsStrategy;
+    }
+
     private Connection filterDatabaseConnections(Strategy databaseStrategy, Set<String> connections, String defaultDatabaseName) {
         List<Connection> dbs = databaseStrategy != null ? databaseStrategy.getConnections() : null;
         if (dbs == null) {
@@ -96,7 +101,7 @@ public class Configuration {
         return connection;
     }
 
-    private Strategy filterADStrategy(Strategy strategy, Set<String> connections) {
+    private Strategy filterStrategy(Strategy strategy, Set<String> connections) {
         if (strategy == null || connections.isEmpty()) {
             return strategy;
         }
@@ -116,10 +121,24 @@ public class Configuration {
         if (strategies == null || connections.isEmpty()) {
             return strategies;
         }
-        List<Strategy>filtered = new ArrayList<>(strategies.size());
+        List<Strategy> filtered = new ArrayList<>(strategies.size());
         for (Strategy strategy : strategies) {
             if (connections.contains(strategy.getName())) {
                 filtered.add(strategy);
+            }
+        }
+        return filtered;
+    }
+
+    private List<Strategy> filterEnterpriseStrategies(List<Strategy> strategies, Set<String> connections) {
+        if (strategies == null || connections.isEmpty()) {
+            return strategies;
+        }
+        List<Strategy> filtered = new ArrayList<>(strategies.size());
+        for (Strategy strategy : strategies) {
+            Strategy str = filterStrategy(strategy, connections);
+            if (str != null) {
+                filtered.add(str);
             }
         }
         return filtered;
@@ -129,11 +148,11 @@ public class Configuration {
         return connections.isEmpty() || connections.contains(connection.getName());
     }
 
-    private Connection filteredDefaultADConnection() {
-        if (this.activeDirectoryStrategy == null) {
+    private Connection filteredDefaultADConnection(Strategy activeDirectoryStrategy) {
+        if (activeDirectoryStrategy == null) {
             return null;
         }
-        final List<Connection> connections = this.activeDirectoryStrategy.getConnections();
+        final List<Connection> connections = activeDirectoryStrategy.getConnections();
         return !connections.isEmpty() ? connections.get(0) : null;
     }
 }

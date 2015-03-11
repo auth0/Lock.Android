@@ -41,15 +41,20 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.auth0.core.Strategies.ActiveDirectory;
 import static com.auth0.core.Strategies.Facebook;
+import static com.auth0.core.Strategies.GoogleApps;
 import static com.auth0.core.Strategies.GooglePlus;
 import static com.auth0.core.Strategies.Instagram;
 import static com.auth0.core.Strategies.Twitter;
 import static com.auth0.core.Strategies.Yahoo;
 import static com.auth0.core.Strategies.Yammer;
+import static com.auth0.core.Strategies.Yandex;
 import static com.auth0.lock.util.ConnectionMatcher.isConnection;
 import static com.auth0.lock.util.StrategyMatcher.isStrategy;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -154,7 +159,25 @@ public class ConfigurationTest {
     @Test
     public void shouldReturnEmptySocialStrategiesIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Yammer.getName(), Yahoo.getName());
-        assertThat(configuration.getSocialStrategies(), hasSize(0));
+        assertThat(configuration.getSocialStrategies(), emptyIterable());
+    }
+
+    @Test
+    public void shouldReturnUnfilteredEnterpriseConnections() throws Exception {
+        configuration = unfilteredConfig();
+        assertThat(configuration.getEnterpriseStrategies(), containsInAnyOrder(isStrategy(ActiveDirectory), isStrategy(GoogleApps)));
+    }
+
+    @Test
+    public void shouldReturnFilteredEnterpriseStrategies() throws Exception {
+        configuration = filteredConfigBy("auth0.com");
+        assertThat(configuration.getEnterpriseStrategies(), contains(isStrategy(GoogleApps)));
+    }
+
+    @Test
+    public void shouldReturnEmptyEnterpriseStrategiesIfNoneMatch() throws Exception {
+        configuration = filteredConfigBy(Yandex.getName());
+        assertThat(configuration.getEnterpriseStrategies(), emptyIterable());
     }
 
     private Configuration unfilteredConfig() {
