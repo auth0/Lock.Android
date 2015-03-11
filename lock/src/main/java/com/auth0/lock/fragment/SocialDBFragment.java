@@ -64,7 +64,7 @@ public class SocialDBFragment extends DatabaseLoginFragment {
         Bundle bundle = getArguments();
         ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         getChildFragmentManager().beginTransaction()
-                .add(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
+                .replace(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
                 .commit();
         return view;
     }

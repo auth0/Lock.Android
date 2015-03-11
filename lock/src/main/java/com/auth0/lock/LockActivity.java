@@ -35,6 +35,7 @@ import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Activity that handles DB, Social and Enterprise Authentication.
@@ -171,7 +172,7 @@ public class LockActivity extends FragmentActivity {
 
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
-        Configuration configuration = new Configuration(application, new ArrayList<String>(), null);
+        Configuration configuration = new Configuration(application, lock.getConnections(), lock.getDefaultDatabaseConnection());
         lock.setConfiguration(configuration);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, builder.root())

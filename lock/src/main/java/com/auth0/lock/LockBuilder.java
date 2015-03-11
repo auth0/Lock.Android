@@ -32,7 +32,9 @@ import android.os.Bundle;
 
 import com.auth0.api.APIClient;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,6 +68,8 @@ public class LockBuilder {
     private boolean loginAfterSignUp;
     private Map<String, Object> parameters;
     private boolean useEmail;
+    private String defaultDBConnectionName;
+    private List<String> connections;
 
     public LockBuilder() {
         this.loginAfterSignUp = true;
@@ -154,6 +158,27 @@ public class LockBuilder {
     }
 
     /**
+     * Make Lock pick these connections for authentication from all the enabled connections in your app.
+     * If the connection is not active in your application it will be ignored.
+     * @param connectionNames List of names of connections to use.
+     * @return itself
+     */
+    public LockBuilder useConnections(String ...connectionNames) {
+        this.connections = Arrays.asList(connectionNames);
+        return this;
+    }
+
+    /**
+     * Specify the DB connection used by Lock.
+     * @param name DB connection name
+     * @return itself.
+     */
+    public LockBuilder defaultDatabaseConnection(String name) {
+        this.defaultDBConnectionName = name;
+        return this;
+    }
+
+    /**
      * Create a {@link com.auth0.lock.Lock} instance with the values stored.
      * @return
      */
@@ -165,6 +190,8 @@ public class LockBuilder {
         lock.setClosable(this.closable);
         lock.setAuthenticationParameters(this.parameters);
         lock.setUseEmail(this.useEmail);
+        lock.setConnections(this.connections);
+        lock.setDefaultDatabaseConnection(this.defaultDBConnectionName);
         return lock;
     }
 

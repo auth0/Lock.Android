@@ -68,7 +68,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         View view = inflater.inflate(R.layout.fragment_database_sign_up, container, false);
         final FragmentManager fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.db_signup_form_container, SignUpFormFragment.newFragment(useEmail, loginAfterSignUp, authenticationParameters))
+                .replace(R.id.db_signup_form_container, SignUpFormFragment.newFragment(useEmail, loginAfterSignUp, authenticationParameters))
                 .commit();
         return view;
     }

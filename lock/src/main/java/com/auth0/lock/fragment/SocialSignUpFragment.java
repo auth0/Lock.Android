@@ -54,8 +54,8 @@ public class SocialSignUpFragment extends BaseTitledFragment {
         ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         Lock lock = getLock();
         getChildFragmentManager().beginTransaction()
-                .add(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
-                .add(R.id.signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
+                .replace(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
+                .replace(R.id.signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
                 .commit();
         return view;
     }
