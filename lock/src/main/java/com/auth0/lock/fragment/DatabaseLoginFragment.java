@@ -45,6 +45,8 @@ import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.Configuration;
+import com.auth0.lock.Lock;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -99,12 +101,13 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
         showCancel = !arguments.getBoolean(IS_MAIN_LOGIN_ARGUMENT);
 
-        hasDB = client.getApplication().getDatabaseStrategy() != null;
+        Configuration configuration = getLock().getConfiguration();
+        hasDB = configuration.getDefaultDatabaseConnection() != null;
         useEmail = useEmail && hasDB;
         showSignUp = showResetPassword = hasDB;
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail);
-        matcher = new DomainMatcher(client.getApplication().getEnterpriseStrategies());
+        matcher = new DomainMatcher(configuration.getEnterpriseStrategies());
         matcher.filterConnection(defaultConnection);
     }
 
@@ -234,8 +237,10 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     private void login() {
         final Connection connection = matcher.getConnection();
         if (connection != null) {
-            Strategy strategy = client.getApplication().strategyForConnection(connection);
-            if (Strategies.ActiveDirectory.getName().equals(strategy.getName())) {
+            final Configuration configuration = getLock().getConfiguration();
+            final Strategy activeDirectoryStrategy = configuration.getActiveDirectoryStrategy();
+            boolean isAD = activeDirectoryStrategy != null && activeDirectoryStrategy.getConnections().contains(connection);
+            if (isAD) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));

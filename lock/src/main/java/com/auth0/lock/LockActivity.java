@@ -34,6 +34,8 @@ import com.auth0.lock.identity.LockIdentityProviderCallback;
 import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
+
 /**
  * Activity that handles DB, Social and Enterprise Authentication.
  * You'll need to declare it in your app's {@code AndroidManifest.xml}:
@@ -78,7 +80,6 @@ public class LockActivity extends FragmentActivity {
     LockFragmentBuilder builder;
     Lock lock;
 
-    private Application application;
     private ProgressDialog progressDialog;
     private IdentityProvider identity;
     private LocalBroadcastManager broadcastManager;
@@ -170,8 +171,8 @@ public class LockActivity extends FragmentActivity {
 
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
-        builder.setApplication(application);
-        this.application = application;
+        Configuration configuration = new Configuration(application, new ArrayList<String>(), null);
+        lock.setConfiguration(configuration);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, builder.root())
                 .commit();
@@ -256,7 +257,7 @@ public class LockActivity extends FragmentActivity {
         Log.v(TAG, "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
         identity.setCallback(callback);
-        identity.start(this, event, application);
+        identity.start(this, event, lock.getConfiguration().getApplication());
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);

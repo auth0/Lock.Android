@@ -73,9 +73,4 @@ public class SocialSignUpFragment extends BaseTitledFragment {
         return fragment;
     }
 
-    private Lock getLock() {
-        LockProvider provider = (LockProvider) getActivity().getApplication();
-        return provider.getLock();
-    }
-
 }

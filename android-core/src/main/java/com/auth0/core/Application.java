@@ -56,8 +56,8 @@ public class Application {
         this.subscription = subscription;
         this.hasAllowedOrigins = hasAllowedOrigins;
         this.strategies = strategies;
-        this.socialStrategies = new ArrayList<Strategy>();
-        this.enterpriseStrategies = new ArrayList<Strategy>();
+        this.socialStrategies = new ArrayList<>();
+        this.enterpriseStrategies = new ArrayList<>();
         for(Strategy strategy: strategies) {
             if (Strategies.Auth0.getName().equals(strategy.getName())) {
                 this.databaseStrategy = strategy;

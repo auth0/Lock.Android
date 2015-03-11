@@ -71,6 +71,8 @@ public class Lock {
     private final Bus bus;
     private final APIClient apiClient;
 
+    private Configuration configuration;
+
     public Lock(APIClient apiClient) {
         this.useWebView = false;
         this.closable = false;
@@ -218,5 +220,13 @@ public class Lock {
             provider.stop();
         }
         this.defaultProvider.stop();
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 }

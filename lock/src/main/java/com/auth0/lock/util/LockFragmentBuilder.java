@@ -31,6 +31,7 @@ import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
+import com.auth0.lock.Configuration;
 import com.auth0.lock.Lock;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.fragment.DatabaseChangePasswordFragment;
@@ -46,7 +47,6 @@ import java.util.HashMap;
 public class LockFragmentBuilder {
 
     private final Lock lock;
-    private Application application;
     private boolean signUpMode;
 
     public LockFragmentBuilder(Lock lock) {
@@ -84,7 +84,7 @@ public class LockFragmentBuilder {
 
     public Fragment loginWithSocial() {
         final SocialDBFragment fragment = new SocialDBFragment();
-        if (application != null) {
+        if (lock.getConfiguration() != null) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(SocialDBFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
             bundle.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.shouldUseEmail());
@@ -104,7 +104,7 @@ public class LockFragmentBuilder {
 
     public Fragment social() {
         final SocialFragment fragment = new SocialFragment();
-        if (application != null) {
+        if (lock.getConfiguration() != null) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(SocialFragment.SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT, activeSocialStrategies());
             bundle.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
@@ -114,7 +114,8 @@ public class LockFragmentBuilder {
     }
 
     public Fragment root() {
-        if (application == null) {
+        Configuration configuration = lock.getConfiguration();
+        if (lock.getConfiguration() == null) {
             return login();
         }
 
@@ -122,10 +123,10 @@ public class LockFragmentBuilder {
             return SocialSignUpFragment.newFragment(activeSocialStrategies());
         }
 
-        final int enterpriseCount = application.getEnterpriseStrategies().size();
-        final int socialCount = application.getSocialStrategies().size();
-        final boolean hasDB = application.getDatabaseStrategy() != null;
-        final Strategy ad = application.strategyForName(Strategies.ActiveDirectory.getName());
+        final int enterpriseCount = configuration.getEnterpriseStrategies().size();
+        final int socialCount = configuration.getSocialStrategies().size();
+        final boolean hasDB = configuration.getDefaultDatabaseConnection() != null;
+        final Strategy ad = configuration.getActiveDirectoryStrategy();
 
         if (!hasDB && socialCount > 0 && enterpriseCount == 0) {
             return social();
@@ -146,20 +147,8 @@ public class LockFragmentBuilder {
         return login();
     }
 
-    public void setApplication(Application application) {
-        this.application = application;
-    }
-
-    public Application getApplication() {
-        return application;
-    }
-
     public Fragment enterpriseLoginWithConnection(Connection connection) {
         return enterpriseLoginWithConnection(connection, false);
-    }
-
-    public boolean isSignUpMode() {
-        return signUpMode;
     }
 
     public void setSignUpMode(boolean signUpMode) {
@@ -180,8 +169,9 @@ public class LockFragmentBuilder {
     }
 
     private ArrayList<String> activeSocialStrategies() {
-        ArrayList<String> strategies = new ArrayList<>(application.getSocialStrategies().size());
-        for (Strategy strategy : application.getSocialStrategies()) {
+        Configuration configuration = lock.getConfiguration();
+        ArrayList<String> strategies = new ArrayList<>(configuration.getSocialStrategies().size());
+        for (Strategy strategy : configuration.getSocialStrategies()) {
             strategies.add(strategy.getName());
         }
         return strategies;

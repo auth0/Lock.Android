@@ -67,7 +67,7 @@ public abstract class BaseTitledFragment extends Fragment {
 
     protected abstract int getTitleResource();
 
-    private Lock getLock() {
+    protected Lock getLock() {
         LockProvider provider = (LockProvider) getActivity().getApplication();
         return provider.getLock();
     }

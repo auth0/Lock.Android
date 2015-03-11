@@ -48,6 +48,8 @@ public class Configuration {
 
     private Strategy smsStrategy;
 
+    private Application application;
+
     public Configuration(Application application, List<String> connections, String defaultDatabaseName) {
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
@@ -56,6 +58,7 @@ public class Configuration {
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
         this.smsStrategy = connectionSet.contains(Strategies.SMS.getName()) ? application.strategyForName(Strategies.SMS.getName()) : null;
+        this.application = application;
     }
 
     public Connection getDefaultDatabaseConnection() {
@@ -80,6 +83,10 @@ public class Configuration {
 
     public Strategy getSmsStrategy() {
         return smsStrategy;
+    }
+
+    public Application getApplication() {
+        return application;
     }
 
     private Connection filterDatabaseConnections(Strategy databaseStrategy, Set<String> connections, String defaultDatabaseName) {
