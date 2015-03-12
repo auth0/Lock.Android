@@ -47,6 +47,7 @@ import java.util.List;
 public class SmallSocialListFragment extends android.support.v4.app.Fragment {
 
     private static final String SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT = "strategies";
+    private static final String TAG = SmallSocialListFragment.class.getName();
 
     GridView gridView;
     Bus bus;
@@ -70,7 +71,7 @@ public class SmallSocialListFragment extends android.support.v4.app.Fragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
-        Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
+        Log.d(TAG, "About to display " + services.size() + " services");
         gridView = (GridView) view.findViewById(R.id.social_grid_view);
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]), true);
         gridView.setAdapter(adapter);

@@ -45,19 +45,24 @@ public class SocialSignUpFragment extends BaseTitledFragment {
 
     public SocialSignUpFragment() {}
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Bundle bundle = getArguments();
+            ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
+            Lock lock = getLock();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
+                    .replace(R.id.signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
+                    .commit();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_social_sign_up, container, false);
-        Bundle bundle = getArguments();
-        ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
-        Lock lock = getLock();
-        getChildFragmentManager().beginTransaction()
-                .add(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
-                .add(R.id.signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
-                .commit();
-        return view;
+        return inflater.inflate(R.layout.fragment_social_sign_up, container, false);
     }
 
     @Override
@@ -71,11 +76,6 @@ public class SocialSignUpFragment extends BaseTitledFragment {
         SocialSignUpFragment fragment = new SocialSignUpFragment();
         fragment.setArguments(arguments);
         return fragment;
-    }
-
-    private Lock getLock() {
-        LockProvider provider = (LockProvider) getActivity().getApplication();
-        return provider.getLock();
     }
 
 }

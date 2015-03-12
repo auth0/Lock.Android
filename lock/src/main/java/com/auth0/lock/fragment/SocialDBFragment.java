@@ -55,18 +55,19 @@ public class SocialDBFragment extends DatabaseLoginFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
+        if (savedInstanceState == null) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
+                    .commit();
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_social_db, container, false);
-        Bundle bundle = getArguments();
-        ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
-        getChildFragmentManager().beginTransaction()
-                .add(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
-                .commit();
-        return view;
+        return inflater.inflate(R.layout.fragment_social_db, container, false);
     }
 
     @Override

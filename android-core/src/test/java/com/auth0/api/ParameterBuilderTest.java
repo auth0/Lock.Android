@@ -129,7 +129,7 @@ public class ParameterBuilderTest extends BaseTestCase {
         assertThat(builder.asDictionary(), not(hasEntry("key", "value")));
     }
 
-    private static Matcher<Map<String, Object>> hasEntry(String key, Object value) {
+    private static Matcher<Map<? extends String, ?>> hasEntry(String key, Object value) {
         return Matchers.hasEntry(key, value);
     }
 }

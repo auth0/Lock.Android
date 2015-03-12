@@ -31,6 +31,7 @@ import com.auth0.identity.web.CallbackParser;
 import com.squareup.otto.Bus;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +71,10 @@ public class Lock {
 
     private final Bus bus;
     private final APIClient apiClient;
+
+    private Configuration configuration;
+    private List<String> connections;
+    private String defaultDatabaseConnection;
 
     public Lock(APIClient apiClient) {
         this.useWebView = false;
@@ -218,5 +223,29 @@ public class Lock {
             provider.stop();
         }
         this.defaultProvider.stop();
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void setConnections(List<String> connections) {
+        this.connections = connections;
+    }
+
+    public List<String> getConnections() {
+        return connections;
+    }
+
+    public void setDefaultDatabaseConnection(String defaultDatabaseConnection) {
+        this.defaultDatabaseConnection = defaultDatabaseConnection;
+    }
+
+    public String getDefaultDatabaseConnection() {
+        return defaultDatabaseConnection;
     }
 }
