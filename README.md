@@ -16,14 +16,14 @@ Lock for Android
 ## Requierements
 
 Android API level 14+ is required in order to use Lock's UI.
-If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.2.+`, the minimum required API level is 9.
+If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.3.+`, the minimum required API level is 9.
 
 ##Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:1.2.+'
+compile 'com.auth0.android:lock:1.3.+'
 ```
 
 Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
@@ -48,6 +48,7 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
 ```
 
 > The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_tenant_name` is the name of the account that owns the application.
+> The final value of `android:scheme` must be in lowercase
 
 Also, you'll need to add *Internet* persmission to your application:
 ```xml
@@ -137,7 +138,7 @@ And you'll see our native login screen
 
 `LockSMSActivity` is not included in `com.auth0:lock:aar` but you can add it with this line in your `build.gradle`:
 ```gradle
-compile 'com.auth0.android:lock-sms:1.2.+'
+compile 'com.auth0.android:lock-sms:1.3.+'
 ```
 
 When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
@@ -276,6 +277,18 @@ public void setAuthenticationParameters(Map<String, Object> authenticationParame
 ```
 Map with parameters that will be sent on every authentication request with Auth0 API.
 
+```java
+public List<String> getConnections();
+public void setConnections(List<String> connections);
+```
+Tells Lock to use the connections whose name is included in the list. By default the list is null or empty which means that all enabled connections in your application will be used.
+
+```java
+public String getDefaultDatabaseConnection();
+public void setDefaultDatabaseConnection(String defaultDatabaseConnection);
+```
+Lock will use the Database Connection whose name matches the one provided. By default its null, which means it will pick the first of the list.
+
 ####Methods
 
 ```java
@@ -356,6 +369,16 @@ Extra parameters sent to Auth0 Auth API during authentication. By default it has
 public LockBuilder useEmail(boolean useEmail);
 ```
 Lock will ask for an email for authentication, otherwise it will ask for a username. By default is `true`.
+
+```java
+public LockBuilder useConnections(String ...connectionNames);
+```
+Make Lock pick these connections for authentication from all the enabled connections in your app.
+
+```java
+public LockBuilder defaultDatabaseConnection(String name);
+```
+Make Lock use the Database Connection whose name matches the one provided.
 
 ```java
 public LockBuilder loadFromApplication(Application application);
