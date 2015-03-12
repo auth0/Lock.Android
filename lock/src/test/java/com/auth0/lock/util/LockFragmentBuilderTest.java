@@ -126,6 +126,7 @@ public class LockFragmentBuilderTest {
         when(configuration.getEnterpriseStrategies()).thenReturn(Arrays.asList(adStrategy));
         when(configuration.getActiveDirectoryStrategy()).thenReturn(adStrategy);
         when(configuration.getSocialStrategies()).thenReturn(new ArrayList<Strategy>());
+        when(configuration.getDefaultActiveDirectoryConnection()).thenReturn(adConnection);
         final Fragment root = builder.root();
         final Bundle arguments = root.getArguments();
         assertThat(arguments, is(notNullValue()));

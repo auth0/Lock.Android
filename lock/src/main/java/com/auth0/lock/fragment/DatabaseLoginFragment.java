@@ -63,6 +63,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     public static final String AD_ENTERPRISE_CONNECTION_ARGUMENT = "AD_ENTERPRISE_CONNECTION_ARGUMENT";
     public static final String DEFAULT_CONNECTION_ARGUMENT = "DEFAULT_CONNECTION_ARGUMENT";
     public static final String IS_MAIN_LOGIN_ARGUMENT = "IS_MAIN_LOGIN_ARGUMENT";
+    private static final String TAG = DatabaseLoginFragment.class.getName();
 
     LoginAuthenticationErrorBuilder errorBuilder;
     LoginValidator validator;
@@ -88,20 +89,24 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments() != null ? getArguments() : new Bundle();
+        Configuration configuration = getLock().getConfiguration();
         if (arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
-            authenticationParameters.put(ParameterBuilder.CONNECTION, enterpriseConnection.getName());
             defaultConnection = enterpriseConnection;
             showADForm = true;
             useEmail = false;
         } else if (arguments.containsKey(DEFAULT_CONNECTION_ARGUMENT)) {
             defaultConnection = arguments.getParcelable(DEFAULT_CONNECTION_ARGUMENT);
-            authenticationParameters.put(ParameterBuilder.CONNECTION, defaultConnection.getName());
+        } else {
+            defaultConnection = configuration.getDefaultDatabaseConnection();
         }
+        authenticationParameters = ParameterBuilder.newBuilder()
+                .setConnection(defaultConnection.getName())
+                .addAll(authenticationParameters)
+                .asDictionary();
+        Log.d(TAG, "Specified default connection " + defaultConnection.getName());
 
         showCancel = !arguments.getBoolean(IS_MAIN_LOGIN_ARGUMENT);
-
-        Configuration configuration = getLock().getConfiguration();
         hasDB = configuration.getDefaultDatabaseConnection() != null;
         useEmail = useEmail && hasDB;
         showSignUp = showResetPassword = hasDB;

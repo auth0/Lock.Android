@@ -123,25 +123,25 @@ public class LockFragmentBuilder {
             return SocialSignUpFragment.newFragment(activeSocialStrategies());
         }
 
-        final int enterpriseCount = configuration.getEnterpriseStrategies().size();
-        final int socialCount = configuration.getSocialStrategies().size();
+        final boolean hasEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+        final boolean hasSocial = !configuration.getSocialStrategies().isEmpty();
         final boolean hasDB = configuration.getDefaultDatabaseConnection() != null;
-        final Strategy ad = configuration.getActiveDirectoryStrategy();
+        final boolean hasAD = configuration.getActiveDirectoryStrategy() != null;
 
-        if (!hasDB && socialCount > 0 && enterpriseCount == 0) {
+        if (!hasDB && hasSocial && !hasEnterprise) {
             return social();
         }
 
-        if (!hasDB && socialCount > 0 && ad != null) {
-            return enterpriseLoginWithSocial(ad.getConnections().get(0));
+        if (!hasDB && hasSocial && hasAD) {
+            return enterpriseLoginWithSocial(configuration.getDefaultActiveDirectoryConnection());
         }
 
-        if ((hasDB || enterpriseCount > 0) && socialCount > 0) {
+        if ((hasDB || hasEnterprise) && hasSocial) {
             return loginWithSocial();
         }
 
-        if (!hasDB && ad != null) {
-            return enterpriseLoginWithConnection(ad.getConnections().get(0), true);
+        if (!hasDB && hasAD) {
+            return enterpriseLoginWithConnection(configuration.getDefaultActiveDirectoryConnection(), true);
         }
 
         return login();

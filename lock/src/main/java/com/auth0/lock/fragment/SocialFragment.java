@@ -64,7 +64,6 @@ public class SocialFragment extends BaseTitledFragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
-        Log.d(SocialFragment.class.getName(), "Obtained " + services.size() + " services");
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]));
         listView = (ListView) view.findViewById(R.id.social_button_list);
         listView.setAdapter(adapter);

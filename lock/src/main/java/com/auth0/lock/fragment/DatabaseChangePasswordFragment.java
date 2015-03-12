@@ -25,6 +25,7 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.BaseCallback;
+import com.auth0.core.Connection;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.ChangePasswordEvent;
@@ -44,6 +47,8 @@ import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
 
 public class DatabaseChangePasswordFragment extends BaseTitledFragment {
+
+    private static final String TAG = DatabaseChangePasswordFragment.class.getName();
 
     CredentialField usernameField;
     CredentialField passwordField;
@@ -96,6 +101,14 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
             }
         });
         validator = new ResetPasswordValidator(useEmail);
+        Connection connection = getLock().getConfiguration().getDefaultDatabaseConnection();
+        if (connection != null) {
+            authenticationParameters = ParameterBuilder.newBuilder()
+                    .setConnection(connection.getName())
+                    .addAll(authenticationParameters)
+                    .asDictionary();
+            Log.d(TAG, "Specified DB connection with name " + connection.getName());
+        }
     }
 
     @Override

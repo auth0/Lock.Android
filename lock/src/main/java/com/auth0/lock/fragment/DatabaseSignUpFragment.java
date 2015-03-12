@@ -60,17 +60,18 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
+        if (savedInstanceState == null) {
+            final FragmentManager fragmentManager = getChildFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.db_signup_form_container, SignUpFormFragment.newFragment(useEmail, loginAfterSignUp, authenticationParameters))
+                    .commit();
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_database_sign_up, container, false);
-        final FragmentManager fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.db_signup_form_container, SignUpFormFragment.newFragment(useEmail, loginAfterSignUp, authenticationParameters))
-                .commit();
-        return view;
+        return inflater.inflate(R.layout.fragment_database_sign_up, container, false);
     }
 
     @Override

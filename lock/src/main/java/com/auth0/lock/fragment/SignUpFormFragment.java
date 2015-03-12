@@ -27,6 +27,7 @@ package com.auth0.lock.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,8 +38,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
+import com.auth0.core.Connection;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
@@ -62,6 +65,7 @@ public class SignUpFormFragment extends Fragment {
     private static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";
     private static final String USE_EMAIL_SIGNUP_ARGUMENT = "USE_EMAIL";
     private static final String LOGIN_AFTER_SIGNUP_ARGUMENT = "LOGIN_AFTER_SIGN_UP";
+    private static final String TAG = SignUpFormFragment.class.getName();
 
     AuthenticationErrorBuilder errorBuilder;
     SignUpValidator validator;
@@ -77,8 +81,7 @@ public class SignUpFormFragment extends Fragment {
     private Bus bus;
     private Map<String, Object> authenticationParameters;
 
-    public SignUpFormFragment() {
-    }
+    public SignUpFormFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +94,14 @@ public class SignUpFormFragment extends Fragment {
         useEmail = arguments == null || arguments.getBoolean(USE_EMAIL_SIGNUP_ARGUMENT);
         loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
         authenticationParameters = arguments != null ? (Map<String, Object>) arguments.getSerializable(AUTHENTICATION_PARAMETER_ARGUMENT) : null;
+        final Connection connection = lock.getConfiguration().getDefaultDatabaseConnection();
+        if (connection != null) {
+            authenticationParameters = ParameterBuilder.newBuilder()
+                    .setConnection(connection.getName())
+                    .addAll(authenticationParameters)
+                    .asDictionary();
+            Log.d(TAG, "Specified DB connection with name " + connection.getName());
+        }
         validator = new SignUpValidator(useEmail);
     }
 
