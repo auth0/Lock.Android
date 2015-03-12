@@ -17,8 +17,8 @@ android {
         release {
             storeFile file('keystore/release.keystore')
             keyAlias 'LockReleaseKey'
-            storePassword hasProperty("lock.keystore.password") ? getProperty("lock.keystore.password") : ""
-            keyPassword hasProperty("lock.key.password") ? getProperty("lock.key.password") : ""
+            storePassword getProperty("lock.keystorepass")
+            keyPassword getProperty("lock.keypass")
         }
     }
 
