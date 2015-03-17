@@ -50,7 +50,7 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
 > The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_tenant_name` is the name of the account that owns the application.
 > The final value of `android:scheme` must be in lowercase
 
-Also, you'll need to add *Internet* persmission to your application:
+Also, you'll need to add *Internet* permission to your application:
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
 ```
