@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.ParameterBuilder;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class LockBuilder {
     public LockBuilder() {
         this.loginAfterSignUp = true;
         this.useEmail = true;
-        this.parameters = new HashMap<>();
+        this.parameters = ParameterBuilder.newBuilder().asDictionary();
     }
 
     /**
@@ -153,7 +154,7 @@ public class LockBuilder {
      * @return itself
      */
     public LockBuilder authenticationParameters(Map<String, Object> parameters) {
-        this.parameters = parameters;
+        this.parameters = parameters != null ? parameters : ParameterBuilder.newBuilder().asDictionary();
         return this;
     }
 

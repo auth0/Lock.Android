@@ -43,11 +43,9 @@ public class LockApplication extends Application implements LockProvider {
     @Override
     public void onCreate() {
         super.onCreate();
-        Map<String, Object> params = ParameterBuilder.newBuilder().asDictionary();
         lock = new LockBuilder()
                 .loadFromApplication(this)
                 .closable(true)
-                .authenticationParameters(params)
                 .build();
         lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider());
         lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));
