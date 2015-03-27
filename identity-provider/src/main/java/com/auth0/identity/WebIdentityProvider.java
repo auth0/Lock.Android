@@ -34,6 +34,7 @@ import com.auth0.core.Token;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.identity.web.WebViewActivity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -46,10 +47,12 @@ public class WebIdentityProvider implements IdentityProvider {
     private boolean useWebView;
     private IdentityProviderCallback callback;
     private CallbackParser parser;
+    private Map<String, Object> parameters;
 
     public WebIdentityProvider(CallbackParser parser) {
         this.parser = parser;
         this.useWebView = false;
+        this.parameters = new HashMap<>();
     }
 
     /**
@@ -64,8 +67,12 @@ public class WebIdentityProvider implements IdentityProvider {
         this.callback = callback;
     }
 
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
+    }
+
     public void start(Activity activity, IdentityProviderRequest request, Application application) {
-        final Uri url = request.getAuthenticationUri(application);
+        final Uri url = request.getAuthenticationUri(application, parameters);
         final Intent intent;
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);

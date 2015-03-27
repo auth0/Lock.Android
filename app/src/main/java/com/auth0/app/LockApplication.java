@@ -26,12 +26,15 @@ package com.auth0.app;
 
 import android.app.Application;
 
+import com.auth0.api.ParameterBuilder;
 import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
 import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockBuilder;
 import com.auth0.lock.LockProvider;
+
+import java.util.Map;
 
 public class LockApplication extends Application implements LockProvider {
 
@@ -40,9 +43,11 @@ public class LockApplication extends Application implements LockProvider {
     @Override
     public void onCreate() {
         super.onCreate();
+        Map<String, Object> params = ParameterBuilder.newBuilder().asDictionary();
         lock = new LockBuilder()
                 .loadFromApplication(this)
                 .closable(true)
+                .authenticationParameters(params)
                 .build();
         lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider());
         lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));

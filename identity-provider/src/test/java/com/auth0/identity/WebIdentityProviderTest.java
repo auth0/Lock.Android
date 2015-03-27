@@ -82,7 +82,7 @@ public class WebIdentityProviderTest {
         MockitoAnnotations.initMocks(this);
         provider = new WebIdentityProvider(parser);
         provider.setCallback(callback);
-        when(request.getAuthenticationUri(eq(application))).thenReturn(uri);
+        when(request.getAuthenticationUri(eq(application), any(Map.class))).thenReturn(uri);
         when(request.getServiceName()).thenReturn(SERVICE_NAME);
     }
 
