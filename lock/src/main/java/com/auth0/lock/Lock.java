@@ -186,6 +186,7 @@ public class Lock {
      */
     public void setAuthenticationParameters(Map<String, Object> authenticationParameters) {
         this.authenticationParameters = authenticationParameters;
+        this.defaultProvider.setParameters(authenticationParameters);
     }
 
     /**
