@@ -29,6 +29,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
@@ -104,7 +105,10 @@ public class LockBuilder {
      * @return itself
      */
     public LockBuilder domainUrl(String domain) {
-        this.domain = domain;
+        this.domain = domain.startsWith("http") ? domain : "https://" + domain;
+        if (this.domain.startsWith("http://")) {
+            Log.w(LockBuilder.class.getName(), "Your Auth0 domain have use (https) instead of (http)");
+        }
         return this;
     }
 
@@ -238,10 +242,10 @@ public class LockBuilder {
         try {
             ApplicationInfo ai = application.getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
-            this.clientId = bundle.getString(CLIENT_ID_KEY);
-            this.tenant = bundle.getString(TENANT_KEY);
-            this.domain = bundle.getString(DOMAIN_URL_KEY);
-            this.configuration = bundle.getString(CONFIGURATION_URL_KEY);
+            this.clientId(bundle.getString(CLIENT_ID_KEY))
+                .tenant(bundle.getString(TENANT_KEY))
+                .domainUrl(bundle.getString(DOMAIN_URL_KEY))
+                .configurationUrl(bundle.getString(CONFIGURATION_URL_KEY));
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalArgumentException("Failed to read info from AndroidManifest.xml", e);
         }

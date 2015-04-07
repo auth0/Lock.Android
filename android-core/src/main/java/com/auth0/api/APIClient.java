@@ -83,15 +83,6 @@ public class APIClient extends BaseAPIClient {
     }
 
     /**
-     * Returns the name of the tenant.
-     * @return name of the tenant or null.
-     */
-    @Override
-    public String getTenantName() {
-        return application != null && application.getTenant() != null ? application.getTenant(): super.getTenantName();
-    }
-
-    /**
      * Fetch application information from {@link #getConfigurationURL()}
      * @param callback called with the application info on success or with the failure reason.
      */
@@ -264,7 +255,6 @@ public class APIClient extends BaseAPIClient {
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
                 .setClientId(getClientID())
-                .set(TENANT_KEY, getTenantName())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
@@ -293,7 +283,6 @@ public class APIClient extends BaseAPIClient {
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, newPassword)
                 .setClientId(getClientID())
-                .set(TENANT_KEY, getTenantName())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
