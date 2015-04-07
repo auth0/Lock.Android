@@ -43,11 +43,11 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
   </intent-filter>
 </activity>
 <meta-data android:name="com.auth0.lock.client-id" android:value="@string/auth0_client_id"/>
-<meta-data android:name="com.auth0.lock.tenant" android:value="@string/auth0_tenant_name"/>
+<meta-data android:name="com.auth0.lock.domain-url" android:value="@string/auth0_domain"/>
 <!--Auth0 Lock End-->
 ```
 
-> The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_tenant_name` is the name of the account that owns the application.
+> The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_domain` is your tenant's domain in Auth0,oth values can be found in your app's settings.
 > The final value of `android:scheme` must be in lowercase
 
 Also, you'll need to add *Internet* permission to your application:
@@ -189,7 +189,7 @@ And you'll see SMS login screen
 [![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 
 ##Proguard
-In the [proguard directory](https://github.com/auth0/Lock.Android/tree/master/proguard) you can find the *Proguard* configuration for Lock and its dependencies. 
+In the [proguard directory](https://github.com/auth0/Lock.Android/tree/master/proguard) you can find the *Proguard* configuration for Lock and its dependencies.
 By default you should at least use the following files:
 * `proguard-android-async-http.pro`
 * `proguard-jackson-2.pro`
