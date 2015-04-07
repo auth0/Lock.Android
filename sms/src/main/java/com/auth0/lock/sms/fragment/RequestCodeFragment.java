@@ -76,7 +76,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
         final Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey(REQUEST_CODE_JWT_ARGUMENT)) {
 
-            authClient = new AuthenticatedAPIClient(client.getClientID(), client.getBaseURL(), client.getConfigurationURL(), client.getTenantName());
+            authClient = new AuthenticatedAPIClient(client.getClientID(), client.getBaseURL(), client.getConfigurationURL());
             authClient.setJWT(arguments.getString(REQUEST_CODE_JWT_ARGUMENT));
         }
 

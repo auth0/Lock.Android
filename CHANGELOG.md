@@ -3,11 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ##master
 
+###Changed
+- Fixed NPE when using domain to configure Lock.
+
 ## 1.3.1 - 2015-03-27
 
 ###Changed
 - Fix issue with scope when authenticating with web flow.
-- Correctly set default scope to `openid offline_access`
+- Correctly set default scope to `openid offline_access`.
 
 ## 1.3.0 - 2015-03-12
 

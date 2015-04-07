@@ -26,12 +26,12 @@ android {
 
         debug {
             resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
-            resValue "string", "auth0_tenant_name", "overmind"
+            resValue "string", "auth0_domain_name", "overmind.auth0.com"
         }
 
         release {
             resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
-            resValue "string", "auth0_tenant_name", "overmind"
+            resValue "string", "auth0_domain_name", "overmind.auth0.com"
             minifyEnabled true
             proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
             proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth

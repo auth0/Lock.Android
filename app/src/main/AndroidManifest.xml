@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <meta-data android:name="com.auth0.lock.client-id" android:value="@string/auth0_client_id"/>
-        <meta-data android:name="com.auth0.lock.tenant" android:value="@string/auth0_tenant_name"/>
+        <meta-data android:name="com.auth0.lock.domain-url" android:value="@string/auth0_domain_name"/>
         <!--Auth0 Lock End-->
 
         <!--Auth0 Lock Embedded WebView-->

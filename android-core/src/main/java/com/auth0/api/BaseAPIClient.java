@@ -24,7 +24,6 @@
 
 package com.auth0.api;
 
-import android.net.Uri;
 import android.os.Build;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +38,6 @@ public abstract class BaseAPIClient {
     private final String clientID;
     private final String configurationURL;
     private final String baseURL;
-    private final String tenantName;
     final JsonEntityBuilder entityBuilder;
     final AsyncHttpClient client;
 
@@ -48,12 +46,6 @@ public abstract class BaseAPIClient {
         this.configurationURL = configurationURL;
         this.baseURL = baseURL;
         this.client = new AsyncHttpClient();
-        if (tenantName == null) {
-            Uri uri = Uri.parse(baseURL);
-            this.tenantName = uri.getHost();
-        } else {
-            this.tenantName = tenantName;
-        }
         this.client.setUserAgent(String.format("%s (%s Android %s)", tenantName, Build.MODEL, Build.VERSION.RELEASE));
         this.entityBuilder = new JsonEntityBuilder(new ObjectMapper());
     }
@@ -68,10 +60,6 @@ public abstract class BaseAPIClient {
 
     public String getClientID() {
         return clientID;
-    }
-
-    public String getTenantName() {
-        return tenantName;
     }
 
     public String getBaseURL() {

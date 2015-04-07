@@ -49,9 +49,9 @@ public class LockBuilderTest {
 
     public static final String CLIENT_ID = "CLIENTID";
     public static final String TENANT = "TENANT";
-    public static final String DOMAIN = "http://domain.com";
+    public static final String DOMAIN = "domain.com";
     public static final String CONFIGURATION = "https://config.com";
-    public static final String AUTH0_SUBDOMAIN = "http://pepe.auth0.com";
+    public static final String AUTH0_SUBDOMAIN = "pepe.auth0.com";
     
     private LockBuilder builder;
     private Lock lock;
@@ -72,7 +72,6 @@ public class LockBuilderTest {
         final APIClient apiClient = lock.getAPIClient();
         assertThat(apiClient, is(notNullValue()));
         assertThat(apiClient.getClientID(), equalTo(CLIENT_ID));
-        assertThat(apiClient.getTenantName(), equalTo(TENANT));
         assertThat(apiClient.getBaseURL(), equalTo("https://TENANT.auth0.com"));
         assertThat(apiClient.getConfigurationURL(), equalTo("https://cdn.auth0.com/client/CLIENTID.js"));
     }
@@ -126,9 +125,8 @@ public class LockBuilderTest {
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
-        assertThat(apiClient.getTenantName(), equalTo("domain.com"));
-        assertThat(apiClient.getBaseURL(), equalTo(DOMAIN));
-        assertThat(apiClient.getConfigurationURL(), equalTo(DOMAIN));
+        assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
+        assertThat(apiClient.getConfigurationURL(), equalTo("https://domain.com"));
     }
 
     @Test
@@ -140,8 +138,7 @@ public class LockBuilderTest {
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
-        assertThat(apiClient.getTenantName(), equalTo("domain.com"));
-        assertThat(apiClient.getBaseURL(), equalTo(DOMAIN));
+        assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
         assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
 
     }
@@ -156,8 +153,7 @@ public class LockBuilderTest {
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
-        assertThat(apiClient.getTenantName(), equalTo("domain.com"));
-        assertThat(apiClient.getBaseURL(), equalTo(DOMAIN));
+        assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
         assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
     }
 
@@ -169,8 +165,7 @@ public class LockBuilderTest {
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
-        assertThat(apiClient.getTenantName(), equalTo("pepe.auth0.com"));
-        assertThat(apiClient.getBaseURL(), equalTo(AUTH0_SUBDOMAIN));
+        assertThat(apiClient.getBaseURL(), equalTo("https://pepe.auth0.com"));
         assertThat(apiClient.getConfigurationURL(), equalTo("https://cdn.auth0.com/client/CLIENTID.js"));
     }
 
@@ -183,7 +178,7 @@ public class LockBuilderTest {
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
-        assertThat(apiClient.getBaseURL(), equalTo(AUTH0_SUBDOMAIN));
+        assertThat(apiClient.getBaseURL(), equalTo("https://pepe.auth0.com"));
         assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
     }
 
