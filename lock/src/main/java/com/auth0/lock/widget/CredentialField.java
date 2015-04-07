@@ -27,6 +27,7 @@ package com.auth0.lock.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
@@ -88,5 +89,11 @@ public class CredentialField extends EditText implements ValidationEnabled {
 
     public void refresh() {
         markAsInvalid(this.invalid);
+    }
+
+    @Override
+    public String getInputText() {
+        final Editable text = getText();
+        return text != null ? text.toString() : null;
     }
 }

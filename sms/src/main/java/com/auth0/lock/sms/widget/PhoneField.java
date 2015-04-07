@@ -104,8 +104,9 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
     }
 
     @Override
-    public Editable getText() {
-        return phoneEditText.getText();
+    public String getInputText() {
+        final Editable text = phoneEditText.getText();
+        return text != null ? text.toString() : null;
     }
 
     public void setOnClickListener(OnClickListener listener) {
