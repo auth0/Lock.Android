@@ -64,10 +64,16 @@ public class WebViewActivity extends ActionBarActivity {
             bar.setDisplayShowCustomEnabled(true);
             View view = LayoutInflater.from(this).inflate(R.layout.webview_action_bar, null);
             final TextView iconLabel = (TextView) view.findViewById(R.id.social_icon_label);
-            iconLabel.setTypeface(SocialResources.socialFont(this));
-            iconLabel.setText(SocialResources.iconForSocialService(this, serviceName));
-            iconLabel.setTextColor(SocialResources.textColorForSocialService(this, serviceName));
-            bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
+            final int iconResourceId = SocialResources.iconForSocialService(this, serviceName);
+            if (iconResourceId != 0) {
+                iconLabel.setTypeface(SocialResources.socialFont(this));
+                iconLabel.setText(iconResourceId);
+                iconLabel.setTextColor(SocialResources.textColorForSocialService(this, serviceName));
+                bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
+            } else {
+                iconLabel.setText(serviceName);
+                iconLabel.setTextColor(getResources().getColor(android.R.color.white));
+            }
             bar.setCustomView(view);
         }
         webView = (WebView) findViewById(R.id.lock_webview);
