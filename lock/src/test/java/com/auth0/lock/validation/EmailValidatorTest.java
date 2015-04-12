@@ -52,7 +52,6 @@ public class EmailValidatorTest {
     private Fragment fragment;
     private View view;
     private CredentialField field;
-    private Editable editable;
 
     @Before
     public void setUp() throws Exception {
@@ -60,27 +59,25 @@ public class EmailValidatorTest {
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
-        editable = mock(Editable.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.db_change_password_username_field))).thenReturn(field);
-        when(field.getText()).thenReturn(editable);
     }
 
     @Test
     public void shouldReturnNullWithValidEmail() throws Exception {
-        when(editable.toString()).thenReturn("mail@mail.com");
+        when(field.getInputText()).thenReturn("mail@mail.com");
         assertThat(validator.validateFrom(fragment), is(nullValue()));
     }
 
     @Test
     public void shouldFailWithEmptyEmail() throws Exception {
-        when(editable.toString()).thenReturn("");
+        when(field.getInputText()).thenReturn("");
         assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_email_message));
     }
 
     @Test
     public void shouldFailWithInvalidEmail() throws Exception {
-        when(editable.toString()).thenReturn("pepe@p");
+        when(field.getInputText()).thenReturn("pepe@p");
         assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_email_message));
     }
 

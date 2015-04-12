@@ -13,25 +13,20 @@ android {
         versionName "1.0.0"
     }
 
-    signingConfigs {
-        release {
-            storeFile file('keystore/release.keystore')
-            keyAlias 'LockReleaseKey'
-            storePassword hasProperty("lock.keystorepass") ? getProperty("lock.keystorepass") : ""
-            keyPassword hasProperty("lock.keypass") ? getProperty("lock.keypass") : ""
+    if (project.hasProperty("lockKeystorePass")) {
+        signingConfigs {
+            release {
+                storeFile file('keystore/release.keystore')
+                keyAlias 'LockReleaseKey'
+                storePassword project.getProperty('lockKeystorePass')
+                keyPassword project.getProperty('lockKeyPass')
+            }
         }
     }
 
     buildTypes {
 
-        debug {
-            resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
-            resValue "string", "auth0_domain_name", "overmind.auth0.com"
-        }
-
         release {
-            resValue "string", "auth0_client_id", "U5MhUrbyQHSVWjlEqZSTCBUFABLbJAS3"
-            resValue "string", "auth0_domain_name", "overmind.auth0.com"
             minifyEnabled true
             proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
             proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
@@ -41,7 +36,7 @@ android {
             proguardFile '../proguard/proguard-lock.pro' //Lock
             proguardFile 'proguard-project.pro'
             proguardFile getDefaultProguardFile('proguard-android.txt')
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.hasProperty('release') ? signingConfigs.release : null
         }
     }
 

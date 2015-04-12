@@ -24,12 +24,10 @@
 
 package com.auth0.lock.validation;
 
-import android.text.Editable;
-
 public interface ValidationEnabled {
 
     void markAsInvalid(boolean invalid);
 
-    Editable getText();
+    String getInputText();
 
 }

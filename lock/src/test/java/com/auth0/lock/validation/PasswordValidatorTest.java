@@ -51,7 +51,6 @@ public class PasswordValidatorTest {
     private Fragment fragment;
     private View view;
     private CredentialField field;
-    private Editable editable;
 
     @Before
     public void setUp() throws Exception {
@@ -59,21 +58,19 @@ public class PasswordValidatorTest {
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
-        editable = mock(Editable.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.db_change_password_password_field))).thenReturn(field);
-        when(field.getText()).thenReturn(editable);
     }
 
     @Test
     public void shouldReturnNullWithValidPassword() throws Exception {
-        when(editable.toString()).thenReturn("a very long long long password");
+        when(field.getInputText()).thenReturn("a very long long long password");
         assertThat(validator.validateFrom(fragment), is(nullValue()));
     }
 
     @Test
     public void shouldFailWithEmptyPassword() throws Exception {
-        when(editable.toString()).thenReturn("");
+        when(field.getInputText()).thenReturn("");
         assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_password_message));
     }
 

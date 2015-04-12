@@ -43,7 +43,7 @@ public abstract class BaseFragmentValidator implements Validator {
     @Override
     public AuthenticationError validateFrom(Fragment fragment) {
         ValidationEnabled field = (ValidationEnabled) fragment.getView().findViewById(fieldResource);
-        String value = field.getText().toString();
+        String value = field.getInputText();
         boolean valid = doValidate(value);
         field.markAsInvalid(!valid);
         return valid ? null : new AuthenticationError(errorTitleResource, errorMessageResource);
