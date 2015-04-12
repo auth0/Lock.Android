@@ -100,11 +100,12 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         } else {
             defaultConnection = configuration.getDefaultDatabaseConnection();
         }
+        String connection = defaultConnection != null ? defaultConnection.getName() : null;
         authenticationParameters = ParameterBuilder.newBuilder()
-                .setConnection(defaultConnection.getName())
+                .setConnection(connection)
                 .addAll(authenticationParameters)
                 .asDictionary();
-        Log.d(TAG, "Specified default connection " + defaultConnection.getName());
+        Log.d(TAG, "Specified default connection " + connection);
 
         showCancel = !arguments.getBoolean(IS_MAIN_LOGIN_ARGUMENT);
         hasDB = configuration.getDefaultDatabaseConnection() != null;
