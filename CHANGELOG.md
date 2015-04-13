@@ -3,8 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ##master
 
+# 1.3.3 - 2015-04-13
+
+###Changed
+- Fix NPE when loading Auth0 info from AndroidManifest.xml.
+
+# 1.3.2 - 2015-04-12
+
 ###Changed
 - Fixed NPE when using domain to configure Lock.
+- Fixed NPE when no DB connection is enabled.
+- Allow enterprise connections to use WebView instead of Browser app.
 
 ## 1.3.1 - 2015-03-27
 
