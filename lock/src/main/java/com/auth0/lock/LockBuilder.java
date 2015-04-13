@@ -105,9 +105,11 @@ public class LockBuilder {
      * @return itself
      */
     public LockBuilder domainUrl(String domain) {
-        this.domain = domain.startsWith("http") ? domain : "https://" + domain;
-        if (this.domain.startsWith("http://")) {
-            Log.w(LockBuilder.class.getName(), "Your Auth0 domain have use (https) instead of (http)");
+        if (domain != null) {
+            this.domain = domain.startsWith("http") ? domain : "https://" + domain;
+            if (this.domain.startsWith("http://")) {
+                Log.w(LockBuilder.class.getName(), "Your Auth0 domain have use (https) instead of (http)");
+            }
         }
         return this;
     }
