@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ##master
 
+# 1.4.0 - 2015-04-16
+
+###Added
+- Fullscreen mode for `LockActivity` & `LockSMSActivity`
+
 # 1.3.3 - 2015-04-13
 
 ###Changed
