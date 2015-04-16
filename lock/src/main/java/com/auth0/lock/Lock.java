@@ -65,6 +65,7 @@ public class Lock {
     private boolean closable;
     private Map<String, Object> authenticationParameters;
     private boolean useEmail;
+    private boolean fullScreen;
 
     private WebIdentityProvider defaultProvider;
     private Map<String, IdentityProvider> providers;
@@ -85,6 +86,7 @@ public class Lock {
         this.bus = new Bus("Lock");
         this.defaultProvider = new WebIdentityProvider(new CallbackParser());
         this.apiClient = apiClient;
+        this.fullScreen = false;
     }
 
     /**
@@ -248,5 +250,21 @@ public class Lock {
 
     public String getDefaultDatabaseConnection() {
         return defaultDatabaseConnection;
+    }
+
+    /**
+     * Shows Lock in Fullscreen mode. Only works for API level 16+, otherwise use theme @android:style/Theme.Holo.NoActionBar.Fullscreen for your app.
+     * @param fullScreen if lock is shown in fullscreen mode
+     */
+    public void setFullScreen(boolean fullScreen) {
+        this.fullScreen = fullScreen;
+    }
+
+    /**
+     * If Lock is displayed in fullscreen mode. By default is false
+     * @return
+     */
+    public boolean isFullScreen() {
+        return fullScreen;
     }
 }

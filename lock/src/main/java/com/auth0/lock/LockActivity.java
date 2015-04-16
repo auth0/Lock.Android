@@ -3,11 +3,13 @@ package com.auth0.lock;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.auth0.api.callback.AuthenticationCallback;
@@ -33,9 +35,6 @@ import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.LockIdentityProviderCallback;
 import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Activity that handles DB, Social and Enterprise Authentication.
@@ -101,6 +100,9 @@ public class LockActivity extends FragmentActivity {
         }
         broadcastManager = LocalBroadcastManager.getInstance(this);
         callback = new LockIdentityProviderCallback(lock.getBus());
+        if (lock.isFullScreen()) {
+            fullscreenMode();
+        }
     }
 
     @Override
@@ -127,6 +129,14 @@ public class LockActivity extends FragmentActivity {
             if (!valid) {
                 dismissProgressDialog();
             }
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (lock.isFullScreen()) {
+            fullscreenMode();
         }
     }
 
@@ -319,5 +329,13 @@ public class LockActivity extends FragmentActivity {
         }
         LockProvider provider = (LockProvider) getApplication();
         return provider.getLock();
+    }
+
+    private void fullscreenMode() {
+        if (Build.VERSION.SDK_INT >= 16) {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
 }
