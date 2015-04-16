@@ -336,6 +336,9 @@ public class LockActivity extends FragmentActivity {
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 }
