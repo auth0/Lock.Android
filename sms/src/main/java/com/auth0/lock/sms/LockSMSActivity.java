@@ -25,10 +25,13 @@
 package com.auth0.lock.sms;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -69,6 +72,17 @@ public class LockSMSActivity extends FragmentActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
+        }
+        if (lock.isFullScreen()) {
+            fullscreenMode();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (lock.isFullScreen()) {
+            fullscreenMode();
         }
     }
 
@@ -149,4 +163,14 @@ public class LockSMSActivity extends FragmentActivity {
         return provider.getLock();
     }
 
+    private void fullscreenMode() {
+        if (Build.VERSION.SDK_INT >= 16) {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
 }
