@@ -72,10 +72,12 @@ public class LockBuilder {
     private boolean useEmail;
     private String defaultDBConnectionName;
     private List<String> connections;
+    private boolean fullscreen;
 
     public LockBuilder() {
         this.loginAfterSignUp = true;
         this.useEmail = true;
+        this.fullscreen = false;
         this.parameters = ParameterBuilder.newBuilder().asDictionary();
     }
 
@@ -186,6 +188,16 @@ public class LockBuilder {
     }
 
     /**
+     * Shows Lock in Fullscreen mode. Only works for API level 16+, otherwise use theme @android:style/Theme.Holo.NoActionBar.Fullscreen for your app.
+     * @param fullscreen if lock is displayed in fullscreen
+     * @return itself
+     */
+    public LockBuilder fullscreen(boolean fullscreen) {
+        this.fullscreen = fullscreen;
+        return this;
+    }
+
+    /**
      * Create a {@link com.auth0.lock.Lock} instance with the values stored.
      * @return
      */
@@ -199,6 +211,7 @@ public class LockBuilder {
         lock.setUseEmail(this.useEmail);
         lock.setConnections(this.connections);
         lock.setDefaultDatabaseConnection(this.defaultDBConnectionName);
+        lock.setFullScreen(fullscreen);
         return lock;
     }
 
