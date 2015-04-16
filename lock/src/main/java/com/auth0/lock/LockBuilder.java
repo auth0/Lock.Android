@@ -188,7 +188,7 @@ public class LockBuilder {
     }
 
     /**
-     * Shows Lock in Fullscreen mode. Only works for API level 16+, otherwise use theme @android:style/Theme.Holo.NoActionBar.Fullscreen for your app.
+     * Shows Lock in Fullscreen mode.
      * @param fullscreen if lock is displayed in fullscreen
      * @return itself
      */
