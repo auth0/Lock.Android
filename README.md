@@ -289,6 +289,12 @@ public void setDefaultDatabaseConnection(String defaultDatabaseConnection);
 ```
 Lock will use the Database Connection whose name matches the one provided. By default its null, which means it will pick the first of the list.
 
+```java
+public void setFullscreen(boolean fullscreen);
+public boolean isFullscreen();
+```
+If Lock's activities should be displayed in Fullscreen. Default is `false`
+
 ####Methods
 
 ```java
@@ -389,6 +395,11 @@ These are the values that can be defined and it's keys:
 * __com.auth0.lock.tenant__: Application's owner tenant name. (Optional if you supply Domain and Configuration URLs)
 * __com.auth0.lock.domain-url__: URL where the Auth0 API is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)
 * __com.auth0.lock.configuration-url__: URL where Auth0 apps information is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)
+
+```java
+public LockBuilder fullscreen(boolean fullscreen);
+```
+Make Lock's activities fullscreen. Default is `false`
 
 ```java
 public Lock build();
