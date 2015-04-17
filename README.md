@@ -47,7 +47,7 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
 <!--Auth0 Lock End-->
 ```
 
-> The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_domain` is your tenant's domain in Auth0,oth values can be found in your app's settings.
+> The value `@string/auth0_client_id` is your application's clientID and `@string/auth0_domain` is your tenant's domain in Auth0, both values can be found in your app's settings.
 > The final value of `android:scheme` must be in lowercase
 
 Also, you'll need to add *Internet* permission to your application:
