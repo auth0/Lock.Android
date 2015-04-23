@@ -30,6 +30,7 @@
         <item name="Auth0.SecondaryButtonStyle">@style/Lock.Theme.SecondaryButton</item>
         <item name="Auth0.CredentialField.Email">@style/Lock.Theme.CredentialField.Email</item>
         <item name="Auth0.CredentialField.Password">@style/Lock.Theme.CredentialField.Password</item>
+        <item name="Auth0.CredentialField.Username">@style/Lock.Theme.CredentialField.Username</item>
         <item name="Auth0.CredentialBox">@style/Lock.Theme.CredentialBox</item>
         <item name="Auth0.Message">@style/Lock.Theme.Message</item>
         <item name="Auth0.Background">@color/lock_background</item>
@@ -60,6 +61,11 @@
     <style name="Lock.Theme.CredentialField.Email" parent="Lock.Theme.CredentialField">
         <item name="normalIconDrawable">@drawable/ic_email</item>
         <item name="errorIconDrawable">@drawable/ic_email_error</item>
+    </style>
+
+    <style name="Lock.Theme.CredentialField.Username" parent="Lock.Theme.CredentialField">
+        <item name="normalIconDrawable">@drawable/ic_person</item>
+        <item name="errorIconDrawable">@drawable/ic_person_error</item>
     </style>
 
     <style name="Lock.Theme.CredentialField.Password" parent="Lock.Theme.CredentialField">

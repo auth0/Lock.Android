@@ -59,8 +59,8 @@ public class SignUpValidator implements Validator {
 
     public static Validator validatorThatUseEmail(boolean useEmail) {
         if (useEmail) {
-            return new EmailValidator(R.id.db_signup_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
+            return new EmailValidator(R.id.db_signup_email_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
         }
-        return new UsernameValidator(R.id.db_signup_username_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+        return new UsernameValidator(R.id.db_signup_email_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
     }
 }

@@ -37,7 +37,18 @@
         android:layout_centerHorizontal="true">
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_signup_username_field"
-            android:tag="db_signup_username_field"
+            style="?attr/Auth0.CredentialField.Username"
+            android:inputType="textEmailAddress"
+            android:hint="@string/username_placeholder"
+            android:nextFocusDown="@+id/db_signup_email_field"
+            />
+        <View
+            android:id="@+id/db_signup_username_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/credential_box_border_width"
+            android:background="?attr/Auth0.Separator.Color"/>
+        <com.auth0.lock.widget.CredentialField
+            android:id="@+id/db_signup_email_field"
             style="?attr/Auth0.CredentialField.Email"
             android:inputType="textEmailAddress"
             android:hint="@string/email_placeholder"
@@ -49,7 +60,6 @@
             android:background="?attr/Auth0.Separator.Color"/>
         <com.auth0.lock.widget.CredentialField
             android:id="@+id/db_signup_password_field"
-            android:tag="db_signup_password_field"
             style="?attr/Auth0.CredentialField.Password"
             android:inputType="textPassword"
             android:hint="@string/password_placeholder"
