@@ -41,7 +41,7 @@ public class SignUpValidator implements Validator {
         this.compositeErrorMessage = compositeErrorMessage;
     }
 
-    public SignUpValidator(boolean useEmail) {
+    public SignUpValidator(boolean useEmail, boolean requiresUsername) {
         this(validatorThatUseEmail(useEmail),
                 new PasswordValidator(R.id.db_signup_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message),
                 useEmail ? R.string.invalid_credentials_message : R.string.invalid_username_credentials_message);
@@ -61,6 +61,6 @@ public class SignUpValidator implements Validator {
         if (useEmail) {
             return new EmailValidator(R.id.db_signup_email_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
         }
-        return new UsernameValidator(R.id.db_signup_email_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+        return new UsernameValidator(R.id.db_signup_username_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
     }
 }

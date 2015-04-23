@@ -55,6 +55,7 @@
             android:nextFocusDown="@+id/db_signup_password_field"
             />
         <View
+            android:id="@+id/db_signup_email_separator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/credential_box_border_width"
             android:background="?attr/Auth0.Separator.Color"/>

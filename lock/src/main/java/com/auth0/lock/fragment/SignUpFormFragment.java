@@ -103,7 +103,7 @@ public class SignUpFormFragment extends Fragment {
             Log.d(TAG, "Specified DB connection with name " + connection.getName());
             requiresUsername = connection.getValueForKey("requires_username");
         }
-        validator = new SignUpValidator(useEmail);
+        validator = new SignUpValidator(useEmail, requiresUsername);
     }
 
     @Override
@@ -118,16 +118,16 @@ public class SignUpFormFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         emailField = (CredentialField) view.findViewById(R.id.db_signup_email_field);
         usernameField = (CredentialField) view.findViewById(R.id.db_signup_username_field);
-        if (!requiresUsername) {
+        if (!requiresUsername && useEmail) {
             usernameField.setVisibility(View.GONE);
             View separator = view.findViewById(R.id.db_signup_username_separator);
             separator.setVisibility(View.GONE);
         }
         if (!useEmail && !requiresUsername) {
-            emailField.setHint(R.string.username_placeholder);
-            emailField.setIconResource(R.drawable.ic_person);
-            emailField.setErrorIconResource(R.drawable.ic_person_error);
-            emailField.refresh();
+            emailField.setVisibility(View.GONE);
+            usernameField.setNextFocusDownId(R.id.db_signup_password_field);
+            View separator = view.findViewById(R.id.db_signup_email_separator);
+            separator.setVisibility(View.GONE);
         }
         passwordField = (CredentialField) view.findViewById(R.id.db_signup_password_field);
         accessButton = (Button) view.findViewById(R.id.db_access_button);
@@ -180,7 +180,8 @@ public class SignUpFormFragment extends Fragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        final String username = emailField.getText().toString().trim();
+        CredentialField field = useEmail || requiresUsername ? emailField : usernameField;
+        final String username = field.getText().toString().trim();
         String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
             client.signUp(username, password, authenticationParameters, new AuthenticationCallback() {
