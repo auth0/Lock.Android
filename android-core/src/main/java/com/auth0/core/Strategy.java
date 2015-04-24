@@ -35,4 +35,10 @@ public class Strategy {
     public Strategies.Type getType() {
         return this.strategyMetadata.getType();
     }
+
+    public boolean isResourceOwnerEnabled() {
+        return Strategies.ActiveDirectory.getName().equals(name)
+                || Strategies.ADFS.getName().equals(name)
+                || Strategies.Waad.getName().equals(name);
+    }
 }

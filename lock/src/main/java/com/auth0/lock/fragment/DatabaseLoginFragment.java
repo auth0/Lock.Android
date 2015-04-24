@@ -249,9 +249,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         final Connection connection = matcher.getConnection();
         if (connection != null) {
             final Configuration configuration = getLock().getConfiguration();
-            final Strategy activeDirectoryStrategy = configuration.getActiveDirectoryStrategy();
-            boolean isAD = activeDirectoryStrategy != null && activeDirectoryStrategy.getConnections().contains(connection);
-            if (isAD) {
+            final Strategy strategy = configuration.getApplication().strategyForConnection(connection);
+            if (strategy.isResourceOwnerEnabled()) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));
