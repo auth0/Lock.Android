@@ -250,11 +250,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         if (connection != null) {
             final Configuration configuration = getLock().getConfiguration();
             final Strategy strategy = configuration.getApplication().strategyForConnection(connection);
-            final String strategyName = strategy.getName();
-            boolean isEnterpriseAuthentication = Strategies.ActiveDirectory.getName().equals(strategyName)
-                    || Strategies.ADFS.getName().equals(strategyName)
-                    || Strategies.Waad.getName().equals(strategyName);
-            if (isEnterpriseAuthentication) {
+            if (strategy.isResourceOwnerEnabled()) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));
