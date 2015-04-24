@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ###Added
 - DB connection's `requires_username` feature. Allows to signup with email, username and password, and login with either email or username.
+- `waad` and `adfs` connections use `/ro` to authenticate.
 
 # 1.4.0 - 2015-04-16
 
