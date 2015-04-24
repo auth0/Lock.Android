@@ -84,6 +84,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     private boolean showCancel;
     private Connection enterpriseConnection;
     private Connection defaultConnection;
+    private boolean requiresUsername;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,8 +100,10 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             defaultConnection = arguments.getParcelable(DEFAULT_CONNECTION_ARGUMENT);
         } else {
             defaultConnection = configuration.getDefaultDatabaseConnection();
+
         }
         String connection = defaultConnection != null ? defaultConnection.getName() : null;
+        requiresUsername = defaultConnection != null && defaultConnection.booleanForKey("requires_username");
         authenticationParameters = ParameterBuilder.newBuilder()
                 .setConnection(connection)
                 .addAll(authenticationParameters)
@@ -112,7 +115,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         useEmail = useEmail && hasDB;
         showSignUp = showResetPassword = hasDB;
         errorBuilder = new LoginAuthenticationErrorBuilder();
-        validator = new LoginValidator(useEmail);
+        validator = new LoginValidator(useEmail, requiresUsername);
         matcher = new DomainMatcher(configuration.getEnterpriseStrategies());
         matcher.filterConnection(defaultConnection);
     }
@@ -134,7 +137,9 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         usernameField = (CredentialField) view.findViewById(R.id.db_login_username_field);
-        if (!useEmail) {
+        if (requiresUsername) {
+            usernameField.setHint(R.string.username_email_placeholder);
+        } if (!useEmail) {
             usernameField.setHint(R.string.username_placeholder);
             usernameField.setIconResource(R.drawable.ic_person);
             usernameField.setErrorIconResource(R.drawable.ic_person_error);

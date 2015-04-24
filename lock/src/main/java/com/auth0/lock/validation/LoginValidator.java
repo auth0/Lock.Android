@@ -41,8 +41,8 @@ public class LoginValidator implements Validator {
         this.compositeErrorMessage = compositeErrorMessage;
     }
 
-    public LoginValidator(boolean useEmail) {
-        this(validatorThatUseEmail(useEmail),
+    public LoginValidator(boolean useEmail, boolean requiresUsername) {
+        this(validatorThatUseEmail(useEmail, requiresUsername),
                 new PasswordValidator(R.id.db_login_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message),
                 useEmail ? R.string.invalid_credentials_message : R.string.invalid_username_credentials_message);
     }
@@ -57,10 +57,10 @@ public class LoginValidator implements Validator {
         return usernameError != null ? usernameError : passwordError;
     }
 
-    public static Validator validatorThatUseEmail(boolean useEmail) {
-        if (useEmail) {
+    public static Validator validatorThatUseEmail(boolean useEmail, boolean requiresUsername) {
+        if (useEmail && !requiresUsername) {
             return new EmailValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
         }
-        return new UsernameValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+        return new UsernameValidator(R.id.db_login_username_field, R.string.invalid_credentials_title, R.string.invalid_username_message);
     }
 }
