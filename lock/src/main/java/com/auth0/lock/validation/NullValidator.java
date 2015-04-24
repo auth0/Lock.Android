@@ -1,7 +1,7 @@
 /*
- * Lock.java
+ * NullValidator.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,15 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.app;
+package com.auth0.lock.validation;
 
-import android.app.Application;
+import android.support.v4.app.Fragment;
 
-import com.auth0.api.ParameterBuilder;
-import com.auth0.core.Strategies;
-import com.auth0.facebook.FacebookIdentityProvider;
-import com.auth0.googleplus.GooglePlusIdentityProvider;
-import com.auth0.lock.Lock;
-import com.auth0.lock.LockBuilder;
-import com.auth0.lock.LockProvider;
+import com.auth0.lock.event.AuthenticationError;
 
-import java.util.Map;
-
-public class LockApplication extends Application implements LockProvider {
-
-    private Lock lock;
-
+public class NullValidator implements Validator {
     @Override
-    public void onCreate() {
-        super.onCreate();
-        lock = new LockBuilder()
-                .loadFromApplication(this)
-                .closable(true)
-                .useEmail(true)
-                .fullscreen(false)
-                .build();
-        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider());
-        lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));
-    }
-
-    @Override
-    public Lock getLock() {
-        return lock;
+    public AuthenticationError validateFrom(Fragment fragment) {
+        return null;
     }
 }

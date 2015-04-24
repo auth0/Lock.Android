@@ -61,6 +61,19 @@ public class Connection implements Parcelable {
     }
 
     /**
+     * Returns a boolean value using its key
+     * @param key a key
+     * @return the value of the flag
+     */
+    public boolean booleanForKey(String key) {
+        Boolean value = getValueForKey(key);
+        if (value == null) {
+            return false;
+        }
+        return value;
+    }
+
+    /**
      * Get set of domain if the connection is Enterprise
      * @return a set with all domains configured
      */

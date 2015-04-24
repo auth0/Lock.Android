@@ -29,7 +29,7 @@ package com.auth0.util;
  */
 public class CheckHelper {
 
-    public static void checkArgument(boolean expression, String message) {
+    public static void checkArgument(boolean expression, String message) throws RuntimeException {
         if (!expression) {
             throw new IllegalArgumentException(message);
         }

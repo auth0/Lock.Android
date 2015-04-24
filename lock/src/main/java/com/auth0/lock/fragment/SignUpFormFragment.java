@@ -48,11 +48,9 @@ import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 import com.auth0.lock.error.AuthenticationErrorBuilder;
-import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.error.SignUpAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.validation.SignUpValidator;
 import com.auth0.lock.widget.CredentialField;
@@ -71,12 +69,14 @@ public class SignUpFormFragment extends Fragment {
     SignUpValidator validator;
 
     CredentialField usernameField;
+    CredentialField emailField;
     CredentialField passwordField;
 
     Button accessButton;
     ProgressBar progressBar;
     private boolean loginAfterSignUp;
     private boolean useEmail;
+    private boolean requiresUsername;
     private APIClient client;
     private Bus bus;
     private Map<String, Object> authenticationParameters;
@@ -101,8 +101,9 @@ public class SignUpFormFragment extends Fragment {
                     .addAll(authenticationParameters)
                     .asDictionary();
             Log.d(TAG, "Specified DB connection with name " + connection.getName());
+            requiresUsername = connection.booleanForKey("requires_username");
         }
-        validator = new SignUpValidator(useEmail);
+        validator = new SignUpValidator(useEmail, requiresUsername);
     }
 
     @Override
@@ -115,12 +116,18 @@ public class SignUpFormFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        emailField = (CredentialField) view.findViewById(R.id.db_signup_email_field);
         usernameField = (CredentialField) view.findViewById(R.id.db_signup_username_field);
-        if (!useEmail) {
-            usernameField.setHint(R.string.username_placeholder);
-            usernameField.setIconResource(R.drawable.ic_person);
-            usernameField.setErrorIconResource(R.drawable.ic_person_error);
-            usernameField.refresh();
+        if (!requiresUsername && useEmail) {
+            usernameField.setVisibility(View.GONE);
+            View separator = view.findViewById(R.id.db_signup_username_separator);
+            separator.setVisibility(View.GONE);
+        }
+        if (!useEmail && !requiresUsername) {
+            emailField.setVisibility(View.GONE);
+            usernameField.setNextFocusDownId(R.id.db_signup_password_field);
+            View separator = view.findViewById(R.id.db_signup_email_separator);
+            separator.setVisibility(View.GONE);
         }
         passwordField = (CredentialField) view.findViewById(R.id.db_signup_password_field);
         accessButton = (Button) view.findViewById(R.id.db_access_button);
@@ -173,10 +180,11 @@ public class SignUpFormFragment extends Fragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        final String username = usernameField.getText().toString().trim();
-        String password = passwordField.getText().toString();
+        final String username = !useEmail || requiresUsername ? usernameField.getText().toString().trim() : null;
+        final String email = useEmail || requiresUsername ? emailField.getText().toString().trim() : null;
+        final String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
-            client.signUp(username, password, authenticationParameters, new AuthenticationCallback() {
+            client.signUp(email, username, password, authenticationParameters, new AuthenticationCallback() {
                 @Override
                 public void onSuccess(UserProfile profile, Token token) {
                     bus.post(new AuthenticationEvent(profile, token));
@@ -194,7 +202,7 @@ public class SignUpFormFragment extends Fragment {
                 }
             });
         } else {
-            client.createUser(username, password, authenticationParameters, new BaseCallback<Void>() {
+            client.createUser(email, username, password, authenticationParameters, new BaseCallback<Void>() {
                 @Override
                 public void onSuccess(Void payload) {
                     bus.post(new SignUpEvent(username));

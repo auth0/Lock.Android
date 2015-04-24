@@ -54,19 +54,24 @@ public class SignUpValidatorTest {
     @Mock
     private Validator emailValidator;
     @Mock
+    private Validator usernameValidator;
+    @Mock
     private Validator passwordValidator;
     @Mock
     private Fragment fragment;
     @Mock
     private AuthenticationError emailError;
     @Mock
+    private AuthenticationError usernameError;
+    @Mock
     private AuthenticationError passwordError;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        validator = new SignUpValidator(emailValidator, passwordValidator, R.string.invalid_credentials_message);
+        validator = new SignUpValidator(emailValidator, usernameValidator, passwordValidator, R.string.invalid_credentials_message);
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(null);
+        when(usernameValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(null);
     }
 
@@ -88,7 +93,36 @@ public class SignUpValidatorTest {
     }
 
     @Test
-    public void shouldReturnCredentialErrorWhenBothFails() throws Exception {
+    public void shouldReturnUsernameErrorOnly() throws Exception {
+        when(usernameValidator.validateFrom(eq(fragment))).thenReturn(usernameError);
+        assertThat(validator.validateFrom(fragment), equalTo(usernameError));
+    }
+
+    @Test
+    public void shouldReturnCredentialErrorWhenAllFails() throws Exception {
+        when(emailValidator.validateFrom(eq(fragment))).thenReturn(emailError);
+        when(passwordValidator.validateFrom(eq(fragment))).thenReturn(passwordError);
+        when(usernameValidator.validateFrom(eq(fragment))).thenReturn(usernameError);
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+    }
+
+    @Test
+    public void shouldReturnCredentialErrorWhenOnlyPasswordOk() throws Exception {
+        when(emailValidator.validateFrom(eq(fragment))).thenReturn(emailError);
+        when(usernameValidator.validateFrom(eq(fragment))).thenReturn(usernameError);
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+    }
+
+
+    @Test
+    public void shouldReturnCredentialErrorWhenOnlyEmailOk() throws Exception {
+        when(passwordValidator.validateFrom(eq(fragment))).thenReturn(passwordError);
+        when(usernameValidator.validateFrom(eq(fragment))).thenReturn(usernameError);
+        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+    }
+
+    @Test
+    public void shouldReturnCredentialErrorWhenOnlyUsernameOk() throws Exception {
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(emailError);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(passwordError);
         assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));

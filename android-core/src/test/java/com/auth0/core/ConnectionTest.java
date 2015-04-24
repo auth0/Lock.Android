@@ -3,7 +3,9 @@ package com.auth0.core;
 import com.auth0.BaseTestCase;
 import com.google.common.collect.Maps;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
@@ -26,6 +28,9 @@ public class ConnectionTest extends BaseTestCase {
     public static final String CONNECTION_NAME = "Username-Password";
     public static final Object VALUE = "value";
     public static final String KEY = "key";
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldBuildConnectionWithName() {
@@ -67,6 +72,35 @@ public class ConnectionTest extends BaseTestCase {
         Connection connection = new Connection(values);
         String value = connection.getValueForKey(KEY);
         assertThat(value, equalTo(VALUE));
+    }
+
+    @Test
+    public void shouldReturnBooleanValueFromKey() {
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", CONNECTION_NAME);
+        values.put(KEY, true);
+        Connection connection = new Connection(values);
+        boolean value = connection.booleanForKey(KEY);
+        assertThat(value, is(true));
+    }
+
+    @Test
+    public void shouldReturnDefaultBooleanValueFromKey() {
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", CONNECTION_NAME);
+        Connection connection = new Connection(values);
+        boolean value = connection.booleanForKey(KEY);
+        assertThat(value, is(false));
+    }
+
+    @Test
+    public void shouldRaiseExceptionWhenValueIsNotBoolean() {
+        expectedException.expect(ClassCastException.class);
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", CONNECTION_NAME);
+        values.put(KEY, VALUE);
+        Connection connection = new Connection(values);
+        connection.booleanForKey(KEY);
     }
 
     @Test
