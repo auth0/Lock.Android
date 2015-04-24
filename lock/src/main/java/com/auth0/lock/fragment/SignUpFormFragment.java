@@ -180,11 +180,11 @@ public class SignUpFormFragment extends Fragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        CredentialField field = useEmail || requiresUsername ? emailField : usernameField;
-        final String username = field.getText().toString().trim();
-        String password = passwordField.getText().toString();
+        final String username = !useEmail || requiresUsername ? usernameField.getText().toString().trim() : null;
+        final String email = useEmail || requiresUsername ? emailField.getText().toString().trim() : null;
+        final String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
-            client.signUp(username, password, authenticationParameters, new AuthenticationCallback() {
+            client.signUp(email, username, password, authenticationParameters, new AuthenticationCallback() {
                 @Override
                 public void onSuccess(UserProfile profile, Token token) {
                     bus.post(new AuthenticationEvent(profile, token));
@@ -202,7 +202,7 @@ public class SignUpFormFragment extends Fragment {
                 }
             });
         } else {
-            client.createUser(username, password, authenticationParameters, new BaseCallback<Void>() {
+            client.createUser(email, username, password, authenticationParameters, new BaseCallback<Void>() {
                 @Override
                 public void onSuccess(Void payload) {
                     bus.post(new SignUpEvent(username));

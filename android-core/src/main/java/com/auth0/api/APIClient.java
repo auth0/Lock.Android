@@ -213,13 +213,14 @@ public class APIClient extends BaseAPIClient {
     }
 
     /**
-     * Creates and logs in a new User using a Database connecion.
+     * Creates and logs in a new User using a Database connection.
      * @param email new user email
+     * @param username new user username
      * @param password new user password
      * @param parameters additional parameters additional parameters sent to the API like 'scope'
      * @param callback called with User's profile and tokens or failure reason
      */
-    public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
+    public void signUp(final String email, final String username, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
         AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -227,7 +228,37 @@ public class APIClient extends BaseAPIClient {
                 APIClient.this.login(email, password, parameters, this.callback);
             }
         };
-        signUp(email, password, parameters, handler);
+        signUp(email, username, password, parameters, handler);
+    }
+
+    /**
+     * Creates and logs in a new User using a Database connection.
+     * @param email new user email
+     * @param password new user password
+     * @param parameters additional parameters additional parameters sent to the API like 'scope'
+     * @param callback called with User's profile and tokens or failure reason
+     */
+    public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
+        signUp(email, null, password, parameters, callback);
+    }
+
+    /**
+     * Creates a new user using a Database connection
+     * @param email new user email
+     * @param username new user username
+     * @param password new user password
+     * @param parameters additional parameters additional parameters sent to the API like 'scope'
+     * @param callback callback that will notify if the user was successfully created or not.
+     */
+    public void createUser(final String email, final String username, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
+        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d(APIClient.class.getName(), "Signed up username " + email);
+                this.callback.onSuccess(null);
+            }
+        };
+        signUp(email, username, password, parameters, handler);
     }
 
     /**
@@ -238,22 +269,16 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user was successfully created or not.
      */
     public void createUser(final String email, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
-        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d(APIClient.class.getName(), "Signed up username " + email);
-                this.callback.onSuccess(null);
-            }
-        };
-        signUp(email, password, parameters, handler);
+        createUser(email, null, password, parameters, callback);
     }
 
-    private void signUp(String email, String password, Map<String, Object> parameters, AsyncHttpResponseHandler callback) {
+    private void signUp(final String email, final String username, final String password, final Map<String, Object> parameters, final AsyncHttpResponseHandler callback) {
         String signUpUrl = getBaseURL() + "/dbconnections/signup";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(EMAIL_KEY, email)
+                .set(EMAIL_KEY, email != null ? email : username)
                 .set(PASSWORD_KEY, password)
+                .set(USERNAME_KEY, username != null ? username : email)
                 .setClientId(getClientID())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
