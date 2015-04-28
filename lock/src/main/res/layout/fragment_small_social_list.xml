@@ -30,15 +30,11 @@
 
     <GridView
         android:id="@+id/social_grid_view"
-        android:tag="social_grid_view"
+        style="?attr/Auth0.GridView.Small"
         android:numColumns="5"
-        android:verticalSpacing="@dimen/social_grid_view_item_spacing_vertical"
         android:background="@android:color/transparent"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/social_grid_view_height"
+        android:layout_gravity="center_horizontal"
         android:layout_above="@+id/social_separator"
-        android:gravity="center_horizontal"
-        android:stretchMode="columnWidth"
         tools:listitem="@layout/item_social_small"
         android:listSelector="@android:color/transparent"
         >
