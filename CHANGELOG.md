@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ##master
 
+###Changed
+- Social GridView styles are extracted to `Lock.Theme.Social.GridView`. They can be modified using `Auth0.GridView.Small` attribute for Lock Theme.
+
 # 1.5.0 - 2015-04-27
 
 ###Added
