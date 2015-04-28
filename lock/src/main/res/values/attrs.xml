@@ -43,5 +43,6 @@
         <attr name="Auth0.Title.Text" format="reference"/>
         <attr name="Auth0.Title.Icon" format="reference"/>
         <attr name="Auth0.Separator.Color" format="color"/>
+        <attr name="Auth0.GridView.Small" format="reference"/>
     </declare-styleable>
 </resources>
