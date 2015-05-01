@@ -24,9 +24,13 @@
 
 package com.auth0.lock.event;
 
+import android.content.Context;
+
 public class AuthenticationError extends AlertDialogEvent {
 
     private Throwable throwable;
+
+    private String customMesssage;
 
     public AuthenticationError(int title, int message) {
         this(title, message, null);
@@ -37,8 +41,21 @@ public class AuthenticationError extends AlertDialogEvent {
         this.throwable = throwable;
     }
 
+    public AuthenticationError(int title, String message, Throwable throwable) {
+        super(title, -1);
+        this.customMesssage = message;
+        this.throwable = throwable;
+    }
+
     public Throwable getThrowable() {
         return throwable;
     }
 
+    @Override
+    public String getMessage(Context context) {
+        if (customMesssage != null) {
+            return customMesssage;
+        }
+        return super.getMessage(context);
+    }
 }
