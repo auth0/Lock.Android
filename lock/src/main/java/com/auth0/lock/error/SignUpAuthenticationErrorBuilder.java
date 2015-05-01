@@ -33,6 +33,7 @@ import java.util.Map;
 public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuilder{
 
     private static final String USERNAME_EXISTS_ERROR = "username_exists";
+    private static final String UNAUTHORIZED_ERROR = "unauthorized";
 
     private final int titleResource;
     private final int defaultMessageResource;
@@ -54,6 +55,11 @@ public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuil
         if (throwable instanceof APIClientException) {
             APIClientException exception = (APIClientException) throwable;
             Map errorResponse = exception.getResponseError();
+            final String errorCode = (String) errorResponse.get(ERROR_KEY);
+            final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
+            if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && errorDescription != null) {
+                return new AuthenticationError(titleResource, errorDescription, throwable);
+            }
             if (USERNAME_EXISTS_ERROR.equalsIgnoreCase((String) errorResponse.get("code"))) {
                 messageResource = userExistsResource;
             }

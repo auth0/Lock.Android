@@ -29,6 +29,7 @@ import com.auth0.lock.event.AuthenticationError;
 public interface AuthenticationErrorBuilder {
 
     String ERROR_KEY = "error";
+    String ERROR_DESCRIPTION_KEY = "error_description";
 
     AuthenticationError buildFrom(Throwable throwable);
 

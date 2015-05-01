@@ -31,6 +31,7 @@ import com.auth0.lock.event.AuthenticationError;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -81,4 +82,16 @@ public class LoginAuthenticationErrorBuilderTest {
         assertThat(error, hasMessage(R.string.db_login_invalid_credentials_error_message));
         assertThat(error.getThrowable(), equalTo(exception));
     }
+
+    @Test
+    public void shouldReturnCustomUnauthorizedMessage() throws Exception {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "unauthorized");
+        errors.put("error_description", "custom error");
+        Throwable exception = new APIClientException("error", 401, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error.getMessage(Robolectric.application), equalTo("custom error"));
+        assertThat(error.getThrowable(), equalTo(exception));
+    }
+
 }
