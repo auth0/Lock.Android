@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ##master
 
+# 1.6.0 - 2015-05-01
+
 ###Addded
 - Show rule error if the code is `unauthorized`. [#57](issues/57)
 
