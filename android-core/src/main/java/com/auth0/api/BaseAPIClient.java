@@ -33,7 +33,8 @@ import com.loopj.android.http.AsyncHttpClient;
 public abstract class BaseAPIClient {
 
     public static final String BASE_URL_FORMAT = "https://%s.auth0.com";
-    public static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com";
+    public static final String AUTH0_US_CDN_URL = "https://cdn.auth0.com";
+    public static final String AUTH0_EU_CDN_URL = "https://cdn.eu.auth0.com";
     static final String APPLICATION_JSON = "application/json";
 
     private final String clientID;
@@ -60,7 +61,7 @@ public abstract class BaseAPIClient {
 
     @Deprecated
     public BaseAPIClient(String clientID, String tenantName) {
-        this(clientID, String.format(BASE_URL_FORMAT, tenantName), APP_INFO_CDN_URL_FORMAT, tenantName);
+        this(clientID, String.format(BASE_URL_FORMAT, tenantName), AUTH0_US_CDN_URL, tenantName);
     }
 
     public String getClientID() {

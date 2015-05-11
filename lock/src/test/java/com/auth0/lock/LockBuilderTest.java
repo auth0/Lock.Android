@@ -54,7 +54,8 @@ public class LockBuilderTest {
     private static final String CONFIGURATION_DOMAIN = "config.com";
     private static final String CONFIGURATION_FULL_URL = "https://config.com/client/" + CLIENT_ID + ".js";
     private static final String AUTH0_SUBDOMAIN = "pepe.auth0.com";
-    
+    private static final String EU_DOMAIN = "samples.eu.auth0.com";
+
     private LockBuilder builder;
     private Lock lock;
 
@@ -141,8 +142,19 @@ public class LockBuilderTest {
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
         assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
-        assertThat(apiClient.getConfigurationURL(), equalTo("https://config.com/client/" + CLIENT_ID + ".js"));
+        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION_FULL_URL));
+    }
 
+    @Test
+    public void shouldUseEuropeCDNWhenAuth0DomainIsInEU() throws Exception {
+        lock = builder
+                .clientId(CLIENT_ID)
+                .domainUrl(EU_DOMAIN)
+                .build();
+        assertThat(lock, is(notNullValue()));
+        final APIClient apiClient = lock.getAPIClient();
+        assertThat(apiClient.getBaseURL(), equalTo("https://samples.eu.auth0.com"));
+        assertThat(apiClient.getConfigurationURL(), equalTo("https://cdn.eu.auth0.com/client/" + CLIENT_ID + ".js"));
     }
 
     @Test

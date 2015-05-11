@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.api.BaseAPIClient.APP_INFO_CDN_URL_FORMAT;
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
 
 /**

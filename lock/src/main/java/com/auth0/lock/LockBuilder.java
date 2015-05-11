@@ -35,7 +35,6 @@ import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -235,8 +234,9 @@ public class LockBuilder {
     private void resolveConfiguration() {
         if (this.configuration == null && this.domain != null) {
             final Uri domainUri = Uri.parse(this.domain);
-            if (domainUri.getHost().endsWith("auth0.com")) {
-                this.configuration = String.format(APIClient.APP_INFO_CDN_URL_FORMAT, this.clientId);
+            final String host = domainUri.getHost();
+            if (host.endsWith(".auth0.com")) {
+                this.configuration = host.endsWith(".eu.auth0.com") ? APIClient.AUTH0_EU_CDN_URL : APIClient.AUTH0_US_CDN_URL;
             } else {
                 this.configuration = this.domain;
             }
