@@ -108,12 +108,7 @@ public class LockBuilder {
      * @return itself
      */
     public LockBuilder domainUrl(String domain) {
-        if (domain != null) {
-            this.domain = domain.startsWith("http") ? domain : "https://" + domain;
-            if (this.domain.startsWith("http://")) {
-                Log.w(LockBuilder.class.getName(), "Your Auth0 domain have use (https) instead of (http)");
-            }
-        }
+        this.domain = ensureUrlString(domain);
         return this;
     }
 
@@ -123,7 +118,7 @@ public class LockBuilder {
      * @return itself
      */
     public LockBuilder configurationUrl(String configuration) {
-        this.configuration = configuration;
+        this.configuration = ensureUrlString(configuration);
         return this;
     }
 
@@ -216,33 +211,6 @@ public class LockBuilder {
         return lock;
     }
 
-    private Lock buildLock() {
-        Lock lock;
-        if (this.clientId == null) {
-            throw new IllegalArgumentException("Must supply a non-null ClientId");
-        }
-        if (this.domain != null) {
-            lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
-        } else if(this.tenant != null) {
-            lock = new Lock(new APIClient(this.clientId, this.tenant));
-        } else {
-            throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
-        }
-        return lock;
-    }
-
-    private void resolveConfiguration() {
-        if (this.configuration == null && this.domain != null) {
-            final Uri domainUri = Uri.parse(this.domain);
-            final String host = domainUri.getHost();
-            if (host.endsWith(".auth0.com")) {
-                this.configuration = host.endsWith(".eu.auth0.com") ? APIClient.AUTH0_EU_CDN_URL : APIClient.AUTH0_US_CDN_URL;
-            } else {
-                this.configuration = this.domain;
-            }
-        }
-    }
-
     /**
      * Load ClientID, Tenant name, Domain and configuration URLs from the Android app's metadata (if available).
      * These are the values that can be defined and it's keys:
@@ -277,5 +245,45 @@ public class LockBuilder {
     public LockBuilder useEmail(boolean useEmail) {
         this.useEmail = useEmail;
         return this;
+    }
+
+    private Lock buildLock() {
+        Lock lock;
+        if (this.clientId == null) {
+            throw new IllegalArgumentException("Must supply a non-null ClientId");
+        }
+        if (this.domain != null) {
+            lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
+        } else if(this.tenant != null) {
+            lock = new Lock(new APIClient(this.clientId, this.tenant));
+        } else {
+            throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
+        }
+        return lock;
+    }
+
+    private void resolveConfiguration() {
+        if (this.configuration == null && this.domain != null) {
+            final Uri domainUri = Uri.parse(this.domain);
+            final String host = domainUri.getHost();
+            if (host.endsWith(".auth0.com")) {
+                this.configuration = host.endsWith(".eu.auth0.com") ? APIClient.AUTH0_EU_CDN_URL : APIClient.AUTH0_US_CDN_URL;
+            } else {
+                this.configuration = this.domain;
+            }
+        }
+    }
+
+    private String ensureUrlString(String url) {
+        String safeUrl = null;
+        if (url != null) {
+            safeUrl = url.startsWith("http") ? url : "https://" + url;
+            if (safeUrl.startsWith("http://")) {
+                Log.w(LockBuilder.class.getName(), "You should use (https) instead of (http) for url " + url);
+            }
+        } else {
+            Log.w(LockBuilder.class.getName(), "A null url was supplied to LockBuilder");
+        }
+        return safeUrl;
     }
 }

@@ -146,6 +146,19 @@ public class LockBuilderTest {
     }
 
     @Test
+    public void shouldBuildWithConfigurationDomainName() throws Exception {
+        lock = builder
+                .clientId(CLIENT_ID)
+                .domainUrl(DOMAIN)
+                .configurationUrl(CONFIGURATION_DOMAIN)
+                .build();
+        assertThat(lock, is(notNullValue()));
+        final APIClient apiClient = lock.getAPIClient();
+        assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
+        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION_FULL_URL));
+    }
+
+    @Test
     public void shouldUseEuropeCDNWhenAuth0DomainIsInEU() throws Exception {
         lock = builder
                 .clientId(CLIENT_ID)
