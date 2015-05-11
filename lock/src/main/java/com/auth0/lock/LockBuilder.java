@@ -95,7 +95,9 @@ public class LockBuilder {
      * Set Auth0 account tenant name
      * @param tenant tenant name
      * @return itself
+     * @deprecated since 1.7.0
      */
+    @Deprecated
     public LockBuilder tenant(String tenant) {
         this.tenant = tenant;
         return this;

@@ -54,6 +54,7 @@ public abstract class BaseAPIClient {
         this(clientID, baseURL, configurationURL, null);
     }
 
+    @Deprecated
     public BaseAPIClient(String clientID, String tenantName) {
         this(clientID, String.format(BASE_URL_FORMAT, tenantName), String.format(APP_INFO_CDN_URL_FORMAT, clientID), tenantName);
     }
