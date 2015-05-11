@@ -24,6 +24,7 @@
 
 package com.auth0.api;
 
+import android.net.Uri;
 import android.os.Build;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +33,7 @@ import com.loopj.android.http.AsyncHttpClient;
 public abstract class BaseAPIClient {
 
     public static final String BASE_URL_FORMAT = "https://%s.auth0.com";
-    public static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com/client/%s.js";
+    public static final String APP_INFO_CDN_URL_FORMAT = "https://cdn.auth0.com";
     static final String APPLICATION_JSON = "application/json";
 
     private final String clientID;
@@ -43,7 +44,10 @@ public abstract class BaseAPIClient {
 
     public BaseAPIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
         this.clientID = clientID;
-        this.configurationURL = configurationURL;
+        this.configurationURL = Uri.parse(configurationURL).buildUpon()
+                .appendPath("client")
+                .appendPath(this.clientID + ".js")
+                .build().toString();
         this.baseURL = baseURL;
         this.client = new AsyncHttpClient();
         this.client.setUserAgent(String.format("%s (%s Android %s)", tenantName, Build.MODEL, Build.VERSION.RELEASE));
@@ -56,7 +60,7 @@ public abstract class BaseAPIClient {
 
     @Deprecated
     public BaseAPIClient(String clientID, String tenantName) {
-        this(clientID, String.format(BASE_URL_FORMAT, tenantName), String.format(APP_INFO_CDN_URL_FORMAT, clientID), tenantName);
+        this(clientID, String.format(BASE_URL_FORMAT, tenantName), APP_INFO_CDN_URL_FORMAT, tenantName);
     }
 
     public String getClientID() {

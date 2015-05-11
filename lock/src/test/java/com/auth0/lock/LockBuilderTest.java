@@ -47,11 +47,13 @@ import static org.junit.Assert.assertThat;
 @Config(emulateSdk = 18)
 public class LockBuilderTest {
 
-    public static final String CLIENT_ID = "CLIENTID";
-    public static final String TENANT = "TENANT";
-    public static final String DOMAIN = "domain.com";
-    public static final String CONFIGURATION = "https://config.com";
-    public static final String AUTH0_SUBDOMAIN = "pepe.auth0.com";
+    private static final String CLIENT_ID = "CLIENTID";
+    private static final String TENANT = "TENANT";
+    private static final String DOMAIN = "domain.com";
+    private static final String CONFIGURATION_URL = "https://config.com";
+    private static final String CONFIGURATION_DOMAIN = "config.com";
+    private static final String CONFIGURATION_FULL_URL = "https://config.com/client/" + CLIENT_ID + ".js";
+    private static final String AUTH0_SUBDOMAIN = "pepe.auth0.com";
     
     private LockBuilder builder;
     private Lock lock;
@@ -126,7 +128,7 @@ public class LockBuilderTest {
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
         assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
-        assertThat(apiClient.getConfigurationURL(), equalTo("https://domain.com"));
+        assertThat(apiClient.getConfigurationURL(), equalTo("https://domain.com/client/" + CLIENT_ID + ".js"));
     }
 
     @Test
@@ -134,12 +136,12 @@ public class LockBuilderTest {
         lock = builder
                 .clientId(CLIENT_ID)
                 .domainUrl(DOMAIN)
-                .configurationUrl(CONFIGURATION)
+                .configurationUrl(CONFIGURATION_URL)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
         assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
-        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
+        assertThat(apiClient.getConfigurationURL(), equalTo("https://config.com/client/" + CLIENT_ID + ".js"));
 
     }
 
@@ -149,12 +151,12 @@ public class LockBuilderTest {
                 .clientId(CLIENT_ID)
                 .tenant(TENANT)
                 .domainUrl(DOMAIN)
-                .configurationUrl(CONFIGURATION)
+                .configurationUrl(CONFIGURATION_URL)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
         assertThat(apiClient.getBaseURL(), equalTo("https://domain.com"));
-        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
+        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION_FULL_URL));
     }
 
     @Test
@@ -174,12 +176,12 @@ public class LockBuilderTest {
         lock = builder
                 .clientId(CLIENT_ID)
                 .domainUrl(AUTH0_SUBDOMAIN)
-                .configurationUrl(CONFIGURATION)
+                .configurationUrl(CONFIGURATION_URL)
                 .build();
         assertThat(lock, is(notNullValue()));
         final APIClient apiClient = lock.getAPIClient();
         assertThat(apiClient.getBaseURL(), equalTo("https://pepe.auth0.com"));
-        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION));
+        assertThat(apiClient.getConfigurationURL(), equalTo(CONFIGURATION_FULL_URL));
     }
 
     @Test
@@ -194,8 +196,8 @@ public class LockBuilderTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage(equalToIgnoringCase("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant."));
         builder
-                .clientId(CLIENT_ID)
-                .build();
+            .clientId(CLIENT_ID)
+            .build();
     }
 
     private LockBuilder basicBuilder() {
