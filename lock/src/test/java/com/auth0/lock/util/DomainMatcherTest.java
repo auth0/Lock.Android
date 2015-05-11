@@ -55,7 +55,7 @@ import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = Config.NONE)
 public class DomainMatcherTest {
 
     public static final String ONE_COM = "1.com";

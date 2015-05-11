@@ -48,7 +48,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = Config.NONE)
 public class LockIdentityProviderCallbackTest {
 
     private static final String ACCESS_TOKEN = "I.O.U an access token";

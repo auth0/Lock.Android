@@ -12,7 +12,7 @@
     <TextView
         android:id="@+id/title_textView"
         style="?attr/Auth0.Title.Text"
-        android:text="@string/app_name"
+        android:text="@string/auth0_lock"
         android:fontFamily="sans-serif-light"
         android:layout_below="@+id/title_imageView"
     />

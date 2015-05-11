@@ -22,7 +22,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = Config.NONE)
 public class ApplicationResponseHandlerTest extends BaseTestCase {
 
     public static final String APP_JSONP_VALID = "Auth0.setClient({\"id\": \"QWERTY123456\"})";

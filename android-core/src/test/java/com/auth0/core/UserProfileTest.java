@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = Config.NONE)
 public class UserProfileTest extends BaseTestCase {
 
     public static final String USER_ID = "IOU a user id";

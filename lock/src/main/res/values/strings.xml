@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Lock</string>
+    <string name="auth0_lock">Lock</string>
     <string name="loading_title"/>
     <string name="email_placeholder">Email</string>
     <string name="username_placeholder">Username</string>
