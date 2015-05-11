@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.api.BaseAPIClient.APP_INFO_CDN_URL_FORMAT;
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
 
 /**
@@ -37,7 +36,6 @@ public class APIClient extends BaseAPIClient {
     private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
     private static final String ID_TOKEN_KEY = "id_token";
     private static final String EMAIL_KEY = "email";
-    private static final String TENANT_KEY = "tenant";
     private static final String TOKEN_TYPE_KEY = "token_type";
     private static final String EXPIRES_IN_KEY = "expires_in";
     private static final String REFRESH_TOKEN_KEY = "refresh_token";
@@ -69,6 +67,7 @@ public class APIClient extends BaseAPIClient {
      * Creates a new API client using clientID and tenant name.
      * @param clientID Your application clientID.
      * @param tenantName Name of the tenant.
+     * @deprecated since 1.7.0, instead build using clientID and baseURL
      */
     public APIClient(String clientID, String tenantName) {
         super(clientID, tenantName);
