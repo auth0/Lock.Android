@@ -460,6 +460,42 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
+    /**
+     * Remove an account from another accounts identities.
+     * @param userId Id of the user account to remove, e.g.: if its a facebook account it will be 'facebook|fb_user_id'.
+     * @param accessToken Access token of the account that owns the account to unlink
+     * @param callback Callback to call on either success or failure.
+     */
+    public void unlinkAccount(String userId, String accessToken, final BaseCallback<Void> callback) {
+        String signUpUrl = getBaseURL() + "/unlink";
+
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .set("clientID", this.getClientID())
+                .set("user_id", userId)
+                .set("access_token", accessToken)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing unlink with parameters " + request);
+        try {
+            HttpEntity entity = entityBuilder.newEntityFrom(request);
+            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    callback.onSuccess(null);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Log.e(APIClient.class.getName(), "Failed to unlink user", error);
+                    callback.onFailure(error);
+                }
+            });
+        } catch (JsonEntityBuildException e) {
+            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
+            callback.onFailure(e);
+        }
+    }
+
     private void fetchProfile(final Token token, final AuthenticationCallback callback) {
         this.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
             @Override
