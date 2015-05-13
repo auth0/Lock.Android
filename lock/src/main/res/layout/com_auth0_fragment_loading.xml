@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/com_auth0_activity_horizontal_margin"
+                android:paddingRight="@dimen/com_auth0_activity_horizontal_margin"
+                android:paddingTop="@dimen/com_auth0_activity_vertical_margin"
+                android:paddingBottom="@dimen/com_auth0_activity_vertical_margin"
+                tools:context="com.auth0.lock.fragment.LoadingFragment"
+                >
+
+    <include layout="@layout/com_auth0_title_lock"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/com_auth0_progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

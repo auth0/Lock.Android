@@ -41,11 +41,11 @@ public class AuthenticationErrorDefaultMatcher extends BaseMatcher<Authenticatio
     private final Matcher<String> titleMatcher;
 
     private AuthenticationErrorDefaultMatcher() {
-        this(R.string.db_login_error_title, R.string.db_login_error_message);
+        this(R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_error_message);
     }
 
     private AuthenticationErrorDefaultMatcher(int messageResource) {
-        this(R.string.db_login_error_title, messageResource);
+        this(R.string.com_auth0_db_login_error_title, messageResource);
     }
 
     public AuthenticationErrorDefaultMatcher(int titleResource, int messageResource) {

@@ -144,7 +144,7 @@ public class GooglePlusIdentityProvider implements IdentityProvider, GoogleApiCl
             }
         } else {
             Log.e(TAG, "Connection failed with unrecoverable error");
-            callback.onFailure(R.string.social_error_title, R.string.social_error_message, null);
+            callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_error_message, null);
         }
     }
 }

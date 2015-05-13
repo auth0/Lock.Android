@@ -52,7 +52,7 @@ public class WebViewActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_web_view);
+        setContentView(R.layout.com_auth0_activity_web_view);
         final ActionBar bar = getSupportActionBar();
         if (bar != null) {
             String serviceName = getIntent().getStringExtra(SERVICE_NAME_EXTRA);
@@ -62,8 +62,8 @@ public class WebViewActivity extends ActionBarActivity {
             bar.setDisplayUseLogoEnabled(false);
             bar.setDisplayHomeAsUpEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
-            View view = LayoutInflater.from(this).inflate(R.layout.webview_action_bar, null);
-            final TextView iconLabel = (TextView) view.findViewById(R.id.social_icon_label);
+            View view = LayoutInflater.from(this).inflate(R.layout.com_auth0_webview_action_bar, null);
+            final TextView iconLabel = (TextView) view.findViewById(R.id.com_auth0_social_icon_label);
             final int iconResourceId = SocialResources.iconForSocialService(this, serviceName);
             if (iconResourceId != 0) {
                 iconLabel.setTypeface(SocialResources.socialFont(this));
@@ -76,8 +76,8 @@ public class WebViewActivity extends ActionBarActivity {
             }
             bar.setCustomView(view);
         }
-        webView = (WebView) findViewById(R.id.lock_webview);
-        progressBar = (SmoothProgressBar) findViewById(R.id.lock_progressbar);
+        webView = (WebView) findViewById(R.id.com_auth0_lock_webview);
+        progressBar = (SmoothProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
     }
 
     @Override

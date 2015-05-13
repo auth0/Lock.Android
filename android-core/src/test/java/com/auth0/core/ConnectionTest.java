@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = Config.NONE)
 public class ConnectionTest extends BaseTestCase {
 
     public static final String CONNECTION_NAME = "Username-Password";

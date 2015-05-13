@@ -40,7 +40,7 @@ public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuil
     private final int userExistsResource;
 
     public SignUpAuthenticationErrorBuilder() {
-        this(R.string.db_signup_error_title, R.string.db_signup_error_message, R.string.db_signup_user_already_exists_error_message);
+        this(R.string.com_auth0_db_signup_error_title, R.string.com_auth0_db_signup_error_message, R.string.com_auth0_db_signup_user_already_exists_error_message);
     }
 
     public SignUpAuthenticationErrorBuilder(int titleResource, int defaultMessageResource, int userExistsResource) {

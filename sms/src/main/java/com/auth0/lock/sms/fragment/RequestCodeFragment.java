@@ -99,20 +99,20 @@ public class RequestCodeFragment extends BaseTitledFragment {
 
     @Override
     protected int getTitleResource() {
-        return R.string.sms_title_send_passcode;
+        return R.string.com_auth0_sms_title_send_passcode;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_request_code, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_request_code, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        validator = new PhoneNumberValidator(R.id.sms_phone_field, R.string.sms_send_code_error_tile, R.string.sms_send_code_no_phone_message);
-        phoneField = (PhoneField) view.findViewById(R.id.sms_phone_field);
+        validator = new PhoneNumberValidator(R.id.com_auth0_sms_phone_field, R.string.com_auth0_sms_send_code_error_tile, R.string.com_auth0_sms_send_code_no_phone_message);
+        phoneField = (PhoneField) view.findViewById(R.id.com_auth0_sms_phone_field);
         phoneField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,15 +137,15 @@ public class RequestCodeFragment extends BaseTitledFragment {
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
-        sendButton = (Button) view.findViewById(R.id.sms_access_button);
+        sendButton = (Button) view.findViewById(R.id.com_auth0_sms_access_button);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestSmsCode();
             }
         });
-        progressBar = (ProgressBar) view.findViewById(R.id.sms_send_code_progress_indicator);
-        final Button hasCodeButton = (Button) view.findViewById(R.id.sms_already_has_code_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_sms_send_code_progress_indicator);
+        final Button hasCodeButton = (Button) view.findViewById(R.id.com_auth0_sms_already_has_code_button);
         hasCodeButton.setVisibility(phoneNumber != null && dialCode != null ? View.VISIBLE : View.GONE);
         hasCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,16 +187,16 @@ public class RequestCodeFragment extends BaseTitledFragment {
                 editor.putString(LAST_PHONE_DIAL_CODE_KEY, phoneField.getDialCode());
                 editor.apply();
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.send_passcode_btn_text);
+                sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
                 progressBar.setVisibility(View.GONE);
                 bus.post(new SmsPasscodeSentEvent(phoneNumber));
             }
 
             @Override
             public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.sms_send_code_error_tile, R.string.sms_send_code_error_message, error));
+                bus.post(new AuthenticationError(R.string.com_auth0_sms_send_code_error_tile, R.string.com_auth0_sms_send_code_error_message, error));
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.send_passcode_btn_text);
+                sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -211,7 +211,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
     private boolean checkForAuthClient() {
         final boolean noJwt = authClient == null;
         if (noJwt) {
-            bus.post(new AuthenticationError(R.string.sms_no_jwt_found_title, R.string.sms_no_jwt_found_message));
+            bus.post(new AuthenticationError(R.string.com_auth0_sms_no_jwt_found_title, R.string.com_auth0_sms_no_jwt_found_message));
         }
         return !noJwt;
     }

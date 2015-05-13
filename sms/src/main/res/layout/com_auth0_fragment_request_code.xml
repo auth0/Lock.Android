@@ -1,0 +1,94 @@
+<!--
+  ~ fragment_request_code.xml
+  ~
+  ~ Copyright (c) 2015 Auth0 (http://auth0.com)
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             xmlns:custom="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:paddingLeft="@dimen/com_auth0_activity_horizontal_margin"
+             android:paddingRight="@dimen/com_auth0_activity_horizontal_margin"
+             android:paddingTop="@dimen/com_auth0_activity_vertical_margin"
+             android:paddingBottom="@dimen/com_auth0_activity_vertical_margin"
+             android:background="@android:color/transparent"
+             tools:context="com.auth0.lock.sms.fragment.RequestCodeFragment"
+    >
+
+    <include layout="@layout/com_auth0_title_lock"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?attr/Auth0.Message"
+        android:text="@string/com_auth0_enter_phone_number"
+        android:layout_above="@+id/com_auth0_sms_login_credentials"
+        android:layout_centerHorizontal="true"
+        />
+
+    <LinearLayout
+        android:id="@+id/com_auth0_sms_login_credentials"
+        android:orientation="horizontal"
+        style="?attr/Auth0.CredentialBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        >
+        <com.auth0.lock.sms.widget.PhoneField
+            android:id="@+id/com_auth0_sms_phone_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            custom:com_auth0_errorPhoneColor="@color/com_auth0_credential_field_error"
+            custom:com_auth0_normalPhoneIconDrawable="@drawable/com_auth0_ic_email"
+            custom:com_auth0_errorPhoneIconDrawable="@drawable/com_auth0_ic_email_error"
+        />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/com_auth0_sms_access_button"
+        style="?attr/Auth0.PrimaryButtonStyle"
+        android:layout_below="@id/com_auth0_sms_login_credentials"
+        android:layout_marginTop="@dimen/com_auth0_sms_button_margin_top"
+        android:text="@string/com_auth0_send_passcode_btn_text"
+        android:fontFamily="sans-serif-medium"/>
+
+    <ProgressBar
+        android:id="@+id/com_auth0_sms_send_code_progress_indicator"
+        android:visibility="gone"
+        android:layout_width="@dimen/com_auth0_primary_button_progress_size"
+        android:layout_height="@dimen/com_auth0_primary_button_progress_size"
+        android:layout_alignTop="@id/com_auth0_sms_access_button"
+        android:layout_alignBottom="@id/com_auth0_sms_access_button"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/com_auth0_sms_already_has_code_button"
+        style="?attr/Auth0.SecondaryButtonStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textAllCaps="true"
+        android:visibility="gone"
+        android:text="@string/com_auth0_sms_already_have_code_btn"/>
+
+</RelativeLayout>

@@ -53,8 +53,8 @@ public class FacebookIdentityProvider implements IdentityProvider {
                 Log.v(FacebookIdentityProvider.class.getName(), "Login FB callback with state " + sessionState + " and session " + session);
                 if (e != null) {
                     Log.e(FacebookIdentityProvider.class.getName(), "Failed to authenticate with FB", e);
-                    int messageResource = e instanceof FacebookOperationCanceledException ? R.string.facebook_cancelled_error_message : R.string.social_access_denied_message;
-                    callback.onFailure(R.string.facebook_error_title, messageResource, e);
+                    int messageResource = e instanceof FacebookOperationCanceledException ? R.string.com_auth0_facebook_cancelled_error_message : R.string.com_auth0_social_access_denied_message;
+                    callback.onFailure(R.string.com_auth0_facebook_error_title, messageResource, e);
                 } else {
                     switch (sessionState) {
                         case OPENED:
@@ -62,7 +62,7 @@ public class FacebookIdentityProvider implements IdentityProvider {
                             callback.onSuccess("facebook", session.getAccessToken());
                             break;
                         case CLOSED_LOGIN_FAILED:
-                            callback.onFailure(R.string.social_error_title, R.string.social_error_message, null);
+                            callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_error_message, null);
                             if (session != null) {
                                 session.closeAndClearTokenInformation();
                             }

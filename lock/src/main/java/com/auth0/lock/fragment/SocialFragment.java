@@ -56,7 +56,7 @@ public class SocialFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_social, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_social, container, false);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class SocialFragment extends BaseTitledFragment {
         Bundle bundle = getArguments();
         List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]));
-        listView = (ListView) view.findViewById(R.id.social_button_list);
+        listView = (ListView) view.findViewById(R.id.com_auth0_social_button_list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -91,7 +91,7 @@ public class SocialFragment extends BaseTitledFragment {
 
     @Override
     protected int getTitleResource() {
-        return R.string.social_only_title;
+        return R.string.com_auth0_social_only_title;
     }
 
 }

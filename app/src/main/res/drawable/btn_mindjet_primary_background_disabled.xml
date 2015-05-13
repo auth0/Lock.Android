@@ -25,5 +25,5 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="#1effffff"/>
-    <corners android:radius="@dimen/primary_button_corner_radius"/>
+    <corners android:radius="@dimen/com_auth0_primary_button_corner_radius"/>
 </shape>

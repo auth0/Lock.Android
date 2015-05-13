@@ -41,12 +41,10 @@ import android.widget.TextView;
 import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Connection;
-import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Configuration;
-import com.auth0.lock.Lock;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -123,26 +121,26 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (showADForm) {
-            return inflater.inflate(R.layout.fragment_enterprise_login, container, false);
+            return inflater.inflate(R.layout.com_auth0_fragment_enterprise_login, container, false);
         }
-        return inflater.inflate(R.layout.fragment_database_login, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_database_login, container, false);
     }
 
     @Override
     protected int getTitleResource() {
-        return R.string.database_login_title;
+        return R.string.com_auth0_database_login_title;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameField = (CredentialField) view.findViewById(R.id.db_login_username_field);
+        usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_login_username_field);
         if (requiresUsername) {
-            usernameField.setHint(R.string.username_email_placeholder);
+            usernameField.setHint(R.string.com_auth0_username_email_placeholder);
         } if (!useEmail) {
-            usernameField.setHint(R.string.username_placeholder);
-            usernameField.setIconResource(R.drawable.ic_person);
-            usernameField.setErrorIconResource(R.drawable.ic_person_error);
+            usernameField.setHint(R.string.com_auth0_username_placeholder);
+            usernameField.setIconResource(R.drawable.com_auth0_ic_person);
+            usernameField.setErrorIconResource(R.drawable.com_auth0_ic_person_error);
             usernameField.refresh();
         }
         if (!showADForm) {
@@ -158,10 +156,10 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
                         final Connection connection = matcher.getConnection();
                         Log.i(DatabaseLoginFragment.class.getName(), "Matched with domain of connection " + connection.getName());
                         final String domain = connection.getValueForKey("domain");
-                        String singleSignOnButtonText = String.format(getString(R.string.db_single_sign_on_button), domain.toUpperCase());
+                        String singleSignOnButtonText = String.format(getString(R.string.com_auth0_db_single_sign_on_button), domain.toUpperCase());
                         accessButton.setText(singleSignOnButtonText);
                     } else {
-                        accessButton.setText(R.string.db_login_btn_text);
+                        accessButton.setText(R.string.com_auth0_db_login_btn_text);
                     }
                     final int passwordVisibility = matches ? View.GONE : View.VISIBLE;
                     passwordField.setVisibility(passwordVisibility);
@@ -174,13 +172,13 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
                 }
             });
         } else {
-            TextView message = (TextView) view.findViewById(R.id.db_enterprise_login_message);
-            message.setText(String.format(getString(R.string.db_enterprise_login_message), enterpriseConnection.getValueForKey("domain")));
-            Button cancelButton = (Button) view.findViewById(R.id.db_enterprise_cancel_button);
+            TextView message = (TextView) view.findViewById(R.id.com_auth0_db_enterprise_login_message);
+            message.setText(String.format(getString(R.string.com_auth0_db_enterprise_login_message), enterpriseConnection.getValueForKey("domain")));
+            Button cancelButton = (Button) view.findViewById(R.id.com_auth0_db_enterprise_cancel_button);
             cancelButton.setVisibility(showCancel ? View.VISIBLE : View.GONE);
         }
-        separator = view.findViewById(R.id.db_separator_view);
-        passwordField = (CredentialField) view.findViewById(R.id.db_login_password_field);
+        separator = view.findViewById(R.id.com_auth0_db_separator_view);
+        passwordField = (CredentialField) view.findViewById(R.id.com_auth0_db_login_password_field);
         passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -191,10 +189,10 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             }
         });
 
-        singleSignOnMessage = view.findViewById(R.id.single_sign_on_view);
+        singleSignOnMessage = view.findViewById(R.id.com_auth0_single_sign_on_view);
 
-        accessButton = (Button) view.findViewById(R.id.db_access_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.db_login_progress_indicator);
+        accessButton = (Button) view.findViewById(R.id.com_auth0_db_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_db_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,7 +204,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     }
 
     private void initNavButtons(View view) {
-        Button signUpButton = (Button) view.findViewById(R.id.db_signup_button);
+        Button signUpButton = (Button) view.findViewById(R.id.com_auth0_db_signup_button);
         if (signUpButton != null) {
             if (!showSignUp) {
                 signUpButton.setVisibility(View.GONE);
@@ -220,7 +218,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             }
         }
 
-        Button resetPassword = (Button) view.findViewById(R.id.db_reset_pass_button);
+        Button resetPassword = (Button) view.findViewById(R.id.com_auth0_db_reset_pass_button);
         if (resetPassword != null) {
             if (!showResetPassword) {
                 resetPassword.setVisibility(View.GONE);
@@ -234,7 +232,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             }
         }
 
-        Button cancelButton = (Button) view.findViewById(R.id.db_enterprise_cancel_button);
+        Button cancelButton = (Button) view.findViewById(R.id.com_auth0_db_enterprise_cancel_button);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -259,7 +257,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         }
 
         if (defaultConnection == null && !hasDB) {
-            bus.post(new AuthenticationError(R.string.db_login_error_title, R.string.enterprise_no_connection_message));
+            bus.post(new AuthenticationError(R.string.com_auth0_db_login_error_title, R.string.com_auth0_enterprise_no_connection_message));
             return;
         }
 
@@ -284,7 +282,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             public void onSuccess(UserProfile userProfile, Token token) {
                 bus.post(new AuthenticationEvent(userProfile, token));
                 accessButton.setEnabled(true);
-                accessButton.setText(R.string.db_login_btn_text);
+                accessButton.setText(R.string.com_auth0_db_login_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -292,7 +290,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             public void onFailure(Throwable throwable) {
                 bus.post(errorBuilder.buildFrom(throwable));
                 accessButton.setEnabled(true);
-                accessButton.setText(R.string.db_login_btn_text);
+                accessButton.setText(R.string.com_auth0_db_login_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });

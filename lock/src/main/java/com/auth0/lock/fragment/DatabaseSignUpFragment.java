@@ -26,44 +26,27 @@ package com.auth0.lock.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.api.callback.BaseCallback;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
-import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
-import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.event.SignUpEvent;
-import com.auth0.lock.validation.SignUpValidator;
-import com.auth0.lock.widget.CredentialField;
 
 public class DatabaseSignUpFragment extends BaseTitledFragment {
 
     public static final String LOGIN_AFTER_SIGNUP_ARGUMENT = "LOGIN_AFTER_SIGN_UP";
 
-    private boolean loginAfterSignUp;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
-        loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
+        final boolean loginAfterSignUp = arguments == null || arguments.getBoolean(LOGIN_AFTER_SIGNUP_ARGUMENT);
         if (savedInstanceState == null) {
             final FragmentManager fragmentManager = getChildFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.db_signup_form_container, SignUpFormFragment.newFragment(useEmail, loginAfterSignUp, authenticationParameters))
+                    .replace(R.id.com_auth0_db_signup_form_container, SignUpFormFragment.newFragment(useEmail, loginAfterSignUp, authenticationParameters))
                     .commit();
         }
     }
@@ -71,13 +54,13 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_database_sign_up, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_database_sign_up, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button cancelButton = (Button) view.findViewById(R.id.db_signup_cancel_button);
+        Button cancelButton = (Button) view.findViewById(R.id.com_auth0_db_signup_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +71,7 @@ public class DatabaseSignUpFragment extends BaseTitledFragment {
 
     @Override
     protected int getTitleResource() {
-        return R.string.database_signup_title;
+        return R.string.com_auth0_database_signup_title;
     }
 
 }

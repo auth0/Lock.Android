@@ -69,12 +69,12 @@ public class CountryAdapter extends BaseAdapter {
         Country country = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_country_code, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.com_auth0_item_country_code, parent, false);
         }
 
-        TextView countryNameTextView = (TextView) convertView.findViewById(R.id.sms_country_name_text_view);
+        TextView countryNameTextView = (TextView) convertView.findViewById(R.id.com_auth0_sms_country_name_text_view);
         countryNameTextView.setText(country.getDisplayName());
-        TextView countryCodeTextView = (TextView) convertView.findViewById(R.id.sms_country_code_text_view);
+        TextView countryCodeTextView = (TextView) convertView.findViewById(R.id.com_auth0_sms_country_code_text_view);
         countryCodeTextView.setText(country.getDialCode());
         return convertView;
     }

@@ -51,7 +51,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = Config.NONE)
 public class WebIdentityProviderTest {
 
     private static final String SERVICE_NAME = "I.O.U. a service name";
@@ -181,7 +181,7 @@ public class WebIdentityProviderTest {
         boolean valid = provider.authorize(activity, IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE, Activity.RESULT_OK, data);
         assertThat(valid, is(true));
 
-        verify(callback).onFailure(R.string.social_error_title, R.string.social_access_denied_message, null);
+        verify(callback).onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_access_denied_message, null);
     }
 
     @Test
@@ -191,7 +191,7 @@ public class WebIdentityProviderTest {
         boolean valid = provider.authorize(activity, IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE, Activity.RESULT_OK, data);
         assertThat(valid, is(true));
 
-        verify(callback).onFailure(R.string.social_error_title, R.string.social_error_message, null);
+        verify(callback).onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_error_message, null);
     }
 
     private Map<String, String> errorValue(String message) {

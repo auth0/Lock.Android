@@ -61,24 +61,24 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_database_change_password, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_database_change_password, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameField = (CredentialField) view.findViewById(R.id.db_change_password_username_field);
+        usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_username_field);
         if (!useEmail) {
-            usernameField.setHint(R.string.username_placeholder);
-            usernameField.setIconResource(R.drawable.ic_person);
-            usernameField.setErrorIconResource(R.drawable.ic_person_error);
+            usernameField.setHint(R.string.com_auth0_username_placeholder);
+            usernameField.setIconResource(R.drawable.com_auth0_ic_person);
+            usernameField.setErrorIconResource(R.drawable.com_auth0_ic_person_error);
             usernameField.refresh();
         }
-        passwordField = (CredentialField) view.findViewById(R.id.db_change_password_password_field);
-        repeatPasswordField = (CredentialField) view.findViewById(R.id.db_change_password_repeat_password_field);
-        sendButton = (Button) view.findViewById(R.id.db_reset_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.db_change_password_progress_indicator);
-        Button cancelButton = (Button) view.findViewById(R.id.db_change_password_cancel_button);
+        passwordField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_password_field);
+        repeatPasswordField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_repeat_password_field);
+        sendButton = (Button) view.findViewById(R.id.com_auth0_db_reset_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_db_change_password_progress_indicator);
+        Button cancelButton = (Button) view.findViewById(R.id.com_auth0_db_change_password_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +113,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
     @Override
     protected int getTitleResource() {
-        return R.string.database_change_password_title;
+        return R.string.com_auth0_database_change_password_title;
     }
 
     private void changePassword() {
@@ -136,15 +136,15 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
             public void onSuccess(Void payload) {
                 bus.post(new ChangePasswordEvent());
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.db_change_password_btn_text);
+                sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.db_change_password_error_title, R.string.db_change_password_error_message, error));
+                bus.post(new AuthenticationError(R.string.com_auth0_db_change_password_error_title, R.string.com_auth0_db_change_password_error_message, error));
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.db_change_password_btn_text);
+                sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });

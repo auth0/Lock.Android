@@ -55,18 +55,18 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         String social = getItem(position);
 
         if (convertView == null) {
-            final int layout = smallLayout ? R.layout.item_social_small : R.layout.item_social_big;
+            final int layout = smallLayout ? R.layout.com_auth0_item_social_small : R.layout.com_auth0_item_social_big;
             convertView = LayoutInflater.from(getContext()).inflate(layout, parent, false);
         }
 
         int textColor = SocialResources.textColorForSocialService(getContext(), social);
-        TextView iconLabel = (TextView) convertView.findViewById(R.id.social_icon_label);
+        TextView iconLabel = (TextView) convertView.findViewById(R.id.com_auth0_social_icon_label);
         iconLabel.setText(SocialResources.iconForSocialService(getContext(), social));
         Typeface font = SocialResources.socialFont(getContext());
         iconLabel.setTypeface(font);
         iconLabel.setTextColor(textColor);
         if (!smallLayout) {
-            TextView textLabel = (TextView) convertView.findViewById(R.id.social_title_label);
+            TextView textLabel = (TextView) convertView.findViewById(R.id.com_auth0_social_title_label);
             textLabel.setText(SocialResources.titleForSocialService(getContext(), social));
             textLabel.setTextColor(textColor);
         }

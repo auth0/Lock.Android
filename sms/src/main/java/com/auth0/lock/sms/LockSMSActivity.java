@@ -62,7 +62,7 @@ public class LockSMSActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lock_sms);
+        setContentView(R.layout.com_auth0_activity_lock_sms);
         lock = getLock();
         if (savedInstanceState == null) {
             final RequestCodeFragment fragment = new RequestCodeFragment();
@@ -70,7 +70,7 @@ public class LockSMSActivity extends FragmentActivity {
             arguments.putString(RequestCodeFragment.REQUEST_CODE_JWT_ARGUMENT, getIntent().getStringExtra(REQUEST_SMS_CODE_JWT));
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
+                    .add(R.id.com_auth0_container, fragment)
                     .commit();
         }
         if (lock.isFullScreen()) {
@@ -111,7 +111,7 @@ public class LockSMSActivity extends FragmentActivity {
         arguments.putString(SmsLoginFragment.PHONE_NUMBER_ARGUMENT, event.getPhoneNumber());
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment)
+                .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(SmsLoginFragment.class.getName())
                 .commit();
     }

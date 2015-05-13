@@ -25,28 +25,13 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.api.callback.BaseCallback;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
 import com.auth0.lock.R;
-import com.auth0.lock.adapter.SocialListAdapter;
-import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
-import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
-import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
-import com.auth0.lock.event.SocialCredentialEvent;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SocialDBFragment extends DatabaseLoginFragment {
 
@@ -59,7 +44,7 @@ public class SocialDBFragment extends DatabaseLoginFragment {
         ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         if (savedInstanceState == null) {
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
+                    .replace(R.id.com_auth0_social_list_container, SmallSocialListFragment.newFragment(services))
                     .commit();
         }
     }
@@ -67,12 +52,12 @@ public class SocialDBFragment extends DatabaseLoginFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_social_db, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_social_db, container, false);
     }
 
     @Override
     protected int getTitleResource() {
-        return R.string.social_db_title;
+        return R.string.com_auth0_social_db_title;
     }
 
 }

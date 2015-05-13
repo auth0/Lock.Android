@@ -29,7 +29,7 @@ import com.auth0.lock.R;
 public class ChangePasswordEvent extends AlertDialogEvent {
 
     public ChangePasswordEvent() {
-        super(R.string.db_change_password_title_success, R.string.db_change_password_message_success);
+        super(R.string.com_auth0_db_change_password_title_success, R.string.com_auth0_db_change_password_message_success);
     }
 
 }

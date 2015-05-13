@@ -61,7 +61,7 @@ public abstract class BaseTitledFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView titleView = (TextView) view.findViewById(R.id.title_textView);
+        TextView titleView = (TextView) view.findViewById(R.id.com_auth0_title_textView);
         titleView.setText(getTitleResource());
     }
 

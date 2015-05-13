@@ -46,7 +46,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
 public class LoginValidatorTest {
 
     @Mock
@@ -65,7 +65,7 @@ public class LoginValidatorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        validator = new LoginValidator(emailValidator, passwordValidator, R.string.invalid_credentials_message);
+        validator = new LoginValidator(emailValidator, passwordValidator, R.string.com_auth0_invalid_credentials_message);
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(null);
     }
@@ -91,7 +91,7 @@ public class LoginValidatorTest {
     public void shouldReturnCredentialErrorWhenBothValidationFails() throws Exception {
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(emailError);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(passwordError);
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_credentials_message));
     }
 
 }

@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -67,32 +66,32 @@ public class SmsLoginFragment extends BaseTitledFragment {
         if (arguments != null) {
             phoneNumber = arguments.getString(PHONE_NUMBER_ARGUMENT);
         }
-        errorBuilder = new LoginAuthenticationErrorBuilder(R.string.sms_login_error_title, R.string.sms_login_error_message, R.string.sms_login_invalid_credentials_message);
-        validator = new SmsPasscodeValidator(R.id.sms_login_code_field, R.string.sms_login_error_title, R.string.sms_login_invalid_passcode_message);
+        errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_sms_login_error_title, R.string.com_auth0_sms_login_error_message, R.string.com_auth0_sms_login_invalid_credentials_message);
+        validator = new SmsPasscodeValidator(R.id.com_auth0_sms_login_code_field, R.string.com_auth0_sms_login_error_title, R.string.com_auth0_sms_login_invalid_passcode_message);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sms_login, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_sms_login, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button noCodeButton = (Button) view.findViewById(R.id.sms_no_code_button);
+        Button noCodeButton = (Button) view.findViewById(R.id.com_auth0_sms_no_code_button);
         noCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bus.post(NavigationEvent.BACK);
             }
         });
-        TextView messageTextView = (TextView) view.findViewById(R.id.sms_enter_code_message);
-        String messageFormat = getString(R.string.sms_login_message);
+        TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_sms_enter_code_message);
+        String messageFormat = getString(R.string.com_auth0_sms_login_message);
         messageTextView.setText(Html.fromHtml(String.format(messageFormat, phoneNumber)));
-        passcodeField = (CredentialField) view.findViewById(R.id.sms_login_code_field);
-        accessButton = (Button) view.findViewById(R.id.sms_access_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.sms_login_progress_indicator);
+        passcodeField = (CredentialField) view.findViewById(R.id.com_auth0_sms_login_code_field);
+        accessButton = (Button) view.findViewById(R.id.com_auth0_sms_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_sms_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +121,7 @@ public class SmsLoginFragment extends BaseTitledFragment {
             public void onSuccess(UserProfile userProfile, Token token) {
                 bus.post(new AuthenticationEvent(userProfile, token));
                 accessButton.setEnabled(true);
-                accessButton.setText(R.string.sms_login_access_btn_text);
+                accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -130,7 +129,7 @@ public class SmsLoginFragment extends BaseTitledFragment {
             public void onFailure(Throwable throwable) {
                 bus.post(errorBuilder.buildFrom(throwable));
                 accessButton.setEnabled(true);
-                accessButton.setText(R.string.sms_login_access_btn_text);
+                accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -138,6 +137,6 @@ public class SmsLoginFragment extends BaseTitledFragment {
 
     @Override
     protected int getTitleResource() {
-        return R.string.sms_title_enter_passcode;
+        return R.string.com_auth0_sms_title_enter_passcode;
     }
 }
