@@ -26,17 +26,14 @@ package com.auth0.lock.fragment;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class SocialSignUpFragment extends BaseTitledFragment {
 
@@ -53,8 +50,8 @@ public class SocialSignUpFragment extends BaseTitledFragment {
             ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
             Lock lock = getLock();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.social_list_container, SmallSocialListFragment.newFragment(services))
-                    .replace(R.id.signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
+                    .replace(R.id.com_auth0_social_list_container, SmallSocialListFragment.newFragment(services))
+                    .replace(R.id.com_auth0_signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
                     .commit();
         }
     }
@@ -62,12 +59,12 @@ public class SocialSignUpFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_social_sign_up, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_social_sign_up, container, false);
     }
 
     @Override
     protected int getTitleResource() {
-        return R.string.database_signup_title;
+        return R.string.com_auth0_database_signup_title;
     }
 
     public static SocialSignUpFragment newFragment(ArrayList<String> services) {

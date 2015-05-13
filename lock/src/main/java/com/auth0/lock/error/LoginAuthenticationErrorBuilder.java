@@ -40,7 +40,7 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
     private final int invalidCredentialsResource;
 
     public LoginAuthenticationErrorBuilder() {
-        this(R.string.db_login_error_title, R.string.db_login_error_message, R.string.db_login_invalid_credentials_error_message);
+        this(R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_error_message, R.string.com_auth0_db_login_invalid_credentials_error_message);
     }
 
     public LoginAuthenticationErrorBuilder(int titleResource, int defaultMessageResource, int invalidCredentialsResource) {

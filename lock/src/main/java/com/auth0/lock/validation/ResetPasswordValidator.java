@@ -46,9 +46,9 @@ public class ResetPasswordValidator implements Validator {
     public ResetPasswordValidator(boolean useEmail) {
         this(
             validatorThatUseEmail(useEmail),
-            new PasswordValidator(R.id.db_change_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message),
-            new RepeatPasswordValidator(R.id.db_change_password_repeat_password_field, R.id.db_change_password_password_field, R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message),
-            useEmail ? R.string.invalid_credentials_message : R.string.invalid_username_credentials_message
+            new PasswordValidator(R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message),
+            new RepeatPasswordValidator(R.id.com_auth0_db_change_password_repeat_password_field, R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_db_reset_password_invalid_repeat_password_message),
+            useEmail ? R.string.com_auth0_invalid_credentials_message : R.string.com_auth0_invalid_username_credentials_message
         );
     }
 
@@ -58,7 +58,7 @@ public class ResetPasswordValidator implements Validator {
         AuthenticationError passwordError = passwordValidator.validateFrom(fragment);
         AuthenticationError repeatError = repeatPasswordValidator.validateFrom(fragment);
         if (emailError != null && (passwordError != null || repeatError != null)) {
-            return new AuthenticationError(R.string.invalid_credentials_title, compositeErrorMessage);
+            return new AuthenticationError(R.string.com_auth0_invalid_credentials_title, compositeErrorMessage);
         }
         if (repeatError != null) {
             return repeatError;
@@ -68,9 +68,9 @@ public class ResetPasswordValidator implements Validator {
 
     public static Validator validatorThatUseEmail(boolean useEmail) {
         if (useEmail) {
-            return new EmailValidator(R.id.db_change_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
+            return new EmailValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message);
         }
-        return new UsernameValidator(R.id.db_change_password_username_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+        return new UsernameValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message);
     }
 
 }

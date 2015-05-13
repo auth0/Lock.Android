@@ -79,7 +79,7 @@ public class LoginAuthenticationErrorBuilderTest {
         errors.put(AuthenticationErrorBuilder.ERROR_KEY, "invalid_user_password");
         Throwable exception = new APIClientException("error", 400, errors);
         AuthenticationError error = builder.buildFrom(exception);
-        assertThat(error, hasMessage(R.string.db_login_invalid_credentials_error_message));
+        assertThat(error, hasMessage(R.string.com_auth0_db_login_invalid_credentials_error_message));
         assertThat(error.getThrowable(), equalTo(exception));
     }
 

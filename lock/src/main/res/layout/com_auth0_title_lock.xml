@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:showIn="@layout/com_auth0_fragment_database_login">
+
+    <ImageView
+        android:id="@+id/com_auth0_title_imageView"
+        style="?attr/Auth0.Title.Icon"
+    />
+
+    <TextView
+        android:id="@+id/com_auth0_title_textView"
+        style="?attr/Auth0.Title.Text"
+        android:text="@string/com_auth0_auth0_lock"
+        android:fontFamily="sans-serif-light"
+        android:layout_below="@+id/com_auth0_title_imageView"
+    />
+</merge>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="oval">
+   <solid android:color="@color/com_auth0_title_lock_icon_background"/>
+   <size android:height="@dimen/com_auth0_title_lock_image_size" android:width="@dimen/com_auth0_title_lock_image_size"/>
+</shape>

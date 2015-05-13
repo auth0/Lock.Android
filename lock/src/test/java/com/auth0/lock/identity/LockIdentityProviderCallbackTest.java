@@ -89,7 +89,7 @@ public class LockIdentityProviderCallbackTest {
 
     @Test
     public void shouldSendAuthenticationErrorEvent() throws Exception {
-        callback.onFailure(R.string.db_login_error_title, R.string.db_login_error_message, cause);
+        callback.onFailure(R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_error_message, cause);
         ArgumentCaptor<AuthenticationError> captor = ArgumentCaptor.forClass(AuthenticationError.class);
         verify(bus).post(captor.capture());
         final AuthenticationError event = captor.getValue();

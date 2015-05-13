@@ -38,7 +38,7 @@ public abstract class ErrorDialogBuilder {
         builder
                 .setTitle(event.getTitle(context))
                 .setMessage(event.getMessage(context))
-                .setPositiveButton(R.string.ok_btn_text, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.com_auth0_ok_btn_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

@@ -109,29 +109,29 @@ public class SignUpFormFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sign_up_form, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_sign_up_form, container, false);
     }
 
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        emailField = (CredentialField) view.findViewById(R.id.db_signup_email_field);
-        usernameField = (CredentialField) view.findViewById(R.id.db_signup_username_field);
+        emailField = (CredentialField) view.findViewById(R.id.com_auth0_db_signup_email_field);
+        usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_signup_username_field);
         if (!requiresUsername && useEmail) {
             usernameField.setVisibility(View.GONE);
-            View separator = view.findViewById(R.id.db_signup_username_separator);
+            View separator = view.findViewById(R.id.com_auth0_db_signup_username_separator);
             separator.setVisibility(View.GONE);
         }
         if (!useEmail && !requiresUsername) {
             emailField.setVisibility(View.GONE);
-            usernameField.setNextFocusDownId(R.id.db_signup_password_field);
-            View separator = view.findViewById(R.id.db_signup_email_separator);
+            usernameField.setNextFocusDownId(R.id.com_auth0_db_signup_password_field);
+            View separator = view.findViewById(R.id.com_auth0_db_signup_email_separator);
             separator.setVisibility(View.GONE);
         }
-        passwordField = (CredentialField) view.findViewById(R.id.db_signup_password_field);
-        accessButton = (Button) view.findViewById(R.id.db_access_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.db_signup_progress_indicator);
+        passwordField = (CredentialField) view.findViewById(R.id.com_auth0_db_signup_password_field);
+        accessButton = (Button) view.findViewById(R.id.com_auth0_db_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_db_signup_progress_indicator);
 
         passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -189,7 +189,7 @@ public class SignUpFormFragment extends Fragment {
                 public void onSuccess(UserProfile profile, Token token) {
                     bus.post(new AuthenticationEvent(profile, token));
                     accessButton.setEnabled(true);
-                    accessButton.setText(R.string.db_login_btn_text);
+                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
                     progressBar.setVisibility(View.GONE);
                 }
 
@@ -197,7 +197,7 @@ public class SignUpFormFragment extends Fragment {
                 public void onFailure(Throwable error) {
                     bus.post(errorBuilder.buildFrom(error));
                     accessButton.setEnabled(true);
-                    accessButton.setText(R.string.db_login_btn_text);
+                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
                     progressBar.setVisibility(View.GONE);
                 }
             });
@@ -207,7 +207,7 @@ public class SignUpFormFragment extends Fragment {
                 public void onSuccess(Void payload) {
                     bus.post(new SignUpEvent(username));
                     accessButton.setEnabled(true);
-                    accessButton.setText(R.string.db_login_btn_text);
+                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
                     progressBar.setVisibility(View.GONE);
                 }
 
@@ -215,7 +215,7 @@ public class SignUpFormFragment extends Fragment {
                 public void onFailure(Throwable error) {
                     bus.post(errorBuilder.buildFrom(error));
                     accessButton.setEnabled(true);
-                    accessButton.setText(R.string.db_login_btn_text);
+                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
                     progressBar.setVisibility(View.GONE);
                 }
             });

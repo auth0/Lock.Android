@@ -25,9 +25,9 @@
 
 <resources>
     <declare-styleable name="CredentialField">
-        <attr name="normalIconDrawable" format="reference"/>
-        <attr name="errorIconDrawable" format="reference"/>
-        <attr name="errorColor" format="color"/>
+        <attr name="com_auth0_normalIconDrawable" format="reference"/>
+        <attr name="com_auth0_errorIconDrawable" format="reference"/>
+        <attr name="com_auth0_errorColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="Lock.Theme">

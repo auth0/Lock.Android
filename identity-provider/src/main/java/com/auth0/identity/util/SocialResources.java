@@ -29,10 +29,10 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 public abstract class SocialResources {
-    private static final String TEXT_COLOR_KEY_FORMAT = "color/social_%s_text";
-    private static final String COLOR_KEY_FORMAT = "color/social_%s";
-    private static final String TEXT_KEY_FORMAT = "string/social_%s";
-    private static final String ICON_KEY_FORMAT = "string/social_icon_%s";
+    private static final String TEXT_COLOR_KEY_FORMAT = "color/com_auth0_social_%s_text";
+    private static final String COLOR_KEY_FORMAT = "color/com_auth0_social_%s";
+    private static final String TEXT_KEY_FORMAT = "string/com_auth0_social_%s";
+    private static final String ICON_KEY_FORMAT = "string/com_auth0_social_icon_%s";
     private static final String SOCIAL_FONT_FILE_NAME = "z-social.ttf";
 
     public static Typeface socialFont(Context context) {

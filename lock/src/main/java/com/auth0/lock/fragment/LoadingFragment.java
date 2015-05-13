@@ -32,9 +32,9 @@ public class LoadingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_loading, container, false);
-        TextView titleView = (TextView) rootView.findViewById(R.id.title_textView);
-        titleView.setText(R.string.loading_title);
+        View rootView = inflater.inflate(R.layout.com_auth0_fragment_loading, container, false);
+        TextView titleView = (TextView) rootView.findViewById(R.id.com_auth0_title_textView);
+        titleView.setText(R.string.com_auth0_loading_title);
         return rootView;
     }
 

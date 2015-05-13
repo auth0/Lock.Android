@@ -89,13 +89,13 @@ public class LockActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        setContentView(R.layout.activity_lock);
+        setContentView(R.layout.com_auth0_activity_lock);
         lock = getLock();
         builder = newFragmentBuilder(getLock());
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new LoadingFragment())
+                    .replace(R.id.com_auth0_container, new LoadingFragment())
                     .commit();
         }
         broadcastManager = LocalBroadcastManager.getInstance(this);
@@ -185,7 +185,7 @@ public class LockActivity extends FragmentActivity {
         Configuration configuration = new Configuration(application, lock.getConnections(), lock.getDefaultDatabaseConnection());
         lock.setConfiguration(configuration);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, builder.root())
+                .replace(R.id.com_auth0_container, builder.root())
                 .commit();
     }
 
@@ -249,7 +249,7 @@ public class LockActivity extends FragmentActivity {
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, fragment)
+                    .replace(R.id.com_auth0_container, fragment)
                     .addToBackStack(event.name())
                     .commit();
         }
@@ -259,7 +259,7 @@ public class LockActivity extends FragmentActivity {
         Fragment fragment = builder.enterpriseLoginWithConnection(event.getConnection());
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, fragment)
+                .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(event.getConnection().getName())
                 .commit();
     }

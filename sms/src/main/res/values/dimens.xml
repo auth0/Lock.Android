@@ -24,9 +24,9 @@
 
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="sms_icon_left_padding">14dp</dimen>
-    <dimen name="sms_horizontal_padding">10dp</dimen>
-    <dimen name="sms_button_margin_top">20dp</dimen>
+    <dimen name="com_auth0_activity_horizontal_margin">16dp</dimen>
+    <dimen name="com_auth0_activity_vertical_margin">16dp</dimen>
+    <dimen name="com_auth0_sms_icon_left_padding">14dp</dimen>
+    <dimen name="com_auth0_sms_horizontal_padding">10dp</dimen>
+    <dimen name="com_auth0_sms_button_margin_top">20dp</dimen>
 </resources>

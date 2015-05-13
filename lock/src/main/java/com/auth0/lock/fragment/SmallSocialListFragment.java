@@ -26,7 +26,6 @@ package com.auth0.lock.fragment;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +62,7 @@ public class SmallSocialListFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_small_social_list, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_small_social_list, container, false);
     }
 
     @Override
@@ -72,10 +71,10 @@ public class SmallSocialListFragment extends android.support.v4.app.Fragment {
         Bundle bundle = getArguments();
         List<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
         Log.d(TAG, "About to display " + services.size() + " services");
-        gridView = (GridView) view.findViewById(R.id.social_grid_view);
+        gridView = (GridView) view.findViewById(R.id.com_auth0_social_grid_view);
         final SocialListAdapter adapter = new SocialListAdapter(getActivity(), services.toArray(new String[services.size()]), true);
         gridView.setAdapter(adapter);
-        int maxItemCount = getResources().getInteger(R.integer.social_grid_max_elements);
+        int maxItemCount = getResources().getInteger(R.integer.com_auth0_social_grid_max_elements);
         gridView.setNumColumns(services.size() > maxItemCount ? maxItemCount : services.size());
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

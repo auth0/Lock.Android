@@ -96,8 +96,8 @@ public class WebIdentityProvider implements IdentityProvider {
         if (isValid) {
             final Map<String, String> values = parser.getValuesFromUri(uri);
             if (values.containsKey("error")) {
-                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.social_access_denied_message : R.string.social_error_message;
-                callback.onFailure(R.string.social_error_title, message, null);
+                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+                callback.onFailure(R.string.com_auth0_social_error_title, message, null);
             } else if(values.size() > 0) {
                 Log.d(WebIdentityProvider.class.getName(), "Authenticated using web flow");
                 callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));

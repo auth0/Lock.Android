@@ -57,15 +57,15 @@ public class RepeatPasswordValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new RepeatPasswordValidator(R.id.db_change_password_repeat_password_field, R.id.db_change_password_password_field, R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message);
+        validator = new RepeatPasswordValidator(R.id.com_auth0_db_change_password_repeat_password_field, R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_db_reset_password_invalid_repeat_password_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
         editable = mock(Editable.class);
         passwordField = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
-        when(view.findViewById(eq(R.id.db_change_password_repeat_password_field))).thenReturn(field);
-        when(view.findViewById(eq(R.id.db_change_password_password_field))).thenReturn(passwordField);
+        when(view.findViewById(eq(R.id.com_auth0_db_change_password_repeat_password_field))).thenReturn(field);
+        when(view.findViewById(eq(R.id.com_auth0_db_change_password_password_field))).thenReturn(passwordField);
         when(passwordField.getText()).thenReturn(editable);
         when(field.getText()).thenReturn(editable);
     }
@@ -79,7 +79,7 @@ public class RepeatPasswordValidatorTest {
     @Test
     public void shouldFailWithEmptyPassword() throws Exception {
         when(editable.toString()).thenReturn("");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_db_reset_password_invalid_repeat_password_message));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class RepeatPasswordValidatorTest {
         when(field.getText()).thenReturn(otherEditable);
         when(editable.toString()).thenReturn("1234567890");
         when(otherEditable.toString()).thenReturn("qwertyuiop");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.db_reset_password_invalid_repeat_password_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_db_reset_password_invalid_repeat_password_message));
     }
 
 }

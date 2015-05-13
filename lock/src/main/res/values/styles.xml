@@ -33,68 +33,68 @@
         <item name="Auth0.CredentialField.Username">@style/Lock.Theme.CredentialField.Username</item>
         <item name="Auth0.CredentialBox">@style/Lock.Theme.CredentialBox</item>
         <item name="Auth0.Message">@style/Lock.Theme.Message</item>
-        <item name="Auth0.Background">@color/lock_background</item>
+        <item name="Auth0.Background">@color/com_auth0_lock_background</item>
         <item name="Auth0.Title.Icon">@style/Lock.Theme.Title.Icon</item>
         <item name="Auth0.Title.Text">@style/Lock.Theme.Title.Text</item>
-        <item name="Auth0.Separator.Color">@color/credential_box_border</item>
+        <item name="Auth0.Separator.Color">@color/com_auth0_credential_box_border</item>
         <item name="Auth0.CredentialField">@style/Lock.Theme.CredentialField</item>
         <item name="Auth0.GridView.Small">@style/Lock.Theme.Social.GridView</item>
     </style>
 
     <style name="Lock.Theme.SecondaryButton" parent="Widget.AppCompat.ActionButton">
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/secondary_button_text</item>
-        <item name="android:layout_height">@dimen/secondary_button_height</item>
+        <item name="android:textColor">@color/com_auth0_secondary_button_text</item>
+        <item name="android:layout_height">@dimen/com_auth0_secondary_button_height</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textSize">@dimen/secondary_button_text_size</item>
-        <item name="android:background">@drawable/btn_secondary_background</item>
-        <item name="android:layout_marginBottom">@dimen/secondary_button_margin_bottom</item>
+        <item name="android:textSize">@dimen/com_auth0_secondary_button_text_size</item>
+        <item name="android:background">@drawable/com_auth0_btn_secondary_background</item>
+        <item name="android:layout_marginBottom">@dimen/com_auth0_secondary_button_margin_bottom</item>
     </style>
 
     <style name="Lock.Theme.PrimaryButton" parent="Widget.AppCompat.ActionButton">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/primary_button_height</item>
-        <item name="android:textColor">@color/primary_button_text</item>
-        <item name="android:background">@drawable/btn_primary_background</item>
-        <item name="android:textSize">@dimen/primary_button_text_size</item>
+        <item name="android:layout_height">@dimen/com_auth0_primary_button_height</item>
+        <item name="android:textColor">@color/com_auth0_primary_button_text</item>
+        <item name="android:background">@drawable/com_auth0_btn_primary_background</item>
+        <item name="android:textSize">@dimen/com_auth0_primary_button_text_size</item>
     </style>
 
     <style name="Lock.Theme.CredentialField.Email" parent="Lock.Theme.CredentialField">
-        <item name="normalIconDrawable">@drawable/ic_email</item>
-        <item name="errorIconDrawable">@drawable/ic_email_error</item>
+        <item name="com_auth0_normalIconDrawable">@drawable/com_auth0_ic_email</item>
+        <item name="com_auth0_errorIconDrawable">@drawable/com_auth0_ic_email_error</item>
     </style>
 
     <style name="Lock.Theme.CredentialField.Username" parent="Lock.Theme.CredentialField">
-        <item name="normalIconDrawable">@drawable/ic_person</item>
-        <item name="errorIconDrawable">@drawable/ic_person_error</item>
+        <item name="com_auth0_normalIconDrawable">@drawable/com_auth0_ic_person</item>
+        <item name="com_auth0_errorIconDrawable">@drawable/com_auth0_ic_person_error</item>
     </style>
 
     <style name="Lock.Theme.CredentialField.Password" parent="Lock.Theme.CredentialField">
-        <item name="normalIconDrawable">@drawable/ic_lock</item>
-        <item name="errorIconDrawable">@drawable/ic_lock_error</item>
+        <item name="com_auth0_normalIconDrawable">@drawable/com_auth0_ic_lock</item>
+        <item name="com_auth0_errorIconDrawable">@drawable/com_auth0_ic_lock_error</item>
     </style>
 
     <style name="Lock.Theme.CredentialField" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/credential_field_height</item>
-        <item name="android:textSize">@dimen/credential_field_font_size</item>
-        <item name="android:textColorHint">@color/credential_field_hint</item>
-        <item name="android:paddingLeft">@dimen/credential_field_padding</item>
-        <item name="android:paddingRight">@dimen/credential_field_padding</item>
-        <item name="android:drawablePadding">@dimen/credential_field_icon_right_padding</item>
-        <item name="android:background">@color/credential_field_background</item>
+        <item name="android:layout_height">@dimen/com_auth0_credential_field_height</item>
+        <item name="android:textSize">@dimen/com_auth0_credential_field_font_size</item>
+        <item name="android:textColorHint">@color/com_auth0_credential_field_hint</item>
+        <item name="android:paddingLeft">@dimen/com_auth0_credential_field_padding</item>
+        <item name="android:paddingRight">@dimen/com_auth0_credential_field_padding</item>
+        <item name="android:drawablePadding">@dimen/com_auth0_credential_field_icon_right_padding</item>
+        <item name="android:background">@color/com_auth0_credential_field_background</item>
     </style>
 
     <style name="Lock.Theme.ProgressBarHorizontal">
-        <item name="spb_color">@color/lock_blue_light</item>
+        <item name="spb_color">@color/com_auth0_lock_blue_light</item>
     </style>
 
     <style name="Lock.Theme.CredentialBox">
-        <item name="android:background">@drawable/box_credential_background</item>
+        <item name="android:background">@drawable/com_auth0_box_credential_background</item>
     </style>
 
     <style name="Lock.Theme.Message" parent="TextAppearance.AppCompat.Small">
-        <item name="android:layout_marginBottom">@dimen/lock_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_vertical_margin</item>
     </style>
 
     <style name="Lock.Theme.Title"/>
@@ -103,30 +103,30 @@
 
     <style name="Lock.Theme.Social.GridView">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/social_grid_view_height</item>
+        <item name="android:layout_height">@dimen/com_auth0_social_grid_view_height</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:stretchMode">columnWidth</item>
-        <item name="android:verticalSpacing">@dimen/social_grid_view_item_spacing_vertical</item>
+        <item name="android:verticalSpacing">@dimen/com_auth0_social_grid_view_item_spacing_vertical</item>
     </style>
 
     <style name="Lock.Theme.Title.Icon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/title_lock_margin_top</item>
-        <item name="android:src">@drawable/ic_people</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_title_lock_margin_top</item>
+        <item name="android:src">@drawable/com_auth0_ic_people</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:background">@drawable/icon_background</item>
+        <item name="android:background">@drawable/com_auth0_icon_background</item>
         <item name="android:cropToPadding">false</item>
-        <item name="android:paddingLeft">@dimen/title_lock_image_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/title_lock_image_horizontal_padding</item>
-        <item name="android:paddingBottom">@dimen/title_lock_image_vertical_padding</item>
-        <item name="android:paddingTop">@dimen/title_lock_image_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/com_auth0_title_lock_image_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/com_auth0_title_lock_image_horizontal_padding</item>
+        <item name="android:paddingBottom">@dimen/com_auth0_title_lock_image_vertical_padding</item>
+        <item name="android:paddingTop">@dimen/com_auth0_title_lock_image_vertical_padding</item>
     </style>
 
     <style name="Lock.Theme.Title.Text" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">@dimen/title_lock_text_size</item>
-        <item name="android:layout_marginTop">@dimen/title_lock_text_margin_top</item>
+        <item name="android:textSize">@dimen/com_auth0_title_lock_text_size</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_title_lock_text_margin_top</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

@@ -25,7 +25,6 @@
 package com.auth0.lock.validation;
 
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.view.View;
 
 import com.auth0.lock.R;
@@ -55,12 +54,12 @@ public class EmailValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new EmailValidator(R.id.db_change_password_username_field, R.string.invalid_credentials_title, R.string.invalid_email_message);
+        validator = new EmailValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
-        when(view.findViewById(eq(R.id.db_change_password_username_field))).thenReturn(field);
+        when(view.findViewById(eq(R.id.com_auth0_db_change_password_username_field))).thenReturn(field);
     }
 
     @Test
@@ -72,13 +71,13 @@ public class EmailValidatorTest {
     @Test
     public void shouldFailWithEmptyEmail() throws Exception {
         when(field.getInputText()).thenReturn("");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_email_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message));
     }
 
     @Test
     public void shouldFailWithInvalidEmail() throws Exception {
         when(field.getInputText()).thenReturn("pepe@p");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_email_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message));
     }
 
 }

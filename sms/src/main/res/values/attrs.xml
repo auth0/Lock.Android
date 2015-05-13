@@ -25,8 +25,8 @@
 
 <resources>
     <declare-styleable name="PhoneField">
-        <attr name="normalPhoneIconDrawable" format="reference"/>
-        <attr name="errorPhoneIconDrawable" format="reference"/>
-        <attr name="errorPhoneColor" format="color"/>
+        <attr name="com_auth0_normalPhoneIconDrawable" format="reference"/>
+        <attr name="com_auth0_errorPhoneIconDrawable" format="reference"/>
+        <attr name="com_auth0_errorPhoneColor" format="color"/>
     </declare-styleable>
 </resources>

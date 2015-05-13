@@ -60,7 +60,7 @@ public class CountryCodeActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_country_code);
+        setContentView(R.layout.com_auth0_activity_country_code);
 
         final ActionBar bar = getSupportActionBar();
         if (bar != null) {
@@ -69,8 +69,8 @@ public class CountryCodeActivity extends ActionBarActivity {
             bar.setDisplayUseLogoEnabled(false);
             bar.setDisplayHomeAsUpEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
-            bar.setCustomView(R.layout.bar_country_search);
-            final EditText searchText = (EditText) bar.getCustomView().findViewById(R.id.sms_search_country);
+            bar.setCustomView(R.layout.com_auth0_bar_country_search);
+            final EditText searchText = (EditText) bar.getCustomView().findViewById(R.id.com_auth0_sms_search_country);
             searchText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -105,7 +105,7 @@ public class CountryCodeActivity extends ActionBarActivity {
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
-        listView = (ListView) findViewById(R.id.sms_country_code_list);
+        listView = (ListView) findViewById(R.id.com_auth0_sms_country_code_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

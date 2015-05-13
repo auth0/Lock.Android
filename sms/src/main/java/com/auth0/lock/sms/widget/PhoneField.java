@@ -66,15 +66,15 @@ public class PhoneField extends LinearLayout implements ValidationEnabled {
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
         LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.view_phone_fied, this, true);
+        inflater.inflate(R.layout.com_auth0_view_phone_fied, this, true);
         iconView = (ImageView) getChildAt(0);
         codeButton = (Button) getChildAt(1);
         phoneEditText = (EditText) getChildAt(2);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PhoneField, defStyleAttr, 0);
         try {
-            iconResource = a.getResourceId(R.styleable.PhoneField_normalPhoneIconDrawable, -1);
-            errorIconResource = a.getResourceId(R.styleable.PhoneField_errorPhoneIconDrawable, -1);
-            errorColorResource = a.getResourceId(R.styleable.PhoneField_errorPhoneColor, R.color.credential_field_error);
+            iconResource = a.getResourceId(R.styleable.PhoneField_com_auth0_normalPhoneIconDrawable, -1);
+            errorIconResource = a.getResourceId(R.styleable.PhoneField_com_auth0_errorPhoneIconDrawable, -1);
+            errorColorResource = a.getResourceId(R.styleable.PhoneField_com_auth0_errorPhoneColor, R.color.com_auth0_credential_field_error);
             colorResource = phoneEditText.getTextColors();
             hintColorResource = phoneEditText.getHintTextColors();
             codeColorResource = codeButton.getTextColors().getDefaultColor();

@@ -68,7 +68,7 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
             holder = new FetchTokenResultHolder(accessToken);
         } catch (IOException transientEx) {
             Log.e(TAG, "Failed to fetch G+ token", transientEx);
-            holder = new FetchTokenResultHolder(R.string.social_error_title, R.string.social_access_denied_message, transientEx);
+            holder = new FetchTokenResultHolder(R.string.com_auth0_social_error_title, R.string.com_auth0_social_access_denied_message, transientEx);
         } catch (GooglePlayServicesAvailabilityException e) {
             Log.w(TAG, "Google Play services not found or invalid", e);
             holder = new FetchTokenResultHolder(GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), context, 0));
@@ -76,9 +76,9 @@ public class FetchTokenAsyncTask extends AsyncTask<String, Void, Object> {
             Log.d(TAG, "User permission from the user required in order to fetch token", e);
             context.startActivityForResult(e.getIntent(), IdentityProvider.GOOGLE_PLUS_TOKEN_REQUEST_CODE);
         } catch (GoogleAuthException authEx) {
-            holder = new FetchTokenResultHolder(R.string.social_error_title, R.string.social_error_message, authEx);
+            holder = new FetchTokenResultHolder(R.string.com_auth0_social_error_title, R.string.com_auth0_social_error_message, authEx);
         } catch (Exception e) {
-            holder = new FetchTokenResultHolder(R.string.social_error_title, R.string.social_error_message, e);
+            holder = new FetchTokenResultHolder(R.string.com_auth0_social_error_title, R.string.com_auth0_social_error_message, e);
         }
         return holder;
     }

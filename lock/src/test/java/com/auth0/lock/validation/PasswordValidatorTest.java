@@ -25,7 +25,6 @@
 package com.auth0.lock.validation;
 
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.view.View;
 
 import com.auth0.lock.R;
@@ -54,12 +53,12 @@ public class PasswordValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new PasswordValidator(R.id.db_change_password_password_field, R.string.invalid_credentials_title, R.string.invalid_password_message);
+        validator = new PasswordValidator(R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message);
         fragment = mock(Fragment.class);
         view = mock(View.class);
         field = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
-        when(view.findViewById(eq(R.id.db_change_password_password_field))).thenReturn(field);
+        when(view.findViewById(eq(R.id.com_auth0_db_change_password_password_field))).thenReturn(field);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class PasswordValidatorTest {
     @Test
     public void shouldFailWithEmptyPassword() throws Exception {
         when(field.getInputText()).thenReturn("");
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_password_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message));
     }
 
 }

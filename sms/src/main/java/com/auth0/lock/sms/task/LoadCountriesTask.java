@@ -39,7 +39,7 @@ import java.util.Map;
 public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
 
     public static final String TAG = LoadCountriesTask.class.getName();
-    public static final String COUNTRIES_JSON_FILE = "countries.json";
+    public static final String COUNTRIES_JSON_FILE = "com_auth0_countries.json";
 
     private final Context context;
 

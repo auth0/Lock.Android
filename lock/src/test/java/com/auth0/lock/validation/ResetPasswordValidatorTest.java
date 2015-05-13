@@ -59,7 +59,7 @@ public class ResetPasswordValidatorTest {
         emailValidator = mock(Validator.class);
         passwordValidator = mock(Validator.class);
         repeatValidator = mock(Validator.class);
-        validator = new ResetPasswordValidator(emailValidator, passwordValidator, repeatValidator, R.string.invalid_credentials_message);
+        validator = new ResetPasswordValidator(emailValidator, passwordValidator, repeatValidator, R.string.com_auth0_invalid_credentials_message);
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(null);
         when(repeatValidator.validateFrom(eq(fragment))).thenReturn(null);
@@ -105,14 +105,14 @@ public class ResetPasswordValidatorTest {
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
         when(repeatValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_credentials_message));
     }
 
     @Test
     public void shouldReturnInvalidCredentialsErrorWhenEmailAdnPasswordFails() throws Exception {
         when(emailValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
         when(passwordValidator.validateFrom(eq(fragment))).thenReturn(mock(AuthenticationError.class));
-        assertThat(validator.validateFrom(fragment), hasError(R.string.invalid_credentials_title, R.string.invalid_credentials_message));
+        assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_credentials_message));
     }
 
 }

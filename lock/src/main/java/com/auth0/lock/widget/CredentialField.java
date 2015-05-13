@@ -26,7 +26,6 @@ package com.auth0.lock.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -55,9 +54,9 @@ public class CredentialField extends EditText implements ValidationEnabled {
         super(context, attrs, defStyleAttr);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CredentialField, defStyleAttr, 0);
         try {
-            iconResource = a.getResourceId(R.styleable.CredentialField_normalIconDrawable, -1);
-            errorIconResource = a.getResourceId(R.styleable.CredentialField_errorIconDrawable, -1);
-            errorColorResource = a.getResourceId(R.styleable.CredentialField_errorColor, R.color.credential_field_error);
+            iconResource = a.getResourceId(R.styleable.CredentialField_com_auth0_normalIconDrawable, -1);
+            errorIconResource = a.getResourceId(R.styleable.CredentialField_com_auth0_errorIconDrawable, -1);
+            errorColorResource = a.getResourceId(R.styleable.CredentialField_com_auth0_errorColor, R.color.com_auth0_credential_field_error);
             colorResource = getTextColors().getDefaultColor();
             hintColorResource = getHintTextColors().getDefaultColor();
             setCompoundDrawablesWithIntrinsicBounds(iconResource, 0, 0, 0);
