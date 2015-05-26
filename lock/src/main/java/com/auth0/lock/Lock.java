@@ -76,6 +76,8 @@ public class Lock {
     private Configuration configuration;
     private List<String> connections;
     private String defaultDatabaseConnection;
+    private boolean signUpEnabled;
+    private boolean changePasswordEnabled;
 
     public Lock(APIClient apiClient) {
         this.useWebView = false;
@@ -87,6 +89,8 @@ public class Lock {
         this.defaultProvider = new WebIdentityProvider(new CallbackParser());
         this.apiClient = apiClient;
         this.fullScreen = false;
+        this.signUpEnabled = true;
+        this.changePasswordEnabled = true;
     }
 
     /**
@@ -266,5 +270,21 @@ public class Lock {
      */
     public boolean isFullScreen() {
         return fullScreen;
+    }
+
+    public void setSignUpEnabled(boolean signUpEnabled) {
+        this.signUpEnabled = signUpEnabled;
+    }
+
+    public boolean isSignUpEnabled() {
+        return signUpEnabled;
+    }
+
+    public void setChangePasswordEnabled(boolean changePasswordEnabled) {
+        this.changePasswordEnabled = changePasswordEnabled;
+    }
+
+    public boolean isChangePasswordEnabled() {
+        return changePasswordEnabled;
     }
 }

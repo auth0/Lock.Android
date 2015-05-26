@@ -225,6 +225,29 @@ public class LockBuilderTest {
             .build();
     }
 
+    @Test
+    public void shouldEnableSignUpAndChangePasswordByDefault() throws Exception {
+        lock = basicBuilder().build();
+        assertThat(lock.isChangePasswordEnabled(), is(true));
+        assertThat(lock.isSignUpEnabled(), is(true));
+    }
+
+    @Test
+    public void shouldDisableSignUp() throws Exception {
+        lock = basicBuilder()
+                .disableSignUp(true)
+                .build();
+        assertThat(lock.isSignUpEnabled(), is(false));
+    }
+
+    @Test
+    public void shouldDisableChangePassword() throws Exception {
+        lock = basicBuilder()
+                .disableChangePassword(true)
+                .build();
+        assertThat(lock.isChangePasswordEnabled(), is(false));
+    }
+
     private LockBuilder basicBuilder() {
         return builder
                 .clientId(CLIENT_ID)
