@@ -1,5 +1,31 @@
 # Change Log
 
+## [1.8.0](https://github.com/auth0/Lock.Android/tree/1.8.0) (2015-05-27)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.7.0...1.8.0)
+
+**Implemented enhancements:**
+
+- Move social integrations to an independent pod [\#77](https://github.com/auth0/Lock.Android/issues/77)
+
+- Support disableSignupAction and disableChangePassword [\#75](https://github.com/auth0/Lock.Android/issues/75)
+
+**Fixed bugs:**
+
+- Handle null callback in App configuration [\#76](https://github.com/auth0/Lock.Android/issues/76)
+
+**Closed issues:**
+
+- java.lang.NoClassDefFoundError: com.auth0.identity.WebIdentityProvider [\#79](https://github.com/auth0/Lock.Android/issues/79)
+
+**Merged pull requests:**
+
+- Allow null callback url [\#85](https://github.com/auth0/Lock.Android/pull/85) ([hzalaz](https://github.com/hzalaz))
+
+- Chore independent native integrations [\#84](https://github.com/auth0/Lock.Android/pull/84) ([hzalaz](https://github.com/hzalaz))
+
+- Feature disable signup change password flags [\#82](https://github.com/auth0/Lock.Android/pull/82) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.7.0](https://github.com/auth0/Lock.Android/tree/1.7.0) (2015-05-20)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.6.0...1.7.0)
