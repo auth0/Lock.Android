@@ -33,6 +33,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -49,14 +50,14 @@ public class AuthenticationErrorDefaultMatcher extends BaseMatcher<Authenticatio
     }
 
     public AuthenticationErrorDefaultMatcher(int titleResource, int messageResource) {
-        messageMatcher = equalTo(Robolectric.application.getString(messageResource));
-        titleMatcher = equalTo(Robolectric.application.getString(titleResource));
+        messageMatcher = equalTo(RuntimeEnvironment.application.getString(messageResource));
+        titleMatcher = equalTo(RuntimeEnvironment.application.getString(titleResource));
     }
 
     @Override
     public boolean matches(Object o) {
         AuthenticationError error = (AuthenticationError) o;
-        Application application = Robolectric.application;
+        Application application = RuntimeEnvironment.application;
         return messageMatcher.matches(error.getMessage(application))
                 && titleMatcher.matches(error.getTitle(application));
     }

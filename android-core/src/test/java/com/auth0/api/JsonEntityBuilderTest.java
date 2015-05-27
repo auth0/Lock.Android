@@ -1,6 +1,7 @@
 package com.auth0.api;
 
 import com.auth0.BaseTestCase;
+import com.auth0.android.BuildConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteStreams;
@@ -23,7 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class JsonEntityBuilderTest extends BaseTestCase {
 
     private static final String JSON = "{\"key\":\"value\"}";

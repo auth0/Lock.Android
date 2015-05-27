@@ -44,7 +44,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class LockBuilderTest {
 
     private static final String CLIENT_ID = "CLIENTID";

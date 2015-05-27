@@ -26,6 +26,7 @@ package com.auth0.lock.validation;
 
 import android.support.v4.app.Fragment;
 
+import com.auth0.android.BuildConfig;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 
@@ -46,7 +47,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
+@Config(constants = BuildConfig.class, sdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
 public class SignUpValidatorTest {
 
     private Validator validator;

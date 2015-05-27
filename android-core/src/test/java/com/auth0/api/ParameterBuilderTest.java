@@ -3,6 +3,7 @@ package com.auth0.api;
 import android.os.Build;
 
 import com.auth0.BaseTestCase;
+import com.auth0.android.BuildConfig;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -21,7 +22,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class ParameterBuilderTest extends BaseTestCase {
 
     public static final String CLIENT_ID = "CLIENT ID";

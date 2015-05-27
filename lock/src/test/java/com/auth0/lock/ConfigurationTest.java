@@ -24,6 +24,7 @@
 
 package com.auth0.lock;
 
+import com.auth0.android.*;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategies;
@@ -66,7 +67,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = com.auth0.android.BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class ConfigurationTest {
 
     private static final String CUSTOM_DATABASE = "CustomDatabase";

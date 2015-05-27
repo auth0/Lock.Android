@@ -1,6 +1,7 @@
 package com.auth0.core;
 
 import com.auth0.BaseTestCase;
+import com.auth0.android.BuildConfig;
 import com.google.common.collect.Lists;
 
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class ApplicationTest extends BaseTestCase {
 
     public static final String ID = "ID";

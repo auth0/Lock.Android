@@ -24,6 +24,7 @@
 
 package com.auth0.lock.error;
 
+import com.auth0.android.BuildConfig;
 import com.auth0.api.APIClientException;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
@@ -33,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
@@ -46,7 +48,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
+@Config(constants = BuildConfig.class, sdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
 public class LoginAuthenticationErrorBuilderTest {
 
     private AuthenticationErrorBuilder builder;
@@ -90,7 +92,7 @@ public class LoginAuthenticationErrorBuilderTest {
         errors.put("error_description", "custom error");
         Throwable exception = new APIClientException("error", 401, errors);
         AuthenticationError error = builder.buildFrom(exception);
-        assertThat(error.getMessage(Robolectric.application), equalTo("custom error"));
+        assertThat(error.getMessage(RuntimeEnvironment.application), equalTo("custom error"));
         assertThat(error.getThrowable(), equalTo(exception));
     }
 
