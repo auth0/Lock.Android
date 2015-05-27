@@ -98,7 +98,6 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             defaultConnection = arguments.getParcelable(DEFAULT_CONNECTION_ARGUMENT);
         } else {
             defaultConnection = configuration.getDefaultDatabaseConnection();
-
         }
         String connection = defaultConnection != null ? defaultConnection.getName() : null;
         requiresUsername = defaultConnection != null && defaultConnection.booleanForKey("requires_username");
@@ -111,7 +110,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         showCancel = !arguments.getBoolean(IS_MAIN_LOGIN_ARGUMENT);
         hasDB = configuration.getDefaultDatabaseConnection() != null;
         useEmail = useEmail && hasDB;
-        showSignUp = showResetPassword = hasDB;
+        showSignUp = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showSignUp");
+        showResetPassword = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showForgot");;
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail, requiresUsername);
         matcher = new DomainMatcher(configuration.getEnterpriseStrategies());
