@@ -49,8 +49,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
-    compile project(':facebook')
-    compile project(':googleplus')
     compile project(':sms')
+    compile project(':integrations:facebook:facebook')
+    compile project(':integrations:googleplus:googleplus')
     compile libraries.app_compat
 }
