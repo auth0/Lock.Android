@@ -47,7 +47,6 @@ public class Application {
         checkArgument(id != null, "id must be non-null");
         checkArgument(tenant != null, "tenant must be non-null");
         checkArgument(authorizeURL != null, "authorize must be non-null");
-        checkArgument(callbackURL != null, "callback must be non-null");
         checkArgument(strategies != null && strategies.size() > 0, "Must have at least 1 strategy");
         this.id = id;
         this.tenant = tenant;
