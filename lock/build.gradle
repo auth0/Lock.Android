@@ -29,9 +29,8 @@ dependencies {
 
     compile project(':android-core')
     compile project(':identity-provider')
-
-    compile libraries.app_compat
     compile 'com.squareup:otto:1.3.5'
+    compile libraries.app_compat
 
     testCompile libraries.testing
 }

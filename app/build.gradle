@@ -49,8 +49,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
-    compile project(':facebook')
-    compile project(':googleplus')
     compile project(':sms')
+    compile(project(':integrations:facebook')) {
+        exclude module: 'identity-core'
+    }
+    compile(project(':integrations:googleplus')) {
+        exclude module: 'identity-core'
+    }
     compile libraries.app_compat
 }

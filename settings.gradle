@@ -1,1 +1,2 @@
-include ':app', ':lock', ':android-core', ':facebook', ':googleplus', ':sms', ':identity-provider'
+include ':app', ':lock', ':android-core', ':sms', ':identity-provider'
+include ':integrations:googleplus', ':integrations:facebook'

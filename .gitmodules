@@ -1,0 +1,6 @@
+[submodule "integrations/googleplus"]
+	path = integrations/googleplus
+	url = git@github.com:auth0/Lock-GooglePlus.Android.git
+[submodule "integrations/facebook"]
+	path = integrations/facebook
+	url = git@github.com:auth0/Lock-Facebook.Android.git
