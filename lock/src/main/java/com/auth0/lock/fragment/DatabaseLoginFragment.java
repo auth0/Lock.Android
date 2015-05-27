@@ -45,6 +45,7 @@ import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Configuration;
+import com.auth0.lock.Lock;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -88,7 +89,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments() != null ? getArguments() : new Bundle();
-        Configuration configuration = getLock().getConfiguration();
+        final Lock lock = getLock();
+        Configuration configuration = lock.getConfiguration();
         if (arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
             defaultConnection = enterpriseConnection;
@@ -110,8 +112,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         showCancel = !arguments.getBoolean(IS_MAIN_LOGIN_ARGUMENT);
         hasDB = configuration.getDefaultDatabaseConnection() != null;
         useEmail = useEmail && hasDB;
-        showSignUp = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showSignUp");
-        showResetPassword = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showForgot");;
+        showSignUp = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showSignup") && lock.isSignUpEnabled();
+        showResetPassword = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showForgot") && lock.isChangePasswordEnabled();
         errorBuilder = new LoginAuthenticationErrorBuilder();
         validator = new LoginValidator(useEmail, requiresUsername);
         matcher = new DomainMatcher(configuration.getEnterpriseStrategies());
