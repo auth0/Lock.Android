@@ -24,6 +24,8 @@
 
 package com.auth0.lock.sms.validation;
 
+import com.auth0.android.BuildConfig;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +36,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
+@Config(constants = BuildConfig.class, sdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
 public class SmsPasscodeValidatorTest {
 
     private static final int FIELD_RESOURCE = 0;

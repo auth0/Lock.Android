@@ -51,7 +51,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class WebIdentityProviderTest {
 
     private static final String SERVICE_NAME = "I.O.U. a service name";

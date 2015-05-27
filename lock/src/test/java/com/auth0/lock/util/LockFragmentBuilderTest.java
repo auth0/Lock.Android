@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
+import com.auth0.android.BuildConfig;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategies;
@@ -60,7 +61,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class LockFragmentBuilderTest {
 
     private LockFragmentBuilder builder;

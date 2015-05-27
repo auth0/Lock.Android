@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion compile.maxSdk
+    buildToolsVersion compile.buildToolsVersion
 
     defaultConfig {
+        minSdkVersion compile.minSdk
+        targetSdkVersion compile.maxSdk
         applicationId "com.auth0.app.Lock"
-        minSdkVersion 14
-        targetSdkVersion 21
         versionCode 1
         versionName "1.0.0"
     }
@@ -52,5 +52,5 @@ dependencies {
     compile project(':facebook')
     compile project(':googleplus')
     compile project(':sms')
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile libraries.app_compat
 }

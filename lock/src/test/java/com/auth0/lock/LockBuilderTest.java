@@ -44,7 +44,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class LockBuilderTest {
 
     private static final String CLIENT_ID = "CLIENTID";
@@ -223,6 +223,29 @@ public class LockBuilderTest {
         builder
             .clientId(CLIENT_ID)
             .build();
+    }
+
+    @Test
+    public void shouldEnableSignUpAndChangePasswordByDefault() throws Exception {
+        lock = basicBuilder().build();
+        assertThat(lock.isChangePasswordEnabled(), is(true));
+        assertThat(lock.isSignUpEnabled(), is(true));
+    }
+
+    @Test
+    public void shouldDisableSignUp() throws Exception {
+        lock = basicBuilder()
+                .disableSignUp(true)
+                .build();
+        assertThat(lock.isSignUpEnabled(), is(false));
+    }
+
+    @Test
+    public void shouldDisableChangePassword() throws Exception {
+        lock = basicBuilder()
+                .disableChangePassword(true)
+                .build();
+        assertThat(lock.isChangePasswordEnabled(), is(false));
     }
 
     private LockBuilder basicBuilder() {

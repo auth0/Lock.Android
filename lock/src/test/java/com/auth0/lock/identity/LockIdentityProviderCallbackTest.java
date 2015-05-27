@@ -26,6 +26,7 @@ package com.auth0.lock.identity;
 
 import android.app.Dialog;
 
+import com.auth0.android.BuildConfig;
 import com.auth0.core.Token;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
@@ -48,7 +49,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class LockIdentityProviderCallbackTest {
 
     private static final String ACCESS_TOKEN = "I.O.U an access token";

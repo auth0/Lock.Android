@@ -1,6 +1,7 @@
 package com.auth0.core;
 
 import com.auth0.BaseTestCase;
+import com.auth0.android.BuildConfig;
 import com.google.common.collect.Maps;
 
 import org.junit.Rule;
@@ -22,7 +23,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class ConnectionTest extends BaseTestCase {
 
     public static final String CONNECTION_NAME = "Username-Password";

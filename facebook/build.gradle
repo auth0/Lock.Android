@@ -25,12 +25,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion compile.maxSdk
+    buildToolsVersion compile.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 21
+        minSdkVersion compile.minSdk
+        targetSdkVersion compile.maxSdk
     }
 
     buildTypes {
@@ -43,7 +43,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile libraries.app_compat
     compile project(':identity-provider')
     compile 'com.facebook.android:facebook-android-sdk:3.21.1'
 }

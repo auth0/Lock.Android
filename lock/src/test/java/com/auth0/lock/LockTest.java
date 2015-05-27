@@ -29,8 +29,6 @@ import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
 
-import org.hamcrest.Matchers;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,14 +38,12 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class LockTest {
 
     private static final String NAME = Strategies.Facebook.getName();

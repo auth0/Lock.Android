@@ -72,6 +72,8 @@ public class LockBuilder {
     private String defaultDBConnectionName;
     private List<String> connections;
     private boolean fullscreen;
+    private boolean disableSignUp;
+    private boolean disableChangePassword;
 
     public LockBuilder() {
         this.loginAfterSignUp = true;
@@ -193,6 +195,16 @@ public class LockBuilder {
         return this;
     }
 
+    public LockBuilder disableSignUp(boolean disableSignUp) {
+        this.disableSignUp = disableSignUp;
+        return this;
+    }
+
+    public LockBuilder disableChangePassword(boolean disableChangePassword) {
+        this.disableChangePassword = disableChangePassword;
+        return this;
+    }
+
     /**
      * Create a {@link com.auth0.lock.Lock} instance with the values stored.
      * @return
@@ -200,14 +212,16 @@ public class LockBuilder {
     public Lock build() {
         resolveConfiguration();
         Lock lock = buildLock();
-        lock.setUseWebView(this.useWebView);
-        lock.setLoginAfterSignUp(this.loginAfterSignUp);
-        lock.setClosable(this.closable);
-        lock.setAuthenticationParameters(this.parameters);
-        lock.setUseEmail(this.useEmail);
-        lock.setConnections(this.connections);
-        lock.setDefaultDatabaseConnection(this.defaultDBConnectionName);
+        lock.setUseWebView(useWebView);
+        lock.setLoginAfterSignUp(loginAfterSignUp);
+        lock.setClosable(closable);
+        lock.setAuthenticationParameters(parameters);
+        lock.setUseEmail(useEmail);
+        lock.setConnections(connections);
+        lock.setDefaultDatabaseConnection(defaultDBConnectionName);
         lock.setFullScreen(fullscreen);
+        lock.setSignUpEnabled(!disableSignUp);
+        lock.setChangePasswordEnabled(!disableChangePassword);
         return lock;
     }
 

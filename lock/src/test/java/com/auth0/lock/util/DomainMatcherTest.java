@@ -24,6 +24,7 @@
 
 package com.auth0.lock.util;
 
+import com.auth0.android.BuildConfig;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
@@ -55,7 +56,7 @@ import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class DomainMatcherTest {
 
     public static final String ONE_COM = "1.com";

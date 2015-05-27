@@ -26,6 +26,8 @@ package com.auth0.identity.web;
 
 import android.net.Uri;
 
+import com.auth0.android.BuildConfig;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +44,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class CallbackParserTest {
 
     private static final String VALUE_STRING = "access_token=dAj4h5dZk93J56jm&token_type=Bearer&state=HvzHSoleBlWp63fi";

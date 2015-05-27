@@ -44,7 +44,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(sdk = 18, manifest = Config.NONE)
 public class APIResponseHandlerTest extends BaseTestCase {
 
     private static final Throwable EXCEPTION = new RuntimeException();
