@@ -50,7 +50,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
     compile project(':sms')
-    compile project(':integrations:facebook')
-    compile project(':integrations:googleplus')
+    compile 'com.auth0.android:lock-facebook:1.+'
+    compile 'com.auth0.android:lock-googleplus:1.+'
     compile libraries.app_compat
 }

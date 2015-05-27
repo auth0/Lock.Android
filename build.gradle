@@ -38,7 +38,7 @@ ext.libraries = [
 ]
 
 ext.compile = [
-        minSdk: 12,
+        minSdk: 14,
         maxSdk: 22,
         buildToolsVersion: "21.1.2"
 ]
