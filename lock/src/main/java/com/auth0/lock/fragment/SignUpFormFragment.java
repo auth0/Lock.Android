@@ -47,6 +47,8 @@ import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
+import com.auth0.lock.credentials.CredentialStore;
+import com.auth0.lock.credentials.CredentialStoreCallback;
 import com.auth0.lock.error.AuthenticationErrorBuilder;
 import com.auth0.lock.error.SignUpAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -186,11 +188,27 @@ public class SignUpFormFragment extends Fragment {
         if (loginAfterSignUp) {
             client.signUp(email, username, password, authenticationParameters, new AuthenticationCallback() {
                 @Override
-                public void onSuccess(UserProfile profile, Token token) {
-                    bus.post(new AuthenticationEvent(profile, token));
-                    accessButton.setEnabled(true);
-                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
-                    progressBar.setVisibility(View.GONE);
+                public void onSuccess(final UserProfile profile, final Token token) {
+                    CredentialStore store = getLock().getCredentialStore();
+                    store.save(email, password, new CredentialStoreCallback() {
+                        @Override
+                        public void onSuccess() {
+                            postAuthEvent();
+                        }
+
+                        @Override
+                        public void onError(int errorCode, Throwable e) {
+                            Log.w(TAG, "Failed to save credentials with code " + errorCode, e);
+                            postAuthEvent();
+                        }
+
+                        private void postAuthEvent() {
+                            bus.post(new AuthenticationEvent(profile, token));
+                            accessButton.setEnabled(true);
+                            accessButton.setText(R.string.com_auth0_db_login_btn_text);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
                 }
 
                 @Override
