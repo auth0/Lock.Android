@@ -49,7 +49,7 @@ public class LockApplication extends Application implements LockProvider {
                 .useEmail(true)
                 .fullscreen(false)
                 .build();
-        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider());
+        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider(this));
         lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));
     }
 
