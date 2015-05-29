@@ -301,7 +301,9 @@ public class Lock {
     }
 
     public void setCredentialStore(CredentialStore credentialStore) {
-        this.credentialStore = credentialStore;
+        if (credentialStore != null) {
+            this.credentialStore = credentialStore;
+        }
     }
 
     /**

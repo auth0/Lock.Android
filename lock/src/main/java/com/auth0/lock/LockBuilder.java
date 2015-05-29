@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
+import com.auth0.lock.credentials.CredentialStore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,6 +75,7 @@ public class LockBuilder {
     private boolean fullscreen;
     private boolean disableSignUp;
     private boolean disableChangePassword;
+    private CredentialStore store;
 
     public LockBuilder() {
         this.loginAfterSignUp = true;
@@ -222,6 +224,7 @@ public class LockBuilder {
         lock.setFullScreen(fullscreen);
         lock.setSignUpEnabled(!disableSignUp);
         lock.setChangePasswordEnabled(!disableChangePassword);
+        lock.setCredentialStore(store);
         return lock;
     }
 
@@ -260,6 +263,17 @@ public class LockBuilder {
         this.useEmail = useEmail;
         return this;
     }
+
+    /**
+     * The credential store that Lock will use to store user's credentials on Sign Up.
+     * @param store a credential store
+     * @return itself
+     */
+    public LockBuilder useCredentialStore(CredentialStore store) {
+        this.store = store;
+        return this;
+    }
+
 
     private Lock buildLock() {
         Lock lock;
