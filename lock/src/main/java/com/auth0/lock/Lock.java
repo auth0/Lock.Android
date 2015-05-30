@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class that allows to change the behaviour of Lock using its options.
+ * Lock is the class that allows to change the behaviour of Lock using its options.
  */
 public class Lock {
 
@@ -303,6 +303,8 @@ public class Lock {
     public void setCredentialStore(CredentialStore credentialStore) {
         if (credentialStore != null) {
             this.credentialStore = credentialStore;
+        } else {
+            this.credentialStore = new NullCredentialStore();
         }
     }
 
