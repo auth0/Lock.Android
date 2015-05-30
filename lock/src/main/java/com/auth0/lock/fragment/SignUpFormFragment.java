@@ -190,7 +190,7 @@ public class SignUpFormFragment extends Fragment {
                 @Override
                 public void onSuccess(final UserProfile profile, final Token token) {
                     CredentialStore store = getLock().getCredentialStore();
-                    store.save(email, password, new CredentialStoreCallback() {
+                    store.saveFromActivity(getActivity(), email, password, new CredentialStoreCallback() {
                         @Override
                         public void onSuccess() {
                             postAuthEvent();
