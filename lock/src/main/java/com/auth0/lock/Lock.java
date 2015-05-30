@@ -28,6 +28,8 @@ import com.auth0.api.APIClient;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
 import com.auth0.identity.web.CallbackParser;
+import com.auth0.lock.credentials.CredentialStore;
+import com.auth0.lock.credentials.NullCredentialStore;
 import com.squareup.otto.Bus;
 
 import java.util.HashMap;
@@ -35,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class that allows to change the behaviour of Lock using its options.
+ * Lock is the class that allows to change the behaviour of Lock using its options.
  */
 public class Lock {
 
@@ -78,6 +80,7 @@ public class Lock {
     private String defaultDatabaseConnection;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
+    private CredentialStore credentialStore;
 
     public Lock(APIClient apiClient) {
         this.useWebView = false;
@@ -91,6 +94,7 @@ public class Lock {
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
+        this.credentialStore = new NullCredentialStore();
     }
 
     /**
@@ -276,6 +280,10 @@ public class Lock {
         this.signUpEnabled = signUpEnabled;
     }
 
+    /**
+     * If Lock has SignUp action enabled
+     * @return
+     */
     public boolean isSignUpEnabled() {
         return signUpEnabled;
     }
@@ -284,7 +292,28 @@ public class Lock {
         this.changePasswordEnabled = changePasswordEnabled;
     }
 
+    /**
+     * If Lock has Change Password action enabled
+     * @return
+     */
     public boolean isChangePasswordEnabled() {
         return changePasswordEnabled;
+    }
+
+    public void setCredentialStore(CredentialStore credentialStore) {
+        if (credentialStore != null) {
+            this.credentialStore = credentialStore;
+        } else {
+            this.credentialStore = new NullCredentialStore();
+        }
+    }
+
+    /**
+     * Lock's credential store for user's credentials e.g. Google's Smart Lock
+     * By default no credentials are stored.
+     * @return an instance of CredentialStore
+     */
+    public CredentialStore getCredentialStore() {
+        return credentialStore;
     }
 }

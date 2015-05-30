@@ -28,16 +28,20 @@ import com.auth0.api.APIClient;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
+import com.auth0.lock.credentials.NullCredentialStore;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Null;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -76,5 +80,11 @@ public class LockTest {
     @Test
     public void shouldReturnDefaultWithUnknownProvider() throws Exception {
         assertThat(lock.providerForName("UNKOWN"), instanceOf(WebIdentityProvider.class));
+    }
+
+    @Test
+    public void shouldUseDefaultCredentialStoreWhenSettingNull() throws Exception {
+        lock.setCredentialStore(null);
+        assertThat(lock.getCredentialStore(), is(instanceOf(NullCredentialStore.class)));
     }
 }

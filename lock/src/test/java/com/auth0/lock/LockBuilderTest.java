@@ -25,12 +25,17 @@
 package com.auth0.lock;
 
 import com.auth0.api.APIClient;
+import com.auth0.lock.credentials.CredentialStore;
+import com.auth0.lock.credentials.NullCredentialStore;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -39,6 +44,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -59,11 +65,15 @@ public class LockBuilderTest {
     private LockBuilder builder;
     private Lock lock;
 
+    @Mock
+    private CredentialStore store;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    
+
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         builder = new LockBuilder();
         lock = null;
     }
@@ -246,6 +256,29 @@ public class LockBuilderTest {
                 .disableChangePassword(true)
                 .build();
         assertThat(lock.isChangePasswordEnabled(), is(false));
+    }
+
+    @Test
+    public void shouldSetACredentialStore() throws Exception {
+        lock = basicBuilder()
+                .useCredentialStore(store)
+                .build();
+        assertThat(lock.getCredentialStore(), is(store));
+    }
+
+    @Test
+    public void shouldSetADefaultCredentialStore() throws Exception {
+        lock = basicBuilder()
+                .build();
+        assertThat(lock.getCredentialStore(), is(instanceOf(NullCredentialStore.class)));
+    }
+
+    @Test
+    public void shouldSetADefaultCredentialStoreWhenSettingNull() throws Exception {
+        lock = basicBuilder()
+                .useCredentialStore(null)
+                .build();
+        assertThat(lock.getCredentialStore(), is(instanceOf(NullCredentialStore.class)));
     }
 
     private LockBuilder basicBuilder() {

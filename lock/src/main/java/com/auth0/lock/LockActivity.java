@@ -165,7 +165,10 @@ public class LockActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.v(TAG, "Child activity result obtained");
-        identity.authorize(this, requestCode, resultCode, data);
+        if (identity != null) {
+            identity.authorize(this, requestCode, resultCode, data);
+        }
+        lock.getCredentialStore().onActivityResult(this, requestCode, resultCode, data);
     }
 
 
