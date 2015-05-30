@@ -48,12 +48,12 @@ import com.auth0.lock.Lock;
 import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 import com.auth0.lock.credentials.CredentialStore;
-import com.auth0.lock.credentials.CredentialStoreCallback;
 import com.auth0.lock.error.AuthenticationErrorBuilder;
 import com.auth0.lock.error.SignUpAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.SignUpEvent;
+import com.auth0.lock.util.LockCredentialStoreCallback;
 import com.auth0.lock.validation.SignUpValidator;
 import com.auth0.lock.widget.CredentialField;
 import com.squareup.otto.Bus;
@@ -186,57 +186,76 @@ public class SignUpFormFragment extends Fragment {
         final String email = useEmail || requiresUsername ? emailField.getText().toString().trim() : null;
         final String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
-            client.signUp(email, username, password, authenticationParameters, new AuthenticationCallback() {
-                @Override
-                public void onSuccess(final UserProfile profile, final Token token) {
-                    CredentialStore store = getLock().getCredentialStore();
-                    store.saveFromActivity(getActivity(), email, password, new CredentialStoreCallback() {
-                        @Override
-                        public void onSuccess() {
-                            postAuthEvent();
-                        }
-
-                        @Override
-                        public void onError(int errorCode, Throwable e) {
-                            Log.w(TAG, "Failed to save credentials with code " + errorCode, e);
-                            postAuthEvent();
-                        }
-
-                        private void postAuthEvent() {
-                            bus.post(new AuthenticationEvent(profile, token));
-                            accessButton.setEnabled(true);
-                            accessButton.setText(R.string.com_auth0_db_login_btn_text);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Throwable error) {
-                    bus.post(errorBuilder.buildFrom(error));
-                    accessButton.setEnabled(true);
-                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
+            client.signUp(email, username, password, authenticationParameters, new SignUpAuthenticationCallback(password));
         } else {
-            client.createUser(email, username, password, authenticationParameters, new BaseCallback<Void>() {
-                @Override
-                public void onSuccess(Void payload) {
-                    bus.post(new SignUpEvent(username));
-                    accessButton.setEnabled(true);
-                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
-                    progressBar.setVisibility(View.GONE);
-                }
+            client.createUser(email, username, password, authenticationParameters, new SignUpCallback(email, username, password));
+        }
+    }
 
+    private class SignUpAuthenticationCallback implements AuthenticationCallback {
+
+        private String password;
+
+        public SignUpAuthenticationCallback(String password) {
+            this.password = password;
+        }
+
+        @Override
+        public void onSuccess(final UserProfile profile, final Token token) {
+            CredentialStore store = getLock().getCredentialStore();
+            store.saveFromActivity(getActivity(), profile.getNickname(), profile.getEmail(), password, profile.getPictureURL(), new LockCredentialStoreCallback() {
                 @Override
-                public void onFailure(Throwable error) {
-                    bus.post(errorBuilder.buildFrom(error));
+                protected void postEvent() {
+                    bus.post(new AuthenticationEvent(profile, token));
                     accessButton.setEnabled(true);
                     accessButton.setText(R.string.com_auth0_db_login_btn_text);
                     progressBar.setVisibility(View.GONE);
                 }
             });
         }
+
+        @Override
+        public void onFailure(Throwable error) {
+            bus.post(errorBuilder.buildFrom(error));
+            accessButton.setEnabled(true);
+            accessButton.setText(R.string.com_auth0_db_login_btn_text);
+            progressBar.setVisibility(View.GONE);
+        }
     }
+
+    private class SignUpCallback implements BaseCallback<Void> {
+
+        private final String email;
+        private final String username;
+        private final String password;
+
+        public SignUpCallback(String email, String username, String password) {
+            this.email = email;
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        public void onSuccess(Void payload) {
+            CredentialStore store = getLock().getCredentialStore();
+            store.saveFromActivity(getActivity(), username, email, password, null, new LockCredentialStoreCallback() {
+                @Override
+                protected void postEvent() {
+                    bus.post(new SignUpEvent(email != null ? email : username));
+                    accessButton.setEnabled(true);
+                    accessButton.setText(R.string.com_auth0_db_login_btn_text);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(Throwable error) {
+            bus.post(errorBuilder.buildFrom(error));
+            accessButton.setEnabled(true);
+            accessButton.setText(R.string.com_auth0_db_login_btn_text);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
 }
