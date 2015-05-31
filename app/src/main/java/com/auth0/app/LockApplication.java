@@ -43,7 +43,7 @@ public class LockApplication extends Application implements LockProvider {
     @Override
     public void onCreate() {
         super.onCreate();
-        lock = new LockBuilder()
+        lock = new Lock.Builder()
                 .loadFromApplication(this)
                 .closable(true)
                 .useEmail(true)

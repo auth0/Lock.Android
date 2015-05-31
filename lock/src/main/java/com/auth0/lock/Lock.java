@@ -27,8 +27,14 @@ package com.auth0.lock;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.ParameterBuilder;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
 import com.auth0.identity.web.CallbackParser;
@@ -36,6 +42,7 @@ import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
 import com.squareup.otto.Bus;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +110,7 @@ public class Lock {
 
     /**
      * A instance of {@link com.auth0.api.APIClient} used by Lock
+     *
      * @return a client
      */
     public APIClient getAPIClient() {
@@ -111,6 +119,7 @@ public class Lock {
 
     /**
      * A instance of {@link com.squareup.otto.Bus} where all internal events are sent.
+     *
      * @return a bus used internally
      */
     public Bus getBus() {
@@ -123,16 +132,8 @@ public class Lock {
      * <pre>{@code
      * <activity android:name="com.auth0.identity.web.WebViewActivity" android:theme="@style/Lock.Theme"/>
      * }</pre>
-     * @param useWebView if Lock should use an embedded {@link android.webkit.WebView} or not
-     */
-    public void setUseWebView(boolean useWebView) {
-        this.useWebView = useWebView;
-        this.defaultProvider.setUseWebView(useWebView);
-    }
-
-    /**
-     * Flag that tells Lock to use an embedded {@link android.webkit.WebView}. Default is {@code false}
-     * @return if Lock uses a {@link android.webkit.WebView}
+     *
+     * @return if Lock uses a {@link android.webkit.WebView}. Default is false
      */
     public boolean shouldUseWebView() {
         return useWebView;
@@ -140,14 +141,7 @@ public class Lock {
 
     /**
      * Make Lock login a newly created user. Default is {@code true}
-     * @param loginAfterSignUp If Lock performs signup + login
-     */
-    public void setLoginAfterSignUp(boolean loginAfterSignUp) {
-        this.loginAfterSignUp = loginAfterSignUp;
-    }
-
-    /**
-     * Make Lock login a newly created user. Default is {@code true}
+     *
      * @return If Lock performs signup + login
      */
     public boolean shouldLoginAfterSignUp() {
@@ -156,6 +150,7 @@ public class Lock {
 
     /**
      * Allows Lock activities to be closed by pressing back button. Default is {@code false}
+     *
      * @return if back button is enabled for Lock
      */
     public boolean isClosable() {
@@ -163,23 +158,8 @@ public class Lock {
     }
 
     /**
-     * Allows Lock activity to be closed by pressing back button. Default is {@code false}
-     * @param closable if back button is enabled for Lock
-     */
-    public void setClosable(boolean closable) {
-        this.closable = closable;
-    }
-
-    /**
      * Use Email to authenticate, otherwise use username. Default is {@code true}
-     * @param useEmail use email or username
-     */
-    public void setUseEmail(boolean useEmail) {
-        this.useEmail = useEmail;
-    }
-
-    /**
-     * Use Email to authenticate, otherwise use username. Default is {@code true}
+     *
      * @return use email or username
      */
     public boolean shouldUseEmail() {
@@ -188,6 +168,7 @@ public class Lock {
 
     /**
      * Extra parameters sent to Auth0 API during authentication
+     *
      * @return extra parameters for the API
      */
     public Map<String, Object> getAuthenticationParameters() {
@@ -195,18 +176,10 @@ public class Lock {
     }
 
     /**
-     * Extra parameters sent to Auth0 API during authentication
-     * @param authenticationParameters extra parameters for the API
-     */
-    public void setAuthenticationParameters(Map<String, Object> authenticationParameters) {
-        this.authenticationParameters = authenticationParameters;
-        this.defaultProvider.setParameters(authenticationParameters);
-    }
-
-    /**
      * Set a native handler for a specific Identity Provider (IdP), e.g.: Facebook
+     *
      * @param serviceName name of the Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
-     * @param provider IdP handler
+     * @param provider    IdP handler
      */
     public void setProvider(String serviceName, IdentityProvider provider) {
         providers.put(serviceName, provider);
@@ -214,6 +187,7 @@ public class Lock {
 
     /**
      * Finds a custom IdP handler by service name.
+     *
      * @param serviceName name of the service
      * @return a custom handler or null
      */
@@ -224,6 +198,7 @@ public class Lock {
 
     /**
      * Default provider for every Auth0 Authentication strategy
+     *
      * @return a default provider
      */
     public IdentityProvider getDefaultProvider() {
@@ -234,7 +209,7 @@ public class Lock {
      * Clears all session information stored in custom IdP handlers.
      */
     public void resetAllProviders() {
-        for (IdentityProvider provider: this.providers.values()) {
+        for (IdentityProvider provider : this.providers.values()) {
             provider.stop();
         }
         this.defaultProvider.stop();
@@ -248,16 +223,8 @@ public class Lock {
         this.configuration = configuration;
     }
 
-    public void setConnections(List<String> connections) {
-        this.connections = connections;
-    }
-
     public List<String> getConnections() {
         return connections;
-    }
-
-    public void setDefaultDatabaseConnection(String defaultDatabaseConnection) {
-        this.defaultDatabaseConnection = defaultDatabaseConnection;
     }
 
     public String getDefaultDatabaseConnection() {
@@ -265,56 +232,36 @@ public class Lock {
     }
 
     /**
-     * Shows Lock in Fullscreen mode.
-     * @param fullScreen if lock is shown in fullscreen mode
-     */
-    public void setFullScreen(boolean fullScreen) {
-        this.fullScreen = fullScreen;
-    }
-
-    /**
      * If Lock is displayed in fullscreen mode. By default is false
+     *
      * @return
      */
     public boolean isFullScreen() {
         return fullScreen;
     }
 
-    public void setSignUpEnabled(boolean signUpEnabled) {
-        this.signUpEnabled = signUpEnabled;
-    }
-
     /**
      * If Lock has SignUp action enabled
+     *
      * @return
      */
     public boolean isSignUpEnabled() {
         return signUpEnabled;
     }
 
-    public void setChangePasswordEnabled(boolean changePasswordEnabled) {
-        this.changePasswordEnabled = changePasswordEnabled;
-    }
-
     /**
      * If Lock has Change Password action enabled
+     *
      * @return
      */
     public boolean isChangePasswordEnabled() {
         return changePasswordEnabled;
     }
 
-    public void setCredentialStore(CredentialStore credentialStore) {
-        if (credentialStore != null) {
-            this.credentialStore = credentialStore;
-        } else {
-            this.credentialStore = new NullCredentialStore();
-        }
-    }
-
     /**
      * Lock's credential store for user's credentials e.g. Google's Smart Lock
      * By default no credentials are stored.
+     *
      * @return an instance of CredentialStore
      */
     public CredentialStore getCredentialStore() {
@@ -323,6 +270,7 @@ public class Lock {
 
     /**
      * Starts LockActivity from a given Activity
+     *
      * @param activity from which LockActivity will be started
      */
     public void loginFromActivity(Activity activity) {
@@ -332,6 +280,7 @@ public class Lock {
 
     /**
      * Returns the Lock object from the Application object.
+     *
      * @param activity that needs Lock instance
      * @return a Lock instance
      */
@@ -342,5 +291,305 @@ public class Lock {
         }
         LockProvider provider = (LockProvider) application;
         return provider.getLock();
+    }
+
+    /**
+     * Builder for {@link com.auth0.lock.Lock}
+     */
+    public static class Builder {
+
+        /**
+         * Key for application meta-data where Lock checks for application's ClientId
+         */
+        public static final String CLIENT_ID_KEY = "com.auth0.lock.client-id";
+        /**
+         * Key for application meta-data where Lock checks for tenant name
+         */
+        public static final String TENANT_KEY = "com.auth0.lock.tenant";
+        /**
+         * Key for application meta-data where Lock checks for domain Url
+         */
+        public static final String DOMAIN_URL_KEY = "com.auth0.lock.domain-url";
+        /**
+         * Key for application meta-data where Lock checks for configuration Url
+         */
+        public static final String CONFIGURATION_URL_KEY = "com.auth0.lock.configuration-url";
+
+        private String clientId;
+        private String tenant;
+        private String domain;
+        private String configuration;
+        private boolean useWebView;
+        private boolean closable;
+        private boolean loginAfterSignUp;
+        private Map<String, Object> parameters;
+        private boolean useEmail;
+        private String defaultDBConnectionName;
+        private List<String> connections;
+        private boolean fullscreen;
+        private boolean disableSignUp;
+        private boolean disableChangePassword;
+        private CredentialStore store;
+
+        public Builder() {
+            this.loginAfterSignUp = true;
+            this.useEmail = true;
+            this.fullscreen = false;
+            this.parameters = ParameterBuilder.newBuilder().asDictionary();
+            this.store = new NullCredentialStore();
+        }
+
+        /**
+         * Set Auth0 application ClientID
+         *
+         * @param clientId clientId
+         * @return itself
+         */
+        public Builder clientId(String clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+
+        /**
+         * Set Auth0 account tenant name
+         *
+         * @param tenant tenant name
+         * @return itself
+         * @deprecated since 1.7.0
+         */
+        @Deprecated
+        public Builder tenant(String tenant) {
+            this.tenant = tenant;
+            return this;
+        }
+
+        /**
+         * Set the default domain Url for Auth0 API
+         *
+         * @param domain url of the domain where Auth0 API is deployed
+         * @return itself
+         */
+        public Builder domainUrl(String domain) {
+            this.domain = ensureUrlString(domain);
+            return this;
+        }
+
+        /**
+         * Set the Url where the app information can be retrieved
+         *
+         * @param configuration Url that returns the app info.
+         * @return itself
+         */
+        public Builder configurationUrl(String configuration) {
+            this.configuration = ensureUrlString(configuration);
+            return this;
+        }
+
+        /**
+         * Use an embedded WebView instead of an external browser
+         *
+         * @param useWebView if Lock will use an embedded WebView or an external browser
+         * @return itself
+         */
+        public Builder useWebView(boolean useWebView) {
+            this.useWebView = useWebView;
+            return this;
+        }
+
+        /**
+         * If the login screen can be closed/dismissed
+         *
+         * @param closable if Lock will allow the login screen to be closed
+         * @return itself
+         */
+        public Builder closable(boolean closable) {
+            this.closable = closable;
+            return this;
+        }
+
+        /**
+         * If after a successful sign up, the user will be logged in too.
+         *
+         * @param loginAfterSignUp if Lock should login a user after sign up
+         * @return itself
+         */
+        public Builder loginAfterSignUp(boolean loginAfterSignUp) {
+            this.loginAfterSignUp = loginAfterSignUp;
+            return this;
+        }
+
+        /**
+         * Extra authentication parameters to send to Auth0 Auth API.
+         *
+         * @param parameters a map with extra parameters for the API.
+         * @return itself
+         */
+        public Builder authenticationParameters(Map<String, Object> parameters) {
+            this.parameters = parameters != null ? parameters : ParameterBuilder.newBuilder().asDictionary();
+            return this;
+        }
+
+        /**
+         * Make Lock pick these connections for authentication from all the enabled connections in your app.
+         * If the connection is not active in your application it will be ignored.
+         *
+         * @param connectionNames List of names of connections to use.
+         * @return itself
+         */
+        public Builder useConnections(String... connectionNames) {
+            this.connections = Arrays.asList(connectionNames);
+            return this;
+        }
+
+        /**
+         * Specify the DB connection used by Lock.
+         *
+         * @param name DB connection name
+         * @return itself.
+         */
+        public Builder defaultDatabaseConnection(String name) {
+            this.defaultDBConnectionName = name;
+            return this;
+        }
+
+        /**
+         * Shows Lock in Fullscreen mode.
+         *
+         * @param fullscreen if lock is displayed in fullscreen
+         * @return itself
+         */
+        public Builder fullscreen(boolean fullscreen) {
+            this.fullscreen = fullscreen;
+            return this;
+        }
+
+        public Builder disableSignUp(boolean disableSignUp) {
+            this.disableSignUp = disableSignUp;
+            return this;
+        }
+
+        public Builder disableChangePassword(boolean disableChangePassword) {
+            this.disableChangePassword = disableChangePassword;
+            return this;
+        }
+
+        /**
+         * Create a {@link com.auth0.lock.Lock} instance with the values stored.
+         *
+         * @return
+         */
+        public Lock build() {
+            resolveConfiguration();
+            Lock lock = buildLock();
+            lock.useWebView = useWebView;
+            lock.defaultProvider.setUseWebView(useWebView);
+            lock.loginAfterSignUp = loginAfterSignUp;
+            lock.closable = closable;
+            lock.authenticationParameters = parameters;
+            lock.defaultProvider.setParameters(parameters);
+            lock.useEmail = useEmail;
+            lock.connections = connections;
+            lock.defaultDatabaseConnection = defaultDBConnectionName;
+            lock.fullScreen = fullscreen;
+            lock.signUpEnabled = !disableSignUp;
+            lock.changePasswordEnabled = !disableChangePassword;
+            lock.credentialStore = store;
+            return lock;
+        }
+
+        /**
+         * Load ClientID, Tenant name, Domain and configuration URLs from the Android app's metadata (if available).
+         * These are the values that can be defined and it's keys:
+         * <ul>
+         * <li>{@link #CLIENT_ID_KEY}: Application's clientId in Auth0.</li>
+         * <li>{@link #TENANT_KEY}: Application's owner tenant name. (Optional if you supply Domain and Configuration URLs)</li>
+         * <li>{@link #DOMAIN_URL_KEY}: URL where the Auth0 API is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
+         * <li>{@link #CONFIGURATION_URL_KEY}: URL where Auth0 apps information is available. (Optional if you supply ClientID/Tenant and you use Auth0 in the cloud)</li>
+         * </ul>
+         *
+         * @param application an instance of {@link android.app.Application}
+         * @return itself
+         */
+        public Builder loadFromApplication(Application application) {
+            try {
+                ApplicationInfo ai = application.getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
+                Bundle bundle = ai.metaData;
+                this.clientId(bundle.getString(CLIENT_ID_KEY))
+                        .tenant(bundle.getString(TENANT_KEY))
+                        .domainUrl(bundle.getString(DOMAIN_URL_KEY))
+                        .configurationUrl(bundle.getString(CONFIGURATION_URL_KEY));
+            } catch (PackageManager.NameNotFoundException e) {
+                throw new IllegalArgumentException("Failed to read info from AndroidManifest.xml", e);
+            }
+            return this;
+        }
+
+        /**
+         * If it should ask for email or username. By default is <code>true</code>
+         *
+         * @param useEmail if Lock ask for email or username.
+         * @return itself
+         */
+        public Builder useEmail(boolean useEmail) {
+            this.useEmail = useEmail;
+            return this;
+        }
+
+        /**
+         * The credential store that Lock will use to store user's credentials on Sign Up.
+         *
+         * @param store a credential store
+         * @return itself
+         */
+        public Builder useCredentialStore(CredentialStore store) {
+            if (store != null) {
+                this.store = store;
+            } else {
+                this.store = new NullCredentialStore();
+            }
+            return this;
+        }
+
+
+        private Lock buildLock() {
+            Lock lock;
+            if (this.clientId == null) {
+                throw new IllegalArgumentException("Must supply a non-null ClientId");
+            }
+            if (this.domain != null) {
+                lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
+            } else if (this.tenant != null) {
+                lock = new Lock(new APIClient(this.clientId, this.tenant));
+            } else {
+                throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
+            }
+            return lock;
+        }
+
+        private void resolveConfiguration() {
+            if (this.configuration == null && this.domain != null) {
+                final Uri domainUri = Uri.parse(this.domain);
+                final String host = domainUri.getHost();
+                if (host.endsWith(".auth0.com")) {
+                    this.configuration = host.endsWith(".eu.auth0.com") ? APIClient.AUTH0_EU_CDN_URL : APIClient.AUTH0_US_CDN_URL;
+                } else {
+                    this.configuration = this.domain;
+                }
+            }
+        }
+
+        private String ensureUrlString(String url) {
+            String safeUrl = null;
+            if (url != null) {
+                safeUrl = url.startsWith("http") ? url : "https://" + url;
+                if (safeUrl.startsWith("http://")) {
+                    Log.w(Builder.class.getName(), "You should use (https) instead of (http) for url " + url);
+                }
+            } else {
+                Log.w(Builder.class.getName(), "A null url was supplied to LockBuilder");
+            }
+            return safeUrl;
+        }
+
     }
 }

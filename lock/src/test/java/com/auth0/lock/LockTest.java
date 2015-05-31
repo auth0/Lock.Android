@@ -81,10 +81,4 @@ public class LockTest {
     public void shouldReturnDefaultWithUnknownProvider() throws Exception {
         assertThat(lock.providerForName("UNKOWN"), instanceOf(WebIdentityProvider.class));
     }
-
-    @Test
-    public void shouldUseDefaultCredentialStoreWhenSettingNull() throws Exception {
-        lock.setCredentialStore(null);
-        assertThat(lock.getCredentialStore(), is(instanceOf(NullCredentialStore.class)));
-    }
 }
