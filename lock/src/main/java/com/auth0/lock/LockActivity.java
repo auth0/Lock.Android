@@ -33,6 +33,7 @@ import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
 import com.auth0.lock.fragment.LoadingFragment;
 import com.auth0.lock.identity.LockIdentityProviderCallback;
+import com.auth0.lock.util.ActivityUIHelper;
 import com.auth0.lock.util.LockFragmentBuilder;
 import com.squareup.otto.Subscribe;
 
@@ -100,7 +101,7 @@ public class LockActivity extends FragmentActivity {
         }
         broadcastManager = LocalBroadcastManager.getInstance(this);
         callback = new LockIdentityProviderCallback(lock.getBus());
-        configureScreenMode();
+        ActivityUIHelper.configureScreenModeForActivity(this, lock);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class LockActivity extends FragmentActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        configureScreenMode();
+        ActivityUIHelper.configureScreenModeForActivity(this, lock);
     }
 
     @Override
@@ -337,21 +338,5 @@ public class LockActivity extends FragmentActivity {
             return lock;
         }
         return Lock.getLock(this);
-    }
-
-    private void configureScreenMode() {
-        if (!lock.isFullScreen()) {
-            Log.d(TAG, "Activity in normal screen model");
-            return;
-        }
-        Log.d(TAG, "Activity in fullscreen model");
-        if (Build.VERSION.SDK_INT >= 16) {
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        } else {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
     }
 }
