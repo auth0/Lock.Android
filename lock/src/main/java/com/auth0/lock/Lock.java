@@ -25,6 +25,7 @@
 package com.auth0.lock;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 
 import com.auth0.api.APIClient;
@@ -35,7 +36,6 @@ import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
 import com.squareup.otto.Bus;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -323,11 +323,24 @@ public class Lock {
 
     /**
      * Starts LockActivity from a given Activity
-     * @param activity
+     * @param activity from which LockActivity will be started
      */
     public void loginFromActivity(Activity activity) {
         Intent loginIntent = new Intent(activity, LockActivity.class);
         activity.startActivity(loginIntent);
     }
 
+    /**
+     * Returns the Lock object from the Application object.
+     * @param activity that needs Lock instance
+     * @return a Lock instance
+     */
+    public static Lock getLock(Activity activity) {
+        Application application = activity.getApplication();
+        if (!(application instanceof LockProvider)) {
+            throw new IllegalStateException("Android Application object must implement LockProvider interface");
+        }
+        LockProvider provider = (LockProvider) application;
+        return provider.getLock();
+    }
 }

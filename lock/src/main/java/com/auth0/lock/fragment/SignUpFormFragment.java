@@ -45,7 +45,6 @@ import com.auth0.core.Connection;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.error.AuthenticationErrorBuilder;
@@ -89,7 +88,7 @@ public class SignUpFormFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
-        final Lock lock = getLock();
+        final Lock lock = Lock.getLock(getActivity());
         client = lock.getAPIClient();
         bus = lock.getBus();
         errorBuilder = new SignUpAuthenticationErrorBuilder();
@@ -163,11 +162,6 @@ public class SignUpFormFragment extends Fragment {
         return fragment;
     }
 
-    private Lock getLock() {
-        LockProvider provider = (LockProvider) getActivity().getApplication();
-        return provider.getLock();
-    }
-
     private void signUp() {
         AuthenticationError error = validator.validateFrom(this);
         boolean valid = error == null;
@@ -202,7 +196,7 @@ public class SignUpFormFragment extends Fragment {
 
         @Override
         public void onSuccess(final UserProfile profile, final Token token) {
-            CredentialStore store = getLock().getCredentialStore();
+            CredentialStore store = Lock.getLock(getActivity()).getCredentialStore();
             store.saveFromActivity(getActivity(), profile.getNickname(), profile.getEmail(), password, profile.getPictureURL(), new LockCredentialStoreCallback() {
                 @Override
                 protected void postEvent() {
@@ -237,7 +231,7 @@ public class SignUpFormFragment extends Fragment {
 
         @Override
         public void onSuccess(Void payload) {
-            CredentialStore store = getLock().getCredentialStore();
+            CredentialStore store = Lock.getLock(getActivity()).getCredentialStore();
             store.saveFromActivity(getActivity(), username, email, password, null, new LockCredentialStoreCallback() {
                 @Override
                 protected void postEvent() {

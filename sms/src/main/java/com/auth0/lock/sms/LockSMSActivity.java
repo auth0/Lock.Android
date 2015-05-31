@@ -36,7 +36,6 @@ import android.view.WindowManager;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockProvider;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
@@ -159,8 +158,7 @@ public class LockSMSActivity extends FragmentActivity {
         if (lock != null) {
             return lock;
         }
-        LockProvider provider = (LockProvider) getApplication();
-        return provider.getLock();
+        return Lock.getLock(this);
     }
 
     private void fullscreenMode() {

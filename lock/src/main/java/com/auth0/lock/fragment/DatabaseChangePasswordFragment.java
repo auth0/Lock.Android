@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Connection;
+import com.auth0.lock.Lock;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.ChangePasswordEvent;
@@ -101,7 +102,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
             }
         });
         validator = new ResetPasswordValidator(useEmail);
-        Connection connection = getLock().getConfiguration().getDefaultDatabaseConnection();
+        Connection connection = Lock.getLock(getActivity()).getConfiguration().getDefaultDatabaseConnection();
         if (connection != null) {
             authenticationParameters = ParameterBuilder.newBuilder()
                     .setConnection(connection.getName())

@@ -336,8 +336,7 @@ public class LockActivity extends FragmentActivity {
         if (lock != null) {
             return lock;
         }
-        LockProvider provider = (LockProvider) getApplication();
-        return provider.getLock();
+        return Lock.getLock(this);
     }
 
     private void configureScreenMode() {

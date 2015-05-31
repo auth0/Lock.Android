@@ -48,7 +48,7 @@ public class SocialSignUpFragment extends BaseTitledFragment {
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
             ArrayList<String> services = bundle.getStringArrayList(SOCIAL_FRAGMENT_STRATEGIES_ARGUMENT);
-            Lock lock = getLock();
+            Lock lock = Lock.getLock(getActivity());
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.com_auth0_social_list_container, SmallSocialListFragment.newFragment(services))
                     .replace(R.id.com_auth0_signup_form_container, SignUpFormFragment.newFragment(lock.shouldUseEmail(), lock.shouldLoginAfterSignUp(), lock.getAuthenticationParameters()))
