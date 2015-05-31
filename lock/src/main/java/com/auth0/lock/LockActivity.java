@@ -100,15 +100,13 @@ public class LockActivity extends FragmentActivity {
         }
         broadcastManager = LocalBroadcastManager.getInstance(this);
         callback = new LockIdentityProviderCallback(lock.getBus());
-        if (lock.isFullScreen()) {
-            fullscreenMode();
-        }
+        configureScreenMode();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        this.lock.getBus().register(this);
+        lock.getBus().register(this);
         lock.resetAllProviders();
     }
 
@@ -135,9 +133,7 @@ public class LockActivity extends FragmentActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (lock.isFullScreen()) {
-            fullscreenMode();
-        }
+        configureScreenMode();
     }
 
     @Override
@@ -183,6 +179,7 @@ public class LockActivity extends FragmentActivity {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onApplicationLoaded(Application application) {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
         Configuration configuration = new Configuration(application, lock.getConnections(), lock.getDefaultDatabaseConnection());
@@ -192,6 +189,7 @@ public class LockActivity extends FragmentActivity {
                 .commit();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onAuthentication(AuthenticationEvent event) {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
@@ -204,6 +202,7 @@ public class LockActivity extends FragmentActivity {
         finish();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onSignUpEvent(SignUpEvent event) {
         Log.i(TAG, "Signed up user " + event.getUsername());
         broadcastManager.sendBroadcast(new Intent(Lock.AUTHENTICATION_ACTION));
@@ -211,6 +210,7 @@ public class LockActivity extends FragmentActivity {
         finish();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onResetPassword(ChangePasswordEvent event) {
         Log.d(TAG, "Changed password");
         ErrorDialogBuilder.showAlertDialog(this, event);
@@ -218,6 +218,7 @@ public class LockActivity extends FragmentActivity {
         getSupportFragmentManager().popBackStack();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         if (identity != null) {
@@ -227,12 +228,14 @@ public class LockActivity extends FragmentActivity {
         ErrorDialogBuilder.showAlertDialog(this, error);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onSystemError(SystemErrorEvent event) {
         Log.e(TAG, "Android System error", event.getError());
         dismissProgressDialog();
         event.getErrorDialog().show();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
         Log.v(TAG, "About to handle navigation " + event);
         if (NavigationEvent.BACK.equals(event)) {
@@ -258,6 +261,7 @@ public class LockActivity extends FragmentActivity {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onEnterpriseAuthenticationRequest(EnterpriseAuthenticationRequest event) {
         Fragment fragment = builder.enterpriseLoginWithConnection(event.getConnection());
         getSupportFragmentManager()
@@ -267,6 +271,7 @@ public class LockActivity extends FragmentActivity {
                 .commit();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {
         Log.v(TAG, "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
@@ -278,8 +283,8 @@ public class LockActivity extends FragmentActivity {
         progressDialog.show();
     }
 
-    @Subscribe
-    public void onSocialAuthentication(IdentityProviderAuthenticationEvent event) {
+    @SuppressWarnings("unused")
+    @Subscribe public void onSocialAuthentication(IdentityProviderAuthenticationEvent event) {
         final Token token = event.getToken();
         lock.getAPIClient().fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
             @Override
@@ -294,6 +299,7 @@ public class LockActivity extends FragmentActivity {
         });
     }
 
+    @SuppressWarnings("unused")
     @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
         Log.v(TAG, "Received social accessToken " + event.getAccessToken());
         lock.getAPIClient().socialLogin(event.getService(), event.getAccessToken(), lock.getAuthenticationParameters(), new AuthenticationCallback() {
@@ -310,7 +316,7 @@ public class LockActivity extends FragmentActivity {
     }
 
     private LockFragmentBuilder newFragmentBuilder(Lock lock) {
-        final LockFragmentBuilder builder = new LockFragmentBuilder(getLock());
+        final LockFragmentBuilder builder = new LockFragmentBuilder(lock);
         Intent intent = getIntent();
         if (intent != null) {
             Bundle extras = intent.getExtras();
@@ -334,7 +340,12 @@ public class LockActivity extends FragmentActivity {
         return provider.getLock();
     }
 
-    private void fullscreenMode() {
+    private void configureScreenMode() {
+        if (!lock.isFullScreen()) {
+            Log.d(TAG, "Activity in normal screen model");
+            return;
+        }
+        Log.d(TAG, "Activity in fullscreen model");
         if (Build.VERSION.SDK_INT >= 16) {
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
