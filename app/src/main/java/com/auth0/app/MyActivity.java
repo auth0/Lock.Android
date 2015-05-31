@@ -45,8 +45,7 @@ public class MyActivity extends ActionBarActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginIntent = new Intent(MyActivity.this, LockActivity.class);
-                startActivity(loginIntent);
+                ((LockProvider) getApplication()).getLock().loginFromActivity(MyActivity.this);
             }
         });
 

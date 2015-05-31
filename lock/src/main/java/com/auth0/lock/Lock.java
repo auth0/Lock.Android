@@ -24,6 +24,9 @@
 
 package com.auth0.lock;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import com.auth0.api.APIClient;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
@@ -32,6 +35,7 @@ import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
 import com.squareup.otto.Bus;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -315,6 +319,15 @@ public class Lock {
      */
     public CredentialStore getCredentialStore() {
         return credentialStore;
+    }
+
+    /**
+     * Starts LockActivity from a given Activity
+     * @param activity
+     */
+    public void loginFromActivity(Activity activity) {
+        Intent loginIntent = new Intent(activity, LockActivity.class);
+        activity.startActivity(loginIntent);
     }
 
 }
