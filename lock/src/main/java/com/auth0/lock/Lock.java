@@ -232,9 +232,9 @@ public class Lock {
     }
 
     /**
-     * If Lock is displayed in fullscreen mode. By default is false
-     *
-     * @return
+     * If Lock is displayed in fullscreen mode.
+     * By default is false
+     * @return if lock will be displayed in fullscreen
      */
     public boolean isFullScreen() {
         return fullScreen;
@@ -242,8 +242,8 @@ public class Lock {
 
     /**
      * If Lock has SignUp action enabled
-     *
-     * @return
+     * By default is true
+     * @return if the sign up action is enabled
      */
     public boolean isSignUpEnabled() {
         return signUpEnabled;
@@ -251,8 +251,8 @@ public class Lock {
 
     /**
      * If Lock has Change Password action enabled
-     *
-     * @return
+     * By default is true
+     * @return if the change password action is enabled
      */
     public boolean isChangePasswordEnabled() {
         return changePasswordEnabled;
@@ -343,7 +343,7 @@ public class Lock {
          * Set Auth0 application ClientID
          *
          * @param clientId clientId
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder clientId(String clientId) {
             this.clientId = clientId;
@@ -354,7 +354,7 @@ public class Lock {
          * Set Auth0 account tenant name
          *
          * @param tenant tenant name
-         * @return itself
+         * @return the Builder instance being used
          * @deprecated since 1.7.0
          */
         @Deprecated
@@ -367,7 +367,7 @@ public class Lock {
          * Set the default domain Url for Auth0 API
          *
          * @param domain url of the domain where Auth0 API is deployed
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder domainUrl(String domain) {
             this.domain = ensureUrlString(domain);
@@ -378,7 +378,7 @@ public class Lock {
          * Set the Url where the app information can be retrieved
          *
          * @param configuration Url that returns the app info.
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder configurationUrl(String configuration) {
             this.configuration = ensureUrlString(configuration);
@@ -389,7 +389,7 @@ public class Lock {
          * Use an embedded WebView instead of an external browser
          *
          * @param useWebView if Lock will use an embedded WebView or an external browser
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder useWebView(boolean useWebView) {
             this.useWebView = useWebView;
@@ -400,7 +400,7 @@ public class Lock {
          * If the login screen can be closed/dismissed
          *
          * @param closable if Lock will allow the login screen to be closed
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder closable(boolean closable) {
             this.closable = closable;
@@ -411,7 +411,7 @@ public class Lock {
          * If after a successful sign up, the user will be logged in too.
          *
          * @param loginAfterSignUp if Lock should login a user after sign up
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder loginAfterSignUp(boolean loginAfterSignUp) {
             this.loginAfterSignUp = loginAfterSignUp;
@@ -422,7 +422,7 @@ public class Lock {
          * Extra authentication parameters to send to Auth0 Auth API.
          *
          * @param parameters a map with extra parameters for the API.
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder authenticationParameters(Map<String, Object> parameters) {
             this.parameters = parameters != null ? parameters : ParameterBuilder.newBuilder().asDictionary();
@@ -434,7 +434,7 @@ public class Lock {
          * If the connection is not active in your application it will be ignored.
          *
          * @param connectionNames List of names of connections to use.
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder useConnections(String... connectionNames) {
             this.connections = Arrays.asList(connectionNames);
@@ -445,7 +445,7 @@ public class Lock {
          * Specify the DB connection used by Lock.
          *
          * @param name DB connection name
-         * @return itself.
+         * @return the Builder instance being used.
          */
         public Builder defaultDatabaseConnection(String name) {
             this.defaultDBConnectionName = name;
@@ -456,18 +456,28 @@ public class Lock {
          * Shows Lock in Fullscreen mode.
          *
          * @param fullscreen if lock is displayed in fullscreen
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder fullscreen(boolean fullscreen) {
             this.fullscreen = fullscreen;
             return this;
         }
 
+        /**
+         * Disables Sign Up action
+         * @param disableSignUp or not
+         * @return the Builder instance being used
+         */
         public Builder disableSignUp(boolean disableSignUp) {
             this.disableSignUp = disableSignUp;
             return this;
         }
 
+        /**
+         * Disables Change Password action
+         * @param disableChangePassword or not
+         * @return the Builder instance being used
+         */
         public Builder disableChangePassword(boolean disableChangePassword) {
             this.disableChangePassword = disableChangePassword;
             return this;
@@ -475,8 +485,7 @@ public class Lock {
 
         /**
          * Create a {@link com.auth0.lock.Lock} instance with the values stored.
-         *
-         * @return
+         * @return a new Lock instance`
          */
         public Lock build() {
             resolveConfiguration();
@@ -508,8 +517,9 @@ public class Lock {
          * </ul>
          *
          * @param application an instance of {@link android.app.Application}
-         * @return itself
+         * @return the Builder instance being used
          */
+        @SuppressWarnings("deprecation")
         public Builder loadFromApplication(Application application) {
             try {
                 ApplicationInfo ai = application.getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
@@ -528,7 +538,7 @@ public class Lock {
          * If it should ask for email or username. By default is <code>true</code>
          *
          * @param useEmail if Lock ask for email or username.
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder useEmail(boolean useEmail) {
             this.useEmail = useEmail;
@@ -539,7 +549,7 @@ public class Lock {
          * The credential store that Lock will use to store user's credentials on Sign Up.
          *
          * @param store a credential store
-         * @return itself
+         * @return the Builder instance being used
          */
         public Builder useCredentialStore(CredentialStore store) {
             if (store != null) {
@@ -551,6 +561,7 @@ public class Lock {
         }
 
 
+        @SuppressWarnings("deprecation")
         private Lock buildLock() {
             Lock lock;
             if (this.clientId == null) {
