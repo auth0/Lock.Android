@@ -25,6 +25,8 @@
 package com.auth0.lock;
 
 import com.auth0.api.APIClient;
+import com.auth0.core.Strategies;
+import com.auth0.identity.IdentityProvider;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
 
@@ -65,11 +67,10 @@ public class BuilderTest {
     private Lock.Builder builder;
     private Lock lock;
 
-    @Mock
-    private CredentialStore store;
+    @Mock private CredentialStore store;
+    @Mock private IdentityProvider identityProvider;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    @Rule public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -279,6 +280,14 @@ public class BuilderTest {
                 .useCredentialStore(null)
                 .build();
         assertThat(lock.getCredentialStore(), is(instanceOf(NullCredentialStore.class)));
+    }
+
+    @Test
+    public void shouldSetIdPHandler() throws Exception {
+        lock = basicBuilder()
+                .withIdentityProvider(Strategies.Facebook, identityProvider)
+                .build();
+        assertThat(lock.providerForName("facebook"), is(identityProvider));
     }
 
     private Lock.Builder basicBuilder() {

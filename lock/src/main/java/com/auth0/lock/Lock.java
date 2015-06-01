@@ -35,6 +35,7 @@ import android.util.Log;
 
 import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
+import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
 import com.auth0.identity.web.CallbackParser;
@@ -180,13 +181,14 @@ public class Lock {
      *
      * @param serviceName name of the Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
      * @param provider    IdP handler
+     * @deprecated use {@link com.auth0.lock.Lock.Builder#withIdentityProvider(Strategies, IdentityProvider)} instead
      */
     public void setProvider(String serviceName, IdentityProvider provider) {
         providers.put(serviceName, provider);
     }
 
     /**
-     * Finds a custom IdP handler by service name.
+     * Finds a custom Identity Provider handler by service name.
      *
      * @param serviceName name of the service
      * @return a custom handler or null
@@ -330,6 +332,8 @@ public class Lock {
         private boolean disableSignUp;
         private boolean disableChangePassword;
         private CredentialStore store;
+        private Map<String, IdentityProvider> providers;
+
 
         public Builder() {
             this.loginAfterSignUp = true;
@@ -337,6 +341,7 @@ public class Lock {
             this.fullscreen = false;
             this.parameters = ParameterBuilder.newBuilder().asDictionary();
             this.store = new NullCredentialStore();
+            this.providers = new HashMap<>();
         }
 
         /**
@@ -484,6 +489,43 @@ public class Lock {
         }
 
         /**
+         * If it should ask for email or username. By default is <code>true</code>
+         *
+         * @param useEmail if Lock ask for email or username.
+         * @return the Builder instance being used
+         */
+        public Builder useEmail(boolean useEmail) {
+            this.useEmail = useEmail;
+            return this;
+        }
+
+        /**
+         * The credential store that Lock will use to store user's credentials on Sign Up.
+         *
+         * @param store a credential store
+         * @return the Builder instance being used
+         */
+        public Builder useCredentialStore(CredentialStore store) {
+            if (store != null) {
+                this.store = store;
+            } else {
+                this.store = new NullCredentialStore();
+            }
+            return this;
+        }
+
+        /**
+         * Sets a native handler for a specific Identity Provider (IdP), e.g.: Facebook
+         *
+         * @param strategy Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
+         * @param identityProvider IdP handler
+         */
+        public Builder withIdentityProvider(Strategies strategy, IdentityProvider identityProvider) {
+            providers.put(strategy.getName(), identityProvider);
+            return this;
+        }
+
+        /**
          * Create a {@link com.auth0.lock.Lock} instance with the values stored.
          * @return a new Lock instance`
          */
@@ -503,6 +545,7 @@ public class Lock {
             lock.signUpEnabled = !disableSignUp;
             lock.changePasswordEnabled = !disableChangePassword;
             lock.credentialStore = store;
+            lock.providers = new HashMap<>(providers);
             return lock;
         }
 
@@ -530,32 +573,6 @@ public class Lock {
                         .configurationUrl(bundle.getString(CONFIGURATION_URL_KEY));
             } catch (PackageManager.NameNotFoundException e) {
                 throw new IllegalArgumentException("Failed to read info from AndroidManifest.xml", e);
-            }
-            return this;
-        }
-
-        /**
-         * If it should ask for email or username. By default is <code>true</code>
-         *
-         * @param useEmail if Lock ask for email or username.
-         * @return the Builder instance being used
-         */
-        public Builder useEmail(boolean useEmail) {
-            this.useEmail = useEmail;
-            return this;
-        }
-
-        /**
-         * The credential store that Lock will use to store user's credentials on Sign Up.
-         *
-         * @param store a credential store
-         * @return the Builder instance being used
-         */
-        public Builder useCredentialStore(CredentialStore store) {
-            if (store != null) {
-                this.store = store;
-            } else {
-                this.store = new NullCredentialStore();
             }
             return this;
         }

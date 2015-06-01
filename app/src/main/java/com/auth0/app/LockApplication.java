@@ -48,9 +48,9 @@ public class LockApplication extends Application implements LockProvider {
                 .closable(true)
                 .useEmail(true)
                 .fullscreen(false)
+                .withIdentityProvider(Strategies.Facebook, new FacebookIdentityProvider(this))
+                .withIdentityProvider(Strategies.GooglePlus, new GooglePlusIdentityProvider(this))
                 .build();
-        lock.setProvider(Strategies.Facebook.getName(), new FacebookIdentityProvider(this));
-        lock.setProvider(Strategies.GooglePlus.getName(), new GooglePlusIdentityProvider(this));
     }
 
     @Override
