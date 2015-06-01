@@ -1,29 +1,28 @@
 package com.auth0.api.handler;
 
-import com.auth0.BaseTestCase;
+import com.auth0.android.BuildConfig;
 import com.auth0.core.Application;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@Config(sdk = 18, manifest = Config.NONE)
-public class ApplicationResponseHandlerTest extends BaseTestCase {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+public class ApplicationResponseHandlerTest {
 
     public static final String APP_JSONP_VALID = "Auth0.setClient({\"id\": \"QWERTY123456\"})";
     public static final String APP_JSON_VALID = "{\"id\":\"QWERTY123456\"}";

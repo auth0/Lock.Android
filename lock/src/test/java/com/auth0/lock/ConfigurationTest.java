@@ -24,10 +24,8 @@
 
 package com.auth0.lock;
 
-import com.auth0.android.*;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
-import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.File;
@@ -56,17 +54,12 @@ import static com.auth0.lock.util.StrategyMatcher.isStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class ConfigurationTest {
 

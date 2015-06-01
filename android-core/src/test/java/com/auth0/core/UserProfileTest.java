@@ -1,11 +1,12 @@
 package com.auth0.core;
 
-import com.auth0.BaseTestCase;
 import com.auth0.android.BuildConfig;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
@@ -20,8 +21,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class UserProfileTest extends BaseTestCase {
+public class UserProfileTest {
 
     public static final String USER_ID = "IOU a user id";
     public static final String NAME = "Somebody Someone";

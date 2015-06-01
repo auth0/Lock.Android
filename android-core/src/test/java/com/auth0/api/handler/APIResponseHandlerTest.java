@@ -24,28 +24,27 @@
 
 package com.auth0.api.handler;
 
-import com.auth0.BaseTestCase;
+import com.auth0.android.BuildConfig;
 import com.auth0.api.APIClientException;
 import com.auth0.api.callback.Callback;
-import com.auth0.util.APIClientExceptionMatcher;
 
 import org.apache.http.Header;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static com.auth0.util.APIClientExceptionMatcher.hasErrorWith;
 import static com.auth0.util.APIClientExceptionMatcher.hasGenericErrorWith;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
-@Config(sdk = 18, manifest = Config.NONE)
-public class APIResponseHandlerTest extends BaseTestCase {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+public class APIResponseHandlerTest {
 
     private static final Throwable EXCEPTION = new RuntimeException();
     private static final byte[] RESPONSE_BODY = new byte[1];

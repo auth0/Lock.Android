@@ -1,6 +1,5 @@
 package com.auth0.api;
 
-import com.auth0.BaseTestCase;
 import com.auth0.android.BuildConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +10,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Map;
@@ -24,8 +25,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class JsonEntityBuilderTest extends BaseTestCase {
+public class JsonEntityBuilderTest {
 
     private static final String JSON = "{\"key\":\"value\"}";
     private static final byte[] JSON_BYTES = JSON.getBytes();

@@ -49,14 +49,13 @@ import static org.mockito.Mockito.*;
 public class PasswordValidatorTest {
     private Validator validator;
     private Fragment fragment;
-    private View view;
     private CredentialField field;
 
     @Before
     public void setUp() throws Exception {
         validator = new PasswordValidator(R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message);
         fragment = mock(Fragment.class);
-        view = mock(View.class);
+        View view = mock(View.class);
         field = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.com_auth0_db_change_password_password_field))).thenReturn(field);
