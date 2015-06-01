@@ -1,96 +1,110 @@
-apply plugin: 'maven'
-apply plugin: 'signing'
- 
-def sonatypeRepositoryUrl
-    if (isReleaseBuild()) {
-//        println 'RELEASE BUILD'
-        sonatypeRepositoryUrl = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-    } else {
-//        println 'SNAPSHOT BUILD'
-        sonatypeRepositoryUrl = hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL : "https://oss.sonatype.org/content/repositories/snapshots/"
-}
- 
-def getRepositoryUsername() {
-    return hasProperty('nexusUsername') ? nexusUsername : ""
-}
- 
-def getRepositoryPassword() {
-    return hasProperty('nexusPassword') ? nexusPassword : ""
-}
+apply plugin: 'com.github.dcendents.android-maven'
 
-if(isReleaseBuild()) {
-    afterEvaluate { project ->
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging POM_PACKAGING
 
-                    pom.artifactId = POM_ARTIFACT_ID
+                name POM_NAME
+                description POM_DESCRIPTION
+                url POM_URL
 
-                    repository(url: sonatypeRepositoryUrl) {
-                        authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                licenses {
+                    license {
+                        name POM_LICENCE_NAME
+                        url POM_LICENCE_URL
+                        distribution POM_LICENCE_DIST
                     }
-
-                    pom.project {
-                        name POM_NAME
-                        packaging POM_PACKAGING
-                        description POM_DESCRIPTION
-                        url POM_URL
-
-                        scm {
-                            url POM_SCM_URL
-                            connection POM_SCM_CONNECTION
-                            developerConnection POM_SCM_DEV_CONNECTION
-                        }
-
-                        licenses {
-                            license {
-                                name POM_LICENCE_NAME
-                                url POM_LICENCE_URL
-                                distribution POM_LICENCE_DIST
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id 'hzalaz'
-                                name 'Hernan Zalazar'
-                            }
-                            developer {
-                                id 'mgonto'
-                                name 'Martin Gontovnikas'
-                            }
-                        }
+                }
+                developers {
+                    developer {
+                        id 'hzalaz'
+                        name 'Hernan Zalazar'
+                        email 'hernan@auth0.com'
                     }
+                    developer {
+                        id 'mgonto'
+                        name 'Martin Gontovnikas'
+                        email 'gonto@auth0.com'
+                    }
+                }
+                scm {
+                    connection POM_SCM_CONNECTION
+                    developerConnection POM_SCM_DEV_CONNECTION
+                    url POM_URL
+
                 }
             }
         }
+    }
+}
 
-        signing {
-            required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-            sign configurations.archives
-        }
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
 
-        task androidJavadocs(type: Javadoc) {
-            source = android.sourceSets.main.java
-        }
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    exclude '**/BuildConfig.java'
+    exclude '**/R.java'
+    failOnError false
+}
 
-        task androidJavadocsJar(type: Jar) {
-            classifier = 'javadoc'
-            //basename = artifact_id
-            from androidJavadocs.destinationDir
-        }
+afterEvaluate {
+    javadoc.classpath += project.android.libraryVariants.toList().first().javaCompile.classpath
+}
 
-        task androidSourcesJar(type: Jar) {
-            classifier = 'sources'
-            //basename = artifact_id
-            from android.sourceSets.main.java.sourceFiles
-        }
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
 
-        artifacts {
-            //archives packageReleaseJar
-            archives androidSourcesJar
-            archives androidJavadocsJar
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+ext.bintrayProps = loadProperties('local.properties')
+
+if (ext.bintrayProps) {
+    apply plugin: 'com.jfrog.bintray'
+    bintray {
+        user = bintrayProps.getProperty("bintray.user")
+        key = bintrayProps.getProperty("bintray.apikey")
+        configurations = ['archives']
+        dryRun = version.endsWith("-SNAPSHOT")
+        publish = false
+        pkg {
+            repo = 'lock-android'
+            name = POM_ARTIFACT_ID
+            desc = POM_DESCRIPTION
+            websiteUrl = POM_URL
+            vcsUrl = POM_SCM_CONNECTION
+            licenses = ["MIT"]
+            userOrg = 'auth0'
+            publish = false
+            version {
+                gpg {
+                    sign = true //Determines whether to GPG sign the files. The default is false
+                    passphrase = bintrayProps.getProperty("bintray.gpg.password") //Optional. The passphrase for GPG signing'
+                }
+                vcsTag = VERSION_NAME
+                name = VERSION_NAME
+                released = new Date()
+            }
         }
+    }    
+}
+
+def loadProperties(fileName) {
+    try {
+        def props = new Properties()
+        props.load(project.rootProject.file(fileName).newDataInputStream())
+        return props
+    } catch(all) { 
+        return null
     }
 }
