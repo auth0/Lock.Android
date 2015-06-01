@@ -1,5 +1,5 @@
 /*
- * LockBuilder.java
+ * ActivityUIHelper.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -22,13 +22,34 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock;
+package com.auth0.lock.util;
 
-/**
- * Builder for {@link com.auth0.lock.Lock}.
- * @deprecated Just use Lock.Builder instead
- * @see com.auth0.lock.Lock.Builder
- */
-public class LockBuilder extends Lock.Builder {
+import android.app.Activity;
+import android.os.Build;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.auth0.lock.Lock;
+
+public abstract class ActivityUIHelper {
+
+    private static final String TAG = ActivityUIHelper.class.getName();
+
+    public static void configureScreenModeForActivity(Activity activity, Lock lock) {
+        if (!lock.isFullScreen()) {
+            Log.d(TAG, "Activity in normal screen model");
+            return;
+        }
+        Log.d(TAG, "Activity in fullscreen model");
+        final Window window = activity.getWindow();
+        if (Build.VERSION.SDK_INT >= 16) {
+            View decorView = window.getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        } else {
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
 }

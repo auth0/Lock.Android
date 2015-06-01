@@ -1,5 +1,5 @@
 /*
- * LockTest.java
+ * ActivityUIHelperTest.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -22,63 +22,60 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock;
+package com.auth0.lock.util;
 
-import com.auth0.api.APIClient;
-import com.auth0.core.Strategies;
-import com.auth0.identity.IdentityProvider;
-import com.auth0.identity.WebIdentityProvider;
-import com.auth0.lock.credentials.NullCredentialStore;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.view.View;
+import android.view.Window;
 
-import org.hamcrest.Matchers;
+import com.auth0.lock.BuildConfig;
+import com.auth0.lock.Lock;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Null;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class LockTest {
+public class ActivityUIHelperTest {
 
-    private static final String NAME = Strategies.Facebook.getName();
-    @Mock
-    private IdentityProvider provider;
-    @Mock
-    private APIClient client;
-
-    private Lock lock;
+    @Mock private Activity activity;
+    @Mock private Lock lock;
+    @Mock private Window window;
+    @Mock private View view;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        lock = new Lock(client);
     }
 
     @Test
-    public void shouldRegisterProvider() throws Exception {
-        lock.setProvider(NAME, provider);
-        assertThat(lock.providerForName(NAME), equalTo(provider));
+    public void shouldConfigureNormalScreenMode() throws Exception {
+        when(lock.isFullScreen()).thenReturn(false);
+        ActivityUIHelper.configureScreenModeForActivity(activity, lock);
+        verifyZeroInteractions(activity);
     }
 
+    @TargetApi(16)
     @Test
-    public void shouldResetAllProviders() throws Exception {
-        lock.setProvider(NAME, provider);
-        lock.resetAllProviders();
-        verify(provider).stop();
-    }
+    public void shouldConfigureFullScreenMode() throws Exception {
+        when(lock.isFullScreen()).thenReturn(true);
+        when(activity.getWindow()).thenReturn(window);
+        when(window.getDecorView()).thenReturn(view);
 
-    @Test
-    public void shouldReturnDefaultWithUnknownProvider() throws Exception {
-        assertThat(lock.providerForName("UNKOWN"), instanceOf(WebIdentityProvider.class));
+        ActivityUIHelper.configureScreenModeForActivity(activity, lock);
+
+        verify(view).setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 }

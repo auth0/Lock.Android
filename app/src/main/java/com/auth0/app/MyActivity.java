@@ -19,8 +19,6 @@ import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockActivity;
-import com.auth0.lock.LockProvider;
 import com.auth0.lock.sms.LockSMSActivity;
 
 import static com.auth0.app.R.id;
@@ -45,8 +43,7 @@ public class MyActivity extends ActionBarActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginIntent = new Intent(MyActivity.this, LockActivity.class);
-                startActivity(loginIntent);
+                Lock.getLock(MyActivity.this).loginFromActivity(MyActivity.this);
             }
         });
 
@@ -65,8 +62,7 @@ public class MyActivity extends ActionBarActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LockProvider lockProvider = (LockProvider) getApplication();
-                Lock lock = lockProvider.getLock();
+                Lock lock = Lock.getLock(MyActivity.this);
                 lock.getAPIClient().fetchIdTokenWithRefreshToken(token.getRefreshToken(), null, new RefreshIdTokenCallback() {
                     @Override
                     public void onSuccess(String idToken, String tokenType, int expiresIn) {

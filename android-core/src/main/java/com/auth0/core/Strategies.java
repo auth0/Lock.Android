@@ -85,7 +85,7 @@ public enum Strategies {
         return strategy;
     }
 
-    public static enum Type {
+    public enum Type {
         DATABASE,
         SOCIAL,
         ENTERPRISE;

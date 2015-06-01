@@ -25,6 +25,8 @@
 package com.auth0.lock;
 
 import com.auth0.api.APIClient;
+import com.auth0.core.Strategies;
+import com.auth0.identity.IdentityProvider;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
 
@@ -51,7 +53,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class LockBuilderTest {
+public class BuilderTest {
 
     private static final String CLIENT_ID = "CLIENTID";
     private static final String TENANT = "TENANT";
@@ -62,14 +64,13 @@ public class LockBuilderTest {
     private static final String AUTH0_SUBDOMAIN = "pepe.auth0.com";
     private static final String EU_DOMAIN = "samples.eu.auth0.com";
 
-    private LockBuilder builder;
+    private Lock.Builder builder;
     private Lock lock;
 
-    @Mock
-    private CredentialStore store;
+    @Mock private CredentialStore store;
+    @Mock private IdentityProvider identityProvider;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    @Rule public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -281,7 +282,15 @@ public class LockBuilderTest {
         assertThat(lock.getCredentialStore(), is(instanceOf(NullCredentialStore.class)));
     }
 
-    private LockBuilder basicBuilder() {
+    @Test
+    public void shouldSetIdPHandler() throws Exception {
+        lock = basicBuilder()
+                .withIdentityProvider(Strategies.Facebook, identityProvider)
+                .build();
+        assertThat(lock.providerForName("facebook"), is(identityProvider));
+    }
+
+    private Lock.Builder basicBuilder() {
         return builder
                 .clientId(CLIENT_ID)
                 .tenant(TENANT);

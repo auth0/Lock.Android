@@ -36,7 +36,6 @@ import android.view.WindowManager;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockProvider;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
@@ -46,6 +45,7 @@ import com.auth0.lock.sms.event.SelectCountryCodeEvent;
 import com.auth0.lock.sms.event.SmsPasscodeSentEvent;
 import com.auth0.lock.sms.fragment.RequestCodeFragment;
 import com.auth0.lock.sms.fragment.SmsLoginFragment;
+import com.auth0.lock.util.ActivityUIHelper;
 import com.squareup.otto.Subscribe;
 
 
@@ -73,17 +73,14 @@ public class LockSMSActivity extends FragmentActivity {
                     .add(R.id.com_auth0_container, fragment)
                     .commit();
         }
-        if (lock.isFullScreen()) {
-            fullscreenMode();
-        }
+
+        ActivityUIHelper.configureScreenModeForActivity(this, lock);
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (lock.isFullScreen()) {
-            fullscreenMode();
-        }
+        ActivityUIHelper.configureScreenModeForActivity(this, lock);
     }
 
     @Override
@@ -98,14 +95,14 @@ public class LockSMSActivity extends FragmentActivity {
         lock.getBus().unregister(this);
     }
 
-    @Subscribe
-    public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
+    @SuppressWarnings("unused")
+    @Subscribe public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
-    @Subscribe
-    public void onPasscodeSentEvent(SmsPasscodeSentEvent event) {
+    @SuppressWarnings("unused")
+    @Subscribe public void onPasscodeSentEvent(SmsPasscodeSentEvent event) {
         final SmsLoginFragment fragment = new SmsLoginFragment();
         Bundle arguments = new Bundle();
         arguments.putString(SmsLoginFragment.PHONE_NUMBER_ARGUMENT, event.getPhoneNumber());
@@ -116,8 +113,8 @@ public class LockSMSActivity extends FragmentActivity {
                 .commit();
     }
 
-    @Subscribe
-    public void onNavigationEvent(NavigationEvent event) {
+    @SuppressWarnings("unused")
+    @Subscribe public void onNavigationEvent(NavigationEvent event) {
         switch (event) {
             case BACK:
                 getSupportFragmentManager().popBackStack();
@@ -127,14 +124,14 @@ public class LockSMSActivity extends FragmentActivity {
         }
     }
 
-    @Subscribe
-    public void onAuthenticationError(AuthenticationError error) {
+    @SuppressWarnings("unused")
+    @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         ErrorDialogBuilder.showAlertDialog(this, error);
     }
 
-    @Subscribe
-    public void onAuthentication(AuthenticationEvent event) {
+    @SuppressWarnings("unused")
+    @Subscribe public void onAuthentication(AuthenticationEvent event) {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
@@ -159,18 +156,6 @@ public class LockSMSActivity extends FragmentActivity {
         if (lock != null) {
             return lock;
         }
-        LockProvider provider = (LockProvider) getApplication();
-        return provider.getLock();
-    }
-
-    private void fullscreenMode() {
-        if (Build.VERSION.SDK_INT >= 16) {
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        } else {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
+        return Lock.getLock(this);
     }
 }

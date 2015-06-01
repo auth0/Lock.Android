@@ -89,7 +89,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments() != null ? getArguments() : new Bundle();
-        final Lock lock = getLock();
+        final Lock lock = Lock.getLock(getActivity());
         Configuration configuration = lock.getConfiguration();
         if (arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
@@ -248,7 +248,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     private void login() {
         final Connection connection = matcher.getConnection();
         if (connection != null) {
-            final Configuration configuration = getLock().getConfiguration();
+            final Configuration configuration = Lock.getLock(getActivity()).getConfiguration();
             final Strategy strategy = configuration.getApplication().strategyForConnection(connection);
             if (strategy.isResourceOwnerEnabled()) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));

@@ -12,7 +12,6 @@ import com.auth0.api.APIClient;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockProvider;
 import com.auth0.lock.R;
 import com.squareup.otto.Bus;
 
@@ -24,7 +23,7 @@ public class LoadingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Lock lock = getLock();
+        final Lock lock = Lock.getLock(getActivity());
         client = lock.getAPIClient();
         bus = lock.getBus();
     }
@@ -60,11 +59,6 @@ public class LoadingFragment extends Fragment {
     public void onPause() {
         super.onPause();
         bus.unregister(this);
-    }
-
-    private Lock getLock() {
-        LockProvider provider = (LockProvider) getActivity().getApplication();
-        return provider.getLock();
     }
 
 }
