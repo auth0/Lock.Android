@@ -598,21 +598,24 @@ public class Lock {
             return this;
         }
 
-
-        @SuppressWarnings("deprecation")
-        private Lock buildLock() {
-            Lock lock;
+        protected APIClient buildAPIClient() {
+            APIClient client;
             if (this.clientId == null) {
                 throw new IllegalArgumentException("Must supply a non-null ClientId");
             }
             if (this.domain != null) {
-                lock = new Lock(new APIClient(this.clientId, this.domain, this.configuration));
+                 client = new APIClient(this.clientId, this.domain, this.configuration);
             } else if (this.tenant != null) {
-                lock = new Lock(new APIClient(this.clientId, this.tenant));
+                client = new APIClient(this.clientId, this.tenant);
             } else {
                 throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
             }
-            return lock;
+            return client;
+        }
+
+        @SuppressWarnings("deprecation")
+        protected Lock buildLock() {
+            return new Lock(buildAPIClient());
         }
 
         private void resolveConfiguration() {
@@ -640,7 +643,7 @@ public class Lock {
             return safeUrl;
         }
 
-        private String buildClientInfo() {
+        protected String buildClientInfo() {
             Map<String, String> info = new HashMap<>();
             info.put("name", "Lock.Android");
             info.put("version", BuildConfig.VERSION_NAME);
