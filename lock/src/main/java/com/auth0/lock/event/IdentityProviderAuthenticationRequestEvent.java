@@ -34,7 +34,7 @@ import java.util.Map;
 
 public class IdentityProviderAuthenticationRequestEvent implements IdentityProviderRequest {
 
-    private static final String REDIRECT_URI_FORMAT = "a0%s://%s.auth0.com/authorize";
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
 
     private final String serviceName;
 
@@ -47,7 +47,8 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
     }
 
     public Uri getAuthenticationUri(Application application, Map<String, Object> parameters) {
-        Map<String, String> queryParameters = new HashMap<>();
+        final Uri authorizeUri = Uri.parse(application.getAuthorizeURL());
+        final Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("scope", "openid");
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -60,8 +61,8 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
         queryParameters.put("response_type", "token");
         queryParameters.put("connection", serviceName);
         queryParameters.put("client_id", application.getId());
-        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), application.getTenant()));
-        final Uri.Builder builder = Uri.parse(application.getAuthorizeURL()).buildUpon();
+        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), authorizeUri.getHost()));
+        final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
         }
