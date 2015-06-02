@@ -563,7 +563,9 @@ public class Lock {
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
             if (sendSdkInfo) {
-                lock.apiClient.setClientInfo(buildClientInfo());
+                final String clientInfo = buildClientInfo();
+                lock.apiClient.setClientInfo(clientInfo);
+                lock.defaultProvider.setClientInfo(clientInfo);
             }
             return lock;
         }
