@@ -31,6 +31,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import com.auth0.api.APIClient;
@@ -41,8 +42,11 @@ import com.auth0.identity.WebIdentityProvider;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Bus;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -546,6 +550,7 @@ public class Lock {
             lock.changePasswordEnabled = !disableChangePassword;
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
+            lock.apiClient.setClientInfo(buildClientInfo());
             return lock;
         }
 
@@ -619,5 +624,18 @@ public class Lock {
             return safeUrl;
         }
 
+        private String buildClientInfo() {
+            Map<String, String> info = new HashMap<>();
+            info.put("name", "Lock.Android");
+            info.put("version", BuildConfig.VERSION_NAME);
+            String clientInfo = null;
+            try {
+                String json = new ObjectMapper().writeValueAsString(info);
+                clientInfo = Base64.encodeToString(json.getBytes(Charset.defaultCharset()), Base64.URL_SAFE | Base64.NO_WRAP);
+            } catch (JsonProcessingException e) {
+                Log.w(Lock.class.getName(), "Failed to build client info", e);
+            }
+            return clientInfo;
+        }
     }
 }
