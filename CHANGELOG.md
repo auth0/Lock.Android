@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.1](https://github.com/auth0/Lock.Android/tree/1.9.1) (2015-06-02)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.0...1.9.1)
+
+**Fixed bugs:**
+
+- Android Core minSdk should be API level 9 [\#94](https://github.com/auth0/Lock.Android/issues/94)
+
 ## [1.9.0](https://github.com/auth0/Lock.Android/tree/1.9.0) (2015-06-02)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.8.0...1.9.0)
