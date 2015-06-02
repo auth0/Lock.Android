@@ -49,7 +49,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
-    compile project(':sms')
+    compile project(':lock-sms')
     compile(project(':integrations:facebook')) {
         exclude module: 'identity-core'
     }

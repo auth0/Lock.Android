@@ -1,5 +1,5 @@
 /*
- * settings.gradle
+ * build.gradle
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -22,4 +22,31 @@
  * THE SOFTWARE.
  */
 
-rootProject.name = POM_ARTIFACT_ID
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion compile.maxSdk
+    buildToolsVersion compile.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion compile.minSdk
+        targetSdkVersion compile.maxSdk
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':core')
+    compile libraries.app_compat
+    compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
+
+    testCompile libraries.testing
+}
+
+apply from: '../maven_push.gradle'

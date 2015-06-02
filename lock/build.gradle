@@ -27,8 +27,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(':android-core')
-    compile project(':identity-provider')
+    compile project(':core')
+    compile project(':identity-core')
     compile 'com.squareup:otto:1.3.5'
     compile libraries.app_compat
 
