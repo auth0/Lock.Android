@@ -31,6 +31,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import com.auth0.api.APIClient;
@@ -41,8 +42,11 @@ import com.auth0.identity.WebIdentityProvider;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Bus;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -333,6 +337,7 @@ public class Lock {
         private boolean disableChangePassword;
         private CredentialStore store;
         private Map<String, IdentityProvider> providers;
+        private boolean sendSdkInfo;
 
 
         public Builder() {
@@ -342,6 +347,7 @@ public class Lock {
             this.parameters = ParameterBuilder.newBuilder().asDictionary();
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
+            this.sendSdkInfo = true;
         }
 
         /**
@@ -519,9 +525,19 @@ public class Lock {
          *
          * @param strategy Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
          * @param identityProvider IdP handler
+         * @return the Builder instance being used
          */
         public Builder withIdentityProvider(Strategies strategy, IdentityProvider identityProvider) {
             providers.put(strategy.getName(), identityProvider);
+            return this;
+        }
+
+        /**
+         * Avoid sending SDK info with API requests
+         * @return the Builder instance being used
+         */
+        public Builder doNotSendSDKInfo() {
+            sendSdkInfo = false;
             return this;
         }
 
@@ -546,6 +562,9 @@ public class Lock {
             lock.changePasswordEnabled = !disableChangePassword;
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
+            if (sendSdkInfo) {
+                lock.apiClient.setClientInfo(buildClientInfo());
+            }
             return lock;
         }
 
@@ -619,5 +638,18 @@ public class Lock {
             return safeUrl;
         }
 
+        private String buildClientInfo() {
+            Map<String, String> info = new HashMap<>();
+            info.put("name", "Lock.Android");
+            info.put("version", BuildConfig.VERSION_NAME);
+            String clientInfo = null;
+            try {
+                String json = new ObjectMapper().writeValueAsString(info);
+                clientInfo = Base64.encodeToString(json.getBytes(Charset.defaultCharset()), Base64.URL_SAFE | Base64.NO_WRAP);
+            } catch (JsonProcessingException e) {
+                Log.w(Lock.class.getName(), "Failed to build client info", e);
+            }
+            return clientInfo;
+        }
     }
 }

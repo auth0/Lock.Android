@@ -35,7 +35,9 @@ public abstract class BaseAPIClient {
     public static final String BASE_URL_FORMAT = "https://%s.auth0.com";
     public static final String AUTH0_US_CDN_URL = "https://cdn.auth0.com";
     public static final String AUTH0_EU_CDN_URL = "https://cdn.eu.auth0.com";
+
     static final String APPLICATION_JSON = "application/json";
+    static final String AUTH0_CLIENT_HEADER = "Auth0-Client";
 
     private final String clientID;
     private final String configurationURL;
@@ -51,7 +53,7 @@ public abstract class BaseAPIClient {
                 .build().toString();
         this.baseURL = baseURL;
         this.client = new AsyncHttpClient();
-        this.client.setUserAgent(String.format("%s (%s Android %s)", tenantName, Build.MODEL, Build.VERSION.RELEASE));
+        this.client.setUserAgent(String.format("Android %s (%s %s;)", Build.VERSION.RELEASE, Build.MODEL, Build.MANUFACTURER));
         this.entityBuilder = new JsonEntityBuilder(new ObjectMapper());
     }
 
@@ -76,4 +78,11 @@ public abstract class BaseAPIClient {
         return configurationURL;
     }
 
+    public void setClientInfo(String clientInfo) {
+        if (clientInfo != null) {
+            client.addHeader(AUTH0_CLIENT_HEADER, clientInfo);
+        } else {
+            client.removeHeader(AUTH0_CLIENT_HEADER);
+        }
+    }
 }
