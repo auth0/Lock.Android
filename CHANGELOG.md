@@ -1,5 +1,25 @@
 # Change Log
 
+## [1.9.0](https://github.com/auth0/Lock.Android/tree/1.9.0) (2015-06-02)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.8.0...1.9.0)
+
+**Fixed bugs:**
+
+- Web flow url host should match account domain [\#83](https://github.com/auth0/Lock.Android/issues/83)
+
+**Merged pull requests:**
+
+- Send SDK info in query parameter [\#93](https://github.com/auth0/Lock.Android/pull/93) ([hzalaz](https://github.com/hzalaz))
+
+- Send SDK Client Headers [\#92](https://github.com/auth0/Lock.Android/pull/92) ([hzalaz](https://github.com/hzalaz))
+
+- Use domain for authorise url instead of tenant [\#91](https://github.com/auth0/Lock.Android/pull/91) ([hzalaz](https://github.com/hzalaz))
+
+- Refactored Lock builder & new util methods [\#90](https://github.com/auth0/Lock.Android/pull/90) ([hzalaz](https://github.com/hzalaz))
+
+- Introduce credential stores in Lock [\#89](https://github.com/auth0/Lock.Android/pull/89) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.8.0](https://github.com/auth0/Lock.Android/tree/1.8.0) (2015-05-27)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.7.0...1.8.0)
@@ -76,11 +96,11 @@
 
 - Native form for ADFS and WAAD connections [\#51](https://github.com/auth0/Lock.Android/issues/51)
 
+- Handle `requires\_username` in DB connection [\#20](https://github.com/auth0/Lock.Android/issues/20)
+
 **Closed issues:**
 
 - Authentication Callback is showing invalid webpage for the callback url [\#46](https://github.com/auth0/Lock.Android/issues/46)
-
-- Handle `requires\_username` in DB connection [\#20](https://github.com/auth0/Lock.Android/issues/20)
 
 **Merged pull requests:**
 
@@ -188,12 +208,6 @@
 
 - Native G+ Authentication [\#15](https://github.com/auth0/Lock.Android/issues/15)
 
-**Fixed bugs:**
-
-- Trim username/email [\#34](https://github.com/auth0/Lock.Android/issues/34)
-
-**Closed issues:**
-
 - Enterprise Login [\#3](https://github.com/auth0/Lock.Android/issues/3)
 
 - Allow to switch from email to username in DB auth [\#21](https://github.com/auth0/Lock.Android/issues/21)
@@ -215,6 +229,10 @@
 - Social Login screens [\#2](https://github.com/auth0/Lock.Android/issues/2)
 
 - Lock options [\#1](https://github.com/auth0/Lock.Android/issues/1)
+
+**Fixed bugs:**
+
+- Trim username/email [\#34](https://github.com/auth0/Lock.Android/issues/34)
 
 **Merged pull requests:**
 
