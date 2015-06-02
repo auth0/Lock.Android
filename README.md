@@ -16,14 +16,14 @@ Lock for Android
 ## Requierements
 
 Android API level 14+ is required in order to use Lock's UI.
-If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.7.+`, the minimum required API level is 9.
+If you'll create your own API and just call Auth0 API via the `com.auth0.android:android-core:1.9.+`, the minimum required API level is 9.
 
 ##Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:1.7.+'
+compile 'com.auth0.android:lock:1.9.+'
 ```
 
 Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
@@ -39,7 +39,7 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
     <action android:name="android.intent.action.VIEW"/>
     <category android:name="android.intent.category.DEFAULT"/>
     <category android:name="android.intent.category.BROWSABLE"/>
-    <data android:scheme="a0INSERT_YOUR_APP_CLIENT_ID" android:host="YOUR_ACCOUNT_NAME.auth0.com"/>
+    <data android:scheme="a0INSERT_YOUR_APP_CLIENT_ID" android:host="@string/auth0_domain"/>
   </intent-filter>
 </activity>
 <meta-data android:name="com.auth0.lock.client-id" android:value="@string/auth0_client_id"/>
@@ -64,7 +64,7 @@ public class MyApplication extends Application implements LockProvider {
 
   public void onCreate() {
     super.onCreate();
-    lock = new LockBuilder()
+    lock = new Lock.Builder()
       .loadFromApplication(this)
       /** Other configuration goes here */
       .closable(true)
@@ -138,7 +138,7 @@ And you'll see our native login screen
 
 `LockSMSActivity` is not included in `com.auth0:lock:aar` but you can add it with this line in your `build.gradle`:
 ```gradle
-compile 'com.auth0.android:lock-sms:1.7.+'
+compile 'com.auth0.android:lock-sms:1.9.+'
 ```
 
 When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:

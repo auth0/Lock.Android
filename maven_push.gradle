@@ -79,7 +79,7 @@ if (ext.bintrayProps) {
         publish = false
         pkg {
             repo = 'lock-android'
-            name = POM_ARTIFACT_ID
+            name = PACKAGE_NAME
             desc = POM_DESCRIPTION
             websiteUrl = POM_URL
             vcsUrl = POM_SCM_CONNECTION
