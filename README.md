@@ -17,7 +17,7 @@ Lock for Android
 ## Requierements
 
 Android API level 14+ is required in order to use Lock's UI.
-If you'll create your own API and just call Auth0 API via the `com.auth0.android:android-core:1.9.+`, the minimum required API level is 9.
+If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.9.+`, the minimum required API level is 9.
 
 ##Install
 
