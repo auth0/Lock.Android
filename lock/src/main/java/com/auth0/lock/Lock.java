@@ -337,6 +337,7 @@ public class Lock {
         private boolean disableChangePassword;
         private CredentialStore store;
         private Map<String, IdentityProvider> providers;
+        private boolean sendSdkInfo;
 
 
         public Builder() {
@@ -346,6 +347,7 @@ public class Lock {
             this.parameters = ParameterBuilder.newBuilder().asDictionary();
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
+            this.sendSdkInfo = true;
         }
 
         /**
@@ -523,9 +525,19 @@ public class Lock {
          *
          * @param strategy Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
          * @param identityProvider IdP handler
+         * @return the Builder instance being used
          */
         public Builder withIdentityProvider(Strategies strategy, IdentityProvider identityProvider) {
             providers.put(strategy.getName(), identityProvider);
+            return this;
+        }
+
+        /**
+         * Avoid sending SDK info with API requests
+         * @return the Builder instance being used
+         */
+        public Builder doNotSendSDKInfo() {
+            sendSdkInfo = false;
             return this;
         }
 
@@ -550,7 +562,9 @@ public class Lock {
             lock.changePasswordEnabled = !disableChangePassword;
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
-            lock.apiClient.setClientInfo(buildClientInfo());
+            if (sendSdkInfo) {
+                lock.apiClient.setClientInfo(buildClientInfo());
+            }
             return lock;
         }
 
