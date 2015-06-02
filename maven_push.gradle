@@ -5,6 +5,7 @@ install {
         pom {
             project {
                 packaging POM_PACKAGING
+                artifactId POM_ARTIFACT_ID
 
                 name POM_NAME
                 description POM_DESCRIPTION

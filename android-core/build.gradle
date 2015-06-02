@@ -5,7 +5,7 @@ android {
     buildToolsVersion compile.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion compile.minSdk
+        minSdkVersion 9
         targetSdkVersion compile.maxSdk
         versionCode 1
         versionName version
