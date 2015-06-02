@@ -1,25 +1,32 @@
 package com.auth0.core;
 
-import com.auth0.BaseTestCase;
 import com.auth0.android.BuildConfig;
 import com.google.common.collect.Lists;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static com.auth0.core.Strategies.*;
+import static com.auth0.core.Strategies.ADFS;
+import static com.auth0.core.Strategies.Auth0;
+import static com.auth0.core.Strategies.Facebook;
+import static com.auth0.core.Strategies.Office365;
+import static com.auth0.core.Strategies.SAMLP;
+import static com.auth0.core.Strategies.Twitter;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class ApplicationTest extends BaseTestCase {
+public class ApplicationTest {
 
     public static final String ID = "ID";
     public static final String TENANT = "TENANT";

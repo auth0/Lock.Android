@@ -50,14 +50,13 @@ public class EmailValidatorTest {
 
     private Validator validator;
     private Fragment fragment;
-    private View view;
     private CredentialField field;
 
     @Before
     public void setUp() throws Exception {
         validator = new EmailValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message);
         fragment = mock(Fragment.class);
-        view = mock(View.class);
+        View view = mock(View.class);
         field = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.com_auth0_db_change_password_username_field))).thenReturn(field);

@@ -51,19 +51,17 @@ public class RepeatPasswordValidatorTest {
     private static final String PASSWORD = "a very long long long password";
     private Validator validator;
     private Fragment fragment;
-    private View view;
     private CredentialField field;
-    private CredentialField passwordField;
     private Editable editable;
 
     @Before
     public void setUp() throws Exception {
         validator = new RepeatPasswordValidator(R.id.com_auth0_db_change_password_repeat_password_field, R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_db_reset_password_invalid_repeat_password_message);
         fragment = mock(Fragment.class);
-        view = mock(View.class);
+        View view = mock(View.class);
         field = mock(CredentialField.class);
         editable = mock(Editable.class);
-        passwordField = mock(CredentialField.class);
+        CredentialField passwordField = mock(CredentialField.class);
         when(fragment.getView()).thenReturn(view);
         when(view.findViewById(eq(R.id.com_auth0_db_change_password_repeat_password_field))).thenReturn(field);
         when(view.findViewById(eq(R.id.com_auth0_db_change_password_password_field))).thenReturn(passwordField);

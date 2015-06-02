@@ -1,12 +1,13 @@
 package com.auth0.core;
 
-import com.auth0.BaseTestCase;
 import com.auth0.android.BuildConfig;
 import com.google.common.collect.Maps;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
@@ -17,14 +18,14 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.hasValue;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class ConnectionTest extends BaseTestCase {
+public class ConnectionTest {
 
     public static final String CONNECTION_NAME = "Username-Password";
     public static final Object VALUE = "value";

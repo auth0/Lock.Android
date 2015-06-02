@@ -31,7 +31,6 @@ import android.support.v4.app.Fragment;
 import com.auth0.android.BuildConfig;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
-import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Configuration;
 import com.auth0.lock.Lock;
@@ -47,20 +46,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class LockFragmentBuilderTest {
 
@@ -87,7 +87,7 @@ public class LockFragmentBuilderTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         builder = new LockFragmentBuilder(lock);
-        when(adStrategy.getConnections()).thenReturn(Arrays.asList(adConnection));
+        when(adStrategy.getConnections()).thenReturn(Collections.singletonList(adConnection));
         when(lock.getConfiguration()).thenReturn(configuration);
     }
 

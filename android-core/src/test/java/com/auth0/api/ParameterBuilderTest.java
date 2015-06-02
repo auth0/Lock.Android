@@ -2,7 +2,6 @@ package com.auth0.api;
 
 import android.os.Build;
 
-import com.auth0.BaseTestCase;
 import com.auth0.android.BuildConfig;
 
 import org.hamcrest.Matcher;
@@ -11,6 +10,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
@@ -22,8 +23,9 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class ParameterBuilderTest extends BaseTestCase {
+public class ParameterBuilderTest {
 
     public static final String CLIENT_ID = "CLIENT ID";
     public static final String GRANT_TYPE = "password";
