@@ -53,7 +53,7 @@ public abstract class BaseAPIClient {
                 .build().toString();
         this.baseURL = baseURL;
         this.client = new AsyncHttpClient();
-        this.client.setUserAgent(String.format("%s (%s Android %s)", tenantName, Build.MODEL, Build.VERSION.RELEASE));
+        this.client.setUserAgent(String.format("Android %s (%s %s;)", Build.VERSION.RELEASE, Build.MODEL, Build.MANUFACTURER));
         this.entityBuilder = new JsonEntityBuilder(new ObjectMapper());
     }
 
