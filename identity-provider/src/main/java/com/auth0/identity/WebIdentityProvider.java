@@ -48,6 +48,7 @@ public class WebIdentityProvider implements IdentityProvider {
     private IdentityProviderCallback callback;
     private CallbackParser parser;
     private Map<String, Object> parameters;
+    private String clientInfo;
 
     public WebIdentityProvider(CallbackParser parser) {
         this.parser = parser;
@@ -72,7 +73,7 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     public void start(Activity activity, IdentityProviderRequest request, Application application) {
-        final Uri url = request.getAuthenticationUri(application, parameters);
+        final Uri url = request.getAuthenticationUri(application, buildParamegers());
         final Intent intent;
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
@@ -108,4 +109,16 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public void clearSession() {}
+
+    public void setClientInfo(String clientInfo) {
+        this.clientInfo = clientInfo;
+    }
+
+    private Map<String, Object> buildParamegers() {
+        Map<String, Object> parameters = new HashMap<>(this.parameters);
+        if (clientInfo != null) {
+            parameters.put("auth0Client", clientInfo);
+        }
+        return parameters;
+    }
 }
