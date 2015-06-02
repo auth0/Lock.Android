@@ -643,7 +643,7 @@ public class Lock {
             return safeUrl;
         }
 
-        private String buildClientInfo() {
+        protected String buildClientInfo() {
             Map<String, String> info = new HashMap<>();
             info.put("name", "Lock.Android");
             info.put("version", BuildConfig.VERSION_NAME);
