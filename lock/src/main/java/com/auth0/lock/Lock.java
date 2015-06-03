@@ -53,7 +53,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Lock is the class that allows to change the behaviour of Lock using its options.
+ * Main class of Auth0 Lock SDK for Authentication through Auth0
+ * This class handles all your Auth0 configuration and authentication using different Identity Providers.
+ * Also this class provides a configured instance of {@link APIClient} and {@link com.auth0.api.AuthenticatedAPIClient} to call Auth0 & Authentication API.
+ * To start just instantiate it using {@link com.auth0.lock.Lock.Builder} like this inside your {@link Application} object:
+ * <pre>
+ *     <code>
+ *      lock = new Lock.Builder()
+ *              .loadFromApplication(this)
+ *              .closable(true)
+ *              .build();
+ *     </code>
+ * </pre>
+ *
+ * Then just invoke the login activity:
+ * <pre>
+ *     <code>
+ *      Lock.getLock(activity).loginFromActivity(activity);
+ *     </code>
+ * </pre>
  */
 public class Lock {
 
