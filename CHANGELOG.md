@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.2](https://github.com/auth0/Lock.Android/tree/1.9.2) (2015-06-03)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.1...1.9.2)
+
+**Merged pull requests:**
+
+- Allow Lock.Builder to be extended for custom Lock classes [\#95](https://github.com/auth0/Lock.Android/pull/95) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.9.1](https://github.com/auth0/Lock.Android/tree/1.9.1) (2015-06-02)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.0...1.9.1)
