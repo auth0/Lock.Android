@@ -12,6 +12,7 @@
     <color name="com_auth0_credential_field_error">#c00</color>
     <color name="com_auth0_credential_field_hint">#ccc</color>
     <color name="com_auth0_credential_field_background">@android:color/transparent</color>
+    <color name="com_auth0_credential_field_cursor">#ffb3b5b6</color>
 
     <color name="com_auth0_primary_button_text">@android:color/white</color>
     <color name="com_auth0_primary_button_normal_background">#15204D</color>
