@@ -81,8 +81,11 @@
         <item name="android:textColorHint">@color/com_auth0_credential_field_hint</item>
         <item name="android:paddingLeft">@dimen/com_auth0_credential_field_padding</item>
         <item name="android:paddingRight">@dimen/com_auth0_credential_field_padding</item>
+        <item name="android:paddingBottom">@dimen/com_auth0_credential_field_vertical_padding</item>
+        <item name="android:paddingTop">@dimen/com_auth0_credential_field_vertical_padding</item>
         <item name="android:drawablePadding">@dimen/com_auth0_credential_field_icon_right_padding</item>
         <item name="android:background">@color/com_auth0_credential_field_background</item>
+        <item name="android:textCursorDrawable">@drawable/com_auth0_cursor</item>
     </style>
 
     <style name="Lock.Theme.ProgressBarHorizontal">

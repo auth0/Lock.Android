@@ -27,7 +27,7 @@
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       tools:showIn="@layout/fragment_database_login">
+       tools:showIn="@layout/com_auth0_fragment_database_login">
 
     <LinearLayout
         android:id="@+id/com_auth0_db_login_credentials"
