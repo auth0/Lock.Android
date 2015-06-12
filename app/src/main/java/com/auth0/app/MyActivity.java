@@ -19,6 +19,7 @@ import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.receiver.AuthenticationReceiver;
 import com.auth0.lock.sms.LockSMSActivity;
 
 import static com.auth0.app.R.id;
@@ -78,14 +79,13 @@ public class MyActivity extends ActionBarActivity {
         });
         broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
-        broadcastManager.registerReceiver(cancelReceiver, new IntentFilter(Lock.CANCEL_ACTION));
+        broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.CANCEL_ACTION));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         broadcastManager.unregisterReceiver(authenticationReceiver);
-        broadcastManager.unregisterReceiver(cancelReceiver);
     }
 
     @Override
@@ -100,33 +100,29 @@ public class MyActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    private BroadcastReceiver authenticationReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver authenticationReceiver = new AuthenticationReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-        profile = intent.getParcelableExtra(Lock.AUTHENTICATION_ACTION_PROFILE_PARAMETER);
-        token = intent.getParcelableExtra(Lock.AUTHENTICATION_ACTION_TOKEN_PARAMETER);
-        if (token != null) {
+        public void onAuthentication(UserProfile profile, Token token) {
+            MyActivity.this.profile = profile;
+            MyActivity.this.token = token;
             Log.d(TAG, "User " + profile.getName() + " with token " + token.getIdToken());
             TextView welcomeLabel = (TextView) findViewById(id.welcome_label);
             welcomeLabel.setText("Herzlich Willkommen " + profile.getName());
-        } else {
-            Log.i(TAG, "Signed Up user");
+            refreshButton.setEnabled(token.getRefreshToken() != null);
         }
-        refreshButton.setEnabled(token != null && token.getRefreshToken() != null);
-        }
-    };
 
-    private BroadcastReceiver cancelReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "User Cancelled");
+        protected void onSignUp() {
+            Log.i(TAG, "Signed Up user");
+            refreshButton.setEnabled(token != null && token.getRefreshToken() != null);
+        }
+
+        @Override
+        protected void onCancel() {
+            Log.i(TAG, "User Cancelled");
         }
     };
 
