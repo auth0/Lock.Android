@@ -26,6 +26,8 @@ package com.auth0.lock.receiver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -35,11 +37,15 @@ import com.auth0.lock.Lock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -53,6 +59,9 @@ public class AuthenticationReceiverTest {
     @Mock private Context context;
     @Mock private UserProfile profile;
     @Mock private Token token;
+    @Mock private LocalBroadcastManager manager;
+
+    @Captor private ArgumentCaptor<IntentFilter> captor;
 
     @Before
     public void setUp() throws Exception {
@@ -115,5 +124,23 @@ public class AuthenticationReceiverTest {
         receiver.onReceive(context, intent);
 
         verifyZeroInteractions(receiver);
+    }
+
+    @Test
+    public void shouldRegisterInBroadcastManager() throws Exception {
+        receiver.registerIn(manager);
+
+        verify(manager).registerReceiver(eq(receiver), captor.capture());
+        final IntentFilter intentFilter = captor.getValue();
+        assertThat(intentFilter.hasAction(Lock.AUTHENTICATION_ACTION), is(true));
+        assertThat(intentFilter.hasAction(Lock.CANCEL_ACTION), is(true));
+        assertThat(intentFilter.hasAction(Lock.CHANGE_PASSWORD_ACTION), is(true));
+    }
+
+    @Test
+    public void shouldUnregisterFromBroadcastManager() throws Exception {
+        receiver.unregisterFrom(manager);
+
+        verify(manager).unregisterReceiver(eq(receiver));
     }
 }

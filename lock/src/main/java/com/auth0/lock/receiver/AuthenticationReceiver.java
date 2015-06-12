@@ -27,6 +27,8 @@ package com.auth0.lock.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.auth0.core.Token;
@@ -54,6 +56,18 @@ public abstract class AuthenticationReceiver extends BroadcastReceiver {
                 onAuthentication(profile, token);
             }
         }
+    }
+
+    public void registerIn(LocalBroadcastManager manager) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Lock.AUTHENTICATION_ACTION);
+        filter.addAction(Lock.CANCEL_ACTION);
+        filter.addAction(Lock.CHANGE_PASSWORD_ACTION);
+        manager.registerReceiver(this, filter);
+    }
+
+    public void unregisterFrom(LocalBroadcastManager manager) {
+        manager.unregisterReceiver(this);
     }
 
     protected abstract void onAuthentication(UserProfile profile, Token token);

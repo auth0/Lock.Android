@@ -1,12 +1,9 @@
 package com.auth0.app;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -25,11 +22,10 @@ import com.auth0.lock.sms.LockSMSActivity;
 import static com.auth0.app.R.id;
 import static com.auth0.app.R.layout;
 
-public class MyActivity extends ActionBarActivity {
+public class MyActivity extends AppCompatActivity {
 
     public static final String TAG = MyActivity.class.getName();
 
-    LocalBroadcastManager broadcastManager;
     Token token;
     UserProfile profile;
     Button refreshButton;
@@ -77,15 +73,13 @@ public class MyActivity extends ActionBarActivity {
                 });
             }
         });
-        broadcastManager = LocalBroadcastManager.getInstance(this);
-        broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.AUTHENTICATION_ACTION));
-        broadcastManager.registerReceiver(authenticationReceiver, new IntentFilter(Lock.CANCEL_ACTION));
+        authenticationReceiver.registerIn(LocalBroadcastManager.getInstance(this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        broadcastManager.unregisterReceiver(authenticationReceiver);
+        authenticationReceiver.unregisterFrom(LocalBroadcastManager.getInstance(this));
     }
 
     @Override
@@ -103,7 +97,7 @@ public class MyActivity extends ActionBarActivity {
         return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    private BroadcastReceiver authenticationReceiver = new AuthenticationReceiver() {
+    private AuthenticationReceiver authenticationReceiver = new AuthenticationReceiver() {
         @Override
         public void onAuthentication(UserProfile profile, Token token) {
             MyActivity.this.profile = profile;
