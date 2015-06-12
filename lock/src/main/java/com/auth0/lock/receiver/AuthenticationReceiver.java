@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -35,6 +36,16 @@ import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
 
+/**
+ * Custom Lock BroadcastReceiver that by default listens for Actions sent by LockActivity.
+ * Only required method to override is {@link #onAuthentication(UserProfile, Token)} that yield user's credentials and profile on login.
+ * There are a couple more methods that can be overridden:
+ * <ul>
+ *     <li>{@link #onSignUp()}: called only when user signs up and flag {@link Lock#shouldLoginAfterSignUp()} is true</li>
+ *     <li>{@link #onCancel()}: called only when user presses back and flag {@link Lock#isClosable()} is true</li>
+ *     <li>{@link #onChangePassword()}: called when user performs a change password action</li>
+ * </ul>
+ */
 public abstract class AuthenticationReceiver extends BroadcastReceiver {
 
     private static final String TAG = AuthenticationReceiver.class.getName();
@@ -58,19 +69,27 @@ public abstract class AuthenticationReceiver extends BroadcastReceiver {
         }
     }
 
-    public void registerIn(LocalBroadcastManager manager) {
+    /**
+     * Registers in the supplied LocalBroadcastManager
+     * @param broadcastManager in which the receiver is registered
+     */
+    public void registerIn(LocalBroadcastManager broadcastManager) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Lock.AUTHENTICATION_ACTION);
         filter.addAction(Lock.CANCEL_ACTION);
         filter.addAction(Lock.CHANGE_PASSWORD_ACTION);
-        manager.registerReceiver(this, filter);
+        broadcastManager.registerReceiver(this, filter);
     }
 
-    public void unregisterFrom(LocalBroadcastManager manager) {
-        manager.unregisterReceiver(this);
+    /**
+     * Unregisters from the supplied LocalBroadcastManager
+     * @param broadcastManager from which the receiver is unregistered
+     */
+    public void unregisterFrom(LocalBroadcastManager broadcastManager) {
+        broadcastManager.unregisterReceiver(this);
     }
 
-    protected abstract void onAuthentication(UserProfile profile, Token token);
+    protected abstract void onAuthentication(@NonNull UserProfile profile, @NonNull Token token);
 
     protected void onSignUp() {
         Log.v(TAG, "AUTHENTICATION action received from LockActivity without credentials. User only signed up");

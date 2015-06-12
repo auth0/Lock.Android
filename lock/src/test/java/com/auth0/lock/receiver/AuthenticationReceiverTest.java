@@ -27,6 +27,7 @@ package com.auth0.lock.receiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.core.Token;
@@ -68,7 +69,7 @@ public class AuthenticationReceiverTest {
         MockitoAnnotations.initMocks(this);
         receiver = spy(new AuthenticationReceiver() {
             @Override
-            public void onAuthentication(UserProfile profile, Token token) {
+            public void onAuthentication(@NonNull UserProfile profile, @NonNull Token token) {
             }
         });
     }
@@ -138,7 +139,7 @@ public class AuthenticationReceiverTest {
     }
 
     @Test
-    public void shouldUnregisterFromBroadcastManager() throws Exception {
+    public void shouldUnregisterBroadcastManager() throws Exception {
         receiver.unregisterFrom(manager);
 
         verify(manager).unregisterReceiver(eq(receiver));

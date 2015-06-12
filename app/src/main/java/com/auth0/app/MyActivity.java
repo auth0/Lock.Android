@@ -2,6 +2,7 @@ package com.auth0.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -99,7 +100,7 @@ public class MyActivity extends AppCompatActivity {
 
     private AuthenticationReceiver authenticationReceiver = new AuthenticationReceiver() {
         @Override
-        public void onAuthentication(UserProfile profile, Token token) {
+        public void onAuthentication(@NonNull UserProfile profile, @NonNull Token token) {
             MyActivity.this.profile = profile;
             MyActivity.this.token = token;
             Log.d(TAG, "User " + profile.getName() + " with token " + token.getIdToken());
