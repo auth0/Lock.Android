@@ -1,5 +1,27 @@
 # Change Log
 
+## [1.9.3](https://github.com/auth0/Lock.Android/tree/1.9.3) (2015-06-15)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.2...1.9.3)
+
+**Implemented enhancements:**
+
+- Add custom Auth0 BroadcastReceivers [\#96](https://github.com/auth0/Lock.Android/issues/96)
+
+**Fixed bugs:**
+
+- Email Signup does not close window on success  [\#101](https://github.com/auth0/Lock.Android/issues/101)
+
+- Cursor does not show in Lollipop [\#98](https://github.com/auth0/Lock.Android/issues/98)
+
+**Merged pull requests:**
+
+- Fix for SignUp when success callback is not called  [\#102](https://github.com/auth0/Lock.Android/pull/102) ([hzalaz](https://github.com/hzalaz))
+
+- Custom BroadcastReceivers [\#100](https://github.com/auth0/Lock.Android/pull/100) ([hzalaz](https://github.com/hzalaz))
+
+- Invisible Cursor Fix [\#99](https://github.com/auth0/Lock.Android/pull/99) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.9.2](https://github.com/auth0/Lock.Android/tree/1.9.2) (2015-06-03)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.1...1.9.2)
