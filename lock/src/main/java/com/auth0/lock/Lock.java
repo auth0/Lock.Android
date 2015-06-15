@@ -655,8 +655,6 @@ public class Lock {
                 if (safeUrl.startsWith("http://")) {
                     Log.w(Builder.class.getName(), "You should use (https) instead of (http) for url " + url);
                 }
-            } else {
-                Log.w(Builder.class.getName(), "A null url was supplied to LockBuilder");
             }
             return safeUrl;
         }
