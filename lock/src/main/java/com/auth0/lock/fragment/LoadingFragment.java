@@ -1,6 +1,10 @@
 package com.auth0.lock.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +23,7 @@ import com.squareup.otto.Bus;
 
 public class LoadingFragment extends Fragment {
 
+    private static final String TAG = LoadingFragment.class.getName();
     private APIClient client;
     private Bus bus;
 
@@ -41,21 +46,36 @@ public class LoadingFragment extends Fragment {
     }
 
     private void loadInfo() {
+        if (!isConnectionAvailable()) {
+            Log.e(TAG, "No Connection to Internet");
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.com_auth0_application_load_failed_title)
+                    .setMessage(R.string.com_auth0_application_load_no_connection_message)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.com_auth0_application_retry_button_text, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            loadInfo();
+                        }
+                    })
+                    .show();
+            return;
+        }
         client.fetchApplicationInfo(new BaseCallback<Application>() {
             @Override
             public void onSuccess(Application application) {
-                Log.i(LoadingFragment.class.getName(), "Fetched app info for tenant " + application.getTenant());
+                Log.i(TAG, "Fetched app info for tenant " + application.getTenant());
                 bus.post(application);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(LoadingFragment.class.getName(), "Failed to fetch app info", throwable);
+                Log.e(TAG, "Failed to fetch app info", throwable);
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Failed to load application information")
-                        .setMessage("Couldn't obtain application configuration. Please check your Auth0 configuration and try again.")
+                        .setTitle(R.string.com_auth0_application_load_failed_title)
+                        .setMessage(R.string.com_auth0_application_load_failed_message)
                         .setCancelable(false)
-                        .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.com_auth0_application_retry_button_text, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 loadInfo();
@@ -64,5 +84,15 @@ public class LoadingFragment extends Fragment {
                         .show();
             }
         });
+    }
+
+    private boolean isConnectionAvailable() {
+        if (getActivity().checkCallingOrSelfPermission("android.permission.ACCESS_NETWORK_STATE") == PackageManager.PERMISSION_GRANTED) {
+            ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+        }
+        return true;
     }
 }

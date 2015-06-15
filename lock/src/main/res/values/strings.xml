@@ -23,6 +23,11 @@
     <string name="com_auth0_db_single_sign_on_button">LOGIN WITH %s</string>
     <string name="com_auth0_enterprise_no_connection_message">There was no connection configured for the domain</string>
 
+    <string name="com_auth0_application_load_failed_title">Failed to load application information</string>
+    <string name="com_auth0_application_load_failed_message">Couldn\'t obtain application configuration. Please check your Auth0 configuration and try again.</string>
+    <string name="com_auth0_application_load_no_connection_message">No Internet connection found. Please check your Internet configuration and try again.</string>
+    <string name="com_auth0_application_retry_button_text">Retry</string>
+    
     <!-- Validation Errors -->
     <string name="com_auth0_invalid_credentials_title">Invalid credentials</string>
     <string name="com_auth0_invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
