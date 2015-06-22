@@ -1,5 +1,23 @@
 # Change Log
 
+## [1.9.4](https://github.com/auth0/Lock.Android/tree/1.9.4) (2015-06-22)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.3...1.9.4)
+
+**Implemented enhancements:**
+
+- Better handling of app info fetch errors [\#88](https://github.com/auth0/Lock.Android/issues/88)
+
+**Fixed bugs:**
+
+- Email validation deeming email with + character as invalid [\#103](https://github.com/auth0/Lock.Android/issues/103)
+
+**Merged pull requests:**
+
+- Improve Loading app info error messages [\#105](https://github.com/auth0/Lock.Android/pull/105) ([hzalaz](https://github.com/hzalaz))
+
+- Allow mails with `+` and `.` [\#104](https://github.com/auth0/Lock.Android/pull/104) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.9.3](https://github.com/auth0/Lock.Android/tree/1.9.3) (2015-06-15)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.2...1.9.3)
