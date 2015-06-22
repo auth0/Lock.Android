@@ -30,7 +30,7 @@ public class EmailValidator extends BaseFragmentValidator {
 
     private final Pattern pattern;
 
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static final String EMAIL_PATTERN = "^[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+[\\.])+[A-Za-z]{2,}$";
 
     public EmailValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {
         super(fieldResource, errorTitleResource, errorMessageResource);
