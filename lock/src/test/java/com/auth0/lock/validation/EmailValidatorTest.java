@@ -69,6 +69,12 @@ public class EmailValidatorTest {
     }
 
     @Test
+    public void shouldAcceptSpecialCharacters() throws Exception {
+        when(field.getInputText()).thenReturn("first.last_family-notsure+mobile@gmail.com");
+        assertThat(validator.validateFrom(fragment), is(nullValue()));
+    }
+
+    @Test
     public void shouldFailWithEmptyEmail() throws Exception {
         when(field.getInputText()).thenReturn("");
         assertThat(validator.validateFrom(fragment), hasError(R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message));
