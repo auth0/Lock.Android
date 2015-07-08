@@ -137,7 +137,7 @@ And you'll see our native login screen
 
 `LockSMSActivity` authenticates users by sending them an SMS (Similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
-`LockSMSActivity` is not included in `com.auth0:lock:aar` but you can add it with this line in your `build.gradle`:
+`LockSMSActivity` is part of the library `lock-sms` and you can add it with this line in your `build.gradle`:
 ```gradle
 compile 'com.auth0.android:lock-sms:1.9.+'
 ```
@@ -178,12 +178,8 @@ public class HomeActivity extends Activity {
 Then just start `LockSMSActivity`
 
 ```java
-Intent smsIntent = new Intent(this, LockSMSActivity.class);
-smsIntent.putExtra(LockSMSActivity.REQUEST_SMS_CODE_JWT, "API v2 JWT");
-startActivity(smsIntent);
+startActivity(new Intent(this, LockSMSActivity.class));
 ```
-
-> The value for `LockSMSActivity.REQUEST_SMS_CODE_JWT` is an API Token used to register the  phone number and send the login code with SMS. This token can be generated in  [Auth0 API v2 page](https://docs.auth0.com/apiv2), just select the scope `create:users` and copy the generated API Token.
 
 And you'll see SMS login screen
 

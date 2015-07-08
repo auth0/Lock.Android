@@ -49,9 +49,7 @@ public class MyActivity extends AppCompatActivity {
         smsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent smsIntent = new Intent(MyActivity.this, LockSMSActivity.class);
-                smsIntent.putExtra(LockSMSActivity.REQUEST_SMS_CODE_JWT, getString(R.string.request_sms_code_jwt));
-                startActivity(smsIntent);
+                startActivity(new Intent(MyActivity.this, LockSMSActivity.class));
             }
         });
 
