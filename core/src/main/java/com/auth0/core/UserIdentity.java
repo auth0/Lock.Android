@@ -16,6 +16,13 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserIdentity implements Parcelable {
 
+    private static final String USER_ID_KEY = "user_id";
+    private static final String CONNECTION_KEY = "connection";
+    private static final String PROVIDER_KEY = "provider";
+    private static final String IS_SOCIAL_KEY = "isSocial";
+    private static final String ACCESS_TOKEN_KEY = "access_token";
+    private static final String ACCESS_TOKEN_SECRET_KEY = "access_token_secret";
+    private static final String PROFILE_DATA_KEY = "profileData";
     private String id;
     private String connection;
     private String provider;
@@ -24,14 +31,28 @@ public class UserIdentity implements Parcelable {
     private String accessTokenSecret;
     private Map<String, Object> profileInfo;
 
+    @SuppressWarnings("unchecked")
+    public UserIdentity(Map<String, Object> values) {
+        final Object idValue = values.get(USER_ID_KEY);
+        if (idValue != null) {
+            this.id = idValue.toString();
+        }
+        this.connection = (String) values.get(CONNECTION_KEY);
+        this.provider = (String) values.get(PROVIDER_KEY);
+        this.social = (boolean) values.get(IS_SOCIAL_KEY);
+        this.accessToken = (String) values.get(ACCESS_TOKEN_KEY);
+        this.accessTokenSecret = (String) values.get(ACCESS_TOKEN_SECRET_KEY);
+        this.profileInfo = (Map<String, Object>) values.get(PROFILE_DATA_KEY);
+    }
+
     @JsonCreator
-    public UserIdentity(@JsonProperty(value = "user_id") String id,
-                        @JsonProperty(value = "connection") String connection,
-                        @JsonProperty(value = "provider") String provider,
-                        @JsonProperty(value = "isSocial") boolean social,
-                        @JsonProperty(value = "access_token") String accessToken,
-                        @JsonProperty(value = "access_token_secret") String accessTokenSecret,
-                        @JsonProperty(value = "profileData") Map<String, Object> profileInfo) {
+    public UserIdentity(@JsonProperty(value = USER_ID_KEY) String id,
+                        @JsonProperty(value = CONNECTION_KEY) String connection,
+                        @JsonProperty(value = PROVIDER_KEY) String provider,
+                        @JsonProperty(value = IS_SOCIAL_KEY) boolean social,
+                        @JsonProperty(value = ACCESS_TOKEN_KEY) String accessToken,
+                        @JsonProperty(value = ACCESS_TOKEN_SECRET_KEY) String accessTokenSecret,
+                        @JsonProperty(value = PROFILE_DATA_KEY) Map<String, Object> profileInfo) {
         this.id = id;
         this.connection = connection;
         this.provider = provider;
