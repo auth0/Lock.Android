@@ -1,5 +1,19 @@
 # Change Log
 
+## [1.9.5](https://github.com/auth0/Lock.Android/tree/1.9.5) (2015-07-08)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.4...1.9.5)
+
+**Fixed bugs:**
+
+- User's identities are not properly parsed from JSON [\#106](https://github.com/auth0/Lock.Android/issues/106)
+
+**Merged pull requests:**
+
+- Use new /passwordless/start endpoint [\#108](https://github.com/auth0/Lock.Android/pull/108) ([hzalaz](https://github.com/hzalaz))
+
+- Fix class cast exception identities [\#107](https://github.com/auth0/Lock.Android/pull/107) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.9.4](https://github.com/auth0/Lock.Android/tree/1.9.4) (2015-06-22)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.3...1.9.4)
