@@ -49,8 +49,40 @@ import com.auth0.lock.util.ActivityUIHelper;
 import com.squareup.otto.Subscribe;
 
 
+/**
+ * Activity that handles passwordless authentication using SMS.
+ * You'll need to declare it in your app's {@code AndroidManifest.xml}:
+ * <pre>{@code
+ * <activity
+ *  android:name="com.auth0.lock.sms.LockSMSActivity"
+ *  android:theme="@style/Lock.Theme"
+ *  android:label="@string/app_name"
+ *  android:screenOrientation="portrait"
+ *  android:launchMode="singleTask"/>
+ * <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/Lock.Theme"/>
+ * }</pre>
+ *
+ * Then just start it like any other Android activity:
+ * <pre>{@code
+ * Intent lockIntent = new Intent(this, LockSMSActivity.class);
+ * startActivity(lockIntent);
+ * }
+ * </pre>
+ *
+ * And finally register listeners in {@link android.support.v4.content.LocalBroadcastManager} for these actions:
+ * <ul>
+ *     <li><b>Lock.Authentication</b>: Sent on a successful authentication with {@link com.auth0.core.UserProfile} and {@link com.auth0.core.Token}.
+ *     Or both {@code null} when {@link Lock#loginAfterSignUp} is {@code false} </li>
+ *     <li><b>Lock.Cancel</b>: Sent when the user's closes the activity by pressing the back button without authenticating. (Only if {@link Lock#closable} is {@code true}</li>
+ * </ul>
+ *
+ * All these action names are defined in these constants: {@link Lock#AUTHENTICATION_ACTION} and {@link Lock#CANCEL_ACTION}.
+ */
 public class LockSMSActivity extends FragmentActivity {
 
+    /**
+     * @deprecated There is no need to provide a API v2 JWT, it will use a special enpoint for SMS Authentication
+     */
     public static final String REQUEST_SMS_CODE_JWT = "REQUEST_SMS_CODE_JWT";
 
     private static final String TAG = LockSMSActivity.class.getName();

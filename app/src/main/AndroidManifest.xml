@@ -51,8 +51,7 @@
             android:theme="@style/MyLock.Theme"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask"/>
         <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock SMS End-->
 
