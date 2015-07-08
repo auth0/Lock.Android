@@ -9,17 +9,17 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
@@ -33,6 +33,10 @@ public class UserProfileTest {
     public static final String PICTURE_URL = "http://somewhere.com/pic.jpg";
     public static final Object EXTRA_VALUE = "extra_value";
     public static final long CREATED_AT_TIMESTAMP = 1404671629005l;
+    public static final String FACEBOOK = "facebook";
+    public static final String TOKEN = "token";
+    public static final String SECRET = "secret";
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -90,12 +94,29 @@ public class UserProfileTest {
     @Test
     public void shouldHandleIdentities() throws Exception {
         Map<String, Object> values = new HashMap<String, Object>();
-        UserIdentity identity = mock(UserIdentity.class);
+        Map<String, Object> identityValue = new HashMap<>();
+        Map<String, Object> profileData = new HashMap<>();
+        identityValue.put("user_id", USER_ID);
+        identityValue.put("connection", FACEBOOK);
+        identityValue.put("provider", FACEBOOK);
+        identityValue.put("isSocial", true);
+        identityValue.put("access_token", TOKEN);
+        identityValue.put("access_token_secret", SECRET);
+        identityValue.put("profileData", profileData);
+        profileData.put("name", "John Doe");
+
         values.put("user_id", USER_ID);
-        values.put("identities", Arrays.asList(identity));
+        values.put("identities", Collections.singletonList(identityValue));
         UserProfile profile = new UserProfile(values);
         assertValidProfile(profile);
-        assertThat(profile.getIdentities(), hasItem(identity));
+        assertThat(profile.getIdentities(), hasSize(1));
+        UserIdentity identity = profile.getIdentities().get(0);
+        assertThat(identity, isA(UserIdentity.class));
+        assertThat(identity.getId(), equalTo(USER_ID));
+        assertThat(identity.getProvider(), equalTo(FACEBOOK));
+        assertThat(identity.getConnection(), equalTo(FACEBOOK));
+        assertThat(identity.getAccessToken(), equalTo(TOKEN));
+        assertThat(identity.getAccessTokenSecret(), equalTo(SECRET));
     }
 
     private void assertValidProfile(UserProfile profile) {

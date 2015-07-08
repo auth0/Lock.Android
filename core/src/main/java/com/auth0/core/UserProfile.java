@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,7 @@ public class UserProfile implements Parcelable {
         } catch (ParseException e) {
             throw new IllegalArgumentException("Invalid created_at value", e);
         }
-        this.identities = (List<UserIdentity>) info.remove("identities");
+        this.identities = buildIdentities((List<Map<String, Object>>) info.remove("identities"));
         this.extraInfo = info;
     }
 
@@ -85,7 +86,7 @@ public class UserProfile implements Parcelable {
      * @return
      */
     public Map<String, Object> getExtraInfo() {
-        return new HashMap<String, Object>(extraInfo);
+        return new HashMap<>(extraInfo);
     }
 
     /**
@@ -93,6 +94,17 @@ public class UserProfile implements Parcelable {
      * @return
      */
     public List<UserIdentity> getIdentities() {
+        return identities;
+    }
+
+    private List<UserIdentity> buildIdentities(List<Map<String, Object>> values) {
+        if (values == null) {
+            return Collections.emptyList();
+        }
+        List<UserIdentity> identities = new ArrayList<>(values.size());
+        for (Map<String, Object> value: values) {
+            identities.add(new UserIdentity(value));
+        }
         return identities;
     }
 
