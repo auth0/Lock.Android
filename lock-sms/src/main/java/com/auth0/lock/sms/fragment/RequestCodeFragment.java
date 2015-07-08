@@ -35,7 +35,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.auth0.api.AuthenticatedAPIClient;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.fragment.BaseTitledFragment;
@@ -43,9 +42,9 @@ import com.auth0.lock.sms.R;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
 import com.auth0.lock.sms.event.SmsPasscodeSentEvent;
+import com.auth0.lock.sms.task.LoadCountriesTask;
 import com.auth0.lock.sms.validation.PhoneNumberValidator;
 import com.auth0.lock.sms.widget.PhoneField;
-import com.auth0.lock.sms.task.LoadCountriesTask;
 import com.auth0.lock.validation.Validator;
 import com.squareup.otto.Subscribe;
 
@@ -54,16 +53,12 @@ import java.util.Map;
 
 public class RequestCodeFragment extends BaseTitledFragment {
 
-    public static final String REQUEST_CODE_JWT_ARGUMENT = "REQUEST_CODE_JWT_ARGUMENT";
-
     private static final String TAG = RequestCodeFragment.class.getName();
     private static final String LAST_PHONE_NUMBER_KEY = "LAST_PHONE_NUMBER";
     private static final String LAST_PHONE_DIAL_CODE_KEY = "LAST_PHONE_DIAL_CODE_KEY";
 
     AsyncTask<String, Void, Map<String, String>> task;
     Validator validator;
-    AuthenticatedAPIClient authClient;
-
     PhoneField phoneField;
     Button sendButton;
     ProgressBar progressBar;
@@ -73,14 +68,6 @@ public class RequestCodeFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "Loading countries...");
         bus.register(this);
-        final Bundle arguments = getArguments();
-        if (arguments != null && arguments.containsKey(REQUEST_CODE_JWT_ARGUMENT)) {
-
-            authClient = new AuthenticatedAPIClient(client.getClientID(), client.getBaseURL(), client.getConfigurationURL());
-            authClient.setJWT(arguments.getString(REQUEST_CODE_JWT_ARGUMENT));
-        }
-
-        checkForAuthClient();
     }
 
     @Override
@@ -162,12 +149,8 @@ public class RequestCodeFragment extends BaseTitledFragment {
 
     private void requestSmsCode() {
         AuthenticationError error = validator.validateFrom(this);
-        boolean valid = error == null;
-        if (valid) {
-            boolean hasClient = checkForAuthClient();
-            if (hasClient) {
+        if (error == null) {
                 sendRequestCode();
-            }
         } else {
             bus.post(error);
         }
@@ -178,7 +161,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         final String phoneNumber = phoneField.getCompletePhoneNumber();
-        authClient.requestSmsCode(phoneNumber, new BaseCallback<Void>() {
+        client.startPasswordless(phoneNumber, new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
                 Log.d(TAG, "SMS code sent to " + phoneNumber);
@@ -206,14 +189,4 @@ public class RequestCodeFragment extends BaseTitledFragment {
         Log.d(TAG, "Received selected country " + event.getIsoCode() + " dial code " + event.getDialCode());
         phoneField.setDialCode(event.getDialCode());
     }
-
-
-    private boolean checkForAuthClient() {
-        final boolean noJwt = authClient == null;
-        if (noJwt) {
-            bus.post(new AuthenticationError(R.string.com_auth0_sms_no_jwt_found_title, R.string.com_auth0_sms_no_jwt_found_message));
-        }
-        return !noJwt;
-    }
-
 }

@@ -25,13 +25,10 @@
 package com.auth0.lock.sms;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
 
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -97,12 +94,8 @@ public class LockSMSActivity extends FragmentActivity {
         setContentView(R.layout.com_auth0_activity_lock_sms);
         lock = getLock();
         if (savedInstanceState == null) {
-            final RequestCodeFragment fragment = new RequestCodeFragment();
-            Bundle arguments = new Bundle();
-            arguments.putString(RequestCodeFragment.REQUEST_CODE_JWT_ARGUMENT, getIntent().getStringExtra(REQUEST_SMS_CODE_JWT));
-            fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.com_auth0_container, fragment)
+                    .add(R.id.com_auth0_container, new RequestCodeFragment())
                     .commit();
         }
 
