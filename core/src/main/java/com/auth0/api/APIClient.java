@@ -496,6 +496,42 @@ public class APIClient extends BaseAPIClient {
         }
     }
 
+    /**
+     * Starts passwordless authentication with SMS, this will send a One Time Password to the user's phone via SMS
+     * @param phoneNumber to where the SMS one time password will be sent
+     * @param callback to call on either success or failure
+     */
+    public void startPasswordless(String phoneNumber, final BaseCallback<Void> callback) {
+        String signUpUrl = getBaseURL() + "/passwordless/start";
+
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .clearAll()
+                .setClientId(this.getClientID())
+                .setConnection("sms")
+                .set("phone_number", phoneNumber)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Starting passwordless authentication with parameters " + request);
+        try {
+            HttpEntity entity = entityBuilder.newEntityFrom(request);
+            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    callback.onSuccess(null);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Log.e(APIClient.class.getName(), "Failed to start passwordless authentication", error);
+                    callback.onFailure(error);
+                }
+            });
+        } catch (JsonEntityBuildException e) {
+            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
+            callback.onFailure(e);
+        }
+    }
+
     private void fetchProfile(final Token token, final AuthenticationCallback callback) {
         this.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
             @Override

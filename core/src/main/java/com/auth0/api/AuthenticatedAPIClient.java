@@ -86,6 +86,7 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
      * Creates a user and request a SMS code using a configured SMS connection
      * @param phoneNumber phone number that will receive the SMS code.
      * @param callback callback when the SMS is sent or with the failure reason.
+     * @deprecated Use passwordless endpoints from {@link APIClient}
      */
     public void requestSmsCode(String phoneNumber, final BaseCallback<Void> callback) {
         String requestCodeUrl = getBaseURL() + "/api/v2/users";
