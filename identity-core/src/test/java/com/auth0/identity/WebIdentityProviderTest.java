@@ -80,7 +80,7 @@ public class WebIdentityProviderTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        provider = new WebIdentityProvider(parser);
+        provider = new WebIdentityProvider(parser, "CLIENT_ID", "https://samples.auth0.com/authorize");
         provider.setCallback(callback);
         when(request.getAuthenticationUri(eq(application), any(Map.class))).thenReturn(uri);
         when(request.getServiceName()).thenReturn(SERVICE_NAME);

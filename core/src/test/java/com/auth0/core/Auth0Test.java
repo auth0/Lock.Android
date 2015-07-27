@@ -88,4 +88,10 @@ public class Auth0Test {
         assertThat(client.getBaseURL(), equalTo("https://samples.auth0.com"));
         assertThat(client.getClientID(), equalTo(CLIENT_ID));
     }
+
+    @Test
+    public void shouldReturnAuthorizeUrl() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN);
+        assertThat(auth0.getAuthorizeUrl(), equalTo("https://samples.auth0.com/authorize"));
+    }
 }
