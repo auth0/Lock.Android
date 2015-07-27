@@ -222,14 +222,14 @@ public class BuilderTest {
     @Test
     public void shouldFailWithInsufficientData() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage(equalToIgnoringCase("Must supply a non-null ClientId"));
+        expectedException.expectMessage(equalToIgnoringCase("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Domain."));
         builder.build();
     }
 
     @Test
     public void shouldFailWithOnlyClientId() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage(equalToIgnoringCase("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant."));
+        expectedException.expectMessage(equalToIgnoringCase("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Domain."));
         builder
             .clientId(CLIENT_ID)
             .build();
