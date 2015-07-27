@@ -29,13 +29,13 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
 import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
+import com.auth0.core.Auth0;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
@@ -340,7 +340,6 @@ public class Lock {
         public static final String CONFIGURATION_URL_KEY = "com.auth0.lock.configuration-url";
 
         private String clientId;
-        private String tenant;
         private String domain;
         private String configuration;
         private boolean useWebView;
@@ -388,7 +387,9 @@ public class Lock {
          */
         @Deprecated
         public Builder tenant(String tenant) {
-            this.tenant = tenant;
+            if (tenant != null) {
+                domainUrl(tenant + ".auth0.com");
+            }
             return this;
         }
 
@@ -399,7 +400,10 @@ public class Lock {
          * @return the Builder instance being used
          */
         public Builder domainUrl(String domain) {
-            this.domain = ensureUrlString(domain);
+            if (domain != null && domain.startsWith("http://")) {
+                Log.w(Builder.class.getName(), "You should use (https) instead of (http) for url " + domain);
+            }
+            this.domain = domain;
             return this;
         }
 
@@ -410,7 +414,10 @@ public class Lock {
          * @return the Builder instance being used
          */
         public Builder configurationUrl(String configuration) {
-            this.configuration = ensureUrlString(configuration);
+            if (configuration != null && configuration.startsWith("http://")) {
+                Log.w(Builder.class.getName(), "You should use (https) instead of (http) for url " + configuration);
+            }
+            this.configuration = configuration;
             return this;
         }
 
@@ -564,7 +571,6 @@ public class Lock {
          * @return a new Lock instance`
          */
         public Lock build() {
-            resolveConfiguration();
             Lock lock = buildLock();
             lock.useWebView = useWebView;
             lock.defaultProvider.setUseWebView(useWebView);
@@ -616,47 +622,12 @@ public class Lock {
             return this;
         }
 
-        protected APIClient buildAPIClient() {
-            APIClient client;
-            if (this.clientId == null) {
-                throw new IllegalArgumentException("Must supply a non-null ClientId");
-            }
-            if (this.domain != null) {
-                 client = new APIClient(this.clientId, this.domain, this.configuration);
-            } else if (this.tenant != null) {
-                client = new APIClient(this.clientId, this.tenant);
-            } else {
-                throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Tenant.");
-            }
-            return client;
-        }
-
-        @SuppressWarnings("deprecation")
         protected Lock buildLock() {
-            return new Lock(buildAPIClient());
-        }
-
-        private void resolveConfiguration() {
-            if (this.configuration == null && this.domain != null) {
-                final Uri domainUri = Uri.parse(this.domain);
-                final String host = domainUri.getHost();
-                if (host.endsWith(".auth0.com")) {
-                    this.configuration = host.endsWith(".eu.auth0.com") ? APIClient.AUTH0_EU_CDN_URL : APIClient.AUTH0_US_CDN_URL;
-                } else {
-                    this.configuration = this.domain;
-                }
+            if (this.clientId == null || this.domain == null) {
+                throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Domain.");
             }
-        }
-
-        private String ensureUrlString(String url) {
-            String safeUrl = null;
-            if (url != null) {
-                safeUrl = url.startsWith("http") ? url : "https://" + url;
-                if (safeUrl.startsWith("http://")) {
-                    Log.w(Builder.class.getName(), "You should use (https) instead of (http) for url " + url);
-                }
-            }
-            return safeUrl;
+            Auth0 auth0 = new Auth0(this.clientId, this.domain, this.configuration);
+            return new Lock(auth0.newAPIClient());
         }
 
         protected String buildClientInfo() {
