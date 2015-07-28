@@ -25,6 +25,7 @@
 package com.auth0.lock;
 
 import com.auth0.api.APIClient;
+import com.auth0.core.Auth0;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
@@ -51,13 +52,18 @@ public class LockTest {
     private IdentityProvider provider;
     @Mock
     private APIClient client;
+    @Mock
+    private Auth0 auth0;
 
     private Lock lock;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        lock = new Lock(client);
+        when(auth0.getClientId()).thenReturn("CLIENT_ID");
+        when(auth0.getAuthorizeUrl()).thenReturn("https://samples.auth0.com/authorize");
+        when(auth0.newAPIClient()).thenReturn(client);
+        lock = new Lock(auth0);
     }
 
     @Test

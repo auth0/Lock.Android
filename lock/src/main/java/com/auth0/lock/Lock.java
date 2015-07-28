@@ -116,15 +116,15 @@ public class Lock {
     private boolean changePasswordEnabled;
     private CredentialStore credentialStore;
 
-    public Lock(APIClient apiClient) {
+    Lock(Auth0 auth0) {
         this.useWebView = false;
         this.closable = false;
         this.loginAfterSignUp = true;
         this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
-        this.defaultProvider = new WebIdentityProvider(new CallbackParser());
-        this.apiClient = apiClient;
+        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl());
+        this.apiClient = auth0.newAPIClient();
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
@@ -627,7 +627,7 @@ public class Lock {
                 throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Domain.");
             }
             Auth0 auth0 = new Auth0(this.clientId, this.domain, this.configuration);
-            return new Lock(auth0.newAPIClient());
+            return new Lock(auth0);
         }
 
         protected String buildClientInfo() {

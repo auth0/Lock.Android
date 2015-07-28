@@ -84,4 +84,11 @@ public class Auth0 {
     public APIClient newAPIClient() {
         return new APIClient(this.clientId, this.domainUrl, this.configurationUrl);
     }
+
+    public String getAuthorizeUrl() {
+        return Uri.parse(domainUrl).buildUpon()
+                .path("authorize")
+                .build()
+                .toString();
+    }
 }
