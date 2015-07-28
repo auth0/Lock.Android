@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.9.6](https://github.com/auth0/Lock.Android/tree/1.9.6) (2015-07-28)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.5...1.9.6)
+
+**Merged pull requests:**
+
+- Allow custom UI to use IdP authentication classes [\#111](https://github.com/auth0/Lock.Android/pull/111) ([hzalaz](https://github.com/hzalaz))
+
+- Add Auth0 class to handle basic account information [\#110](https://github.com/auth0/Lock.Android/pull/110) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.9.5](https://github.com/auth0/Lock.Android/tree/1.9.5) (2015-07-08)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.4...1.9.5)
