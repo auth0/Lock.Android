@@ -142,6 +142,19 @@ And you'll see our native login screen
 compile 'com.auth0.android:lock-sms:1.9.+'
 ```
 
+Then in your `AndroidManifest.xml` register the following activities:
+```xml
+    <!--Auth0 Lock SMS-->
+    <activity
+      android:name="com.auth0.lock.sms.LockSMSActivity"
+      android:theme="@style/Lock.Theme"
+      android:label="@string/app_name"
+      android:screenOrientation="portrait"
+      android:launchMode="singleTask"/>
+    <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/Lock.Theme"/>
+    <!--Auth0 Lock SMS End-->
+```
+
 When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
