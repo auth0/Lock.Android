@@ -6,8 +6,8 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.api.handler.APIResponseHandler;
-import com.auth0.api.handler.ApplicationResponseHandler;
 import com.auth0.core.Application;
+import com.auth0.core.Auth0;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
 import com.auth0.core.Token;
@@ -41,6 +41,7 @@ public class APIClient extends BaseAPIClient {
     private static final String REFRESH_TOKEN_KEY = "refresh_token";
 
     private Application application;
+    private AuthenticationAPIClient newClient;
 
     /**
      * Creates a new API client instance providing Auth API and Configuration Urls different than the default. (Useful for on premise deploys).
@@ -51,6 +52,7 @@ public class APIClient extends BaseAPIClient {
      */
     public APIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
         super(clientID, baseURL, configurationURL, tenantName);
+        this.newClient = new AuthenticationAPIClient(new Auth0(clientID, baseURL, configurationURL));
     }
 
     /**
@@ -71,6 +73,7 @@ public class APIClient extends BaseAPIClient {
      */
     public APIClient(String clientID, String tenantName) {
         super(clientID, tenantName);
+        this.newClient = new AuthenticationAPIClient(new Auth0(clientID, getBaseURL()));
     }
 
     /**
@@ -78,7 +81,7 @@ public class APIClient extends BaseAPIClient {
      * @return an instance of {@link com.auth0.core.Application} or null.
      */
     public Application getApplication() {
-        return application;
+        return newClient.getApplication();
     }
 
     /**
@@ -86,21 +89,7 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with the application info on success or with the failure reason.
      */
     public void fetchApplicationInfo(final BaseCallback<Application> callback) {
-        Log.v(APIClient.class.getName(), "Fetching application info from " + getConfigurationURL());
-        this.client.get(getConfigurationURL(), null, new ApplicationResponseHandler(new ObjectMapper()) {
-            @Override
-            public void onSuccess(Application app) {
-                Log.d(APIClient.class.getName(), "Obtained application with id " + app.getId() + " tenant " + app.getTenant());
-                callback.onSuccess(app);
-                APIClient.this.application = app;
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                Log.e(APIClient.class.getName(), "Failed to fetch application from Auth0 CDN", error);
-                callback.onFailure(error);
-            }
-        });
+        newClient.fetchApplicationInfo(callback);
     }
 
     /**
