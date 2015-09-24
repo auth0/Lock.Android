@@ -73,26 +73,26 @@ public class RequestCodeFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.com_auth0_fragment_request_code, container, false);
+        return inflater.inflate(R.layout.com_auth0_email_fragment_request_code, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        validator = new EmailValidator(R.id.com_auth0_sms_phone_field, R.string.com_auth0_email_send_code_error_tile, R.string.com_auth0_email_send_code_no_phone_message);
-        emailField = (CredentialField) view.findViewById(R.id.com_auth0_sms_phone_field);
+        validator = new EmailValidator(R.id.com_auth0_email_email_field, R.string.com_auth0_email_send_code_error_tile, R.string.com_auth0_email_send_code_no_phone_message);
+        emailField = (CredentialField) view.findViewById(R.id.com_auth0_email_email_field);
         final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         final String storedEmail = preferences.getString(LAST_EMAIL_KEY, null);
         emailField.setText(storedEmail);
-        sendButton = (Button) view.findViewById(R.id.com_auth0_sms_access_button);
+        sendButton = (Button) view.findViewById(R.id.com_auth0_email_access_button);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestSmsCode();
             }
         });
-        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_sms_send_code_progress_indicator);
-        final Button hasCodeButton = (Button) view.findViewById(R.id.com_auth0_sms_already_has_code_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_send_code_progress_indicator);
+        final Button hasCodeButton = (Button) view.findViewById(R.id.com_auth0_email_already_has_code_button);
         hasCodeButton.setVisibility(storedEmail != null ? View.VISIBLE : View.GONE);
         hasCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,25 +119,25 @@ public class RequestCodeFragment extends BaseTitledFragment {
         sendButton.setEnabled(false);
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        final String phoneNumber = emailField.getText().toString();
-        client.requestSMSVerificationCode(phoneNumber, new BaseCallback<Void>() {
+        final String email = emailField.getText().toString();
+        client.requestEmailVerificationCode(email, new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
-                Log.d(TAG, "SMS code sent to " + phoneNumber);
+                Log.d(TAG, "SMS code sent to " + email);
                 final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
                 editor.putString(LAST_EMAIL_KEY, emailField.getText().toString());
                 editor.apply();
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
+                sendButton.setText(R.string.com_auth0_email_send_passcode_btn_text);
                 progressBar.setVisibility(View.GONE);
-                bus.post(new EmailVerificationCodeRequestedEvent(phoneNumber));
+                bus.post(new EmailVerificationCodeRequestedEvent(email));
             }
 
             @Override
             public void onFailure(Throwable error) {
                 bus.post(new AuthenticationError(R.string.com_auth0_email_send_code_error_tile, R.string.com_auth0_email_send_code_error_message, error));
                 sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
+                sendButton.setText(R.string.com_auth0_email_send_passcode_btn_text);
                 progressBar.setVisibility(View.GONE);
             }
         });

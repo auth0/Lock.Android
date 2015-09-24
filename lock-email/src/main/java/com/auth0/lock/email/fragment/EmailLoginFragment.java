@@ -67,7 +67,7 @@ public class EmailLoginFragment extends BaseTitledFragment {
             email = arguments.getString(EMAIL_ARGUMENT);
         }
         errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_error_message, R.string.com_auth0_email_login_invalid_credentials_message);
-        validator = new VerificationCodeValidator(R.id.com_auth0_sms_login_code_field, R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_invalid_passcode_message);
+        validator = new VerificationCodeValidator(R.id.com_auth0_email_login_code_field, R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_invalid_passcode_message);
     }
 
     @Override
@@ -79,19 +79,19 @@ public class EmailLoginFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button noCodeButton = (Button) view.findViewById(R.id.com_auth0_sms_no_code_button);
+        Button noCodeButton = (Button) view.findViewById(R.id.com_auth0_email_no_code_button);
         noCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bus.post(NavigationEvent.BACK);
             }
         });
-        TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_sms_enter_code_message);
+        TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_email_enter_code_message);
         String messageFormat = getString(R.string.com_auth0_email_login_message);
         messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
-        passcodeField = (CredentialField) view.findViewById(R.id.com_auth0_sms_login_code_field);
-        accessButton = (Button) view.findViewById(R.id.com_auth0_sms_access_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_sms_login_progress_indicator);
+        passcodeField = (CredentialField) view.findViewById(R.id.com_auth0_email_login_code_field);
+        accessButton = (Button) view.findViewById(R.id.com_auth0_email_access_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +116,7 @@ public class EmailLoginFragment extends BaseTitledFragment {
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         String passcode = passcodeField.getText().toString();
-        client.smsLogin(email, passcode, authenticationParameters, new AuthenticationCallback() {
+        client.emailLogin(email, passcode, authenticationParameters, new AuthenticationCallback() {
             @Override
             public void onSuccess(UserProfile userProfile, Token token) {
                 bus.post(new AuthenticationEvent(userProfile, token));
