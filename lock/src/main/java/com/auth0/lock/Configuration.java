@@ -46,8 +46,6 @@ public class Configuration {
 
     private List<Strategy> enterpriseStrategies;
 
-    private Strategy smsStrategy;
-
     private Application application;
 
     public Configuration(Application application, List<String> connections, String defaultDatabaseName) {
@@ -57,7 +55,6 @@ public class Configuration {
         this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
-        this.smsStrategy = connectionSet.contains(Strategies.SMS.getName()) ? application.strategyForName(Strategies.SMS.getName()) : null;
         this.application = application;
     }
 
@@ -79,10 +76,6 @@ public class Configuration {
 
     public List<Strategy> getEnterpriseStrategies() {
         return enterpriseStrategies;
-    }
-
-    public Strategy getSmsStrategy() {
-        return smsStrategy;
     }
 
     public Application getApplication() {

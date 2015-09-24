@@ -7,7 +7,9 @@ import static com.auth0.core.Strategies.Type.*;
  */
 public enum Strategies {
     Auth0("auth0", DATABASE),
-    SMS("sms", DATABASE),
+
+    Email("email", PASSWORDLESS),
+    SMS("sms", PASSWORDLESS),
 
     Amazon("amazon", SOCIAL),
     AOL("aol", SOCIAL),
@@ -88,6 +90,7 @@ public enum Strategies {
     public enum Type {
         DATABASE,
         SOCIAL,
-        ENTERPRISE;
+        ENTERPRISE,
+        PASSWORDLESS;
     }
 }
