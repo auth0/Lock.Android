@@ -578,9 +578,9 @@ public class APIClient extends BaseAPIClient {
         Map<String, Object> request = ParameterBuilder.newBuilder()
                 .clearAll()
                 .setClientId(this.getClientID())
-                .setConnection("sms")
+                .setConnection("email")
                 .set("email", email)
-                .set("send", "link")
+                .set("send", "code")
                 .asDictionary();
         startPasswordless(request, callback);
     }
