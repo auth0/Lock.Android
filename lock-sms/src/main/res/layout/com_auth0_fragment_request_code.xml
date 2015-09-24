@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         style="?attr/Auth0.Message"
         android:text="@string/com_auth0_enter_phone_number"
+        android:gravity="center"
         android:layout_above="@+id/com_auth0_sms_login_credentials"
         android:layout_centerHorizontal="true"
         />

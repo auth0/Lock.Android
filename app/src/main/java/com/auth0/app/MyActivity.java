@@ -17,6 +17,7 @@ import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.email.LockEmailActivity;
 import com.auth0.lock.receiver.AuthenticationReceiver;
 import com.auth0.lock.sms.LockSMSActivity;
 
@@ -50,6 +51,14 @@ public class MyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MyActivity.this, LockSMSActivity.class));
+            }
+        });
+
+        final Button emailButton = (Button) findViewById(id.email_button);
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MyActivity.this, LockEmailActivity.class));
             }
         });
 

@@ -55,6 +55,15 @@
         <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock SMS End-->
 
+        <!--Auth0 Lock Email-->
+        <activity
+            android:name="com.auth0.lock.email.LockEmailActivity"
+            android:theme="@style/MyLock.Theme"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+        <!--Auth0 Lock SMS End-->
+
         <!--Facebook Native-->
         <activity android:name="com.facebook.FacebookActivity"
                   android:configChanges=

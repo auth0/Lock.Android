@@ -50,6 +50,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lock')
     compile project(':lock-sms')
+    compile project(':lock-email')
     compile(project(':integrations:facebook')) {
         exclude module: 'core'
         exclude module: 'identity-core'
