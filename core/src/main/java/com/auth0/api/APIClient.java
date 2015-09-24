@@ -152,25 +152,48 @@ public class APIClient extends BaseAPIClient {
     }
 
     /**
-     * Performs a SMS connection login with a phone number and a passcode.
-     * @param phoneNumber Phone number where the passcode was received.
-     * @param passcode passcode received by SMS.
+     * Performs a SMS connection login with a phone number and verification code.
+     * @param phoneNumber number where the verificationCode was received.
+     * @param verificationCode received by SMS.
      * @param parameters additional parameters sent to the API like 'scope'
      * @param callback called with User's profile and tokens or failure reason
      */
-    public void smsLogin(String phoneNumber, String passcode, Map<String, Object> parameters, final AuthenticationCallback callback) {
+    public void smsLogin(String phoneNumber, String verificationCode, Map<String, Object> parameters, final AuthenticationCallback callback) {
         final String loginURL = getBaseURL() + "/oauth/ro";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
                 .set(USERNAME_KEY, phoneNumber)
-                .set(PASSWORD_KEY, passcode)
+                .set(PASSWORD_KEY, verificationCode)
                 .setGrantType(GRANT_TYPE_PASSWORD)
                 .setClientId(getClientID())
                 .setConnection("sms")
                 .addAll(parameters)
                 .asDictionary();
 
-        Log.v(APIClient.class.getName(), "Performing SMS login with parameters " + request);
+        Log.v(APIClient.class.getName(), "Performing sms code login with parameters " + request);
+        login(loginURL, request, callback);
+    }
+
+    /**
+     * Performs an Email connection login with an email and verification code.
+     * @param email where the user received the verificationCode
+     * @param verificationCode sent by email
+     * @param parameters to be sent for authentication in the request, useful to add extra values to Auth0 or override defaults
+     * @param callback called with user's profile and tokens, or failure reason
+     */
+    public void emailLogin(String email, String verificationCode, Map<String, Object> parameters, final AuthenticationCallback callback) {
+        final String loginURL = getBaseURL() + "/oauth/ro";
+
+        final Map<String, Object> request = ParameterBuilder.newBuilder()
+                .set(USERNAME_KEY, email)
+                .set(PASSWORD_KEY, verificationCode)
+                .setGrantType(GRANT_TYPE_PASSWORD)
+                .setClientId(getClientID())
+                .setConnection("email")
+                .addAll(parameters)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing email code login with parameters " + request);
         login(loginURL, request, callback);
     }
 
@@ -250,7 +273,7 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user was successfully created or not.
      */
     public void createUser(final String email, final String username, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
-        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback>(callback) {
+        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback<Void>>(callback) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.d(APIClient.class.getName(), "Signed up username " + email);
@@ -464,7 +487,7 @@ public class APIClient extends BaseAPIClient {
      * Remove an account from another accounts identities.
      * @param userId Id of the user account to remove, e.g.: if its a facebook account it will be 'facebook|fb_user_id'.
      * @param accessToken Access token of the account that owns the account to unlink
-     * @param callback Callback to call on either success or failure.
+     * @param callback to call on either success or failure.
      */
     public void unlinkAccount(String userId, String accessToken, final BaseCallback<Void> callback) {
         String signUpUrl = getBaseURL() + "/unlink";
@@ -497,24 +520,23 @@ public class APIClient extends BaseAPIClient {
     }
 
     /**
-     * Starts passwordless authentication with SMS, this will send a One Time Password to the user's phone via SMS
-     * @param phoneNumber to where the SMS one time password will be sent
+     * Start passwordless authentication flow calling "/passwordless/start" API.
+     * @param parameters sent to API to start the flow
      * @param callback to call on either success or failure
      */
-    public void startPasswordless(String phoneNumber, final BaseCallback<Void> callback) {
-        String signUpUrl = getBaseURL() + "/passwordless/start";
+    public void startPasswordless(Map<String, Object> parameters, final BaseCallback<Void> callback) {
+        String startUrl = getBaseURL() + "/passwordless/start";
 
         Map<String, Object> request = ParameterBuilder.newBuilder()
                 .clearAll()
                 .setClientId(this.getClientID())
-                .setConnection("sms")
-                .set("phone_number", phoneNumber)
+                .addAll(parameters)
                 .asDictionary();
 
         Log.v(APIClient.class.getName(), "Starting passwordless authentication with parameters " + request);
         try {
             HttpEntity entity = entityBuilder.newEntityFrom(request);
-            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
+            this.client.post(null, startUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     callback.onSuccess(null);
@@ -530,6 +552,47 @@ public class APIClient extends BaseAPIClient {
             Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
             callback.onFailure(e);
         }
+    }
+
+    /**
+     * Request a verification code to login to be sent via SMS
+     * @param phoneNumber where the code is sent
+     * @param callback to call on either success or failure
+     */
+    public void requestSMSVerificationCode(String phoneNumber, final BaseCallback<Void> callback) {
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .clearAll()
+                .setClientId(this.getClientID())
+                .setConnection("sms")
+                .set("phone_number", phoneNumber)
+                .asDictionary();
+        startPasswordless(request, callback);
+    }
+
+    /**
+     * Request a verification code to login to be sent via email
+     * @param email where the code is sent
+     * @param callback to call on either success or failure
+     */
+    public void requestEmailVerificationCode(String email, final BaseCallback<Void> callback) {
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .clearAll()
+                .setClientId(this.getClientID())
+                .setConnection("sms")
+                .set("email", email)
+                .set("send", "link")
+                .asDictionary();
+        startPasswordless(request, callback);
+    }
+
+    /**
+     * Starts passwordless authentication with SMS, this will send a One Time Password to the user's phone via SMS
+     * @param phoneNumber to where the SMS one time password will be sent
+     * @param callback to call on either success or failure
+     * @deprecated in favor of generic {@link #startPasswordless(Map, BaseCallback)} or more specific ones {@link #requestSMSVerificationCode(String, BaseCallback)} and {@link #requestEmailVerificationCode(String, BaseCallback)}
+     */
+    public void startPasswordless(String phoneNumber, final BaseCallback<Void> callback) {
+        requestSMSVerificationCode(phoneNumber, callback);
     }
 
     private void fetchProfile(final Token token, final AuthenticationCallback callback) {
