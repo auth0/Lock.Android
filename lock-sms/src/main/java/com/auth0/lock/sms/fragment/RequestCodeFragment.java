@@ -161,7 +161,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         final String phoneNumber = phoneField.getCompletePhoneNumber();
-        client.startPasswordless(phoneNumber, new BaseCallback<Void>() {
+        client.requestSMSVerificationCode(phoneNumber, new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
                 Log.d(TAG, "SMS code sent to " + phoneNumber);

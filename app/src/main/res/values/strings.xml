@@ -9,4 +9,5 @@
     <string name="sms_login_btn_text">Login SMS</string>
     <string name="no_login_text">Login not found</string>
     <string name="refresh_login_btn_text">Refresh JWT</string>
+    <string name="email_login_btn_text">Login Email</string>
 </resources>

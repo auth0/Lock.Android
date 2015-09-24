@@ -26,7 +26,7 @@
 
     <string name="com_auth0_sms_title_send_passcode">Send Passcode</string>
     <string name="com_auth0_sms_title_enter_passcode">Enter SMS code</string>
-    <string name="com_auth0_enter_phone_number">Please enter your phone number</string>
+    <string name="com_auth0_enter_phone_number">Enter your phone number to sign in or create an account</string>
     <string name="com_auth0_phone_placeholder">Phone Number</string>
     <string name="com_auth0_send_passcode_btn_text">SEND</string>
     <string name="com_auth0_sms_default_code">+1</string>
