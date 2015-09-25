@@ -77,14 +77,6 @@ public class APIClient extends BaseAPIClient {
     }
 
     /**
-     * Returns the Auth0 app info retrieved from {@link #getConfigurationURL()}
-     * @return an instance of {@link com.auth0.core.Application} or null.
-     */
-    public Application getApplication() {
-        return newClient.getApplication();
-    }
-
-    /**
      * Fetch application information from {@link #getConfigurationURL()}
      * @param callback called with the application info on success or with the failure reason.
      */

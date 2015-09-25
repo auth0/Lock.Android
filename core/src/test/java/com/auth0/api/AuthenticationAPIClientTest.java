@@ -24,10 +24,13 @@
 
 package com.auth0.api;
 
+import android.os.Handler;
+
 import com.auth0.android.BuildConfig;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -35,6 +38,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -42,11 +48,12 @@ import java.util.concurrent.Callable;
 
 import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
@@ -65,7 +72,16 @@ public class AuthenticationAPIClientTest {
         server.start();
         final String domain = server.url("/").toString();
         Auth0 auth0 = new Auth0(CLIENT_ID, domain, domain);
-        client = new AuthenticationAPIClient(auth0);
+        Handler handler = mock(Handler.class);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Runnable runnable = (Runnable) invocation.getArguments()[0];
+                runnable.run();
+                return null;
+            }
+        }).when(handler).post(any(Runnable.class));
+        client = new AuthenticationAPIClient(auth0, new OkHttpClient(), handler);
     }
 
     @After
@@ -91,9 +107,6 @@ public class AuthenticationAPIClientTest {
         assertThat(server.takeRequest().getPath(), equalTo("/client/CLIENTID.js"));
         await().until(callback.payload(), is(notNullValue()));
         await().until(callback.error(), is(nullValue()));
-        Application application = client.getApplication();
-        assertThat(application.getId(), equalTo(CLIENT_ID));
-        assertThat(application.getStrategies(), hasSize(1));
     }
 
     @Test

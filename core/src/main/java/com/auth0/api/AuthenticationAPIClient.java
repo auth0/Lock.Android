@@ -24,6 +24,8 @@
 
 package com.auth0.api;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.auth0.api.callback.BaseCallback;
@@ -45,16 +47,23 @@ public class AuthenticationAPIClient {
 
     private final Auth0 auth0;
     private final OkHttpClient client;
-
-    private Application application;
+    private final Handler handler;
 
     /**
      * Creates a new API client instance providing Auth0 account info.
      * @param auth0 account information
      */
     public AuthenticationAPIClient(Auth0 auth0) {
-        this.auth0 = auth0;
-        this.client = new OkHttpClient();
+        this(auth0, new Handler(Looper.getMainLooper()));
+    }
+
+    /**
+     * Creates a new API client instance providing Auth0 account info and a handler where all callbacks will be called
+     * @param auth0 account information
+     * @param handler where callback will be called with either the response or error from the server
+     */
+    public AuthenticationAPIClient(Auth0 auth0, Handler handler) {
+        this(auth0, new OkHttpClient(), handler);
     }
 
     /**
@@ -67,20 +76,18 @@ public class AuthenticationAPIClient {
         this(new Auth0(clientID, baseURL, configurationURL));
     }
 
+    AuthenticationAPIClient(Auth0 auth0, OkHttpClient client, Handler handler) {
+        this.auth0 = auth0;
+        this.client = client;
+        this.handler = handler;
+    }
+
     public String getClientId() {
         return auth0.getClientId();
     }
 
     public String getBaseURL() {
         return auth0.getDomainUrl();
-    }
-
-    /**
-     * Returns the Auth0 app info retrieved from Auth0
-     * @return an instance of {@link com.auth0.core.Application} or null.
-     */
-    public Application getApplication() {
-        return application;
     }
 
     /**
@@ -96,20 +103,8 @@ public class AuthenticationAPIClient {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        client.newCall(request).enqueue(new ApplicationInfoCallback(new ObjectMapper()) {
-            @Override
-            public void onSuccess(Application app) {
-                Log.d(TAG, "Obtained application with id " + app.getId() + " tenant " + app.getTenant());
-                callback.onSuccess(app);
-                application = app;
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                Log.e(TAG, "Failed to fetch application from Auth0 CDN", error);
-                callback.onFailure(error);
-            }
-        });
+        ObjectMapper mapper = new ObjectMapper();
+        client.newCall(request).enqueue(new ApplicationInfoCallback(handler, callback, mapper));
     }
 
 }

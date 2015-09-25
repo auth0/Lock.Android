@@ -24,6 +24,7 @@
 
 package com.auth0.api.okhttp;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.auth0.api.callback.BaseCallback;
@@ -42,7 +43,7 @@ import java.io.IOException;
 /**
  * Callback and response handler used when requesting Auth0's app info.
  */
-public abstract class ApplicationInfoCallback implements Callback, BaseCallback<Application> {
+public class ApplicationInfoCallback extends CallbackHandler<Application> implements Callback {
 
     private static final String TAG = ApplicationInfoCallback.class.getName();
 
@@ -51,14 +52,15 @@ public abstract class ApplicationInfoCallback implements Callback, BaseCallback<
      */
     private final ObjectMapper mapper;
 
-    protected ApplicationInfoCallback(ObjectMapper mapper) {
+    public ApplicationInfoCallback(Handler handler, BaseCallback<Application> callback, ObjectMapper mapper) {
+        super(handler, callback);
         this.mapper = mapper;
     }
 
     @Override
     public void onFailure(Request request, IOException e) {
         Log.e(TAG, "Failed to fetch Auth0 info from CDN " + request.urlString(), e);
-        this.onFailure(e);
+        postOnFailure(e);
     }
 
     @Override
@@ -66,7 +68,7 @@ public abstract class ApplicationInfoCallback implements Callback, BaseCallback<
         if (response.code() < 200 || response.code() >= 300) {
             String message = "Received app info failed response with code " + response.code() + " and body " + response.body().string();
             Log.d(TAG, message);
-            this.onFailure(new IOException(message));
+            postOnFailure(new IOException(message));
             return;
         }
         try {
@@ -74,21 +76,21 @@ public abstract class ApplicationInfoCallback implements Callback, BaseCallback<
             JSONTokener tokenizer = new JSONTokener(jsonp);
             tokenizer.skipPast("Auth0.setClient(");
             if (!tokenizer.more()) {
-                this.onFailure(tokenizer.syntaxError("Invalid App Info JSONP"));
+                postOnFailure(tokenizer.syntaxError("Invalid App Info JSONP"));
                 return;
             }
             Object nextValue = tokenizer.nextValue();
             if (!(nextValue instanceof JSONObject)) {
                 tokenizer.back();
-                this.onFailure(tokenizer.syntaxError("Invalid JSON value of App Info"));
+                postOnFailure(tokenizer.syntaxError("Invalid JSON value of App Info"));
             }
             JSONObject jsonObject = (JSONObject) nextValue;
             Log.d(TAG, "Obtained JSON object from JSONP: " + jsonObject);
             Application app = this.mapper.readValue(jsonObject.toString(), Application.class);
-            this.onSuccess(app);
+            postOnSuccess(app);
         } catch (JSONException | IOException e) {
             Log.e(TAG, "Failed to parse JSONP", e);
-            this.onFailure(e);
+            postOnFailure(e);
         }
     }
 }
