@@ -1,5 +1,5 @@
 /*
- * ApplicationInfoCallback.java
+ * AuthenticationResponseCallback.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -27,68 +27,61 @@ package com.auth0.api.okhttp;
 import android.os.Handler;
 import android.util.Log;
 
+import com.auth0.api.APIClientException;
+import com.auth0.api.JsonEntityBuildException;
 import com.auth0.api.callback.BaseCallback;
-import com.auth0.core.Application;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
-/**
- * Callback and response handler used when requesting Auth0's app info.
- */
-public class ApplicationInfoCallback extends CallbackHandler<Application> implements Callback {
+public class AuthenticationResponseCallback<T> extends CallbackHandler<T> implements Callback {
 
-    private static final String TAG = ApplicationInfoCallback.class.getName();
-
+    private static final String TAG = AuthenticationResponseCallback.class.getName();
     private final ObjectReader reader;
+    private final ObjectReader errorReader;
 
-    public ApplicationInfoCallback(Handler handler, BaseCallback<Application> callback, ObjectReader reader) {
+    public AuthenticationResponseCallback(Handler handler, BaseCallback<T> callback, ObjectReader reader) {
         super(handler, callback);
         this.reader = reader;
+        this.errorReader = new ObjectMapper().reader(Map.class);
     }
 
     @Override
     public void onFailure(Request request, IOException e) {
-        Log.e(TAG, "Failed to fetch Auth0 info from CDN " + request.urlString(), e);
+        Log.e(TAG, "Failed to make request to " + request.urlString(), e);
         postOnFailure(e);
     }
 
     @Override
     public void onResponse(Response response) throws IOException {
+        Log.d(TAG, String.format("Received response from request to %s with status code %d", response.request().urlString(), response.code()));
+        final InputStream byteStream = response.body().byteStream();
         if (!response.isSuccessful()) {
-            String message = "Received app info failed response with code " + response.code() + " and body " + response.body().string();
-            Log.d(TAG, message);
-            postOnFailure(new IOException(message));
+            Throwable throwable;
+            try {
+                Map<String, Object> payload = errorReader.readValue(byteStream);
+                throwable = new APIClientException("Failed request to " + response.request().urlString(), response.code(), payload);
+            } catch (IOException e) {
+                throwable = new APIClientException("Request failed", response.code(), null);
+            }
+            postOnFailure(throwable);
             return;
         }
+
         try {
-            String jsonp = response.body().string();
-            JSONTokener tokenizer = new JSONTokener(jsonp);
-            tokenizer.skipPast("Auth0.setClient(");
-            if (!tokenizer.more()) {
-                postOnFailure(tokenizer.syntaxError("Invalid App Info JSONP"));
-                return;
-            }
-            Object nextValue = tokenizer.nextValue();
-            if (!(nextValue instanceof JSONObject)) {
-                tokenizer.back();
-                postOnFailure(tokenizer.syntaxError("Invalid JSON value of App Info"));
-            }
-            JSONObject jsonObject = (JSONObject) nextValue;
-            Log.d(TAG, "Obtained JSON object from JSONP: " + jsonObject);
-            Application app = reader.readValue(jsonObject.toString());
-            postOnSuccess(app);
-        } catch (JSONException | IOException e) {
-            Log.e(TAG, "Failed to parse JSONP", e);
-            postOnFailure(e);
+            Log.d(TAG, "Received successful response from " + response.request().urlString());
+            T payload = reader.readValue(byteStream);
+            postOnSuccess(payload);
+        } catch (IOException e) {
+            postOnFailure(new APIClientException("Request failed", response.code(), null));
         }
     }
 }

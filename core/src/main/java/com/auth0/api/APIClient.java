@@ -81,7 +81,18 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with the application info on success or with the failure reason.
      */
     public void fetchApplicationInfo(final BaseCallback<Application> callback) {
-        newClient.fetchApplicationInfo(callback);
+        newClient.fetchApplicationInfo(new BaseCallback<Application>() {
+            @Override
+            public void onSuccess(Application payload) {
+                callback.onSuccess(payload);
+                application = payload;
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                callback.onFailure(error);
+            }
+        });
     }
 
     /**

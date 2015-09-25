@@ -28,14 +28,24 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.okhttp.ApplicationInfoCallback;
+import com.auth0.api.okhttp.AuthenticationResponseCallback;
+import com.auth0.api.okhttp.JsonRequestBodyBuilder;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
+import com.auth0.core.Token;
+import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+
+import java.util.Map;
+
+import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
 
 /**
  * API client for Auth0 Authentication API.
@@ -48,6 +58,7 @@ public class AuthenticationAPIClient {
     private final Auth0 auth0;
     private final OkHttpClient client;
     private final Handler handler;
+    private final ObjectMapper mapper;
 
     /**
      * Creates a new API client instance providing Auth0 account info.
@@ -63,7 +74,7 @@ public class AuthenticationAPIClient {
      * @param handler where callback will be called with either the response or error from the server
      */
     public AuthenticationAPIClient(Auth0 auth0, Handler handler) {
-        this(auth0, new OkHttpClient(), handler);
+        this(auth0, new OkHttpClient(), handler, new ObjectMapper());
     }
 
     /**
@@ -72,14 +83,16 @@ public class AuthenticationAPIClient {
      * @param baseURL Auth0's auth API endpoint
      * @param configurationURL Auth0's enpoint where App info can be retrieved.
      */
+    @SuppressWarnings("unused")
     public AuthenticationAPIClient(String clientID, String baseURL, String configurationURL) {
         this(new Auth0(clientID, baseURL, configurationURL));
     }
 
-    AuthenticationAPIClient(Auth0 auth0, OkHttpClient client, Handler handler) {
+    AuthenticationAPIClient(Auth0 auth0, OkHttpClient client, Handler handler, ObjectMapper mapper) {
         this.auth0 = auth0;
         this.client = client;
         this.handler = handler;
+        this.mapper = mapper;
     }
 
     public String getClientId() {
@@ -103,8 +116,76 @@ public class AuthenticationAPIClient {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        ObjectMapper mapper = new ObjectMapper();
-        client.newCall(request).enqueue(new ApplicationInfoCallback(handler, callback, mapper));
+
+        client.newCall(request).enqueue(new ApplicationInfoCallback(handler, callback, mapper.reader(Application.class)));
     }
 
+    public void loginWithResourceOwner(Map<String, Object> parameters, BaseCallback<Token> callback) {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("oauth")
+                .addPathSegment("ro")
+                .build();
+        Map<String, Object> requestParameters = new ParameterBuilder()
+                .setClientId(getClientId())
+                .addAll(parameters)
+                .asDictionary();
+        Log.d(TAG, "Trying to login using " + url.toString() + " with parameters " + requestParameters);
+        postRequestTo(url, requestParameters, Token.class, callback);
+    }
+
+    public void login(String usernameOrEmail, String password, Map<String, Object> parameters, final AuthenticationCallback callback) {
+        Map<String, Object> requestParameters = new ParameterBuilder()
+                .set("username", usernameOrEmail)
+                .set("password", password)
+                .setGrantType(GRANT_TYPE_PASSWORD)
+                .addAll(parameters)
+                .asDictionary();
+        loginWithResourceOwner(requestParameters, new BaseCallback<Token>() {
+            @Override
+            public void onSuccess(final Token token) {
+                tokenInfo(token.getIdToken(), new BaseCallback<UserProfile>() {
+                    @Override
+                    public void onSuccess(UserProfile profile) {
+                        callback.onSuccess(profile, token);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable error) {
+                        callback.onFailure(error);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                callback.onFailure(error);
+            }
+        });
+    }
+
+    public void tokenInfo(String idToken, BaseCallback<UserProfile> callback) {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("tokeninfo")
+                .build();
+        Map<String, Object> requestParameters = new ParameterBuilder()
+                .clearAll()
+                .set("id_token", idToken)
+                .asDictionary();
+        Log.d(TAG, "Trying to fetch token from" + url.toString() + " with parameters " + requestParameters);
+        postRequestTo(url, requestParameters, UserProfile.class, callback);
+    }
+
+    private <T> void postRequestTo(HttpUrl url, Map<String, Object> payload, Class<T> responseType, BaseCallback<T> callback) {
+        try {
+            RequestBody body = JsonRequestBodyBuilder.createBody(payload, mapper.writer());
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+            client.newCall(request).enqueue(new AuthenticationResponseCallback<>(handler, callback, mapper.reader(responseType)));
+        } catch (JsonEntityBuildException e) {
+            Log.e(TAG, "Failed to build JSON body with parameters " + payload, e);
+            callback.onFailure(new APIClientException("Failed to send request to " + url.toString(), e));
+        }
+    }
 }
