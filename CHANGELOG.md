@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.10.0](https://github.com/auth0/Lock.Android/tree/1.10.0) (2015-09-26)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.6...1.10.0)
+
+**Merged pull requests:**
+
+- Correctly handle sms and email as passwordless strategies [\#119](https://github.com/auth0/Lock.Android/pull/119) ([hzalaz](https://github.com/hzalaz))
+
+- Email Passwordless Authentication [\#118](https://github.com/auth0/Lock.Android/pull/118) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.9.6](https://github.com/auth0/Lock.Android/tree/1.9.6) (2015-07-28)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.5...1.9.6)
