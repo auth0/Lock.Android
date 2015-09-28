@@ -30,11 +30,11 @@ import com.auth0.api.callback.BaseCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.io.IOException;
 import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 /**
  * API client for Auth0 API v2.

@@ -4,17 +4,16 @@ import android.util.Log;
 
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Callback and response handler used when requesting Auth0's app info.
@@ -31,7 +30,7 @@ public abstract class ApplicationResponseHandler extends AsyncHttpResponseHandle
     }
 
     /**
-     * @see com.loopj.android.http.AsyncHttpResponseHandler#onSuccess(int, org.apache.http.Header[], byte[])
+     * @see com.loopj.android.http.AsyncHttpResponseHandler#onSuccess(int, cz.msebera.android.httpclient.Header[], byte[])
      */
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -49,7 +48,7 @@ public abstract class ApplicationResponseHandler extends AsyncHttpResponseHandle
     }
 
     /**
-     * @see com.loopj.android.http.AsyncHttpResponseHandler#onFailure(int, org.apache.http.Header[], byte[], Throwable)
+     * @see com.loopj.android.http.AsyncHttpResponseHandler#onFailure(int, cz.msebera.android.httpclient.Header[], byte[], Throwable)
      */
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
