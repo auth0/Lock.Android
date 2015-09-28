@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.10.1](https://github.com/auth0/Lock.Android/tree/1.10.1) (2015-09-28)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.10.0...1.10.1)
+
+**Merged pull requests:**
+
+- Use android-async-http:1.4.9 [\#120](https://github.com/auth0/Lock.Android/pull/120) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.10.0](https://github.com/auth0/Lock.Android/tree/1.10.0) (2015-09-26)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.9.6...1.10.0)
