@@ -28,13 +28,14 @@ import com.auth0.android.BuildConfig;
 import com.auth0.api.APIClientException;
 import com.auth0.api.callback.Callback;
 
-import org.apache.http.Header;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import cz.msebera.android.httpclient.Header;
 
 import static com.auth0.util.APIClientExceptionMatcher.hasErrorWith;
 import static com.auth0.util.APIClientExceptionMatcher.hasGenericErrorWith;

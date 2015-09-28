@@ -31,10 +31,10 @@ import com.auth0.api.callback.Callback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.apache.http.Header;
-
 import java.io.IOException;
 import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Default Response handler for all request performed with android-async-http client.
@@ -56,7 +56,7 @@ public abstract class APIResponseHandler<T extends Callback> extends AsyncHttpRe
     }
 
     /**
-     * @see com.loopj.android.http.AsyncHttpResponseHandler#onFailure(int, org.apache.http.Header[], byte[], Throwable)
+     * @see com.loopj.android.http.AsyncHttpResponseHandler#onFailure(int, cz.msebera.android.httpclient.Header[], byte[], Throwable)
      */
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
