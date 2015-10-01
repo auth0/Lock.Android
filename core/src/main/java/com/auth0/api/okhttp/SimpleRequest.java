@@ -1,5 +1,5 @@
 /*
- * AuthenticationResponseCallback.java
+ * AuthenticationRequest.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -29,33 +29,50 @@ import android.util.Log;
 
 import com.auth0.api.APIClientException;
 import com.auth0.api.JsonEntityBuildException;
+import com.auth0.api.ParameterizableRequest;
+import com.auth0.api.Request;
 import com.auth0.api.callback.BaseCallback;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
-public class AuthenticationResponseCallback<T> extends CallbackHandler<T> implements Callback {
+class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, ParameterizableRequest<T>, Callback {
 
-    private static final String TAG = AuthenticationResponseCallback.class.getName();
+    private static final String TAG = SimpleRequest.class.getName();
+
+    private final HttpUrl url;
+    private final OkHttpClient client;
     private final ObjectReader reader;
     private final ObjectReader errorReader;
+    private final String httpMethod;
+    private final ObjectWriter writer;
 
-    public AuthenticationResponseCallback(Handler handler, BaseCallback<T> callback, ObjectReader reader) {
-        super(handler, callback);
-        this.reader = reader;
-        this.errorReader = new ObjectMapper().reader(Map.class);
+    private Map<String, Object> parameters;
+
+    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod, Class<T> clazz) {
+        super(handler);
+        this.url = url;
+        this.client = client;
+        this.httpMethod = httpMethod;
+        this.reader = mapper.reader(clazz);
+        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
+        this.writer = mapper.writer();
+        this.parameters = new HashMap<>();
     }
 
     @Override
-    public void onFailure(Request request, IOException e) {
+    public void onFailure(com.squareup.okhttp.Request request, IOException e) {
         Log.e(TAG, "Failed to make request to " + request.urlString(), e);
         postOnFailure(e);
     }
@@ -83,5 +100,29 @@ public class AuthenticationResponseCallback<T> extends CallbackHandler<T> implem
         } catch (IOException e) {
             postOnFailure(new APIClientException("Request failed", response.code(), null));
         }
+    }
+
+    @Override
+    public void start(BaseCallback<T> callback) {
+        setCallback(callback);
+        try {
+            RequestBody body = JsonRequestBodyBuilder.createBody(parameters, writer);
+            com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
+                    .url(url)
+                    .method(httpMethod, body)
+                    .build();
+            client.newCall(request).enqueue(this);
+        } catch (JsonEntityBuildException e) {
+            Log.e(TAG, "Failed to build JSON body with parameters " + parameters, e);
+            callback.onFailure(new APIClientException("Failed to send request to " + url.toString(), e));
+        }
+    }
+
+    @Override
+    public ParameterizableRequest<T> setParameters(Map<String, Object> parameters) {
+        if (parameters != null) {
+            this.parameters.putAll(parameters);
+        }
+        return this;
     }
 }

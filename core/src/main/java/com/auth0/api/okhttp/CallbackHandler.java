@@ -31,10 +31,18 @@ import com.auth0.api.callback.BaseCallback;
 public class CallbackHandler<T> {
 
     private final Handler handler;
-    private final BaseCallback<T> callback;
+    private BaseCallback<T> callback;
+
+    public CallbackHandler(Handler handler) {
+        this.handler = handler;
+    }
 
     public CallbackHandler(Handler handler, BaseCallback<T> callback) {
         this.handler = handler;
+        this.callback = callback;
+    }
+
+    protected void setCallback(BaseCallback<T> callback) {
         this.callback = callback;
     }
 

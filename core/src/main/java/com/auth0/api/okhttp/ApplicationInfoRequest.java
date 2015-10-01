@@ -1,5 +1,5 @@
 /*
- * ApplicationInfoCallback.java
+ * ApplicationInfoRequest.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -27,12 +27,14 @@ package com.auth0.api.okhttp;
 import android.os.Handler;
 import android.util.Log;
 
+import com.auth0.api.Request;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
@@ -41,22 +43,34 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 
-/**
- * Callback and response handler used when requesting Auth0's app info.
- */
-public class ApplicationInfoCallback extends CallbackHandler<Application> implements Callback {
+public class ApplicationInfoRequest extends CallbackHandler<Application> implements Request<Application>, Callback {
 
-    private static final String TAG = ApplicationInfoCallback.class.getName();
+    private static final String TAG = ApplicationInfoRequest.class.getName();
 
+    private final HttpUrl url;
+    private final OkHttpClient client;
     private final ObjectReader reader;
 
-    public ApplicationInfoCallback(Handler handler, BaseCallback<Application> callback, ObjectReader reader) {
-        super(handler, callback);
-        this.reader = reader;
+    public ApplicationInfoRequest(Handler handler, OkHttpClient client, HttpUrl url, ObjectMapper mapper) {
+        super(handler);
+        this.client = client;
+        this.url = url;
+        this.reader = mapper.reader(Application.class);
     }
 
     @Override
-    public void onFailure(Request request, IOException e) {
+    public void start(BaseCallback<Application> callback) {
+        setCallback(callback);
+        Log.v(TAG, "Fetching application info from " + url);
+        com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(this);
+    }
+
+    @Override
+    public void onFailure(com.squareup.okhttp.Request request, IOException e) {
         Log.e(TAG, "Failed to fetch Auth0 info from CDN " + request.urlString(), e);
         postOnFailure(e);
     }
@@ -70,8 +84,8 @@ public class ApplicationInfoCallback extends CallbackHandler<Application> implem
             return;
         }
         try {
-            String jsonp = response.body().string();
-            JSONTokener tokenizer = new JSONTokener(jsonp);
+            String json = response.body().string();
+            JSONTokener tokenizer = new JSONTokener(json);
             tokenizer.skipPast("Auth0.setClient(");
             if (!tokenizer.more()) {
                 postOnFailure(tokenizer.syntaxError("Invalid App Info JSONP"));

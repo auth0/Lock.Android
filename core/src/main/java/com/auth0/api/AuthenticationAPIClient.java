@@ -28,11 +28,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.api.callback.BaseCallback;
-import com.auth0.api.okhttp.ApplicationInfoCallback;
-import com.auth0.api.okhttp.AuthenticationResponseCallback;
-import com.auth0.api.okhttp.JsonRequestBodyBuilder;
+import com.auth0.api.okhttp.ApplicationInfoRequest;
+import com.auth0.api.okhttp.RequestFactory;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.Token;
@@ -40,8 +37,6 @@ import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
 
 import java.util.Map;
 
@@ -105,87 +100,58 @@ public class AuthenticationAPIClient {
 
     /**
      * Fetch application information from Auth0
-     * @param callback called with the application info on success or with the failure reason.
+     * @return a Auth0 request to start
      */
-    public void fetchApplicationInfo(final BaseCallback<Application> callback) {
+    public Request<Application> fetchApplicationInfo() {
         HttpUrl url = HttpUrl.parse(auth0.getConfigurationUrl()).newBuilder()
                 .addPathSegment("client")
                 .addPathSegment(auth0.getClientId() + ".js")
                 .build();
-        Log.v(TAG, "Fetching application info from " + url);
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new ApplicationInfoCallback(handler, callback, mapper.reader(Application.class)));
+        return new ApplicationInfoRequest(handler, client, url, mapper);
     }
 
-    public void loginWithResourceOwner(Map<String, Object> parameters, BaseCallback<Token> callback) {
+    public ParameterizableRequest<Token> loginWithResourceOwner() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("oauth")
                 .addPathSegment("ro")
                 .build();
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .setClientId(getClientId())
-                .addAll(parameters)
                 .asDictionary();
+        ParameterizableRequest<Token> request = RequestFactory.POST(url, client, handler, mapper, Token.class)
+                .setParameters(requestParameters);
         Log.d(TAG, "Trying to login using " + url.toString() + " with parameters " + requestParameters);
-        postRequestTo(url, requestParameters, Token.class, callback);
+        return request;
     }
 
-    public void login(String usernameOrEmail, String password, Map<String, Object> parameters, final AuthenticationCallback callback) {
+    public AuthenticationRequest login(String usernameOrEmail, String password) {
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .set("username", usernameOrEmail)
                 .set("password", password)
                 .setGrantType(GRANT_TYPE_PASSWORD)
-                .addAll(parameters)
                 .asDictionary();
-        loginWithResourceOwner(requestParameters, new BaseCallback<Token>() {
-            @Override
-            public void onSuccess(final Token token) {
-                tokenInfo(token.getIdToken(), new BaseCallback<UserProfile>() {
-                    @Override
-                    public void onSuccess(UserProfile profile) {
-                        callback.onSuccess(profile, token);
-                    }
+        final ParameterizableRequest<Token> credentialsRequest = loginWithResourceOwner()
+                .setParameters(requestParameters);
+        final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
 
-                    @Override
-                    public void onFailure(Throwable error) {
-                        callback.onFailure(error);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                callback.onFailure(error);
-            }
-        });
+        return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
 
-    public void tokenInfo(String idToken, BaseCallback<UserProfile> callback) {
-        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
-                .addPathSegment("tokeninfo")
-                .build();
+    public Request<UserProfile> tokenInfo(String idToken) {
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .clearAll()
                 .set("id_token", idToken)
                 .asDictionary();
-        Log.d(TAG, "Trying to fetch token from" + url.toString() + " with parameters " + requestParameters);
-        postRequestTo(url, requestParameters, UserProfile.class, callback);
+        Log.d(TAG, "Trying to fetch token with parameters " + requestParameters);
+        return profileRequest()
+                .setParameters(requestParameters);
     }
 
-    private <T> void postRequestTo(HttpUrl url, Map<String, Object> payload, Class<T> responseType, BaseCallback<T> callback) {
-        try {
-            RequestBody body = JsonRequestBodyBuilder.createBody(payload, mapper.writer());
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
-            client.newCall(request).enqueue(new AuthenticationResponseCallback<>(handler, callback, mapper.reader(responseType)));
-        } catch (JsonEntityBuildException e) {
-            Log.e(TAG, "Failed to build JSON body with parameters " + payload, e);
-            callback.onFailure(new APIClientException("Failed to send request to " + url.toString(), e));
-        }
+    private ParameterizableRequest<UserProfile> profileRequest() {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("tokeninfo")
+                .build();
+        return RequestFactory.POST(url, client, handler, mapper, UserProfile.class);
+
     }
 }

@@ -36,15 +36,12 @@ import com.auth0.core.UserProfile;
 import com.auth0.util.AuthenticationAPI;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -110,7 +107,8 @@ public class AuthenticationAPIClientTest {
         mockAPI.willReturnValidApplicationResponse();
 
         final MockBaseCallback<Application> callback = new MockBaseCallback<>();
-        client.fetchApplicationInfo(callback);
+        client.fetchApplicationInfo()
+                .start(callback);
 
         assertThat(mockAPI.takeRequest().getPath(), equalTo("/client/CLIENTID.js"));
         await().until(callback.payload(), is(notNullValue()));
@@ -121,7 +119,8 @@ public class AuthenticationAPIClientTest {
     public void shoulFailWithInvalidJSON() throws Exception {
         mockAPI.willReturnApplicationResponseWithBody("Auth0Client.set({ })", 200);
         final MockBaseCallback<Application> callback = new MockBaseCallback<>();
-        client.fetchApplicationInfo(callback);
+        client.fetchApplicationInfo()
+                .start(callback);
         await().until(callback.payload(), is(nullValue()));
         await().until(callback.error(), is(notNullValue()));
     }
@@ -130,16 +129,20 @@ public class AuthenticationAPIClientTest {
     public void shoulFailWithInvalidJSONP() throws Exception {
         mockAPI.willReturnApplicationResponseWithBody("INVALID_JSONP", 200);
         final MockBaseCallback<Application> callback = new MockBaseCallback<>();
-        client.fetchApplicationInfo(callback);
+        client.fetchApplicationInfo()
+                .start(callback);
         await().until(callback.payload(), is(nullValue()));
         await().until(callback.error(), is(notNullValue()));
     }
 
     @Test
-    public void shoulFailWithFailedStatusCode() throws Exception {
+    public void shouldFailWithFailedStatusCode() throws Exception {
         mockAPI.willReturnApplicationResponseWithBody("Not Found", 404);
         final MockBaseCallback<Application> callback = new MockBaseCallback<>();
-        client.fetchApplicationInfo(callback);
+
+        client.fetchApplicationInfo()
+                .start(callback);
+
         await().until(callback.payload(), is(nullValue()));
         await().until(callback.error(), is(notNullValue()));
     }
@@ -156,7 +159,9 @@ public class AuthenticationAPIClientTest {
                 .set("password", "notapassword")
                 .setScope(ParameterBuilder.SCOPE_OPENID)
                 .asDictionary();
-        client.loginWithResourceOwner(parameters, callback);
+        client.loginWithResourceOwner()
+            .setParameters(parameters)
+            .start(callback);
         await().until(callback.payload(), is(notNullValue()));
         await().until(callback.error(), is(nullValue()));
 
@@ -182,7 +187,9 @@ public class AuthenticationAPIClientTest {
                 .set("username", "support@auth0.com")
                 .set("password", "notapassword")
                 .asDictionary();
-        client.loginWithResourceOwner(parameters, callback);
+        client.loginWithResourceOwner()
+                .setParameters(parameters)
+                .start(callback);
         await().until(callback.payload(), is(nullValue()));
         await().until(callback.error(), is(notNullValue()));
     }
@@ -194,7 +201,8 @@ public class AuthenticationAPIClientTest {
                 .willReturnTokenInfo();
         final MockAuthenticationCallback callback = new MockAuthenticationCallback();
 
-        client.login("support@auth0.com", "voidpassword", null, callback);
+        client.login("support@auth0.com", "voidpassword")
+            .start(callback);
         await().until(callback.profile(), is(notNullValue()));
         await().until(callback.token(), is(notNullValue()));
         await().until(callback.error(), is(nullValue()));
@@ -205,7 +213,8 @@ public class AuthenticationAPIClientTest {
         mockAPI.willReturnTokenInfo();
         final MockBaseCallback<UserProfile> callback = new MockBaseCallback<>();
 
-        client.tokenInfo("ID_TOKEN", callback);
+        client.tokenInfo("ID_TOKEN")
+            .start(callback);
         await().until(callback.payload(), is(notNullValue()));
         await().until(callback.error(), is(nullValue()));
         final RecordedRequest request = mockAPI.takeRequest();

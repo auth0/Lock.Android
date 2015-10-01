@@ -81,18 +81,19 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with the application info on success or with the failure reason.
      */
     public void fetchApplicationInfo(final BaseCallback<Application> callback) {
-        newClient.fetchApplicationInfo(new BaseCallback<Application>() {
-            @Override
-            public void onSuccess(Application payload) {
-                callback.onSuccess(payload);
-                application = payload;
-            }
+        newClient.fetchApplicationInfo()
+                .start(new BaseCallback<Application>() {
+                    @Override
+                    public void onSuccess(Application payload) {
+                        callback.onSuccess(payload);
+                        application = payload;
+                    }
 
-            @Override
-            public void onFailure(Throwable error) {
-                callback.onFailure(error);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable error) {
+                        callback.onFailure(error);
+                    }
+                });
     }
 
     /**
@@ -103,19 +104,16 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void login(final String username, String password, Map<String, Object> params, final AuthenticationCallback callback) {
-        final String loginURL = getBaseURL() + "/oauth/ro";
-
         Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(USERNAME_KEY, username)
-                .set(PASSWORD_KEY, password)
-                .setGrantType(GRANT_TYPE_PASSWORD)
                 .setClientId(getClientID())
                 .setConnection(getDBConnectionName())
                 .addAll(params)
                 .asDictionary();
 
-        Log.v(APIClient.class.getName(), "Performing login with parameters " + request);
-        login(loginURL, request, callback);
+        newClient
+                .login(username, password)
+                .setParameters(request)
+                .start(callback);
     }
 
     /**
@@ -208,10 +206,10 @@ public class APIClient extends BaseAPIClient {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     Log.e(APIClient.class.getName(), "Failed login user with " + url, error);
-                    Map errorResponse = null;
+                    Map<String, Object> errorResponse = null;
                     if (statusCode == 400 || statusCode == 401) {
                         try {
-                            errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
+                            errorResponse = new ObjectMapper().readValue(responseBody, new TypeReference<Map<String, Object>>() {});
                             Log.e(APIClient.class.getName(), "Login error " + errorResponse);
                         } catch (IOException e) {
                             Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
