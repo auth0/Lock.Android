@@ -100,14 +100,14 @@ public class APIClient extends BaseAPIClient {
      * Performs a Database connection login with username/email and password.
      * @param username email or username required to login. By default it should be an email
      * @param password user's password
-     * @param params additional parameters sent to the API like 'scope'
+     * @param parameters additional parameters sent to the API like 'scope'
      * @param callback called with User's profile and tokens or failure reason
      */
-    public void login(final String username, String password, Map<String, Object> params, final AuthenticationCallback callback) {
+    public void login(final String username, String password, Map<String, Object> parameters, final AuthenticationCallback callback) {
         Map<String, Object> request = ParameterBuilder.newBuilder()
                 .setClientId(getClientID())
                 .setConnection(getDBConnectionName())
-                .addAll(params)
+                .addAll(parameters)
                 .asDictionary();
 
         newClient
@@ -137,7 +137,7 @@ public class APIClient extends BaseAPIClient {
 
         newClient
                 .loginWithOAuthAccessToken(accessToken, connectionName)
-                .setParameters(parameters)
+                .setParameters(request)
                 .start(callback);
     }
 
@@ -149,19 +149,9 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void smsLogin(String phoneNumber, String verificationCode, Map<String, Object> parameters, final AuthenticationCallback callback) {
-        final String loginURL = getBaseURL() + "/oauth/ro";
-
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(USERNAME_KEY, phoneNumber)
-                .set(PASSWORD_KEY, verificationCode)
-                .setGrantType(GRANT_TYPE_PASSWORD)
-                .setClientId(getClientID())
-                .setConnection("sms")
-                .addAll(parameters)
-                .asDictionary();
-
-        Log.v(APIClient.class.getName(), "Performing sms code login with parameters " + request);
-        login(loginURL, request, callback);
+        newClient.loginWithPhoneNumber(phoneNumber, verificationCode)
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**

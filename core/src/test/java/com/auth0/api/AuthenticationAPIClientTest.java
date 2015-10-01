@@ -240,6 +240,28 @@ public class AuthenticationAPIClientTest {
         assertThat(callback, hasTokenAndProfile());
     }
 
+    @Test
+    public void shouldLoginWithPhoneNumber() throws Exception {
+        mockAPI
+                .willReturnSuccessfulLogin()
+                .willReturnTokenInfo();
+
+        final MockAuthenticationCallback callback = new MockAuthenticationCallback();
+        client.loginWithPhoneNumber("+10101010101", "1234")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/oauth/ro"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("connection", "sms"));
+        assertThat(body, hasEntry("username", "+10101010101"));
+        assertThat(body, hasEntry("password", "1234"));
+        assertThat(body, hasEntry("scope", "openid offline_access"));
+
+        assertThat(callback, hasTokenAndProfile());
+    }
+
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
         return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {});
     }

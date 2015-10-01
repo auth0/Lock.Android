@@ -50,6 +50,15 @@ public class AuthenticationAPIClient {
 
     private static final String TAG = AuthenticationAPIClient.class.getName();
 
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
+    private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
+    private static final String ID_TOKEN_KEY = "id_token";
+    private static final String EMAIL_KEY = "email";
+    private static final String TOKEN_TYPE_KEY = "token_type";
+    private static final String EXPIRES_IN_KEY = "expires_in";
+    private static final String REFRESH_TOKEN_KEY = "refresh_token";
+
     private final Auth0 auth0;
     private final OkHttpClient client;
     private final Handler handler;
@@ -126,8 +135,8 @@ public class AuthenticationAPIClient {
 
     public AuthenticationRequest login(String usernameOrEmail, String password) {
         Map<String, Object> requestParameters = new ParameterBuilder()
-                .set("username", usernameOrEmail)
-                .set("password", password)
+                .set(USERNAME_KEY, usernameOrEmail)
+                .set(PASSWORD_KEY, password)
                 .setGrantType(GRANT_TYPE_PASSWORD)
                 .asDictionary();
         return newAuthenticationRequest(requestParameters);
@@ -153,10 +162,21 @@ public class AuthenticationAPIClient {
         return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
 
+    public AuthenticationRequest loginWithPhoneNumber(String phoneNumber, String verificationCode) {
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .set(USERNAME_KEY, phoneNumber)
+                .set(PASSWORD_KEY, verificationCode)
+                .setGrantType(GRANT_TYPE_PASSWORD)
+                .setClientId(getClientId())
+                .setConnection("sms")
+                .asDictionary();
+        return newAuthenticationRequest(parameters);
+    }
+
     public Request<UserProfile> tokenInfo(String idToken) {
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .clearAll()
-                .set("id_token", idToken)
+                .set(ID_TOKEN_KEY, idToken)
                 .asDictionary();
         Log.d(TAG, "Trying to fetch token with parameters " + requestParameters);
         return profileRequest()
