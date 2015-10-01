@@ -61,6 +61,17 @@ public class AuthenticationAPI  {
         return willReturnApplicationResponseWithBody("Auth0.setClient({\"id\":\"CLIENTID\",\"tenant\":\"overmind\",\"subscription\":\"free\",\"authorize\":\"https://samples.auth0.com/authorize\",\"callback\":\"http://localhost:3000/\",\"hasAllowedOrigins\":true,\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]});", 200);
     }
 
+    public AuthenticationAPI willReturnSuccessfulSignUp() {
+        String json = "{\n" +
+                "    \"_id\": \"gjsmgdkjs72jljsf2dsdhh\", \n" +
+                "    \"email\": \"support@auth0.com\", \n" +
+                "    \"email_verified\": false, \n" +
+                "    \"username\": \"support\"\n" +
+                "}";
+        server.enqueue(responseWithJSON(json, 200));
+        return this;
+    }
+
     public AuthenticationAPI willReturnSuccessfulLogin() {
         String json = "{\n" +
                 "  \"refresh_token\": \"" + REFRESH_TOKEN + "\",\n" +

@@ -29,6 +29,7 @@ import android.os.Handler;
 import com.auth0.android.BuildConfig;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
+import com.auth0.core.DatabaseUser;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.util.AuthenticationAPI;
@@ -50,12 +51,14 @@ import org.robolectric.annotation.Config;
 import java.util.Map;
 
 import static com.auth0.util.AuthenticationCallbackMatcher.hasTokenAndProfile;
+import static com.auth0.util.CallbackMatcher.hasNoError;
 import static com.auth0.util.CallbackMatcher.hasNoPayloadOfType;
 import static com.auth0.util.CallbackMatcher.hasPayloadOfType;
 import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -260,6 +263,68 @@ public class AuthenticationAPIClientTest {
         assertThat(body, hasEntry("scope", "openid offline_access"));
 
         assertThat(callback, hasTokenAndProfile());
+    }
+
+    @Test
+    public void shouldLoginWithEmailOnly() throws Exception {
+        mockAPI
+                .willReturnSuccessfulLogin()
+                .willReturnTokenInfo();
+
+        final MockAuthenticationCallback callback = new MockAuthenticationCallback();
+        client.loginWithEmail("support@auth0.com", "1234")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/oauth/ro"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("connection", "email"));
+        assertThat(body, hasEntry("username", "support@auth0.com"));
+        assertThat(body, hasEntry("password", "1234"));
+        assertThat(body, hasEntry("scope", "openid offline_access"));
+
+        assertThat(callback, hasTokenAndProfile());
+    }
+
+    @Test
+    public void shouldCreateUser() throws Exception {
+        mockAPI.willReturnSuccessfulSignUp();
+
+        final MockBaseCallback<DatabaseUser> callback = new MockBaseCallback<>();
+        client.createUser("support@auth0.com", "123123123", "support")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/dbconnections/signup"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, hasEntry("username", "support"));
+        assertThat(body, hasEntry("password", "123123123"));
+
+        assertThat(callback, hasPayloadOfType(DatabaseUser.class));
+
+    }
+
+    @Test
+    public void shouldCreateUserWithoutUsername() throws Exception {
+        mockAPI.willReturnSuccessfulSignUp();
+
+        final MockBaseCallback<DatabaseUser> callback = new MockBaseCallback<>();
+        client.createUser("support@auth0.com", "123123123")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/dbconnections/signup"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, not(hasEntry("username", "support")));
+        assertThat(body, hasEntry("password", "123123123"));
+
+        assertThat(callback, hasPayloadOfType(DatabaseUser.class));
+
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {

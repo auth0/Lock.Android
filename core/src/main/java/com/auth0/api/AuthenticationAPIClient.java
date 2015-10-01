@@ -31,6 +31,7 @@ import android.util.Log;
 import com.auth0.api.okhttp.RequestFactory;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
+import com.auth0.core.DatabaseUser;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -173,6 +174,17 @@ public class AuthenticationAPIClient {
         return newAuthenticationRequest(parameters);
     }
 
+    public AuthenticationRequest loginWithEmail(String email, String verificationCode) {
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .set(USERNAME_KEY, email)
+                .set(PASSWORD_KEY, verificationCode)
+                .setGrantType(GRANT_TYPE_PASSWORD)
+                .setClientId(getClientId())
+                .setConnection("email")
+                .asDictionary();
+        return newAuthenticationRequest(parameters);
+    }
+
     public Request<UserProfile> tokenInfo(String idToken) {
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .clearAll()
@@ -181,6 +193,26 @@ public class AuthenticationAPIClient {
         Log.d(TAG, "Trying to fetch token with parameters " + requestParameters);
         return profileRequest()
                 .setParameters(requestParameters);
+    }
+
+    public ParameterizableRequest<DatabaseUser> createUser(String email, String password, String username) {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("dbconnections")
+                .addPathSegment("signup")
+                .build();
+        Map<String, Object> parameters = new ParameterBuilder()
+                .set(USERNAME_KEY, username)
+                .set(EMAIL_KEY, email)
+                .set(PASSWORD_KEY, password)
+                .setClientId(getClientId())
+                .asDictionary();
+        Log.d(TAG, "Creating user with email " + email + " and username " + username);
+        return RequestFactory.POST(url, client, handler, mapper, DatabaseUser.class)
+                .setParameters(parameters);
+    }
+
+    public ParameterizableRequest<DatabaseUser> createUser(String email, String password) {
+        return createUser(email, password, null);
     }
 
     private ParameterizableRequest<UserProfile> profileRequest() {

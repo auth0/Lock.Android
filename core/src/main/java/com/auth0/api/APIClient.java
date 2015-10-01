@@ -9,6 +9,7 @@ import com.auth0.api.handler.APIResponseHandler;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.Connection;
+import com.auth0.core.DatabaseUser;
 import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
@@ -162,56 +163,9 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with user's profile and tokens, or failure reason
      */
     public void emailLogin(String email, String verificationCode, Map<String, Object> parameters, final AuthenticationCallback callback) {
-        final String loginURL = getBaseURL() + "/oauth/ro";
-
-        final Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(USERNAME_KEY, email)
-                .set(PASSWORD_KEY, verificationCode)
-                .setGrantType(GRANT_TYPE_PASSWORD)
-                .setClientId(getClientID())
-                .setConnection("email")
-                .addAll(parameters)
-                .asDictionary();
-
-        Log.v(APIClient.class.getName(), "Performing email code login with parameters " + request);
-        login(loginURL, request, callback);
-    }
-
-    private void login(final String url, final Map<String, Object> request, final AuthenticationCallback callback) {
-        try {
-            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
-            this.client.post(null, url, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    try {
-                        final Token token = new ObjectMapper().readValue(responseBody, Token.class);
-                        Log.d(APIClient.class.getName(), "Logged in with " + url + " jwt " + token.getIdToken());
-                        APIClient.this.fetchProfile(token, callback);
-                    } catch (IOException e) {
-                        Log.e(APIClient.class.getName(), "Failed to parse JSON of token info", e);
-                        this.onFailure(statusCode, headers, responseBody, e);
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed login user with " + url, error);
-                    Map<String, Object> errorResponse = null;
-                    if (statusCode == 400 || statusCode == 401) {
-                        try {
-                            errorResponse = new ObjectMapper().readValue(responseBody, new TypeReference<Map<String, Object>>() {});
-                            Log.e(APIClient.class.getName(), "Login error " + errorResponse);
-                        } catch (IOException e) {
-                            Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                        }
-                    }
-                    callback.onFailure(new APIClientException("Failed to perform login", error, statusCode, errorResponse));
-                }
-            });
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
-        }
+        newClient.loginWithEmail(email, verificationCode)
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**
@@ -253,14 +207,19 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user was successfully created or not.
      */
     public void createUser(final String email, final String username, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
-        AsyncHttpResponseHandler handler = new APIResponseHandler<BaseCallback<Void>>(callback) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d(APIClient.class.getName(), "Signed up username " + email);
-                this.callback.onSuccess(null);
-            }
-        };
-        signUp(email, username, password, parameters, handler);
+        newClient.createUser(email, password, username)
+                .setParameters(parameters)
+                .start(new BaseCallback<DatabaseUser>() {
+                    @Override
+                    public void onSuccess(DatabaseUser payload) {
+                        callback.onSuccess(null);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable error) {
+                        callback.onFailure(error);
+                    }
+                });
     }
 
     /**
@@ -271,7 +230,19 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user was successfully created or not.
      */
     public void createUser(final String email, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
-        createUser(email, null, password, parameters, callback);
+        newClient.createUser(email, password)
+                .setParameters(parameters)
+                .start(new BaseCallback<DatabaseUser>() {
+                    @Override
+                    public void onSuccess(DatabaseUser payload) {
+                        callback.onSuccess(null);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable error) {
+                        callback.onFailure(error);
+                    }
+                });
     }
 
     private void signUp(final String email, final String username, final String password, final Map<String, Object> parameters, final AsyncHttpResponseHandler callback) {
