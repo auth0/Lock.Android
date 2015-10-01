@@ -27,13 +27,13 @@ package com.auth0.api;
 import android.os.Handler;
 
 import com.auth0.android.BuildConfig;
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.util.AuthenticationAPI;
+import com.auth0.util.MockAuthenticationCallback;
+import com.auth0.util.MockBaseCallback;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -48,8 +48,10 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
+import static com.auth0.util.AuthenticationCallbackMatcher.hasTokenAndProfile;
+import static com.auth0.util.CallbackMatcher.hasNoPayloadOfType;
+import static com.auth0.util.CallbackMatcher.hasPayloadOfType;
 import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
@@ -111,8 +113,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         assertThat(mockAPI.takeRequest().getPath(), equalTo("/client/CLIENTID.js"));
-        await().until(callback.payload(), is(notNullValue()));
-        await().until(callback.error(), is(nullValue()));
+        assertThat(callback, hasPayloadOfType(Application.class));
     }
 
     @Test
@@ -121,8 +122,7 @@ public class AuthenticationAPIClientTest {
         final MockBaseCallback<Application> callback = new MockBaseCallback<>();
         client.fetchApplicationInfo()
                 .start(callback);
-        await().until(callback.payload(), is(nullValue()));
-        await().until(callback.error(), is(notNullValue()));
+        assertThat(callback, hasNoPayloadOfType(Application.class));
     }
 
     @Test
@@ -131,8 +131,7 @@ public class AuthenticationAPIClientTest {
         final MockBaseCallback<Application> callback = new MockBaseCallback<>();
         client.fetchApplicationInfo()
                 .start(callback);
-        await().until(callback.payload(), is(nullValue()));
-        await().until(callback.error(), is(notNullValue()));
+        assertThat(callback, hasNoPayloadOfType(Application.class));
     }
 
     @Test
@@ -143,8 +142,7 @@ public class AuthenticationAPIClientTest {
         client.fetchApplicationInfo()
                 .start(callback);
 
-        await().until(callback.payload(), is(nullValue()));
-        await().until(callback.error(), is(notNullValue()));
+        assertThat(callback, hasNoPayloadOfType(Application.class));
     }
 
     @Test
@@ -162,13 +160,13 @@ public class AuthenticationAPIClientTest {
         client.loginWithResourceOwner()
             .setParameters(parameters)
             .start(callback);
-        await().until(callback.payload(), is(notNullValue()));
-        await().until(callback.error(), is(nullValue()));
+
+        assertThat(callback, hasPayloadOfType(Token.class));
 
         final RecordedRequest request = mockAPI.takeRequest();
         assertThat(request.getPath(), equalTo("/oauth/ro"));
 
-        Map<String, String> body = payloadFromRequest(request);
+        Map<String, String> body = bodyFromRequest(request);
         assertThat(body, hasEntry("connection", "DB"));
         assertThat(body, hasEntry("grant_type", "password"));
         assertThat(body, hasEntry("username", "support@auth0.com"));
@@ -190,22 +188,21 @@ public class AuthenticationAPIClientTest {
         client.loginWithResourceOwner()
                 .setParameters(parameters)
                 .start(callback);
-        await().until(callback.payload(), is(nullValue()));
-        await().until(callback.error(), is(notNullValue()));
+
+        assertThat(callback, hasNoPayloadOfType(Token.class));
     }
 
     @Test
     public void shouldLoginWithUserAndPassword() throws Exception {
         mockAPI
-                .willReturnSuccessfulLogin()
-                .willReturnTokenInfo();
+            .willReturnSuccessfulLogin()
+            .willReturnTokenInfo();
         final MockAuthenticationCallback callback = new MockAuthenticationCallback();
 
         client.login("support@auth0.com", "voidpassword")
             .start(callback);
-        await().until(callback.profile(), is(notNullValue()));
-        await().until(callback.token(), is(notNullValue()));
-        await().until(callback.error(), is(nullValue()));
+
+        assertThat(callback, hasTokenAndProfile());
     }
 
     @Test
@@ -215,93 +212,35 @@ public class AuthenticationAPIClientTest {
 
         client.tokenInfo("ID_TOKEN")
             .start(callback);
-        await().until(callback.payload(), is(notNullValue()));
-        await().until(callback.error(), is(nullValue()));
+
+        assertThat(callback, hasPayloadOfType(UserProfile.class));
+
         final RecordedRequest request = mockAPI.takeRequest();
         assertThat(request.getPath(), equalTo("/tokeninfo"));
     }
 
-    private Map<String, String> payloadFromRequest(RecordedRequest request) throws java.io.IOException {
+    @Test
+    public void shouldLoginWithOAuthAccessToken() throws Exception {
+        mockAPI
+                .willReturnSuccessfulLogin()
+                .willReturnTokenInfo();
+
+        final MockAuthenticationCallback callback = new MockAuthenticationCallback();
+        client.loginWithOAuthAccessToken("fbtoken", "facebook")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/oauth/access_token"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("connection", "facebook"));
+        assertThat(body, hasEntry("access_token", "fbtoken"));
+        assertThat(body, hasEntry("scope", "openid offline_access"));
+
+        assertThat(callback, hasTokenAndProfile());
+    }
+
+    private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
         return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {});
     }
-
-    private static class MockBaseCallback<T> implements BaseCallback<T> {
-
-        private T payload;
-        private Throwable error;
-
-        @Override
-        public void onSuccess(T payload) {
-            this.payload = payload;
-        }
-
-        @Override
-        public void onFailure(Throwable error) {
-            this.error = error;
-        }
-
-        Callable<T> payload() {
-            return new Callable<T>() {
-                @Override
-                public T call() throws Exception {
-                    return payload;
-                }
-            };
-        }
-
-        Callable<Throwable> error() {
-            return new Callable<Throwable>() {
-                @Override
-                public Throwable call() throws Exception {
-                    return error;
-                }
-            };
-        }
-    }
-
-    private static class MockAuthenticationCallback implements AuthenticationCallback {
-
-        private Token token;
-        private UserProfile profile;
-        private Throwable error;
-
-        @Override
-        public void onSuccess(UserProfile profile, Token token) {
-            this.token = token;
-            this.profile = profile;
-        }
-
-        @Override
-        public void onFailure(Throwable error) {
-            this.error = error;
-        }
-
-        Callable<Token> token() {
-            return new Callable<Token>() {
-                @Override
-                public Token call() throws Exception {
-                    return token;
-                }
-            };
-        }
-
-        Callable<UserProfile> profile() {
-            return new Callable<UserProfile>() {
-                @Override
-                public UserProfile call() throws Exception {
-                    return profile;
-                }
-            };
-        }
-
-        Callable<Throwable> error() {
-            return new Callable<Throwable>() {
-                @Override
-                public Throwable call() throws Exception {
-                    return error;
-                }
-            };
-        }
-    }
-
 }

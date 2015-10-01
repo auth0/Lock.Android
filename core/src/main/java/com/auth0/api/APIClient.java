@@ -124,8 +124,6 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void socialLogin(final String connectionName, String accessToken, Map<String, Object> parameters, final AuthenticationCallback callback) {
-        final String loginURL = getBaseURL() + "/oauth/access_token";
-
         Map<String, Object> params = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
         if (params.containsKey("access_token")) {
             params.put("main_access_token", params.remove("access_token"));
@@ -137,8 +135,10 @@ public class APIClient extends BaseAPIClient {
                 .addAll(params)
                 .asDictionary();
 
-        Log.v(APIClient.class.getName(), "Performing social login with parameters " + request);
-        login(loginURL, request, callback);
+        newClient
+                .loginWithOAuthAccessToken(accessToken, connectionName)
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**

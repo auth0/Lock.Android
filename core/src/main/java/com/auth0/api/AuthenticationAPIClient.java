@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
@@ -129,10 +130,26 @@ public class AuthenticationAPIClient {
                 .set("password", password)
                 .setGrantType(GRANT_TYPE_PASSWORD)
                 .asDictionary();
-        final ParameterizableRequest<Token> credentialsRequest = loginWithResourceOwner()
-                .setParameters(requestParameters);
-        final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
+        return newAuthenticationRequest(requestParameters);
+    }
 
+    public AuthenticationRequest loginWithOAuthAccessToken(String token, String connection) {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("oauth")
+                .addPathSegment("access_token")
+                .build();
+
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .setClientId(getClientId())
+                .setConnection(connection)
+                .setAccessToken(token)
+                .asDictionary();
+
+        Log.v(APIClient.class.getName(), "Performing OAuth access_token login with parameters " + parameters);
+
+        final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
+        ParameterizableRequest<Token> credentialsRequest = RequestFactory.POST(url, client, handler, mapper, Token.class)
+                .setParameters(parameters);
         return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
 
@@ -152,5 +169,13 @@ public class AuthenticationAPIClient {
                 .build();
         return RequestFactory.POST(url, client, handler, mapper, UserProfile.class);
 
+    }
+
+    private AuthenticationRequest newAuthenticationRequest(Map<String, Object> parameters) {
+        final ParameterizableRequest<Token> credentialsRequest = loginWithResourceOwner()
+                .setParameters(parameters);
+        final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
+
+        return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
 }
