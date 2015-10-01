@@ -43,7 +43,7 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 
-public class ApplicationInfoRequest extends CallbackHandler<Application> implements Request<Application>, Callback {
+class ApplicationInfoRequest extends CallbackHandler<Application> implements Request<Application>, Callback {
 
     private static final String TAG = ApplicationInfoRequest.class.getName();
 

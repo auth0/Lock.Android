@@ -28,7 +28,7 @@ import android.os.Handler;
 
 import com.auth0.api.callback.BaseCallback;
 
-public class CallbackHandler<T> {
+class CallbackHandler<T> {
 
     private final Handler handler;
     private BaseCallback<T> callback;

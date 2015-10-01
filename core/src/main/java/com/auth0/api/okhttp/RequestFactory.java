@@ -27,6 +27,8 @@ package com.auth0.api.okhttp;
 import android.os.Handler;
 
 import com.auth0.api.ParameterizableRequest;
+import com.auth0.api.Request;
+import com.auth0.core.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -55,4 +57,7 @@ public class RequestFactory {
         return new SimpleRequest<>(handler, url, client, mapper, "DELETE", clazz);
     }
 
+    public static Request<Application> newApplicationInfoRequest(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
+        return new ApplicationInfoRequest(handler, client, url, mapper);
+    }
 }

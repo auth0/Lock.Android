@@ -28,7 +28,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.auth0.api.okhttp.ApplicationInfoRequest;
 import com.auth0.api.okhttp.RequestFactory;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
@@ -107,7 +106,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment("client")
                 .addPathSegment(auth0.getClientId() + ".js")
                 .build();
-        return new ApplicationInfoRequest(handler, client, url, mapper);
+        return RequestFactory.newApplicationInfoRequest(url, client, handler, mapper);
     }
 
     public ParameterizableRequest<Token> loginWithResourceOwner() {

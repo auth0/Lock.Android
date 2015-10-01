@@ -33,7 +33,7 @@ import com.squareup.okhttp.RequestBody;
 /**
  * Converts a POJO to JSON stored in a {@link com.squareup.okhttp.RequestBody}
  */
-public abstract class JsonRequestBodyBuilder {
+abstract class JsonRequestBodyBuilder {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
