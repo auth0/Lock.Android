@@ -177,14 +177,10 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void signUp(final String email, final String username, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
-        AsyncHttpResponseHandler handler = new APIResponseHandler<AuthenticationCallback>(callback) {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d(APIClient.class.getName(), "Signed up username " + email);
-                APIClient.this.login(email, password, parameters, this.callback);
-            }
-        };
-        signUp(email, username, password, parameters, handler);
+        newClient.signUp(email, password, username)
+                .setSignUpParameters(parameters)
+                .setAuthenticationParameters(parameters)
+                .start(callback);
     }
 
     /**
@@ -195,7 +191,10 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
-        signUp(email, null, password, parameters, callback);
+        newClient.signUp(email, password)
+                .setSignUpParameters(parameters)
+                .setAuthenticationParameters(parameters)
+                .start(callback);
     }
 
     /**
@@ -243,28 +242,6 @@ public class APIClient extends BaseAPIClient {
                         callback.onFailure(error);
                     }
                 });
-    }
-
-    private void signUp(final String email, final String username, final String password, final Map<String, Object> parameters, final AsyncHttpResponseHandler callback) {
-        String signUpUrl = getBaseURL() + "/dbconnections/signup";
-
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(EMAIL_KEY, email != null ? email : username)
-                .set(PASSWORD_KEY, password)
-                .set(USERNAME_KEY, username != null ? username : email)
-                .setClientId(getClientID())
-                .setConnection(getDBConnectionName())
-                .addAll(parameters)
-                .asDictionary();
-
-        Log.v(APIClient.class.getName(), "Performing signup with parameters " + request);
-        try {
-            HttpEntity entity = entityBuilder.newEntityFrom(request);
-            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, callback);
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(0, null, null, e);
-        }
     }
 
     /**

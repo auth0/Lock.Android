@@ -327,6 +327,48 @@ public class AuthenticationAPIClientTest {
 
     }
 
+    @Test
+    public void shouldSignUpUser() throws Exception {
+        mockAPI.willReturnSuccessfulSignUp()
+                .willReturnSuccessfulLogin()
+                .willReturnTokenInfo();
+
+        final MockAuthenticationCallback callback = new MockAuthenticationCallback();
+        client.signUp("support@auth0.com", "123123123", "support")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/dbconnections/signup"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, hasEntry("username", "support"));
+        assertThat(body, hasEntry("password", "123123123"));
+
+        assertThat(callback, hasTokenAndProfile());
+    }
+
+    @Test
+    public void shouldSignUpUserWithoutUsername() throws Exception {
+        mockAPI.willReturnSuccessfulSignUp()
+                .willReturnSuccessfulLogin()
+                .willReturnTokenInfo();
+
+        final MockAuthenticationCallback callback = new MockAuthenticationCallback();
+        client.signUp("support@auth0.com", "123123123")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/dbconnections/signup"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, not(hasEntry("username", "support")));
+        assertThat(body, hasEntry("password", "123123123"));
+
+        assertThat(callback, hasTokenAndProfile());
+    }
+
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
         return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {});
     }

@@ -155,7 +155,7 @@ public class AuthenticationAPIClient {
                 .setAccessToken(token)
                 .asDictionary();
 
-        Log.v(APIClient.class.getName(), "Performing OAuth access_token login with parameters " + parameters);
+        Log.v(TAG, "Performing OAuth access_token login with parameters " + parameters);
 
         final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
         ParameterizableRequest<Token> credentialsRequest = RequestFactory.POST(url, client, handler, mapper, Token.class)
@@ -213,6 +213,18 @@ public class AuthenticationAPIClient {
 
     public ParameterizableRequest<DatabaseUser> createUser(String email, String password) {
         return createUser(email, password, null);
+    }
+
+    public SignUpRequest signUp(String email, String password, String username) {
+        ParameterizableRequest<DatabaseUser> createUserRequest = createUser(email, password, username);
+        AuthenticationRequest authenticationRequest = login(email, password);
+        return new SignUpRequest(createUserRequest, authenticationRequest);
+    }
+
+    public SignUpRequest signUp(String email, String password) {
+        ParameterizableRequest<DatabaseUser> createUserRequest = createUser(email, password);
+        AuthenticationRequest authenticationRequest = login(email, password);
+        return new SignUpRequest(createUserRequest, authenticationRequest);
     }
 
     private ParameterizableRequest<UserProfile> profileRequest() {
