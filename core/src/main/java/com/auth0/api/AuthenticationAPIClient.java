@@ -227,6 +227,22 @@ public class AuthenticationAPIClient {
         return new SignUpRequest(createUserRequest, authenticationRequest);
     }
 
+    public ParameterizableRequest<Void> changePassword(String email, String newPassword) {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("dbconnections")
+                .addPathSegment("change_password")
+                .build();
+
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .set(EMAIL_KEY, email)
+                .set(PASSWORD_KEY, newPassword)
+                .setClientId(getClientId())
+                .asDictionary();
+
+        return RequestFactory.POST(url, client, handler, mapper)
+                .setParameters(parameters);
+    }
+
     private ParameterizableRequest<UserProfile> profileRequest() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("tokeninfo")

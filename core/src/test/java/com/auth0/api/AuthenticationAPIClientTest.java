@@ -369,6 +369,26 @@ public class AuthenticationAPIClientTest {
         assertThat(callback, hasTokenAndProfile());
     }
 
+    @Test
+    public void shouldChangePassword() throws Exception {
+        mockAPI.willReturnSuccessfulChangePassword();
+
+        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        client.changePassword("support@auth0.com", "123123123")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/dbconnections/change_password"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, not(hasEntry("username", "support")));
+        assertThat(body, hasEntry("password", "123123123"));
+
+        assertThat(callback, hasNoError());
+
+    }
+
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
         return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {});
     }

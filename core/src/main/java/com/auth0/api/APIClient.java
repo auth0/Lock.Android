@@ -177,9 +177,13 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void signUp(final String email, final String username, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .setConnection(getDBConnectionName())
+                .addAll(parameters)
+                .asDictionary();
         newClient.signUp(email, password, username)
-                .setSignUpParameters(parameters)
-                .setAuthenticationParameters(parameters)
+                .setSignUpParameters(request)
+                .setAuthenticationParameters(request)
                 .start(callback);
     }
 
@@ -191,8 +195,12 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with User's profile and tokens or failure reason
      */
     public void signUp(final String email, final String password, final Map<String, Object> parameters, final AuthenticationCallback callback) {
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .setConnection(getDBConnectionName())
+                .addAll(parameters)
+                .asDictionary();
         newClient.signUp(email, password)
-                .setSignUpParameters(parameters)
+                .setSignUpParameters(request)
                 .setAuthenticationParameters(parameters)
                 .start(callback);
     }
@@ -206,8 +214,12 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user was successfully created or not.
      */
     public void createUser(final String email, final String username, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .setConnection(getDBConnectionName())
+                .addAll(parameters)
+                .asDictionary();
         newClient.createUser(email, password, username)
-                .setParameters(parameters)
+                .setParameters(request)
                 .start(new BaseCallback<DatabaseUser>() {
                     @Override
                     public void onSuccess(DatabaseUser payload) {
@@ -229,8 +241,12 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user was successfully created or not.
      */
     public void createUser(final String email, final String password, final Map<String, Object> parameters, final BaseCallback<Void> callback) {
+        Map<String, Object> request = ParameterBuilder.newBuilder()
+                .setConnection(getDBConnectionName())
+                .addAll(parameters)
+                .asDictionary();
         newClient.createUser(email, password)
-                .setParameters(parameters)
+                .setParameters(request)
                 .start(new BaseCallback<DatabaseUser>() {
                     @Override
                     public void onSuccess(DatabaseUser payload) {
@@ -252,29 +268,13 @@ public class APIClient extends BaseAPIClient {
      * @param callback callback that will notify if the user password request was sent or not.
      */
     public void changePassword(final String email, String newPassword, Map<String, Object> parameters, BaseCallback<Void> callback) {
-        String changePasswordUrl = getBaseURL() + "/dbconnections/change_password";
-
         Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(EMAIL_KEY, email)
-                .set(PASSWORD_KEY, newPassword)
-                .setClientId(getClientID())
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
-
-        Log.v(APIClient.class.getName(), "Performing change password with parameters " + request);
-        try {
-            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
-            this.client.post(null, changePasswordUrl, entity, APPLICATION_JSON, new APIResponseHandler<BaseCallback<Void>>(callback) {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    callback.onSuccess(null);
-                }
-            });
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
-        }
+        newClient.changePassword(email, newPassword)
+                .setParameters(request)
+                .start(callback);
     }
 
     /**
@@ -283,36 +283,8 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with the user's profile on success or with the failure reason
      */
     public void fetchUserProfile(String idToken, final BaseCallback<UserProfile> callback) {
-        Log.v(APIClient.class.getName(), "Fetching user profile with token " + idToken);
-        final String profileURL = getBaseURL() + "/tokeninfo";
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set(ID_TOKEN_KEY, idToken)
-                .asDictionary();
-        try {
-            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
-            this.client.post(null, profileURL, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    try {
-                        UserProfile profile = new ObjectMapper().readValue(responseBody, UserProfile.class);
-                        Log.d(APIClient.class.getName(), "Obtained user profile");
-                        callback.onSuccess(profile);
-                    } catch (IOException e) {
-                        Log.e(APIClient.class.getName(), "Failed to parse JSON of profile", e);
-                        this.onFailure(statusCode, headers, responseBody, e);
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed obtain user profile", error);
-                    callback.onFailure(error);
-                }
-            });
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
-        }
+        newClient.tokenInfo(idToken)
+                .start(callback);
     }
 
     /**

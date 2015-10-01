@@ -26,17 +26,12 @@ package com.auth0.api.okhttp;
 
 import android.os.Handler;
 
-import com.auth0.api.AuthenticationRequest;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.Request;
 import com.auth0.core.Application;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
-
-import java.util.Map;
 
 public class RequestFactory {
 
@@ -48,6 +43,10 @@ public class RequestFactory {
 
     public static <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
         return new SimpleRequest<>(handler, url, client, mapper, "POST", clazz);
+    }
+
+    public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
+        return new VoidRequest(handler, url, client, mapper, "POST");
     }
 
     public static <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
