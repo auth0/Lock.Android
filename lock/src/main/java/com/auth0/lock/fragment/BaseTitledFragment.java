@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.lock.Lock;
 import com.auth0.lock.R;
 import com.squareup.otto.Bus;
@@ -41,7 +42,7 @@ public abstract class BaseTitledFragment extends Fragment {
     public static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";
     public static final String AUTHENTICATION_USES_EMAIL_ARGUMENT = "AUTHENTICATION_USES_EMAIL_ARGUMENT";
 
-    protected APIClient client;
+    protected AuthenticationAPIClient client;
     protected Bus bus;
     protected Map<String, Object> authenticationParameters;
     boolean useEmail;
@@ -50,7 +51,7 @@ public abstract class BaseTitledFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Lock lock = Lock.getLock(getActivity());
-        client = lock.getAPIClient();
+        client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
         final Bundle arguments = getArguments();
         authenticationParameters = arguments != null ? (Map<String, Object>) arguments.getSerializable(AUTHENTICATION_PARAMETER_ARGUMENT) : null;

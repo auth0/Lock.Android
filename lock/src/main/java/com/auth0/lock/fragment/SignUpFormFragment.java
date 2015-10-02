@@ -39,9 +39,11 @@ import android.widget.TextView;
 
 import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Connection;
+import com.auth0.core.DatabaseUser;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
@@ -78,7 +80,7 @@ public class SignUpFormFragment extends Fragment {
     private boolean loginAfterSignUp;
     private boolean useEmail;
     private boolean requiresUsername;
-    private APIClient client;
+    private AuthenticationAPIClient client;
     private Bus bus;
     private Map<String, Object> authenticationParameters;
 
@@ -89,7 +91,7 @@ public class SignUpFormFragment extends Fragment {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         final Lock lock = Lock.getLock(getActivity());
-        client = lock.getAPIClient();
+        client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
         errorBuilder = new SignUpAuthenticationErrorBuilder();
         useEmail = arguments == null || arguments.getBoolean(USE_EMAIL_SIGNUP_ARGUMENT);
@@ -180,9 +182,12 @@ public class SignUpFormFragment extends Fragment {
         final String email = useEmail || requiresUsername ? emailField.getText().toString().trim() : null;
         final String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
-            client.signUp(email, username, password, authenticationParameters, new SignUpAuthenticationCallback(password));
+            client.signUp(email, username, password)
+                    .setAuthenticationParameters(authenticationParameters)
+                    .start(new SignUpAuthenticationCallback(password));
         } else {
-            client.createUser(email, username, password, authenticationParameters, new SignUpCallback(email, username, password));
+            client.createUser(email, username, password)
+                    .start(new SignUpCallback(email, username, password));
         }
     }
 
@@ -217,7 +222,7 @@ public class SignUpFormFragment extends Fragment {
         }
     }
 
-    private class SignUpCallback implements BaseCallback<Void> {
+    private class SignUpCallback implements BaseCallback<DatabaseUser> {
 
         private final String email;
         private final String username;
@@ -230,7 +235,7 @@ public class SignUpFormFragment extends Fragment {
         }
 
         @Override
-        public void onSuccess(Void payload) {
+        public void onSuccess(DatabaseUser payload) {
             CredentialStore store = Lock.getLock(getActivity()).getCredentialStore();
             store.saveFromActivity(getActivity(), username, email, password, null, new LockCredentialStoreCallback() {
                 @Override

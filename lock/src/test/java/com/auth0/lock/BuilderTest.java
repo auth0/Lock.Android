@@ -25,6 +25,7 @@
 package com.auth0.lock;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.lock.credentials.CredentialStore;
@@ -47,6 +48,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -87,6 +89,12 @@ public class BuilderTest {
         assertThat(apiClient.getClientID(), equalTo(CLIENT_ID));
         assertThat(apiClient.getBaseURL(), equalTo("https://TENANT.auth0.com"));
         assertThat(apiClient.getConfigurationURL(), equalTo("https://cdn.auth0.com/client/CLIENTID.js"));
+    }
+
+    @Test
+    public void shouldHaveAnAuthenticationAPIClient() throws Exception {
+        lock = basicBuilder().build();
+        assertThat(lock.getAuthenticationAPIClient(), isA(AuthenticationAPIClient.class));
     }
 
     @Test

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.lock.Lock;
@@ -24,14 +25,14 @@ import com.squareup.otto.Bus;
 public class LoadingFragment extends Fragment {
 
     private static final String TAG = LoadingFragment.class.getName();
-    private APIClient client;
+    private AuthenticationAPIClient client;
     private Bus bus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Lock lock = Lock.getLock(getActivity());
-        client = lock.getAPIClient();
+        client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
     }
 
@@ -61,29 +62,31 @@ public class LoadingFragment extends Fragment {
                     .show();
             return;
         }
-        client.fetchApplicationInfo(new BaseCallback<Application>() {
-            @Override
-            public void onSuccess(Application application) {
-                Log.i(TAG, "Fetched app info for tenant " + application.getTenant());
-                bus.post(application);
-            }
 
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.e(TAG, "Failed to fetch app info", throwable);
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.com_auth0_application_load_failed_title)
-                        .setMessage(R.string.com_auth0_application_load_failed_message)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.com_auth0_application_retry_button_text, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                loadInfo();
-                            }
-                        })
-                        .show();
-            }
-        });
+        client.fetchApplicationInfo()
+                .start(new BaseCallback<Application>() {
+                    @Override
+                    public void onSuccess(Application application) {
+                        Log.i(TAG, "Fetched app info for tenant " + application.getTenant());
+                        bus.post(application);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.e(TAG, "Failed to fetch app info", throwable);
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.com_auth0_application_load_failed_title)
+                                .setMessage(R.string.com_auth0_application_load_failed_message)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.com_auth0_application_retry_button_text, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        loadInfo();
+                                    }
+                                })
+                                .show();
+                    }
+                });
     }
 
     private boolean isConnectionAvailable() {

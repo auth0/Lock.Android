@@ -120,7 +120,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         final String email = emailField.getText().toString();
-        client.requestEmailVerificationCode(email, new BaseCallback<Void>() {
+        client.passwordlessWithEmailCode(email).start(new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
                 Log.d(TAG, "SMS code sent to " + email);

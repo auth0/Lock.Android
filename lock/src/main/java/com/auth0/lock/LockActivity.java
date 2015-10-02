@@ -285,33 +285,38 @@ public class LockActivity extends FragmentActivity {
     @SuppressWarnings("unused")
     @Subscribe public void onSocialAuthentication(IdentityProviderAuthenticationEvent event) {
         final Token token = event.getToken();
-        lock.getAPIClient().fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
-            @Override
-            public void onSuccess(UserProfile userProfile) {
-                lock.getBus().post(new AuthenticationEvent(userProfile, token));
-            }
+        lock.getAuthenticationAPIClient()
+                .tokenInfo(token.getIdToken())
+                .start(new BaseCallback<UserProfile>() {
+                    @Override
+                    public void onSuccess(UserProfile userProfile) {
+                        lock.getBus().post(new AuthenticationEvent(userProfile, token));
+                    }
 
-            @Override
-            public void onFailure(Throwable error) {
-                lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable error) {
+                        lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
+                    }
+                });
     }
 
     @SuppressWarnings("unused")
     @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
         Log.v(TAG, "Received social accessToken " + event.getAccessToken());
-        lock.getAPIClient().socialLogin(event.getService(), event.getAccessToken(), lock.getAuthenticationParameters(), new AuthenticationCallback() {
-            @Override
-            public void onSuccess(UserProfile profile, Token token) {
-                lock.getBus().post(new AuthenticationEvent(profile, token));
-            }
+        lock.getAuthenticationAPIClient()
+                .loginWithOAuthAccessToken(event.getAccessToken(), event.getService())
+                .setParameters(lock.getAuthenticationParameters())
+                .start(new AuthenticationCallback() {
+                    @Override
+                    public void onSuccess(UserProfile profile, Token token) {
+                        lock.getBus().post(new AuthenticationEvent(profile, token));
+                    }
 
-            @Override
-            public void onFailure(Throwable error) {
-                lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable error) {
+                        lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
+                    }
+                });
     }
 
     private LockFragmentBuilder newFragmentBuilder(Lock lock) {

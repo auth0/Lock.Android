@@ -132,23 +132,25 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
         progressBar.setVisibility(View.VISIBLE);
         String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
-        client.changePassword(username, password, authenticationParameters, new BaseCallback<Void>() {
-            @Override
-            public void onSuccess(Void payload) {
-                bus.post(new ChangePasswordEvent());
-                sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
+        client.changePassword(username, password)
+                .setParameters(authenticationParameters)
+                .start(new BaseCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void payload) {
+                        bus.post(new ChangePasswordEvent());
+                        sendButton.setEnabled(true);
+                        sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.com_auth0_db_change_password_error_title, R.string.com_auth0_db_change_password_error_message, error));
-                sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable error) {
+                        bus.post(new AuthenticationError(R.string.com_auth0_db_change_password_error_title, R.string.com_auth0_db_change_password_error_message, error));
+                        sendButton.setEnabled(true);
+                        sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
 }
