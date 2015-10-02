@@ -100,19 +100,18 @@ public class LockActivity extends FragmentActivity {
         broadcastManager = LocalBroadcastManager.getInstance(this);
         callback = new LockIdentityProviderCallback(lock.getBus());
         ActivityUIHelper.configureScreenModeForActivity(this, lock);
+        lock.getBus().register(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        lock.getBus().register(this);
         lock.resetAllProviders();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        this.lock.getBus().unregister(this);
         lock.resetAllProviders();
     }
 
@@ -153,6 +152,7 @@ public class LockActivity extends FragmentActivity {
     protected void onDestroy() {
         identity = null;
         dismissProgressDialog();
+        this.lock.getBus().unregister(this);
         super.onDestroy();
     }
 
