@@ -56,9 +56,9 @@ public class AuthenticationAPIClient {
     private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
     private static final String ID_TOKEN_KEY = "id_token";
     private static final String EMAIL_KEY = "email";
-    private static final String TOKEN_TYPE_KEY = "token_type";
-    private static final String EXPIRES_IN_KEY = "expires_in";
     private static final String REFRESH_TOKEN_KEY = "refresh_token";
+    private static final String API_TYPE_KEY = "api_type";
+    private static final String DEFAULT_API_TYPE = "app";
 
     private final Auth0 auth0;
     private final OkHttpClient client;
@@ -253,6 +253,26 @@ public class AuthenticationAPIClient {
                 .asDictionary();
         return RequestFactory.rawPOST(url, client, handler, mapper)
                 .setParameters(parameters);
+    }
+
+    public DelegationRequest delegationWithIdToken(String idToken) {
+        Map<String, Object> parameters = new ParameterBuilder()
+                .set(ID_TOKEN_KEY, idToken)
+                .set(API_TYPE_KEY, DEFAULT_API_TYPE)
+                .asDictionary();
+        ParameterizableRequest<Map<String, Object>> request = delegation()
+                .setParameters(parameters);
+        return new DelegationRequest(request);
+    }
+
+    public DelegationRequest delegationWithRefreshToken(String refreshToken) {
+        Map<String, Object> parameters = new ParameterBuilder()
+                .set(REFRESH_TOKEN_KEY, refreshToken)
+                .set(API_TYPE_KEY, DEFAULT_API_TYPE)
+                .asDictionary();
+        ParameterizableRequest<Map<String, Object>> request = delegation()
+                .setParameters(parameters);
+        return new DelegationRequest(request);
     }
 
     private ParameterizableRequest<UserProfile> profileRequest() {

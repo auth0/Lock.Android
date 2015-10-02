@@ -130,9 +130,6 @@ public class APIClient extends BaseAPIClient {
             params.put("main_access_token", params.remove("access_token"));
         }
         Map<String, Object> request = ParameterBuilder.newBuilder()
-                .setClientId(getClientID())
-                .setConnection(connectionName)
-                .setAccessToken(accessToken)
                 .addAll(params)
                 .asDictionary();
 
@@ -294,24 +291,9 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with new token in success or with the failure reason on error
      */
     public void fetchIdTokenWithIdToken(String idToken, Map<String, Object> parameters, final RefreshIdTokenCallback callback) {
-        Map<String, Object> request = ParameterBuilder.newEmptyBuilder()
-                .set(ID_TOKEN_KEY, idToken)
-                .addAll(parameters)
-                .asDictionary();
-        fetchDelegationToken(request, new BaseCallback<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> payload) {
-                final String id_token = (String) payload.get(ID_TOKEN_KEY);
-                final String token_type = (String) payload.get(TOKEN_TYPE_KEY);
-                final Integer expires_in = (Integer) payload.get(EXPIRES_IN_KEY);
-                callback.onSuccess(id_token, token_type, expires_in);
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                callback.onFailure(error);
-            }
-        });
+        newClient.delegationWithIdToken(idToken)
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**
@@ -321,24 +303,9 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with new token in success or with the failure reason on error
      */
     public void fetchIdTokenWithRefreshToken(String refreshToken, Map<String, Object> parameters, final RefreshIdTokenCallback callback) {
-        Map<String, Object> request = ParameterBuilder.newEmptyBuilder()
-                .set(REFRESH_TOKEN_KEY, refreshToken)
-                .addAll(parameters)
-                .asDictionary();
-        fetchDelegationToken(request, new BaseCallback<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> payload) {
-                final String id_token = (String) payload.get(ID_TOKEN_KEY);
-                final String token_type = (String) payload.get(TOKEN_TYPE_KEY);
-                final Integer expires_in = (Integer) payload.get(EXPIRES_IN_KEY);
-                callback.onSuccess(id_token, token_type, expires_in);
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                callback.onFailure(error);
-            }
-        });
+        newClient.delegationWithRefreshToken(refreshToken)
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**
@@ -348,39 +315,9 @@ public class APIClient extends BaseAPIClient {
      * @param callback called with delegation api response in success or with the failure reason on error.
      */
     public void fetchDelegationToken(Map<String, Object> parameters, final BaseCallback<Map<String, Object>> callback) {
-        Log.v(APIClient.class.getName(), "Fetching delegation token");
-        final String delegationURL = getBaseURL() + "/delegation";
-        Map<String, Object> request = ParameterBuilder.newEmptyBuilder()
-                .setClientId(getClientID())
-                .setGrantType("urn:ietf:params:oauth:grant-type:jwt-bearer")
-                .addAll(parameters)
-                .asDictionary();
-        try {
-            HttpEntity entity = this.entityBuilder.newEntityFrom(request);
-            this.client.post(null, delegationURL, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    try {
-                        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
-                        final Map<String, Object> delegation = new ObjectMapper().readValue(responseBody, typeRef);
-                        Log.d(APIClient.class.getName(), "Obtained delegation token info: " + delegation);
-                        callback.onSuccess(delegation);
-                    } catch (IOException e) {
-                        Log.e(APIClient.class.getName(), "Failed to parse JSON of delegation token info", e);
-                        this.onFailure(statusCode, headers, responseBody, e);
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed obtain delegation token info", error);
-                    callback.onFailure(error);
-                }
-            });
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
-        }
+        newClient.delegation()
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**

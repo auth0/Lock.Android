@@ -35,6 +35,7 @@ import com.auth0.core.UserProfile;
 import com.auth0.util.AuthenticationAPI;
 import com.auth0.util.MockAuthenticationCallback;
 import com.auth0.util.MockBaseCallback;
+import com.auth0.util.MockRefreshIdTokenCallback;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -53,6 +54,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.auth0.util.AuthenticationAPI.GENERIC_TOKEN;
+import static com.auth0.util.AuthenticationAPI.ID_TOKEN;
+import static com.auth0.util.AuthenticationAPI.NEW_ID_TOKEN;
+import static com.auth0.util.AuthenticationAPI.REFRESH_TOKEN;
 import static com.auth0.util.AuthenticationCallbackMatcher.hasTokenAndProfile;
 import static com.auth0.util.CallbackMatcher.hasNoError;
 import static com.auth0.util.CallbackMatcher.hasNoPayloadOfType;
@@ -394,7 +398,6 @@ public class AuthenticationAPIClientTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void shouldCallDelegation() throws Exception {
         mockAPI.willReturnGenericDelegationToken();
 
@@ -412,6 +415,46 @@ public class AuthenticationAPIClientTest {
         Map<String, Object> payload = new HashMap<>();
         payload.put("token", GENERIC_TOKEN);
         assertThat(callback, hasPayload(payload));
+    }
+
+    @Test
+    public void shouldGetNewIdTokenWithIdToken() throws Exception {
+        mockAPI.willReturnNewIdToken();
+
+        final MockRefreshIdTokenCallback callback = new MockRefreshIdTokenCallback();
+        client.delegationWithIdToken(ID_TOKEN)
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/delegation"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("grant_type", ParameterBuilder.GRANT_TYPE_JWT));
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+        assertThat(body, hasEntry("api_type", "app"));
+        assertThat(body, hasEntry("id_token", ID_TOKEN));
+
+        assertThat(callback, hasPayload(NEW_ID_TOKEN));
+    }
+
+    @Test
+    public void shouldGetNewIdTokenWithRefreshToken() throws Exception {
+        mockAPI.willReturnNewIdToken();
+
+        final MockRefreshIdTokenCallback callback = new MockRefreshIdTokenCallback();
+        client.delegationWithRefreshToken(REFRESH_TOKEN)
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/delegation"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("grant_type", ParameterBuilder.GRANT_TYPE_JWT));
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+        assertThat(body, hasEntry("api_type", "app"));
+        assertThat(body, hasEntry("refresh_token", REFRESH_TOKEN));
+
+        assertThat(callback, hasPayload(NEW_ID_TOKEN));
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
