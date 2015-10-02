@@ -279,7 +279,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
         client.login(username, password)
-                .setParameters(authenticationParameters)
+                .addParameters(authenticationParameters)
                 .start(new AuthenticationCallback() {
                     @Override
                     public void onSuccess(UserProfile userProfile, Token token) {

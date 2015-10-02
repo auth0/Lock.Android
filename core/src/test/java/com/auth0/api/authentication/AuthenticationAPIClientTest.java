@@ -167,7 +167,7 @@ public class AuthenticationAPIClientTest {
                 .setScope(ParameterBuilder.SCOPE_OPENID)
                 .asDictionary();
         client.loginWithResourceOwner()
-            .setParameters(parameters)
+            .addParameters(parameters)
             .start(callback);
 
         assertThat(callback, hasPayloadOfType(Token.class));
@@ -195,7 +195,7 @@ public class AuthenticationAPIClientTest {
                 .set("password", "notapassword")
                 .asDictionary();
         client.loginWithResourceOwner()
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
 
         assertThat(callback, hasNoPayloadOfType(Token.class));
@@ -485,7 +485,7 @@ public class AuthenticationAPIClientTest {
                 .set("email", "support@auth0.com")
                 .asDictionary();
         client.passwordless()
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();

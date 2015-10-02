@@ -98,7 +98,7 @@ class ApplicationInfoRequest extends BaseRequest<Application> implements Callbac
     }
 
     @Override
-    public ParameterizableRequest<Application> setParameters(Map<String, Object> parameters) {
+    public ParameterizableRequest<Application> addParameters(Map<String, Object> parameters) {
         return this;
     }
 

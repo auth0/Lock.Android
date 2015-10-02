@@ -95,7 +95,7 @@ public class BaseRequestTest {
             }
 
             @Override
-            public ParameterizableRequest<String> setParameters(Map parameters) {
+            public ParameterizableRequest<String> addParameters(Map parameters) {
                 return null;
             }
         };

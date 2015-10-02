@@ -147,7 +147,7 @@ public class AuthenticationAPIClient {
                 .setConnection(defaultDbConnection)
                 .asDictionary();
         ParameterizableRequest<Token> request = RequestFactory.POST(url, client, handler, mapper, Token.class)
-                .setParameters(requestParameters);
+                .addParameters(requestParameters);
         Log.d(TAG, "Trying to login using " + url.toString() + " with parameters " + requestParameters);
         return request;
     }
@@ -189,7 +189,7 @@ public class AuthenticationAPIClient {
 
         final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
         ParameterizableRequest<Token> credentialsRequest = RequestFactory.POST(url, client, handler, mapper, Token.class)
-                .setParameters(parameters);
+                .addParameters(parameters);
         return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
 
@@ -239,7 +239,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
         Log.d(TAG, "Trying to fetch token with parameters " + requestParameters);
         return profileRequest()
-                .setParameters(requestParameters);
+                .addParameters(requestParameters);
     }
 
     /**
@@ -263,7 +263,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
         Log.d(TAG, "Creating user with email " + email + " and username " + username);
         return RequestFactory.POST(url, client, handler, mapper, DatabaseUser.class)
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     /**
@@ -323,7 +323,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         return RequestFactory.POST(url, client, handler, mapper)
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     /**
@@ -340,7 +340,7 @@ public class AuthenticationAPIClient {
                 .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
         return RequestFactory.rawPOST(url, client, handler, mapper)
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     /**
@@ -355,7 +355,7 @@ public class AuthenticationAPIClient {
                 .set(API_TYPE_KEY, DEFAULT_API_TYPE)
                 .asDictionary();
         ParameterizableRequest<Map<String, Object>> request = delegation()
-                .setParameters(parameters);
+                .addParameters(parameters);
         return new DelegationRequest(request);
     }
 
@@ -372,7 +372,7 @@ public class AuthenticationAPIClient {
                 .set(API_TYPE_KEY, DEFAULT_API_TYPE)
                 .asDictionary();
         ParameterizableRequest<Map<String, Object>> request = delegation()
-                .setParameters(parameters);
+                .addParameters(parameters);
         return new DelegationRequest(request);
     }
 
@@ -393,7 +393,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment("unlink")
                 .build();
         return RequestFactory.POST(url, client, handler, mapper)
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     /**
@@ -412,7 +412,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         return RequestFactory.POST(url, client, handler, mapper)
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     /**
@@ -428,7 +428,7 @@ public class AuthenticationAPIClient {
                 .setConnection("email")
                 .asDictionary();
         return passwordless()
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     /**
@@ -443,7 +443,7 @@ public class AuthenticationAPIClient {
                 .setConnection("sms")
                 .asDictionary();
         return passwordless()
-                .setParameters(parameters);
+                .addParameters(parameters);
     }
 
     private ParameterizableRequest<UserProfile> profileRequest() {
@@ -456,7 +456,7 @@ public class AuthenticationAPIClient {
 
     private AuthenticationRequest newAuthenticationRequest(Map<String, Object> parameters) {
         final ParameterizableRequest<Token> credentialsRequest = loginWithResourceOwner()
-                .setParameters(parameters);
+                .addParameters(parameters);
         final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
 
         return new AuthenticationRequest(credentialsRequest, profileRequest);

@@ -50,8 +50,8 @@ public class DelegationRequest {
      * @param parameters as a non-null dictionary
      * @return itself
      */
-    public DelegationRequest setParameters(Map<String, Object> parameters) {
-        request.setParameters(parameters);
+    public DelegationRequest addParameters(Map<String, Object> parameters) {
+        request.addParameters(parameters);
         return this;
     }
 

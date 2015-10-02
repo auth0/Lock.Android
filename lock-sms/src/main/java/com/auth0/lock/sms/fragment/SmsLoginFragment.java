@@ -117,7 +117,7 @@ public class SmsLoginFragment extends BaseTitledFragment {
         progressBar.setVisibility(View.VISIBLE);
         String passcode = passcodeField.getText().toString();
         client.loginWithPhoneNumber(phoneNumber, passcode)
-                .setParameters(authenticationParameters)
+                .addParameters(authenticationParameters)
                 .start(new AuthenticationCallback() {
                     @Override
                     public void onSuccess(UserProfile userProfile, Token token) {

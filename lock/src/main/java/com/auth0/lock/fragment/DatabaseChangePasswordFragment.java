@@ -133,7 +133,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
         String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
         client.changePassword(username, password)
-                .setParameters(authenticationParameters)
+                .addParameters(authenticationParameters)
                 .start(new BaseCallback<Void>() {
                     @Override
                     public void onSuccess(Void payload) {

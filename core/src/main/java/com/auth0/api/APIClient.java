@@ -97,7 +97,7 @@ public class APIClient extends BaseAPIClient {
 
         newClient
                 .login(username, password)
-                .setParameters(request)
+                .addParameters(request)
                 .start(callback);
     }
 
@@ -119,7 +119,7 @@ public class APIClient extends BaseAPIClient {
 
         newClient
                 .loginWithOAuthAccessToken(accessToken, connectionName)
-                .setParameters(request)
+                .addParameters(request)
                 .start(callback);
     }
 
@@ -132,7 +132,7 @@ public class APIClient extends BaseAPIClient {
      */
     public void smsLogin(String phoneNumber, String verificationCode, Map<String, Object> parameters, final AuthenticationCallback callback) {
         newClient.loginWithPhoneNumber(phoneNumber, verificationCode)
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
     }
 
@@ -145,7 +145,7 @@ public class APIClient extends BaseAPIClient {
      */
     public void emailLogin(String email, String verificationCode, Map<String, Object> parameters, final AuthenticationCallback callback) {
         newClient.loginWithEmail(email, verificationCode)
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
     }
 
@@ -163,8 +163,8 @@ public class APIClient extends BaseAPIClient {
                 .addAll(parameters)
                 .asDictionary();
         newClient.signUp(email, password, username)
-                .setSignUpParameters(request)
-                .setAuthenticationParameters(request)
+                .addSignUpParameters(request)
+                .addAuthenticationParameters(request)
                 .start(callback);
     }
 
@@ -181,8 +181,8 @@ public class APIClient extends BaseAPIClient {
                 .addAll(parameters)
                 .asDictionary();
         newClient.signUp(email, password)
-                .setSignUpParameters(request)
-                .setAuthenticationParameters(parameters)
+                .addSignUpParameters(request)
+                .addAuthenticationParameters(parameters)
                 .start(callback);
     }
 
@@ -200,7 +200,7 @@ public class APIClient extends BaseAPIClient {
                 .addAll(parameters)
                 .asDictionary();
         newClient.createUser(email, password, username)
-                .setParameters(request)
+                .addParameters(request)
                 .start(new BaseCallback<DatabaseUser>() {
                     @Override
                     public void onSuccess(DatabaseUser payload) {
@@ -227,7 +227,7 @@ public class APIClient extends BaseAPIClient {
                 .addAll(parameters)
                 .asDictionary();
         newClient.createUser(email, password)
-                .setParameters(request)
+                .addParameters(request)
                 .start(new BaseCallback<DatabaseUser>() {
                     @Override
                     public void onSuccess(DatabaseUser payload) {
@@ -254,7 +254,7 @@ public class APIClient extends BaseAPIClient {
                 .addAll(parameters)
                 .asDictionary();
         newClient.changePassword(email, newPassword)
-                .setParameters(request)
+                .addParameters(request)
                 .start(callback);
     }
 
@@ -276,7 +276,7 @@ public class APIClient extends BaseAPIClient {
      */
     public void fetchIdTokenWithIdToken(String idToken, Map<String, Object> parameters, final RefreshIdTokenCallback callback) {
         newClient.delegationWithIdToken(idToken)
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
     }
 
@@ -288,7 +288,7 @@ public class APIClient extends BaseAPIClient {
      */
     public void fetchIdTokenWithRefreshToken(String refreshToken, Map<String, Object> parameters, final RefreshIdTokenCallback callback) {
         newClient.delegationWithRefreshToken(refreshToken)
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
     }
 
@@ -300,7 +300,7 @@ public class APIClient extends BaseAPIClient {
      */
     public void fetchDelegationToken(Map<String, Object> parameters, final BaseCallback<Map<String, Object>> callback) {
         newClient.delegation()
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
     }
 
@@ -322,7 +322,7 @@ public class APIClient extends BaseAPIClient {
      */
     public void startPasswordless(Map<String, Object> parameters, final BaseCallback<Void> callback) {
         newClient.passwordless()
-                .setParameters(parameters)
+                .addParameters(parameters)
                 .start(callback);
     }
 

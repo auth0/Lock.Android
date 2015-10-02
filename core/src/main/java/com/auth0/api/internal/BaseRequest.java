@@ -145,7 +145,7 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     }
 
     @Override
-    public ParameterizableRequest<T> setParameters(Map<String, Object> parameters) {
+    public ParameterizableRequest<T> addParameters(Map<String, Object> parameters) {
         if (parameters != null) {
             this.parameters.putAll(parameters);
         }

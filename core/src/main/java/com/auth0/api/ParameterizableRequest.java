@@ -37,7 +37,7 @@ public interface ParameterizableRequest<T> extends Request<T> {
      * @param parameters as a non-null dictionary
      * @return itself
      */
-    ParameterizableRequest<T> setParameters(Map<String, Object> parameters);
+    ParameterizableRequest<T> addParameters(Map<String, Object> parameters);
 
     /**
      * Adds an additional header for the request

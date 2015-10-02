@@ -51,8 +51,28 @@ public class AuthenticationRequest {
      * @param parameters as a non-null dictionary
      * @return itself
      */
-    public AuthenticationRequest setParameters(Map<String, Object> parameters) {
-        credentialsRequest.setParameters(parameters);
+    public AuthenticationRequest addParameters(Map<String, Object> parameters) {
+        credentialsRequest.addParameters(parameters);
+        return this;
+    }
+
+    /**
+     * Set the scope used to authenticate the user
+     * @param scope value
+     * @return itself
+     */
+    public AuthenticationRequest setScope(String scope) {
+        credentialsRequest.addParameters(new ParameterBuilder().clearAll().setScope(scope).asDictionary());
+        return this;
+    }
+
+    /**
+     * Set the connection used to authenticate
+     * @param connection name
+     * @return itself
+     */
+    public AuthenticationRequest setConnection(String connection) {
+        credentialsRequest.addParameters(new ParameterBuilder().clearAll().setConnection(connection).asDictionary());
         return this;
     }
 
@@ -69,7 +89,7 @@ public class AuthenticationRequest {
                         .set("id_token", token.getIdToken())
                         .asDictionary();
                 tokenInfoRequest
-                        .setParameters(parameters)
+                        .addParameters(parameters)
                         .start(new BaseCallback<UserProfile>() {
                             @Override
                             public void onSuccess(UserProfile profile) {

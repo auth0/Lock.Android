@@ -24,6 +24,7 @@
 
 package com.auth0.api.authentication;
 
+import com.auth0.api.ParameterBuilder;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
@@ -49,8 +50,8 @@ public class SignUpRequest {
      * @param parameters as a non-null dictionary
      * @return itself
      */
-    public SignUpRequest setSignUpParameters(Map<String, Object> parameters) {
-        signUpRequest.setParameters(parameters);
+    public SignUpRequest addSignUpParameters(Map<String, Object> parameters) {
+        signUpRequest.addParameters(parameters);
         return this;
     }
 
@@ -59,8 +60,28 @@ public class SignUpRequest {
      * @param parameters as a non-null dictionary
      * @return itself
      */
-    public SignUpRequest setAuthenticationParameters(Map<String, Object> parameters) {
-        authenticationRequest.setParameters(parameters);
+    public SignUpRequest addAuthenticationParameters(Map<String, Object> parameters) {
+        authenticationRequest.addParameters(parameters);
+        return this;
+    }
+
+    /**
+     * Set the scope used to authenticate the user
+     * @param scope value
+     * @return itself
+     */
+    public SignUpRequest setScope(String scope) {
+        authenticationRequest.setScope(scope);
+        return this;
+    }
+
+    /**
+     * Set the connection used to authenticate
+     * @param connection name
+     * @return itself
+     */
+    public SignUpRequest setConnection(String connection) {
+        authenticationRequest.setConnection(connection);
         return this;
     }
 

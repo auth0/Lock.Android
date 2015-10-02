@@ -305,7 +305,7 @@ public class LockActivity extends FragmentActivity {
         Log.v(TAG, "Received social accessToken " + event.getAccessToken());
         lock.getAuthenticationAPIClient()
                 .loginWithOAuthAccessToken(event.getAccessToken(), event.getService())
-                .setParameters(lock.getAuthenticationParameters())
+                .addParameters(lock.getAuthenticationParameters())
                 .start(new AuthenticationCallback() {
                     @Override
                     public void onSuccess(UserProfile profile, Token token) {

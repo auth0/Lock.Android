@@ -110,7 +110,7 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
         Log.v(TAG, "Requesting SMS code for phone " + phoneNumber);
 
         RequestFactory.POST(url, newClient, new Handler(Looper.getMainLooper()), new ObjectMapper(), jwt)
-                .setParameters(params)
+                .addParameters(params)
                 .start(callback);
     }
 }

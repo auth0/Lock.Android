@@ -37,7 +37,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.callback.AuthenticationCallback;
@@ -183,7 +182,7 @@ public class SignUpFormFragment extends Fragment {
         final String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
             client.signUp(email, username, password)
-                    .setAuthenticationParameters(authenticationParameters)
+                    .addAuthenticationParameters(authenticationParameters)
                     .start(new SignUpAuthenticationCallback(password));
         } else {
             client.createUser(email, username, password)
