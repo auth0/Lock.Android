@@ -24,14 +24,14 @@ public class JsonEntityBuilder {
         this.mapper = mapper;
     }
 
-    public HttpEntity newEntityFrom(Map<String, Object> values) throws JsonEntityBuildException {
+    public HttpEntity newEntityFrom(Map<String, Object> values) throws RequestBodyBuildException {
         try {
             byte[] bytes = mapper.writeValueAsBytes(values);
             ByteArrayEntity entity = new ByteArrayEntity(bytes);
             entity.setContentType(APPLICATION_JSON);
             return entity;
         } catch (JsonProcessingException e) {
-            throw new JsonEntityBuildException("Failed to convert Map<String, String> to JSON", e);
+            throw new RequestBodyBuildException("Failed to convert Map<String, String> to JSON", e);
         }
     }
 }

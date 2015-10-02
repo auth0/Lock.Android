@@ -30,4 +30,6 @@ public interface ParameterizableRequest<T> extends Request<T> {
 
     ParameterizableRequest<T> setParameters(Map<String, Object> parameters);
 
+    ParameterizableRequest<T> addHeader(String name, String value);
+
 }

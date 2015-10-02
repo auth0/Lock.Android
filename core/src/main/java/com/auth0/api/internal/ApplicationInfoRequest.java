@@ -27,7 +27,7 @@ package com.auth0.api.internal;
 import android.os.Handler;
 import android.util.Log;
 
-import com.auth0.api.Request;
+import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
@@ -42,31 +43,21 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.util.Map;
 
-class ApplicationInfoRequest extends CallbackHandler<Application> implements Request<Application>, Callback {
+class ApplicationInfoRequest extends BaseRequest<Application> implements Callback {
 
     private static final String TAG = ApplicationInfoRequest.class.getName();
 
-    private final HttpUrl url;
-    private final OkHttpClient client;
-    private final ObjectReader reader;
-
     public ApplicationInfoRequest(Handler handler, OkHttpClient client, HttpUrl url, ObjectMapper mapper) {
-        super(handler);
-        this.client = client;
-        this.url = url;
-        this.reader = mapper.reader(Application.class);
+        super(handler, url, client, mapper.reader(Application.class), null);
     }
 
     @Override
-    public void start(BaseCallback<Application> callback) {
-        setCallback(callback);
-        Log.v(TAG, "Fetching application info from " + url);
-        com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(this);
+    protected Request doBuildRequest(Request.Builder builder) {
+        final Request request = builder.build();
+        Log.v(TAG, "Fetching application info from " + request.urlString());
+        return request;
     }
 
     @Override
@@ -98,11 +89,21 @@ class ApplicationInfoRequest extends CallbackHandler<Application> implements Req
             }
             JSONObject jsonObject = (JSONObject) nextValue;
             Log.d(TAG, "Obtained JSON object from JSONP: " + jsonObject);
-            Application app = reader.readValue(jsonObject.toString());
+            Application app = getReader().readValue(jsonObject.toString());
             postOnSuccess(app);
         } catch (JSONException | IOException e) {
             Log.e(TAG, "Failed to parse JSONP", e);
             postOnFailure(e);
         }
+    }
+
+    @Override
+    public ParameterizableRequest<Application> setParameters(Map<String, Object> parameters) {
+        return this;
+    }
+
+    @Override
+    public ParameterizableRequest<Application> addHeader(String name, String value) {
+        return this;
     }
 }

@@ -27,7 +27,14 @@ package com.auth0.api.internal;
 import android.os.Handler;
 
 import com.auth0.android.BuildConfig;
+import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,15 +46,18 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class CallbackHandlerTest {
+public class BaseRequestTest {
 
-    private CallbackHandler<String> callbackHandler;
+    private BaseRequest<String> baseRequest;
 
     @Mock
     private Handler handler;
@@ -55,18 +65,45 @@ public class CallbackHandlerTest {
     private BaseCallback<String> callback;
     @Mock
     private Throwable throwable;
+    @Mock
+    private OkHttpClient client;
+    @Mock
+    private ObjectReader reader;
+    @Mock
+    private ObjectWriter writer;
     @Captor
     private ArgumentCaptor<Runnable> captor;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        callbackHandler = new CallbackHandler<>(handler, callback);
+        HttpUrl url = HttpUrl.parse("https://auth0.com");
+        baseRequest = new BaseRequest<String>(handler, url, client, reader, writer, callback) {
+            @Override
+            protected Request doBuildRequest(Request.Builder builder) {
+                return null;
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+            }
+
+            @Override
+            public void start(BaseCallback callback) {
+
+            }
+
+            @Override
+            public ParameterizableRequest<String> setParameters(Map parameters) {
+                return null;
+            }
+        };
     }
 
     @Test
     public void shouldPostOnSuccess() throws Exception {
-        callbackHandler.postOnSuccess("OK");
+        baseRequest.postOnSuccess("OK");
         verify(handler).post(captor.capture());
         Runnable runnable = captor.getValue();
         runnable.run();
@@ -76,7 +113,7 @@ public class CallbackHandlerTest {
 
     @Test
     public void shouldPostOnFailure() throws Exception {
-        callbackHandler.postOnFailure(throwable);
+        baseRequest.postOnFailure(throwable);
         verify(handler).post(captor.capture());
         Runnable runnable = captor.getValue();
         runnable.run();

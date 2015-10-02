@@ -28,14 +28,12 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.auth0.api.APIClientException;
-import com.auth0.api.JsonEntityBuildException;
+import com.auth0.api.RequestBodyBuildException;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.Request;
-import com.auth0.api.callback.BaseCallback;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -44,42 +42,26 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
-class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, ParameterizableRequest<T>, Callback {
+class SimpleRequest<T> extends BaseRequest<T> implements Request<T>, ParameterizableRequest<T>, Callback {
 
     private static final String TAG = SimpleRequest.class.getName();
 
-    private final HttpUrl url;
-    private final OkHttpClient client;
-    private final ObjectReader reader;
     private final ObjectReader errorReader;
-    private final String httpMethod;
-    private final ObjectWriter writer;
-
-    private Map<String, Object> parameters;
+    private final String method;
 
     public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod, Class<T> clazz) {
-        super(handler);
-        this.url = url;
-        this.client = client;
-        this.httpMethod = httpMethod;
-        this.reader = mapper.reader(clazz);
+        super(handler, url, client, mapper.reader(clazz), mapper.writer());
         this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
-        this.writer = mapper.writer();
-        this.parameters = new HashMap<>();
+        this.method = httpMethod;
     }
 
     public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod) {
-        super(handler);
-        this.url = url;
-        this.client = client;
-        this.httpMethod = httpMethod;
-        this.reader = mapper.reader(new TypeReference<Map<String, Object>>() {});
-        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
-        this.writer = mapper.writer();
-        this.parameters = new HashMap<>();
+        super(handler, url, client, mapper.reader(new TypeReference<Map<String, Object>>() {}), mapper.writer());
+        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {
+        });
+        this.method = httpMethod;
     }
 
     @Override
@@ -106,7 +88,7 @@ class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, Paramet
 
         try {
             Log.d(TAG, "Received successful response from " + response.request().urlString());
-            T payload = reader.readValue(byteStream);
+            T payload = getReader().readValue(byteStream);
             postOnSuccess(payload);
         } catch (IOException e) {
             postOnFailure(new APIClientException("Request failed", response.code(), null));
@@ -114,26 +96,10 @@ class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, Paramet
     }
 
     @Override
-    public void start(BaseCallback<T> callback) {
-        setCallback(callback);
-        try {
-            RequestBody body = JsonRequestBodyBuilder.createBody(parameters, writer);
-            com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
-                    .url(url)
-                    .method(httpMethod, body)
-                    .build();
-            client.newCall(request).enqueue(this);
-        } catch (JsonEntityBuildException e) {
-            Log.e(TAG, "Failed to build JSON body with parameters " + parameters, e);
-            callback.onFailure(new APIClientException("Failed to send request to " + url.toString(), e));
-        }
-    }
-
-    @Override
-    public ParameterizableRequest<T> setParameters(Map<String, Object> parameters) {
-        if (parameters != null) {
-            this.parameters.putAll(parameters);
-        }
-        return this;
+    protected com.squareup.okhttp.Request doBuildRequest(com.squareup.okhttp.Request.Builder builder) throws RequestBodyBuildException {
+        RequestBody body = buildBody();
+        return newBuilder()
+                .method(method, body)
+                .build();
     }
 }

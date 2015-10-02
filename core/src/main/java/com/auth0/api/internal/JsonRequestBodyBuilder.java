@@ -24,7 +24,7 @@
 
 package com.auth0.api.internal;
 
-import com.auth0.api.JsonEntityBuildException;
+import com.auth0.api.RequestBodyBuildException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.squareup.okhttp.MediaType;
@@ -37,11 +37,11 @@ abstract class JsonRequestBodyBuilder {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public static RequestBody createBody(Object pojo, ObjectWriter writer) throws JsonEntityBuildException {
+    public static RequestBody createBody(Object pojo, ObjectWriter writer) throws RequestBodyBuildException {
         try {
             return RequestBody.create(JSON, writer.writeValueAsBytes(pojo));
         } catch (JsonProcessingException e) {
-            throw new JsonEntityBuildException("Failed to convert " + pojo.getClass().getName() + " to JSON", e);
+            throw new RequestBodyBuildException("Failed to convert " + pojo.getClass().getName() + " to JSON", e);
         }
     }
 }

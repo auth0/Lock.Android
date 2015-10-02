@@ -28,15 +28,9 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.auth0.api.APIClientException;
-import com.auth0.api.AuthorizableRequest;
-import com.auth0.api.JsonEntityBuildException;
-import com.auth0.api.ParameterizableRequest;
-import com.auth0.api.Request;
-import com.auth0.api.callback.BaseCallback;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -45,36 +39,20 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
-class VoidRequest extends CallbackHandler<Void> implements Request<Void>, AuthorizableRequest<Void>, Callback {
+class VoidRequest extends BaseRequest<Void> implements Callback {
 
     private static final String TAG = VoidRequest.class.getName();
 
-    private final HttpUrl url;
-    private final OkHttpClient client;
     private final ObjectReader errorReader;
     private final String httpMethod;
-    private final ObjectWriter writer;
-
-    private Map<String, Object> parameters;
-    private String bearerToken;
 
     public VoidRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod) {
-        super(handler);
-        this.url = url;
-        this.client = client;
+        super(handler, url, client, null, mapper.writer());
         this.httpMethod = httpMethod;
-        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
-        this.writer = mapper.writer();
-        this.parameters = new HashMap<>();
-    }
-
-    @Override
-    public void onFailure(com.squareup.okhttp.Request request, IOException e) {
-        Log.e(TAG, "Failed to make request to " + request.urlString(), e);
-        postOnFailure(e);
+        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {
+        });
     }
 
     @Override
@@ -97,40 +75,10 @@ class VoidRequest extends CallbackHandler<Void> implements Request<Void>, Author
     }
 
     @Override
-    public void start(BaseCallback<Void> callback) {
-        setCallback(callback);
-        try {
-            RequestBody body = JsonRequestBodyBuilder.createBody(parameters, writer);
-            final com.squareup.okhttp.Request.Builder builder = new com.squareup.okhttp.Request.Builder();
-            if (bearerToken != null) {
-                builder.addHeader("Authorization", buildAuthorizationHeader());
-            }
-            com.squareup.okhttp.Request request = builder
-                    .url(url)
-                    .method(httpMethod, body)
-                    .build();
-            client.newCall(request).enqueue(this);
-        } catch (JsonEntityBuildException e) {
-            Log.e(TAG, "Failed to build JSON body with parameters " + parameters, e);
-            callback.onFailure(new APIClientException("Failed to send request to " + url.toString(), e));
-        }
-    }
-
-    @Override
-    public ParameterizableRequest<Void> setParameters(Map<String, Object> parameters) {
-        if (parameters != null) {
-            this.parameters.putAll(parameters);
-        }
-        return this;
-    }
-
-    @Override
-    public AuthorizableRequest<Void> setBearer(String jwt) {
-        this.bearerToken = jwt;
-        return this;
-    }
-
-    private String buildAuthorizationHeader() {
-        return "Bearer " + this.bearerToken;
+    protected com.squareup.okhttp.Request doBuildRequest(com.squareup.okhttp.Request.Builder builder) {
+        RequestBody body = buildBody();
+        return newBuilder()
+                .method(httpMethod, body)
+                .build();
     }
 }
