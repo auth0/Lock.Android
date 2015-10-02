@@ -394,7 +394,6 @@ public class AuthenticationAPIClientTest {
         assertThat(body, hasEntry("password", "123123123"));
 
         assertThat(callback, hasNoError());
-
     }
 
     @Test
@@ -455,6 +454,25 @@ public class AuthenticationAPIClientTest {
         assertThat(body, hasEntry("refresh_token", REFRESH_TOKEN));
 
         assertThat(callback, hasPayload(NEW_ID_TOKEN));
+    }
+
+    @Test
+    public void shouldUnlinkAccount() throws Exception {
+        mockAPI.willReturnSuccessfulUnlinkAccount();
+
+        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        client.unlink("user id", "access token")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/unlink"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("clientID", CLIENT_ID));
+        assertThat(body, hasEntry("user_id", "user id"));
+        assertThat(body, hasEntry("access_token", "access token"));
+
+        assertThat(callback, hasNoError());
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {

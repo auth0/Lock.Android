@@ -248,6 +248,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment("delegation")
                 .build();
         Map<String, Object> parameters = ParameterBuilder.newEmptyBuilder()
+                .clearAll()
                 .setClientId(getClientId())
                 .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
@@ -257,6 +258,7 @@ public class AuthenticationAPIClient {
 
     public DelegationRequest delegationWithIdToken(String idToken) {
         Map<String, Object> parameters = new ParameterBuilder()
+                .clearAll()
                 .set(ID_TOKEN_KEY, idToken)
                 .set(API_TYPE_KEY, DEFAULT_API_TYPE)
                 .asDictionary();
@@ -267,12 +269,27 @@ public class AuthenticationAPIClient {
 
     public DelegationRequest delegationWithRefreshToken(String refreshToken) {
         Map<String, Object> parameters = new ParameterBuilder()
+                .clearAll()
                 .set(REFRESH_TOKEN_KEY, refreshToken)
                 .set(API_TYPE_KEY, DEFAULT_API_TYPE)
                 .asDictionary();
         ParameterizableRequest<Map<String, Object>> request = delegation()
                 .setParameters(parameters);
         return new DelegationRequest(request);
+    }
+
+    public Request<Void> unlink(String userId, String accessToken) {
+        Map<String, Object> parameters = new ParameterBuilder()
+                .clearAll()
+                .set("clientID", getClientId())
+                .set("user_id", userId)
+                .set("access_token", accessToken)
+                .asDictionary();
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("unlink")
+                .build();
+        return RequestFactory.POST(url, client, handler, mapper)
+                .setParameters(parameters);
     }
 
     private ParameterizableRequest<UserProfile> profileRequest() {

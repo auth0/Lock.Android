@@ -327,33 +327,8 @@ public class APIClient extends BaseAPIClient {
      * @param callback to call on either success or failure.
      */
     public void unlinkAccount(String userId, String accessToken, final BaseCallback<Void> callback) {
-        String signUpUrl = getBaseURL() + "/unlink";
-
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .set("clientID", this.getClientID())
-                .set("user_id", userId)
-                .set("access_token", accessToken)
-                .asDictionary();
-
-        Log.v(APIClient.class.getName(), "Performing unlink with parameters " + request);
-        try {
-            HttpEntity entity = entityBuilder.newEntityFrom(request);
-            this.client.post(null, signUpUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    callback.onSuccess(null);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed to unlink user", error);
-                    callback.onFailure(error);
-                }
-            });
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
-        }
+        newClient.unlink(userId, accessToken)
+                .start(callback);
     }
 
     /**
