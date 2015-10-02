@@ -31,20 +31,18 @@ import android.util.Log;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.internal.RequestFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 
-import java.io.IOException;
 import java.util.Map;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpEntity;
 
 /**
  * API client for Auth0 API v2.
  * @see <a href="https://auth0.com/docs/apiv2">API v2 docs</a>
+ * @deprecated To request a SMS message for passwordless use {@link com.auth0.api.authentication.AuthenticationAPIClient}
  */
+@Deprecated
+@SuppressWarnings("all")
 public class AuthenticatedAPIClient extends BaseAPIClient {
 
     private static final String TAG = AuthenticatedAPIClient.class.getName();

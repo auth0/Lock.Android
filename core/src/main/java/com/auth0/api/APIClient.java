@@ -17,7 +17,10 @@ import java.util.Map;
 /**
  * API client for Auth0 Authentication API.
  * @see <a href="https://auth0.com/docs/auth-api">Auth API docs</a>
+ * @deprecated Use {@link AuthenticationAPIClient}
  */
+@Deprecated
+@SuppressWarnings("all")
 public class APIClient extends BaseAPIClient {
 
     private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";

@@ -31,7 +31,8 @@ import com.auth0.api.internal.RequestFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 
-public abstract class BaseAPIClient {
+@Deprecated
+abstract class BaseAPIClient {
 
     public static final String BASE_URL_FORMAT = "https://%s.auth0.com";
     public static final String AUTH0_US_CDN_URL = "https://cdn.auth0.com";
