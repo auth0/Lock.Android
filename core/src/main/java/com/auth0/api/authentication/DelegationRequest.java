@@ -30,6 +30,9 @@ import com.auth0.api.callback.RefreshIdTokenCallback;
 
 import java.util.Map;
 
+/**
+ * Represent a delegation request for Auth0 tokens that will yield a new 'id_token'
+ */
 public class DelegationRequest {
 
     private static final String TOKEN_TYPE_KEY = "token_type";
@@ -38,15 +41,24 @@ public class DelegationRequest {
 
     private final ParameterizableRequest<Map<String, Object>> request;
 
-    public DelegationRequest(ParameterizableRequest<Map<String, Object>> request) {
+    DelegationRequest(ParameterizableRequest<Map<String, Object>> request) {
         this.request = request;
     }
 
+    /**
+     * Add additional parameters to be sent in the request
+     * @param parameters as a non-null dictionary
+     * @return itself
+     */
     public DelegationRequest setParameters(Map<String, Object> parameters) {
         request.setParameters(parameters);
         return this;
     }
 
+    /**
+     * Performs the HTTP request against Auth0 API
+     * @param callback called either on success or failure
+     */
     public void start(final RefreshIdTokenCallback callback) {
         request.start(new BaseCallback<Map<String, Object>>() {
             @Override

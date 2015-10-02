@@ -26,6 +26,10 @@ package com.auth0.api;
 
 import com.auth0.api.callback.BaseCallback;
 
+/**
+ * Defines a request that can be started
+ * @param <T>
+ */
 public interface Request<T> {
 
     void start(BaseCallback<T> callback);

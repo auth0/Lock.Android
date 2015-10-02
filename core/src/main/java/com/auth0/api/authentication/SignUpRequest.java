@@ -31,25 +31,43 @@ import com.auth0.core.DatabaseUser;
 
 import java.util.Map;
 
+/**
+ * Represent a request to create a user + log in + fetch user profile.
+ */
 public class SignUpRequest {
 
     private final ParameterizableRequest<DatabaseUser> signUpRequest;
     private final AuthenticationRequest authenticationRequest;
 
-    public SignUpRequest(ParameterizableRequest<DatabaseUser> signUpRequest, AuthenticationRequest authenticationRequest) {
+    SignUpRequest(ParameterizableRequest<DatabaseUser> signUpRequest, AuthenticationRequest authenticationRequest) {
         this.signUpRequest = signUpRequest;
         this.authenticationRequest = authenticationRequest;
     }
 
+    /**
+     * Add additional parameters for create user request
+     * @param parameters as a non-null dictionary
+     * @return itself
+     */
     public SignUpRequest setSignUpParameters(Map<String, Object> parameters) {
         signUpRequest.setParameters(parameters);
         return this;
     }
+
+    /**
+     * Add additional parameters for login request
+     * @param parameters as a non-null dictionary
+     * @return itself
+     */
     public SignUpRequest setAuthenticationParameters(Map<String, Object> parameters) {
         authenticationRequest.setParameters(parameters);
         return this;
     }
 
+    /**
+     * Starts to execute create user request and then logs the user in.
+     * @param callback called on either success or failure.
+     */
     public void start(final AuthenticationCallback callback) {
         signUpRequest.start(new BaseCallback<DatabaseUser>() {
             @Override

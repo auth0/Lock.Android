@@ -33,21 +33,33 @@ import com.auth0.core.UserProfile;
 
 import java.util.Map;
 
+/**
+ * Represent a Authentication request that consist of a log in and a fetch profile requests
+ */
 public class AuthenticationRequest {
 
     private final ParameterizableRequest<Token> credentialsRequest;
     private final ParameterizableRequest<UserProfile> tokenInfoRequest;
 
-    public AuthenticationRequest(ParameterizableRequest<Token> credentialsRequest, ParameterizableRequest<UserProfile> tokenInfoRequest) {
+    AuthenticationRequest(ParameterizableRequest<Token> credentialsRequest, ParameterizableRequest<UserProfile> tokenInfoRequest) {
         this.credentialsRequest = credentialsRequest;
         this.tokenInfoRequest = tokenInfoRequest;
     }
 
+    /**
+     * Adds additional parameters for the login request
+     * @param parameters as a non-null dictionary
+     * @return itself
+     */
     public AuthenticationRequest setParameters(Map<String, Object> parameters) {
         credentialsRequest.setParameters(parameters);
         return this;
     }
 
+    /**
+     * Starts the log in request and then fetches the user's profile
+     * @param callback called on either success or failure
+     */
     public void start(final AuthenticationCallback callback) {
         credentialsRequest.start(new BaseCallback<Token>() {
             @Override

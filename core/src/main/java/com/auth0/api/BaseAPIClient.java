@@ -25,11 +25,8 @@
 package com.auth0.api;
 
 import android.net.Uri;
-import android.os.Build;
 
 import com.auth0.api.internal.RequestFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopj.android.http.AsyncHttpClient;
 
 @Deprecated
 abstract class BaseAPIClient {

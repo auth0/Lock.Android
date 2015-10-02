@@ -24,8 +24,17 @@
 
 package com.auth0.api;
 
+/**
+ * Interface for a Auth0 request that need Authorization using a JWT
+ * @param <T>
+ */
 public interface AuthorizableRequest<T> extends ParameterizableRequest<T> {
 
+    /**
+     * Set the JWT used in 'Authorization' header value
+     * @param jwt token to send to the API
+     * @return itself
+     */
     AuthorizableRequest<T> setBearer(String jwt);
 
 }

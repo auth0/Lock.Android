@@ -67,6 +67,8 @@ public class AuthenticationAPIClient {
     private final Handler handler;
     private final ObjectMapper mapper;
 
+    private String defaultDbConnection = DEFAULT_DB_CONNECTION;
+
     /**
      * Creates a new API client instance providing Auth0 account info.
      * @param auth0 account information
@@ -111,6 +113,14 @@ public class AuthenticationAPIClient {
     }
 
     /**
+     * Set the default DB connection name used. By default is 'Username-Password-Authentication'
+     * @param defaultDbConnection name to use on every login with DB connection
+     */
+    public void setDefaultDbConnection(String defaultDbConnection) {
+        this.defaultDbConnection = defaultDbConnection;
+    }
+
+    /**
      * Fetch application information from Auth0
      * @return a Auth0 request to start
      */
@@ -122,13 +132,19 @@ public class AuthenticationAPIClient {
         return RequestFactory.newApplicationInfoRequest(url, client, handler, mapper);
     }
 
+    /**
+     * Log in a user using resource owner endpoint (<a href="https://auth0.com/docs/auth-api#!#post--oauth-ro">'/oauth/ro'</a>)
+     * @return a request to configure and start
+     */
     public ParameterizableRequest<Token> loginWithResourceOwner() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("oauth")
                 .addPathSegment("ro")
                 .build();
+
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .setClientId(getClientId())
+                .setConnection(defaultDbConnection)
                 .asDictionary();
         ParameterizableRequest<Token> request = RequestFactory.POST(url, client, handler, mapper, Token.class)
                 .setParameters(requestParameters);
@@ -136,6 +152,12 @@ public class AuthenticationAPIClient {
         return request;
     }
 
+    /**
+     * Log in a user with email/username and password using a DB connection and fetch it's profile from Auth0
+     * @param usernameOrEmail of the user depending of the type of DB connection
+     * @param password of the user
+     * @return a request to configure and start that will yield {@link Token} and {@link UserProfile}
+     */
     public AuthenticationRequest login(String usernameOrEmail, String password) {
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .set(USERNAME_KEY, usernameOrEmail)
@@ -145,6 +167,12 @@ public class AuthenticationAPIClient {
         return newAuthenticationRequest(requestParameters);
     }
 
+    /**
+     * Log in a user with a OAuth 'access_token' of a Identity Provider like Facebook or Twitter using <a href="https://auth0.com/docs/auth-api#!#post--oauth-access_token">'\oauth\access_token' endpoint</a>
+     * @param token obtained from the IdP
+     * @param connection that will be used to authenticate the user, e.g. 'facebook'
+     * @return a request to configure and start that will yield {@link Token} and {@link UserProfile}
+     */
     public AuthenticationRequest loginWithOAuthAccessToken(String token, String connection) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("oauth")
@@ -165,6 +193,12 @@ public class AuthenticationAPIClient {
         return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
 
+    /**
+     * Log in a user using a phone number and a verification code received via SMS (Part of passwordless login flow)
+     * @param phoneNumber where the user received the verification code
+     * @param verificationCode sent by Auth0 via SMS
+     * @return a request to configure and start that will yield {@link Token} and {@link UserProfile}
+     */
     public AuthenticationRequest loginWithPhoneNumber(String phoneNumber, String verificationCode) {
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(USERNAME_KEY, phoneNumber)
@@ -176,6 +210,12 @@ public class AuthenticationAPIClient {
         return newAuthenticationRequest(parameters);
     }
 
+    /**
+     * Log in a user using an email and a verification code received via Email (Part of passwordless login flow)
+     * @param email where the user received the verification code
+     * @param verificationCode sent by Auth0 via Email
+     * @return a request to configure and start that will yield {@link Token} and {@link UserProfile}
+     */
     public AuthenticationRequest loginWithEmail(String email, String verificationCode) {
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(USERNAME_KEY, email)
@@ -187,6 +227,11 @@ public class AuthenticationAPIClient {
         return newAuthenticationRequest(parameters);
     }
 
+    /**
+     * Fetch the token information from Auth0
+     * @param idToken used to fetch it's information
+     * @return a request to start
+     */
     public Request<UserProfile> tokenInfo(String idToken) {
         Map<String, Object> requestParameters = new ParameterBuilder()
                 .clearAll()
@@ -197,6 +242,13 @@ public class AuthenticationAPIClient {
                 .setParameters(requestParameters);
     }
 
+    /**
+     * Creates a user in a DB connection using <a href="https://auth0.com/docs/auth-api#!#post--dbconnections-signup">'/dbconnections/signup' endpoint</a>
+     * @param email of the user and must be non null
+     * @param password of the user and must be non null
+     * @param username of the user and must be non null
+     * @return a request to start
+     */
     public ParameterizableRequest<DatabaseUser> createUser(String email, String password, String username) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("dbconnections")
@@ -206,6 +258,7 @@ public class AuthenticationAPIClient {
                 .set(USERNAME_KEY, username)
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
+                .setConnection(defaultDbConnection)
                 .setClientId(getClientId())
                 .asDictionary();
         Log.d(TAG, "Creating user with email " + email + " and username " + username);
@@ -213,22 +266,49 @@ public class AuthenticationAPIClient {
                 .setParameters(parameters);
     }
 
+    /**
+     * Creates a user in a DB connection using <a href="https://auth0.com/docs/auth-api#!#post--dbconnections-signup">'/dbconnections/signup' endpoint</a>
+     * @param email of the user and must be non null
+     * @param password of the user and must be non null
+     * @return a request to start
+     */
     public ParameterizableRequest<DatabaseUser> createUser(String email, String password) {
         return createUser(email, password, null);
     }
 
+    /**
+     * Creates a user in a DB connection using <a href="https://auth0.com/docs/auth-api#!#post--dbconnections-signup">'/dbconnections/signup' endpoint</a>
+     * and then logs in and fetches it's user profile
+     * @param email of the user and must be non null
+     * @param password of the user and must be non null
+     * @param username of the user and must be non null
+     * @return a request to configure and start that will yield {@link Token} and {@link UserProfile}
+     */
     public SignUpRequest signUp(String email, String password, String username) {
         ParameterizableRequest<DatabaseUser> createUserRequest = createUser(email, password, username);
         AuthenticationRequest authenticationRequest = login(email, password);
         return new SignUpRequest(createUserRequest, authenticationRequest);
     }
 
+    /**
+     * Creates a user in a DB connection using <a href="https://auth0.com/docs/auth-api#!#post--dbconnections-signup">'/dbconnections/signup' endpoint</a>
+     * and then logs in and fetches it's user profile
+     * @param email of the user and must be non null
+     * @param password of the user and must be non null
+     * @return a request to configure and start that will yield {@link Token} and {@link UserProfile}
+     */
     public SignUpRequest signUp(String email, String password) {
         ParameterizableRequest<DatabaseUser> createUserRequest = createUser(email, password);
         AuthenticationRequest authenticationRequest = login(email, password);
         return new SignUpRequest(createUserRequest, authenticationRequest);
     }
 
+    /**
+     * Perform a change password request using <a href="https://auth0.com/docs/auth-api#!#post--dbconnections-change_password">'/dbconnections/change_password'</a>
+     * @param email of the user that changes the password. It's also where the confirmation email will be sent
+     * @param newPassword to use
+     * @return a request to configure and start
+     */
     public ParameterizableRequest<Void> changePassword(String email, String newPassword) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("dbconnections")
@@ -239,12 +319,17 @@ public class AuthenticationAPIClient {
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, newPassword)
                 .setClientId(getClientId())
+                .setConnection(defaultDbConnection)
                 .asDictionary();
 
         return RequestFactory.POST(url, client, handler, mapper)
                 .setParameters(parameters);
     }
 
+    /**
+     * Performs a <a href="https://auth0.com/docs/auth-api#!#post--delegation">delegation</a> request
+     * @return a request to configure and start
+     */
     public ParameterizableRequest<Map<String, Object>> delegation() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("delegation")
@@ -258,6 +343,11 @@ public class AuthenticationAPIClient {
                 .setParameters(parameters);
     }
 
+    /**
+     * Performs a <a href="https://auth0.com/docs/auth-api#!#post--delegation">delegation</a> request that will yield a new Auth0 'id_token'
+     * @param idToken issued by Auth0 for the user. The token must not be expired.
+     * @return a request to configure and start
+     */
     public DelegationRequest delegationWithIdToken(String idToken) {
         Map<String, Object> parameters = new ParameterBuilder()
                 .clearAll()
@@ -269,6 +359,12 @@ public class AuthenticationAPIClient {
         return new DelegationRequest(request);
     }
 
+    /**
+     * Performs a <a href="https://auth0.com/docs/auth-api#!#post--delegation">delegation</a> request that will yield a new Auth0 'id_token'.
+     * Check our <a href="https://auth0.com/docs/refresh-token">refresh token</a> docs for more information
+     * @param refreshToken issued by Auth0 for the user when using the 'offline_access' scope when logging in.
+     * @return a request to configure and start
+     */
     public DelegationRequest delegationWithRefreshToken(String refreshToken) {
         Map<String, Object> parameters = new ParameterBuilder()
                 .clearAll()
@@ -280,6 +376,12 @@ public class AuthenticationAPIClient {
         return new DelegationRequest(request);
     }
 
+    /**
+     * Unlink a user identity calling <a href="https://auth0.com/docs/auth-api#!#post--unlink">'/unlink'</a> endpoint
+     * @param userId of the identity to unlink
+     * @param accessToken of the main identity obtained after login
+     * @return a request to start
+     */
     public Request<Void> unlink(String userId, String accessToken) {
         Map<String, Object> parameters = new ParameterBuilder()
                 .clearAll()
@@ -294,6 +396,10 @@ public class AuthenticationAPIClient {
                 .setParameters(parameters);
     }
 
+    /**
+     * Start a passwordless flow with either <a href="https://auth0.com/docs/auth-api#!#post--with_email">Email</a> or <a href="https://auth0.com/docs/auth-api#!#post--with_sms">SMS</a>
+     * @return a request to configure and stat
+     */
     public ParameterizableRequest<Void> passwordless() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("passwordless")
@@ -309,6 +415,11 @@ public class AuthenticationAPIClient {
                 .setParameters(parameters);
     }
 
+    /**
+     * Start a passwordless flow with either <a href="https://auth0.com/docs/auth-api#!#post--with_email">Email</a>
+     * @param email that will receive a verification code to use for login
+     * @return a request to configure and stat
+     */
     public ParameterizableRequest<Void> passwordlessWithEmailCode(String email) {
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .clearAll()
@@ -320,6 +431,11 @@ public class AuthenticationAPIClient {
                 .setParameters(parameters);
     }
 
+    /**
+     * Start a passwordless flow with either <a href="https://auth0.com/docs/auth-api#!#post--with_sms">SMS</a>
+     * @param phoneNumber where an SMS with a verification code will be sent
+     * @return a request to configure and stat
+     */
     public ParameterizableRequest<Void> passwordlessWithSMSCode(String phoneNumber) {
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .clearAll()
@@ -345,4 +461,5 @@ public class AuthenticationAPIClient {
 
         return new AuthenticationRequest(credentialsRequest, profileRequest);
     }
+
 }
