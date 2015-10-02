@@ -82,6 +82,14 @@ public class AuthenticationAPI  {
         return this;
     }
 
+    public AuthenticationAPI willReturnSuccessfulPasswordlessStart() {
+        String json = "{\n" +
+                "  \"phone+number\": \"+1098098098\"\n" +
+                "}";
+        server.enqueue(responseWithJSON(json, 200));
+        return this;
+    }
+
     public AuthenticationAPI willReturnNewIdToken() {
         String json = "{\n" +
                 "  \"id_token\": \"" + NEW_ID_TOKEN + "\",\n" +

@@ -32,14 +32,7 @@ import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
  */
 public class APIClient extends BaseAPIClient {
 
-    private static final String USERNAME_KEY = "username";
-    private static final String PASSWORD_KEY = "password";
     private static final String DEFAULT_DB_CONNECTION = "Username-Password-Authentication";
-    private static final String ID_TOKEN_KEY = "id_token";
-    private static final String EMAIL_KEY = "email";
-    private static final String TOKEN_TYPE_KEY = "token_type";
-    private static final String EXPIRES_IN_KEY = "expires_in";
-    private static final String REFRESH_TOKEN_KEY = "refresh_token";
 
     private Application application;
     private AuthenticationAPIClient newClient;
@@ -337,33 +330,9 @@ public class APIClient extends BaseAPIClient {
      * @param callback to call on either success or failure
      */
     public void startPasswordless(Map<String, Object> parameters, final BaseCallback<Void> callback) {
-        String startUrl = getBaseURL() + "/passwordless/start";
-
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .clearAll()
-                .setClientId(this.getClientID())
-                .addAll(parameters)
-                .asDictionary();
-
-        Log.v(APIClient.class.getName(), "Starting passwordless authentication with parameters " + request);
-        try {
-            HttpEntity entity = entityBuilder.newEntityFrom(request);
-            this.client.post(null, startUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    callback.onSuccess(null);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e(APIClient.class.getName(), "Failed to start passwordless authentication", error);
-                    callback.onFailure(error);
-                }
-            });
-        } catch (JsonEntityBuildException e) {
-            Log.e(APIClient.class.getName(), "Failed to build request parameters " + request, e);
-            callback.onFailure(e);
-        }
+        newClient.passwordless()
+                .setParameters(parameters)
+                .start(callback);
     }
 
     /**
@@ -372,13 +341,8 @@ public class APIClient extends BaseAPIClient {
      * @param callback to call on either success or failure
      */
     public void requestSMSVerificationCode(String phoneNumber, final BaseCallback<Void> callback) {
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .clearAll()
-                .setClientId(this.getClientID())
-                .setConnection("sms")
-                .set("phone_number", phoneNumber)
-                .asDictionary();
-        startPasswordless(request, callback);
+        newClient.passwordlessWithSMSCode(phoneNumber)
+                .start(callback);
     }
 
     /**
@@ -387,14 +351,8 @@ public class APIClient extends BaseAPIClient {
      * @param callback to call on either success or failure
      */
     public void requestEmailVerificationCode(String email, final BaseCallback<Void> callback) {
-        Map<String, Object> request = ParameterBuilder.newBuilder()
-                .clearAll()
-                .setClientId(this.getClientID())
-                .setConnection("email")
-                .set("email", email)
-                .set("send", "code")
-                .asDictionary();
-        startPasswordless(request, callback);
+        newClient.passwordlessWithEmailCode(email)
+                .start(callback);
     }
 
     /**
@@ -405,20 +363,6 @@ public class APIClient extends BaseAPIClient {
      */
     public void startPasswordless(String phoneNumber, final BaseCallback<Void> callback) {
         requestSMSVerificationCode(phoneNumber, callback);
-    }
-
-    private void fetchProfile(final Token token, final AuthenticationCallback callback) {
-        this.fetchUserProfile(token.getIdToken(), new BaseCallback<UserProfile>() {
-            @Override
-            public void onSuccess(UserProfile profile) {
-                callback.onSuccess(profile, token);
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                callback.onFailure(error);
-            }
-        });
     }
 
     private String getDBConnectionName() {

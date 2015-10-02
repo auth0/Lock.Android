@@ -475,6 +475,72 @@ public class AuthenticationAPIClientTest {
         assertThat(callback, hasNoError());
     }
 
+    @Test
+    public void shouldStartPasswordless() throws Exception {
+        mockAPI.willReturnSuccessfulPasswordlessStart();
+
+        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final Map<String, Object> parameters = new ParameterBuilder()
+                .clearAll()
+                .setConnection("email")
+                .set("send", "code")
+                .set("email", "support@auth0.com")
+                .asDictionary();
+        client.passwordless()
+                .setParameters(parameters)
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/passwordless/start"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, hasEntry("send", "code"));
+        assertThat(body, hasEntry("connection", "email"));
+
+        assertThat(callback, hasNoError());
+    }
+
+    @Test
+    public void shouldSendEmailCode() throws Exception {
+        mockAPI.willReturnSuccessfulPasswordlessStart();
+
+        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        client.passwordlessWithEmailCode("support@auth0.com")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/passwordless/start"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, hasEntry("send", "code"));
+        assertThat(body, hasEntry("connection", "email"));
+
+        assertThat(callback, hasNoError());
+    }
+
+    @Test
+    public void shouldSendSMSCode() throws Exception {
+        mockAPI.willReturnSuccessfulPasswordlessStart();
+
+        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        client.passwordlessWithSMSCode("+1123123123")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/passwordless/start"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+        assertThat(body, hasEntry("phone_number", "+1123123123"));
+        assertThat(body, hasEntry("connection", "sms"));
+
+        assertThat(callback, hasNoError());
+    }
+
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
         return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {});
     }

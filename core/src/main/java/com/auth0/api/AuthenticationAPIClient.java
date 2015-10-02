@@ -59,6 +59,7 @@ public class AuthenticationAPIClient {
     private static final String REFRESH_TOKEN_KEY = "refresh_token";
     private static final String API_TYPE_KEY = "api_type";
     private static final String DEFAULT_API_TYPE = "app";
+    private static final String PHONE_NUMBER_KEY = "phone_number";
 
     private final Auth0 auth0;
     private final OkHttpClient client;
@@ -289,6 +290,42 @@ public class AuthenticationAPIClient {
                 .addPathSegment("unlink")
                 .build();
         return RequestFactory.POST(url, client, handler, mapper)
+                .setParameters(parameters);
+    }
+
+    public ParameterizableRequest<Void> passwordless() {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("passwordless")
+                .addPathSegment("start")
+                .build();
+
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .clearAll()
+                .setClientId(getClientId())
+                .asDictionary();
+
+        return RequestFactory.POST(url, client, handler, mapper)
+                .setParameters(parameters);
+    }
+
+    public ParameterizableRequest<Void> passwordlessWithEmailCode(String email) {
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .clearAll()
+                .set(EMAIL_KEY, email)
+                .set("send", "code")
+                .setConnection("email")
+                .asDictionary();
+        return passwordless()
+                .setParameters(parameters);
+    }
+
+    public ParameterizableRequest<Void> passwordlessWithSMSCode(String phoneNumber) {
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
+                .clearAll()
+                .set(PHONE_NUMBER_KEY, phoneNumber)
+                .setConnection("sms")
+                .asDictionary();
+        return passwordless()
                 .setParameters(parameters);
     }
 
