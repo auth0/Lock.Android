@@ -27,6 +27,7 @@ package com.auth0.core;
 import android.net.Uri;
 
 import com.auth0.api.APIClient;
+import com.auth0.api.authentication.AuthenticationAPIClient;
 
 public class Auth0 {
 
@@ -81,8 +82,13 @@ public class Auth0 {
         return configurationUrl;
     }
 
+    @Deprecated
     public APIClient newAPIClient() {
         return new APIClient(this.clientId, this.domainUrl, this.configurationUrl);
+    }
+
+    public AuthenticationAPIClient newAuthenticationAPIClient() {
+        return new AuthenticationAPIClient(this);
     }
 
     public String getAuthorizeUrl() {
