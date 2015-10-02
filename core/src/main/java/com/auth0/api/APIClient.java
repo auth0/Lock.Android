@@ -1,30 +1,18 @@
 package com.auth0.api;
 
-import android.util.Log;
-
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.callback.RefreshIdTokenCallback;
-import com.auth0.api.handler.APIResponseHandler;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.Connection;
 import com.auth0.core.DatabaseUser;
 import com.auth0.core.Strategy;
-import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpEntity;
-
-import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
 
 /**
  * API client for Auth0 Authentication API.

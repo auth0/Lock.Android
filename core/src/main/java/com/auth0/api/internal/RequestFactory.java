@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api.okhttp;
+package com.auth0.api.internal;
 
 import android.os.Handler;
 
@@ -53,6 +53,11 @@ public class RequestFactory {
 
     public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
         return new VoidRequest(handler, url, client, mapper, "POST");
+    }
+
+    public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, String jwt) {
+        return new VoidRequest(handler, url, client, mapper, "POST")
+                .setBearer(jwt);
     }
 
     public static <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {

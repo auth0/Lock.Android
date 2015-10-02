@@ -22,11 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api;
+package com.auth0.api.authentication;
 
 import android.os.Handler;
 
 import com.auth0.android.BuildConfig;
+import com.auth0.api.ParameterBuilder;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.DatabaseUser;
@@ -40,7 +41,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,13 +62,11 @@ import static com.auth0.util.CallbackMatcher.hasNoError;
 import static com.auth0.util.CallbackMatcher.hasNoPayloadOfType;
 import static com.auth0.util.CallbackMatcher.hasPayload;
 import static com.auth0.util.CallbackMatcher.hasPayloadOfType;
-import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;

@@ -22,13 +22,16 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api;
+package com.auth0.api.authentication;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.auth0.api.okhttp.RequestFactory;
+import com.auth0.api.ParameterBuilder;
+import com.auth0.api.ParameterizableRequest;
+import com.auth0.api.Request;
+import com.auth0.api.internal.RequestFactory;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.DatabaseUser;
@@ -37,8 +40,6 @@ import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;

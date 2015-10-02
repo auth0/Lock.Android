@@ -24,11 +24,16 @@
 
 package com.auth0.api;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.auth0.api.callback.BaseCallback;
+import com.auth0.api.internal.RequestFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
 import java.util.Map;
@@ -43,6 +48,9 @@ import cz.msebera.android.httpclient.HttpEntity;
 public class AuthenticatedAPIClient extends BaseAPIClient {
 
     private static final String TAG = AuthenticatedAPIClient.class.getName();
+
+    private String jwt;
+    private OkHttpClient newClient = new OkHttpClient();
 
     /**
      * Creates a new API client instance providing  API and Configuration Urls different than the default. (Useful for on premise deploys).
@@ -79,7 +87,7 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
      * @param jwt a valid JWT token
      */
     public void setJWT(String jwt) {
-        this.client.addHeader("Authorization", "Bearer " + jwt);
+        this.jwt = jwt;
     }
 
     /**
@@ -89,7 +97,11 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
      * @deprecated Use passwordless endpoints from {@link APIClient}
      */
     public void requestSmsCode(String phoneNumber, final BaseCallback<Void> callback) {
-        String requestCodeUrl = getBaseURL() + "/api/v2/users";
+        HttpUrl url = HttpUrl.parse(getBaseURL()).newBuilder()
+                .addPathSegment("api")
+                .addPathSegment("v2")
+                .addPathSegment("users")
+                .build();
         Map<String, Object> params = ParameterBuilder.newBuilder()
                 .clearAll()
                 .setConnection("sms")
@@ -97,28 +109,10 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
                 .set("phone_number", phoneNumber)
                 .asDictionary();
 
-        Log.v(AuthenticatedAPIClient.class.getName(), "Requesting SMS code for phone " + phoneNumber);
-        HttpEntity entity = this.entityBuilder.newEntityFrom(params);
-        this.client.post(null, requestCodeUrl, entity, APPLICATION_JSON, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                callback.onSuccess(null);
-            }
+        Log.v(TAG, "Requesting SMS code for phone " + phoneNumber);
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.e(TAG, "Failed to request SMS code", error);
-                Map errorResponse = null;
-                if (statusCode == 400 || statusCode == 401) {
-                    try {
-                        errorResponse = new ObjectMapper().readValue(responseBody, Map.class);
-                        Log.e(APIClient.class.getName(), "Login error " + errorResponse);
-                    } catch (IOException e) {
-                        Log.w(APIClient.class.getName(), "Failed to parse json error response", error);
-                    }
-                }
-                callback.onFailure(new APIClientException("Failed to request SMS code", error, statusCode, errorResponse));
-            }
-        });
+        RequestFactory.POST(url, newClient, new Handler(Looper.getMainLooper()), new ObjectMapper(), jwt)
+                .setParameters(params)
+                .start(callback);
     }
 }

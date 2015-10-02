@@ -1,5 +1,5 @@
 /*
- * JsonRequestBodyBuilder.java
+ * AuthorizedRequest.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -22,26 +22,10 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api.okhttp;
+package com.auth0.api;
 
-import com.auth0.api.JsonEntityBuildException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
+public interface AuthorizableRequest<T> extends ParameterizableRequest<T> {
 
-/**
- * Converts a POJO to JSON stored in a {@link com.squareup.okhttp.RequestBody}
- */
-abstract class JsonRequestBodyBuilder {
+    AuthorizableRequest<T> setBearer(String jwt);
 
-    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-    public static RequestBody createBody(Object pojo, ObjectWriter writer) throws JsonEntityBuildException {
-        try {
-            return RequestBody.create(JSON, writer.writeValueAsBytes(pojo));
-        } catch (JsonProcessingException e) {
-            throw new JsonEntityBuildException("Failed to convert " + pojo.getClass().getName() + " to JSON", e);
-        }
-    }
 }

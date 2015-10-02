@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api;
+package com.auth0.api.authentication;
 
+import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.callback.RefreshIdTokenCallback;
 

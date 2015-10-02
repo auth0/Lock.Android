@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api.okhttp;
+package com.auth0.api.internal;
 
 import android.os.Handler;
 

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api.okhttp;
+package com.auth0.api.internal;
 
 import android.os.Handler;
 
@@ -39,7 +39,6 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
