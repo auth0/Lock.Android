@@ -27,6 +27,7 @@ package com.auth0.api;
 import android.net.Uri;
 import android.os.Build;
 
+import com.auth0.api.internal.RequestFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 
@@ -36,14 +37,9 @@ public abstract class BaseAPIClient {
     public static final String AUTH0_US_CDN_URL = "https://cdn.auth0.com";
     public static final String AUTH0_EU_CDN_URL = "https://cdn.eu.auth0.com";
 
-    static final String APPLICATION_JSON = "application/json";
-    static final String AUTH0_CLIENT_HEADER = "Auth0-Client";
-
     private final String clientID;
     private final String configurationURL;
     private final String baseURL;
-    final JsonEntityBuilder entityBuilder;
-    final AsyncHttpClient client;
 
     public BaseAPIClient(String clientID, String baseURL, String configurationURL, String tenantName) {
         this.clientID = clientID;
@@ -52,9 +48,6 @@ public abstract class BaseAPIClient {
                 .appendPath(this.clientID + ".js")
                 .build().toString();
         this.baseURL = baseURL;
-        this.client = new AsyncHttpClient();
-        this.client.setUserAgent(String.format("Android %s (%s %s;)", Build.VERSION.RELEASE, Build.MODEL, Build.MANUFACTURER));
-        this.entityBuilder = new JsonEntityBuilder(new ObjectMapper());
     }
 
     public BaseAPIClient(String clientID, String baseURL, String configurationURL) {
@@ -79,10 +72,6 @@ public abstract class BaseAPIClient {
     }
 
     public void setClientInfo(String clientInfo) {
-        if (clientInfo != null) {
-            client.addHeader(AUTH0_CLIENT_HEADER, clientInfo);
-        } else {
-            client.removeHeader(AUTH0_CLIENT_HEADER);
-        }
+        RequestFactory.setClientInfo(clientInfo);
     }
 }

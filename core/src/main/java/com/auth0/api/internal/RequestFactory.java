@@ -26,6 +26,7 @@ package com.auth0.api.internal;
 
 import android.os.Handler;
 
+import com.auth0.api.AuthorizableRequest;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.Request;
 import com.auth0.core.Application;
@@ -37,42 +38,58 @@ import java.util.Map;
 
 public class RequestFactory {
 
+    private static String CLIENT_INFO;
+
     private RequestFactory() {}
 
+    public static void setClientInfo(String clientInfo) {
+        CLIENT_INFO = clientInfo;
+    }
+
     public static <T> ParameterizableRequest<T> GET(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return new SimpleRequest<>(handler, url, client, mapper, "GET", clazz);
+        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "GET", clazz));
     }
 
     public static <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return new SimpleRequest<>(handler, url, client, mapper, "POST", clazz);
+        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "POST", clazz));
     }
 
     public static ParameterizableRequest<Map<String, Object>> rawPOST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
-        return new SimpleRequest<>(handler, url, client, mapper, "POST");
+        final SimpleRequest<Map<String, Object>> request = new SimpleRequest<>(handler, url, client, mapper, "POST");
+        addMetricHeader(request);
+        return request;
     }
 
     public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
-        return new VoidRequest(handler, url, client, mapper, "POST");
+        return addMetricHeader(new VoidRequest(handler, url, client, mapper, "POST"));
     }
 
     public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, String jwt) {
-        return new VoidRequest(handler, url, client, mapper, "POST")
+        final AuthorizableRequest<Void> request = new VoidRequest(handler, url, client, mapper, "POST")
                 .setBearer(jwt);
+        return addMetricHeader(request);
     }
 
     public static <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return new SimpleRequest<>(handler, url, client, mapper, "PUT", clazz);
+        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "PUT", clazz));
     }
 
     public static <T> ParameterizableRequest<T> PATCH(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return new SimpleRequest<>(handler, url, client, mapper, "GET", clazz);
+        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "GET", clazz));
     }
 
     public static <T> ParameterizableRequest<T> DELETE(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return new SimpleRequest<>(handler, url, client, mapper, "DELETE", clazz);
+        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "DELETE", clazz));
     }
 
     public static Request<Application> newApplicationInfoRequest(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
-        return new ApplicationInfoRequest(handler, client, url, mapper);
+        return addMetricHeader(new ApplicationInfoRequest(handler, client, url, mapper));
+    }
+
+    private static <T> ParameterizableRequest<T> addMetricHeader(ParameterizableRequest<T> request) {
+        if (CLIENT_INFO != null) {
+            request.addHeader("Auth0-Client", CLIENT_INFO);
+        }
+        return request;
     }
 }

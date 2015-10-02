@@ -24,6 +24,7 @@
 
 package com.auth0.api.internal;
 
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
@@ -71,7 +72,7 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
         this.callback = callback;
         this.headers = new HashMap<>();
         this.parameters = new HashMap<>();
-
+        this.headers.put("User-Agent", String.format("Android %s (%s %s;)", Build.VERSION.RELEASE, Build.MODEL, Build.MANUFACTURER));
     }
 
     protected void setCallback(BaseCallback<T> callback) {
