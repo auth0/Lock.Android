@@ -116,23 +116,25 @@ public class SmsLoginFragment extends BaseTitledFragment {
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         String passcode = passcodeField.getText().toString();
-        client.smsLogin(phoneNumber, passcode, authenticationParameters, new AuthenticationCallback() {
-            @Override
-            public void onSuccess(UserProfile userProfile, Token token) {
-                bus.post(new AuthenticationEvent(userProfile, token));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
+        client.loginWithPhoneNumber(phoneNumber, passcode)
+                .addParameters(authenticationParameters)
+                .start(new AuthenticationCallback() {
+                    @Override
+                    public void onSuccess(UserProfile userProfile, Token token) {
+                        bus.post(new AuthenticationEvent(userProfile, token));
+                        accessButton.setEnabled(true);
+                        accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onFailure(Throwable throwable) {
-                bus.post(errorBuilder.buildFrom(throwable));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        bus.post(errorBuilder.buildFrom(throwable));
+                        accessButton.setEnabled(true);
+                        accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     @Override

@@ -278,23 +278,24 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         progressBar.setVisibility(View.VISIBLE);
         String username = usernameField.getText().toString().trim();
         String password = passwordField.getText().toString();
-        client.login(username, password, authenticationParameters, new AuthenticationCallback() {
+        client.login(username, password)
+                .addParameters(authenticationParameters)
+                .start(new AuthenticationCallback() {
+                    @Override
+                    public void onSuccess(UserProfile userProfile, Token token) {
+                        bus.post(new AuthenticationEvent(userProfile, token));
+                        accessButton.setEnabled(true);
+                        accessButton.setText(R.string.com_auth0_db_login_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onSuccess(UserProfile userProfile, Token token) {
-                bus.post(new AuthenticationEvent(userProfile, token));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.com_auth0_db_login_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                bus.post(errorBuilder.buildFrom(throwable));
-                accessButton.setEnabled(true);
-                accessButton.setText(R.string.com_auth0_db_login_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        bus.post(errorBuilder.buildFrom(throwable));
+                        accessButton.setEnabled(true);
+                        accessButton.setText(R.string.com_auth0_db_login_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 }

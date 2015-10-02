@@ -68,17 +68,18 @@ public class MyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Lock lock = Lock.getLock(MyActivity.this);
-                lock.getAPIClient().fetchIdTokenWithRefreshToken(token.getRefreshToken(), null, new RefreshIdTokenCallback() {
-                    @Override
-                    public void onSuccess(String idToken, String tokenType, int expiresIn) {
-                        Log.d(TAG, "User " + profile.getName() + " with new token " + idToken);
-                    }
+                lock.getAuthenticationAPIClient().delegationWithRefreshToken(token.getRefreshToken())
+                        .start(new RefreshIdTokenCallback() {
+                            @Override
+                            public void onSuccess(String idToken, String tokenType, int expiresIn) {
+                                Log.d(TAG, "User " + profile.getName() + " with new token " + idToken);
+                            }
 
-                    @Override
-                    public void onFailure(Throwable error) {
-                        Log.e(TAG, "Failed to refresh JWT", error);
-                    }
-                });
+                            @Override
+                            public void onFailure(Throwable error) {
+                                Log.e(TAG, "Failed to refresh JWT", error);
+                            }
+                        });
             }
         });
         authenticationReceiver.registerIn(LocalBroadcastManager.getInstance(this));

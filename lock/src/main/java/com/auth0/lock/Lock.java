@@ -35,6 +35,8 @@ import android.util.Log;
 
 import com.auth0.api.APIClient;
 import com.auth0.api.ParameterBuilder;
+import com.auth0.api.authentication.AuthenticationAPIClient;
+import com.auth0.api.internal.RequestFactory;
 import com.auth0.core.Auth0;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
@@ -55,7 +57,7 @@ import java.util.Map;
 /**
  * Main class of Auth0 Lock SDK for Authentication through Auth0
  * This class handles all your Auth0 configuration and authentication using different Identity Providers.
- * Also this class provides a configured instance of {@link APIClient} and {@link com.auth0.api.AuthenticatedAPIClient} to call Auth0 & Authentication API.
+ * Also this class provides a configured instance of {@link AuthenticationAPIClient} to call Auth0 Authentication API.
  * To start just instantiate it using {@link com.auth0.lock.Lock.Builder} like this inside your {@link Application} object:
  * <pre>
  *     <code>
@@ -108,6 +110,7 @@ public class Lock {
 
     private final Bus bus;
     private final APIClient apiClient;
+    private final AuthenticationAPIClient authenticationAPIClient;
 
     private Configuration configuration;
     private List<String> connections;
@@ -125,6 +128,7 @@ public class Lock {
         this.bus = new Bus("Lock");
         this.defaultProvider = new WebIdentityProvider(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl());
         this.apiClient = auth0.newAPIClient();
+        this.authenticationAPIClient = auth0.newAuthenticationAPIClient();
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
@@ -135,9 +139,19 @@ public class Lock {
      * A instance of {@link com.auth0.api.APIClient} used by Lock
      *
      * @return a client
+     * @deprecated Use {@link #getAuthenticationAPIClient()}
      */
+    @Deprecated
     public APIClient getAPIClient() {
         return apiClient;
+    }
+
+    /**
+     * An API client for Auth0 authentication API
+     * @return
+     */
+    public AuthenticationAPIClient getAuthenticationAPIClient() {
+        return authenticationAPIClient;
     }
 
     /**
@@ -472,6 +486,7 @@ public class Lock {
          * @param connectionNames List of names of connections to use.
          * @return the Builder instance being used
          */
+        @SuppressWarnings("unused")
         public Builder useConnections(String... connectionNames) {
             this.connections = Arrays.asList(connectionNames);
             return this;
@@ -483,6 +498,7 @@ public class Lock {
          * @param name DB connection name
          * @return the Builder instance being used.
          */
+        @SuppressWarnings("unused")
         public Builder defaultDatabaseConnection(String name) {
             this.defaultDBConnectionName = name;
             return this;
@@ -561,6 +577,7 @@ public class Lock {
          * Avoid sending SDK info with API requests
          * @return the Builder instance being used
          */
+        @SuppressWarnings("unused")
         public Builder doNotSendSDKInfo() {
             sendSdkInfo = false;
             return this;
@@ -590,6 +607,7 @@ public class Lock {
                 final String clientInfo = buildClientInfo();
                 lock.apiClient.setClientInfo(clientInfo);
                 lock.defaultProvider.setClientInfo(clientInfo);
+                RequestFactory.setClientInfo(clientInfo);
             }
             return lock;
         }
@@ -622,12 +640,15 @@ public class Lock {
             return this;
         }
 
-        protected Lock buildLock() {
+        protected Auth0 buildAuth0() {
             if (this.clientId == null || this.domain == null) {
                 throw new IllegalArgumentException("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Domain.");
             }
-            Auth0 auth0 = new Auth0(this.clientId, this.domain, this.configuration);
-            return new Lock(auth0);
+            return new Auth0(this.clientId, this.domain, this.configuration);
+        }
+
+        protected Lock buildLock() {
+            return new Lock(buildAuth0());
         }
 
         protected String buildClientInfo() {
