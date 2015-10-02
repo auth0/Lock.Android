@@ -1,5 +1,5 @@
 /*
- * AuthenticationRequest.java
+ * VoidRequest.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -47,36 +47,23 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, ParameterizableRequest<T>, Callback {
+class VoidRequest extends CallbackHandler<Void> implements Request<Void>, ParameterizableRequest<Void>, Callback {
 
-    private static final String TAG = SimpleRequest.class.getName();
+    private static final String TAG = VoidRequest.class.getName();
 
     private final HttpUrl url;
     private final OkHttpClient client;
-    private final ObjectReader reader;
     private final ObjectReader errorReader;
     private final String httpMethod;
     private final ObjectWriter writer;
 
     private Map<String, Object> parameters;
 
-    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod, Class<T> clazz) {
+    public VoidRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod) {
         super(handler);
         this.url = url;
         this.client = client;
         this.httpMethod = httpMethod;
-        this.reader = mapper.reader(clazz);
-        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
-        this.writer = mapper.writer();
-        this.parameters = new HashMap<>();
-    }
-
-    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod) {
-        super(handler);
-        this.url = url;
-        this.client = client;
-        this.httpMethod = httpMethod;
-        this.reader = mapper.reader(new TypeReference<Map<String, Object>>() {});
         this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
         this.writer = mapper.writer();
         this.parameters = new HashMap<>();
@@ -104,17 +91,11 @@ class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, Paramet
             return;
         }
 
-        try {
-            Log.d(TAG, "Received successful response from " + response.request().urlString());
-            T payload = reader.readValue(byteStream);
-            postOnSuccess(payload);
-        } catch (IOException e) {
-            postOnFailure(new APIClientException("Request failed", response.code(), null));
-        }
+        postOnSuccess(null);
     }
 
     @Override
-    public void start(BaseCallback<T> callback) {
+    public void start(BaseCallback<Void> callback) {
         setCallback(callback);
         try {
             RequestBody body = JsonRequestBodyBuilder.createBody(parameters, writer);
@@ -130,10 +111,11 @@ class SimpleRequest<T> extends CallbackHandler<T> implements Request<T>, Paramet
     }
 
     @Override
-    public ParameterizableRequest<T> setParameters(Map<String, Object> parameters) {
+    public ParameterizableRequest<Void> setParameters(Map<String, Object> parameters) {
         if (parameters != null) {
             this.parameters.putAll(parameters);
         }
         return this;
     }
+
 }

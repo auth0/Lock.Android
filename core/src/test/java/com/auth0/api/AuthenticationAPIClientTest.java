@@ -39,6 +39,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +49,14 @@ import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.util.AuthenticationAPI.GENERIC_TOKEN;
 import static com.auth0.util.AuthenticationCallbackMatcher.hasTokenAndProfile;
 import static com.auth0.util.CallbackMatcher.hasNoError;
 import static com.auth0.util.CallbackMatcher.hasNoPayloadOfType;
+import static com.auth0.util.CallbackMatcher.hasPayload;
 import static com.auth0.util.CallbackMatcher.hasPayloadOfType;
 import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
@@ -387,6 +391,27 @@ public class AuthenticationAPIClientTest {
 
         assertThat(callback, hasNoError());
 
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldCallDelegation() throws Exception {
+        mockAPI.willReturnGenericDelegationToken();
+
+        final MockBaseCallback<Map<String, Object>> callback = new MockBaseCallback<>();
+        client.delegation()
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/delegation"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("grant_type", ParameterBuilder.GRANT_TYPE_JWT));
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("token", GENERIC_TOKEN);
+        assertThat(callback, hasPayload(payload));
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {

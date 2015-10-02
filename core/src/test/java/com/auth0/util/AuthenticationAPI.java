@@ -24,7 +24,6 @@
 
 package com.auth0.util;
 
-import com.squareup.okhttp.Response;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -37,6 +36,7 @@ public class AuthenticationAPI  {
     public static final String ID_TOKEN = "ID_TOKEN";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String BEARER = "BEARER";
+    public static final String GENERIC_TOKEN = "GENERIC_TOKEN";
 
     private MockWebServer server;
 
@@ -63,6 +63,14 @@ public class AuthenticationAPI  {
 
     public AuthenticationAPI willReturnSuccessfulChangePassword() {
         server.enqueue(responseWithJSON("NOT REALLY A JSON", 200));
+        return this;
+    }
+
+    public AuthenticationAPI willReturnGenericDelegationToken() {
+        String json = "{\n" +
+                "  \"token\": \"" + GENERIC_TOKEN + "\"\n" +
+                "}";
+        server.enqueue(responseWithJSON(json, 200));
         return this;
     }
 

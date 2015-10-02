@@ -33,6 +33,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import static com.jayway.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.notNullValue;
@@ -68,6 +69,10 @@ public class CallbackMatcher<T> extends BaseMatcher<MockBaseCallback<T>> {
 
     public static <T> Matcher<MockBaseCallback<T>> hasPayloadOfType(Class<T> clazz) {
         return new CallbackMatcher<>(isA(clazz), is(nullValue(Throwable.class)));
+    }
+
+    public static <T> Matcher<MockBaseCallback<T>> hasPayload(T payload) {
+        return new CallbackMatcher<>(equalTo(payload), is(nullValue(Throwable.class)));
     }
 
     public static <T> Matcher<MockBaseCallback<T>> hasNoPayloadOfType(Class<T> clazz) {

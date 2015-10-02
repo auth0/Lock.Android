@@ -243,6 +243,18 @@ public class AuthenticationAPIClient {
                 .setParameters(parameters);
     }
 
+    public ParameterizableRequest<Map<String, Object>> delegation() {
+        HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
+                .addPathSegment("delegation")
+                .build();
+        Map<String, Object> parameters = ParameterBuilder.newEmptyBuilder()
+                .setClientId(getClientId())
+                .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
+                .asDictionary();
+        return RequestFactory.rawPOST(url, client, handler, mapper)
+                .setParameters(parameters);
+    }
+
     private ParameterizableRequest<UserProfile> profileRequest() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("tokeninfo")

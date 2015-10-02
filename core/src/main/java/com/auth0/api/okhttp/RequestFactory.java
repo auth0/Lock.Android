@@ -33,6 +33,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.util.Map;
+
 public class RequestFactory {
 
     private RequestFactory() {}
@@ -43,6 +45,10 @@ public class RequestFactory {
 
     public static <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
         return new SimpleRequest<>(handler, url, client, mapper, "POST", clazz);
+    }
+
+    public static ParameterizableRequest<Map<String, Object>> rawPOST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
+        return new SimpleRequest<>(handler, url, client, mapper, "POST");
     }
 
     public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {

@@ -14,9 +14,11 @@ public class ParameterBuilder {
 
     public static final String SCOPE_OPENID = "openid";
     public static final String SCOPE_OFFLINE_ACCESS = "openid offline_access";
-    public static final String GRANT_TYPE_PASSWORD = "password";
     public static final String ACCESS_TOKEN = "access_token";
     public static final String CONNECTION = "connection";
+
+    public static final String GRANT_TYPE_PASSWORD = "password";
+    public static final String GRANT_TYPE_JWT = "urn:ietf:params:oauth:grant-type:jwt-bearer";
 
     private Map<String, Object> parameters;
 
