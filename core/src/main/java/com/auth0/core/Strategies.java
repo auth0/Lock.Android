@@ -19,6 +19,7 @@ public enum Strategies {
     EBay("ebay", SOCIAL),
     Evernote("evernote", SOCIAL),
     EvernoteSandbox("evernote-sandbox", SOCIAL),
+    Exact("exact", SOCIAL),
     Facebook("facebook", SOCIAL),
     Fitbit("fitbit", SOCIAL),
     Github("github", SOCIAL),
