@@ -61,13 +61,19 @@ public class SocialListAdapter extends ArrayAdapter<String> {
 
         int textColor = SocialResources.textColorForSocialService(getContext(), social);
         TextView iconLabel = (TextView) convertView.findViewById(R.id.com_auth0_social_icon_label);
-        iconLabel.setText(SocialResources.iconForSocialService(getContext(), social));
+        int iconResId = SocialResources.iconForSocialService(getContext(), social);
+        if (iconResId != 0) {
+            iconLabel.setText(iconResId);
+        }
         Typeface font = SocialResources.socialFont(getContext());
         iconLabel.setTypeface(font);
         iconLabel.setTextColor(textColor);
         if (!smallLayout) {
             TextView textLabel = (TextView) convertView.findViewById(R.id.com_auth0_social_title_label);
-            textLabel.setText(SocialResources.titleForSocialService(getContext(), social));
+            int textResId = SocialResources.titleForSocialService(getContext(), social);
+            if (textResId != 0) {
+                textLabel.setText(textResId);
+            }
             textLabel.setTextColor(textColor);
         }
         final float scale = getContext().getResources().getDisplayMetrics().density;
