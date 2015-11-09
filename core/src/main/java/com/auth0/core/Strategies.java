@@ -57,8 +57,9 @@ public enum Strategies {
     PingFederate("pingfederate", ENTERPRISE),
     SAMLP("samlp", ENTERPRISE),
     Sharepoint("sharepoint", ENTERPRISE),
-    Waad("waad", ENTERPRISE);
+    Waad("waad", ENTERPRISE),
 
+    UnknownSocial("unknown-social", SOCIAL);
 
     private String name;
     private Type type;
@@ -84,6 +85,11 @@ public enum Strategies {
                 break;
             }
         }
+
+        // if strategy not found, assume it's a new social type
+        if (strategy == null)
+            strategy = UnknownSocial;
+
         return strategy;
     }
 
@@ -91,6 +97,6 @@ public enum Strategies {
         DATABASE,
         SOCIAL,
         ENTERPRISE,
-        PASSWORDLESS;
+        PASSWORDLESS
     }
 }
