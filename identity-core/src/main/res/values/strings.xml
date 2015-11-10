@@ -30,6 +30,7 @@
 
     <!-- Social -->
 
+    <string name="com_auth0_social_unknown_placeholder">LOGIN WITH %s</string>
     <string name="com_auth0_social_yahoo">LOGIN WITH YAHOO!</string>
     <string name="com_auth0_social_linkedin">LOGIN WITH LINKEDIN</string>
     <string name="com_auth0_social_google_oauth2">LOGIN WITH GOOGLE</string>
@@ -39,7 +40,7 @@
     <string name="com_auth0_social_aol">LOGIN WITH AOL</string>
     <string name="com_auth0_social_box">LOGIN WITH BOX</string>
     <string name="com_auth0_social_evernote">LOGIN WITH EVERNOTE</string>
-    <string name="com_auth0_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANBOX)</string>
+    <string name="com_auth0_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANDBOX)</string>
     <string name="com_auth0_social_exact">LOGIN WITH EXACT</string>
     <string name="com_auth0_social_github">LOGIN WITH GITHUB</string>
     <string name="com_auth0_social_instagram">LOGIN WITH INSTAGRAM</string>

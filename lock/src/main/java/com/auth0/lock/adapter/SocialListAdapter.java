@@ -64,6 +64,8 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         int iconResId = SocialResources.iconForSocialService(getContext(), social);
         if (iconResId != 0) {
             iconLabel.setImageResource(iconResId);
+        } else {
+            iconLabel.setImageResource(R.drawable.com_auth0_social_icon_auth0);
         }
 
         if (!smallLayout) {
@@ -71,6 +73,8 @@ public class SocialListAdapter extends ArrayAdapter<String> {
             int textResId = SocialResources.titleForSocialService(getContext(), social);
             if (textResId != 0) {
                 textLabel.setText(textResId);
+            } else {
+                textLabel.setText(getContext().getString(R.string.com_auth0_social_unknown_placeholder, social.toUpperCase()));
             }
             textLabel.setTextColor(textColor);
         }

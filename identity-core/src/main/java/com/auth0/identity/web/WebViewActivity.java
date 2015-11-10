@@ -68,16 +68,16 @@ public class WebViewActivity extends ActionBarActivity {
             final int iconResourceId = SocialResources.iconForSocialService(this, serviceName);
             if (iconResourceId != 0) {
                 iconLabel.setImageResource(iconResourceId);
-                bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
             } else {
-                iconLabel.setImageResource(SocialResources.iconForSocialService(this, "auth0"));
+                iconLabel.setImageResource(R.drawable.com_auth0_social_icon_auth0);
             }
+            bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
             TextView textLabel = (TextView) view.findViewById(R.id.com_auth0_social_title_label);
             int textResId = SocialResources.titleForSocialService(this, serviceName);
             if (textResId != 0) {
                 textLabel.setText(textResId);
             } else {
-                textLabel.setText(serviceName);
+                textLabel.setText(getResources().getString(R.string.com_auth0_social_unknown_placeholder, serviceName.toUpperCase()));
             }
             int textColor = SocialResources.textColorForSocialService(this, serviceName);
             textLabel.setTextColor(textColor);
