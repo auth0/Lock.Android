@@ -31,6 +31,7 @@
     </declare-styleable>
 
     <declare-styleable name="Lock.Theme">
+        <attr name="Auth0.BackgroundImageStyle" format="reference"/>
         <attr name="Auth0.PrimaryButtonStyle" format="reference"/>
         <attr name="Auth0.SecondaryButtonStyle" format="reference"/>
         <attr name="Auth0.CredentialField" format="reference"/>
