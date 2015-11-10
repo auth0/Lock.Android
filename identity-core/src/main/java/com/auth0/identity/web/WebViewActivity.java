@@ -35,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.auth0.identity.R;
@@ -63,17 +64,23 @@ public class WebViewActivity extends ActionBarActivity {
             bar.setDisplayHomeAsUpEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
             View view = LayoutInflater.from(this).inflate(R.layout.com_auth0_webview_action_bar, null);
-            final TextView iconLabel = (TextView) view.findViewById(R.id.com_auth0_social_icon_label);
+            final ImageView iconLabel = (ImageView) view.findViewById(R.id.com_auth0_social_icon_label);
             final int iconResourceId = SocialResources.iconForSocialService(this, serviceName);
             if (iconResourceId != 0) {
-                iconLabel.setTypeface(SocialResources.socialFont(this));
-                iconLabel.setText(iconResourceId);
-                iconLabel.setTextColor(SocialResources.textColorForSocialService(this, serviceName));
+                iconLabel.setImageResource(iconResourceId);
                 bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
             } else {
-                iconLabel.setText(serviceName);
-                iconLabel.setTextColor(getResources().getColor(android.R.color.white));
+                iconLabel.setImageResource(SocialResources.iconForSocialService(this, "auth0"));
             }
+            TextView textLabel = (TextView) view.findViewById(R.id.com_auth0_social_title_label);
+            int textResId = SocialResources.titleForSocialService(this, serviceName);
+            if (textResId != 0) {
+                textLabel.setText(textResId);
+            } else {
+                textLabel.setText(serviceName);
+            }
+            int textColor = SocialResources.textColorForSocialService(this, serviceName);
+            textLabel.setTextColor(textColor);
             bar.setCustomView(view);
         }
         webView = (WebView) findViewById(R.id.com_auth0_lock_webview);

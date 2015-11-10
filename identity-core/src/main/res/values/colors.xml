@@ -33,11 +33,13 @@
     <color name="com_auth0_social_box">#4A79B5</color>
     <color name="com_auth0_social_evernote">#82B137</color>
     <color name="com_auth0_social_evernote_sandbox">#82B137</color>
+    <color name="com_auth0_social_exact">#A21D22</color>
     <color name="com_auth0_social_github">#EDEDED</color>
     <color name="com_auth0_social_instagram">#38537A</color>
     <color name="com_auth0_social_miicard">#D0E9FF</color>
     <color name="com_auth0_social_paypal">#EDEDED</color>
     <color name="com_auth0_social_salesforce">#EDEDED</color>
+    <color name="com_auth0_social_salesforce_community">#EDEDED</color>
     <color name="com_auth0_social_salesforce_sandbox">#EDEDED</color>
     <color name="com_auth0_social_soundcloud">#B23900</color>
     <color name="com_auth0_social_windowslive">#446EEB</color>
@@ -66,11 +68,13 @@
     <color name="com_auth0_social_box_text">#ffffff</color>
     <color name="com_auth0_social_evernote_text">#ffffff</color>
     <color name="com_auth0_social_evernote_sandbox_text">#ffffff</color>
+    <color name="com_auth0_social_exact_text">#ffffff</color>
     <color name="com_auth0_social_github_text">#000000</color>
     <color name="com_auth0_social_instagram_text">#ffffff</color>
     <color name="com_auth0_social_miicard_text">#000000</color>
     <color name="com_auth0_social_paypal_text">#32689A</color>
     <color name="com_auth0_social_salesforce_text">#F00000</color>
+    <color name="com_auth0_social_salesforce_community_text">#F00000</color>
     <color name="com_auth0_social_salesforce_sandbox_text">#F00000</color>
     <color name="com_auth0_social_soundcloud_text">#ffffff</color>
     <color name="com_auth0_social_windowslive_text">#ffffff</color>
