@@ -18,7 +18,8 @@
     </style>
 
     <style name="Mindjet.Theme" parent="Lock.Theme">
-        <item name="Auth0.Background">@drawable/mindjet_bg</item>
+        <item name="Auth0.BackgroundImageStyle">@style/Mindjet.Theme.BackgroundImageStyle</item>
+        <item name="Auth0.Background">@null</item>
         <item name="Auth0.PrimaryButtonStyle">@style/Mindjet.Theme.PrimaryButton</item>
         <item name="Auth0.SecondaryButtonStyle">@style/Mindjet.Theme.SecondaryButton</item>
         <item name="Auth0.CredentialField.Email">@style/Mindjet.Theme.CredentialField.Email</item>
@@ -28,6 +29,11 @@
         <item name="Auth0.Title.Icon">@style/Mindjet.Theme.Title.Icon</item>
         <item name="Auth0.Title.Text">@style/Mindjet.Theme.Title.Text</item>
         <item name="Auth0.Message">@style/Mindjet.Theme.Message</item>
+    </style>
+
+    <style name="Mindjet.Theme.BackgroundImageStyle">
+        <item name="android:src">@drawable/mindjet_bg</item>
+        <item name="android:scaleType">centerCrop</item>
     </style>
 
     <style name="Mindjet.Theme.SecondaryButton" parent="Lock.Theme.SecondaryButton">
