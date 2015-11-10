@@ -20,7 +20,7 @@ allprojects {
 }
 
 ext.libraries = [
-        app_compat: 'com.android.support:appcompat-v7:22.1.1',
+        app_compat: 'com.android.support:appcompat-v7:23.1.0',
         testing: [
             dependencies.create('junit:junit:4.11') {
                 exclude module: 'hamcrest-core'
@@ -39,6 +39,6 @@ ext.libraries = [
 
 ext.compile = [
         minSdk: 14,
-        maxSdk: 22,
-        buildToolsVersion: "23.0.1"
+        maxSdk: 23,
+        buildToolsVersion: "23.0.2"
 ]
