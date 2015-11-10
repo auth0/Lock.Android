@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="com_auth0_webview_button_text_padding_left">10dp</dimen>
+    <dimen name="com_auth0_webview_button_text_size">13sp</dimen>
+
+    <dimen name="com_auth0_webview_button_icon_label_size">50dp</dimen>
+
+</resources>

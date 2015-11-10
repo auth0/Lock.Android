@@ -25,16 +25,16 @@
 package com.auth0.lock.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.auth0.lock.R;
 import com.auth0.identity.util.SocialResources;
+import com.auth0.lock.R;
 
 public class SocialListAdapter extends ArrayAdapter<String> {
 
@@ -60,14 +60,12 @@ public class SocialListAdapter extends ArrayAdapter<String> {
         }
 
         int textColor = SocialResources.textColorForSocialService(getContext(), social);
-        TextView iconLabel = (TextView) convertView.findViewById(R.id.com_auth0_social_icon_label);
+        ImageView iconLabel = (ImageView) convertView.findViewById(R.id.com_auth0_social_icon_label);
         int iconResId = SocialResources.iconForSocialService(getContext(), social);
         if (iconResId != 0) {
-            iconLabel.setText(iconResId);
+            iconLabel.setImageResource(iconResId);
         }
-        Typeface font = SocialResources.socialFont(getContext());
-        iconLabel.setTypeface(font);
-        iconLabel.setTextColor(textColor);
+
         if (!smallLayout) {
             TextView textLabel = (TextView) convertView.findViewById(R.id.com_auth0_social_title_label);
             int textResId = SocialResources.titleForSocialService(getContext(), social);

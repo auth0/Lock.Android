@@ -29,14 +29,23 @@
               android:layout_height="fill_parent"
               android:background="@android:color/transparent">
 
-    <TextView
+    <ImageView
         android:id="@+id/com_auth0_social_icon_label"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_width="@dimen/com_auth0_webview_button_icon_label_size"
+        android:layout_height="@dimen/com_auth0_webview_button_icon_label_size"
         android:gravity="center"
-        android:textSize="16sp"
+        android:scaleType="center"
+        />
+    <TextView
+        android:id="@+id/com_auth0_social_title_label"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/com_auth0_webview_button_icon_label_size"
+        android:layout_toEndOf="@id/com_auth0_social_icon_label"
+        android:layout_toRightOf="@id/com_auth0_social_icon_label"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/com_auth0_webview_button_text_padding_left"
+        android:background="@android:color/transparent"
+        android:textSize="@dimen/com_auth0_webview_button_text_size"
         />
 
 </RelativeLayout>

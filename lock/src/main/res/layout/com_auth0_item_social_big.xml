@@ -28,13 +28,14 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
     >
-    <TextView
+    <ImageView
         android:id="@+id/com_auth0_social_icon_label"
         android:layout_width="@dimen/com_auth0_social_button_icon_label_size"
         android:layout_height="@dimen/com_auth0_social_button_icon_label_size"
         android:gravity="center"
         android:background="@drawable/com_auth0_social_icon_background"
         android:textSize="@dimen/com_auth0_social_button_icon_size"
+        android:scaleType="center"
         />
     <TextView
         android:id="@+id/com_auth0_social_title_label"

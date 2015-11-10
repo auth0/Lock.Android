@@ -40,11 +40,13 @@
     <string name="com_auth0_social_box">LOGIN WITH BOX</string>
     <string name="com_auth0_social_evernote">LOGIN WITH EVERNOTE</string>
     <string name="com_auth0_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANBOX)</string>
+    <string name="com_auth0_social_exact">LOGIN WITH EXACT</string>
     <string name="com_auth0_social_github">LOGIN WITH GITHUB</string>
     <string name="com_auth0_social_instagram">LOGIN WITH INSTAGRAM</string>
     <string name="com_auth0_social_miicard">LOGIN WITH MIICARD</string>
     <string name="com_auth0_social_paypal">LOGIN WITH PAYPAL</string>
     <string name="com_auth0_social_salesforce">LOGIN WITH SALESFORCE</string>
+    <string name="com_auth0_social_salesforce_community">LOGIN WITH SALESFORCE (COMMUNITY)</string>
     <string name="com_auth0_social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
     <string name="com_auth0_social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
     <string name="com_auth0_social_windowslive">LOGIN WITH MICROSOFT ACCOUNT</string>
