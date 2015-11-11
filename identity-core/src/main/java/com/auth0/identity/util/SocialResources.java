@@ -25,8 +25,9 @@
 package com.auth0.identity.util;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
+
+import com.auth0.identity.R;
 
 public abstract class SocialResources {
     private static final String TEXT_COLOR_KEY_FORMAT = "color/com_auth0_social_%s_text";
@@ -42,13 +43,13 @@ public abstract class SocialResources {
     public static int textColorForSocialService(Context context, String service) {
         String colorIdentifier = String.format(TEXT_COLOR_KEY_FORMAT, normalizeServiceName(service));
         int resId = resourceFromIdentifier(context, colorIdentifier);
-        return resId == 0 ? Color.BLACK : context.getResources().getColor(resId);
+        return resId == 0 ? context.getResources().getColor(R.color.com_auth0_social_unknown_text) : context.getResources().getColor(resId);
     }
 
     public static int colorForSocialService(Context context, String service) {
         String colorIdentifier = String.format(COLOR_KEY_FORMAT, normalizeServiceName(service));
         int resId = resourceFromIdentifier(context, colorIdentifier);
-        return resId == 0 ? Color.BLACK : context.getResources().getColor(resId);
+        return resId == 0 ? context.getResources().getColor(R.color.com_auth0_social_unknown) : context.getResources().getColor(resId);
     }
 
     public static int titleForSocialService(Context context, String service) {
