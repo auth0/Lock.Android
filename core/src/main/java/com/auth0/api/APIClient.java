@@ -342,7 +342,7 @@ public class APIClient extends BaseAPIClient {
      * @param callback to call on either success or failure
      */
     public void requestEmailVerificationCode(String email, final BaseCallback<Void> callback) {
-        newClient.passwordlessWithEmailCode(email)
+        newClient.passwordlessWithEmail(email, false)
                 .start(callback);
     }
 

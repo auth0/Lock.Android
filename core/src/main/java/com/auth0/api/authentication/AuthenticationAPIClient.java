@@ -418,13 +418,14 @@ public class AuthenticationAPIClient {
     /**
      * Start a passwordless flow with either <a href="https://auth0.com/docs/auth-api#!#post--with_email">Email</a>
      * @param email that will receive a verification code to use for login
-     * @return a request to configure and stat
+     * @param useMagicLink whether the email should contain the magic link or the code
+     * @return a request to configure and start
      */
-    public ParameterizableRequest<Void> passwordlessWithEmailCode(String email) {
+    public ParameterizableRequest<Void> passwordlessWithEmail(String email, boolean useMagicLink) {
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .clearAll()
                 .set(EMAIL_KEY, email)
-                .set("send", "code")
+                .set("send", useMagicLink ? "link_android" : "code")
                 .setConnection("email")
                 .asDictionary();
         return passwordless()
