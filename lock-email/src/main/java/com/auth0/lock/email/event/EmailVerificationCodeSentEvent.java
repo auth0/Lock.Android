@@ -1,5 +1,5 @@
 /*
- * EmailVerificationCodeRequestedEvent.java
+ * EmailVerificationCodeSentEvent.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -24,15 +24,17 @@
 
 package com.auth0.lock.email.event;
 
-public class EmailVerificationCodeRequestedEvent {
+
+public class EmailVerificationCodeSentEvent {
 
     private final String email;
 
-    public EmailVerificationCodeRequestedEvent(String email) {
+    public EmailVerificationCodeSentEvent(String email) {
         this.email = email;
     }
 
     public String getEmail() {
         return email;
     }
+
 }

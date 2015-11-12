@@ -1,5 +1,5 @@
 /*
- * EmailLoginFragment.java
+ * MagicLinkLoginFragment.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -35,26 +35,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.lock.email.R;
-import com.auth0.lock.email.event.LoginRequestEvent;
-import com.auth0.lock.email.validation.VerificationCodeValidator;
+import com.auth0.lock.email.event.AuthenticationStartedEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
-import com.auth0.lock.validation.Validator;
-import com.auth0.lock.widget.CredentialField;
 import com.squareup.otto.Subscribe;
 
-public class EmailLoginFragment extends BaseTitledFragment {
+public class MagicLinkLoginFragment extends BaseTitledFragment {
 
     public static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
 
     private String email;
-    private Validator validator;
 
-    Button accessButton;
+    Button noCodeButton;
+    TextView messageTextView;
     ProgressBar progressBar;
-    CredentialField passcodeField;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,8 +59,6 @@ public class EmailLoginFragment extends BaseTitledFragment {
         if (arguments != null) {
             email = arguments.getString(EMAIL_ARGUMENT);
         }
-        validator = new VerificationCodeValidator(R.id.com_auth0_email_login_code_field, R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_invalid_passcode_message);
-
         bus.register(this);
     }
 
@@ -78,69 +72,52 @@ public class EmailLoginFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.com_auth0_fragment_email_login, container, false);
+        return inflater.inflate(R.layout.com_auth0_fragment_magic_link_login, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button noCodeButton = (Button) view.findViewById(R.id.com_auth0_email_no_code_button);
+        noCodeButton = (Button) view.findViewById(R.id.com_auth0_email_no_magic_link_button);
         noCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bus.post(NavigationEvent.BACK);
             }
         });
-        TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_email_enter_code_message);
-        String messageFormat = getString(R.string.com_auth0_email_login_message);
+        messageTextView = (TextView) view.findViewById(R.id.com_auth0_email_magic_link_message);
+        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link);
         messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
-        passcodeField = (CredentialField) view.findViewById(R.id.com_auth0_email_login_code_field);
-        accessButton = (Button) view.findViewById(R.id.com_auth0_email_access_button);
-        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_login_progress_indicator);
-        accessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_magic_link_login_progress_indicator);
     }
 
-    private void login() {
-        AuthenticationError error = validator.validateFrom(this);
-        boolean valid = error == null;
-        if (valid) {
-            performLogin();
-        } else {
-            bus.post(error);
-        }
-    }
-
-    private void performLogin() {
-        accessButton.setEnabled(false);
-        accessButton.setText("");
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onAuthenticationStarted(AuthenticationStartedEvent event) {
+        noCodeButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
-        String passcode = passcodeField.getText().toString();
-        bus.post(new LoginRequestEvent(email, passcode));
+        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link_in_progress);
+        messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onAuthenticationError(AuthenticationError error) {
-        accessButton.setEnabled(true);
-        accessButton.setText(R.string.com_auth0_email_login_access_btn_text);
         progressBar.setVisibility(View.GONE);
+        noCodeButton.setVisibility(View.VISIBLE);
+
+        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link);
+        messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
     }
 
     @SuppressWarnings("unused")
     @Subscribe public void onAuthentication(AuthenticationEvent event) {
-        accessButton.setEnabled(true);
-        accessButton.setText(R.string.com_auth0_email_login_access_btn_text);
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     protected int getTitleResource() {
-        return R.string.com_auth0_email_title_enter_passcode;
+        return R.string.com_auth0_email_title_magic_link;
     }
 }

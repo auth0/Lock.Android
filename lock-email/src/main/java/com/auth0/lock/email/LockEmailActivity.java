@@ -1,5 +1,5 @@
 /*
- * LockSMSActivity.java
+ * LockEmailActivity.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -27,21 +27,31 @@ package com.auth0.lock.email;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.auth0.api.authentication.AuthenticationAPIClient;
+import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.email.event.AuthenticationStartedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
+import com.auth0.lock.email.event.EmailVerificationCodeSentEvent;
+import com.auth0.lock.email.event.LoginRequestEvent;
 import com.auth0.lock.email.fragment.EmailLoginFragment;
+import com.auth0.lock.email.fragment.MagicLinkLoginFragment;
 import com.auth0.lock.error.ErrorDialogBuilder;
+import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.email.fragment.RequestCodeFragment;
 import com.auth0.lock.util.ActivityUIHelper;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 
@@ -77,20 +87,48 @@ public class LockEmailActivity extends FragmentActivity {
 
     private static final String TAG = LockEmailActivity.class.getName();
 
+    public static final String EMAIL_PARAMETER = "EMAIL_PARAMETER";
+
+    public static final String USE_MAGIC_LINK_ARGUMENT = "USE_MAGIC_LINK_ARGUMENT";
+
     Lock lock;
+
+    private boolean useMagicLink;
+    private String email;
+    private String passcode;
+    private LoginAuthenticationErrorBuilder errorBuilder;
+
+    protected AuthenticationAPIClient client;
+    protected Bus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.com_auth0_activity_lock_email);
+
+        useMagicLink = getIntent().getBooleanExtra(USE_MAGIC_LINK_ARGUMENT, false);
+
         lock = getLock();
+        client = lock.getAuthenticationAPIClient();
+        bus = lock.getBus();
+        errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_error_message, R.string.com_auth0_email_login_invalid_credentials_message);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.com_auth0_container, new RequestCodeFragment())
                     .commit();
+        } else {
+            email = savedInstanceState.getString(EMAIL_PARAMETER);
         }
 
         ActivityUIHelper.configureScreenModeForActivity(this, lock);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(EMAIL_PARAMETER, email);
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -103,13 +141,23 @@ public class LockEmailActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         lock.getBus().register(this);
-        
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            String dataString = getIntent().getDataString();
+
+        Log.d(TAG, "onStart email: " + email + " intent: " + getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Log.d(TAG, "onNewIntent email: " + email + " intent: " + intent);
+        if (Intent.ACTION_VIEW.equals(intent.getAction()) && email != null) {
+            String dataString = intent.getDataString();
             Log.d(TAG, "data: " +dataString);
             Uri uri = Uri.parse(dataString);
-            String code = uri.getQueryParameter("code");
-            Log.d(TAG, "code: " +code);
+            passcode = uri.getQueryParameter("code");
+            Log.d(TAG, "code: " +passcode);
+
+            performLogin();
         }
     }
 
@@ -120,14 +168,27 @@ public class LockEmailActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onPasscodeSentEvent(EmailVerificationCodeRequestedEvent event) {
-        final EmailLoginFragment fragment = new EmailLoginFragment();
+    @Subscribe public void onPasscodeRequestedEvent(EmailVerificationCodeRequestedEvent event) {
+        email = event.getEmail();
+        sendEmail();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onPasscodeSentEvent(EmailVerificationCodeSentEvent event) {
+        email = event.getEmail();
+        Fragment fragment;
         Bundle arguments = new Bundle();
-        arguments.putString(EmailLoginFragment.EMAIL_ARGUMENT, event.getPhoneNumber());
+        if (!useMagicLink) {
+            fragment = new EmailLoginFragment();
+            arguments.putString(EmailLoginFragment.EMAIL_ARGUMENT, email);
+        } else {
+            fragment = new MagicLinkLoginFragment();
+            arguments.putString(MagicLinkLoginFragment.EMAIL_ARGUMENT, email);
+        }
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
-                .addToBackStack(EmailLoginFragment.class.getName())
+                .addToBackStack(fragment.getClass().getName())
                 .commit();
     }
 
@@ -160,10 +221,49 @@ public class LockEmailActivity extends FragmentActivity {
         finish();
     }
 
+    @SuppressWarnings("unused")
+    @Subscribe public void onLoginRequest(LoginRequestEvent event) {
+        email = event.getEmail();
+        passcode = event.getPasscode();
+        performLogin();
+    }
+
     private Lock getLock() {
         if (lock != null) {
             return lock;
         }
         return Lock.getLock(this);
+    }
+
+    private void performLogin() {
+        bus.post(new AuthenticationStartedEvent());
+        client.loginWithEmail(email, passcode)
+                .addParameters(lock.getAuthenticationParameters())
+                .start(new AuthenticationCallback() {
+                    @Override
+                    public void onSuccess(UserProfile userProfile, Token token) {
+                        bus.post(new AuthenticationEvent(userProfile, token));
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        bus.post(errorBuilder.buildFrom(throwable));
+                    }
+                });
+    }
+
+    private void sendEmail() {
+        client.passwordlessWithEmail(email, useMagicLink).start(new BaseCallback<Void>() {
+            @Override
+            public void onSuccess(Void payload) {
+                Log.d(TAG, "Email code sent to " + email);
+                bus.post(new EmailVerificationCodeSentEvent(email));
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                bus.post(new AuthenticationError(R.string.com_auth0_email_send_code_error_tile, R.string.com_auth0_email_send_code_error_message, error));
+            }
+        });
     }
 }
