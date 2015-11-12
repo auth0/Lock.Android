@@ -25,6 +25,7 @@
 package com.auth0.lock.email;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -102,6 +103,14 @@ public class LockEmailActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         lock.getBus().register(this);
+        
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            String dataString = getIntent().getDataString();
+            Log.d(TAG, "data: " +dataString);
+            Uri uri = Uri.parse(dataString);
+            String code = uri.getQueryParameter("code");
+            Log.d(TAG, "code: " +code);
+        }
     }
 
     @Override
