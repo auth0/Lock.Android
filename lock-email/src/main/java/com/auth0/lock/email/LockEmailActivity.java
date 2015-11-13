@@ -121,7 +121,7 @@ public class LockEmailActivity extends FragmentActivity {
                         .commit();
             } else {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, new RequestCodeFragment())
+                        .add(R.id.com_auth0_container, RequestCodeFragment.newInstance(useMagicLink))
                         .commit();
             }
         } else {

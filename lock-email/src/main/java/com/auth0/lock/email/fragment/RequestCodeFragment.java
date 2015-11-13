@@ -48,14 +48,31 @@ public class RequestCodeFragment extends BaseTitledFragment {
     private static final String TAG = RequestCodeFragment.class.getName();
     private static final String LAST_EMAIL_KEY = "LAST_EMAIL_NUMBER_KEY";
 
+    private static final String USE_MAGIC_LINK_ARGUMENT = "USE_MAGIC_LINK_ARGUMENT";
+
+    private boolean useMagicLink;
+
     Validator validator;
     CredentialField emailField;
     Button sendButton;
     ProgressBar progressBar;
 
+    public static RequestCodeFragment newInstance(boolean useMagicLink) {
+        RequestCodeFragment fragment = new RequestCodeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(USE_MAGIC_LINK_ARGUMENT, useMagicLink);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            useMagicLink = getArguments().getBoolean(USE_MAGIC_LINK_ARGUMENT);
+        }
+
         bus.register(this);
     }
 
@@ -93,7 +110,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
         });
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_send_code_progress_indicator);
         final Button hasCodeButton = (Button) view.findViewById(R.id.com_auth0_email_already_has_code_button);
-        hasCodeButton.setVisibility(storedEmail != null ? View.VISIBLE : View.GONE);
+        hasCodeButton.setVisibility((!useMagicLink && storedEmail != null) ? View.VISIBLE : View.GONE);
         hasCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
