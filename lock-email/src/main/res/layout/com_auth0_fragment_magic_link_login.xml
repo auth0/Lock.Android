@@ -1,5 +1,5 @@
 <!--
-  ~ fragment_sms_login.xml
+  ~ com_auth0_fragment_magic_link_login.xml
   ~
   ~ Copyright (c) 2015 Auth0 (http://auth0.com)
   ~
@@ -31,7 +31,7 @@
     android:paddingTop="@dimen/com_auth0_activity_vertical_margin"
     android:paddingBottom="@dimen/com_auth0_activity_vertical_margin"
     android:background="@android:color/transparent"
-    tools:context="com.auth0.lock.email.fragment.EmailLoginFragment">
+    tools:context="com.auth0.lock.email.fragment.MagicLinkLoginFragment">
 
     <include layout="@layout/com_auth0_title_lock"/>
 
