@@ -45,29 +45,6 @@
         android:layout_centerInParent="true"
         />
 
-    <LinearLayout
-        android:id="@+id/com_auth0_email_magic_link_progress_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/com_auth0_email_magic_link_progress_message"
-            android:layout_width="@dimen/com_auth0_email_magic_link_progress_message_width"
-            android:layout_height="wrap_content"
-            style="?attr/Auth0.Message"
-            android:layout_marginLeft="@dimen/com_auth0_email_magic_link_progress_message_margin"
-            android:layout_marginTop="@dimen/com_auth0_email_magic_link_progress_message_margin"
-            android:layout_marginBottom="@dimen/com_auth0_email_magic_link_progress_message_margin"
-            />
-    </LinearLayout>
-
     <Button
         android:id="@+id/com_auth0_email_no_magic_link_button"
         style="?attr/Auth0.SecondaryButtonStyle"
