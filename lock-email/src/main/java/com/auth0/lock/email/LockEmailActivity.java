@@ -97,7 +97,6 @@ public class LockEmailActivity extends FragmentActivity {
 
     private boolean useMagicLink;
     private String email;
-    private String passcode;
     private LoginAuthenticationErrorBuilder errorBuilder;
 
     protected AuthenticationAPIClient client;
@@ -160,8 +159,8 @@ public class LockEmailActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent email: " + email + " intent: " + intent);
 
-        passcode = LinkParser.getCodeFromAppLinkIntent(intent);
-        performLogin();
+        String passcode = LinkParser.getCodeFromAppLinkIntent(intent);
+        performLogin(new LoginRequestEvent(email, passcode));
     }
 
     @Override
@@ -226,9 +225,7 @@ public class LockEmailActivity extends FragmentActivity {
 
     @SuppressWarnings("unused")
     @Subscribe public void onLoginRequest(LoginRequestEvent event) {
-        email = event.getEmail();
-        passcode = event.getPasscode();
-        performLogin();
+        performLogin(event);
     }
 
     private Lock getLock() {
@@ -238,9 +235,9 @@ public class LockEmailActivity extends FragmentActivity {
         return Lock.getLock(this);
     }
 
-    private void performLogin() {
+    private void performLogin(LoginRequestEvent event) {
         bus.post(new AuthenticationStartedEvent());
-        client.loginWithEmail(email, passcode)
+        client.loginWithEmail(event.getEmail(), event.getPasscode())
                 .addParameters(lock.getAuthenticationParameters())
                 .start(new AuthenticationCallback() {
                     @Override
