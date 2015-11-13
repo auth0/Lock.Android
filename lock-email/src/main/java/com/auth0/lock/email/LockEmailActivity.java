@@ -113,14 +113,16 @@ public class LockEmailActivity extends FragmentActivity {
         errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_error_message, R.string.com_auth0_email_login_invalid_credentials_message);
 
         if (savedInstanceState == null) {
-            useMagicLink = getIntent().getBooleanExtra(USE_MAGIC_LINK, false);
-            if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            boolean invalidMagicLink = Intent.ACTION_VIEW.equals(getIntent().getAction());
+            useMagicLink = invalidMagicLink || getIntent().getBooleanExtra(USE_MAGIC_LINK, false);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.com_auth0_container, RequestCodeFragment.newInstance(useMagicLink))
+                    .commit();
+            if (invalidMagicLink) {
+                Fragment fragment = new InvalidLinkFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, new InvalidLinkFragment())
-                        .commit();
-            } else {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, RequestCodeFragment.newInstance(useMagicLink))
+                        .replace(R.id.com_auth0_container, fragment)
+                        .addToBackStack(fragment.getClass().getName())
                         .commit();
             }
         } else {
