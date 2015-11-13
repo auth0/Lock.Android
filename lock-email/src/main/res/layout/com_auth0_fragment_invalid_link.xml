@@ -46,4 +46,13 @@
         android:layout_centerInParent="true"
         android:text="@string/com_auth0_email_invalid_link_error_title"/>
 
+    <Button
+        android:id="@+id/com_auth0_email_access_button"
+        style="?attr/Auth0.PrimaryButtonStyle"
+        android:layout_below="@id/com_auth0_invalid_link_message"
+        android:layout_marginTop="@dimen/com_auth0_email_button_margin_top"
+        android:textAllCaps="true"
+        android:text="@string/com_auth0_email_login_access_btn_text"
+        android:fontFamily="sans-serif-medium"/>
+
 </RelativeLayout>
