@@ -29,8 +29,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.auth0.lock.email.R;
+import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
 
 public class InvalidLinkFragment extends BaseTitledFragment {
@@ -39,6 +41,18 @@ public class InvalidLinkFragment extends BaseTitledFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.com_auth0_fragment_invalid_link, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Button requestNewLinkButton = (Button) view.findViewById(R.id.com_auth0_email_request_new_link_button);
+        requestNewLinkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bus.post(NavigationEvent.BACK);
+            }
+        });
     }
 
     @Override

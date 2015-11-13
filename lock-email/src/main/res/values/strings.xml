@@ -36,7 +36,7 @@
     <string name="com_auth0_email_no_jwt_found_title">There was an error with your configuration</string>
     <string name="com_auth0_email_already_have_code_btn">Already have a code?</string>
     <string name="com_auth0_email_login_access_btn_text">Login</string>
-    <string name="com_auth0_email_login_again_btn_text">Request new link</string>
+    <string name="com_auth0_email_request_new_link_btn_text">Request new link</string>
     <string name="com_auth0_email_code_placeholder">Email Code</string>
     <string name="com_auth0_email_no_code_button">Didn\'t receive code</string>
     <string name="com_auth0_email_no_magic_link_button">Didn\'t receive the link</string>
