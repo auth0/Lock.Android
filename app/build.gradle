@@ -30,7 +30,7 @@ android {
             minifyEnabled true
             proguardFile '../proguard/proguard-facebook.pro' //facebook native auth
             proguardFile '../proguard/proguard-google-play-services.pro' //G+ native auth
-            proguardFile '../proguard/proguard-android-async-http.pro' //Auth0 core
+            proguardFile '../proguard/proguard-square-okhttp.pro' //Auth0 core
             proguardFile '../proguard/proguard-jackson-2.pro' //Auth0 core
             proguardFile '../proguard/proguard-square-otto.pro' //Lock
             proguardFile '../proguard/proguard-lock.pro' //Lock
