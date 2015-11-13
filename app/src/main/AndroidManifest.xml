@@ -68,7 +68,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" />
                 <data android:scheme="http" />
-                <data android:host="nikolaseu-test.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
+                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
             </intent-filter>
         </activity>
         <!--Auth0 Lock Email End-->
