@@ -505,7 +505,7 @@ public class AuthenticationAPIClientTest {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
         final MockBaseCallback<Void> callback = new MockBaseCallback<>();
-        client.passwordlessWithEmailCode("support@auth0.com")
+        client.passwordlessWithEmail("support@auth0.com", false)
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
