@@ -38,11 +38,11 @@ import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.identity.web.LinkParser;
 import com.auth0.lock.Lock;
-import com.auth0.lock.email.event.AuthenticationStartedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeSentEvent;
 import com.auth0.lock.email.event.LoginRequestEvent;
 import com.auth0.lock.email.fragment.EmailLoginFragment;
+import com.auth0.lock.email.fragment.InProgressFragment;
 import com.auth0.lock.email.fragment.InvalidLinkFragment;
 import com.auth0.lock.email.fragment.MagicLinkLoginFragment;
 import com.auth0.lock.email.fragment.RequestCodeFragment;
@@ -212,6 +212,7 @@ public class LockEmailActivity extends FragmentActivity {
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         ErrorDialogBuilder.showAlertDialog(this, error);
+        getSupportFragmentManager().popBackStack();
     }
 
     @SuppressWarnings("unused")
@@ -239,7 +240,13 @@ public class LockEmailActivity extends FragmentActivity {
     }
 
     private void performLogin(LoginRequestEvent event) {
-        bus.post(new AuthenticationStartedEvent());
+        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link_in_progress);
+        Fragment fragment = InProgressFragment.newInstance(String.format(messageFormat, email));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.com_auth0_container, fragment)
+                .addToBackStack(fragment.getClass().getName())
+                .commit();
+
         client.loginWithEmail(event.getEmail(), event.getPasscode())
                 .addParameters(lock.getAuthenticationParameters())
                 .start(new AuthenticationCallback() {
