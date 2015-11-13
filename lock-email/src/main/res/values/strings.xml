@@ -26,7 +26,7 @@
 
     <string name="com_auth0_email_title_send_passcode">Send Passcode</string>
     <string name="com_auth0_email_title_enter_passcode">Email Code</string>
-    <string name="com_auth0_email_title_invalid_link">Invalid Link</string>
+    <string name="com_auth0_email_title_invalid_link">Login</string>
     <string name="com_auth0_email_title_magic_link">Email Magic Link</string>
     <string name="com_auth0_email_enter_email">Enter your email to sign in or create an account</string>
     <string name="com_auth0_email_send_passcode_btn_text">SEND</string>
