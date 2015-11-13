@@ -7,7 +7,7 @@ import android.util.Log;
 public class LinkParser {
     private static String TAG = LinkParser.class.getName();
 
-    public static String getCodeFromAppLinkIntent(Intent intent) {
+    public String getCodeFromAppLinkIntent(Intent intent) {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             String dataString = intent.getDataString();
             String code = getCodeFromAppLinkUri(dataString);
@@ -20,7 +20,7 @@ public class LinkParser {
         return null;
     }
 
-    public static String getCodeFromAppLinkUri(String uriString) {
+    public String getCodeFromAppLinkUri(String uriString) {
         if (uriString == null) {
             return null;
         }

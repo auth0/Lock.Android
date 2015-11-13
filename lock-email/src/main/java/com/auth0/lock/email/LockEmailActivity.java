@@ -161,7 +161,8 @@ public class LockEmailActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent email: " + email + " intent: " + intent);
 
-        String passcode = LinkParser.getCodeFromAppLinkIntent(intent);
+        LinkParser linkParser = new LinkParser();
+        String passcode = linkParser.getCodeFromAppLinkIntent(intent);
         performLogin(new LoginRequestEvent(email, passcode));
     }
 
