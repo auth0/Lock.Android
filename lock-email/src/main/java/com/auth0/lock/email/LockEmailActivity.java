@@ -24,6 +24,7 @@
 
 package com.auth0.lock.email;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -275,5 +276,11 @@ public class LockEmailActivity extends FragmentActivity {
                 bus.post(new AuthenticationError(R.string.com_auth0_email_send_code_error_tile, R.string.com_auth0_email_send_code_error_message, error));
             }
         });
+    }
+
+    public static void showFrom(Activity activity, boolean useMagicLink) {
+        Intent intent = new Intent(activity, LockEmailActivity.class);
+        intent.putExtra(LockEmailActivity.USE_MAGIC_LINK, useMagicLink);
+        activity.startActivity(intent);
     }
 }

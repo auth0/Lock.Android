@@ -58,9 +58,7 @@ public class MyActivity extends AppCompatActivity {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MyActivity.this, LockEmailActivity.class);
-                intent.putExtra(LockEmailActivity.USE_MAGIC_LINK, true);
-                startActivity(intent);
+                LockEmailActivity.showFrom(MyActivity.this, true);
             }
         });
 
