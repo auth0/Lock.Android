@@ -35,25 +35,34 @@
 
     <include layout="@layout/com_auth0_title_lock"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/com_auth0_email_magic_link_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        style="?attr/Auth0.Message"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true" />
+
+    <LinearLayout
+        android:id="@+id/com_auth0_email_magic_link_progress_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
 
         <ProgressBar
-            android:id="@+id/com_auth0_email_magic_link_login_progress_indicator"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:layout_height="match_parent" />
 
         <TextView
-            android:id="@+id/com_auth0_email_magic_link_message"
-            android:layout_width="wrap_content"
+            android:id="@+id/com_auth0_email_magic_link_progress_message"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             style="?attr/Auth0.Message"
-            android:layout_gravity="center_vertical" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
     </LinearLayout>
 
     <Button

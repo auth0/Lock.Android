@@ -26,6 +26,7 @@
 
     <string name="com_auth0_email_title_send_passcode">Send Passcode</string>
     <string name="com_auth0_email_title_enter_passcode">Email Code</string>
+    <string name="com_auth0_email_title_invalid_link">Invalid Link</string>
     <string name="com_auth0_email_title_magic_link">Email Magic Link</string>
     <string name="com_auth0_email_enter_email">Enter your email to sign in or create an account</string>
     <string name="com_auth0_email_send_passcode_btn_text">SEND</string>
@@ -53,8 +54,10 @@
         Please check your email <b>%s</b>.<br/>You&#39;ve received a message from us with your passcode
     ]]>
     </string>
+    <string name="com_auth0_email_invalid_link_error_title">This link isn\'t valid anymore</string>
     <string name="com_auth0_email_login_error_title">There was an error logging in</string>
     <string name="com_auth0_email_login_error_message">There was an error processing the sign in.</string>
     <string name="com_auth0_email_login_invalid_credentials_message">Wrong email or passcode.</string>
     <string name="com_auth0_email_login_invalid_passcode_message">You must enter a valid email code.</string>
+
 </resources>

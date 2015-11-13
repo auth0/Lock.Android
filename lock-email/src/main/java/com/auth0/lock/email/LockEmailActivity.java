@@ -25,7 +25,6 @@
 package com.auth0.lock.email;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -37,19 +36,21 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.identity.web.LinkParser;
 import com.auth0.lock.Lock;
 import com.auth0.lock.email.event.AuthenticationStartedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeSentEvent;
 import com.auth0.lock.email.event.LoginRequestEvent;
 import com.auth0.lock.email.fragment.EmailLoginFragment;
+import com.auth0.lock.email.fragment.InvalidLinkFragment;
 import com.auth0.lock.email.fragment.MagicLinkLoginFragment;
+import com.auth0.lock.email.fragment.RequestCodeFragment;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.email.fragment.RequestCodeFragment;
 import com.auth0.lock.util.ActivityUIHelper;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -87,9 +88,10 @@ public class LockEmailActivity extends FragmentActivity {
 
     private static final String TAG = LockEmailActivity.class.getName();
 
-    public static final String EMAIL_PARAMETER = "EMAIL_PARAMETER";
+    private static final String EMAIL_PARAMETER = "EMAIL_PARAMETER";
+    private static final String USE_MAGIC_LINK_PARAMETER = "USE_MAGIC_LINK_PARAMETER";
 
-    public static final String USE_MAGIC_LINK_ARGUMENT = "USE_MAGIC_LINK_ARGUMENT";
+    public static final String USE_MAGIC_LINK = "USE_MAGIC_LINK";
 
     Lock lock;
 
@@ -106,18 +108,24 @@ public class LockEmailActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.com_auth0_activity_lock_email);
 
-        useMagicLink = getIntent().getBooleanExtra(USE_MAGIC_LINK_ARGUMENT, false);
-
         lock = getLock();
         client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
         errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_error_message, R.string.com_auth0_email_login_invalid_credentials_message);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.com_auth0_container, new RequestCodeFragment())
-                    .commit();
+            useMagicLink = getIntent().getBooleanExtra(USE_MAGIC_LINK, false);
+            if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.com_auth0_container, new InvalidLinkFragment())
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.com_auth0_container, new RequestCodeFragment())
+                        .commit();
+            }
         } else {
+            useMagicLink = savedInstanceState.getBoolean(USE_MAGIC_LINK_PARAMETER);
             email = savedInstanceState.getString(EMAIL_PARAMETER);
         }
 
@@ -126,6 +134,7 @@ public class LockEmailActivity extends FragmentActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(USE_MAGIC_LINK_PARAMETER, useMagicLink);
         savedInstanceState.putString(EMAIL_PARAMETER, email);
 
         super.onSaveInstanceState(savedInstanceState);
@@ -150,15 +159,9 @@ public class LockEmailActivity extends FragmentActivity {
         super.onNewIntent(intent);
 
         Log.d(TAG, "onNewIntent email: " + email + " intent: " + intent);
-        if (Intent.ACTION_VIEW.equals(intent.getAction()) && email != null) {
-            String dataString = intent.getDataString();
-            Log.d(TAG, "data: " +dataString);
-            Uri uri = Uri.parse(dataString);
-            passcode = uri.getQueryParameter("code");
-            Log.d(TAG, "code: " +passcode);
 
-            performLogin();
-        }
+        passcode = LinkParser.getCodeFromAppLinkIntent(intent);
+        performLogin();
     }
 
     @Override

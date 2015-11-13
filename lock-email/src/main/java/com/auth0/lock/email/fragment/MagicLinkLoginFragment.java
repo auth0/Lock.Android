@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.auth0.lock.email.R;
@@ -50,7 +49,7 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
 
     Button noCodeButton;
     TextView messageTextView;
-    ProgressBar progressBar;
+    View progressLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,32 +87,31 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
         messageTextView = (TextView) view.findViewById(R.id.com_auth0_email_magic_link_message);
         String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link);
         messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
-        progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_magic_link_login_progress_indicator);
+        TextView progressTextView = (TextView) view.findViewById(R.id.com_auth0_email_magic_link_progress_message);
+        messageFormat = getString(R.string.com_auth0_email_login_message_magic_link_in_progress);
+        progressTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
+        progressLayout = view.findViewById(R.id.com_auth0_email_magic_link_progress_layout);
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onAuthenticationStarted(AuthenticationStartedEvent event) {
         noCodeButton.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link_in_progress);
-        messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
+        messageTextView.setVisibility(View.GONE);
+        progressLayout.setVisibility(View.VISIBLE);
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onAuthenticationError(AuthenticationError error) {
-        progressBar.setVisibility(View.GONE);
+        progressLayout.setVisibility(View.GONE);
         noCodeButton.setVisibility(View.VISIBLE);
-
-        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link);
-        messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
+        messageTextView.setVisibility(View.VISIBLE);
     }
 
     @SuppressWarnings("unused")
     @Subscribe public void onAuthentication(AuthenticationEvent event) {
-        progressBar.setVisibility(View.GONE);
+        progressLayout.setVisibility(View.GONE);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class MyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyActivity.this, LockEmailActivity.class);
-                //intent.putExtra(LockEmailActivity.USE_MAGIC_LINK_ARGUMENT, true);
+                intent.putExtra(LockEmailActivity.USE_MAGIC_LINK, true);
                 startActivity(intent);
             }
         });
