@@ -54,7 +54,7 @@
         Please check your email <b>%s</b>.<br/>You&#39;ve received a message from us with your passcode
     ]]>
     </string>
-    <string name="com_auth0_email_invalid_link_error_title">This link isn\'t valid anymore</string>
+    <string name="com_auth0_email_invalid_link_error_title">Couldn\'t log in with the magic link, it was probably used already or not valid anymore. Please request a new one</string>
     <string name="com_auth0_email_login_error_title">There was an error logging in</string>
     <string name="com_auth0_email_login_error_message">There was an error processing the sign in.</string>
     <string name="com_auth0_email_login_invalid_credentials_message">Wrong email or passcode.</string>
