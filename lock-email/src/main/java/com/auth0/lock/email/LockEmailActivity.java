@@ -39,6 +39,7 @@ import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.identity.web.LinkParser;
 import com.auth0.lock.Lock;
+import com.auth0.lock.email.event.CodeManualEntryRequestedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeSentEvent;
 import com.auth0.lock.email.event.LoginRequestEvent;
@@ -191,6 +192,18 @@ public class LockEmailActivity extends FragmentActivity {
             fragment = new MagicLinkLoginFragment();
             arguments.putString(MagicLinkLoginFragment.EMAIL_ARGUMENT, email);
         }
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.com_auth0_container, fragment)
+                .addToBackStack(fragment.getClass().getName())
+                .commit();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onCodeManualEntryRequested(CodeManualEntryRequestedEvent event) {
+        Bundle arguments = new Bundle();
+        arguments.putString(EmailLoginFragment.EMAIL_ARGUMENT, email);
+        Fragment fragment = new EmailLoginFragment();
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)

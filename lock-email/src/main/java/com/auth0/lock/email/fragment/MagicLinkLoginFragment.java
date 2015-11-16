@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.auth0.lock.email.R;
+import com.auth0.lock.email.event.CodeManualEntryRequestedEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
 
@@ -66,11 +67,11 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button noCodeButton = (Button) view.findViewById(R.id.com_auth0_email_no_magic_link_button);
-        noCodeButton.setOnClickListener(new View.OnClickListener() {
+        Button enterCodeButton = (Button) view.findViewById(R.id.com_auth0_email_enter_code_button);
+        enterCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bus.post(NavigationEvent.BACK);
+                bus.post(new CodeManualEntryRequestedEvent());
             }
         });
         TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_email_magic_link_message);

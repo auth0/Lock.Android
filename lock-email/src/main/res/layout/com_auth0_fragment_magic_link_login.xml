@@ -46,7 +46,7 @@
         />
 
     <Button
-        android:id="@+id/com_auth0_email_no_magic_link_button"
+        android:id="@+id/com_auth0_email_enter_code_button"
         style="?attr/Auth0.SecondaryButtonStyle"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
