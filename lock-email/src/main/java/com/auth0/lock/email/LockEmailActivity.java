@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -226,7 +227,10 @@ public class LockEmailActivity extends FragmentActivity {
     @Subscribe public void onAuthenticationError(AuthenticationError error) {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         ErrorDialogBuilder.showAlertDialog(this, error);
-        getSupportFragmentManager().popBackStack();
+
+        // go back to the state immediately before the InProgressFragment was displayed
+        // if the InProgressFragment wasn't visible, nothing will be popped out
+        getSupportFragmentManager().popBackStack(InProgressFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @SuppressWarnings("unused")
