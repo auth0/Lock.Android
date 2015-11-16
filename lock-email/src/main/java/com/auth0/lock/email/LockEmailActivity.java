@@ -183,15 +183,11 @@ public class LockEmailActivity extends FragmentActivity {
     @Subscribe public void onPasscodeSentEvent(EmailVerificationCodeSentEvent event) {
         email = event.getEmail();
         Fragment fragment;
-        Bundle arguments = new Bundle();
         if (!useMagicLink) {
-            fragment = new EmailLoginFragment();
-            arguments.putString(EmailLoginFragment.EMAIL_ARGUMENT, email);
+            fragment = EmailLoginFragment.newInstance(email);
         } else {
-            fragment = new MagicLinkLoginFragment();
-            arguments.putString(MagicLinkLoginFragment.EMAIL_ARGUMENT, email);
+            fragment = MagicLinkLoginFragment.newInstance(email);
         }
-        fragment.setArguments(arguments);
         // in case we were already showing the fragment (it happens we the user asks to resend the email)
         getSupportFragmentManager().popBackStack(fragment.getClass().getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction()
@@ -202,10 +198,7 @@ public class LockEmailActivity extends FragmentActivity {
 
     @SuppressWarnings("unused")
     @Subscribe public void onCodeManualEntryRequested(CodeManualEntryRequestedEvent event) {
-        Bundle arguments = new Bundle();
-        arguments.putString(EmailLoginFragment.EMAIL_ARGUMENT, email);
-        Fragment fragment = new EmailLoginFragment();
-        fragment.setArguments(arguments);
+        Fragment fragment = EmailLoginFragment.newInstance(email);
         getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)

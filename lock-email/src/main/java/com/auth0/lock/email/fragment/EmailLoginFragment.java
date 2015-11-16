@@ -47,7 +47,7 @@ import com.squareup.otto.Subscribe;
 
 public class EmailLoginFragment extends BaseTitledFragment {
 
-    public static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
+    private static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
 
     private String email;
     private Validator validator;
@@ -55,6 +55,14 @@ public class EmailLoginFragment extends BaseTitledFragment {
     Button accessButton;
     ProgressBar progressBar;
     CredentialField passcodeField;
+
+    public static EmailLoginFragment newInstance(String email) {
+        EmailLoginFragment fragment = new EmailLoginFragment();
+        Bundle args = new Bundle();
+        args.putString(EMAIL_ARGUMENT, email);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -41,9 +41,17 @@ import com.auth0.lock.fragment.BaseTitledFragment;
 
 public class MagicLinkLoginFragment extends BaseTitledFragment {
 
-    public static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
+    private static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
 
     private String email;
+
+    public static MagicLinkLoginFragment newInstance(String email) {
+        MagicLinkLoginFragment fragment = new MagicLinkLoginFragment();
+        Bundle args = new Bundle();
+        args.putString(EMAIL_ARGUMENT, email);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
