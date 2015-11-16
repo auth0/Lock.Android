@@ -206,6 +206,7 @@ public class LockEmailActivity extends FragmentActivity {
         arguments.putString(EmailLoginFragment.EMAIL_ARGUMENT, email);
         Fragment fragment = new EmailLoginFragment();
         fragment.setArguments(arguments);
+        getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
