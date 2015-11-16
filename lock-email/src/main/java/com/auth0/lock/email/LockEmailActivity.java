@@ -194,6 +194,8 @@ public class LockEmailActivity extends FragmentActivity {
             arguments.putString(MagicLinkLoginFragment.EMAIL_ARGUMENT, email);
         }
         fragment.setArguments(arguments);
+        // in case we were already showing the fragment (it happens we the user asks to resend the email)
+        getSupportFragmentManager().popBackStack(fragment.getClass().getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
