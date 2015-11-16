@@ -94,8 +94,6 @@ public class LockEmailActivity extends FragmentActivity {
     private static final String EMAIL_PARAMETER = "EMAIL_PARAMETER";
     private static final String USE_MAGIC_LINK_PARAMETER = "USE_MAGIC_LINK_PARAMETER";
 
-    public static final String USE_MAGIC_LINK = "USE_MAGIC_LINK";
-
     Lock lock;
 
     private boolean useMagicLink;
@@ -117,7 +115,7 @@ public class LockEmailActivity extends FragmentActivity {
 
         if (savedInstanceState == null) {
             boolean invalidMagicLink = Intent.ACTION_VIEW.equals(getIntent().getAction());
-            useMagicLink = invalidMagicLink || getIntent().getBooleanExtra(USE_MAGIC_LINK, false);
+            useMagicLink = invalidMagicLink || getIntent().getBooleanExtra(USE_MAGIC_LINK_PARAMETER, false);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.com_auth0_container, RequestCodeFragment.newInstance(useMagicLink))
                     .commit();
@@ -300,7 +298,7 @@ public class LockEmailActivity extends FragmentActivity {
 
     public static void showFrom(Activity activity, boolean useMagicLink) {
         Intent intent = new Intent(activity, LockEmailActivity.class);
-        intent.putExtra(LockEmailActivity.USE_MAGIC_LINK, useMagicLink);
+        intent.putExtra(LockEmailActivity.USE_MAGIC_LINK_PARAMETER, useMagicLink);
         activity.startActivity(intent);
     }
 }
