@@ -27,12 +27,23 @@ package com.auth0.lock.email.event;
 public class EmailVerificationCodeRequestedEvent {
 
     private final String email;
+    private final boolean isRetry;
+
+    public EmailVerificationCodeRequestedEvent(String email, boolean isRetry) {
+        this.email = email;
+        this.isRetry = isRetry;
+    }
 
     public EmailVerificationCodeRequestedEvent(String email) {
         this.email = email;
+        this.isRetry = false;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean isRetry() {
+        return isRetry;
     }
 }

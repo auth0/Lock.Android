@@ -93,9 +93,11 @@ public class LockEmailActivity extends FragmentActivity {
 
     private static final String EMAIL_PARAMETER = "EMAIL_PARAMETER";
     private static final String USE_MAGIC_LINK_PARAMETER = "USE_MAGIC_LINK_PARAMETER";
+    private static final String IS_IN_PROGRESS_PARAMETER = "IS_IN_PROGRESS_PARAMETER";
 
     Lock lock;
 
+    private boolean isInProgress;
     private boolean useMagicLink;
     private String email;
     private LoginAuthenticationErrorBuilder errorBuilder;
@@ -114,6 +116,7 @@ public class LockEmailActivity extends FragmentActivity {
         errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_error_message, R.string.com_auth0_email_login_invalid_credentials_message);
 
         if (savedInstanceState == null) {
+            isInProgress = false;
             boolean invalidMagicLink = Intent.ACTION_VIEW.equals(getIntent().getAction());
             useMagicLink = invalidMagicLink || getIntent().getBooleanExtra(USE_MAGIC_LINK_PARAMETER, false);
             getSupportFragmentManager().beginTransaction()
@@ -127,6 +130,7 @@ public class LockEmailActivity extends FragmentActivity {
                         .commit();
             }
         } else {
+            isInProgress = savedInstanceState.getBoolean(IS_IN_PROGRESS_PARAMETER);
             useMagicLink = savedInstanceState.getBoolean(USE_MAGIC_LINK_PARAMETER);
             email = savedInstanceState.getString(EMAIL_PARAMETER);
         }
@@ -136,6 +140,7 @@ public class LockEmailActivity extends FragmentActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(IS_IN_PROGRESS_PARAMETER, isInProgress);
         savedInstanceState.putBoolean(USE_MAGIC_LINK_PARAMETER, useMagicLink);
         savedInstanceState.putString(EMAIL_PARAMETER, email);
 
@@ -173,10 +178,17 @@ public class LockEmailActivity extends FragmentActivity {
         lock.getBus().unregister(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!isInProgress) {
+            // the backstack is managed automatically
+            super.onBackPressed();
+        }
+    }
+
     @SuppressWarnings("unused")
     @Subscribe public void onPasscodeRequestedEvent(EmailVerificationCodeRequestedEvent event) {
-        email = event.getEmail();
-        sendEmail();
+        sendEmail(event);
     }
 
     @SuppressWarnings("unused")
@@ -188,8 +200,7 @@ public class LockEmailActivity extends FragmentActivity {
         } else {
             fragment = MagicLinkLoginFragment.newInstance(email);
         }
-        // in case we were already showing the fragment (it happens we the user asks to resend the email)
-        getSupportFragmentManager().popBackStack(fragment.getClass().getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
@@ -210,7 +221,7 @@ public class LockEmailActivity extends FragmentActivity {
     @Subscribe public void onNavigationEvent(NavigationEvent event) {
         switch (event) {
             case BACK:
-                getSupportFragmentManager().popBackStack();
+                onBackPressed();
                 break;
             default:
                 Log.v(TAG, "Invalid navigation event " + event);
@@ -222,9 +233,10 @@ public class LockEmailActivity extends FragmentActivity {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         ErrorDialogBuilder.showAlertDialog(this, error);
 
-        // go back to the state immediately before the InProgressFragment was displayed
-        // if the InProgressFragment wasn't visible, nothing will be popped out
-        getSupportFragmentManager().popBackStack(InProgressFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (isInProgress) {
+            isInProgress = false;
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     @SuppressWarnings("unused")
@@ -258,6 +270,7 @@ public class LockEmailActivity extends FragmentActivity {
                 .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
                 .commit();
+        isInProgress = true;
 
         client.loginWithEmail(event.getEmail(), event.getPasscode())
                 .addParameters(lock.getAuthenticationParameters())
@@ -274,12 +287,15 @@ public class LockEmailActivity extends FragmentActivity {
                 });
     }
 
-    private void sendEmail() {
+    private void sendEmail(final EmailVerificationCodeRequestedEvent event) {
+        email = event.getEmail();
         client.passwordlessWithEmail(email, useMagicLink).start(new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
                 Log.d(TAG, "Email code sent to " + email);
-                bus.post(new EmailVerificationCodeSentEvent(email));
+                if (!event.isRetry()) {
+                    bus.post(new EmailVerificationCodeSentEvent(email));
+                }
             }
 
             @Override

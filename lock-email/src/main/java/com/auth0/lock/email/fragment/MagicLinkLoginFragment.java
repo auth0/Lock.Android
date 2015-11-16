@@ -90,7 +90,7 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
             @Override
             public void onClick(View v) {
                 resendCodeButton.setVisibility(View.INVISIBLE);
-                bus.post(new EmailVerificationCodeRequestedEvent(email));
+                bus.post(new EmailVerificationCodeRequestedEvent(email, true));
                 new ShowLaterTask().execute(resendCodeButton);
             }
         });
