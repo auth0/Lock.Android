@@ -61,5 +61,6 @@
     <string name="com_auth0_email_login_error_message">There was an error processing the sign in.</string>
     <string name="com_auth0_email_login_invalid_credentials_message">Wrong email or passcode.</string>
     <string name="com_auth0_email_login_invalid_passcode_message">You must enter a valid email code.</string>
+    <string name="com_auth0_email_resend_code_button">Resend</string>
 
 </resources>

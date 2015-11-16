@@ -25,6 +25,7 @@
 package com.auth0.lock.email.fragment;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ import android.widget.TextView;
 
 import com.auth0.lock.email.R;
 import com.auth0.lock.email.event.CodeManualEntryRequestedEvent;
-import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
 
 public class MagicLinkLoginFragment extends BaseTitledFragment {
@@ -67,6 +68,7 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         Button enterCodeButton = (Button) view.findViewById(R.id.com_auth0_email_enter_code_button);
         enterCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,13 +76,50 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
                 bus.post(new CodeManualEntryRequestedEvent());
             }
         });
+
+        final Button resendCodeButton = (Button) view.findViewById(R.id.com_auth0_email_resend_code_button);
+        resendCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resendCodeButton.setVisibility(View.INVISIBLE);
+                bus.post(new EmailVerificationCodeRequestedEvent(email));
+                new ShowLaterTask().execute(resendCodeButton);
+            }
+        });
+
         TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_email_magic_link_message);
         String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link);
         messageTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
+
+        new ShowLaterTask().execute(resendCodeButton);
     }
 
     @Override
     protected int getTitleResource() {
         return R.string.com_auth0_email_title_magic_link;
+    }
+
+    private class ShowLaterTask extends AsyncTask<View, Void, Boolean> {
+
+        View view;
+
+        @Override
+        protected Boolean doInBackground(View... params) {
+            try {
+                view = params[0];
+                Thread.sleep(10000);
+                return true;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (success) {
+                view.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }
