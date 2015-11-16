@@ -26,7 +26,8 @@
 
     <string name="com_auth0_email_title_send_passcode">Send Passcode</string>
     <string name="com_auth0_email_title_enter_passcode">Email Code</string>
-    <string name="com_auth0_email_title_in_progress">Login</string>
+    <string name="com_auth0_email_title_in_progress_code">Log in with Code</string>
+    <string name="com_auth0_email_title_in_progress_magic_link">Log in with Magic Link</string>
     <string name="com_auth0_email_title_invalid_link">Login</string>
     <string name="com_auth0_email_title_magic_link">Magic Link Sent</string>
     <string name="com_auth0_email_enter_email">Enter your email to sign in or create an account</string>
@@ -46,7 +47,7 @@
         Please check your email <b>%s</b>.<br/>You&#39;ve received a message from us with the link
     ]]>
     </string>
-    <string name="com_auth0_email_login_message_magic_link_in_progress">
+    <string name="com_auth0_email_login_message_in_progress">
     <![CDATA[
         Logging in with your email <b>%s</b>.
     ]]>

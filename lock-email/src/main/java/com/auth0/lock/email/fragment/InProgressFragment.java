@@ -37,15 +37,18 @@ import com.auth0.lock.fragment.BaseTitledFragment;
 
 public class InProgressFragment extends BaseTitledFragment {
 
+    private static final String TITLE_ARGUMENT = "TITLE_ARGUMENT";
     private static final String MESSAGE_ARGUMENT = "MESSAGE_ARGUMENT";
 
-    private String message;
+    private int titleResourceId;
+    private String email;
 
 
-    public static InProgressFragment newInstance(String message) {
+    public static InProgressFragment newInstance(int titleResourceId, String email) {
         InProgressFragment fragment = new InProgressFragment();
         Bundle args = new Bundle();
-        args.putString(MESSAGE_ARGUMENT, message);
+        args.putInt(TITLE_ARGUMENT, titleResourceId);
+        args.putString(MESSAGE_ARGUMENT, email);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +62,8 @@ public class InProgressFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            message = getArguments().getString(MESSAGE_ARGUMENT);
+            titleResourceId = getArguments().getInt(TITLE_ARGUMENT);
+            email = getArguments().getString(MESSAGE_ARGUMENT);
         }
     }
 
@@ -73,12 +77,13 @@ public class InProgressFragment extends BaseTitledFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        String messageFormat = getString(R.string.com_auth0_email_login_message_in_progress);
         TextView progressTextView = (TextView) view.findViewById(R.id.com_auth0_email_progress_message);
-        progressTextView.setText(Html.fromHtml(message));
+        progressTextView.setText(Html.fromHtml(String.format(messageFormat, email)));
     }
 
     @Override
     protected int getTitleResource() {
-        return R.string.com_auth0_email_title_in_progress;
+        return titleResourceId;
     }
 }

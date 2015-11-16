@@ -254,8 +254,8 @@ public class LockEmailActivity extends FragmentActivity {
     }
 
     private void performLogin(LoginRequestEvent event) {
-        String messageFormat = getString(R.string.com_auth0_email_login_message_magic_link_in_progress);
-        Fragment fragment = InProgressFragment.newInstance(String.format(messageFormat, email));
+        Fragment fragment = InProgressFragment.newInstance(
+                useMagicLink ? R.string.com_auth0_email_title_in_progress_magic_link : R.string.com_auth0_email_title_in_progress_code, email);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
