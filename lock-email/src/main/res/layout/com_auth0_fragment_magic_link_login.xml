@@ -35,26 +35,48 @@
 
     <include layout="@layout/com_auth0_title_lock"/>
 
-    <TextView
-        android:id="@+id/com_auth0_email_magic_link_message"
+    <LinearLayout
+        android:id="@+id/com_auth0_message_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        style="?attr/Auth0.Message"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
-        />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/com_auth0_email_magic_link_sent_mark"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/com_auth0_circle_green"
+            android:text="@string/com_auth0_email_magic_link_sent_mark"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/com_auth0_email_magic_link_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            style="?attr/Auth0.Message"
+            android:layout_gravity="center_horizontal"
+            />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/com_auth0_email_resend_code_button"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_below="@+id/com_auth0_email_magic_link_message"
         android:layout_centerHorizontal="true"
         android:textAllCaps="true"
         android:text="@string/com_auth0_email_resend_code_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:visibility="invisible"
+        android:layout_below="@+id/com_auth0_message_container"
         />
 
     <Button
@@ -63,6 +85,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:textAllCaps="true"
-        android:text="@string/com_auth0_email_no_magic_link_button"/>
+        android:text="@string/com_auth0_email_no_magic_link_button"
+        />
 
 </RelativeLayout>
