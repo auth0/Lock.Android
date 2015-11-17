@@ -332,7 +332,7 @@ public class APIClient extends BaseAPIClient {
      * @param callback to call on either success or failure
      */
     public void requestSMSVerificationCode(String phoneNumber, final BaseCallback<Void> callback) {
-        newClient.passwordlessWithSMSCode(phoneNumber)
+        newClient.passwordlessWithSMS(phoneNumber, false)
                 .start(callback);
     }
 
