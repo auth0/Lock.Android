@@ -45,10 +45,10 @@ public class MagicLinkLoginFragment extends BaseTitledFragment {
 
     private String phoneNumber;
 
-    public static MagicLinkLoginFragment newInstance(String email) {
+    public static MagicLinkLoginFragment newInstance(String phoneNumber) {
         MagicLinkLoginFragment fragment = new MagicLinkLoginFragment();
         Bundle args = new Bundle();
-        args.putString(PHONE_NUMBER_ARGUMENT, email);
+        args.putString(PHONE_NUMBER_ARGUMENT, phoneNumber);
         fragment.setArguments(args);
         return fragment;
     }
