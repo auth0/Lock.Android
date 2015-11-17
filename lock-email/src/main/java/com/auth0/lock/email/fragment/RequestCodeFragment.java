@@ -46,7 +46,7 @@ import com.squareup.otto.Subscribe;
 public class RequestCodeFragment extends BaseTitledFragment {
 
     private static final String TAG = RequestCodeFragment.class.getName();
-    private static final String LAST_EMAIL_KEY = "LAST_EMAIL_NUMBER_KEY";
+    private static final String LAST_EMAIL_KEY = "LAST_EMAIL_KEY";
 
     private static final String USE_MAGIC_LINK_ARGUMENT = "USE_MAGIC_LINK_ARGUMENT";
 
