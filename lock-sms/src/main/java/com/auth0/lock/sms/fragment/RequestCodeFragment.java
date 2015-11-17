@@ -184,8 +184,9 @@ public class RequestCodeFragment extends BaseTitledFragment {
             }
         });
     }
-    @Subscribe
-    public void onCountrySelected(CountryCodeSelectedEvent event) {
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onCountrySelected(CountryCodeSelectedEvent event) {
         Log.d(TAG, "Received selected country " + event.getIsoCode() + " dial code " + event.getDialCode());
         phoneField.setDialCode(event.getDialCode());
     }
