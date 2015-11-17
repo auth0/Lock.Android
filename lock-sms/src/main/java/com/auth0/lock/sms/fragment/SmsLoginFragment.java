@@ -34,30 +34,35 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
-import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
+import com.auth0.lock.sms.event.LoginRequestEvent;
 import com.auth0.lock.sms.validation.SmsPasscodeValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
+import com.squareup.otto.Subscribe;
 
 public class SmsLoginFragment extends BaseTitledFragment {
 
-    public static final String PHONE_NUMBER_ARGUMENT = "PHONE_NUMBER_ARGUMENT";
+    private static final String PHONE_NUMBER_ARGUMENT = "PHONE_NUMBER_ARGUMENT";
 
     private String phoneNumber;
-    private LoginAuthenticationErrorBuilder errorBuilder;
     private Validator validator;
 
     Button accessButton;
     ProgressBar progressBar;
     CredentialField passcodeField;
+
+    public static SmsLoginFragment newInstance(String phoneNumber) {
+        SmsLoginFragment fragment = new SmsLoginFragment();
+        Bundle args = new Bundle();
+        args.putString(PHONE_NUMBER_ARGUMENT, phoneNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,16 @@ public class SmsLoginFragment extends BaseTitledFragment {
         if (arguments != null) {
             phoneNumber = arguments.getString(PHONE_NUMBER_ARGUMENT);
         }
-        errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_sms_login_error_title, R.string.com_auth0_sms_login_error_message, R.string.com_auth0_sms_login_invalid_credentials_message);
         validator = new SmsPasscodeValidator(R.id.com_auth0_sms_login_code_field, R.string.com_auth0_sms_login_error_title, R.string.com_auth0_sms_login_invalid_passcode_message);
+
+        bus.register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        bus.unregister(this);
     }
 
     @Override
@@ -108,7 +121,6 @@ public class SmsLoginFragment extends BaseTitledFragment {
         } else {
             bus.post(error);
         }
-
     }
 
     private void performLogin() {
@@ -116,25 +128,22 @@ public class SmsLoginFragment extends BaseTitledFragment {
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         String passcode = passcodeField.getText().toString();
-        client.loginWithPhoneNumber(phoneNumber, passcode)
-                .addParameters(authenticationParameters)
-                .start(new AuthenticationCallback() {
-                    @Override
-                    public void onSuccess(UserProfile userProfile, Token token) {
-                        bus.post(new AuthenticationEvent(userProfile, token));
-                        accessButton.setEnabled(true);
-                        accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
-                        progressBar.setVisibility(View.GONE);
-                    }
+        bus.post(new LoginRequestEvent(phoneNumber, passcode));
+    }
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        bus.post(errorBuilder.buildFrom(throwable));
-                        accessButton.setEnabled(true);
-                        accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onAuthenticationError(AuthenticationError error) {
+        accessButton.setEnabled(true);
+        accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onAuthentication(AuthenticationEvent event) {
+        accessButton.setEnabled(true);
+        accessButton.setText(R.string.com_auth0_sms_login_access_btn_text);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

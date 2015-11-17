@@ -1,5 +1,5 @@
 /*
- * InProgressFragment.java
+ * InvalidLinkFragment.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -26,64 +26,37 @@ package com.auth0.lock.sms.fragment;
 
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
+import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 
-public class InProgressFragment extends BaseTitledFragment {
-
-    private static final String TITLE_ARGUMENT = "TITLE_ARGUMENT";
-    private static final String MESSAGE_ARGUMENT = "MESSAGE_ARGUMENT";
-
-    private int titleResourceId;
-    private String phoneNumber;
-
-
-    public static InProgressFragment newInstance(int titleResourceId, String phoneNumber) {
-        InProgressFragment fragment = new InProgressFragment();
-        Bundle args = new Bundle();
-        args.putInt(TITLE_ARGUMENT, titleResourceId);
-        args.putString(MESSAGE_ARGUMENT, phoneNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public InProgressFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            titleResourceId = getArguments().getInt(TITLE_ARGUMENT);
-            phoneNumber = getArguments().getString(MESSAGE_ARGUMENT);
-        }
-    }
+public class InvalidLinkFragment extends BaseTitledFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.com_auth0_sms_fragment_in_progress, container, false);
+        return inflater.inflate(R.layout.com_auth0_sms_fragment_invalid_link, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        String messageFormat = getString(R.string.com_auth0_sms_login_message_in_progress);
-        TextView progressTextView = (TextView) view.findViewById(R.id.com_auth0_sms_progress_message);
-        progressTextView.setText(Html.fromHtml(String.format(messageFormat, phoneNumber)));
+        Button requestNewLinkButton = (Button) view.findViewById(R.id.com_auth0_sms_request_new_link_button);
+        requestNewLinkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bus.post(NavigationEvent.BACK);
+            }
+        });
     }
 
     @Override
     protected int getTitleResource() {
-        return titleResourceId;
+        return R.string.com_auth0_sms_title_invalid_link;
     }
 }

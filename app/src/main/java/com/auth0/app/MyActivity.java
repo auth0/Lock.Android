@@ -50,7 +50,7 @@ public class MyActivity extends AppCompatActivity {
         smsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MyActivity.this, LockSMSActivity.class));
+                LockSMSActivity.showFrom(MyActivity.this, true);
             }
         });
 
