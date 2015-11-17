@@ -27,35 +27,52 @@ package com.auth0.lock.email.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.auth0.api.callback.BaseCallback;
+import com.auth0.lock.email.R;
 import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
+import com.auth0.lock.email.event.EmailVerificationCodeSentEvent;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.fragment.BaseTitledFragment;
-import com.auth0.lock.email.R;
 import com.auth0.lock.validation.EmailValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
+import com.squareup.otto.Subscribe;
 
 public class RequestCodeFragment extends BaseTitledFragment {
 
     private static final String TAG = RequestCodeFragment.class.getName();
     private static final String LAST_EMAIL_KEY = "LAST_EMAIL_NUMBER_KEY";
 
+    private static final String USE_MAGIC_LINK_ARGUMENT = "USE_MAGIC_LINK_ARGUMENT";
+
+    private boolean useMagicLink;
+
     Validator validator;
     CredentialField emailField;
     Button sendButton;
     ProgressBar progressBar;
 
+    public static RequestCodeFragment newInstance(boolean useMagicLink) {
+        RequestCodeFragment fragment = new RequestCodeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(USE_MAGIC_LINK_ARGUMENT, useMagicLink);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            useMagicLink = getArguments().getBoolean(USE_MAGIC_LINK_ARGUMENT);
+        }
+
         bus.register(this);
     }
 
@@ -93,14 +110,14 @@ public class RequestCodeFragment extends BaseTitledFragment {
         });
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_email_send_code_progress_indicator);
         final Button hasCodeButton = (Button) view.findViewById(R.id.com_auth0_email_already_has_code_button);
-        hasCodeButton.setVisibility(storedEmail != null ? View.VISIBLE : View.GONE);
+        hasCodeButton.setVisibility((!useMagicLink && storedEmail != null) ? View.VISIBLE : View.GONE);
         hasCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
                 final String phoneNumber = preferences.getString(LAST_EMAIL_KEY, null);
                 if (phoneNumber != null) {
-                    bus.post(new EmailVerificationCodeRequestedEvent(phoneNumber));
+                    bus.post(new EmailVerificationCodeSentEvent(phoneNumber));
                 }
             }
         });
@@ -119,27 +136,25 @@ public class RequestCodeFragment extends BaseTitledFragment {
         sendButton.setEnabled(false);
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        final String email = emailField.getText().toString();
-        client.passwordlessWithEmailCode(email).start(new BaseCallback<Void>() {
-            @Override
-            public void onSuccess(Void payload) {
-                Log.d(TAG, "SMS code sent to " + email);
-                final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
-                editor.putString(LAST_EMAIL_KEY, emailField.getText().toString());
-                editor.apply();
-                sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_email_send_passcode_btn_text);
-                progressBar.setVisibility(View.GONE);
-                bus.post(new EmailVerificationCodeRequestedEvent(email));
-            }
 
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.com_auth0_email_send_code_error_tile, R.string.com_auth0_email_send_code_error_message, error));
-                sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_email_send_passcode_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        final String email = emailField.getText().toString();
+        bus.post(new EmailVerificationCodeRequestedEvent(email));
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onPasscodeSentEvent(EmailVerificationCodeSentEvent event) {
+        final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putString(LAST_EMAIL_KEY, event.getEmail());
+        editor.apply();
+        sendButton.setEnabled(true);
+        sendButton.setText(R.string.com_auth0_email_send_passcode_btn_text);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onAuthenticationError(AuthenticationError error) {
+        sendButton.setEnabled(true);
+        sendButton.setText(R.string.com_auth0_email_send_passcode_btn_text);
+        progressBar.setVisibility(View.GONE);
     }
 }

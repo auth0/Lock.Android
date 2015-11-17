@@ -1,5 +1,5 @@
 /*
- * EmailVerificationCodeRequestedEvent.java
+ * LoginRequestEvent.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -24,26 +24,22 @@
 
 package com.auth0.lock.email.event;
 
-public class EmailVerificationCodeRequestedEvent {
 
-    private final String email;
-    private final boolean isRetry;
+public class LoginRequestEvent {
 
-    public EmailVerificationCodeRequestedEvent(String email, boolean isRetry) {
+    private String email;
+    private String passcode;
+
+    public LoginRequestEvent(String email, String passcode) {
         this.email = email;
-        this.isRetry = isRetry;
-    }
-
-    public EmailVerificationCodeRequestedEvent(String email) {
-        this.email = email;
-        this.isRetry = false;
+        this.passcode = passcode;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public boolean isRetry() {
-        return isRetry;
+    public String getPasscode() {
+        return passcode;
     }
 }

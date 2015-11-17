@@ -1,5 +1,5 @@
 /*
- * SmsLoginFragment.java
+ * EmailLoginFragment.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -34,30 +34,35 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.auth0.api.callback.AuthenticationCallback;
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
-import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
+import com.auth0.lock.email.R;
+import com.auth0.lock.email.event.LoginRequestEvent;
+import com.auth0.lock.email.validation.VerificationCodeValidator;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.fragment.BaseTitledFragment;
-import com.auth0.lock.email.R;
-import com.auth0.lock.email.validation.VerificationCodeValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
+import com.squareup.otto.Subscribe;
 
 public class EmailLoginFragment extends BaseTitledFragment {
 
-    public static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
+    private static final String EMAIL_ARGUMENT = "EMAIL_ARGUMENT";
 
     private String email;
-    private LoginAuthenticationErrorBuilder errorBuilder;
     private Validator validator;
 
     Button accessButton;
     ProgressBar progressBar;
     CredentialField passcodeField;
+
+    public static EmailLoginFragment newInstance(String email) {
+        EmailLoginFragment fragment = new EmailLoginFragment();
+        Bundle args = new Bundle();
+        args.putString(EMAIL_ARGUMENT, email);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,16 @@ public class EmailLoginFragment extends BaseTitledFragment {
         if (arguments != null) {
             email = arguments.getString(EMAIL_ARGUMENT);
         }
-        errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_error_message, R.string.com_auth0_email_login_invalid_credentials_message);
         validator = new VerificationCodeValidator(R.id.com_auth0_email_login_code_field, R.string.com_auth0_email_login_error_title, R.string.com_auth0_email_login_invalid_passcode_message);
+
+        bus.register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        bus.unregister(this);
     }
 
     @Override
@@ -108,33 +121,30 @@ public class EmailLoginFragment extends BaseTitledFragment {
         } else {
             bus.post(error);
         }
-
     }
 
     private void performLogin() {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        String passcode = passcodeField.getText().toString();
-        client.loginWithEmail(email, passcode)
-                .addParameters(authenticationParameters)
-                .start(new AuthenticationCallback() {
-                    @Override
-                    public void onSuccess(UserProfile userProfile, Token token) {
-                        bus.post(new AuthenticationEvent(userProfile, token));
-                        accessButton.setEnabled(true);
-                        accessButton.setText(R.string.com_auth0_email_login_access_btn_text);
-                        progressBar.setVisibility(View.GONE);
-                    }
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        bus.post(errorBuilder.buildFrom(throwable));
-                        accessButton.setEnabled(true);
-                        accessButton.setText(R.string.com_auth0_email_login_access_btn_text);
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+        String passcode = passcodeField.getText().toString();
+        bus.post(new LoginRequestEvent(email, passcode));
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onAuthenticationError(AuthenticationError error) {
+        accessButton.setEnabled(true);
+        accessButton.setText(R.string.com_auth0_email_login_access_btn_text);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onAuthentication(AuthenticationEvent event) {
+        accessButton.setEnabled(true);
+        accessButton.setText(R.string.com_auth0_email_login_access_btn_text);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
