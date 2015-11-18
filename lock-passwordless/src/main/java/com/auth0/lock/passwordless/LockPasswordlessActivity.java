@@ -66,14 +66,18 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private static final String TAG = LockPasswordlessActivity.class.getName();
 
-    public static final int TYPE_EMAIL = 0;
-    public static final int TYPE_SMS   = 1;
+    public static final int MODE_SMS_CODE         = 0x00;
+    public static final int MODE_EMAIL_CODE       = 0x01;
+    public static final int MODE_SMS_MAGIC_LINK   = 0x10;
+    public static final int MODE_EMAIL_MAGIC_LINK = 0x11;
+
+    private static final int USE_MAGIC_LINK_MASK  = 0x10;
+    private static final int IS_EMAIL_MASK        = 0x01;
 
     private static final int REQUEST_CODE = 1234;
 
     private static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
     private static final String USERNAME_PARAMETER = "USERNAME_PARAMETER";
-    private static final String USE_MAGIC_LINK_PARAMETER = "USE_MAGIC_LINK_PARAMETER";
     private static final String IS_IN_PROGRESS_PARAMETER = "IS_IN_PROGRESS_PARAMETER";
 
     protected AuthenticationAPIClient client;
@@ -81,18 +85,19 @@ public class LockPasswordlessActivity extends FragmentActivity {
     Lock lock;
     private int passwordlessType;
     private boolean isInProgress;
-    private boolean useMagicLink;
     private String username;
     private LoginAuthenticationErrorBuilder errorBuilder;
 
-    public static void showFrom(Activity activity, int passwordlessType, boolean useMagicLink) {
+    public static void showFrom(Activity activity, int passwordlessType) {
         Intent intent = new Intent(activity, LockPasswordlessActivity.class);
-        if (passwordlessType != TYPE_EMAIL && passwordlessType != TYPE_SMS) {
-            Log.e(TAG, "Invalid passwordless type, it must be either TYPE_EMAIL or TYPE_SMS");
+        if (passwordlessType != MODE_EMAIL_CODE
+                && passwordlessType != MODE_EMAIL_MAGIC_LINK
+                && passwordlessType != MODE_SMS_CODE
+                && passwordlessType != MODE_SMS_MAGIC_LINK) {
+            Log.e(TAG, "Invalid passwordless type, it must be one of {MODE_EMAIL_CODE, MODE_EMAIL_MAGIC_LINK, MODE_SMS_CODE, MODE_SMS_MAGIC_LINK}");
             return;
         }
         intent.putExtra(PASSWORDLESS_TYPE_PARAMETER, passwordlessType);
-        intent.putExtra(USE_MAGIC_LINK_PARAMETER, useMagicLink);
         activity.startActivity(intent);
     }
 
@@ -108,22 +113,22 @@ public class LockPasswordlessActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             isInProgress = false;
             Intent intent = getIntent();
-            passwordlessType = intent.getIntExtra(PASSWORDLESS_TYPE_PARAMETER, TYPE_EMAIL);
+            setPasswordlessType(intent.getIntExtra(PASSWORDLESS_TYPE_PARAMETER, MODE_EMAIL_CODE));
             boolean invalidMagicLink = Intent.ACTION_VIEW.equals(intent.getAction());
             if (invalidMagicLink) {
                 String dataString = intent.getDataString();
                 if (dataString.contains("/sms?code")) {
-                    passwordlessType = TYPE_SMS;
+                    setIsEmailType(false);
                 }
+                setUseMagicLink(true);
             }
-            useMagicLink = invalidMagicLink || intent.getBooleanExtra(USE_MAGIC_LINK_PARAMETER, false);
-            if (passwordlessType == TYPE_EMAIL) {
+            if (isEmailType()) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, RequestCodeEmailFragment.newInstance(useMagicLink))
+                        .add(R.id.com_auth0_container, RequestCodeEmailFragment.newInstance(useMagicLink()))
                         .commit();
             } else {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, RequestCodeSmsFragment.newInstance(useMagicLink))
+                        .add(R.id.com_auth0_container, RequestCodeSmsFragment.newInstance(useMagicLink()))
                         .commit();
             }
             if (invalidMagicLink) {
@@ -134,13 +139,12 @@ public class LockPasswordlessActivity extends FragmentActivity {
                         .commit();
             }
         } else {
-            passwordlessType = savedInstanceState.getInt(PASSWORDLESS_TYPE_PARAMETER);
+            setPasswordlessType(savedInstanceState.getInt(PASSWORDLESS_TYPE_PARAMETER));
             isInProgress = savedInstanceState.getBoolean(IS_IN_PROGRESS_PARAMETER);
-            useMagicLink = savedInstanceState.getBoolean(USE_MAGIC_LINK_PARAMETER);
             username = savedInstanceState.getString(USERNAME_PARAMETER);
         }
 
-        if (passwordlessType == TYPE_EMAIL) {
+        if (isEmailType()) {
             errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_passwordless_login_error_title, R.string.com_auth0_passwordless_login_error_message, R.string.com_auth0_passwordless_login_invalid_credentials_message_email);
         } else {
             errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_passwordless_login_error_title, R.string.com_auth0_passwordless_login_error_message, R.string.com_auth0_passwordless_login_invalid_credentials_message_sms);
@@ -153,7 +157,6 @@ public class LockPasswordlessActivity extends FragmentActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(PASSWORDLESS_TYPE_PARAMETER, passwordlessType);
         savedInstanceState.putBoolean(IS_IN_PROGRESS_PARAMETER, isInProgress);
-        savedInstanceState.putBoolean(USE_MAGIC_LINK_PARAMETER, useMagicLink);
         savedInstanceState.putString(USERNAME_PARAMETER, username);
 
         super.onSaveInstanceState(savedInstanceState);
@@ -211,6 +214,58 @@ public class LockPasswordlessActivity extends FragmentActivity {
         return Lock.getLock(this);
     }
 
+    protected void setPasswordlessType(int passwordlessType) {
+        if (passwordlessType != MODE_EMAIL_CODE
+                && passwordlessType != MODE_EMAIL_MAGIC_LINK
+                && passwordlessType != MODE_SMS_CODE
+                && passwordlessType != MODE_SMS_MAGIC_LINK) {
+            Log.e(TAG, "Invalid passwordless type, it must be one of {MODE_EMAIL_CODE, MODE_EMAIL_MAGIC_LINK, MODE_SMS_CODE, MODE_SMS_MAGIC_LINK}");
+            return;
+        }
+
+        this.passwordlessType = passwordlessType;
+    }
+
+    protected boolean useMagicLink() {
+        return 0 != (passwordlessType & USE_MAGIC_LINK_MASK);
+    }
+
+    protected void setUseMagicLink(boolean useMagicLink) {
+        if (useMagicLink() == useMagicLink) {
+            return;
+        }
+
+        Log.d(TAG, "before  > passwordlessType: " + passwordlessType);
+        if (useMagicLink) {
+            Log.d(TAG, "Enabling magic link type");
+            passwordlessType |= USE_MAGIC_LINK_MASK;
+        } else {
+            Log.d(TAG, "Disabling magic link type");
+            passwordlessType &= ~USE_MAGIC_LINK_MASK;
+        }
+        Log.d(TAG, "after   > passwordlessType: " + passwordlessType);
+    }
+
+    protected boolean isEmailType() {
+        return 0 != (passwordlessType & IS_EMAIL_MASK);
+    }
+
+    protected void setIsEmailType(boolean isEmailType) {
+        if (isEmailType() == isEmailType) {
+            return;
+        }
+
+        Log.d(TAG, "before  > passwordlessType: "+passwordlessType);
+        if (isEmailType) {
+            Log.d(TAG, "Enabling email type");
+            passwordlessType |= IS_EMAIL_MASK;
+        } else {
+            Log.d(TAG, "Disabling email type");
+            passwordlessType &= ~IS_EMAIL_MASK;
+        }
+        Log.d(TAG, "after   > passwordlessType: "+passwordlessType);
+    }
+
     @SuppressWarnings("unused")
     @Subscribe public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
@@ -237,14 +292,14 @@ public class LockPasswordlessActivity extends FragmentActivity {
         username = event.getUsername();
         Fragment fragment;
 
-        if (passwordlessType == TYPE_EMAIL) {
-            if (!useMagicLink) {
+        if (isEmailType()) {
+            if (!useMagicLink()) {
                 fragment = PasscodeLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_email, username);
             } else {
                 fragment = MagicLinkLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_magic_link_email, username);
             }
         } else {
-            if (!useMagicLink) {
+            if (!useMagicLink()) {
                 fragment = PasscodeLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_sms, username);
             } else {
                 fragment = MagicLinkLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_magic_link_sms, username);
@@ -260,7 +315,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
     @SuppressWarnings("unused")
     @Subscribe public void onCodeManualEntryRequested(CodeManualEntryRequestedEvent event) {
         Fragment fragment = PasscodeLoginFragment.newInstance(
-                passwordlessType == TYPE_EMAIL
+                isEmailType()
                         ? R.string.com_auth0_passwordless_login_message_email
                         : R.string.com_auth0_passwordless_login_message_sms
                 , username);
@@ -313,8 +368,8 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private void performLogin(LoginRequestEvent event) {
         Fragment fragment = InProgressFragment.newInstance(
-                useMagicLink ? R.string.com_auth0_passwordless_title_in_progress_magic_link : R.string.com_auth0_passwordless_title_in_progress_code,
-                passwordlessType == TYPE_EMAIL ? R.string.com_auth0_passwordless_login_message_in_progress_email : R.string.com_auth0_passwordless_login_message_in_progress_sms,
+                useMagicLink() ? R.string.com_auth0_passwordless_title_in_progress_magic_link : R.string.com_auth0_passwordless_title_in_progress_code,
+                isEmailType() ? R.string.com_auth0_passwordless_login_message_in_progress_email : R.string.com_auth0_passwordless_login_message_in_progress_sms,
                 event.getUsername());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
@@ -335,7 +390,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
         };
 
         AuthenticationRequest request;
-        if (passwordlessType == TYPE_EMAIL) {
+        if (isEmailType()) {
             request = client.loginWithEmail(event.getUsername(), event.getPasscode());
         } else {
             request = client.loginWithPhoneNumber(event.getUsername(), event.getPasscode());
@@ -352,12 +407,12 @@ public class LockPasswordlessActivity extends FragmentActivity {
         final int message;
 
         ParameterizableRequest<Void> request;
-        if (passwordlessType == TYPE_EMAIL) {
-            request = client.passwordlessWithEmail(username, useMagicLink);
+        if (isEmailType()) {
+            request = client.passwordlessWithEmail(username, useMagicLink());
             title = R.string.com_auth0_passwordless_send_code_error_tile_email;
             message = R.string.com_auth0_passwordless_send_code_error_message_email;
         } else {
-            request = client.passwordlessWithSMS(username, useMagicLink);
+            request = client.passwordlessWithSMS(username, useMagicLink());
             title = R.string.com_auth0_passwordless_send_code_error_tile_sms;
             message = R.string.com_auth0_passwordless_send_code_error_message_sms;
         }

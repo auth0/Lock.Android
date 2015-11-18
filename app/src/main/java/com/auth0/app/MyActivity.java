@@ -51,7 +51,8 @@ public class MyActivity extends AppCompatActivity {
         smsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.TYPE_SMS, true);
+                LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_CODE);
+                //LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_MAGIC_LINK);
                 //LockSMSActivity.showFrom(MyActivity.this, true);
             }
         });
@@ -60,7 +61,8 @@ public class MyActivity extends AppCompatActivity {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.TYPE_EMAIL, true);
+                LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_CODE);
+                //LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_MAGIC_LINK);
                 //LockEmailActivity.showFrom(MyActivity.this, true);
             }
         });
