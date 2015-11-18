@@ -35,12 +35,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.auth0.api.callback.BaseCallback;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.fragment.BaseTitledFragment;
 import com.auth0.lock.sms.R;
 import com.auth0.lock.sms.event.CountryCodeSelectedEvent;
 import com.auth0.lock.sms.event.SelectCountryCodeEvent;
+import com.auth0.lock.sms.event.SmsPasscodeRequestedEvent;
 import com.auth0.lock.sms.event.SmsPasscodeSentEvent;
 import com.auth0.lock.sms.task.LoadCountriesTask;
 import com.auth0.lock.sms.validation.PhoneNumberValidator;
@@ -57,16 +57,33 @@ public class RequestCodeFragment extends BaseTitledFragment {
     private static final String LAST_PHONE_NUMBER_KEY = "LAST_PHONE_NUMBER";
     private static final String LAST_PHONE_DIAL_CODE_KEY = "LAST_PHONE_DIAL_CODE_KEY";
 
+    private static final String USE_MAGIC_LINK_ARGUMENT = "USE_MAGIC_LINK_ARGUMENT";
+
+    private boolean useMagicLink;
+
     AsyncTask<String, Void, Map<String, String>> task;
     Validator validator;
     PhoneField phoneField;
     Button sendButton;
     ProgressBar progressBar;
 
+    public static RequestCodeFragment newInstance(boolean useMagicLink) {
+        RequestCodeFragment fragment = new RequestCodeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(USE_MAGIC_LINK_ARGUMENT, useMagicLink);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "Loading countries...");
+
+        if (getArguments() != null) {
+            useMagicLink = getArguments().getBoolean(USE_MAGIC_LINK_ARGUMENT);
+        }
+
         bus.register(this);
     }
 
@@ -133,7 +150,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
         });
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_sms_send_code_progress_indicator);
         final Button hasCodeButton = (Button) view.findViewById(R.id.com_auth0_sms_already_has_code_button);
-        hasCodeButton.setVisibility(phoneNumber != null && dialCode != null ? View.VISIBLE : View.GONE);
+        hasCodeButton.setVisibility((!useMagicLink && phoneNumber != null && dialCode != null) ? View.VISIBLE : View.GONE);
         hasCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +167,7 @@ public class RequestCodeFragment extends BaseTitledFragment {
     private void requestSmsCode() {
         AuthenticationError error = validator.validateFrom(this);
         if (error == null) {
-                sendRequestCode();
+            sendRequestCode();
         } else {
             bus.post(error);
         }
@@ -160,32 +177,31 @@ public class RequestCodeFragment extends BaseTitledFragment {
         sendButton.setEnabled(false);
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        final String phoneNumber = phoneField.getCompletePhoneNumber();
-        client.passwordlessWithSMSCode(phoneNumber).start(new BaseCallback<Void>() {
-            @Override
-            public void onSuccess(Void payload) {
-                Log.d(TAG, "SMS code sent to " + phoneNumber);
-                final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
-                editor.putString(LAST_PHONE_NUMBER_KEY, phoneField.getPhoneNumber());
-                editor.putString(LAST_PHONE_DIAL_CODE_KEY, phoneField.getDialCode());
-                editor.apply();
-                sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
-                progressBar.setVisibility(View.GONE);
-                bus.post(new SmsPasscodeSentEvent(phoneNumber));
-            }
 
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.com_auth0_sms_send_code_error_tile, R.string.com_auth0_sms_send_code_error_message, error));
-                sendButton.setEnabled(true);
-                sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        String phoneNumber = phoneField.getCompletePhoneNumber();
+        bus.post(new SmsPasscodeRequestedEvent(phoneNumber));
     }
-    @Subscribe
-    public void onCountrySelected(CountryCodeSelectedEvent event) {
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onPasscodeSentEvent(SmsPasscodeSentEvent event) {
+        final SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putString(LAST_PHONE_NUMBER_KEY, phoneField.getPhoneNumber());
+        editor.putString(LAST_PHONE_DIAL_CODE_KEY, phoneField.getDialCode());
+        editor.apply();
+        sendButton.setEnabled(true);
+        sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onAuthenticationError(AuthenticationError error) {
+        sendButton.setEnabled(true);
+        sendButton.setText(R.string.com_auth0_send_passcode_btn_text);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe public void onCountrySelected(CountryCodeSelectedEvent event) {
         Log.d(TAG, "Received selected country " + event.getIsoCode() + " dial code " + event.getDialCode());
         phoneField.setDialCode(event.getDialCode());
     }

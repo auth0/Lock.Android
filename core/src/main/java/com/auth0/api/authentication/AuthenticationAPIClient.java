@@ -433,14 +433,16 @@ public class AuthenticationAPIClient {
     }
 
     /**
-     * Start a passwordless flow with either <a href="https://auth0.com/docs/auth-api#!#post--with_sms">SMS</a>
+     * Start a passwordless flow with <a href="https://auth0.com/docs/auth-api#!#post--with_sms">SMS</a>
      * @param phoneNumber where an SMS with a verification code will be sent
+     * @param useMagicLink whether the SMS should contain the magic link or the code
      * @return a request to configure and stat
      */
-    public ParameterizableRequest<Void> passwordlessWithSMSCode(String phoneNumber) {
+    public ParameterizableRequest<Void> passwordlessWithSMS(String phoneNumber, boolean useMagicLink) {
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .clearAll()
                 .set(PHONE_NUMBER_KEY, phoneNumber)
+                .set("send", useMagicLink ? "link_android" : "code")
                 .setConnection("sms")
                 .asDictionary();
         return passwordless()
