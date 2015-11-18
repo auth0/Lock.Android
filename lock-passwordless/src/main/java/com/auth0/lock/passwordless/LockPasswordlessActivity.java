@@ -32,6 +32,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.authentication.AuthenticationRequest;
 import com.auth0.api.callback.AuthenticationCallback;
@@ -228,11 +229,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     @SuppressWarnings("unused")
     @Subscribe public void onPasscodeRequestedEvent(PasscodeRequestedEvent event) {
-        if (passwordlessType == TYPE_EMAIL) {
-            sendEmail(event);
-        } else {
-            sendRequestCode(event);
-        }
+        sendRequestCode(event);
     }
 
     @SuppressWarnings("unused")
@@ -350,10 +347,25 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private void sendRequestCode(final PasscodeRequestedEvent event) {
         username = event.getUsername();
-        client.passwordlessWithSMS(username, useMagicLink).start(new BaseCallback<Void>() {
+
+        final int title;
+        final int message;
+
+        ParameterizableRequest<Void> request;
+        if (passwordlessType == TYPE_EMAIL) {
+            request = client.passwordlessWithEmail(username, useMagicLink);
+            title = R.string.com_auth0_passwordless_send_code_error_tile_email;
+            message = R.string.com_auth0_passwordless_send_code_error_message_email;
+        } else {
+            request = client.passwordlessWithSMS(username, useMagicLink);
+            title = R.string.com_auth0_passwordless_send_code_error_tile_sms;
+            message = R.string.com_auth0_passwordless_send_code_error_message_sms;
+        }
+
+        BaseCallback<Void> callback = new BaseCallback<Void>() {
             @Override
             public void onSuccess(Void payload) {
-                Log.d(TAG, "SMS code sent to " + username);
+                Log.d(TAG, "Passcode sent to " + username);
                 if (!event.isRetry()) {
                     bus.post(new PasscodeSentEvent(username));
                 }
@@ -361,26 +373,10 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
             @Override
             public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.com_auth0_passwordless_send_code_error_tile_sms, R.string.com_auth0_passwordless_send_code_error_message_sms, error));
+                bus.post(new AuthenticationError(title, message, error));
             }
-        });
-    }
+        };
 
-    private void sendEmail(final PasscodeRequestedEvent event) {
-        username = event.getUsername();
-        client.passwordlessWithEmail(username, useMagicLink).start(new BaseCallback<Void>() {
-            @Override
-            public void onSuccess(Void payload) {
-                Log.d(TAG, "Email code sent to " + username);
-                if (!event.isRetry()) {
-                    bus.post(new PasscodeSentEvent(username));
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(R.string.com_auth0_passwordless_send_code_error_tile_email, R.string.com_auth0_passwordless_send_code_error_message_email, error));
-            }
-        });
+        request.start(callback);
     }
 }
