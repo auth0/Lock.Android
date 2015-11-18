@@ -105,7 +105,7 @@ public class RequestCodeEmailFragment extends BaseTitledFragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestSmsCode();
+                requestPasscode();
             }
         });
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_passwordless_send_code_progress_indicator_email);
@@ -123,7 +123,7 @@ public class RequestCodeEmailFragment extends BaseTitledFragment {
         });
     }
 
-    private void requestSmsCode() {
+    private void requestPasscode() {
         AuthenticationError error = validator.validateFrom(this);
         if (error == null) {
             sendRequestCode();
