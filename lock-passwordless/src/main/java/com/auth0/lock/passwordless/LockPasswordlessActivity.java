@@ -33,6 +33,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.auth0.api.authentication.AuthenticationAPIClient;
+import com.auth0.api.authentication.AuthenticationRequest;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
@@ -336,15 +337,15 @@ public class LockPasswordlessActivity extends FragmentActivity {
             }
         };
 
+        AuthenticationRequest request;
         if (passwordlessType == TYPE_EMAIL) {
-            client.loginWithEmail(event.getUsername(), event.getPasscode())
-                    .addParameters(lock.getAuthenticationParameters())
-                    .start(authCallback);
+            request = client.loginWithEmail(event.getUsername(), event.getPasscode());
         } else {
-            client.loginWithPhoneNumber(event.getUsername(), event.getPasscode())
-                    .addParameters(lock.getAuthenticationParameters())
-                    .start(authCallback);
+            request = client.loginWithPhoneNumber(event.getUsername(), event.getPasscode());
         }
+        request
+                .addParameters(lock.getAuthenticationParameters())
+                .start(authCallback);
     }
 
     private void sendRequestCode(final PasscodeRequestedEvent event) {
