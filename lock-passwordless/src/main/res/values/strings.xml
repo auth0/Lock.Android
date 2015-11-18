@@ -30,16 +30,16 @@
     <string name="com_auth0_passwordless_title_in_progress_magic_link">Log in with Magic Link</string>
     <string name="com_auth0_passwordless_title_invalid_link">Login</string>
     <string name="com_auth0_passwordless_title_magic_link">Magic Link Sent</string>
-    <string name="com_auth0_passwordless_enter_email">Enter your username to sign in or create an account</string>
+    <string name="com_auth0_passwordless_enter_email">Enter your email to sign in or create an account</string>
     <string name="com_auth0_passwordless_enter_phone_number">Enter your phone number to sign in or create an account</string>
     <string name="com_auth0_passwordless_phone_placeholder">Phone Number</string>
     <string name="com_auth0_passwordless_send_passcode_btn_text">SEND</string>
     <string name="com_auth0_passwordless_default_code">+1</string>
-    <string name="com_auth0_passwordless_send_code_error_tile_email">There was an error sending the username code</string>
+    <string name="com_auth0_passwordless_send_code_error_tile_email">There was an error sending the email code</string>
     <string name="com_auth0_passwordless_send_code_error_tile_sms">There was an error sending the SMS code</string>
-    <string name="com_auth0_passwordless_send_code_error_message_email">Couldn\'t send an username with your passcode. Please try again later.</string>
+    <string name="com_auth0_passwordless_send_code_error_message_email">Couldn\'t send an email with your passcode. Please try again later.</string>
     <string name="com_auth0_passwordless_send_code_error_message_sms">Couldn\'t send an SMS to your phone. Please try again later.</string>
-    <string name="com_auth0_passwordless_send_code_no_phone_message_email">You must enter a valid username address</string>
+    <string name="com_auth0_passwordless_send_code_no_phone_message_email">You must enter a valid email address</string>
     <string name="com_auth0_passwordless_send_code_no_phone_message_sms">You must enter a valid phone number</string>
     <string name="com_auth0_passwordless_no_jwt_found_title">There was an error with your configuration</string>
     <string name="com_auth0_passwordless_already_have_code_btn">Already have a code?</string>
@@ -50,7 +50,7 @@
     <string name="com_auth0_passwordless_no_magic_link_button">Let me enter a code</string>
     <string name="com_auth0_passwordless_login_message_magic_link_email">
     <![CDATA[
-        Please check your username <b>%s</b>.<br/>You&#39;ve received a message from us with the link
+        Please check your email <b>%s</b>.<br/>You&#39;ve received a message from us with the link
     ]]>
     </string>
     <string name="com_auth0_passwordless_login_message_magic_link_sms">
@@ -60,7 +60,7 @@
     </string>
     <string name="com_auth0_passwordless_login_message_in_progress_email">
     <![CDATA[
-        Logging in with your username <b>%s</b>.
+        Logging in with your email <b>%s</b>.
     ]]>
     </string>
     <string name="com_auth0_passwordless_login_message_in_progress_sms">
@@ -70,7 +70,7 @@
     </string>
     <string name="com_auth0_passwordless_login_message_email">
     <![CDATA[
-        Please check your username <b>%s</b>.<br/>You&#39;ve received a message from us with your passcode
+        Please check your email <b>%s</b>.<br/>You&#39;ve received a message from us with your passcode
     ]]>
     </string>
     <string name="com_auth0_passwordless_login_message_sms">
@@ -81,7 +81,7 @@
     <string name="com_auth0_passwordless_invalid_link_error_title">Couldn\'t log in with the magic link, it was probably used already or not valid anymore</string>
     <string name="com_auth0_passwordless_login_error_title">There was an error logging in</string>
     <string name="com_auth0_passwordless_login_error_message">There was an error processing the sign in.</string>
-    <string name="com_auth0_passwordless_login_invalid_credentials_message_email">Wrong username or passcode.</string>
+    <string name="com_auth0_passwordless_login_invalid_credentials_message_email">Wrong email or passcode.</string>
     <string name="com_auth0_passwordless_login_invalid_credentials_message_sms">Wrong phone number or passcode.</string>
     <string name="com_auth0_passwordless_login_invalid_passcode_message">You must enter a valid code.</string>
     <string name="com_auth0_passwordless_resend_code_button">Resend</string>
