@@ -154,11 +154,12 @@ public class LockPasswordlessActivity extends FragmentActivity {
             username = savedInstanceState.getString(USERNAME_PARAMETER);
         }
 
-        if (isEmailType()) {
-            errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_passwordless_login_error_title, R.string.com_auth0_passwordless_login_error_message, R.string.com_auth0_passwordless_login_invalid_credentials_message_email);
-        } else {
-            errorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_passwordless_login_error_title, R.string.com_auth0_passwordless_login_error_message, R.string.com_auth0_passwordless_login_invalid_credentials_message_sms);
-        }
+        errorBuilder = new LoginAuthenticationErrorBuilder(
+                R.string.com_auth0_passwordless_login_error_title,
+                R.string.com_auth0_passwordless_login_error_message,
+                isEmailType()
+                        ? R.string.com_auth0_passwordless_login_invalid_credentials_message_email
+                        : R.string.com_auth0_passwordless_login_invalid_credentials_message_sms);
 
         ActivityUIHelper.configureScreenModeForActivity(this, lock);
     }
