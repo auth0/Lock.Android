@@ -14,7 +14,7 @@ Lock for Android
 * Provides support for **Social Providers** (Facebook, Twitter, etc.), **Enterprise Providers** (AD, LDAP, etc.) and **Username & Password**.
 * Passwordless authentication using **SMS**.
 
-## Requierements
+## Requirements
 
 Android API level 15+ is required in order to use Lock's UI.
 If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.11.+`, the minimum required API level is 9.
