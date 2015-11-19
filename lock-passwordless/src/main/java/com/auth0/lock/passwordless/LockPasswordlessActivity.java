@@ -39,7 +39,7 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
-import com.auth0.identity.web.LinkParser;
+import com.auth0.identity.web.AppLinkParser;
 import com.auth0.lock.Lock;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
@@ -114,16 +114,16 @@ public class LockPasswordlessActivity extends FragmentActivity {
             isInProgress = false;
             Intent intent = getIntent();
             setPasswordlessType(intent.getIntExtra(PASSWORDLESS_TYPE_PARAMETER, MODE_EMAIL_CODE));
-            LinkParser linkParser = new LinkParser();
+            AppLinkParser linkParser = new AppLinkParser();
             boolean invalidMagicLink = linkParser.isAppLinkIntent(intent);
             if (invalidMagicLink) {
                 setUseMagicLink(true);
                 int appLinkType = linkParser.getAppLinkTypeFromIntent(intent);
                 switch (appLinkType) {
-                    case LinkParser.TYPE_SMS:
+                    case AppLinkParser.TYPE_SMS:
                         setIsEmailType(false);
                         break;
-                    case LinkParser.TYPE_EMAIL:
+                    case AppLinkParser.TYPE_EMAIL:
                         setIsEmailType(true);
                         break;
                     default:
@@ -190,7 +190,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent username: " + username + " intent: " + intent);
 
-        LinkParser linkParser = new LinkParser();
+        AppLinkParser linkParser = new AppLinkParser();
         if (username != null && linkParser.isValidAppLinkIntent(intent)) {
             String passcode = linkParser.getCodeFromAppLinkIntent(intent);
             performLogin(new LoginRequestEvent(username, passcode));

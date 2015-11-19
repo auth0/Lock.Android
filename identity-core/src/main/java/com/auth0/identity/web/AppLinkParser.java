@@ -28,8 +28,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-public class LinkParser {
-    private static final String TAG = LinkParser.class.getName();
+public class AppLinkParser {
+    private static final String TAG = AppLinkParser.class.getName();
 
     public static final int TYPE_INVALID = 0;
     public static final int TYPE_EMAIL   = 1;

@@ -17,34 +17,34 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class LinkParserTest {
+public class AppLinkParserTest {
 
-    LinkParser linkParser;
+    AppLinkParser linkParser;
 
     @Before
     public void setUp() throws Exception {
-        linkParser = new LinkParser();
+        linkParser = new AppLinkParser();
     }
 
     @Test
     public void testAppLinkTypeFromIntent() throws Exception {
         Intent validEmailIntent = new Intent(Intent.ACTION_VIEW);
         validEmailIntent.setData(Uri.parse("https://tenant.auth0.com/android/com.example.app/email?code=234567"));
-        assertEquals(LinkParser.TYPE_EMAIL, linkParser.getAppLinkTypeFromIntent(validEmailIntent));
+        assertEquals(AppLinkParser.TYPE_EMAIL, linkParser.getAppLinkTypeFromIntent(validEmailIntent));
 
         Intent validSmsIntent = new Intent(Intent.ACTION_VIEW);
         validSmsIntent.setData(Uri.parse("https://tenant.auth0.com/android/com.example.app/sms?code=234567"));
-        assertEquals(LinkParser.TYPE_SMS, linkParser.getAppLinkTypeFromIntent(validSmsIntent));
+        assertEquals(AppLinkParser.TYPE_SMS, linkParser.getAppLinkTypeFromIntent(validSmsIntent));
 
         Intent emptyIntent = new Intent();
-        assertEquals(LinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(emptyIntent));
+        assertEquals(AppLinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(emptyIntent));
 
         Intent emptyViewIntent = new Intent(Intent.ACTION_VIEW);
-        assertEquals(LinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(emptyViewIntent));
+        assertEquals(AppLinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(emptyViewIntent));
 
         Intent invalidIntent = new Intent(Intent.ACTION_VIEW);
         invalidIntent.setData(Uri.parse("https://tenant.auth0.com/android/com.example.app/other?code=234567"));
-        assertEquals(LinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(invalidIntent));
+        assertEquals(AppLinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(invalidIntent));
     }
 
     @Test
