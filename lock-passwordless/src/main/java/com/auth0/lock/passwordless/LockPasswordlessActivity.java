@@ -302,18 +302,22 @@ public class LockPasswordlessActivity extends FragmentActivity {
         username = event.getUsername();
         Fragment fragment;
 
-        if (isEmailType()) {
-            if (!useMagicLink()) {
+        switch (passwordlessType) {
+            case MODE_EMAIL_CODE:
                 fragment = PasscodeLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_email, username);
-            } else {
+                break;
+            case MODE_EMAIL_MAGIC_LINK:
                 fragment = MagicLinkLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_magic_link_email, username);
-            }
-        } else {
-            if (!useMagicLink()) {
+                break;
+            case MODE_SMS_CODE:
                 fragment = PasscodeLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_sms, username);
-            } else {
+                break;
+            case MODE_SMS_MAGIC_LINK:
                 fragment = MagicLinkLoginFragment.newInstance(R.string.com_auth0_passwordless_login_message_magic_link_sms, username);
-            }
+                break;
+            default:
+                Log.e(TAG, "Can't continue. Unknown passwordless type: "+passwordlessType);
+                return;
         }
 
         getSupportFragmentManager().beginTransaction()
