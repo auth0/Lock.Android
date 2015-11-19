@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+@Deprecated
 public class AppLinkParser {
     private static final String TAG = AppLinkParser.class.getName();
 
