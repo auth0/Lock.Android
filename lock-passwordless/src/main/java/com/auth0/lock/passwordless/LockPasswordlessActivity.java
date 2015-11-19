@@ -39,7 +39,6 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
-import com.auth0.identity.web.AppLinkParser;
 import com.auth0.lock.Lock;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
@@ -58,6 +57,7 @@ import com.auth0.lock.passwordless.fragment.MagicLinkLoginFragment;
 import com.auth0.lock.passwordless.fragment.PasscodeLoginFragment;
 import com.auth0.lock.passwordless.fragment.RequestCodeEmailFragment;
 import com.auth0.lock.passwordless.fragment.RequestCodeSmsFragment;
+import com.auth0.lock.passwordless.util.AppLinkIntentParser;
 import com.auth0.lock.util.ActivityUIHelper;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -66,13 +66,14 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private static final String TAG = LockPasswordlessActivity.class.getName();
 
-    public static final int MODE_SMS_CODE         = 0x00;
-    public static final int MODE_EMAIL_CODE       = 0x01;
-    public static final int MODE_SMS_MAGIC_LINK   = 0x10;
-    public static final int MODE_EMAIL_MAGIC_LINK = 0x11;
+    public static final int MODE_UNKNOWN          = 0x100;
+    public static final int MODE_SMS_CODE         = 0x000;
+    public static final int MODE_EMAIL_CODE       = 0x001;
+    public static final int MODE_SMS_MAGIC_LINK   = 0x010;
+    public static final int MODE_EMAIL_MAGIC_LINK = 0x011;
 
-    private static final int USE_MAGIC_LINK_MASK  = 0x10;
-    private static final int IS_EMAIL_MASK        = 0x01;
+    private static final int USE_MAGIC_LINK_MASK  = 0x010;
+    private static final int IS_EMAIL_MASK        = 0x001;
 
     private static final int REQUEST_CODE = 1234;
 
@@ -106,6 +107,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.com_auth0_passwordless_activity_lock_passwordless);
 
+        passwordlessType = MODE_UNKNOWN;
         lock = getLock();
         client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
@@ -113,30 +115,27 @@ public class LockPasswordlessActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             isInProgress = false;
             Intent intent = getIntent();
-            setPasswordlessType(intent.getIntExtra(PASSWORDLESS_TYPE_PARAMETER, MODE_EMAIL_CODE));
-            AppLinkParser linkParser = new AppLinkParser();
-            boolean invalidMagicLink = linkParser.isAppLinkIntent(intent);
-            if (invalidMagicLink) {
-                setUseMagicLink(true);
-                int appLinkType = linkParser.getAppLinkTypeFromIntent(intent);
-                switch (appLinkType) {
-                    case AppLinkParser.TYPE_SMS:
-                        setIsEmailType(false);
-                        break;
-                    case AppLinkParser.TYPE_EMAIL:
-                        setIsEmailType(true);
-                        break;
-                    default:
-                        Log.e(TAG, "Started with an invalid app link intent:"+intent);
+            boolean invalidMagicLink = false;
+            int mode = intent.getIntExtra(PASSWORDLESS_TYPE_PARAMETER, MODE_UNKNOWN);
+            if (mode != MODE_UNKNOWN) {
+                setPasswordlessType(mode);
+            } else {
+                AppLinkIntentParser linkParser = new AppLinkIntentParser(intent);
+                invalidMagicLink = linkParser.isAppLinkIntent();
+                if (invalidMagicLink) {
+                    setPasswordlessType(linkParser.getModeFromAppLink());
                 }
             }
 
-            Fragment initialFragment;
-            if (isEmailType()) {
-                initialFragment = RequestCodeEmailFragment.newInstance(useMagicLink());
-            } else {
-                initialFragment = RequestCodeSmsFragment.newInstance(useMagicLink());
+            if (passwordlessType == MODE_UNKNOWN) {
+                Log.e(TAG, "Passwordless type is unknown, the intent that started the activity is "+intent);
+                finish();
             }
+
+            Fragment initialFragment = isEmailType()
+                    ? RequestCodeEmailFragment.newInstance(useMagicLink())
+                    : RequestCodeSmsFragment.newInstance(useMagicLink());
+
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.com_auth0_container, initialFragment)
                     .commit();
@@ -191,9 +190,9 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent username: " + username + " intent: " + intent);
 
-        AppLinkParser linkParser = new AppLinkParser();
-        if (username != null && linkParser.isValidAppLinkIntent(intent)) {
-            String passcode = linkParser.getCodeFromAppLinkIntent(intent);
+        AppLinkIntentParser linkParser = new AppLinkIntentParser(intent);
+        if (username != null && linkParser.isValidAppLinkIntent()) {
+            String passcode = linkParser.getCodeFromAppLinkIntent();
             performLogin(new LoginRequestEvent(username, passcode));
         } else {
             Fragment fragment = new InvalidLinkFragment();
@@ -226,7 +225,8 @@ public class LockPasswordlessActivity extends FragmentActivity {
     }
 
     protected void setPasswordlessType(int passwordlessType) {
-        if (passwordlessType != MODE_EMAIL_CODE
+        if (passwordlessType != MODE_UNKNOWN
+                && passwordlessType != MODE_EMAIL_CODE
                 && passwordlessType != MODE_EMAIL_MAGIC_LINK
                 && passwordlessType != MODE_SMS_CODE
                 && passwordlessType != MODE_SMS_MAGIC_LINK) {
