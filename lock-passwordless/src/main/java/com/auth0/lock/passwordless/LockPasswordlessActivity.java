@@ -241,32 +241,8 @@ public class LockPasswordlessActivity extends FragmentActivity {
         return 0 != (passwordlessType & USE_MAGIC_LINK_MASK);
     }
 
-    protected void setUseMagicLink(boolean useMagicLink) {
-        if (useMagicLink() == useMagicLink) {
-            return;
-        }
-
-        if (useMagicLink) {
-            passwordlessType |= USE_MAGIC_LINK_MASK;
-        } else {
-            passwordlessType &= ~USE_MAGIC_LINK_MASK;
-        }
-    }
-
     protected boolean isEmailType() {
         return 0 != (passwordlessType & IS_EMAIL_MASK);
-    }
-
-    protected void setIsEmailType(boolean isEmailType) {
-        if (isEmailType() == isEmailType) {
-            return;
-        }
-
-        if (isEmailType) {
-            passwordlessType |= IS_EMAIL_MASK;
-        } else {
-            passwordlessType &= ~IS_EMAIL_MASK;
-        }
     }
 
     @SuppressWarnings("unused")
@@ -375,8 +351,12 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private void performLogin(LoginRequestEvent event) {
         Fragment fragment = InProgressFragment.newInstance(
-                useMagicLink() ? R.string.com_auth0_passwordless_title_in_progress_magic_link : R.string.com_auth0_passwordless_title_in_progress_code,
-                isEmailType() ? R.string.com_auth0_passwordless_login_message_in_progress_email : R.string.com_auth0_passwordless_login_message_in_progress_sms,
+                useMagicLink()
+                        ? R.string.com_auth0_passwordless_title_in_progress_magic_link
+                        : R.string.com_auth0_passwordless_title_in_progress_code,
+                isEmailType()
+                        ? R.string.com_auth0_passwordless_login_message_in_progress_email
+                        : R.string.com_auth0_passwordless_login_message_in_progress_sms,
                 event.getUsername());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
