@@ -245,15 +245,11 @@ public class LockPasswordlessActivity extends FragmentActivity {
             return;
         }
 
-        Log.d(TAG, "before  > passwordlessType: " + passwordlessType);
         if (useMagicLink) {
-            Log.d(TAG, "Enabling magic link type");
             passwordlessType |= USE_MAGIC_LINK_MASK;
         } else {
-            Log.d(TAG, "Disabling magic link type");
             passwordlessType &= ~USE_MAGIC_LINK_MASK;
         }
-        Log.d(TAG, "after   > passwordlessType: " + passwordlessType);
     }
 
     protected boolean isEmailType() {
@@ -265,15 +261,11 @@ public class LockPasswordlessActivity extends FragmentActivity {
             return;
         }
 
-        Log.d(TAG, "before  > passwordlessType: "+passwordlessType);
         if (isEmailType) {
-            Log.d(TAG, "Enabling email type");
             passwordlessType |= IS_EMAIL_MASK;
         } else {
-            Log.d(TAG, "Disabling email type");
             passwordlessType &= ~IS_EMAIL_MASK;
         }
-        Log.d(TAG, "after   > passwordlessType: "+passwordlessType);
     }
 
     @SuppressWarnings("unused")
