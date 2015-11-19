@@ -27,13 +27,33 @@ public class LinkParserTest {
     }
 
     @Test
+    public void testAppLinkTypeFromIntent() throws Exception {
+        Intent validEmailIntent = new Intent(Intent.ACTION_VIEW);
+        validEmailIntent.setData(Uri.parse("https://tenant.auth0.com/android/com.example.app/email?code=234567"));
+        assertEquals(LinkParser.TYPE_EMAIL, linkParser.getAppLinkTypeFromIntent(validEmailIntent));
+
+        Intent validSmsIntent = new Intent(Intent.ACTION_VIEW);
+        validSmsIntent.setData(Uri.parse("https://tenant.auth0.com/android/com.example.app/sms?code=234567"));
+        assertEquals(LinkParser.TYPE_SMS, linkParser.getAppLinkTypeFromIntent(validSmsIntent));
+
+        Intent emptyIntent = new Intent();
+        assertEquals(LinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(emptyIntent));
+
+        Intent emptyViewIntent = new Intent(Intent.ACTION_VIEW);
+        assertEquals(LinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(emptyViewIntent));
+
+        Intent invalidIntent = new Intent(Intent.ACTION_VIEW);
+        invalidIntent.setData(Uri.parse("https://tenant.auth0.com/android/com.example.app/other?code=234567"));
+        assertEquals(LinkParser.TYPE_INVALID, linkParser.getAppLinkTypeFromIntent(invalidIntent));
+    }
+
+    @Test
     public void testCodeFromAppLinkUri() throws Exception {
         assertNull(linkParser.getCodeFromAppLinkUri(null));
-        assertNull(linkParser.getCodeFromAppLinkUri(""));
-        assertNull(linkParser.getCodeFromAppLinkUri("http://example.com/"));
-        assertNull(linkParser.getCodeFromAppLinkUri("thisshouldreturnnull"));
-        assertEquals("567234", linkParser.getCodeFromAppLinkUri("https://tenant.auth0.com/android/com.example.app/email?code=567234"));
-        assertNotEquals("234567", linkParser.getCodeFromAppLinkUri("https://tenant.auth0.com/android/com.example.app/email?code=567234"));
+        assertNull(linkParser.getCodeFromAppLinkUri(Uri.parse("")));
+        assertNull(linkParser.getCodeFromAppLinkUri(Uri.parse("http://example.com/")));
+        assertNull(linkParser.getCodeFromAppLinkUri(Uri.parse("thisshouldreturnnull")));
+        assertEquals("567234", linkParser.getCodeFromAppLinkUri(Uri.parse("https://tenant.auth0.com/android/com.example.app/email?code=567234")));
     }
 
     @Test
