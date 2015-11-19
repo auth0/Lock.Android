@@ -114,23 +114,33 @@ public class LockPasswordlessActivity extends FragmentActivity {
             isInProgress = false;
             Intent intent = getIntent();
             setPasswordlessType(intent.getIntExtra(PASSWORDLESS_TYPE_PARAMETER, MODE_EMAIL_CODE));
-            boolean invalidMagicLink = Intent.ACTION_VIEW.equals(intent.getAction());
+            LinkParser linkParser = new LinkParser();
+            boolean invalidMagicLink = linkParser.isAppLinkIntent(intent);
             if (invalidMagicLink) {
-                String dataString = intent.getDataString();
-                if (dataString.contains("/sms?code")) {
-                    setIsEmailType(false);
-                }
                 setUseMagicLink(true);
+                int appLinkType = linkParser.getAppLinkTypeFromIntent(intent);
+                switch (appLinkType) {
+                    case LinkParser.TYPE_SMS:
+                        setIsEmailType(false);
+                        break;
+                    case LinkParser.TYPE_EMAIL:
+                        setIsEmailType(true);
+                        break;
+                    default:
+                        Log.e(TAG, "Started with an invalid app link intent:"+intent);
+                }
             }
+
+            Fragment initialFragment;
             if (isEmailType()) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, RequestCodeEmailFragment.newInstance(useMagicLink()))
-                        .commit();
+                initialFragment = RequestCodeEmailFragment.newInstance(useMagicLink());
             } else {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.com_auth0_container, RequestCodeSmsFragment.newInstance(useMagicLink()))
-                        .commit();
+                initialFragment = RequestCodeSmsFragment.newInstance(useMagicLink());
             }
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.com_auth0_container, initialFragment)
+                    .commit();
+
             if (invalidMagicLink) {
                 Fragment fragment = new InvalidLinkFragment();
                 getSupportFragmentManager().beginTransaction()
@@ -180,8 +190,8 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent username: " + username + " intent: " + intent);
 
-        if (username != null) {
-            LinkParser linkParser = new LinkParser();
+        LinkParser linkParser = new LinkParser();
+        if (username != null && linkParser.isValidAppLinkIntent(intent)) {
             String passcode = linkParser.getCodeFromAppLinkIntent(intent);
             performLogin(new LoginRequestEvent(username, passcode));
         } else {
