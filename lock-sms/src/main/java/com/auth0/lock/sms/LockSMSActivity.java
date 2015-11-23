@@ -37,7 +37,7 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
-import com.auth0.identity.web.LinkParser;
+import com.auth0.identity.web.AppLinkParser;
 import com.auth0.lock.Lock;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
@@ -176,7 +176,7 @@ public class LockSMSActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent phoneNumber: " + phoneNumber + " intent: " + intent);
 
-        LinkParser linkParser = new LinkParser();
+        AppLinkParser linkParser = new AppLinkParser();
         String passcode = linkParser.getCodeFromAppLinkIntent(intent);
         performLogin(new LoginRequestEvent(phoneNumber, passcode));
     }

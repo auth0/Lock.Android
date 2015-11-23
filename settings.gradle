@@ -1,2 +1,2 @@
-include ':app', ':lock', ':core', ':lock-sms', ':identity-core', ':lock-email'
+include ':app', ':lock', ':core', ':lock-sms', ':identity-core', ':lock-email', ':lock-passwordless'
 include ':integrations:googleplus', ':integrations:facebook'

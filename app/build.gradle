@@ -51,6 +51,7 @@ dependencies {
     compile project(':lock')
     compile project(':lock-sms')
     compile project(':lock-email')
+    compile project(':lock-passwordless')
     compile(project(':integrations:facebook')) {
         exclude module: 'core'
         exclude module: 'identity-core'

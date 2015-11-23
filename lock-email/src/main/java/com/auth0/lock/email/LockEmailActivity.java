@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -38,7 +37,7 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
-import com.auth0.identity.web.LinkParser;
+import com.auth0.identity.web.AppLinkParser;
 import com.auth0.lock.Lock;
 import com.auth0.lock.email.event.CodeManualEntryRequestedEvent;
 import com.auth0.lock.email.event.EmailVerificationCodeRequestedEvent;
@@ -167,7 +166,7 @@ public class LockEmailActivity extends FragmentActivity {
 
         Log.d(TAG, "onNewIntent email: " + email + " intent: " + intent);
 
-        LinkParser linkParser = new LinkParser();
+        AppLinkParser linkParser = new AppLinkParser();
         String passcode = linkParser.getCodeFromAppLinkIntent(intent);
         performLogin(new LoginRequestEvent(email, passcode));
     }

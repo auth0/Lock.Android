@@ -52,14 +52,14 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
-            <intent-filter android:autoVerify="true">
+            <!--<intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" />
                 <data android:scheme="http" />
                 <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock SMS End-->
@@ -67,6 +67,24 @@
         <!--Auth0 Lock Email-->
         <activity
             android:name="com.auth0.lock.email.LockEmailActivity"
+            android:theme="@style/MyLock.Theme"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+            <!--<intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
+            </intent-filter>-->
+        </activity>
+        <!--Auth0 Lock Email End-->
+
+        <!--Auth0 Lock Passwordless-->
+        <activity
+            android:name="com.auth0.lock.passwordless.LockPasswordlessActivity"
             android:theme="@style/MyLock.Theme"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -79,8 +97,17 @@
                 <data android:scheme="http" />
                 <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
+            </intent-filter>
         </activity>
-        <!--Auth0 Lock Email End-->
+        <activity android:name="com.auth0.lock.passwordless.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
+        <!--Auth0 Lock Passwordless End-->
 
         <!--Facebook Native-->
         <activity android:name="com.facebook.FacebookActivity"

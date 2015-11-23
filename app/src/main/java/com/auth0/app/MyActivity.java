@@ -18,6 +18,7 @@ import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
 import com.auth0.lock.email.LockEmailActivity;
+import com.auth0.lock.passwordless.LockPasswordlessActivity;
 import com.auth0.lock.receiver.AuthenticationReceiver;
 import com.auth0.lock.sms.LockSMSActivity;
 
@@ -50,7 +51,9 @@ public class MyActivity extends AppCompatActivity {
         smsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LockSMSActivity.showFrom(MyActivity.this, true);
+                LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_CODE);
+                //LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_MAGIC_LINK);
+                //LockSMSActivity.showFrom(MyActivity.this, true);
             }
         });
 
@@ -58,7 +61,9 @@ public class MyActivity extends AppCompatActivity {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LockEmailActivity.showFrom(MyActivity.this, true);
+                LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_CODE);
+                //LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_MAGIC_LINK);
+                //LockEmailActivity.showFrom(MyActivity.this, true);
             }
         });
 
