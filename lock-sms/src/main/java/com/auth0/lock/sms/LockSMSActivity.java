@@ -87,8 +87,12 @@ public class LockSMSActivity extends LockPasswordlessActivity {
     }
 
     @Override
-    @Subscribe
-    public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
+    protected Class getCountryCodeActivityClass() {
+        return CountryCodeActivity.class;
+    }
+
+    @Override
+    @Subscribe public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
         super.onSelectCountryCodeEvent(event);
     }
 

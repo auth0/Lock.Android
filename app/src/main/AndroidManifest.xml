@@ -61,6 +61,7 @@
                 <data android:host="@string/auth0_domain_name" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
             </intent-filter>-->
         </activity>
+        <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock SMS End-->
 
         <!--Auth0 Lock Email-->

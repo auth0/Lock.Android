@@ -251,9 +251,13 @@ public class LockPasswordlessActivity extends FragmentActivity {
         return 0 != (passwordlessType & IS_EMAIL_MASK);
     }
 
+    protected Class getCountryCodeActivityClass() {
+        return CountryCodeActivity.class;
+    }
+
     @SuppressWarnings("unused")
     @Subscribe public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
-        Intent intent = new Intent(this, CountryCodeActivity.class);
+        Intent intent = new Intent(this, getCountryCodeActivityClass());
         startActivityForResult(intent, REQUEST_CODE);
     }
 
