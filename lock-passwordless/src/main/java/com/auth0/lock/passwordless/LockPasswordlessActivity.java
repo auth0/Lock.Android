@@ -212,8 +212,14 @@ public class LockPasswordlessActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         if (!isInProgress) {
-            // the backstack is managed automatically
-            super.onBackPressed();
+            final double count = getSupportFragmentManager().getBackStackEntryCount();
+            if ((!lock.isClosable() && count >= 1) || lock.isClosable()) {
+                if (count == 0) {
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Lock.CANCEL_ACTION));
+                }
+                // the backstack is managed automatically
+                super.onBackPressed();
+            }
         }
     }
 
