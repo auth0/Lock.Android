@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    compile project(':lock')
+    compile project(':lock-passwordless')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile libraries.app_compat
     testCompile libraries.testing
