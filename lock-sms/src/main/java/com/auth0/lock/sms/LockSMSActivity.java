@@ -27,27 +27,17 @@ package com.auth0.lock.sms;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
-import com.auth0.core.Token;
-import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
-import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.passwordless.CountryCodeActivity;
 import com.auth0.lock.passwordless.LockPasswordlessActivity;
 import com.auth0.lock.passwordless.event.CodeManualEntryRequestedEvent;
-import com.auth0.lock.passwordless.event.CountryCodeSelectedEvent;
 import com.auth0.lock.passwordless.event.LoginRequestEvent;
 import com.auth0.lock.passwordless.event.PasscodeRequestedEvent;
 import com.auth0.lock.passwordless.event.PasscodeSentEvent;
 import com.auth0.lock.passwordless.event.SelectCountryCodeEvent;
-import com.auth0.lock.passwordless.fragment.MagicLinkLoginFragment;
-import com.auth0.lock.passwordless.fragment.PasscodeLoginFragment;
 import com.squareup.otto.Subscribe;
 
 
@@ -61,7 +51,7 @@ import com.squareup.otto.Subscribe;
  *  android:label="@string/app_name"
  *  android:screenOrientation="portrait"
  *  android:launchMode="singleTask"/>
- * <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/Lock.Theme"/>
+ * <activity android:name="com.auth0.lock.passwordless.CountryCodeActivity" android:theme="@style/Lock.Theme"/>
  * }</pre>
  *
  * Then just start it with the helper method:
