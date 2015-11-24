@@ -46,6 +46,7 @@ import com.auth0.core.DatabaseUser;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.error.AuthenticationErrorBuilder;
@@ -89,7 +90,7 @@ public class SignUpFormFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
-        final Lock lock = Lock.getLock(getActivity());
+        final Lock lock = LockContext.getLock(getActivity());
         client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
         errorBuilder = new SignUpAuthenticationErrorBuilder();
@@ -200,7 +201,7 @@ public class SignUpFormFragment extends Fragment {
 
         @Override
         public void onSuccess(final UserProfile profile, final Token token) {
-            CredentialStore store = Lock.getLock(getActivity()).getCredentialStore();
+            CredentialStore store = LockContext.getLock(getActivity()).getCredentialStore();
             store.saveFromActivity(getActivity(), profile.getNickname(), profile.getEmail(), password, profile.getPictureURL(), new LockCredentialStoreCallback() {
                 @Override
                 protected void postEvent() {
@@ -235,7 +236,7 @@ public class SignUpFormFragment extends Fragment {
 
         @Override
         public void onSuccess(DatabaseUser payload) {
-            CredentialStore store = Lock.getLock(getActivity()).getCredentialStore();
+            CredentialStore store = LockContext.getLock(getActivity()).getCredentialStore();
             store.saveFromActivity(getActivity(), username, email, password, null, new LockCredentialStoreCallback() {
                 @Override
                 protected void postEvent() {

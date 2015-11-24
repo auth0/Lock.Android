@@ -321,7 +321,11 @@ public class Lock {
      *
      * @param activity that needs Lock instance
      * @return a Lock instance
+     *
+     * @deprecated Please use {@link com.auth0.lock.LockContext}
+     * @see com.auth0.lock.LockContext
      */
+    @Deprecated
     public static Lock getLock(Activity activity) {
         Application application = activity.getApplication();
         if (!(application instanceof LockProvider)) {

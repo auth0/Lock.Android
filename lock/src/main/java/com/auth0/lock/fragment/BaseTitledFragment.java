@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.auth0.api.APIClient;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.squareup.otto.Bus;
 
@@ -50,7 +51,7 @@ public abstract class BaseTitledFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Lock lock = Lock.getLock(getActivity());
+        final Lock lock = LockContext.getLock(getActivity());
         client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
         final Bundle arguments = getArguments();

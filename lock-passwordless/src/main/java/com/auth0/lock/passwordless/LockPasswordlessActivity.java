@@ -40,6 +40,7 @@ import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -227,7 +228,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
         if (lock != null) {
             return lock;
         }
-        return Lock.getLock(this);
+        return LockContext.getLock(this);
     }
 
     protected void setPasswordlessType(int passwordlessType) {

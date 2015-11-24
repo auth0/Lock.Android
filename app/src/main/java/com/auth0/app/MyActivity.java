@@ -17,6 +17,7 @@ import com.auth0.api.callback.RefreshIdTokenCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.email.LockEmailActivity;
 import com.auth0.lock.passwordless.LockPasswordlessActivity;
 import com.auth0.lock.receiver.AuthenticationReceiver;
@@ -43,7 +44,7 @@ public class MyActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Lock.getLock(MyActivity.this).loginFromActivity(MyActivity.this);
+                LockContext.getLock(MyActivity.this).loginFromActivity(MyActivity.this);
             }
         });
 
@@ -72,7 +73,7 @@ public class MyActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Lock lock = Lock.getLock(MyActivity.this);
+                Lock lock = LockContext.getLock(MyActivity.this);
                 lock.getAuthenticationAPIClient().delegationWithRefreshToken(token.getRefreshToken())
                         .start(new RefreshIdTokenCallback() {
                             @Override

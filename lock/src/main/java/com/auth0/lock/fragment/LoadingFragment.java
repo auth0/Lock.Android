@@ -19,6 +19,7 @@ import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.squareup.otto.Bus;
 
@@ -31,7 +32,7 @@ public class LoadingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Lock lock = Lock.getLock(getActivity());
+        final Lock lock = LockContext.getLock(getActivity());
         client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
     }
