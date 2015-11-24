@@ -327,12 +327,7 @@ public class Lock {
      */
     @Deprecated
     public static Lock getLock(Activity activity) {
-        Application application = activity.getApplication();
-        if (!(application instanceof LockProvider)) {
-            throw new IllegalStateException("Android Application object must implement LockProvider interface");
-        }
-        LockProvider provider = (LockProvider) application;
-        return provider.getLock();
+        return LockContext.getLock(activity);
     }
 
     /**
