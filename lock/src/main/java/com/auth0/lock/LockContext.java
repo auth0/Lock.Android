@@ -36,7 +36,7 @@ public class LockContext {
 
     private static final String TAG = LockContext.class.getName();
 
-    static Lock sLock;
+    static Lock lockInstance;
 
     private LockContext() {
         // private constructor
@@ -47,7 +47,7 @@ public class LockContext {
      * @param builder the builder
      */
     public static void configureLock(Lock.Builder builder) {
-        sLock = builder.build();
+        lockInstance = builder.build();
     }
 
     /**
@@ -69,6 +69,6 @@ public class LockContext {
         }
 
         Log.i(TAG, "Returning LockContext configured lock");
-        return sLock;
+        return lockInstance;
     }
 }
