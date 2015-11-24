@@ -58,7 +58,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" />
                 <data android:scheme="http" />
-                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
+                <data android:host="@string/auth0_domain_name" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
             </intent-filter>-->
         </activity>
         <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>
@@ -77,7 +77,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" />
                 <data android:scheme="http" />
-                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
+                <data android:host="@string/auth0_domain_name" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
             </intent-filter>-->
         </activity>
         <!--Auth0 Lock Email End-->
@@ -95,7 +95,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" />
                 <data android:scheme="http" />
-                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
+                <data android:host="@string/auth0_domain_name" android:pathPrefix="/android/com.auth0.app.Lock/email"/>
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
@@ -103,7 +103,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" />
                 <data android:scheme="http" />
-                <data android:host="overmind.auth0.com" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
+                <data android:host="@string/auth0_domain_name" android:pathPrefix="/android/com.auth0.app.Lock/sms"/>
             </intent-filter>
         </activity>
         <activity android:name="com.auth0.lock.passwordless.CountryCodeActivity" android:theme="@style/MyLock.Theme"/>

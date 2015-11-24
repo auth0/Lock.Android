@@ -77,7 +77,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private static final int REQUEST_CODE = 1234;
 
-    private static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
+    protected static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
     private static final String USERNAME_PARAMETER = "USERNAME_PARAMETER";
     private static final String IS_IN_PROGRESS_PARAMETER = "IS_IN_PROGRESS_PARAMETER";
 
@@ -181,7 +181,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        lock.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
@@ -206,14 +206,20 @@ public class LockPasswordlessActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        lock.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Override
     public void onBackPressed() {
         if (!isInProgress) {
-            // the backstack is managed automatically
-            super.onBackPressed();
+            final double count = getSupportFragmentManager().getBackStackEntryCount();
+            if ((!lock.isClosable() && count >= 1) || lock.isClosable()) {
+                if (count == 0) {
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Lock.CANCEL_ACTION));
+                }
+                // the backstack is managed automatically
+                super.onBackPressed();
+            }
         }
     }
 
@@ -245,9 +251,13 @@ public class LockPasswordlessActivity extends FragmentActivity {
         return 0 != (passwordlessType & IS_EMAIL_MASK);
     }
 
+    protected Class getCountryCodeActivityClass() {
+        return CountryCodeActivity.class;
+    }
+
     @SuppressWarnings("unused")
     @Subscribe public void onSelectCountryCodeEvent(SelectCountryCodeEvent event) {
-        Intent intent = new Intent(this, CountryCodeActivity.class);
+        Intent intent = new Intent(this, getCountryCodeActivityClass());
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -257,7 +267,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
             String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE);
             String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE);
             Log.d(TAG, "Picked country " + country);
-            lock.getBus().post(new CountryCodeSelectedEvent(country, dialCode));
+            bus.post(new CountryCodeSelectedEvent(country, dialCode));
         }
     }
 
