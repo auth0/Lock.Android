@@ -78,7 +78,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private static final int REQUEST_CODE = 1234;
 
-    protected static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
+    public static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
     private static final String USERNAME_PARAMETER = "USERNAME_PARAMETER";
     private static final String IS_IN_PROGRESS_PARAMETER = "IS_IN_PROGRESS_PARAMETER";
 
