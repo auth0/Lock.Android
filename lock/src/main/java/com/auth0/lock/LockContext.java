@@ -27,6 +27,8 @@ package com.auth0.lock;
 
 import android.app.Activity;
 import android.app.Application;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -43,22 +45,33 @@ public class LockContext {
     }
 
     /**
-     * Initializes this object's Lock from a builder
+     * Initializes the Lock instance from a builder
+     *
      * @param builder the builder
      */
-    public static void configureLock(Lock.Builder builder) {
-        lockInstance = builder.build();
+    public static void configureLock(@NonNull Lock.Builder builder) {
+        Lock lock = builder.build();
+
+        if (lockInstance != null) {
+            Log.w(TAG, "Overwritting previous lock instance with clientId: "
+                    + lockInstance.getAuthenticationAPIClient().getClientId()
+                    + " with lock with clientId: "
+                    + lock.getAuthenticationAPIClient().getClientId());
+        }
+
+        lockInstance = lock;
     }
 
     /**
      * Returns the Lock provided by the Activity's Application when it implements LockProvider
      * interface, otherwise returns the local instance that should have been configured with
      * configureLock()
-     * @see configureLock
+     *
      * @param activity the activity where Lock is used (if applicable), or null
      * @return the Lock instance
+     * @see configureLock
      */
-    public static Lock getLock(Activity activity) {
+    public static Lock getLock(@Nullable Activity activity) {
         if (activity != null) {
             Application application = activity.getApplication();
             if (application instanceof LockProvider) {
