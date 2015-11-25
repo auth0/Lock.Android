@@ -153,7 +153,7 @@ Then in your `AndroidManifest.xml` register the following activities:
     <!--Auth0 Lock Passwordless End-->
 ```
 
-Just like LockActivity, when a user authenticates successfully, LockPasswordlessActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
+Just like `LockActivity`, when a user authenticates successfully, `LockPasswordlessActivity` will send an Action using `LocalBroadcastManager` and then finish itself (by calling `finish()`). The activity that is interested in receiving this `Action` (In this case the one that will show Lock) needs to register a listener in the `LocalBroadcastManager`:
 
 ```java
 // This activity will show Lock
