@@ -85,7 +85,7 @@ public class MyApplication extends Application {
 
 `LockActivity` will handle Email/Password, Enterprise & Social authentication based on your Application's connections enabled in your Auth0's Dashboard.
 
-When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
+When a user authenticates successfully, `LockActivity` will send an `Action` using `LocalBroadcastManager` and then finish itself (by calling `finish()`). The activity that is interested in receiving this `Action` (in this case the one that will show Lock) needs to register a listener in the `LocalBroadcastManager`:
 
 ```java
 // This activity will show Lock
@@ -153,7 +153,7 @@ Then in your `AndroidManifest.xml` register the following activities:
     <!--Auth0 Lock Passwordless End-->
 ```
 
-Just like `LockActivity`, when a user authenticates successfully, `LockPasswordlessActivity` will send an Action using `LocalBroadcastManager` and then finish itself (by calling `finish()`). The activity that is interested in receiving this `Action` (In this case the one that will show Lock) needs to register a listener in the `LocalBroadcastManager`:
+Just like `LockActivity`, when a user authenticates successfully, `LockPasswordlessActivity` will send an `Action` using `LocalBroadcastManager` and then finish itself (by calling `finish()`). The activity that is interested in receiving this `Action` (in this case the one that will show Lock) needs to register a listener in the `LocalBroadcastManager`:
 
 ```java
 // This activity will show Lock
@@ -192,18 +192,15 @@ Then just start `LockPasswordlessActivity` especifying the passwordless type you
 LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_CODE);
 ```
 
-And you'll see the Email login screen
-
-[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-Email-Android-Screenshot.png)](https://auth0.com)
-
 Or 
 
 ```java
 LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_CODE);
 ```
 
-And you'll see the SMS login screen
+And you'll see the Email/SMS login screen
 
+[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 [![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 
 ##Proguard
