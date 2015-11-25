@@ -56,26 +56,24 @@ Also, you'll need to add *Internet* permission to your application:
 <uses-permission android:name="android.permission.INTERNET"/>
 ```
 
-Finally, Make your Application class (The one that extends from `android.app.Application`) implement the interface `com.auth0.lock.LockProvider` and add the following code:
+Finally, before you use any Lock functionality you need to configure the Lock instance. 
+One way to do it would be in your Application subclass (the one that extends from `android.app.Application`), as seen in the following example:
 
 ```java
-public class MyApplication extends Application implements LockProvider {
-
-  private Lock lock;
+public class MyApplication extends Application {
 
   public void onCreate() {
     super.onCreate();
-    lock = new Lock.Builder()
-      .loadFromApplication(this)
-      /** Other configuration goes here */
-      .closable(true)
-      .build();
+
+    /** Set up Lock */
+    LockContext.configureLock(
+      new Lock.Builder()
+        .loadFromApplication(this)
+        /** Other configuration goes here */
+        .closable(true)
+      );
   }
 
-  @Override
-  public Lock getLock() {
-    return lock;
-  }
 }
 ```
 
@@ -135,7 +133,7 @@ And you'll see our native login screen
 
 ### Passwordless
 
-`LockPasswordlessActivity` authenticates users by sending them an Email or SMS (Similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
+`LockPasswordlessActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
 `LockPasswordlessActivity` is part of the library `lock-passwordless` and you can add it with this line in your `build.gradle`:
 ```gradle
@@ -155,7 +153,7 @@ Then in your `AndroidManifest.xml` register the following activities:
     <!--Auth0 Lock Passwordless End-->
 ```
 
-When a user authenticates successfully, LockPasswordlessActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
+Just like LockActivity, when a user authenticates successfully, LockPasswordlessActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
 // This activity will show Lock
