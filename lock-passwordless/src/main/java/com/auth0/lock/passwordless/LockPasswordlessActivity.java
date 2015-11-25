@@ -40,6 +40,7 @@ import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
@@ -77,7 +78,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
     private static final int REQUEST_CODE = 1234;
 
-    protected static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
+    public static final String PASSWORDLESS_TYPE_PARAMETER = "PASSWORDLESS_TYPE_PARAMETER";
     private static final String USERNAME_PARAMETER = "USERNAME_PARAMETER";
     private static final String IS_IN_PROGRESS_PARAMETER = "IS_IN_PROGRESS_PARAMETER";
 
@@ -227,7 +228,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
         if (lock != null) {
             return lock;
         }
-        return Lock.getLock(this);
+        return LockContext.getLock(this);
     }
 
     protected void setPasswordlessType(int passwordlessType) {

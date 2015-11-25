@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.auth0.lock.Lock;
+import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
@@ -55,7 +56,7 @@ public class SmallSocialListFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bus = Lock.getLock(getActivity()).getBus();
+        bus = LockContext.getLock(getActivity()).getBus();
     }
 
     @Override

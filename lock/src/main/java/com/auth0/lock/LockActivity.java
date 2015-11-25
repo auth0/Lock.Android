@@ -340,6 +340,6 @@ public class LockActivity extends FragmentActivity {
         if (lock != null) {
             return lock;
         }
-        return Lock.getLock(this);
+        return LockContext.getLock(this);
     }
 }

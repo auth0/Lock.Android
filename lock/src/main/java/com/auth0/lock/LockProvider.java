@@ -26,7 +26,11 @@ package com.auth0.lock;
 
 /**
  * Interface for a object that returns a {@link com.auth0.lock.Lock} instance
+ *
+ * @deprecated Please use {@link com.auth0.lock.LockContext}
+ * @see com.auth0.lock.LockContext
  */
+@Deprecated
 public interface LockProvider {
 
     Lock getLock();
