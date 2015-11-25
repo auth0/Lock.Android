@@ -12,19 +12,19 @@ Lock for Android
 * **Integrates** your Android app with **Auth0**.
 * Provides a **beautiful native UI** to log your users in.
 * Provides support for **Social Providers** (Facebook, Twitter, etc.), **Enterprise Providers** (AD, LDAP, etc.) and **Username & Password**.
-* Passwordless authentication using **SMS**.
+* Passwordless authentication using **SMS** and **Email**.
 
 ## Requirements
 
 Android API level 15+ is required in order to use Lock's UI.
-If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.11.+`, the minimum required API level is 9.
+If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.12.+`, the minimum required API level is 9.
 
 ##Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:1.11.+'
+compile 'com.auth0.android:lock:1.12.+'
 ```
 
 Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
@@ -40,7 +40,7 @@ Once it's installed, you'll need to configure LockActivity in your`AndroidManife
     <action android:name="android.intent.action.VIEW"/>
     <category android:name="android.intent.category.DEFAULT"/>
     <category android:name="android.intent.category.BROWSABLE"/>
-    <data android:scheme="a0INSERT_YOUR_APP_CLIENT_ID" android:host="@string/auth0_domain"/>
+    <data android:scheme="a0<INSERT_YOUR_APP_CLIENT_ID>" android:host="@string/auth0_domain"/>
   </intent-filter>
 </activity>
 <meta-data android:name="com.auth0.lock.client-id" android:value="@string/auth0_client_id"/>
@@ -133,29 +133,29 @@ And you'll see our native login screen
 
 > By default all social authentication will be done using an external browser, if you want native integration please check [our docs](https://auth0.com/docs/libraries/lock-android/native-social-authentication).
 
-### SMS
+### Passwordless
 
-`LockSMSActivity` authenticates users by sending them an SMS (Similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
+`LockPasswordlessActivity` authenticates users by sending them an Email or SMS (Similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
-`LockSMSActivity` is part of the library `lock-sms` and you can add it with this line in your `build.gradle`:
+`LockPasswordlessActivity` is part of the library `lock-passwordless` and you can add it with this line in your `build.gradle`:
 ```gradle
-compile 'com.auth0.android:lock-sms:1.11.+'
+compile 'com.auth0.android:lock-passwordless:1.12.+'
 ```
 
 Then in your `AndroidManifest.xml` register the following activities:
 ```xml
-    <!--Auth0 Lock SMS-->
+    <!--Auth0 Lock Passwordless-->
     <activity
-      android:name="com.auth0.lock.sms.LockSMSActivity"
+      android:name="com.auth0.lock.passwordless.LockPasswordlessActivity"
       android:theme="@style/Lock.Theme"
       android:label="@string/app_name"
       android:screenOrientation="portrait"
       android:launchMode="singleTask"/>
-    <activity android:name="com.auth0.lock.sms.CountryCodeActivity" android:theme="@style/Lock.Theme"/>
-    <!--Auth0 Lock SMS End-->
+    <activity android:name="com.auth0.lock.passwordless.CountryCodeActivity" android:theme="@style/Lock.Theme"/>
+    <!--Auth0 Lock Passwordless End-->
 ```
 
-When a user authenticates successfully, LockActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
+When a user authenticates successfully, LockPasswordlessActivity will send an Action using LocalBroadcaster manager and then finish itself (by calling finish()). The activity that is interested in receiving this Action (In this case the one that will show Lock) needs to register a listener in the LocalBroadcastManager:
 
 ```java
 // This activity will show Lock
@@ -188,13 +188,23 @@ public class HomeActivity extends Activity {
 }
 ```
 
-Then just start `LockSMSActivity`
+Then just start `LockPasswordlessActivity` especifying the passwordless type you want to use:
 
 ```java
-startActivity(new Intent(this, LockSMSActivity.class));
+LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_CODE);
 ```
 
-And you'll see SMS login screen
+And you'll see the Email login screen
+
+[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-Email-Android-Screenshot.png)](https://auth0.com)
+
+Or 
+
+```java
+LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_CODE);
+```
+
+And you'll see the SMS login screen
 
 [![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 
