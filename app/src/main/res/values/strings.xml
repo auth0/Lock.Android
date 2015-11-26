@@ -10,4 +10,11 @@
     <string name="no_login_text">Login not found</string>
     <string name="refresh_login_btn_text">Refresh JWT</string>
     <string name="email_login_btn_text">Login Email</string>
+
+    <string name="passwordless_type_selection_sms_title">Select SMS type</string>
+    <string name="passwordless_type_selection_email_title">Select Email type</string>
+    <array name="passwordless_types">
+        <item>Code</item>
+        <item>Magic Link</item>
+    </array>
 </resources>
