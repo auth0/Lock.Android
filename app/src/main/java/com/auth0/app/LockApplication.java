@@ -1,5 +1,5 @@
 /*
- * Lock.java
+ * LockApplication.java
  *
  * Copyright (c) 2014 Auth0 (http://auth0.com)
  *
@@ -26,15 +26,11 @@ package com.auth0.app;
 
 import android.app.Application;
 
-import com.auth0.api.ParameterBuilder;
 import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
 import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockBuilder;
 import com.auth0.lock.LockProvider;
-
-import java.util.Map;
 
 public class LockApplication extends Application implements LockProvider {
 
