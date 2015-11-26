@@ -186,21 +186,20 @@ public class HomeActivity extends Activity {
 }
 ```
 
-Then just start `LockPasswordlessActivity` especifying the passwordless type you want to use:
+Then just start `LockPasswordlessActivity` especifying the passwordless type you want to use, so for **Email**
 
 ```java
 LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_EMAIL_CODE);
 ```
 
-Or 
+or just for **SMS**
 
 ```java
 LockPasswordlessActivity.showFrom(MyActivity.this, LockPasswordlessActivity.MODE_SMS_CODE);
 ```
 
-And you'll see the Email/SMS login screen
+and you'll see the **SMS** login screen
 
-[![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 [![Lock.png](http://blog.auth0.com.s3.amazonaws.com/Lock-SMS-Android-Screenshot.png)](https://auth0.com)
 
 ##Proguard
