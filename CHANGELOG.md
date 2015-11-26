@@ -1,5 +1,28 @@
 # Change Log
 
+## [1.12.0](https://github.com/auth0/Lock.Android/tree/1.12.0) (2015-11-26)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.11.0...1.12.0)
+
+**Implemented enhancements:**
+
+- Update Microsoft Account logo and color [\#114](https://github.com/auth0/Lock.Android/issues/114)
+
+**Closed issues:**
+
+- Update Google+ social icon [\#131](https://github.com/auth0/Lock.Android/issues/131)
+
+**Merged pull requests:**
+
+- Update readme for v1.12 [\#143](https://github.com/auth0/Lock.Android/pull/143) ([nikolaseu](https://github.com/nikolaseu))
+- Update sample app [\#142](https://github.com/auth0/Lock.Android/pull/142) ([nikolaseu](https://github.com/nikolaseu))
+- Use 'Login with Microsoft' as title [\#141](https://github.com/auth0/Lock.Android/pull/141) ([hzalaz](https://github.com/hzalaz))
+- Add \(and use\) new class LockContext to provide the Lock instance [\#139](https://github.com/auth0/Lock.Android/pull/139) ([nikolaseu](https://github.com/nikolaseu))
+- deprecate lock-sms and lock-email in favor of lock-passwordless [\#138](https://github.com/auth0/Lock.Android/pull/138) ([nikolaseu](https://github.com/nikolaseu))
+- Fixed typo [\#137](https://github.com/auth0/Lock.Android/pull/137) ([trydis](https://github.com/trydis))
+- Feature: add lock-passwordless [\#136](https://github.com/auth0/Lock.Android/pull/136) ([nikolaseu](https://github.com/nikolaseu))
+- Feature: add passwordless sms magic link [\#135](https://github.com/auth0/Lock.Android/pull/135) ([nikolaseu](https://github.com/nikolaseu))
+- Feature add passwordless email magic link [\#134](https://github.com/auth0/Lock.Android/pull/134) ([nikolaseu](https://github.com/nikolaseu))
+
 ## [1.11.0](https://github.com/auth0/Lock.Android/tree/1.11.0) (2015-11-13)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.10.1...1.11.0)
 
