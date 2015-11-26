@@ -50,7 +50,7 @@
     <string name="com_auth0_social_salesforce_community">LOGIN WITH SALESFORCE (COMMUNITY)</string>
     <string name="com_auth0_social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
     <string name="com_auth0_social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
-    <string name="com_auth0_social_windowslive">LOGIN WITH MICROSOFT ACCOUNT</string>
+    <string name="com_auth0_social_windowslive">LOGIN WITH MICROSOFT</string>
     <string name="com_auth0_social_yammer">LOGIN WITH YAMMER</string>
     <string name="com_auth0_social_baidu">LOGIN WITH 百度</string>
     <string name="com_auth0_social_fitbit">LOGIN WITH FITBIT</string>
