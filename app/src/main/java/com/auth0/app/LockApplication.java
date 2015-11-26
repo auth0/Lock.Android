@@ -30,27 +30,24 @@ import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
 import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
-import com.auth0.lock.LockProvider;
+import com.auth0.lock.LockContext;
 
-public class LockApplication extends Application implements LockProvider {
-
-    private Lock lock;
+public class LockApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        lock = new Lock.Builder()
-                .loadFromApplication(this)
-                .closable(true)
-                .useEmail(true)
-                .fullscreen(false)
-                .withIdentityProvider(Strategies.Facebook, new FacebookIdentityProvider(this))
-                .withIdentityProvider(Strategies.GooglePlus, new GooglePlusIdentityProvider(this))
-                .build();
+
+        LockContext.configureLock(
+                new Lock.Builder()
+                        .loadFromApplication(this)
+                        .closable(true)
+                        .useEmail(true)
+                        .fullscreen(false)
+                        .useWebView(true)
+                        .withIdentityProvider(Strategies.Facebook, new FacebookIdentityProvider(this))
+                        .withIdentityProvider(Strategies.GooglePlus, new GooglePlusIdentityProvider(this))
+        );
     }
 
-    @Override
-    public Lock getLock() {
-        return lock;
-    }
 }
