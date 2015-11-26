@@ -6,8 +6,7 @@
     <string name="native_login_btn_text">Login Native</string>
 
     <string name="facebook_app_id">696506353719958</string>
-    <string name="sms_login_btn_text">Login SMS (code)</string>
-    <string name="sms_magic_link_login_btn_text">Login SMS (link)</string>
+    <string name="sms_login_btn_text">Login SMS</string>
     <string name="no_login_text">Login not found</string>
     <string name="refresh_login_btn_text">Refresh JWT</string>
     <string name="email_login_btn_text">Login Email</string>
