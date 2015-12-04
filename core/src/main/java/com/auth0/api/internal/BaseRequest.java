@@ -88,7 +88,8 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
         });
     }
 
-    protected void postOnFailure(final Throwable error) {
+    protected final void postOnFailure(final Throwable error) {
+        Log.e(TAG, "Failed to make request to " + url, error);
         handler.post(new CallbackTask<T>(callback) {
             @Override
             public void run() {
@@ -128,7 +129,6 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
 
     @Override
     public void onFailure(com.squareup.okhttp.Request request, IOException e) {
-        Log.e(TAG, "Failed to make request to " + request.urlString(), e);
         postOnFailure(e);
     }
 

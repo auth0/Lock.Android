@@ -27,6 +27,7 @@ package com.auth0.api.internal;
 import android.os.Handler;
 import android.util.Log;
 
+import com.auth0.api.APIClientException;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
@@ -62,7 +63,6 @@ class ApplicationInfoRequest extends BaseRequest<Application> implements Callbac
 
     @Override
     public void onFailure(com.squareup.okhttp.Request request, IOException e) {
-        Log.e(TAG, "Failed to fetch Auth0 info from CDN " + request.urlString(), e);
         postOnFailure(e);
     }
 
@@ -70,7 +70,6 @@ class ApplicationInfoRequest extends BaseRequest<Application> implements Callbac
     public void onResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
             String message = "Received app info failed response with code " + response.code() + " and body " + response.body().string();
-            Log.d(TAG, message);
             postOnFailure(new IOException(message));
             return;
         }
@@ -92,8 +91,7 @@ class ApplicationInfoRequest extends BaseRequest<Application> implements Callbac
             Application app = getReader().readValue(jsonObject.toString());
             postOnSuccess(app);
         } catch (JSONException | IOException e) {
-            Log.e(TAG, "Failed to parse JSONP", e);
-            postOnFailure(e);
+            postOnFailure(new APIClientException("Failed to parse JSONP", e));
         }
     }
 

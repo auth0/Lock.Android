@@ -63,7 +63,7 @@ class VoidRequest extends BaseRequest<Void> implements Callback {
             Throwable throwable;
             try {
                 Map<String, Object> payload = errorReader.readValue(byteStream);
-                throwable = new APIClientException("Failed request to " + response.request().urlString(), response.code(), payload);
+                throwable = new APIClientException("Request failed with response " + payload, response.code(), payload);
             } catch (IOException e) {
                 throwable = new APIClientException("Request failed", response.code(), null);
             }
