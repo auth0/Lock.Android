@@ -35,6 +35,8 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
 
+    private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
+
     private final int titleResource;
     private final int defaultMessageResource;
     private final int invalidCredentialsResource;
@@ -66,7 +68,7 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
             final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
             if (INVALID_USER_PASSWORD_ERROR.equalsIgnoreCase(errorCode)) {
                 messageResource = invalidCredentialsResource;
-            } else if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode)) {
+            } else if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && USER_IS_BLOCKED_DESCRIPTION.equalsIgnoreCase(errorDescription)) {
                 messageResource = unauthorizedResource;
             } else if (errorDescription != null) {
                 return new AuthenticationError(titleResource, errorDescription, throwable);

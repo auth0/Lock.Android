@@ -86,12 +86,24 @@ public class LoginAuthenticationErrorBuilderTest {
     }
 
     @Test
-    public void shouldReturnUnauthorizedMessage() throws Exception {
+    public void shouldReturnUserIsBlockedMessage() throws Exception {
         Map<String, Object> errors = new HashMap<>();
         errors.put(AuthenticationErrorBuilder.ERROR_KEY, "unauthorized");
+        errors.put("error_description", "user is blocked");
         Throwable exception = new APIClientException("error", 401, errors);
         AuthenticationError error = builder.buildFrom(exception);
         assertThat(error, hasMessage(R.string.com_auth0_db_login_unauthorized_error_message));
+        assertThat(error.getThrowable(), equalTo(exception));
+    }
+
+    @Test
+    public void shouldReturnCustomUnauthorizedMessage() throws Exception {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "unauthorized");
+        errors.put("error_description", "custom error");
+        Throwable exception = new APIClientException("error", 401, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error.getMessage(RuntimeEnvironment.application), equalTo("custom error"));
         assertThat(error.getThrowable(), equalTo(exception));
     }
 
