@@ -65,12 +65,6 @@ class SimpleRequest<T> extends BaseRequest<T> implements Request<T>, Parameteriz
     }
 
     @Override
-    public void onFailure(com.squareup.okhttp.Request request, IOException e) {
-        Log.e(TAG, "Failed to make request to " + request.urlString(), e);
-        postOnFailure(e);
-    }
-
-    @Override
     public void onResponse(Response response) throws IOException {
         Log.d(TAG, String.format("Received response from request to %s with status code %d", response.request().urlString(), response.code()));
         final InputStream byteStream = response.body().byteStream();
@@ -78,7 +72,7 @@ class SimpleRequest<T> extends BaseRequest<T> implements Request<T>, Parameteriz
             Throwable throwable;
             try {
                 Map<String, Object> payload = errorReader.readValue(byteStream);
-                throwable = new APIClientException("Failed request to " + response.request().urlString(), response.code(), payload);
+                throwable = new APIClientException("Request failed with response " + payload, response.code(), payload);
             } catch (IOException e) {
                 throwable = new APIClientException("Request failed", response.code(), null);
             }
