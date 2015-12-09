@@ -16,6 +16,7 @@
     <string name="com_auth0_db_login_error_title">There was an error logging in</string>
     <string name="com_auth0_db_login_error_message">There was an error processing the sign in.</string>
     <string name="com_auth0_db_login_invalid_credentials_error_message">Wrong email or password.</string>
+    <string name="com_auth0_db_login_unauthorized_error_message">User is blocked.</string>
     <string name="com_auth0_db_signup_error_title">There was an error signing up</string>
     <string name="com_auth0_db_signup_error_message">There was an error processing the sign up.</string>
     <string name="com_auth0_db_signup_user_already_exists_error_message">The user already exists.</string>

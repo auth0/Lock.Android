@@ -86,9 +86,19 @@ public class LoginAuthenticationErrorBuilderTest {
     }
 
     @Test
-    public void shouldReturnCustomUnauthorizedMessage() throws Exception {
+    public void shouldReturnUnauthorizedMessage() throws Exception {
         Map<String, Object> errors = new HashMap<>();
         errors.put(AuthenticationErrorBuilder.ERROR_KEY, "unauthorized");
+        Throwable exception = new APIClientException("error", 401, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error, hasMessage(R.string.com_auth0_db_login_unauthorized_error_message));
+        assertThat(error.getThrowable(), equalTo(exception));
+    }
+
+    @Test
+    public void shouldReturnCustomErrorMessage() throws Exception {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "other_error");
         errors.put("error_description", "custom error");
         Throwable exception = new APIClientException("error", 401, errors);
         AuthenticationError error = builder.buildFrom(exception);
