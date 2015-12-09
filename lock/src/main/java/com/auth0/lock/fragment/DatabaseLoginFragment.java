@@ -254,7 +254,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
             if (strategy.isResourceOwnerEnabled()) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
-                bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName()));
+                bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName(), usernameField.getText().toString()));
             }
             return;
         }

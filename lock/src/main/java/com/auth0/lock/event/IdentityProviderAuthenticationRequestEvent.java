@@ -37,9 +37,15 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
     private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
 
     private final String serviceName;
+    private final String username;
 
     public IdentityProviderAuthenticationRequestEvent(String serviceName) {
+        this(serviceName, null);
+    }
+
+    public IdentityProviderAuthenticationRequestEvent(String serviceName, String username) {
         this.serviceName = serviceName;
+        this.username = username;
     }
 
     public String getServiceName() {
@@ -62,6 +68,16 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
         queryParameters.put("connection", serviceName);
         queryParameters.put("client_id", application.getId());
         queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), authorizeUri.getHost()));
+        if (username != null) {
+            int arrobaIndex = username.indexOf("@");
+            String loginHint;
+            if (arrobaIndex < 0) {
+                loginHint = username;
+            } else {
+                loginHint = username.substring(0, arrobaIndex);
+            }
+            queryParameters.put("login_hint", loginHint);
+        }
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
