@@ -6,6 +6,7 @@
     <string name="com_auth0_email_placeholder">Email</string>
     <string name="com_auth0_username_placeholder">Username</string>
     <string name="com_auth0_password_placeholder">Password</string>
+    <string name="com_auth0_new_password_placeholder">New Password</string>
     <string name="com_auth0_username_email_placeholder">Username/Email</string>
     <string name="com_auth0_repeat_password_placeholder">Confirm New Password</string>
     <string name="com_auth0_ok_btn_text">OK</string>
