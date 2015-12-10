@@ -159,7 +159,8 @@ public class LockPasswordlessActivity extends FragmentActivity {
                 R.string.com_auth0_passwordless_login_error_message,
                 isEmailType()
                         ? R.string.com_auth0_passwordless_login_invalid_credentials_message_email
-                        : R.string.com_auth0_passwordless_login_invalid_credentials_message_sms);
+                        : R.string.com_auth0_passwordless_login_invalid_credentials_message_sms,
+                R.string.com_auth0_db_login_unauthorized_error_message);
 
         ActivityUIHelper.configureScreenModeForActivity(this, lock);
     }

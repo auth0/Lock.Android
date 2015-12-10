@@ -35,18 +35,27 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
 
+    private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
+
     private final int titleResource;
     private final int defaultMessageResource;
     private final int invalidCredentialsResource;
+    private final int unauthorizedResource;
 
     public LoginAuthenticationErrorBuilder() {
-        this(R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_error_message, R.string.com_auth0_db_login_invalid_credentials_error_message);
+        this(R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_error_message,
+                R.string.com_auth0_db_login_invalid_credentials_error_message, R.string.com_auth0_db_login_unauthorized_error_message);
     }
 
     public LoginAuthenticationErrorBuilder(int titleResource, int defaultMessageResource, int invalidCredentialsResource) {
+        this(titleResource, defaultMessageResource, invalidCredentialsResource, R.string.com_auth0_db_login_unauthorized_error_message);
+    }
+
+    public LoginAuthenticationErrorBuilder(int titleResource, int defaultMessageResource, int invalidCredentialsResource, int unauthorizedResource) {
         this.titleResource = titleResource;
         this.defaultMessageResource = defaultMessageResource;
         this.invalidCredentialsResource = invalidCredentialsResource;
+        this.unauthorizedResource = unauthorizedResource;
     }
 
     @Override
@@ -59,8 +68,9 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
             final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
             if (INVALID_USER_PASSWORD_ERROR.equalsIgnoreCase(errorCode)) {
                 messageResource = invalidCredentialsResource;
-            }
-            if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && errorDescription != null) {
+            } else if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && USER_IS_BLOCKED_DESCRIPTION.equalsIgnoreCase(errorDescription)) {
+                messageResource = unauthorizedResource;
+            } else if (errorDescription != null) {
                 return new AuthenticationError(titleResource, errorDescription, throwable);
             }
         }
