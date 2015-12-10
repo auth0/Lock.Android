@@ -34,6 +34,15 @@ import java.util.Map;
 
 public class IdentityProviderAuthenticationRequestEvent implements IdentityProviderRequest {
 
+    private static final String SCOPE_KEY = "scope";
+    private static final String RESPONSE_TYPE_KEY = "response_type";
+    private static final String CONNECTION_KEY = "connection";
+    private static final String CLIENT_ID_KEY = "client_id";
+    private static final String REDIRECT_URI_KEY = "redirect_uri";
+    private static final String LOGIN_HINT_KEY = "login_hint";
+
+    private static final String SCOPE_OPENID = "openid";
+    private static final String RESPONSE_TYPE_TOKEN = "token";
     private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
 
     private final String serviceName;
@@ -55,7 +64,7 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
     public Uri getAuthenticationUri(Application application, Map<String, Object> parameters) {
         final Uri authorizeUri = Uri.parse(application.getAuthorizeURL());
         final Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("scope", "openid");
+        queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 Object value = entry.getValue();
@@ -64,10 +73,10 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
                 }
             }
         }
-        queryParameters.put("response_type", "token");
-        queryParameters.put("connection", serviceName);
-        queryParameters.put("client_id", application.getId());
-        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), authorizeUri.getHost()));
+        queryParameters.put(RESPONSE_TYPE_KEY, RESPONSE_TYPE_TOKEN);
+        queryParameters.put(CONNECTION_KEY, serviceName);
+        queryParameters.put(CLIENT_ID_KEY, application.getId());
+        queryParameters.put(REDIRECT_URI_KEY, String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), authorizeUri.getHost()));
         if (username != null) {
             int arrobaIndex = username.indexOf("@");
             String loginHint;
@@ -76,7 +85,7 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
             } else {
                 loginHint = username.substring(0, arrobaIndex);
             }
-            queryParameters.put("login_hint", loginHint);
+            queryParameters.put(LOGIN_HINT_KEY, loginHint);
         }
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
