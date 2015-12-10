@@ -113,4 +113,20 @@ public class IdentityProviderAuthenticationRequestEventTest {
         final Uri uri = event.getAuthenticationUri(application, parameters);
         assertThat(uri.getQueryParameter("state"), equalTo(state));
     }
+
+    @Test
+    public void shouldHaveLoginHintQueryParameter() throws Exception {
+        final String username = "username-value";
+        IdentityProviderAuthenticationRequestEvent event = new IdentityProviderAuthenticationRequestEvent(SERVICE_NAME, username);
+        final Uri uri = event.getAuthenticationUri(application, null);
+        assertThat(uri.getQueryParameter("login_hint"), equalTo(username));
+    }
+
+    @Test
+    public void shouldHaveLoginHintOnlyUsernameQueryParameter() throws Exception {
+        final String username = "username@example.com";
+        IdentityProviderAuthenticationRequestEvent event = new IdentityProviderAuthenticationRequestEvent(SERVICE_NAME, username);
+        final Uri uri = event.getAuthenticationUri(application, null);
+        assertThat(uri.getQueryParameter("login_hint"), equalTo("username"));
+    }
 }
