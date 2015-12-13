@@ -182,11 +182,11 @@ public class SignUpFormFragment extends Fragment {
         final String email = useEmail || requiresUsername ? emailField.getText().toString().trim() : null;
         final String password = passwordField.getText().toString();
         if (loginAfterSignUp) {
-            client.signUp(email, username, password)
+            client.signUp(email, password, username)
                     .addAuthenticationParameters(authenticationParameters)
                     .start(new SignUpAuthenticationCallback(password));
         } else {
-            client.createUser(email, username, password)
+            client.createUser(email, password, username)
                     .start(new SignUpCallback(email, username, password));
         }
     }
