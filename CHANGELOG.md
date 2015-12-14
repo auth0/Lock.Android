@@ -1,5 +1,31 @@
 # Change Log
 
+## [1.12.1](https://github.com/auth0/Lock.Android/tree/1.12.1) (2015-12-14)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.12.0...1.12.1)
+
+**Implemented enhancements:**
+
+- Log the body of the error responses [\#144](https://github.com/auth0/Lock.Android/issues/144)
+- Support customizing "user is blocked" message [\#140](https://github.com/auth0/Lock.Android/issues/140)
+
+**Fixed bugs:**
+
+- In change password screen use "New Password" instead of "Password" [\#146](https://github.com/auth0/Lock.Android/issues/146)
+
+**Closed issues:**
+
+- Bug when Signing up new user [\#153](https://github.com/auth0/Lock.Android/issues/153)
+- Error logging in from google+ [\#151](https://github.com/auth0/Lock.Android/issues/151)
+- Send login\_hint parameter for all email/username requests [\#147](https://github.com/auth0/Lock.Android/issues/147)
+
+**Merged pull requests:**
+
+- Fix mixed signup parameters [\#155](https://github.com/auth0/Lock.Android/pull/155) ([hzalaz](https://github.com/hzalaz))
+- Send 'login\_hint' parameter [\#150](https://github.com/auth0/Lock.Android/pull/150) ([nikolaseu](https://github.com/nikolaseu))
+- Feature: Add option to customize the "user is blocked" message [\#149](https://github.com/auth0/Lock.Android/pull/149) ([nikolaseu](https://github.com/nikolaseu))
+- Change password screen: use 'New password' instead of 'Password' [\#148](https://github.com/auth0/Lock.Android/pull/148) ([nikolaseu](https://github.com/nikolaseu))
+- Log the exception when the request fails [\#145](https://github.com/auth0/Lock.Android/pull/145) ([nikolaseu](https://github.com/nikolaseu))
+
 ## [1.12.0](https://github.com/auth0/Lock.Android/tree/1.12.0) (2015-11-26)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.11.0...1.12.0)
 
