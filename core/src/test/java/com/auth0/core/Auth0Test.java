@@ -46,6 +46,8 @@ public class Auth0Test {
     private static final String DOMAIN = "samples.auth0.com";
     private static final String CONFIG_DOMAIN_CUSTOM = "config.mydomain.com";
     private static final String EU_DOMAIN = "samples.eu.auth0.com";
+    private static final String AU_DOMAIN = "samples.au.auth0.com";
+    private static final String OTHER_DOMAIN = "samples-test.other-subdomain.other.auth0.com";
 
     @Test
     public void shouldBuildWithClientIdAndDomain() throws Exception {
@@ -69,6 +71,22 @@ public class Auth0Test {
         assertThat(auth0.getClientId(), equalTo(CLIENT_ID));
         assertThat(auth0.getDomainUrl(), equalTo("https://samples.eu.auth0.com"));
         assertThat(auth0.getConfigurationUrl(), equalTo("https://cdn.eu.auth0.com"));
+    }
+
+    @Test
+    public void shouldHandleAUInstance() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, AU_DOMAIN);
+        assertThat(auth0.getClientId(), equalTo(CLIENT_ID));
+        assertThat(auth0.getDomainUrl(), equalTo("https://samples.au.auth0.com"));
+        assertThat(auth0.getConfigurationUrl(), equalTo("https://cdn.au.auth0.com"));
+    }
+
+    @Test
+    public void shouldHandleOtherInstance() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, OTHER_DOMAIN);
+        assertThat(auth0.getClientId(), equalTo(CLIENT_ID));
+        assertThat(auth0.getDomainUrl(), equalTo("https://samples-test.other-subdomain.other.auth0.com"));
+        assertThat(auth0.getConfigurationUrl(), equalTo("https://cdn.other.auth0.com"));
     }
 
     @Test

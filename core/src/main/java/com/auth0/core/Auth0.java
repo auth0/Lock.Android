@@ -32,7 +32,7 @@ import com.auth0.api.authentication.AuthenticationAPIClient;
 public class Auth0 {
 
     private static final String AUTH0_US_CDN_URL = "https://cdn.auth0.com";
-    private static final String AUTH0_EU_CDN_URL = "https://cdn.eu.auth0.com";
+    private static final String DOT_AUTH0_DOT_COM = ".auth0.com";
 
     private final String clientId;
     private final String domainUrl;
@@ -53,8 +53,13 @@ public class Auth0 {
         if (configurationDomain == null && domainUrl != null) {
             final Uri domainUri = Uri.parse(domainUrl);
             final String host = domainUri.getHost();
-            if (host.endsWith(".auth0.com")) {
-                url = host.endsWith(".eu.auth0.com") ? AUTH0_EU_CDN_URL : AUTH0_US_CDN_URL;
+            if (host.endsWith(DOT_AUTH0_DOT_COM)) {
+                String[] parts = host.split("\\.");
+                if (parts.length > 3) {
+                    url = "https://cdn." + parts[parts.length-3] + DOT_AUTH0_DOT_COM;
+                } else {
+                    url = AUTH0_US_CDN_URL;
+                }
             } else {
                 url = domainUrl;
             }
