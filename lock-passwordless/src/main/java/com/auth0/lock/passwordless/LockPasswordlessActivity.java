@@ -28,8 +28,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.auth0.api.ParameterizableRequest;
@@ -39,6 +39,7 @@ import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.lock.BaseLockActivity;
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockContext;
 import com.auth0.lock.error.ErrorDialogBuilder;
@@ -63,7 +64,7 @@ import com.auth0.lock.util.ActivityUIHelper;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class LockPasswordlessActivity extends FragmentActivity {
+public class LockPasswordlessActivity extends BaseLockActivity {
 
     private static final String TAG = LockPasswordlessActivity.class.getName();
 
@@ -137,16 +138,16 @@ public class LockPasswordlessActivity extends FragmentActivity {
                     ? RequestCodeEmailFragment.newInstance(useMagicLink())
                     : RequestCodeSmsFragment.newInstance(useMagicLink());
 
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.com_auth0_container, initialFragment)
-                    .commit();
+            FragmentTransaction transaction  = getSupportFragmentManager().beginTransaction()
+                    .add(R.id.com_auth0_container, initialFragment);
+            commitOrEnqueueFragmentTransaction(transaction);
 
             if (invalidMagicLink) {
                 Fragment fragment = new InvalidLinkFragment();
-                getSupportFragmentManager().beginTransaction()
+                transaction  = getSupportFragmentManager().beginTransaction()
                         .replace(R.id.com_auth0_container, fragment)
-                        .addToBackStack(fragment.getClass().getName())
-                        .commit();
+                        .addToBackStack(fragment.getClass().getName());
+                commitOrEnqueueFragmentTransaction(transaction);
             }
         } else {
             setPasswordlessType(savedInstanceState.getInt(PASSWORDLESS_TYPE_PARAMETER));
@@ -198,10 +199,10 @@ public class LockPasswordlessActivity extends FragmentActivity {
             performLogin(new LoginRequestEvent(username, passcode));
         } else {
             Fragment fragment = new InvalidLinkFragment();
-            getSupportFragmentManager().beginTransaction()
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.com_auth0_container, fragment)
-                    .addToBackStack(fragment.getClass().getName())
-                    .commit();
+                    .addToBackStack(fragment.getClass().getName());
+            commitOrEnqueueFragmentTransaction(transaction);
         }
     }
 
@@ -301,10 +302,10 @@ public class LockPasswordlessActivity extends FragmentActivity {
                 return;
         }
 
-        getSupportFragmentManager().beginTransaction()
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
-                .addToBackStack(fragment.getClass().getName())
-                .commit();
+                .addToBackStack(fragment.getClass().getName());
+        commitOrEnqueueFragmentTransaction(transaction);
     }
 
     @SuppressWarnings("unused")
@@ -316,10 +317,10 @@ public class LockPasswordlessActivity extends FragmentActivity {
                 , username);
 
         getSupportFragmentManager().popBackStack();
-        getSupportFragmentManager().beginTransaction()
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
-                .addToBackStack(fragment.getClass().getName())
-                .commit();
+                .addToBackStack(fragment.getClass().getName());
+        commitOrEnqueueFragmentTransaction(transaction);
     }
 
     @SuppressWarnings("unused")
@@ -370,10 +371,10 @@ public class LockPasswordlessActivity extends FragmentActivity {
                         ? R.string.com_auth0_passwordless_login_message_in_progress_email
                         : R.string.com_auth0_passwordless_login_message_in_progress_sms,
                 event.getUsername());
-        getSupportFragmentManager().beginTransaction()
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
-                .addToBackStack(fragment.getClass().getName())
-                .commit();
+                .addToBackStack(fragment.getClass().getName());
+        commitOrEnqueueFragmentTransaction(transaction);
         isInProgress = true;
 
         AuthenticationCallback authCallback = new AuthenticationCallback() {
