@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
@@ -70,7 +70,7 @@ import com.squareup.otto.Subscribe;
  *
  * All these action names are defined in these constants: {@link Lock#AUTHENTICATION_ACTION}, {@link Lock#CANCEL_ACTION} and {@link com.auth0.lock.Lock#CHANGE_PASSWORD_ACTION}.
  */
-public class LockActivity extends FragmentActivity {
+public class LockActivity extends BaseLockActivity {
 
     public static final String SIGN_UP_MODE_ARGUMENT = "SIGN_UP_MODE";
 
@@ -93,9 +93,9 @@ public class LockActivity extends FragmentActivity {
         builder = newFragmentBuilder(getLock());
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.com_auth0_container, new LoadingFragment())
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.com_auth0_container, new LoadingFragment());
+            commitOrEnqueueFragmentTransaction(transaction);
         }
         broadcastManager = LocalBroadcastManager.getInstance(this);
         callback = new LockIdentityProviderCallback(lock.getBus());
@@ -183,9 +183,9 @@ public class LockActivity extends FragmentActivity {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
         Configuration configuration = new Configuration(application, lock.getConnections(), lock.getDefaultDatabaseConnection());
         lock.setConfiguration(configuration);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.com_auth0_container, builder.root())
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.com_auth0_container, builder.root());
+        commitOrEnqueueFragmentTransaction(transaction);
     }
 
     @SuppressWarnings("unused")
@@ -252,22 +252,22 @@ public class LockActivity extends FragmentActivity {
                 break;
         }
         if (fragment != null) {
-            getSupportFragmentManager()
+            FragmentTransaction transaction = getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.com_auth0_container, fragment)
-                    .addToBackStack(event.name())
-                    .commit();
+                    .addToBackStack(event.name());
+            commitOrEnqueueFragmentTransaction(transaction);
         }
     }
 
     @SuppressWarnings("unused")
     @Subscribe public void onEnterpriseAuthenticationRequest(EnterpriseAuthenticationRequest event) {
         Fragment fragment = builder.enterpriseLoginWithConnection(event.getConnection());
-        getSupportFragmentManager()
+        FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
-                .addToBackStack(event.getConnection().getName())
-                .commit();
+                .addToBackStack(event.getConnection().getName());
+        commitOrEnqueueFragmentTransaction(transaction);
     }
 
     @SuppressWarnings("unused")
