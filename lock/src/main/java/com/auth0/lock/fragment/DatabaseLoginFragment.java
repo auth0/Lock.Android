@@ -254,8 +254,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         final Connection connection = matcher.getConnection();
         if (connection != null) {
             final Configuration configuration = LockContext.getLock(getActivity()).getConfiguration();
-            final Strategy strategy = configuration.getApplication().strategyForConnection(connection);
-            if (strategy.isResourceOwnerEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName())) {
+            if (configuration.shouldUseNativeAuthentication(connection, enterpriseConnectionsUsingWebForm)) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName(), usernameField.getText().toString()));

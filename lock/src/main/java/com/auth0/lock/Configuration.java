@@ -24,6 +24,8 @@
 
 package com.auth0.lock;
 
+import android.support.annotation.NonNull;
+
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategies;
@@ -80,6 +82,11 @@ public class Configuration {
 
     public Application getApplication() {
         return application;
+    }
+
+    public boolean shouldUseNativeAuthentication(Connection connection, @NonNull List<String> enterpriseConnectionsUsingWebForm) {
+        final Strategy strategy = getApplication().strategyForConnection(connection);
+        return strategy.isResourceOwnerEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
     }
 
     private Connection filterDatabaseConnections(Strategy databaseStrategy, Set<String> connections, String defaultDatabaseName) {
