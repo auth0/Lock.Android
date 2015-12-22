@@ -49,6 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Bus;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -134,6 +135,7 @@ public class Lock {
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
         this.credentialStore = new NullCredentialStore();
+        this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
     }
 
     /**
@@ -381,6 +383,7 @@ public class Lock {
             this.useEmail = true;
             this.fullscreen = false;
             this.parameters = ParameterBuilder.newBuilder().asDictionary();
+            this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
             this.sendSdkInfo = true;
