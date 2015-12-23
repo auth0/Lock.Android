@@ -52,11 +52,11 @@ dependencies {
     compile project(':lock-sms')
     compile project(':lock-email')
     compile project(':lock-passwordless')
-    compile(project(':integrations:facebook')) {
+    compile('com.auth0.android:lock-facebook:2.+') {
         exclude module: 'core'
         exclude module: 'identity-core'
     }
-    compile(project(':integrations:googleplus')) {
+    compile('com.auth0.android:lock-googleplus:2.+') {
         exclude module: 'core'
         exclude module: 'identity-core'
     }

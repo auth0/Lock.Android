@@ -9,11 +9,6 @@ android:
   - extra-google-m2repository
   - extra-android-m2repository
   - addon-google_apis-google-23
-git:
-  submodules: false
-before_install:
-    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-    - git submodule update --init --recursive
 script:
   - "./gradlew clean test --continue"
 branches:
