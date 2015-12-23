@@ -1,5 +1,19 @@
 # Change Log
 
+## [Unreleased](https://github.com/auth0/Lock.Android/tree/HEAD)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.12.1...HEAD)
+
+**Closed issues:**
+
+- Add an option to use Webview with ADFS connections [\#158](https://github.com/auth0/Lock.Android/issues/158)
+- Add `au` region for CDN [\#152](https://github.com/auth0/Lock.Android/issues/152)
+
+**Merged pull requests:**
+
+- Add option to force webview on adfs connections [\#159](https://github.com/auth0/Lock.Android/pull/159) ([nikolaseu](https://github.com/nikolaseu))
+- Add AU region CDN [\#156](https://github.com/auth0/Lock.Android/pull/156) ([nikolaseu](https://github.com/nikolaseu))
+
 ## [1.12.1](https://github.com/auth0/Lock.Android/tree/1.12.1) (2015-12-14)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.12.0...1.12.1)
 
