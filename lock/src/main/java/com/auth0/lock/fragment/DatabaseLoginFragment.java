@@ -58,6 +58,8 @@ import com.auth0.lock.util.DomainMatcher;
 import com.auth0.lock.validation.LoginValidator;
 import com.auth0.lock.widget.CredentialField;
 
+import java.util.List;
+
 public class DatabaseLoginFragment extends BaseTitledFragment {
 
     public static final String AD_ENTERPRISE_CONNECTION_ARGUMENT = "AD_ENTERPRISE_CONNECTION_ARGUMENT";
@@ -85,12 +87,14 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
     private Connection enterpriseConnection;
     private Connection defaultConnection;
     private boolean requiresUsername;
+    private List<String> enterpriseConnectionsUsingWebForm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments() != null ? getArguments() : new Bundle();
         final Lock lock = LockContext.getLock(getActivity());
+        enterpriseConnectionsUsingWebForm = lock.getEnterpriseConnectionsUsingWebForm();
         Configuration configuration = lock.getConfiguration();
         if (arguments.containsKey(AD_ENTERPRISE_CONNECTION_ARGUMENT)) {
             enterpriseConnection = arguments.getParcelable(AD_ENTERPRISE_CONNECTION_ARGUMENT);
@@ -250,8 +254,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         final Connection connection = matcher.getConnection();
         if (connection != null) {
             final Configuration configuration = LockContext.getLock(getActivity()).getConfiguration();
-            final Strategy strategy = configuration.getApplication().strategyForConnection(connection);
-            if (strategy.isResourceOwnerEnabled()) {
+            if (configuration.shouldUseNativeAuthentication(connection, enterpriseConnectionsUsingWebForm)) {
                 bus.post(new EnterpriseAuthenticationRequest(connection));
             } else {
                 bus.post(new IdentityProviderAuthenticationRequestEvent(connection.getName(), usernameField.getText().toString()));

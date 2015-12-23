@@ -37,6 +37,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,10 +55,12 @@ import static com.auth0.lock.util.StrategyMatcher.isStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.BuildConfig.class, sdk = 18, manifest = Config.NONE)
@@ -174,11 +177,43 @@ public class ConfigurationTest {
         assertThat(configuration.getEnterpriseStrategies(), emptyIterable());
     }
 
+    @Test
+    public void shouldUseNativeAuthentication() throws Exception {
+        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
+        final Connection connection = configuration.getDefaultActiveDirectoryConnection();
+        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(true));
+    }
+
+    @Test
+    public void shouldNotUseNativeAuthenticationBecauseOverrided() throws Exception {
+        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
+        final Connection connection = configuration.getDefaultActiveDirectoryConnection();
+        assertThat(configuration.shouldUseNativeAuthentication(connection, Arrays.asList(MY_AD, MY_SECOND_AD)), is(false));
+    }
+
+    @Test
+    public void shouldNotUseNativeAuthenticationBecauseIsSocial() throws Exception {
+        configuration = unfilteredConfig();
+        final Connection connection = getConnectionByName("twitter");
+        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(false));
+    }
+
     private Configuration unfilteredConfig() {
         return new Configuration(application, null, null);
     }
 
     private Configuration filteredConfigBy(String ...names) {
         return new Configuration(application, Arrays.asList(names), null);
+    }
+
+    private Connection getConnectionByName(String name) {
+        for (Strategy strategy : application.getStrategies()) {
+            for (Connection connection : strategy.getConnections()) {
+                if (connection.getName().equals(name)) {
+                    return connection;
+                }
+            }
+        }
+        return null;
     }
 }

@@ -49,6 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Bus;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +115,7 @@ public class Lock {
 
     private Configuration configuration;
     private List<String> connections;
+    private List<String> enterpriseConnectionsUsingWebForm;
     private String defaultDatabaseConnection;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
@@ -133,6 +135,7 @@ public class Lock {
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
         this.credentialStore = new NullCredentialStore();
+        this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
     }
 
     /**
@@ -265,6 +268,10 @@ public class Lock {
         return connections;
     }
 
+    public List<String> getEnterpriseConnectionsUsingWebForm() {
+        return enterpriseConnectionsUsingWebForm;
+    }
+
     public String getDefaultDatabaseConnection() {
         return defaultDatabaseConnection;
     }
@@ -362,6 +369,7 @@ public class Lock {
         private boolean useEmail;
         private String defaultDBConnectionName;
         private List<String> connections;
+        private List<String> enterpriseConnectionsUsingWebForm;
         private boolean fullscreen;
         private boolean disableSignUp;
         private boolean disableChangePassword;
@@ -375,6 +383,7 @@ public class Lock {
             this.useEmail = true;
             this.fullscreen = false;
             this.parameters = ParameterBuilder.newBuilder().asDictionary();
+            this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
             this.sendSdkInfo = true;
@@ -491,6 +500,11 @@ public class Lock {
             return this;
         }
 
+        public Builder enterpriseConnectionsUsingWebForm(String... connectionNames) {
+            this.enterpriseConnectionsUsingWebForm = Arrays.asList(connectionNames);
+            return this;
+        }
+
         /**
          * Specify the DB connection used by Lock.
          *
@@ -596,6 +610,7 @@ public class Lock {
             lock.defaultProvider.setParameters(parameters);
             lock.useEmail = useEmail;
             lock.connections = connections;
+            lock.enterpriseConnectionsUsingWebForm = enterpriseConnectionsUsingWebForm;
             lock.defaultDatabaseConnection = defaultDBConnectionName;
             lock.fullScreen = fullscreen;
             lock.signUpEnabled = !disableSignUp;
