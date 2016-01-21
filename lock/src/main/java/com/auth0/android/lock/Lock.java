@@ -1,10 +1,23 @@
 package com.auth0.android.lock;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+
+import com.auth0.Auth0Exception;
+import com.auth0.authentication.Authentication;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by nikolaseu on 1/21/16.
  */
 public class Lock {
-    private final LocalResultReceiver receiver;
+
     private AuthenticationCallback callback;
     private final LockOptions options;
 
@@ -12,8 +25,7 @@ public class Lock {
     public static final String CANCELED_ACTION = "Lock.Canceled";
     public static final String SIGNUP_ACTION = "Lock.Signup";
 
-
-    private static class LocalResultReceiver extends BroadcastReceiver {
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent data) {
@@ -22,21 +34,16 @@ public class Lock {
             if (action.equals(Lock.AUTHENTICATION_ACTION)){
                 processEvent(data);
             } else if (action.equals(Lock.CANCELED_ACTION)){
-              callback.onCanceled();
+              callback.onCancelled();
             } else if (action.equals(Lock.SIGNUP_ACTION)){
               //processSignup()?
             }
         }
     };
 
-    protected Lock() {
-        // no public constructor √
-        throw Exception();
-    }
-
     protected Lock(LockOptions options) {
         this.options = options;
-        this.receiver = new LocalResultReceiver();
+        this.callback = options.callback;
     }
 
     public void onCreate(Activity activity) {
@@ -45,14 +52,18 @@ public class Lock {
         //  L= lets leave this as an improvement
 
         //if (callback != null) //can the callback be optional?
-            LocalBroadcastManager.getInstance(activity).register(this.receiver);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Lock.AUTHENTICATION_ACTION);
+        filter.addAction(Lock.CANCELED_ACTION);
+        filter.addAction(Lock.SIGNUP_ACTION);
+        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
     public void onDestroy(Activity activity) {
         // unregister listener (if something was registered)
-        if (options.receiver != null) {
+        if (this.receiver != null) {
             LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
-            options.receiver = null;
+            this.receiver = null;
         }
     }
 
@@ -60,18 +71,18 @@ public class Lock {
     Evaluate changing the name of this method: parseActivityResult? processResult?
     */
     public void onActivityResult(Activity activity, int resultCode, Intent data) {
-      if (resultCode == Result.RESULT_OK){
-        processEvent(data);
-        return;
-      }
+        if (resultCode == Activity.RESULT_OK) {
+            processEvent(data);
+            return;
+        }
 
-      //user pressed back.
-      callback.onCanceled();
+        //user pressed back.
+        callback.onCancelled();
     }
 
     private void processEvent(Intent eventData) {
       //black magic. (?) parse eventData
-      Authentication authentication = (Authentication) eventData.getExtra("authentication");
+      Authentication authentication = eventData.getParcelableExtra("authentication");
 
       if (authentication != null) {
           callback.onAuthentication(authentication);
@@ -79,13 +90,6 @@ public class Lock {
         Auth0Exception up = new Auth0Exception("wops!");
         callback.onError(up);
         //throw up. haha
-      }
-      return null;
-    }
-
-    public static class Auth0Exception extends Exception {
-      public Auth0Exception(String message){
-        super(message);
       }
     }
 
@@ -150,7 +154,7 @@ public class Lock {
             return this;
         }
 
-        public Builder onlyUseConnections(Map<String> connections) {
+        public Builder onlyUseConnections(List<String> connections) {
             options.connections = connections;
             return this;
         }
@@ -165,12 +169,12 @@ public class Lock {
             return this;
         }
 
-        public Buidler disableSignUp() {
+        public Builder disableSignUp() {
             options.signUpEnabled = false;
             return this;
         }
 
-        public Buidler disableChangePassword() {
+        public Builder disableChangePassword() {
             options.changePasswordEnabled = false;
             return this;
         }

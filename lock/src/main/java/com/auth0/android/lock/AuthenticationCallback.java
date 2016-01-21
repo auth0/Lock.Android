@@ -1,5 +1,7 @@
 package com.auth0.android.lock;
 
+import com.auth0.authentication.Authentication;
+
 /**
  * Created by nikolaseu on 1/21/16.
  */
