@@ -1,0 +1,3 @@
+[submodule "auth0"]
+	path = auth0
+	url = git@github.com:auth0/auth0-api-java.git
