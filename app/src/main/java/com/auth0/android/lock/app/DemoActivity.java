@@ -1,4 +1,4 @@
-package com.auth0.android.lock;
+package com.auth0.android.lock.app;
 
 import android.support.v7.app.AppCompatActivity;
 
