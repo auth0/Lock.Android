@@ -1,5 +1,6 @@
 package com.auth0.android.lock;
 
+import com.auth0.Auth0Exception;
 import com.auth0.authentication.Authentication;
 
 /**
@@ -7,6 +8,8 @@ import com.auth0.authentication.Authentication;
  */
 public interface AuthenticationCallback {
     void onAuthentication(Authentication authentication);
+
     void onCancelled();
+
     void onError(Auth0Exception error);
 }
