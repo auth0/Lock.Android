@@ -102,22 +102,6 @@ public class Lock {
         }
     }
 
-    private static class LockOptions {  //lets imlement Parcelable
-        public Auth0 account;
-        public AuthenticationCallback callback;
-        public boolean useBrowser;
-        public boolean closable;
-        public boolean fullscreen;
-        public Map<String, Object> authenticationParameters;
-        public boolean sendSDKInfo = true;
-        public boolean useEmail = false;
-        public boolean signUpEnabled = true;
-        public boolean changePasswordEnabled = true;
-        public List<String> connections;
-        public List<String> enterpriseConnectionsUsingWebForm;
-        public String defaultDatabaseConnection;
-    }
-
     public static class Builder {
         private LockOptions options;
 
