@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.auth0.Auth0Exception;
 import com.auth0.authentication.Authentication;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,7 +142,12 @@ public class Lock {
         }
 
         public Builder withAuthenticationParameters(Map<String, Object> authenticationParameters) {
-            options.authenticationParameters = authenticationParameters;
+            if (authenticationParameters instanceof HashMap) {
+                options.authenticationParameters = (HashMap<String, Object>) authenticationParameters;
+            } else {
+                options.authenticationParameters = new HashMap<String, Object>(authenticationParameters);
+            }
+
             return this;
         }
 
