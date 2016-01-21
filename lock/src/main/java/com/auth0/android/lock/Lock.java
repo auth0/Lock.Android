@@ -41,9 +41,9 @@ public class Lock {
         }
     };
 
-    protected Lock(LockOptions options) {
+    protected Lock(LockOptions options, AuthenticationCallback callback) {
         this.options = options;
-        this.callback = options.callback;
+        this.callback = callback;
     }
 
     public static Builder newBuilder() {
@@ -51,8 +51,9 @@ public class Lock {
     }
 
     public Intent newIntent(Activity activity) {
-        Intent lockIntent = new Intent();
-        return new Intent();    //TODO: new Intent(activity, LockActivity.class);
+        Intent lockIntent = new Intent(activity, LockActivity.class);
+        lockIntent.putExtra("options", options);
+        return lockIntent;
     }
 
     public void onCreate(Activity activity) {
@@ -104,13 +105,14 @@ public class Lock {
 
     public static class Builder {
         private LockOptions options;
+        private AuthenticationCallback callback;
 
         public Builder() {
             options = new LockOptions();
         }
 
         public Lock build() {
-            return new Lock(options);
+            return new Lock(options, callback);
         }
 
         public Builder withAccount(Auth0 account) {
@@ -119,7 +121,7 @@ public class Lock {
         }
 
         public Builder withCallback(AuthenticationCallback callback) {
-            options.callback = callback;
+            this.callback = callback;
             return this;
         }
 

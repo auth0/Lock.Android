@@ -12,7 +12,6 @@ import java.util.Map;
  */
 public class LockOptions implements Parcelable {
     public Auth0 account;
-    public AuthenticationCallback callback;
     public boolean useBrowser;
     public boolean closable;
     public boolean fullscreen;
@@ -26,9 +25,11 @@ public class LockOptions implements Parcelable {
     public List<String> enterpriseConnectionsUsingWebForm;
     public String defaultDatabaseConnection;
 
+    public LockOptions() {
+    }
+
     protected LockOptions(Parcel in) {
         account = (Auth0) in.readValue(Auth0.class.getClassLoader());
-        callback = (AuthenticationCallback) in.readValue(AuthenticationCallback.class.getClassLoader());
         useBrowser = in.readByte() != 0x00;
         closable = in.readByte() != 0x00;
         fullscreen = in.readByte() != 0x00;
@@ -59,7 +60,6 @@ public class LockOptions implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(account);
-        dest.writeValue(callback);
         dest.writeByte((byte) (useBrowser ? 0x01 : 0x00));
         dest.writeByte((byte) (closable ? 0x01 : 0x00));
         dest.writeByte((byte) (fullscreen ? 0x01 : 0x00));
