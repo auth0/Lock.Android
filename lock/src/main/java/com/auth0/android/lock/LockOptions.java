@@ -1,11 +1,12 @@
 package com.auth0.android.lock;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lbalmaceda on 1/21/16.
@@ -15,15 +16,14 @@ public class LockOptions implements Parcelable {
     public boolean useBrowser;
     public boolean closable;
     public boolean fullscreen;
-    //FIXME: This map cannot be put into a Parcel
-    public Map<String, Object> authenticationParameters;
     public boolean sendSDKInfo = true;
     public boolean useEmail = false;
     public boolean signUpEnabled = true;
     public boolean changePasswordEnabled = true;
+    public String defaultDatabaseConnection;
     public List<String> connections;
     public List<String> enterpriseConnectionsUsingWebForm;
-    public String defaultDatabaseConnection;
+    public HashMap<String, Object> authenticationParameters;
 
     public LockOptions() {
     }
@@ -37,6 +37,7 @@ public class LockOptions implements Parcelable {
         useEmail = in.readByte() != 0x00;
         signUpEnabled = in.readByte() != 0x00;
         changePasswordEnabled = in.readByte() != 0x00;
+        defaultDatabaseConnection = in.readString();
         if (in.readByte() == 0x01) {
             connections = new ArrayList<String>();
             in.readList(connections, String.class.getClassLoader());
@@ -49,7 +50,13 @@ public class LockOptions implements Parcelable {
         } else {
             enterpriseConnectionsUsingWebForm = null;
         }
-        defaultDatabaseConnection = in.readString();
+        if (in.readByte() == 0x01) {
+            // FIXME this is something to improve
+            Bundle mapBundle = in.readBundle();
+            authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable("authenticationParameters");
+        } else {
+            authenticationParameters = null;
+        }
     }
 
     @Override
@@ -67,6 +74,7 @@ public class LockOptions implements Parcelable {
         dest.writeByte((byte) (useEmail ? 0x01 : 0x00));
         dest.writeByte((byte) (signUpEnabled ? 0x01 : 0x00));
         dest.writeByte((byte) (changePasswordEnabled ? 0x01 : 0x00));
+        dest.writeString(defaultDatabaseConnection);
         if (connections == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -79,7 +87,15 @@ public class LockOptions implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(enterpriseConnectionsUsingWebForm);
         }
-        dest.writeString(defaultDatabaseConnection);
+        if (authenticationParameters == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            // FIXME this is something to improve
+            Bundle mapBundle = new Bundle();
+            mapBundle.putSerializable("authenticationParameters", authenticationParameters);
+            dest.writeBundle(mapBundle);
+        }
     }
 
     @SuppressWarnings("unused")
