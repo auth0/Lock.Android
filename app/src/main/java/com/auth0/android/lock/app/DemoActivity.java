@@ -1,53 +1,72 @@
 package com.auth0.android.lock.app;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.auth0.android.lock.Auth0;
+import com.auth0.android.lock.AuthenticationCallback;
+import com.auth0.android.lock.Lock;
+import com.auth0.authentication.Authentication;
 
 /**
  * Created by lbalmaceda on 1/21/16.
  */
 public class DemoActivity extends AppCompatActivity implements AuthenticationCallback {
-  private static final AUTH0_CLIENT_ID = "";
-  private static final AUTH0_DOMAIN = "";
-  private static final int AUTH_REQUEST = 333;
-  private Lock lock;
+    private static final String AUTH0_CLIENT_ID = "";
+    private static final String AUTH0_DOMAIN = "";
+    private static final int AUTH_REQUEST = 333;
+    private Lock lock;
 
-  @Override
-  public void onCreate(){
-    // create account
-    Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // create account
+        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
-    // create/configure lock
-    lock = Lock.Builder.newBuilder()
-      .withAccount(auth0)
-      .withCallback(this);
-    lock.onCreate(DemoActivity.this);
+        // create/configure lock
+        lock = Lock.newBuilder()
+                .withAccount(auth0)
+                .withCallback(this)
+                .build();
+        lock.onCreate(DemoActivity.this);
 
-    // launch, the results will be received in the callback
-    startActivity(lock.newIntent(this));
-  }
-
-  @Override
-  public void onDestroy(){
-    //should we ask for null lock?
-    lock.onDestroy(DemoActivity.this);
-  }
-
-  @Override
-  public void onActivityResult(Intent data, int requestCode, int resultCode) {
-    //should we ask for null lock?
-    if (requestCode == AUTH_REQUEST){
-      lock.onActivityResult(DemoActivity.this, resultCode, data);
-      return;
+        // launch, the results will be received in the callback
+        startActivity(lock.newIntent(this));
     }
-  }
 
-  @Override
-  public void onAuthentication(Authentication authentication){
 
-  }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //should we ask for null lock?
+        lock.onDestroy(DemoActivity.this);
+    }
 
-  @Override
-  public void onCancelled(){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //should we ask for null lock?
+        if (requestCode == AUTH_REQUEST) {
+            lock.onActivityResult(DemoActivity.this, resultCode, data);
+            return;
+        }
 
-  }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onAuthentication(Authentication authentication) {
+
+    }
+
+    @Override
+    public void onCancelled() {
+
+    }
+
+    @Override
+    public void onError(Auth0Exception error) {
+
+    }
 }

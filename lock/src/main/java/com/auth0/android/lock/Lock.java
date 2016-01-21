@@ -31,12 +31,12 @@ public class Lock {
         public void onReceive(Context context, Intent data) {
             // Get extra data included in the Intent
             String action = data.getAction();
-            if (action.equals(Lock.AUTHENTICATION_ACTION)){
+            if (action.equals(Lock.AUTHENTICATION_ACTION)) {
                 processEvent(data);
-            } else if (action.equals(Lock.CANCELED_ACTION)){
-              callback.onCancelled();
-            } else if (action.equals(Lock.SIGNUP_ACTION)){
-              //processSignup()?
+            } else if (action.equals(Lock.CANCELED_ACTION)) {
+                callback.onCancelled();
+            } else if (action.equals(Lock.SIGNUP_ACTION)) {
+                //processSignup()?
             }
         }
     };
@@ -44,6 +44,15 @@ public class Lock {
     protected Lock(LockOptions options) {
         this.options = options;
         this.callback = options.callback;
+    }
+
+    public static Builder newBuilder() {
+        return new Lock.Builder();
+    }
+
+    public Intent newIntent(Activity activity) {
+        Intent lockIntent = new Intent();
+        return new Intent();    //TODO: new Intent(activity, LockActivity.class);
     }
 
     public void onCreate(Activity activity) {
@@ -81,16 +90,16 @@ public class Lock {
     }
 
     private void processEvent(Intent eventData) {
-      //black magic. (?) parse eventData
-      Authentication authentication = eventData.getParcelableExtra("authentication");
+        //black magic. (?) parse eventData
+        Authentication authentication = eventData.getParcelableExtra("authentication");
 
-      if (authentication != null) {
-          callback.onAuthentication(authentication);
-      } else {
-        Auth0Exception up = new Auth0Exception("wops!");
-        callback.onError(up);
-        //throw up. haha
-      }
+        if (authentication != null) {
+            callback.onAuthentication(authentication);
+        } else {
+            Auth0Exception up = new Auth0Exception("wops!");
+            callback.onError(up);
+            //throw up. haha
+        }
     }
 
     private static class LockOptions {  //lets imlement Parcelable
@@ -105,36 +114,32 @@ public class Lock {
         public boolean signUpEnabled = true;
         public boolean changePasswordEnabled = true;
         public List<String> connections;
-        public List<String>enterpriseConnectionsUsingWebForm;
+        public List<String> enterpriseConnectionsUsingWebForm;
         public String defaultDatabaseConnection;
     }
 
     public static class Builder {
         private LockOptions options;
 
-        public Builder(){
+        public Builder() {
             options = new LockOptions();
         }
 
-        public Lock build(){
+        public Lock build() {
             return new Lock(options);
         }
 
-        public Builder newBuilder(){
-            return new Lock.Builder();
-        }
-
-        public Builder withAccount(Auth0 account){
+        public Builder withAccount(Auth0 account) {
             options.account = account;
             return this;
         }
 
-        public Builder withCallback(AuthenticationCallback callback){
+        public Builder withCallback(AuthenticationCallback callback) {
             options.callback = callback;
             return this;
         }
 
-        public Builder useBrowser(boolean useBrowser){
+        public Builder useBrowser(boolean useBrowser) {
             options.useBrowser = useBrowser;
             return this;
         }
