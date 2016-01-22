@@ -1,6 +1,7 @@
 package com.auth0.android.lock;
 
 import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -8,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.LockProgress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
@@ -20,6 +20,14 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import android.widget.RelativeLayout;
+
+import com.auth0.Application;
+import com.auth0.android.lock.social.SocialView;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by lbalmaceda on 1/21/16.
@@ -50,6 +58,8 @@ public class LockActivity extends AppCompatActivity {
         if (application == null) {
             fetchApplicationInfo();
         }
+        // Configuration configuration = new Configuration(application, null, null);
+        // SocialView sv = new SocialView(this, configuration, SocialView.Mode.Grid);
     }
 
     /**
