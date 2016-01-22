@@ -50,17 +50,7 @@ public class LockOptionsTest {
         boolean useBrowser = true;
         boolean useEmail = true;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -79,17 +69,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -108,17 +88,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -137,17 +107,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -166,17 +126,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -195,17 +145,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -224,17 +164,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -253,17 +183,7 @@ public class LockOptionsTest {
         boolean useBrowser = true;
         boolean useEmail = false;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -282,17 +202,7 @@ public class LockOptionsTest {
         boolean useBrowser = false;
         boolean useEmail = true;
 
-        LockOptions options = createOptions(
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        check(optionsBundle,
-                auth0, authenticationParameters, changePasswordEnabled, closable, connections,
+        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
                 defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
                 sendSdkInfo, signUpEnabled, useBrowser, useEmail);
     }
@@ -327,7 +237,6 @@ public class LockOptionsTest {
     }
 
     private void check(
-            LockOptions optionsBundle,
             Auth0 account,
             HashMap<String, Object> authenticationParameters,
             boolean changePasswordEnabled,
@@ -340,6 +249,15 @@ public class LockOptionsTest {
             boolean signUpEnabled,
             boolean useBrowser,
             boolean useEmail) throws Exception {
+
+        LockOptions options = createOptions(
+                account, authenticationParameters, changePasswordEnabled, closable, connections,
+                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
+                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(OPTIONS_KEY, options);
+        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
 
         Auth0 auth0bundle = optionsBundle.account;
         assertThat(auth0bundle.getClientId(), is(equalTo(account.getClientId())));
