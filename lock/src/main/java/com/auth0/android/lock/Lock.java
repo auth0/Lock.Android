@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
 import com.auth0.authentication.Authentication;
 
@@ -22,9 +23,8 @@ public class Lock {
     private AuthenticationCallback callback;
     private final LockOptions options;
 
-    public static final String AUTHENTICATION_ACTION = "Lock.Authentication";
-    public static final String CANCELED_ACTION = "Lock.Canceled";
-    public static final String SIGNUP_ACTION = "Lock.Signup";
+    public static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
+    public static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -35,9 +35,7 @@ public class Lock {
             if (action.equals(Lock.AUTHENTICATION_ACTION)) {
                 processEvent(data);
             } else if (action.equals(Lock.CANCELED_ACTION)) {
-                callback.onCancelled();
-            } else if (action.equals(Lock.SIGNUP_ACTION)) {
-                //processSignup()?
+                callback.onCanceled();
             }
         }
     };
@@ -66,7 +64,6 @@ public class Lock {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Lock.AUTHENTICATION_ACTION);
         filter.addAction(Lock.CANCELED_ACTION);
-        filter.addAction(Lock.SIGNUP_ACTION);
         LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
@@ -88,7 +85,7 @@ public class Lock {
         }
 
         //user pressed back.
-        callback.onCancelled();
+        callback.onCanceled();
     }
 
     private void processEvent(Intent eventData) {

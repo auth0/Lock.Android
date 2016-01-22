@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.auth0.Auth0;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 /**
  * Created by lbalmaceda on 1/21/16.
  */
-public class LockOptions implements Parcelable {
+class LockOptions implements Parcelable {
     public Auth0 account;
     public boolean useBrowser;
     public boolean closable;
@@ -29,7 +31,8 @@ public class LockOptions implements Parcelable {
     }
 
     protected LockOptions(Parcel in) {
-        account = (Auth0) in.readValue(Auth0.class.getClassLoader());
+        Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
+        account = auth0Parcelable.getAuth0();
         useBrowser = in.readByte() != 0x00;
         closable = in.readByte() != 0x00;
         fullscreen = in.readByte() != 0x00;
@@ -66,7 +69,7 @@ public class LockOptions implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(account);
+        dest.writeValue(new Auth0Parcelable(account));
         dest.writeByte((byte) (useBrowser ? 0x01 : 0x00));
         dest.writeByte((byte) (closable ? 0x01 : 0x00));
         dest.writeByte((byte) (fullscreen ? 0x01 : 0x00));

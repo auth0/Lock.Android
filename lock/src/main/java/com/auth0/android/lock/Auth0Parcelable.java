@@ -27,18 +27,22 @@ package com.auth0.android.lock;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.auth0.Auth0;
+
 
 /**
- * This class extends {@link com.auth0.Auth0} to make it Parcelable
+ * This class wraps a {@link com.auth0.Auth0} to make it Parcelable
  */
-public class Auth0 extends com.auth0.Auth0 implements Parcelable {
+class Auth0Parcelable implements Parcelable {
 
-    public Auth0(String clientId, String domainUrl, String configurationUrl) {
-        super(clientId, domainUrl, configurationUrl);
+    Auth0 auth0;
+
+    public Auth0Parcelable(Auth0 auth0) {
+        this.auth0 = auth0;
     }
 
-    public Auth0(String clientId, String domain) {
-        this(clientId, domain, null);
+    public Auth0 getAuth0() {
+        return auth0;
     }
 
     // PARCELABLE
@@ -49,23 +53,26 @@ public class Auth0 extends com.auth0.Auth0 implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(clientId);
-        dest.writeString(domainUrl);
-        dest.writeString(configurationUrl);
+        dest.writeString(auth0.getClientId());
+        dest.writeString(auth0.getDomainUrl());
+        dest.writeString(auth0.getConfigurationUrl());
     }
 
-    public static final Parcelable.Creator<Auth0> CREATOR
-            = new Parcelable.Creator<Auth0>() {
-        public Auth0 createFromParcel(Parcel in) {
-            return new Auth0(in);
+    public static final Parcelable.Creator<Auth0Parcelable> CREATOR
+            = new Parcelable.Creator<Auth0Parcelable>() {
+        public Auth0Parcelable createFromParcel(Parcel in) {
+            return new Auth0Parcelable(in);
         }
 
-        public Auth0[] newArray(int size) {
-            return new Auth0[size];
+        public Auth0Parcelable[] newArray(int size) {
+            return new Auth0Parcelable[size];
         }
     };
 
-    private Auth0(Parcel in) {
-        this(in.readString(), in.readString(), in.readString());
+    private Auth0Parcelable(Parcel in) {
+        String clientId = in.readString();
+        String domain = in.readString();
+        String configurationDomain = in.readString();
+        this.auth0 = new Auth0(clientId, domain, configurationDomain);
     }
 }

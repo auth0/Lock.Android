@@ -9,7 +9,7 @@ import com.auth0.authentication.Authentication;
 public interface AuthenticationCallback {
     void onAuthentication(Authentication authentication);
 
-    void onCancelled();
+    void onCanceled();
 
     void onError(Auth0Exception error);
 }

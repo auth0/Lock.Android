@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.authentication.Authentication;
@@ -62,7 +62,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     }
 
     @Override
-    public void onCancelled() {
+    public void onCanceled() {
 
     }
 
