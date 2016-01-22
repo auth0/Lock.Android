@@ -14,6 +14,10 @@ import java.util.List;
  * Created by lbalmaceda on 1/21/16.
  */
 class LockOptions implements Parcelable {
+    private static final int WITHOUT_DATA = 0x00;
+    private static final int HAS_DATA = 0x01;
+    private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
+
     public Auth0 account;
     public boolean useBrowser;
     public boolean closable;
@@ -33,30 +37,30 @@ class LockOptions implements Parcelable {
     protected LockOptions(Parcel in) {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         account = auth0Parcelable.getAuth0();
-        useBrowser = in.readByte() != 0x00;
-        closable = in.readByte() != 0x00;
-        fullscreen = in.readByte() != 0x00;
-        sendSDKInfo = in.readByte() != 0x00;
-        useEmail = in.readByte() != 0x00;
-        signUpEnabled = in.readByte() != 0x00;
-        changePasswordEnabled = in.readByte() != 0x00;
+        useBrowser = in.readByte() != HAS_DATA;
+        closable = in.readByte() != WITHOUT_DATA;
+        fullscreen = in.readByte() != WITHOUT_DATA;
+        sendSDKInfo = in.readByte() != WITHOUT_DATA;
+        useEmail = in.readByte() != WITHOUT_DATA;
+        signUpEnabled = in.readByte() != WITHOUT_DATA;
+        changePasswordEnabled = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
-        if (in.readByte() == 0x01) {
+        if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<String>();
             in.readList(connections, String.class.getClassLoader());
         } else {
             connections = null;
         }
-        if (in.readByte() == 0x01) {
+        if (in.readByte() == HAS_DATA) {
             enterpriseConnectionsUsingWebForm = new ArrayList<String>();
             in.readList(enterpriseConnectionsUsingWebForm, String.class.getClassLoader());
         } else {
             enterpriseConnectionsUsingWebForm = null;
         }
-        if (in.readByte() == 0x01) {
+        if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
             Bundle mapBundle = in.readBundle();
-            authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable("authenticationParameters");
+            authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
         } else {
             authenticationParameters = null;
         }
@@ -70,33 +74,33 @@ class LockOptions implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(new Auth0Parcelable(account));
-        dest.writeByte((byte) (useBrowser ? 0x01 : 0x00));
-        dest.writeByte((byte) (closable ? 0x01 : 0x00));
-        dest.writeByte((byte) (fullscreen ? 0x01 : 0x00));
-        dest.writeByte((byte) (sendSDKInfo ? 0x01 : 0x00));
-        dest.writeByte((byte) (useEmail ? 0x01 : 0x00));
-        dest.writeByte((byte) (signUpEnabled ? 0x01 : 0x00));
-        dest.writeByte((byte) (changePasswordEnabled ? 0x01 : 0x00));
+        dest.writeByte((byte) (useBrowser ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (sendSDKInfo ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (useEmail ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         if (connections == null) {
-            dest.writeByte((byte) (0x00));
+            dest.writeByte((byte) (WITHOUT_DATA));
         } else {
-            dest.writeByte((byte) (0x01));
+            dest.writeByte((byte) (HAS_DATA));
             dest.writeList(connections);
         }
         if (enterpriseConnectionsUsingWebForm == null) {
-            dest.writeByte((byte) (0x00));
+            dest.writeByte((byte) (WITHOUT_DATA));
         } else {
-            dest.writeByte((byte) (0x01));
+            dest.writeByte((byte) (HAS_DATA));
             dest.writeList(enterpriseConnectionsUsingWebForm);
         }
         if (authenticationParameters == null) {
-            dest.writeByte((byte) (0x00));
+            dest.writeByte((byte) (WITHOUT_DATA));
         } else {
-            dest.writeByte((byte) (0x01));
+            dest.writeByte((byte) (HAS_DATA));
             // FIXME this is something to improve
             Bundle mapBundle = new Bundle();
-            mapBundle.putSerializable("authenticationParameters", authenticationParameters);
+            mapBundle.putSerializable(KEY_AUTHENTICATION_PARAMETERS, authenticationParameters);
             dest.writeBundle(mapBundle);
         }
     }
