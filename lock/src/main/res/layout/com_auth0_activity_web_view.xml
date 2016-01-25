@@ -29,21 +29,10 @@
     android:layout_height="match_parent"
     tools:context="com.auth0.android.lock.net.WebViewActivity">
 
-    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+    <ProgressBar
         android:id="@+id/com_auth0_lock_progressbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:tag="lock_progressbar"
-        android:visibility="gone"
-        app:spb_color="@android:color/holo_blue_light"
-        app:spb_mirror_mode="false"
-        app:spb_progressiveStart_activated="false"
-        app:spb_reversed="false"
-        app:spb_sections_count="2"
-        app:spb_speed="2.5"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_stroke_width="4dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <WebView
         android:id="@+id/com_auth0_lock_webview"

@@ -24,6 +24,7 @@ public class Lock {
     private AuthenticationCallback callback;
     private final LockOptions options;
 
+    public static final String OPTIONS_KEY = "com.auth0.android.lock.key.options";
     public static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
     public static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
 

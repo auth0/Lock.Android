@@ -50,16 +50,6 @@ public interface IdentityProvider {
      * Starts the authentication process for an identity provider.
      *
      * @param activity    activity that starts the process (and will receive its response)
-     * @param request     request information
-     * @param application Auth0 application.
-     * @deprecated
-     */
-    void start(Activity activity, IdentityProviderRequest request, Application application);
-
-    /**
-     * Starts the authentication process for an identity provider.
-     *
-     * @param activity    activity that starts the process (and will receive its response)
      * @param serviceName of the IdP to authenticate with
      */
     void start(Activity activity, String serviceName);

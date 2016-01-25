@@ -9,4 +9,8 @@ public class SocialConnectionEvent {
     public SocialConnectionEvent(String connectionName) {
         this.connectionName = connectionName;
     }
+
+    public String getConnectionName() {
+        return connectionName;
+    }
 }

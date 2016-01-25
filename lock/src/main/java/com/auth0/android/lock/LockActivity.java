@@ -1,38 +1,35 @@
 package com.auth0.android.lock;
 
+
+import android.app.Dialog;
+import android.content.Intent;
 import android.net.Uri;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.auth0.Application;
 import com.auth0.Auth0Exception;
+import com.auth0.Token;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.net.CallbackParser;
+import com.auth0.android.lock.net.IdentityProviderCallback;
+import com.auth0.android.lock.net.WebIdentityProvider;
 import com.auth0.android.lock.views.LockProgress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import android.widget.RelativeLayout;
-
-import com.auth0.Application;
-import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.net.CallbackParser;
-import com.auth0.android.lock.net.WebIdentityProvider;
-import com.auth0.android.lock.social.SocialView;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by lbalmaceda on 1/21/16.
@@ -40,12 +37,29 @@ import java.io.InputStream;
 public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
-    private LockOptions options;
     private Application application;
     private static final String JSONP_PREFIX = "Auth0.setClient(";
     private Handler handler;
     private LockProgress progress;
     private Bus lockBus;
+    private LockOptions options;
+    private WebIdentityProvider lastIdp;
+
+    private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
+        @Override
+        public void onFailure(Dialog dialog) {
+            Log.w(TAG, "OnFailure called");
+        }
+
+        @Override
+        public void onFailure(int titleResource, int messageResource, Throwable cause) {
+        }
+
+        @Override
+        public void onSuccess(Token token) {
+            Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +67,11 @@ public class LockActivity extends AppCompatActivity {
         lockBus = new Bus();
         lockBus.register(this);
 
+        options = getIntent().getParcelableExtra(Lock.OPTIONS_KEY);
+        if (options == null) {
+            //FIXME: we can do better
+            throw new IllegalArgumentException("Invalid LockOptions.");
+        }
 
         handler = new Handler(getMainLooper());
 
@@ -139,10 +158,24 @@ public class LockActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (lastIdp != null) {
+            lastIdp.authorize(LockActivity.this, requestCode, resultCode, data);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
+        if (options == null) {
+            return;
+        }
+
         CallbackParser parser = new CallbackParser();
-        WebIdentityProvider wip = new WebIdentityProvider(parser, )
+        lastIdp = new WebIdentityProvider(parser, options.account, idpCallback);
+        lastIdp.start(LockActivity.this, event.getConnectionName());
     }
 
 }

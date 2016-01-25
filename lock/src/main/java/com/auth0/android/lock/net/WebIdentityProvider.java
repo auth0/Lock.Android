@@ -29,15 +29,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.auth0.Application;
+import com.auth0.Auth0;
 import com.auth0.Token;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
- * Implementation of {@link com.auth0.identity.IdentityProvider} that handles authentication
- * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link com.auth0.identity.web.WebViewActivity}.
+ * Implementation of {@link IdentityProvider} that handles authentication
+ * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link WebViewActivity}.
  * This behaviour is changed using {@link #setUseWebView(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
  */
 public class WebIdentityProvider implements IdentityProvider {
@@ -48,16 +49,16 @@ public class WebIdentityProvider implements IdentityProvider {
     private boolean useWebView;
     private IdentityProviderCallback callback;
     private CallbackParser parser;
-    private final String clientId;
-    private final String authorizeUrl;
+    private final Auth0 account;
     private Map<String, Object> parameters;
     private String clientInfo;
+    private String lastState;
 
-    public WebIdentityProvider(CallbackParser parser, String clientId, String authorizeUrl) {
+    public WebIdentityProvider(CallbackParser parser, Auth0 account, IdentityProviderCallback idpCallback) {
         this.parser = parser;
-        this.clientId = clientId;
-        this.authorizeUrl = authorizeUrl;
-        this.useWebView = false;
+        this.account = account;
+        this.callback = idpCallback;
+        this.useWebView = true;
         this.parameters = new HashMap<>();
     }
 
@@ -74,18 +75,13 @@ public class WebIdentityProvider implements IdentityProvider {
         this.callback = callback;
     }
 
-    @Override
-    public void start(Activity activity, IdentityProviderRequest request, Application application) {
-        //FIXME: Delete this deprecated method
-    }
-
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
     }
 
     @Override
     public void start(Activity activity, String serviceName) {
-        if (authorizeUrl == null) {
+        if (account.getAuthorizeUrl() == null) {
             if (callback != null) {
                 //callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_authorize_url, null);
             } else {
@@ -93,7 +89,11 @@ public class WebIdentityProvider implements IdentityProvider {
             }
             return;
         }
-        startAuthorization(activity, buildAuthorizeUri(authorizeUrl, serviceName, parameters), serviceName);
+
+        //Generate random state
+        lastState = UUID.randomUUID().toString();
+
+        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), serviceName, lastState, parameters), serviceName);
     }
 
     private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
@@ -102,7 +102,7 @@ public class WebIdentityProvider implements IdentityProvider {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
             intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, serviceName);
-            //let LockActivity set requestCode
+            //Improvement: let LockActivity set requestCode
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
@@ -122,8 +122,11 @@ public class WebIdentityProvider implements IdentityProvider {
         if (isValid) {
             final Map<String, String> values = parser.getValuesFromUri(uri);
             if (values.containsKey("error")) {
+                Log.e(TAG, "Error, access denied.");
                 //final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
                 //callback.onFailure(R.string.com_auth0_social_error_title, message, null);
+            } else if (values.containsKey("state") && !values.get("state").equals(lastState)) {
+                Log.e(TAG, "Received state doesn't match");
             } else if (values.size() > 0) {
                 Log.d(TAG, "Authenticated using web flow");
                 callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
@@ -148,7 +151,7 @@ public class WebIdentityProvider implements IdentityProvider {
         return parameters;
     }
 
-    private Uri buildAuthorizeUri(String url, String serviceName, Map<String, Object> parameters) {
+    private Uri buildAuthorizeUri(String url, String serviceName, String state, Map<String, Object> parameters) {
         final Uri authorizeUri = Uri.parse(url);
 
         //refactor >
@@ -162,10 +165,12 @@ public class WebIdentityProvider implements IdentityProvider {
                 }
             }
         }
+
         queryParameters.put("response_type", "token");
+        queryParameters.put("state", state);
         queryParameters.put("connection", serviceName);
-        queryParameters.put("client_id", clientId);
-        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, clientId.toLowerCase(), authorizeUri.getHost()));
+        queryParameters.put("client_id", account.getClientId());
+        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, account.getClientId().toLowerCase(), authorizeUri.getHost()));
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());

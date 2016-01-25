@@ -51,14 +51,6 @@ public interface IdentityProviderCallback {
     void onFailure(int titleResource, int messageResource, Throwable cause);
 
     /**
-     * Called when a social authentication is successful,
-     *
-     * @param serviceName name of the social connection
-     * @param accessToken access token of the user
-     */
-    void onSuccess(String serviceName, String accessToken);
-
-    /**
      * Called when the authentication is successful using web authentication against Auth0
      *
      * @param token Auth0 token information (id_token, refresh_token, etc).
