@@ -1,5 +1,5 @@
-<manifest package="com.auth0.android.lock.app"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.auth0.android.lock.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -37,6 +37,13 @@
             </intent-filter>
         </activity>
         <!--Auth0 Lock End-->
+
+
+        <!--Auth0 Lock Embedded WebView-->
+        <activity
+            android:name="com.auth0.android.lock.net.WebViewActivity"
+            android:theme="@style/AppTheme" />
+        <!--Auth0 Lock Embedded WebView End-->
 
     </application>
 

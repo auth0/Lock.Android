@@ -23,8 +23,13 @@ import java.io.IOException;
 import android.widget.RelativeLayout;
 
 import com.auth0.Application;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.net.CallbackParser;
+import com.auth0.android.lock.net.WebIdentityProvider;
 import com.auth0.android.lock.social.SocialView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,10 +45,14 @@ public class LockActivity extends AppCompatActivity {
     private static final String JSONP_PREFIX = "Auth0.setClient(";
     private Handler handler;
     private LockProgress progress;
+    private Bus lockBus;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        lockBus = new Bus();
+        lockBus.register(this);
+
 
         handler = new Handler(getMainLooper());
 
@@ -59,7 +68,7 @@ public class LockActivity extends AppCompatActivity {
             fetchApplicationInfo();
         }
         // Configuration configuration = new Configuration(application, null, null);
-        // SocialView sv = new SocialView(this, configuration, SocialView.Mode.Grid);
+        // SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.Grid);
     }
 
     /**
@@ -130,5 +139,10 @@ public class LockActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe
+    public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
+        CallbackParser parser = new CallbackParser();
+        WebIdentityProvider wip = new WebIdentityProvider(parser, )
+    }
 
 }

@@ -6,18 +6,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.squareup.otto.Bus;
 
 /**
  * Created by lbalmaceda on 1/22/16.
  */
-public class SocialView extends RecyclerView {
+public class SocialView extends RecyclerView implements ConnectionAuthenticationListener {
+
+    private Bus bus;
 
     public enum Mode {
         Grid, List
     }
 
-    public SocialView(Context context, Configuration configuration, Mode mode) {
+    public SocialView(Context context, Bus bus, Configuration configuration, Mode mode) {
         super(context);
+        this.bus = bus;
         init(configuration, mode);
     }
 
@@ -26,6 +31,12 @@ public class SocialView extends RecyclerView {
         LayoutManager lm = mode == Mode.Grid ? new GridLayoutManager(getContext(), 3) : new LinearLayoutManager(getContext());
         setLayoutManager(lm);
         setHasFixedSize(true);
+        adapter.setCallback(this);
         setAdapter(adapter);
+    }
+
+    @Override
+    public void onConnectionClicked(String connectionName) {
+        bus.post(new SocialConnectionEvent(connectionName));
     }
 }
