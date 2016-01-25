@@ -20,6 +20,7 @@ import java.util.Map;
  */
 public class Lock {
 
+    public static final String OPTIONS_EXTRA = "options";
     private AuthenticationCallback callback;
     private final LockOptions options;
 
@@ -51,7 +52,7 @@ public class Lock {
 
     public Intent newIntent(Activity activity) {
         Intent lockIntent = new Intent(activity, LockActivity.class);
-        lockIntent.putExtra("options", options);
+        lockIntent.putExtra(OPTIONS_EXTRA, options);
         return lockIntent;
     }
 
