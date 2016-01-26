@@ -47,7 +47,9 @@ public class LockActivity extends AppCompatActivity {
             throw new IllegalArgumentException("Missing LockOptions");
         }
 
-        fetchApplicationInfo();
+        if (application == null) {
+            fetchApplicationInfo();
+        }
     }
 
     /**
