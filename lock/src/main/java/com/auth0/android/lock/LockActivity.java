@@ -2,12 +2,14 @@ package com.auth0.android.lock;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.views.LockProgress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -28,10 +30,17 @@ public class LockActivity extends AppCompatActivity {
     private LockOptions options;
     private Application application;
     private static final String JSONP_PREFIX = "Auth0.setClient(";
+    private Handler handler;
+    private LockProgress progress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        handler = new Handler(getMainLooper());
+
+        setContentView(R.layout.com_auth0_lock_activity_lock);
+        progress = (LockProgress) findViewById(R.id.progress);
 
         options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
         if (options == null) {
@@ -57,14 +66,28 @@ public class LockActivity extends AppCompatActivity {
 
         client.newCall(req).enqueue(new Callback() {
             @Override
-            public void onFailure(com.squareup.okhttp.Request request, IOException e) {
+            public void onFailure(com.squareup.okhttp.Request request, final IOException e) {
                 Log.e(TAG, "Failed to fetchApplication: " + e.getMessage());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progress.showResult(e.getMessage());
+                    }
+                });
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 application = parseJSONP(response);
                 Log.i(TAG, "Application received!: " + application.getId());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //this will trigger a hide
+                        progress.showResult("");
+                        //todo: show lock-ui
+                    }
+                });
             }
         });
 
