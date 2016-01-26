@@ -101,7 +101,7 @@ public class WebIdentityProvider implements IdentityProvider {
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
-            intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, serviceName);
+            intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, serviceName);
             //Improvement: let LockActivity set requestCode
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {

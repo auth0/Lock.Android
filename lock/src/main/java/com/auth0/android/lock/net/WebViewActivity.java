@@ -29,21 +29,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.auth0.android.lock.R;
 
-public class WebViewActivity extends ActionBarActivity {
+public class WebViewActivity extends AppCompatActivity {
 
-    public static final String SERVICE_NAME_EXTRA = "serviceName";
+    public static final String CONNECTION_NAME_EXTRA = "serviceName";
 
-    WebView webView;
-    //SmoothProgressBar progressBar;
+    private WebView webView;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,7 @@ public class WebViewActivity extends ActionBarActivity {
         setContentView(R.layout.com_auth0_activity_web_view);
         final ActionBar bar = getSupportActionBar();
         if (bar != null) {
-            String serviceName = getIntent().getStringExtra(SERVICE_NAME_EXTRA);
+            String serviceName = getIntent().getStringExtra(CONNECTION_NAME_EXTRA);
 
             bar.setIcon(android.R.color.transparent);
             bar.setDisplayShowTitleEnabled(false);
@@ -81,7 +80,7 @@ public class WebViewActivity extends ActionBarActivity {
             */
         }
         webView = (WebView) findViewById(R.id.com_auth0_lock_webview);
-        //progressBar = (SmoothProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
+        progressBar = (ProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
     }
 
     @Override
@@ -106,13 +105,13 @@ public class WebViewActivity extends ActionBarActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                //progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                //progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
         webView.getSettings().setJavaScriptEnabled(true);

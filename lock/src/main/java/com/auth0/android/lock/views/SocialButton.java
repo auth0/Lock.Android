@@ -1,4 +1,4 @@
-package com.auth0.android.lock.social;
+package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;

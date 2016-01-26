@@ -1,18 +1,18 @@
-package com.auth0.android.lock.social;
+package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.utils.Configuration;
 import com.squareup.otto.Bus;
 
 /**
  * Created by lbalmaceda on 1/22/16.
  */
-public class SocialView extends RecyclerView implements ConnectionAuthenticationListener {
+public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {
 
     private Bus bus;
 

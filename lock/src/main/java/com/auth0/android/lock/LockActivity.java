@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.SocialConnectionEvent;
@@ -16,7 +17,9 @@ import com.auth0.android.lock.net.CallbackParser;
 import com.auth0.android.lock.net.IdentityProviderCallback;
 import com.auth0.android.lock.net.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.utils.Configuration;
 import com.auth0.android.lock.views.LockProgress;
+import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.result.Token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
@@ -37,12 +40,15 @@ import java.io.IOException;
 public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
-    private Application application;
     private static final String JSONP_PREFIX = "Auth0.setClient(";
-    private Handler handler;
-    private LockProgress progress;
-    private Bus lockBus;
+
+    private Application application;
     private LockOptions options;
+    private Handler handler;
+    private Bus lockBus;
+    private FrameLayout rootView;
+    private LockProgress progress;
+
     private WebIdentityProvider lastIdp;
 
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
@@ -64,36 +70,28 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lockBus = new Bus();
-        lockBus.register(this);
 
-        options = getIntent().getParcelableExtra(Lock.OPTIONS_KEY);
+        options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
         if (options == null) {
             //FIXME: we can do better
             throw new IllegalArgumentException("Invalid LockOptions.");
         }
 
+        lockBus = new Bus();
+        lockBus.register(this);
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         progress = (LockProgress) findViewById(R.id.progress);
-
-        options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
-        if (options == null) {
-            throw new IllegalArgumentException("Missing LockOptions");
-        }
+        rootView = (FrameLayout) findViewById(android.R.id.content);
 
         if (application == null) {
             fetchApplicationInfo();
         }
-        // Configuration configuration = new Configuration(application, null, null);
-        // SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.Grid);
     }
 
     /**
      * Fetch application information from Auth0
-     *
-     * @return a Auth0 request to start
      */
     public void fetchApplicationInfo() {
         OkHttpClient client = new OkHttpClient();
@@ -125,7 +123,7 @@ public class LockActivity extends AppCompatActivity {
                     public void run() {
                         //this will trigger a hide
                         progress.showResult("");
-                        //todo: show lock-ui
+                        initLockUI();
                     }
                 });
             }
@@ -133,7 +131,20 @@ public class LockActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Show the LockUI with all the panels and custom widgets.
+     */
+    private void initLockUI() {
+        Configuration config = new Configuration(application, null, null);
+        SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.Grid);
+        //TODO: add custom view for panels layout.
+        rootView.addView(sv);
+    }
 
+
+    /**
+     * Parses the Application JSONP received from the API.
+     */
     private Application parseJSONP(Response response) {
         try {
             String json = response.body().string();
@@ -161,14 +172,17 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (lastIdp != null) {
+            //Deliver result to the IDP
             lastIdp.authorize(LockActivity.this, requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
+        //called on social button click
         if (options == null) {
             return;
         }

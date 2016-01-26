@@ -1,4 +1,4 @@
-package com.auth0.android.lock.social;
+package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.List;
  */
 class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolder> {
     private static final String TAG = SocialViewAdapter.class.getSimpleName();
-    private static final String CONNECTION_FACEBOOK = "facebook";
 
     private final Context context;
     private final List<Strategy> strategyList;
@@ -61,8 +61,10 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     @DrawableRes
     private int getIconForStrategy(Strategy strategy) {
         String name = strategy.getName().toLowerCase();
-        if (name.startsWith(CONNECTION_FACEBOOK)) {
+        if (name.startsWith(Strategies.Facebook.getName())) {
             return android.R.drawable.ic_delete;
+        } else if (name.startsWith(Strategies.Twitter.getName())) {
+            return android.R.drawable.ic_input_add;
         } else {
             return android.R.drawable.ic_btn_speak_now;
         }
@@ -84,9 +86,18 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
                 Strategy strategy = strategyList.get(getAdapterPosition());
                 callback.onConnectionClicked(strategy.getName());       //returns the name of the first connection element
             } else {
-                Log.w(TAG, "SocialAuthenticationListener not configured");
+                Log.w(TAG, ConnectionAuthenticationListener.class.getSimpleName() + " not configured");
             }
         }
 
+    }
+
+    public interface ConnectionAuthenticationListener {
+        /**
+         * Called when a SocialButton is clicked.
+         *
+         * @param connectionName the connectionName associated to the button.
+         */
+        void onConnectionClicked(String connectionName);
     }
 }
