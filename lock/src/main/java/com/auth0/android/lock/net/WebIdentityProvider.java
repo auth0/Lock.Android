@@ -30,7 +30,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.auth0.Auth0;
-import com.auth0.Token;
+import com.auth0.authentication.result.Token;
 
 import java.util.HashMap;
 import java.util.Map;

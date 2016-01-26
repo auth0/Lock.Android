@@ -27,7 +27,6 @@ package com.auth0.android.lock.net;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.auth0.Application;
 
 
 /**

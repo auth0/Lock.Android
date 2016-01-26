@@ -10,14 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.auth0.Application;
 import com.auth0.Auth0Exception;
-import com.auth0.Token;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.net.CallbackParser;
 import com.auth0.android.lock.net.IdentityProviderCallback;
 import com.auth0.android.lock.net.WebIdentityProvider;
+import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.LockProgress;
+import com.auth0.authentication.result.Token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;

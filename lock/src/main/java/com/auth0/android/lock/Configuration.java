@@ -26,10 +26,10 @@ package com.auth0.android.lock;
 
 import android.support.annotation.NonNull;
 
-import com.auth0.Application;
-import com.auth0.Connection;
-import com.auth0.Strategies;
-import com.auth0.Strategy;
+import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.utils.Connection;
+import com.auth0.android.lock.utils.Strategies;
+import com.auth0.android.lock.utils.Strategy;
 
 import java.util.ArrayList;
 import java.util.HashSet;

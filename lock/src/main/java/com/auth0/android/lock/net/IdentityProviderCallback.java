@@ -25,8 +25,7 @@ package com.auth0.android.lock.net;
 
 import android.app.Dialog;
 
-import com.auth0.Token;
-
+import com.auth0.authentication.result.Token;
 
 /**
  * Callback called on success/failure of an Identity Provider authentication.

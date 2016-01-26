@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.auth0.authentication.api.util.CheckHelper.checkArgument;
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Class with your Auth0's application information and the list of enabled connections (DB, Social, Enterprise, Passwordless).

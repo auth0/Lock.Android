@@ -9,7 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
-import com.auth0.authentication.Authentication;
+import com.auth0.authentication.result.Authentication;
 
 import java.util.HashMap;
 import java.util.List;

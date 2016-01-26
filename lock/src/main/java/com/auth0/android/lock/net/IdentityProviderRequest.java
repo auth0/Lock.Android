@@ -26,7 +26,7 @@ package com.auth0.android.lock.net;
 
 import android.net.Uri;
 
-import com.auth0.Application;
+import com.auth0.android.lock.utils.Application;
 
 import java.util.Map;
 

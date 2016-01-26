@@ -9,7 +9,7 @@ import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
-import com.auth0.authentication.Authentication;
+import com.auth0.authentication.result.Authentication;
 
 /**
  * Created by lbalmaceda on 1/21/16.
