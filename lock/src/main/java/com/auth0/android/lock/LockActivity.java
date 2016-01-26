@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -59,11 +60,21 @@ public class LockActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(int titleResource, int messageResource, Throwable cause) {
+            Log.w(TAG, "OnFailure called");
         }
 
         @Override
         public void onSuccess(Token token) {
+            Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
+            intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
+            intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
+            intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, token.getRefreshToken());
+            intent.putExtra(Lock.TOKEN_TYPE_EXTRA, token.getType());
+
+            LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+
             Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
+            LockActivity.this.finish();
         }
     };
 
@@ -88,6 +99,13 @@ public class LockActivity extends AppCompatActivity {
         if (application == null) {
             fetchApplicationInfo();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Lock.CANCELED_ACTION);
+        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+        super.onBackPressed();
     }
 
     /**
