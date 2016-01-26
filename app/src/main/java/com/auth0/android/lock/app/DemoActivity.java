@@ -1,9 +1,9 @@
 package com.auth0.android.lock.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
 import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
@@ -14,7 +14,7 @@ import com.auth0.authentication.Authentication;
 /**
  * Created by lbalmaceda on 1/21/16.
  */
-public class DemoActivity extends Activity implements AuthenticationCallback {
+public class DemoActivity extends AppCompatActivity implements AuthenticationCallback {
     private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
     private static final String AUTH0_DOMAIN = "https://lbalmaceda.auth0.com";
     private static final int AUTH_REQUEST = 333;

@@ -1,9 +1,9 @@
 package com.auth0.android.lock;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.auth0.Auth0Exception;
@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Created by lbalmaceda on 1/21/16.
  */
-public class LockActivity extends Activity {
+public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private LockOptions options;
