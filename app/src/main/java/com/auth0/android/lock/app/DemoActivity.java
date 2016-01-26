@@ -15,8 +15,8 @@ import com.auth0.authentication.Authentication;
  * Created by lbalmaceda on 1/21/16.
  */
 public class DemoActivity extends AppCompatActivity implements AuthenticationCallback {
-    private static final String AUTH0_CLIENT_ID = "";
-    private static final String AUTH0_DOMAIN = "";
+    private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
+    private static final String AUTH0_DOMAIN = "https://lbalmaceda.auth0.com";
     private static final int AUTH_REQUEST = 333;
     private Lock lock;
 
