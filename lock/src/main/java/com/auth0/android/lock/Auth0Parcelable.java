@@ -33,7 +33,7 @@ import com.auth0.Auth0;
 /**
  * This class wraps a {@link com.auth0.Auth0} to make it Parcelable
  */
-class Auth0Parcelable implements Parcelable {
+public class Auth0Parcelable implements Parcelable {
 
     Auth0 auth0;
 

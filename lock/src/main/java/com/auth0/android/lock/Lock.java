@@ -167,7 +167,7 @@ public class Lock {
         }
 
         public Builder withAccount(Auth0 account) {
-            options.account = account;
+            options.setAccount(account);
             return this;
         }
 
@@ -177,52 +177,52 @@ public class Lock {
         }
 
         public Builder useBrowser(boolean useBrowser) {
-            options.useBrowser = useBrowser;
+            options.setUseBrowser(useBrowser);
             return this;
         }
 
         public Builder closable(boolean closable) {
-            options.closable = closable;
+            options.setClosable(closable);
             return this;
         }
 
         public Builder fullscreen(boolean fullscreen) {
-            options.fullscreen = fullscreen;
+            options.setFullscreen(fullscreen);
             return this;
         }
 
         public Builder withAuthenticationParameters(Map<String, Object> authenticationParameters) {
             if (authenticationParameters instanceof HashMap) {
-                options.authenticationParameters = (HashMap<String, Object>) authenticationParameters;
+                options.setAuthenticationParameters((HashMap<String, Object>) authenticationParameters);
             } else {
-                options.authenticationParameters = new HashMap<String, Object>(authenticationParameters);
+                options.setAuthenticationParameters(new HashMap<String, Object>(authenticationParameters));
             }
 
             return this;
         }
 
         public Builder onlyUseConnections(List<String> connections) {
-            options.connections = connections;
+            options.setConnections(connections);
             return this;
         }
 
         public Builder doNotSendSDKInfo() {
-            options.sendSDKInfo = false;
+            options.setSendSDKInfo(false);
             return this;
         }
 
         public Builder useEmail() {
-            options.useEmail = true;
+            options.setUseEmail(true);
             return this;
         }
 
         public Builder disableSignUp() {
-            options.signUpEnabled = false;
+            options.setSignUpEnabled(false);
             return this;
         }
 
         public Builder disableChangePassword() {
-            options.changePasswordEnabled = false;
+            options.setChangePasswordEnabled(false);
             return this;
         }
     }

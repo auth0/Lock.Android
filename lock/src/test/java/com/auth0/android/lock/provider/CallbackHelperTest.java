@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 public class CallbackHelperTest {
 
     private static final String PACKAGE_NAME = "com.auth0.lock.android.app";
-    private static final String DOMAIN = "https://lbalmaceda.auth0.com";
+    private static final String DOMAIN = "https://my-domain.auth0.com";
 
     private CallbackHelper helper;
 

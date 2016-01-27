@@ -134,8 +134,8 @@ public class LockActivity extends AppCompatActivity {
      */
     public void fetchApplicationInfo() {
         OkHttpClient client = new OkHttpClient();
-        Uri uri = Uri.parse(options.account.getConfigurationUrl()).buildUpon().appendPath("client")
-                .appendPath(options.account.getClientId() + ".js").build();
+        Uri uri = Uri.parse(options.getAccount().getConfigurationUrl()).buildUpon().appendPath("client")
+                .appendPath(options.getAccount().getClientId() + ".js").build();
 
         com.squareup.okhttp.Request req = new com.squareup.okhttp.Request.Builder()
                 .url(uri.toString())
@@ -228,8 +228,8 @@ public class LockActivity extends AppCompatActivity {
 
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
-        lastIdp = new WebIdentityProvider(helper, options.account, idpCallback);
-        lastIdp.setUseBrowser(options.useBrowser);
+        lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
+        lastIdp.setUseBrowser(options.useBrowser());
         lastIdp.start(LockActivity.this, event.getConnectionName());
     }
 

@@ -1,6 +1,6 @@
 package com.auth0.android.lock;
 
-import android.os.Bundle;
+import android.os.Parcel;
 
 import com.auth0.Auth0;
 
@@ -16,7 +16,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -27,9 +28,7 @@ public class LockOptionsTest {
     private static final String DOMAIN = "https://my-domain.auth0.com";
     private static final String CONFIG_DOMAIN = "https://my-cdn.auth0.com";
 
-    private static final String OPTIONS_KEY = "OPTIONS_KEY";
-
-    Auth0 auth0;
+    private Auth0 auth0;
 
     @Before
     public void setUp() throws Exception {
@@ -37,244 +36,250 @@ public class LockOptionsTest {
     }
 
     @Test
-    public void testParcelableAllTrue() throws Exception {
-        HashMap<String, Object> authenticationParameters = createAuthenticationParameters(654321);
-        boolean changePasswordEnabled = true;
-        boolean closable = true;
-        List<String> connections = createConnections("twitter", "facebook");
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = createEnterpriseConnectionsUsingWebForm("myAD");
-        boolean fullscreen = true;
-        boolean sendSdkInfo = true;
-        boolean signUpEnabled = true;
-        boolean useBrowser = true;
-        boolean useEmail = true;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testParcelableAllFalse() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = false;
-        boolean useBrowser = false;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testChangePasswordEnabled() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = true;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = false;
-        boolean useBrowser = false;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testClosable() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = true;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = false;
-        boolean useBrowser = false;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testFullscreen() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = true;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = false;
-        boolean useBrowser = false;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testSendSdkInfo() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = true;
-        boolean signUpEnabled = false;
-        boolean useBrowser = false;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testSignUpEnabled() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = true;
-        boolean useBrowser = false;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testUseBrowser() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = false;
-        boolean useBrowser = true;
-        boolean useEmail = false;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    @Test
-    public void testUseEmail() throws Exception {
-        HashMap<String, Object> authenticationParameters = null;
-        boolean changePasswordEnabled = false;
-        boolean closable = false;
-        List<String> connections = null;
-        String defaultDatabaseConnection = "default_db_connection";
-        List<String> enterpriseConnectionsUsingWebForm = null;
-        boolean fullscreen = false;
-        boolean sendSdkInfo = false;
-        boolean signUpEnabled = false;
-        boolean useBrowser = false;
-        boolean useEmail = true;
-
-        check(auth0, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
-    }
-
-    private LockOptions createOptions(
-            Auth0 account,
-            HashMap<String, Object> authenticationParameters,
-            boolean changePasswordEnabled,
-            boolean closable,
-            List<String> connections,
-            String defaultDatabaseConnection,
-            List<String> enterpriseConnectionsUsingWebForm,
-            boolean fullscreen,
-            boolean sendSdkInfo,
-            boolean signUpEnabled,
-            boolean useBrowser,
-            boolean useEmail) {
+    public void shouldSetAccount() {
         LockOptions options = new LockOptions();
-        options.account = account;
-        options.authenticationParameters = authenticationParameters;
-        options.changePasswordEnabled = changePasswordEnabled;
-        options.closable = closable;
-        options.connections = connections;
-        options.defaultDatabaseConnection = defaultDatabaseConnection;
-        options.enterpriseConnectionsUsingWebForm = enterpriseConnectionsUsingWebForm;
-        options.fullscreen = fullscreen;
-        options.sendSDKInfo = sendSdkInfo;
-        options.signUpEnabled = signUpEnabled;
-        options.useBrowser = useBrowser;
-        options.useEmail = useEmail;
-        return options;
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAccount().getClientId(), is(equalTo(parceledOptions.getAccount().getClientId())));
+        assertThat(options.getAccount().getConfigurationUrl(), is(equalTo(parceledOptions.getAccount().getConfigurationUrl())));
+        assertThat(options.getAccount().getDomainUrl(), is(equalTo(parceledOptions.getAccount().getDomainUrl())));
     }
 
-    private void check(
-            Auth0 account,
-            HashMap<String, Object> authenticationParameters,
-            boolean changePasswordEnabled,
-            boolean closable,
-            List<String> connections,
-            String defaultDatabaseConnection,
-            List<String> enterpriseConnectionsUsingWebForm,
-            boolean fullscreen,
-            boolean sendSdkInfo,
-            boolean signUpEnabled,
-            boolean useBrowser,
-            boolean useEmail) throws Exception {
+    @Test
+    public void shouldUseBrowser() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setUseBrowser(true);
 
-        LockOptions options = createOptions(
-                account, authenticationParameters, changePasswordEnabled, closable, connections,
-                defaultDatabaseConnection, enterpriseConnectionsUsingWebForm, fullscreen,
-                sendSdkInfo, signUpEnabled, useBrowser, useEmail);
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OPTIONS_KEY, options);
-        LockOptions optionsBundle = bundle.getParcelable(OPTIONS_KEY);
-
-        Auth0 auth0bundle = optionsBundle.account;
-        assertThat(auth0bundle.getClientId(), is(equalTo(account.getClientId())));
-        assertThat(auth0bundle.getDomainUrl(), is(equalTo(account.getDomainUrl())));
-        assertThat(auth0bundle.getConfigurationUrl(), is(equalTo(account.getConfigurationUrl())));
-        assertThat(optionsBundle.authenticationParameters, is(equalTo(authenticationParameters)));
-        assertThat(optionsBundle.changePasswordEnabled, is(equalTo(changePasswordEnabled)));
-        assertThat(optionsBundle.closable, is(equalTo(closable)));
-        assertThat(optionsBundle.connections, is(equalTo(connections)));
-        assertThat(optionsBundle.defaultDatabaseConnection, is(equalTo(defaultDatabaseConnection)));
-        assertThat(optionsBundle.enterpriseConnectionsUsingWebForm, is(equalTo(enterpriseConnectionsUsingWebForm)));
-        assertThat(optionsBundle.fullscreen, is(equalTo(fullscreen)));
-        assertThat(optionsBundle.sendSDKInfo, is(equalTo(sendSdkInfo)));
-        assertThat(optionsBundle.signUpEnabled, is(equalTo(signUpEnabled)));
-        assertThat(optionsBundle.useBrowser, is(equalTo(useBrowser)));
-        assertThat(optionsBundle.useEmail, is(equalTo(useEmail)));
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
     }
+
+    @Test
+    public void shouldBeClosable() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setClosable(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
+    }
+
+    @Test
+    public void shouldBeFullscreen() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setFullscreen(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
+    }
+
+    @Test
+    public void shouldSendSDKInfo() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setSendSDKInfo(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
+    }
+
+    @Test
+    public void shouldUseEmail() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setUseEmail(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
+    }
+
+    @Test
+    public void shouldBeSignUpEnabled() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setSignUpEnabled(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+    }
+
+    @Test
+    public void shouldBeChangePasswordEnabled() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setChangePasswordEnabled(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
+    }
+
+
+    @Test
+    public void shouldSetDefaultDatabaseConnection() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setDefaultDatabaseConnection("default_db_connection");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.getDefaultDatabaseConnection(), is(equalTo(parceledOptions.getDefaultDatabaseConnection())));
+    }
+
+    @Test
+    public void shouldSetConnections() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setConnections(createConnections("twitter", "facebook"));
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.getConnections(), is(equalTo(parceledOptions.getConnections())));
+    }
+
+
+    @Test
+    public void shouldSetEnterpriseConnectionsUsingWebForm() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setEnterpriseConnectionsUsingWebForm(createEnterpriseConnectionsUsingWebForm("myAD"));
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.getEnterpriseConnectionsUsingWebForm(), is(equalTo(parceledOptions.getEnterpriseConnectionsUsingWebForm())));
+    }
+
+    @Test
+    public void shouldSetAuthenticationParameters() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+        options.setAuthenticationParameters(createAuthenticationParameters(654123));
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAuthenticationParameters(), is(equalTo(parceledOptions.getAuthenticationParameters())));
+    }
+
+    @Test
+    public void shouldSetDefaultValues() {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertTrue(options != parceledOptions); //assure correct Parcelable object testing
+        assertThat(options.sendSDKInfo(), is(true));
+        assertThat(options.useBrowser(), is(false));
+        assertThat(options.isSignUpEnabled(), is(true));
+        assertThat(options.isChangePasswordEnabled(), is(true));
+    }
+
+
+    @Test
+    public void shouldSetAllTrueFields() throws Exception {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+
+        options.setChangePasswordEnabled(true);
+        options.setClosable(true);
+        options.setFullscreen(true);
+        options.setSendSDKInfo(true);
+        options.setUseBrowser(true);
+        options.setUseEmail(true);
+        options.setSignUpEnabled(true);
+
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
+        assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
+        assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
+        assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
+        assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
+        assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
+        assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+    }
+
+    @Test
+    public void shouldSetAllFalseFields() throws Exception {
+        LockOptions options = new LockOptions();
+        options.setAccount(auth0);
+
+        options.setChangePasswordEnabled(false);
+        options.setClosable(false);
+        options.setFullscreen(false);
+        options.setSendSDKInfo(false);
+        options.setUseBrowser(false);
+        options.setUseEmail(false);
+        options.setSignUpEnabled(false);
+
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
+        assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
+        assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
+        assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
+        assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
+        assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
+        assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+    }
+
 
     private HashMap<String, Object> createAuthenticationParameters(int innerIntParam) {
         HashMap<String, Object> authenticationParameters = new HashMap<>();
