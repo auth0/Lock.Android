@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="com_auth0_btn_social_big_height">80dp</dimen>
+    <dimen name="com_auth0_btn_social_big_width">300dp</dimen>
+</resources>

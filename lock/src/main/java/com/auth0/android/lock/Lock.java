@@ -1,3 +1,27 @@
+/*
+ * Lock.java
+ *
+ * Copyright (c) 2016 Auth0 (http://auth0.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package com.auth0.android.lock;
 
 import android.app.Activity;
@@ -8,25 +32,33 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
-import com.auth0.Auth0Exception;
-import com.auth0.authentication.Authentication;
+import com.auth0.android.lock.utils.LockException;
+import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.UserProfile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by nikolaseu on 1/21/16.
- */
 public class Lock {
 
-    public static final String OPTIONS_EXTRA = "options";
     private AuthenticationCallback callback;
     private final LockOptions options;
 
-    public static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
-    public static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
+    public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
 
+    static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
+    static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
+
+    static final String ID_TOKEN_EXTRA = "com.auth0.android.lock.extra.IdToken";
+    static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
+    static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
+    static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
+
+    /**
+     * Listens to LockActivity broadcasts and fires the correct action on the AuthenticationCallback.
+     */
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
@@ -50,6 +82,12 @@ public class Lock {
         return new Lock.Builder();
     }
 
+    /**
+     * Builds a new intent to launch LockActivity with the given options
+     *
+     * @param activity a valid Activity context
+     * @return the intent to which the user has to call startActivity or startActivityForResult
+     */
     public Intent newIntent(Activity activity) {
         Intent lockIntent = new Intent(activity, LockActivity.class);
         lockIntent.putExtra(OPTIONS_EXTRA, options);
@@ -89,14 +127,28 @@ public class Lock {
         callback.onCanceled();
     }
 
+    /**
+     * Extracts the Authentication data from the intent data.
+     *
+     * @param eventData the intent received at the end of the login process.
+     */
     private void processEvent(Intent eventData) {
-        //black magic. (?) parse eventData
-        Authentication authentication = eventData.getParcelableExtra("authentication");
+        String idToken = eventData.getStringExtra(Lock.ID_TOKEN_EXTRA);
+        String accessToken = eventData.getStringExtra(Lock.ACCESS_TOKEN_EXTRA);
+        String tokenType = eventData.getStringExtra(Lock.TOKEN_TYPE_EXTRA);
+        String refreshToken = eventData.getStringExtra(Lock.REFRESH_TOKEN_EXTRA);
+        Token token = new Token(idToken, accessToken, tokenType, refreshToken);
 
-        if (authentication != null) {
+        //TODO: Fetch UserProfile
+        HashMap<String, Object> profileData = new HashMap<String, Object>();
+        profileData.put("user_id", "1");
+        UserProfile profile = new UserProfile(profileData); //TODO. Ask api for profile?
+        Authentication authentication = new Authentication(profile, token);
+
+        if (idToken != null && accessToken != null) {
             callback.onAuthentication(authentication);
         } else {
-            Auth0Exception up = new Auth0Exception("wops!");
+            LockException up = new LockException(R.string.com_auth0_social_error_authentication);
             callback.onError(up);
             //throw up. haha
         }

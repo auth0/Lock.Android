@@ -1,5 +1,5 @@
 /*
- * Auth0.java
+ * Auth0Parcelable.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *

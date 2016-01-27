@@ -1,5 +1,5 @@
 /*
- * AuthenticationCallback.java
+ * CallbackParser.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,15 +22,28 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.provider;
 
-import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Authentication;
+import android.net.Uri;
 
-public interface AuthenticationCallback {
-    void onAuthentication(Authentication authentication);
+import java.util.HashMap;
+import java.util.Map;
 
-    void onCanceled();
+public class CallbackParser {
 
-    void onError(LockException error);
+    public Map<String, String> getValuesFromUri(Uri uri) {
+        return asMap(uri.getQuery() != null ? uri.getQuery() : uri.getFragment());
+    }
+
+    private Map<String, String> asMap(String valueString) {
+        final String[] entries = valueString != null && valueString.length() > 0 ? valueString.split("&") : new String[]{};
+        Map<String, String> values = new HashMap<>(entries.length);
+        for (String entry : entries) {
+            final String[] value = entry.split("=");
+            if (value.length == 2) {
+                values.put(value[0], value[1]);
+            }
+        }
+        return values;
+    }
 }

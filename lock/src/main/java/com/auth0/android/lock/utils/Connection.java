@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.authentication.api.util.CheckHelper;
+import com.auth0.util.CheckHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

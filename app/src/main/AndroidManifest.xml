@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.auth0.android.lock.app">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -19,7 +19,31 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.auth0.android.lock.LockActivity" />
+        <!--Auth0 Lock-->
+        <activity
+            android:name="com.auth0.android.lock.LockActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="overmind.auth0.com"
+                    android:scheme="a0u5mhurbyqhsvwjleqzstcbufablbjas3" />
+            </intent-filter>
+        </activity>
+        <!--Auth0 Lock End-->
+
+
+        <!--Auth0 Lock Embedded WebView-->
+        <activity
+            android:name="com.auth0.android.lock.provider.WebViewActivity"
+            android:theme="@style/AppTheme" />
+        <!--Auth0 Lock Embedded WebView End-->
 
     </application>
 

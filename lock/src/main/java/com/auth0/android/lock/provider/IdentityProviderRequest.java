@@ -1,7 +1,7 @@
 /*
- * AuthenticationCallback.java
+ * IdentityProviderRequest.java
  *
- * Copyright (c) 2016 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,33 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.provider;
 
-import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Authentication;
+import android.net.Uri;
 
-public interface AuthenticationCallback {
-    void onAuthentication(Authentication authentication);
+import com.auth0.android.lock.utils.Application;
 
-    void onCanceled();
+import java.util.Map;
 
-    void onError(LockException error);
+/**
+ * Interface for a authentication request to a Identity Provider, e.g. Facebook, Instagram, etc.
+ */
+public interface IdentityProviderRequest {
+
+    /**
+     * Returns the URL used to authenticate the user in the Identity Provider.
+     *
+     * @param application Auth0 application information
+     * @param parameters
+     * @return a {@link android.net.Uri}
+     */
+    Uri getAuthenticationUri(Application application, Map<String, Object> parameters);
+
+    /**
+     * Name of the Identity Provider
+     *
+     * @return a name
+     */
+    String getServiceName();
+
 }

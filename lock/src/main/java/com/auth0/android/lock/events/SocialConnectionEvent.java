@@ -1,5 +1,5 @@
 /*
- * AuthenticationCallback.java
+ * SocialConnectionEvent.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,15 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.events;
 
-import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Authentication;
 
-public interface AuthenticationCallback {
-    void onAuthentication(Authentication authentication);
+public class SocialConnectionEvent {
+    private final String connectionName;
 
-    void onCanceled();
+    public SocialConnectionEvent(String connectionName) {
+        this.connectionName = connectionName;
+    }
 
-    void onError(LockException error);
+    public String getConnectionName() {
+        return connectionName;
+    }
 }
