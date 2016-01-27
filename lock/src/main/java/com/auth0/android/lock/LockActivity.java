@@ -38,7 +38,7 @@ import android.widget.FrameLayout;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.provider.CallbackParser;
+import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
@@ -226,8 +226,10 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        CallbackParser parser = new CallbackParser();
-        lastIdp = new WebIdentityProvider(parser, options.account, idpCallback);
+        String pkgName = getApplicationContext().getPackageName();
+        CallbackHelper helper = new CallbackHelper(pkgName);
+        lastIdp = new WebIdentityProvider(helper, options.account, idpCallback);
+        lastIdp.setUseBrowser(options.useBrowser);
         lastIdp.start(LockActivity.this, event.getConnectionName());
     }
 

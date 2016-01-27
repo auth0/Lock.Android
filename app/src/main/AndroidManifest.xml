@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.auth0.android.lock.app">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -32,8 +32,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="overmind.auth0.com"
-                    android:scheme="a0u5mhurbyqhsvwjleqzstcbufablbjas3" />
+                    android:host="lbalmaceda.auth0.com"
+                    android:pathPrefix="/android/com.auth0.android.lock.app/callback"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <!--Auth0 Lock End-->

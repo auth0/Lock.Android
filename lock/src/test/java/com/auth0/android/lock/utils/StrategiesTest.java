@@ -1,5 +1,6 @@
-package com.auth0.android.lock;
+package com.auth0.android.lock.utils;
 
+import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.utils.Strategies;
 
 import org.junit.Test;

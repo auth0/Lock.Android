@@ -1,7 +1,7 @@
 /*
- * IdentityProviderRequest.java
+ * CallbackHelperTest.java
  *
- * Copyright (c) 2015 Auth0 (http://auth0.com)
+ * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,31 +24,29 @@
 
 package com.auth0.android.lock.provider;
 
-import android.net.Uri;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.auth0.android.lock.utils.Application;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import java.util.Map;
 
-/**
- * Interface for a authentication request to a Identity Provider, e.g. Facebook, Instagram, etc.
- */
-public interface IdentityProviderRequest {
+public class CallbackHelperTest {
 
-    /**
-     * Returns the URL used to authenticate the user in the Identity Provider.
-     *
-     * @param application Auth0 application information
-     * @param parameters
-     * @return a {@link android.net.Uri}
-     */
-    Uri getAuthenticationUri(Application application, Map<String, Object> parameters);
+    private static final String PACKAGE_NAME = "com.auth0.lock.android.app";
+    private static final String DOMAIN = "https://lbalmaceda.auth0.com";
 
-    /**
-     * Name of the Identity Provider
-     *
-     * @return a name
-     */
-    String getServiceName();
+    private CallbackHelper helper;
 
+    @Before
+    public void setUp() throws Exception {
+        helper = new CallbackHelper(PACKAGE_NAME);
+    }
+
+    @Test
+    public void shouldGetCallbackURI() throws Exception {
+        String expected = DOMAIN + "/android/" + PACKAGE_NAME + "/callback";
+        String uri = helper.getCallbackURI(DOMAIN);
+        assertThat(uri, equalTo(expected));
+    }
 }

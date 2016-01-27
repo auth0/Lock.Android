@@ -1,25 +1,28 @@
+
 /*
- * WebIdentityProvider.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ *  * WebIdentityProvider.java
+ *  *
+ *  * Copyright (c) 2016 Auth0 (http://auth0.com)
+ *  *
+ *  * Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  * of this software and associated documentation files (the "Software"), to deal
+ *  * in the Software without restriction, including without limitation the rights
+ *  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  * copies of the Software, and to permit persons to whom the Software is
+ *  * furnished to do so, subject to the following conditions:
+ *  *
+ *  * The above copyright notice and this permission notice shall be included in
+ *  * all copies or substantial portions of the Software.
+ *  *
+ *  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  * THE SOFTWARE.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
  */
 
 package com.auth0.android.lock.provider;
@@ -40,36 +43,35 @@ import java.util.UUID;
 /**
  * Implementation of {@link IdentityProvider} that handles authentication
  * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link WebViewActivity}.
- * This behaviour is changed using {@link #setUseWebView(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
+ * This behaviour is changed using {@link #setUseBrowser(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
  */
 public class WebIdentityProvider implements IdentityProvider {
 
-    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
     private static final String TAG = WebIdentityProvider.class.getName();
 
-    private boolean useWebView;
+    private boolean useBrowser;
     private IdentityProviderCallback callback;
-    private CallbackParser parser;
+    private CallbackHelper helper;
     private final Auth0 account;
     private Map<String, Object> parameters;
     private String clientInfo;
     private String lastState;
 
-    public WebIdentityProvider(CallbackParser parser, Auth0 account, IdentityProviderCallback idpCallback) {
-        this.parser = parser;
+    public WebIdentityProvider(CallbackHelper helper, Auth0 account, IdentityProviderCallback idpCallback) {
+        this.helper = helper;
         this.account = account;
         this.callback = idpCallback;
-        this.useWebView = true;
+        this.useBrowser = true;
         this.parameters = new HashMap<>();
     }
 
     /**
      * If the class authenticates with an external browser or not.
      *
-     * @param useWebView if the authentication is handled in a WebView.
+     * @param useBrowser if the authentication is handled in a Browser.
      */
-    public void setUseWebView(boolean useWebView) {
-        this.useWebView = useWebView;
+    public void setUseBrowser(boolean useBrowser) {
+        this.useBrowser = useBrowser;
     }
 
     public void setCallback(IdentityProviderCallback callback) {
@@ -99,15 +101,15 @@ public class WebIdentityProvider implements IdentityProvider {
 
     private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
         final Intent intent;
-        if (this.useWebView) {
+        if (this.useBrowser) {
+            intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
+            activity.startActivity(intent);
+        } else {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
             intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, serviceName);
             //Improvement: let LockActivity set requestCode
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
-        } else {
-            intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
-            activity.startActivity(intent);
         }
     }
 
@@ -121,7 +123,7 @@ public class WebIdentityProvider implements IdentityProvider {
         Log.v(TAG, "Authenticating with webflow with data " + uri);
         boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK && uri != null;
         if (isValid) {
-            final Map<String, String> values = parser.getValuesFromUri(uri);
+            final Map<String, String> values = helper.getValuesFromUri(uri);
             if (values.containsKey("error")) {
                 Log.e(TAG, "Error, access denied.");
                 final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
@@ -171,7 +173,7 @@ public class WebIdentityProvider implements IdentityProvider {
         queryParameters.put("state", state);
         queryParameters.put("connection", serviceName);
         queryParameters.put("client_id", account.getClientId());
-        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, account.getClientId().toLowerCase(), authorizeUri.getHost()));
+        queryParameters.put("redirect_uri", helper.getCallbackURI(account.getDomainUrl()));
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
