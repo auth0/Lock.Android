@@ -1,5 +1,3 @@
-package com.auth0.android.lock.net;
-
 /*
  * WebViewActivity.java
  *
@@ -23,6 +21,8 @@ package com.auth0.android.lock.net;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+package com.auth0.android.lock.provider;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -51,33 +51,12 @@ public class WebViewActivity extends AppCompatActivity {
         final ActionBar bar = getSupportActionBar();
         if (bar != null) {
             String serviceName = getIntent().getStringExtra(CONNECTION_NAME_EXTRA);
-
             bar.setIcon(android.R.color.transparent);
             bar.setDisplayShowTitleEnabled(false);
             bar.setDisplayUseLogoEnabled(false);
             bar.setDisplayHomeAsUpEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
-            /*
-            View view = LayoutInflater.from(this).inflate(R.layout.com_auth0_webview_action_bar, null);
-            final ImageView iconLabel = (ImageView) view.findViewById(R.id.com_auth0_social_icon_label);
-            final int iconResourceId = SocialResources.iconForSocialService(this, serviceName);
-            if (iconResourceId != 0) {
-                iconLabel.setImageResource(iconResourceId);
-            } else {
-                iconLabel.setImageResource(R.drawable.com_auth0_social_icon_auth0);
-            }
-            bar.setBackgroundDrawable(new ColorDrawable(SocialResources.colorForSocialService(this, serviceName)));
-            TextView textLabel = (TextView) view.findViewById(R.id.com_auth0_social_title_label);
-            int textResId = SocialResources.titleForSocialService(this, serviceName);
-            if (textResId != 0) {
-                textLabel.setText(textResId);
-            } else {
-                textLabel.setText(getResources().getString(R.string.com_auth0_social_unknown_placeholder, serviceName.toUpperCase()));
-            }
-            int textColor = SocialResources.textColorForSocialService(this, serviceName);
-            textLabel.setTextColor(textColor);
-            bar.setCustomView(view);
-            */
+            bar.setTitle(serviceName);
         }
         webView = (WebView) findViewById(R.id.com_auth0_lock_webview);
         progressBar = (ProgressBar) findViewById(R.id.com_auth0_lock_progressbar);

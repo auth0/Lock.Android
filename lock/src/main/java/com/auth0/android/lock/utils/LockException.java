@@ -1,5 +1,5 @@
 /*
- * AuthenticationCallback.java
+ * LockException.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,15 +22,27 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.utils;
 
-import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Authentication;
+import android.content.Context;
+import android.support.annotation.StringRes;
 
-public interface AuthenticationCallback {
-    void onAuthentication(Authentication authentication);
 
-    void onCanceled();
+public class LockException extends Exception {
+    private int message;
 
-    void onError(LockException error);
+    public LockException(@StringRes int message) {
+        super();
+        this.message = message;
+    }
+
+    /**
+     * Gets the error message or description for this LockException
+     *
+     * @param context a valid context
+     * @return the localized error message
+     */
+    public String getErrorMessage(Context context) {
+        return context.getResources().getString(message);
+    }
 }

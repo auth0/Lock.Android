@@ -41,7 +41,7 @@
 
         <!--Auth0 Lock Embedded WebView-->
         <activity
-            android:name="com.auth0.android.lock.net.WebViewActivity"
+            android:name="com.auth0.android.lock.provider.WebViewActivity"
             android:theme="@style/AppTheme" />
         <!--Auth0 Lock Embedded WebView End-->
 

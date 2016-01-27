@@ -1,4 +1,3 @@
-package com.auth0.android.lock.net;
 /*
  * IdentityProviderCallback.java
  *
@@ -22,6 +21,8 @@ package com.auth0.android.lock.net;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+package com.auth0.android.lock.provider;
 
 import android.app.Dialog;
 

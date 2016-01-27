@@ -1,4 +1,3 @@
-package com.auth0.android.lock.net;
 /*
  * IdentityProviderRequest.java
  *
@@ -23,6 +22,7 @@ package com.auth0.android.lock.net;
  * THE SOFTWARE.
  */
 
+package com.auth0.android.lock.provider;
 
 import android.net.Uri;
 

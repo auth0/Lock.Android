@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.net;
+package com.auth0.android.lock.provider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.R;
 import com.auth0.authentication.result.Token;
 
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public class WebIdentityProvider implements IdentityProvider {
     public void start(Activity activity, String serviceName) {
         if (account.getAuthorizeUrl() == null) {
             if (callback != null) {
-                //callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_authorize_url, null);
+                callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_authorize_url, null);
             } else {
                 Log.w(TAG, "No callback set for web IdP authenticator");
             }
@@ -123,8 +124,8 @@ public class WebIdentityProvider implements IdentityProvider {
             final Map<String, String> values = parser.getValuesFromUri(uri);
             if (values.containsKey("error")) {
                 Log.e(TAG, "Error, access denied.");
-                //final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
-                //callback.onFailure(R.string.com_auth0_social_error_title, message, null);
+                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+                callback.onFailure(R.string.com_auth0_social_error_title, message, null);
             } else if (values.containsKey("state") && !values.get("state").equals(lastState)) {
                 Log.e(TAG, "Received state doesn't match");
             } else if (values.size() > 0) {

@@ -1,4 +1,3 @@
-
 /*
  * Strategies.java
  *

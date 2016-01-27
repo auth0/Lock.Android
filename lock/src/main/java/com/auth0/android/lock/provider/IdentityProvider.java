@@ -1,5 +1,3 @@
-package com.auth0.android.lock.net;
-
 /*
  * IdentityProvider.java
  *
@@ -24,9 +22,10 @@ package com.auth0.android.lock.net;
  * THE SOFTWARE.
  */
 
+package com.auth0.android.lock.provider;
+
 import android.app.Activity;
 import android.content.Intent;
-
 
 
 /**
