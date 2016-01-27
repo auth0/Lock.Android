@@ -2,7 +2,21 @@
 
 ## [Unreleased](https://github.com/auth0/Lock.Android/tree/HEAD)
 
-[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.12.1...HEAD)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.13.0...HEAD)
+
+**Closed issues:**
+
+- License and Readme need fixing [\#162](https://github.com/auth0/Lock.Android/issues/162)
+
+**Merged pull requests:**
+
+- Social layout [\#190](https://github.com/auth0/Lock.Android/pull/190) ([lbalmaceda](https://github.com/lbalmaceda))
+- Fetch application [\#189](https://github.com/auth0/Lock.Android/pull/189) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add LockOptions test [\#186](https://github.com/auth0/Lock.Android/pull/186) ([nikolaseu](https://github.com/nikolaseu))
+- Fix license and readme [\#163](https://github.com/auth0/Lock.Android/pull/163) ([aguerere](https://github.com/aguerere))
+
+## [1.13.0](https://github.com/auth0/Lock.Android/tree/1.13.0) (2015-12-23)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.12.1...1.13.0)
 
 **Closed issues:**
 
