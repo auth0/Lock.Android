@@ -60,13 +60,11 @@ public interface IdentityProvider {
     /**
      * Called with the result of the authorization.
      *
-     * @param activity    activity that will receive the result.
-     * @param requestCode code of the authentication request
-     * @param resultCode  result code
-     * @param data        authentication paylod
+     * @param activity activity that will receive the result.
+     * @param result   authorization result data.
      * @return if the result is valid or not.
      */
-    boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
+    boolean authorize(Activity activity, AuthorizeResult result);
 
     /**
      * Removes any session information stored in the object.

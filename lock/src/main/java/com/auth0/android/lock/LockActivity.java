@@ -38,6 +38,7 @@ import android.widget.FrameLayout;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
@@ -210,12 +211,27 @@ public class LockActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "OnActivityResult called with intent: " + data);
         if (lastIdp != null) {
             //Deliver result to the IDP
-            lastIdp.authorize(LockActivity.this, requestCode, resultCode, data);
+            AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
+            lastIdp.authorize(LockActivity.this, result);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "OnNewIntent called with intent: " + intent);
+        if (lastIdp != null) {
+            //Deliver result to the IDP
+            AuthorizeResult result = new AuthorizeResult(intent);
+            lastIdp.authorize(LockActivity.this, result);
+        }
+
+        super.onNewIntent(intent);
     }
 
     @SuppressWarnings("unused")

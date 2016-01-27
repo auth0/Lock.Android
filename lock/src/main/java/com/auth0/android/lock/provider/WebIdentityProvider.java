@@ -99,15 +99,16 @@ public class WebIdentityProvider implements IdentityProvider {
         startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), serviceName, lastState, parameters), serviceName);
     }
 
-    private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
+    private void startAuthorization(Activity activity, Uri authorizeUri, String connectionName) {
         final Intent intent;
         if (this.useBrowser) {
             intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             activity.startActivity(intent);
         } else {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
-            intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, serviceName);
+            intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, connectionName);
             //Improvement: let LockActivity set requestCode
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         }
@@ -118,24 +119,28 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
-        Uri uri = data != null ? data.getData() : null;
+    public boolean authorize(Activity activity, AuthorizeResult data) {
+        Uri uri = data.getIntent() != null ? data.getIntent().getData() : null;
         Log.v(TAG, "Authenticating with webflow with data " + uri);
-        boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK && uri != null;
-        if (isValid) {
-            final Map<String, String> values = helper.getValuesFromUri(uri);
-            if (values.containsKey("error")) {
-                Log.e(TAG, "Error, access denied.");
-                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
-                callback.onFailure(R.string.com_auth0_social_error_title, message, null);
-            } else if (values.containsKey("state") && !values.get("state").equals(lastState)) {
-                Log.e(TAG, "Received state doesn't match");
-            } else if (values.size() > 0) {
-                Log.d(TAG, "Authenticated using web flow");
-                callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
-            }
+
+        boolean fromWebView = data.getRequestCode() == WEBVIEW_AUTH_REQUEST_CODE;
+        if (uri == null || (fromWebView && data.getResultCode() != Activity.RESULT_OK)) {
+            return false;
         }
-        return isValid;
+
+        final Map<String, String> values = helper.getValuesFromUri(uri);
+        if (values.containsKey("error")) {
+            Log.e(TAG, "Error, access denied.");
+            final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+            callback.onFailure(R.string.com_auth0_social_error_title, message, null);
+        } else if (values.containsKey("state") && !values.get("state").equals(lastState)) {
+            Log.e(TAG, "Received state doesn't match");
+            Log.e(TAG, "Expected: " + lastState + " / Received: " + values.get("state"));
+        } else if (values.size() > 0) {
+            Log.d(TAG, "Authenticated using web flow");
+            callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
+        }
+        return true;
     }
 
     @Override
