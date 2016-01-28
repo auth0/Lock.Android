@@ -121,7 +121,11 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         lock.onCreate(DemoActivity.this);
 
         // launch, the results will be received in the callback
-        startActivity(lock.newIntent(this));
+        if (useBrowser) {
+            startActivity(lock.newIntent(this));
+        } else {
+            startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
+        }
     }
 
     /**
