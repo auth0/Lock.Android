@@ -49,6 +49,24 @@ public class WebIdentityProvider implements IdentityProvider {
 
     private static final String TAG = WebIdentityProvider.class.getName();
 
+    private static final String KEY_ERROR = "error";
+    private static final String KEY_ID_TOKEN = "id_token";
+    private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String KEY_TOKEN_TYPE = "token_type";
+    private static final String KEY_REFRESH_TOKEN = "refresh_token";
+    private static final String KEY_AUTH0_CLIENT = "auth0Client";
+    private static final String KEY_RESPONSE_TYPE = "response_type";
+    private static final String KEY_STATE = "state";
+    private static final String KEY_CONNECTION = "connection";
+    private static final String KEY_CLIENT_ID = "client_id";
+    private static final String KEY_REDIRECT_URI = "redirect_uri";
+    private static final String KEY_SCOPE = "scope";
+
+    private static final String ERROR_VALUE_ACCESS_DENIED = "access_denied";
+    private static final String RESPONSE_TYPE_TOKEN = "token";
+    private static final String SCOPE_TYPE_OPENID = "openid";
+
+
     private boolean useBrowser;
     private IdentityProviderCallback callback;
     private CallbackHelper helper;
@@ -120,26 +138,22 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public boolean authorize(Activity activity, AuthorizeResult data) {
-        Uri uri = data.getIntent() != null ? data.getIntent().getData() : null;
-        Log.v(TAG, "Authenticating with web flow with data " + uri);
-
-        boolean fromWebView = data.getRequestCode() == WEBVIEW_AUTH_REQUEST_CODE;
-        if (uri == null || (fromWebView && data.getResultCode() != Activity.RESULT_OK)) {
+        if (!data.isValid(WEBVIEW_AUTH_REQUEST_CODE)) {
             return false;
         }
 
-        final Map<String, String> values = helper.getValuesFromUri(uri);
-        if (values.containsKey("error")) {
+        final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
+        if (values.containsKey(KEY_ERROR)) {
             Log.e(TAG, "Error, access denied.");
-            final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+            final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
             callback.onFailure(R.string.com_auth0_social_error_title, message, null);
-        } else if (values.containsKey("state") && !values.get("state").equals(lastState)) {
+        } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
             Log.e(TAG, "Received state doesn't match");
-            Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get("state"));
+            Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
             callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_state, null);
         } else if (values.size() > 0) {
             Log.d(TAG, "Authenticated using web flow");
-            callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
+            callback.onSuccess(new Token(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
         }
         return true;
     }
@@ -155,7 +169,7 @@ public class WebIdentityProvider implements IdentityProvider {
     private Map<String, Object> buildParameters() {
         Map<String, Object> parameters = new HashMap<>(this.parameters);
         if (clientInfo != null) {
-            parameters.put("auth0Client", clientInfo);
+            parameters.put(KEY_AUTH0_CLIENT, clientInfo);
         }
         return parameters;
     }
@@ -165,7 +179,7 @@ public class WebIdentityProvider implements IdentityProvider {
 
         //refactor >
         final Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("scope", "openid");
+        queryParameters.put(KEY_SCOPE, SCOPE_TYPE_OPENID);
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 Object value = entry.getValue();
@@ -175,11 +189,11 @@ public class WebIdentityProvider implements IdentityProvider {
             }
         }
 
-        queryParameters.put("response_type", "token");
-        queryParameters.put("state", state);
-        queryParameters.put("connection", serviceName);
-        queryParameters.put("client_id", account.getClientId());
-        queryParameters.put("redirect_uri", helper.getCallbackURI(account.getDomainUrl()));
+        queryParameters.put(KEY_RESPONSE_TYPE, RESPONSE_TYPE_TOKEN);
+        queryParameters.put(KEY_STATE, state);
+        queryParameters.put(KEY_CONNECTION, serviceName);
+        queryParameters.put(KEY_CLIENT_ID, account.getClientId());
+        queryParameters.put(KEY_REDIRECT_URI, helper.getCallbackURI(account.getDomainUrl()));
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());

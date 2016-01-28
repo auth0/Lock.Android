@@ -26,10 +26,8 @@ package com.auth0.android.lock.provider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 
-/**
- * Created by lbalmaceda on 1/27/16.
- */
 public class AuthorizeResult {
 
     private final int requestCode;
@@ -58,6 +56,19 @@ public class AuthorizeResult {
         this.requestCode = -100;
         this.resultCode = Activity.RESULT_OK;
         this.intent = intent;
+    }
+
+    /**
+     * Checks if the received data is valid and can be parsed.
+     *
+     * @param expectedRequestCode the request code this activity is expecting to receive
+     * @return whether if the
+     */
+    public boolean isValid(int expectedRequestCode) {
+        Uri uri = intent != null ? intent.getData() : null;
+
+        boolean fromWebView = getRequestCode() == expectedRequestCode;
+        return !(uri == null || (fromWebView && getResultCode() != Activity.RESULT_OK));
     }
 
     public Intent getIntent() {
