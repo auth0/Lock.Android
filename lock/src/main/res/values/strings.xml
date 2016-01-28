@@ -1,3 +1,27 @@
+<!--
+  ~ strings.xml
+  ~
+  ~ Copyright (c) 2015 Auth0 (http://auth0.com)
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+
 <resources>
     <!-- Social Authentication -->
     <string name="com_auth0_social_error_authentication">Error parsing Authentication data</string>
@@ -6,4 +30,73 @@
     <string name="com_auth0_social_invalid_authorize_url">Auth0 authorize url not properly set.</string>
     <string name="com_auth0_social_error_message">The application isn\'t configured properly for the social connection. Please check your Auth0\'s application configuration</string>
     <string name="com_auth0_social_invalid_state">The received URI state is invalid.</string>
+
+    <!-- Social Buttons -->
+    <string name="com_auth0_social_unknown_placeholder">LOGIN WITH %s</string>
+    <string name="com_auth0_social_yahoo">LOGIN WITH YAHOO!</string>
+    <string name="com_auth0_social_linkedin">LOGIN WITH LINKEDIN</string>
+    <string name="com_auth0_social_google_oauth2">LOGIN WITH GOOGLE</string>
+    <string name="com_auth0_social_twitter">LOGIN WITH TWITTER</string>
+    <string name="com_auth0_social_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="com_auth0_social_amazon">LOGIN WITH AMAZON</string>
+    <string name="com_auth0_social_aol">LOGIN WITH AOL</string>
+    <string name="com_auth0_social_box">LOGIN WITH BOX</string>
+    <string name="com_auth0_social_evernote">LOGIN WITH EVERNOTE</string>
+    <string name="com_auth0_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANDBOX)</string>
+    <string name="com_auth0_social_exact">LOGIN WITH EXACT</string>
+    <string name="com_auth0_social_github">LOGIN WITH GITHUB</string>
+    <string name="com_auth0_social_instagram">LOGIN WITH INSTAGRAM</string>
+    <string name="com_auth0_social_miicard">LOGIN WITH MIICARD</string>
+    <string name="com_auth0_social_paypal">LOGIN WITH PAYPAL</string>
+    <string name="com_auth0_social_salesforce">LOGIN WITH SALESFORCE</string>
+    <string name="com_auth0_social_salesforce_community">LOGIN WITH SALESFORCE (COMMUNITY)</string>
+    <string name="com_auth0_social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
+    <string name="com_auth0_social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
+    <string name="com_auth0_social_windowslive">LOGIN WITH MICROSOFT</string>
+    <string name="com_auth0_social_yammer">LOGIN WITH YAMMER</string>
+    <string name="com_auth0_social_baidu">LOGIN WITH 百度</string>
+    <string name="com_auth0_social_fitbit">LOGIN WITH FITBIT</string>
+    <string name="com_auth0_social_planningcenter">LOGIN WITH PLANNING CENTER</string>
+    <string name="com_auth0_social_renren">LOGIN WITH 人人</string>
+    <string name="com_auth0_social_thecity">LOGIN WITH THE CITY</string>
+    <string name="com_auth0_social_thecity_sandbox">LOGIN WITH THE CITY (SANDBOX)</string>
+    <string name="com_auth0_social_thirtysevensignals">LOGIN WITH 37 SIGNALS</string>
+    <string name="com_auth0_social_vkontakte">LOGIN WITH VKONTAKTE</string>
+    <string name="com_auth0_social_weibo">LOGIN WITH 新浪微博</string>
+    <string name="com_auth0_social_wordpress">LOGIN WITH WORDPRESS</string>
+    <string name="com_auth0_social_yandex">LOGIN WITH YANDEX</string>
+    <string name="com_auth0_social_shopify">LOGIN WITH SHOPIFY</string>
+    <string name="com_auth0_social_dwolla">LOGIN WITH DWOLLA</string>
+    <string name="com_auth0_social_icon_yahoo">Y</string>
+    <string name="com_auth0_social_icon_linkedin">L</string>
+    <string name="com_auth0_social_icon_google_oauth2">+</string>
+    <string name="com_auth0_social_icon_twitter">T</string>
+    <string name="com_auth0_social_icon_facebook">f</string>
+    <string name="com_auth0_social_icon_amazon">a</string>
+    <string name="com_auth0_social_icon_aol">l</string>
+    <string name="com_auth0_social_icon_box">x</string>
+    <string name="com_auth0_social_icon_evernote">n</string>
+    <string name="com_auth0_social_icon_evernote_sandbox">n</string>
+    <string name="com_auth0_social_icon_github">è</string>
+    <string name="com_auth0_social_icon_instagram">i</string>
+    <string name="com_auth0_social_icon_miicard">m</string>
+    <string name="com_auth0_social_icon_paypal">$</string>
+    <string name="com_auth0_social_icon_salesforce">*</string>
+    <string name="com_auth0_social_icon_salesforce_sandbox">*</string>
+    <string name="com_auth0_social_icon_soundcloud">t</string>
+    <string name="com_auth0_social_icon_windowslive">W</string>
+    <string name="com_auth0_social_icon_yammer">!</string>
+    <string name="com_auth0_social_icon_baidu">u</string>
+    <string name="com_auth0_social_icon_fitbit">#</string>
+    <string name="com_auth0_social_icon_planningcenter">y</string>
+    <string name="com_auth0_social_icon_renren">r</string>
+    <string name="com_auth0_social_icon_thecity">c</string>
+    <string name="com_auth0_social_icon_thecity_sandbox">c</string>
+    <string name="com_auth0_social_icon_thirtysevensignals">b</string>
+    <string name="com_auth0_social_icon_vkontakte">N</string>
+    <string name="com_auth0_social_icon_weibo">S</string>
+    <string name="com_auth0_social_icon_wordpress">w</string>
+    <string name="com_auth0_social_icon_yandex">&amp;</string>
+    <string name="com_auth0_social_icon_shopify">s</string>
+    <string name="com_auth0_social_icon_dwolla">D</string>
 </resources>

@@ -62,8 +62,10 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Strategy item = strategyList.get(i);
-        viewHolder.socialButton.setTitle(getTitleForStrategy(item));
-        viewHolder.socialButton.setIcon(getIconForStrategy(item));
+        viewHolder.socialButton.setSocialConfig(new SocialButtonConfig(context, item));
+    }
+
+    private void getButtonColorForStrategy(Strategy strategy) {
     }
 
     @Override
@@ -84,11 +86,11 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     private int getIconForStrategy(Strategy strategy) {
         String name = strategy.getName().toLowerCase();
         if (name.startsWith(Strategies.Facebook.getName())) {
-            return android.R.drawable.ic_delete;
+            return R.drawable.com_auth0_social_icon_facebook;
         } else if (name.startsWith(Strategies.Twitter.getName())) {
-            return android.R.drawable.ic_input_add;
+            return R.drawable.com_auth0_social_icon_twitter;
         } else {
-            return android.R.drawable.ic_btn_speak_now;
+            return R.drawable.com_auth0_social_icon_fitbit;
         }
     }
 

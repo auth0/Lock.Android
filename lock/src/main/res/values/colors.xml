@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ colors.xml
+  ~
+  ~ Copyright (c) 2015 Auth0 (http://auth0.com)
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+<resources>
+    <color name="com_auth0_social_unknown">#E33B1B</color>
+    <color name="com_auth0_social_yahoo">#a200c2</color>
+    <color name="com_auth0_social_linkedin">#0083a8</color>
+    <color name="com_auth0_social_google_oauth2">#4285F4</color>
+    <color name="com_auth0_social_twitter">#46c0fb</color>
+    <color name="com_auth0_social_facebook">#4863AE</color>
+    <color name="com_auth0_social_amazon">#ffad1d</color>
+    <color name="com_auth0_social_aol">#355FA7</color>
+    <color name="com_auth0_social_box">#4A79B5</color>
+    <color name="com_auth0_social_evernote">#82B137</color>
+    <color name="com_auth0_social_evernote_sandbox">#82B137</color>
+    <color name="com_auth0_social_exact">#A21D22</color>
+    <color name="com_auth0_social_github">#EDEDED</color>
+    <color name="com_auth0_social_instagram">#38537A</color>
+    <color name="com_auth0_social_miicard">#D0E9FF</color>
+    <color name="com_auth0_social_paypal">#EDEDED</color>
+    <color name="com_auth0_social_salesforce">#EDEDED</color>
+    <color name="com_auth0_social_salesforce_community">#EDEDED</color>
+    <color name="com_auth0_social_salesforce_sandbox">#EDEDED</color>
+    <color name="com_auth0_social_soundcloud">#B23900</color>
+    <color name="com_auth0_social_windowslive">#446EEB</color>
+    <color name="com_auth0_social_yammer">#3C6FC5</color>
+    <color name="com_auth0_social_baidu">#2A2AE0</color>
+    <color name="com_auth0_social_fitbit">#77C1C5</color>
+    <color name="com_auth0_social_planningcenter">#4F4F4F</color>
+    <color name="com_auth0_social_renren">#2D54B4</color>
+    <color name="com_auth0_social_thecity">#757470</color>
+    <color name="com_auth0_social_thecity_sandbox">#757470</color>
+    <color name="com_auth0_social_thirtysevensignals">#6AC071</color>
+    <color name="com_auth0_social_vkontakte">#51678D</color>
+    <color name="com_auth0_social_weibo">#F9F6F1</color>
+    <color name="com_auth0_social_wordpress">#508ABD</color>
+    <color name="com_auth0_social_yandex">#B00000</color>
+    <color name="com_auth0_social_shopify">#82B137</color>
+    <color name="com_auth0_social_dwolla">#DE881A</color>
+
+    <color name="com_auth0_social_unknown_text">#ffffff</color>
+    <color name="com_auth0_social_yahoo_text">#ffffff</color>
+    <color name="com_auth0_social_linkedin_text">#ffffff</color>
+    <color name="com_auth0_social_google_oauth2_text">#ffffff</color>
+    <color name="com_auth0_social_twitter_text">#ffffff</color>
+    <color name="com_auth0_social_facebook_text">#ffffff</color>
+    <color name="com_auth0_social_amazon_text">#000000</color>
+    <color name="com_auth0_social_aol_text">#ffffff</color>
+    <color name="com_auth0_social_box_text">#ffffff</color>
+    <color name="com_auth0_social_evernote_text">#ffffff</color>
+    <color name="com_auth0_social_evernote_sandbox_text">#ffffff</color>
+    <color name="com_auth0_social_exact_text">#ffffff</color>
+    <color name="com_auth0_social_github_text">#000000</color>
+    <color name="com_auth0_social_instagram_text">#ffffff</color>
+    <color name="com_auth0_social_miicard_text">#000000</color>
+    <color name="com_auth0_social_paypal_text">#32689A</color>
+    <color name="com_auth0_social_salesforce_text">#F00000</color>
+    <color name="com_auth0_social_salesforce_community_text">#F00000</color>
+    <color name="com_auth0_social_salesforce_sandbox_text">#F00000</color>
+    <color name="com_auth0_social_soundcloud_text">#ffffff</color>
+    <color name="com_auth0_social_windowslive_text">#ffffff</color>
+    <color name="com_auth0_social_yammer_text">#ffffff</color>
+    <color name="com_auth0_social_baidu_text">#ffffff</color>
+    <color name="com_auth0_social_fitbit_text">#ffffff</color>
+    <color name="com_auth0_social_planningcenter_text">#D1D1D1</color>
+    <color name="com_auth0_social_renren_text">#ffffff</color>
+    <color name="com_auth0_social_thecity_text">#D1D1D1</color>
+    <color name="com_auth0_social_thecity_sandbox_text">#D1D1D1</color>
+    <color name="com_auth0_social_thirtysevensignals_text">#ffffff</color>
+    <color name="com_auth0_social_vkontakte_text">#ffffff</color>
+    <color name="com_auth0_social_weibo_text">#F00000</color>
+    <color name="com_auth0_social_wordpress_text">#ffffff</color>
+    <color name="com_auth0_social_yandex_text">#ffffff</color>
+    <color name="com_auth0_social_shopify_text">#ffffff</color>
+    <color name="com_auth0_social_dwolla_text">#ffffff</color>
+</resources>
