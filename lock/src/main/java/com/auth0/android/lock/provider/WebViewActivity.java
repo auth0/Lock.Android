@@ -1,7 +1,7 @@
 /*
  * WebViewActivity.java
  *
- * Copyright (c) 2014 Auth0 (http://auth0.com)
+ * Copyright(c) 2016 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@ import com.auth0.android.lock.R;
 public class WebViewActivity extends AppCompatActivity {
 
     public static final String CONNECTION_NAME_EXTRA = "serviceName";
+    public static final String KEY_REDIRECT_URI = "redirect_uri";
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -67,7 +68,7 @@ public class WebViewActivity extends AppCompatActivity {
         super.onResume();
         final Intent intent = getIntent();
         final Uri uri = intent.getData();
-        final String redirectUrl = uri.getQueryParameter("redirect_uri");
+        final String redirectUrl = uri.getQueryParameter(KEY_REDIRECT_URI);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

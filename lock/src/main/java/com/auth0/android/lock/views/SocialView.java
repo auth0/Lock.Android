@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,7 +42,7 @@ public class SocialView extends RecyclerView implements SocialViewAdapter.Connec
         Grid, List
     }
 
-    public SocialView(Context context, Bus bus, Configuration configuration, Mode mode) {
+    public SocialView(Context context, @NonNull Bus bus, @NonNull Configuration configuration, @NonNull Mode mode) {
         super(context);
         this.bus = bus;
         init(configuration, mode);

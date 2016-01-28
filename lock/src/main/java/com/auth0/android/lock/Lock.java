@@ -29,6 +29,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
@@ -44,7 +45,7 @@ import java.util.Map;
 public class Lock {
 
     private AuthenticationCallback callback;
-    private final LockOptions options;
+    private final Options options;
 
     public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
 
@@ -73,9 +74,13 @@ public class Lock {
         }
     };
 
-    protected Lock(LockOptions options, AuthenticationCallback callback) {
+    private Lock(Options options, AuthenticationCallback callback) {
         this.options = options;
         this.callback = callback;
+    }
+
+    public Options getOptions() {
+        return options;
     }
 
     public static Builder newBuilder() {
@@ -117,7 +122,7 @@ public class Lock {
     /*
     Evaluate changing the name of this method: parseActivityResult? processResult?
     */
-    public void onActivityResult(Activity activity, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             processEvent(data);
             return;
@@ -155,74 +160,74 @@ public class Lock {
     }
 
     public static class Builder {
-        private LockOptions options;
+        private Options options;
         private AuthenticationCallback callback;
 
         public Builder() {
-            options = new LockOptions();
+            options = new Options();
         }
 
         public Lock build() {
             return new Lock(options, callback);
         }
 
-        public Builder withAccount(Auth0 account) {
-            options.account = account;
+        public Builder withAccount(@NonNull Auth0 account) {
+            options.setAccount(account);
             return this;
         }
 
-        public Builder withCallback(AuthenticationCallback callback) {
+        public Builder withCallback(@NonNull AuthenticationCallback callback) {
             this.callback = callback;
             return this;
         }
 
         public Builder useBrowser(boolean useBrowser) {
-            options.useBrowser = useBrowser;
+            options.setUseBrowser(useBrowser);
             return this;
         }
 
         public Builder closable(boolean closable) {
-            options.closable = closable;
+            options.setClosable(closable);
             return this;
         }
 
         public Builder fullscreen(boolean fullscreen) {
-            options.fullscreen = fullscreen;
+            options.setFullscreen(fullscreen);
             return this;
         }
 
-        public Builder withAuthenticationParameters(Map<String, Object> authenticationParameters) {
+        public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             if (authenticationParameters instanceof HashMap) {
-                options.authenticationParameters = (HashMap<String, Object>) authenticationParameters;
+                options.setAuthenticationParameters((HashMap<String, Object>) authenticationParameters);
             } else {
-                options.authenticationParameters = new HashMap<String, Object>(authenticationParameters);
+                options.setAuthenticationParameters(new HashMap<String, Object>(authenticationParameters));
             }
 
             return this;
         }
 
         public Builder onlyUseConnections(List<String> connections) {
-            options.connections = connections;
+            options.setConnections(connections);
             return this;
         }
 
         public Builder doNotSendSDKInfo() {
-            options.sendSDKInfo = false;
+            options.setSendSDKInfo(false);
             return this;
         }
 
         public Builder useEmail() {
-            options.useEmail = true;
+            options.setUseEmail(true);
             return this;
         }
 
         public Builder disableSignUp() {
-            options.signUpEnabled = false;
+            options.setSignUpEnabled(false);
             return this;
         }
 
         public Builder disableChangePassword() {
-            options.changePasswordEnabled = false;
+            options.setChangePasswordEnabled(false);
             return this;
         }
     }

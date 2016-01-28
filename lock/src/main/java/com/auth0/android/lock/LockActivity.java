@@ -28,8 +28,10 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +40,8 @@ import android.widget.FrameLayout;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.provider.CallbackParser;
+import com.auth0.android.lock.provider.AuthorizeResult;
+import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
@@ -65,7 +68,7 @@ public class LockActivity extends AppCompatActivity {
     private static final String JSONP_PREFIX = "Auth0.setClient(";
 
     private Application application;
-    private LockOptions options;
+    private Options options;
     private Handler handler;
     private Bus lockBus;
     private FrameLayout rootView;
@@ -75,7 +78,7 @@ public class LockActivity extends AppCompatActivity {
 
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
         @Override
-        public void onFailure(Dialog dialog) {
+        public void onFailure(@NonNull Dialog dialog) {
             Log.w(TAG, "OnFailure called");
         }
 
@@ -85,7 +88,7 @@ public class LockActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(Token token) {
+        public void onSuccess(@NonNull Token token) {
             Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
             intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
             intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
@@ -102,11 +105,9 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
-        if (options == null) {
-            //FIXME: we can do better
-            throw new IllegalArgumentException("Invalid LockOptions.");
+        if (!isLaunchConfigValid()) {
+            finish();
+            return;
         }
 
         lockBus = new Bus();
@@ -122,6 +123,30 @@ public class LockActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isLaunchConfigValid() {
+        options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
+        if (options == null) {
+            Log.e(TAG, "You need to specify the com.auth0.android.lock.Options in the Lock.OPTIONS_EXTRA of the Intent for LockActivity to launch. " +
+                    "Use com.auth0.android.lock.Lock.Builder to generate one.");
+            throw new IllegalArgumentException("Missing com.auth0.android.lock.Options in intent");
+        }
+
+        boolean launchedForResult = getCallingActivity() != null;
+        if (options.useBrowser() && launchedForResult) {
+            Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
+            return false;
+        }
+        boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
+            if (options.useBrowser() && !launchedAsSingleTask) {
+                Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(Lock.CANCELED_ACTION);
@@ -134,8 +159,8 @@ public class LockActivity extends AppCompatActivity {
      */
     public void fetchApplicationInfo() {
         OkHttpClient client = new OkHttpClient();
-        Uri uri = Uri.parse(options.account.getConfigurationUrl()).buildUpon().appendPath("client")
-                .appendPath(options.account.getClientId() + ".js").build();
+        Uri uri = Uri.parse(options.getAccount().getConfigurationUrl()).buildUpon().appendPath("client")
+                .appendPath(options.getAccount().getClientId() + ".js").build();
 
         com.squareup.okhttp.Request req = new com.squareup.okhttp.Request.Builder()
                 .url(uri.toString())
@@ -210,12 +235,27 @@ public class LockActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "OnActivityResult called with intent: " + data);
         if (lastIdp != null) {
             //Deliver result to the IDP
-            lastIdp.authorize(LockActivity.this, requestCode, resultCode, data);
+            AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
+            lastIdp.authorize(LockActivity.this, result);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "OnNewIntent called with intent: " + intent);
+        if (lastIdp != null) {
+            //Deliver result to the IDP
+            AuthorizeResult result = new AuthorizeResult(intent);
+            lastIdp.authorize(LockActivity.this, result);
+        }
+
+        super.onNewIntent(intent);
     }
 
     @SuppressWarnings("unused")
@@ -226,8 +266,10 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        CallbackParser parser = new CallbackParser();
-        lastIdp = new WebIdentityProvider(parser, options.account, idpCallback);
+        String pkgName = getApplicationContext().getPackageName();
+        CallbackHelper helper = new CallbackHelper(pkgName);
+        lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
+        lastIdp.setUseBrowser(options.useBrowser());
         lastIdp.start(LockActivity.this, event.getConnectionName());
     }
 

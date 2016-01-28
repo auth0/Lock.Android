@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +45,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     private final List<Strategy> strategyList;
     private ConnectionAuthenticationListener callback;
 
-    public SocialViewAdapter(Context context, List<Strategy> strategyList) {
+    public SocialViewAdapter(Context context, @NonNull List<Strategy> strategyList) {
         this.context = context;
         this.strategyList = strategyList;
     }

@@ -34,31 +34,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class LockOptions implements Parcelable {
+class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
 
-    public Auth0 account;
-    public boolean useBrowser;
-    public boolean closable;
-    public boolean fullscreen;
-    public boolean sendSDKInfo = true;
-    public boolean useEmail = false;
-    public boolean signUpEnabled = true;
-    public boolean changePasswordEnabled = true;
-    public String defaultDatabaseConnection;
-    public List<String> connections;
-    public List<String> enterpriseConnectionsUsingWebForm;
-    public HashMap<String, Object> authenticationParameters;
+    private Auth0 account;
+    private boolean useBrowser;
+    private boolean closable;
+    private boolean fullscreen;
+    private boolean sendSDKInfo;
+    private boolean useEmail;
+    private boolean signUpEnabled;
+    private boolean changePasswordEnabled;
+    private String defaultDatabaseConnection;
+    private List<String> connections;
+    private List<String> enterpriseConnectionsUsingWebForm;
+    private HashMap<String, Object> authenticationParameters;
 
-    public LockOptions() {
+    public Options() {
+        sendSDKInfo = true;
+        useEmail = false;
+        signUpEnabled = true;
+        changePasswordEnabled = true;
     }
 
-    protected LockOptions(Parcel in) {
+    protected Options(Parcel in) {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         account = auth0Parcelable.getAuth0();
-        useBrowser = in.readByte() != HAS_DATA;
+        useBrowser = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
         sendSDKInfo = in.readByte() != WITHOUT_DATA;
@@ -127,15 +131,111 @@ class LockOptions implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<LockOptions> CREATOR = new Parcelable.Creator<LockOptions>() {
+    public static final Parcelable.Creator<Options> CREATOR = new Parcelable.Creator<Options>() {
         @Override
-        public LockOptions createFromParcel(Parcel in) {
-            return new LockOptions(in);
+        public Options createFromParcel(Parcel in) {
+            return new Options(in);
         }
 
         @Override
-        public LockOptions[] newArray(int size) {
-            return new LockOptions[size];
+        public Options[] newArray(int size) {
+            return new Options[size];
         }
     };
+
+    public Auth0 getAccount() {
+        return account;
+    }
+
+    public void setAccount(Auth0 account) {
+        this.account = account;
+    }
+
+    public boolean useBrowser() {
+        return useBrowser;
+    }
+
+    public void setUseBrowser(boolean useBrowser) {
+        this.useBrowser = useBrowser;
+    }
+
+    public boolean isClosable() {
+        return closable;
+    }
+
+    public void setClosable(boolean closable) {
+        this.closable = closable;
+    }
+
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    public void setFullscreen(boolean fullscreen) {
+        this.fullscreen = fullscreen;
+    }
+
+    public boolean sendSDKInfo() {
+        return sendSDKInfo;
+    }
+
+    public void setSendSDKInfo(boolean sendSDKInfo) {
+        this.sendSDKInfo = sendSDKInfo;
+    }
+
+    public boolean useEmail() {
+        return useEmail;
+    }
+
+    public void setUseEmail(boolean useEmail) {
+        this.useEmail = useEmail;
+    }
+
+    public boolean isSignUpEnabled() {
+        return signUpEnabled;
+    }
+
+    public void setSignUpEnabled(boolean signUpEnabled) {
+        this.signUpEnabled = signUpEnabled;
+    }
+
+    public boolean isChangePasswordEnabled() {
+        return changePasswordEnabled;
+    }
+
+    public void setChangePasswordEnabled(boolean changePasswordEnabled) {
+        this.changePasswordEnabled = changePasswordEnabled;
+    }
+
+    public String getDefaultDatabaseConnection() {
+        return defaultDatabaseConnection;
+    }
+
+    public void setDefaultDatabaseConnection(String defaultDatabaseConnection) {
+        this.defaultDatabaseConnection = defaultDatabaseConnection;
+    }
+
+    public List<String> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(List<String> connections) {
+        this.connections = connections;
+    }
+
+    public List<String> getEnterpriseConnectionsUsingWebForm() {
+        return enterpriseConnectionsUsingWebForm;
+    }
+
+    public void setEnterpriseConnectionsUsingWebForm(List<String> enterpriseConnectionsUsingWebForm) {
+        this.enterpriseConnectionsUsingWebForm = enterpriseConnectionsUsingWebForm;
+    }
+
+    public HashMap<String, Object> getAuthenticationParameters() {
+        return authenticationParameters;
+    }
+
+    public void setAuthenticationParameters(HashMap<String, Object> authenticationParameters) {
+        this.authenticationParameters = authenticationParameters;
+    }
 }

@@ -3,6 +3,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ class SocialButton extends FrameLayout {
         addView(title, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@NonNull String title) {
         this.title.setText(title);
     }
 
