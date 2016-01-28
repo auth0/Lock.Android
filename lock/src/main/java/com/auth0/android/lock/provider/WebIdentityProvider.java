@@ -121,7 +121,7 @@ public class WebIdentityProvider implements IdentityProvider {
     @Override
     public boolean authorize(Activity activity, AuthorizeResult data) {
         Uri uri = data.getIntent() != null ? data.getIntent().getData() : null;
-        Log.v(TAG, "Authenticating with webflow with data " + uri);
+        Log.v(TAG, "Authenticating with web flow with data " + uri);
 
         boolean fromWebView = data.getRequestCode() == WEBVIEW_AUTH_REQUEST_CODE;
         if (uri == null || (fromWebView && data.getResultCode() != Activity.RESULT_OK)) {
@@ -135,7 +135,8 @@ public class WebIdentityProvider implements IdentityProvider {
             callback.onFailure(R.string.com_auth0_social_error_title, message, null);
         } else if (values.containsKey("state") && !values.get("state").equals(lastState)) {
             Log.e(TAG, "Received state doesn't match");
-            Log.e(TAG, "Expected: " + lastState + " / Received: " + values.get("state"));
+            Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get("state"));
+            callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_state, null);
         } else if (values.size() > 0) {
             Log.d(TAG, "Authenticated using web flow");
             callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
