@@ -1,0 +1,20 @@
+language: android
+sudo: false
+android:
+  components:
+  - build-tools-23.0.2
+  - android-22
+  - android-23
+  - extra-google-google_play_services
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - addon-google_apis-google-23
+script:
+  - "./gradlew clean test --continue"
+branches:
+  only:
+  - master
+  - v2
+notifications:
+  slack:
+    secure: L10gaOgxp3Dv/Xwpb2GXCE0gmV1IndAnHHAlT4iUL2WZegucY7HlTXJMkKw464cNtHL/oINCyBXAODch1/2np62x3BluZDtge1qDeBXwEL1DKrmmzxXo6AaNs/DLL/Tn7wonLLnoYtQQg2V37RfK4rZeqnwn0eSzxwZyB7N8uWQ=
