@@ -30,6 +30,7 @@ import android.net.Uri;
 
 public class AuthorizeResult {
 
+    private static final int MISSING_REQUEST_CODE = -100;
     private final int requestCode;
     private final int resultCode;
     private final Intent intent;
@@ -53,7 +54,7 @@ public class AuthorizeResult {
      * @param intent the response intent.
      */
     public AuthorizeResult(Intent intent) {
-        this.requestCode = -100;
+        this.requestCode = MISSING_REQUEST_CODE;
         this.resultCode = Activity.RESULT_OK;
         this.intent = intent;
     }
@@ -62,13 +63,20 @@ public class AuthorizeResult {
      * Checks if the received data is valid and can be parsed.
      *
      * @param expectedRequestCode the request code this activity is expecting to receive
-     * @return whether if the
+     * @return whether if the received uri data can be parsed or not.
      */
     public boolean isValid(int expectedRequestCode) {
         Uri uri = intent != null ? intent.getData() : null;
+        if (uri == null) {
+            return false;
+        }
 
-        boolean fromWebView = getRequestCode() == expectedRequestCode;
-        return !(uri == null || (fromWebView && getResultCode() != Activity.RESULT_OK));
+        if (requestCode == MISSING_REQUEST_CODE) {
+            return true;
+        }
+
+        boolean fromRequest = getRequestCode() == expectedRequestCode;
+        return fromRequest && resultCode == Activity.RESULT_OK;
     }
 
     public Intent getIntent() {
