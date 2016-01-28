@@ -25,10 +25,12 @@
 package com.auth0.android.lock.events;
 
 
+import android.support.annotation.NonNull;
+
 public class SocialConnectionEvent {
     private final String connectionName;
 
-    public SocialConnectionEvent(String connectionName) {
+    public SocialConnectionEvent(@NonNull String connectionName) {
         this.connectionName = connectionName;
     }
 

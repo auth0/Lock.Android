@@ -29,6 +29,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
@@ -121,7 +122,7 @@ public class Lock {
     /*
     Evaluate changing the name of this method: parseActivityResult? processResult?
     */
-    public void onActivityResult(Activity activity, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             processEvent(data);
             return;
@@ -170,12 +171,12 @@ public class Lock {
             return new Lock(options, callback);
         }
 
-        public Builder withAccount(Auth0 account) {
+        public Builder withAccount(@NonNull Auth0 account) {
             options.setAccount(account);
             return this;
         }
 
-        public Builder withCallback(AuthenticationCallback callback) {
+        public Builder withCallback(@NonNull AuthenticationCallback callback) {
             this.callback = callback;
             return this;
         }
@@ -195,7 +196,7 @@ public class Lock {
             return this;
         }
 
-        public Builder withAuthenticationParameters(Map<String, Object> authenticationParameters) {
+        public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             if (authenticationParameters instanceof HashMap) {
                 options.setAuthenticationParameters((HashMap<String, Object>) authenticationParameters);
             } else {

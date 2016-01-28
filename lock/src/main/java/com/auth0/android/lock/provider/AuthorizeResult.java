@@ -27,6 +27,7 @@ package com.auth0.android.lock.provider;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 public class AuthorizeResult {
 
@@ -42,7 +43,7 @@ public class AuthorizeResult {
      * @param resultCode  the response result code
      * @param intent      the response intent.
      */
-    public AuthorizeResult(int requestCode, int resultCode, Intent intent) {
+    public AuthorizeResult(int requestCode, int resultCode, @NonNull Intent intent) {
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.intent = intent;
@@ -53,7 +54,7 @@ public class AuthorizeResult {
      *
      * @param intent the response intent.
      */
-    public AuthorizeResult(Intent intent) {
+    public AuthorizeResult(@NonNull Intent intent) {
         this.requestCode = MISSING_REQUEST_CODE;
         this.resultCode = Activity.RESULT_OK;
         this.intent = intent;

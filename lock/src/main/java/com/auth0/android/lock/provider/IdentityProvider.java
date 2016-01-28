@@ -26,6 +26,7 @@ package com.auth0.android.lock.provider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 
 /**
@@ -47,10 +48,10 @@ public interface IdentityProvider {
     /**
      * Starts the authentication process for an identity provider.
      *
-     * @param activity    activity that starts the process (and will receive its response)
-     * @param serviceName of the IdP to authenticate with
+     * @param activity       activity that starts the process (and will receive its response)
+     * @param connectionName of the IdP to authenticate with
      */
-    void start(Activity activity, String serviceName);
+    void start(Activity activity, @NonNull String connectionName);
 
     /**
      * Stops the authentication process (even if it's in progress).
@@ -64,7 +65,7 @@ public interface IdentityProvider {
      * @param result   authorization result data.
      * @return if the result is valid or not.
      */
-    boolean authorize(Activity activity, AuthorizeResult result);
+    boolean authorize(Activity activity, @NonNull AuthorizeResult result);
 
     /**
      * Removes any session information stored in the object.

@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -74,7 +75,7 @@ public class LockProgress extends RelativeLayout {
 
     }
 
-    public void showResult(String error) {
+    public void showResult(@Nullable String error) {
         Log.i(TAG, "Showing result: " + error);
         if (error == null || error.isEmpty()) {
             message.setText("");

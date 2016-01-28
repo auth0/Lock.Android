@@ -30,6 +30,8 @@ package com.auth0.android.lock.provider;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.Auth0;
@@ -92,7 +94,7 @@ public class WebIdentityProvider implements IdentityProvider {
         this.useBrowser = useBrowser;
     }
 
-    public void setCallback(IdentityProviderCallback callback) {
+    public void setCallback(@Nullable IdentityProviderCallback callback) {
         this.callback = callback;
     }
 
@@ -101,7 +103,7 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void start(Activity activity, String serviceName) {
+    public void start(Activity activity, @NonNull String connectionName) {
         if (account.getAuthorizeUrl() == null) {
             if (callback != null) {
                 callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_authorize_url, null);
@@ -114,7 +116,7 @@ public class WebIdentityProvider implements IdentityProvider {
         //Generate random state
         lastState = UUID.randomUUID().toString();
 
-        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), serviceName, lastState, parameters), serviceName);
+        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), connectionName, lastState, parameters), connectionName);
     }
 
     private void startAuthorization(Activity activity, Uri authorizeUri, String connectionName) {
@@ -137,7 +139,7 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public boolean authorize(Activity activity, AuthorizeResult data) {
+    public boolean authorize(Activity activity, @NonNull AuthorizeResult data) {
         if (!data.isValid(WEBVIEW_AUTH_REQUEST_CODE)) {
             return false;
         }
@@ -145,15 +147,21 @@ public class WebIdentityProvider implements IdentityProvider {
         final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
         if (values.containsKey(KEY_ERROR)) {
             Log.e(TAG, "Error, access denied.");
-            final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
-            callback.onFailure(R.string.com_auth0_social_error_title, message, null);
+            if (callback != null) {
+                final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+                callback.onFailure(R.string.com_auth0_social_error_title, message, null);
+            }
         } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
             Log.e(TAG, "Received state doesn't match");
             Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
-            callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_state, null);
+            if (callback != null) {
+                callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_state, null);
+            }
         } else if (values.size() > 0) {
             Log.d(TAG, "Authenticated using web flow");
-            callback.onSuccess(new Token(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
+            if (callback != null) {
+                callback.onSuccess(new Token(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
+            }
         }
         return true;
     }

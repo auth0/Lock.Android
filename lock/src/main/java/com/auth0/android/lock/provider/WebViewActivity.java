@@ -40,6 +40,7 @@ import com.auth0.android.lock.R;
 public class WebViewActivity extends AppCompatActivity {
 
     public static final String CONNECTION_NAME_EXTRA = "serviceName";
+    public static final String KEY_REDIRECT_URI = "redirect_uri";
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -67,7 +68,7 @@ public class WebViewActivity extends AppCompatActivity {
         super.onResume();
         final Intent intent = getIntent();
         final Uri uri = intent.getData();
-        final String redirectUrl = uri.getQueryParameter("redirect_uri");
+        final String redirectUrl = uri.getQueryParameter(KEY_REDIRECT_URI);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

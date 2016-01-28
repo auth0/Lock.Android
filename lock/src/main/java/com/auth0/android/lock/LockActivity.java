@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -77,7 +78,7 @@ public class LockActivity extends AppCompatActivity {
 
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
         @Override
-        public void onFailure(Dialog dialog) {
+        public void onFailure(@NonNull Dialog dialog) {
             Log.w(TAG, "OnFailure called");
         }
 
@@ -87,7 +88,7 @@ public class LockActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(Token token) {
+        public void onSuccess(@NonNull Token token) {
             Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
             intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
             intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());

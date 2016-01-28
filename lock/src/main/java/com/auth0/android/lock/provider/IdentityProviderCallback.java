@@ -25,6 +25,7 @@
 package com.auth0.android.lock.provider;
 
 import android.app.Dialog;
+import android.support.annotation.NonNull;
 
 import com.auth0.authentication.result.Token;
 
@@ -39,7 +40,7 @@ public interface IdentityProviderCallback {
      *
      * @param dialog error dialog
      */
-    void onFailure(Dialog dialog);
+    void onFailure(@NonNull Dialog dialog);
 
     /**
      * Called with a title and message resource that describes the error. If a cause is available it will be sent or it will be {@code null}
@@ -55,5 +56,5 @@ public interface IdentityProviderCallback {
      *
      * @param token Auth0 token information (id_token, refresh_token, etc).
      */
-    void onSuccess(Token token);
+    void onSuccess(@NonNull Token token);
 }
