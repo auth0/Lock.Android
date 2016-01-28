@@ -67,7 +67,7 @@ public class LockActivity extends AppCompatActivity {
     private static final String JSONP_PREFIX = "Auth0.setClient(";
 
     private Application application;
-    private LockOptions options;
+    private Options options;
     private Handler handler;
     private Bus lockBus;
     private FrameLayout rootView;
@@ -105,6 +105,7 @@ public class LockActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!isLaunchConfigValid()) {
+            finish();
             return;
         }
 
@@ -124,21 +125,21 @@ public class LockActivity extends AppCompatActivity {
     private boolean isLaunchConfigValid() {
         options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
         if (options == null) {
-            throw new IllegalArgumentException("Invalid LockOptions.");
+            Log.e(TAG, "You need to specify the com.auth0.android.lock.Options in the Lock.OPTIONS_EXTRA of the Intent for LockActivity to launch. " +
+                    "Use com.auth0.android.lock.Lock.Builder to generate one.");
+            throw new IllegalArgumentException("Missing com.auth0.android.lock.Options in intent");
         }
 
         boolean launchedForResult = getCallingActivity() != null;
         if (options.useBrowser() && launchedForResult) {
             Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
-            finish();
             return false;
         }
         boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
             if (options.useBrowser() && !launchedAsSingleTask) {
-                Log.e(TAG, "Please, check that you have launchMode 'singleTask' in the AndroidManifest.");
-                finish();
+                Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
                 return false;
             }
         }

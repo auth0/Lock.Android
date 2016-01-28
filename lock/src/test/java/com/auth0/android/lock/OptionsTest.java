@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class LockOptionsTest {
+public class OptionsTest {
 
     private static final String CLIENT_ID = "CLIENT_ID";
     private static final String DOMAIN = "https://my-domain.auth0.com";
@@ -37,14 +37,14 @@ public class LockOptionsTest {
 
     @Test
     public void shouldSetAccount() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getAccount().getClientId(), is(equalTo(parceledOptions.getAccount().getClientId())));
         assertThat(options.getAccount().getConfigurationUrl(), is(equalTo(parceledOptions.getAccount().getConfigurationUrl())));
         assertThat(options.getAccount().getDomainUrl(), is(equalTo(parceledOptions.getAccount().getDomainUrl())));
@@ -52,7 +52,7 @@ public class LockOptionsTest {
 
     @Test
     public void shouldUseBrowser() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setUseBrowser(true);
 
@@ -60,13 +60,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
     }
 
     @Test
     public void shouldBeClosable() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setClosable(true);
 
@@ -74,13 +74,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
     }
 
     @Test
     public void shouldBeFullscreen() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setFullscreen(true);
 
@@ -88,13 +88,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
     }
 
     @Test
     public void shouldSendSDKInfo() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setSendSDKInfo(true);
 
@@ -102,13 +102,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
     }
 
     @Test
     public void shouldUseEmail() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setUseEmail(true);
 
@@ -116,13 +116,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
     }
 
     @Test
     public void shouldBeSignUpEnabled() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setSignUpEnabled(true);
 
@@ -130,13 +130,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
     }
 
     @Test
     public void shouldBeChangePasswordEnabled() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setChangePasswordEnabled(true);
 
@@ -144,14 +144,14 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
     }
 
 
     @Test
     public void shouldSetDefaultDatabaseConnection() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setDefaultDatabaseConnection("default_db_connection");
 
@@ -159,13 +159,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getDefaultDatabaseConnection(), is(equalTo(parceledOptions.getDefaultDatabaseConnection())));
     }
 
     @Test
     public void shouldSetConnections() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setConnections(createConnections("twitter", "facebook"));
 
@@ -173,14 +173,14 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getConnections(), is(equalTo(parceledOptions.getConnections())));
     }
 
 
     @Test
     public void shouldSetEnterpriseConnectionsUsingWebForm() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setEnterpriseConnectionsUsingWebForm(createEnterpriseConnectionsUsingWebForm("myAD"));
 
@@ -188,13 +188,13 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getEnterpriseConnectionsUsingWebForm(), is(equalTo(parceledOptions.getEnterpriseConnectionsUsingWebForm())));
     }
 
     @Test
     public void shouldSetAuthenticationParameters() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
         options.setAuthenticationParameters(createAuthenticationParameters(654123));
 
@@ -202,20 +202,20 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getAuthenticationParameters(), is(equalTo(parceledOptions.getAuthenticationParameters())));
     }
 
     @Test
     public void shouldSetDefaultValues() {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
         assertThat(options.sendSDKInfo(), is(true));
         assertThat(options.useBrowser(), is(false));
@@ -226,7 +226,7 @@ public class LockOptionsTest {
 
     @Test
     public void shouldSetAllTrueFields() throws Exception {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
 
         options.setChangePasswordEnabled(true);
@@ -242,7 +242,7 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
@@ -254,7 +254,7 @@ public class LockOptionsTest {
 
     @Test
     public void shouldSetAllFalseFields() throws Exception {
-        LockOptions options = new LockOptions();
+        Options options = new Options();
         options.setAccount(auth0);
 
         options.setChangePasswordEnabled(false);
@@ -270,7 +270,7 @@ public class LockOptionsTest {
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
-        LockOptions parceledOptions = LockOptions.CREATOR.createFromParcel(parcel);
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));

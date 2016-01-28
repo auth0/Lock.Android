@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class LockOptions implements Parcelable {
+class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
@@ -52,14 +52,14 @@ class LockOptions implements Parcelable {
     private List<String> enterpriseConnectionsUsingWebForm;
     private HashMap<String, Object> authenticationParameters;
 
-    public LockOptions() {
+    public Options() {
         sendSDKInfo = true;
         useEmail = false;
         signUpEnabled = true;
         changePasswordEnabled = true;
     }
 
-    protected LockOptions(Parcel in) {
+    protected Options(Parcel in) {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         account = auth0Parcelable.getAuth0();
         useBrowser = in.readByte() != WITHOUT_DATA;
@@ -131,15 +131,15 @@ class LockOptions implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<LockOptions> CREATOR = new Parcelable.Creator<LockOptions>() {
+    public static final Parcelable.Creator<Options> CREATOR = new Parcelable.Creator<Options>() {
         @Override
-        public LockOptions createFromParcel(Parcel in) {
-            return new LockOptions(in);
+        public Options createFromParcel(Parcel in) {
+            return new Options(in);
         }
 
         @Override
-        public LockOptions[] newArray(int size) {
-            return new LockOptions[size];
+        public Options[] newArray(int size) {
+            return new Options[size];
         }
     };
 

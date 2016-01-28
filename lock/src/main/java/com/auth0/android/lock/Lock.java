@@ -44,7 +44,7 @@ import java.util.Map;
 public class Lock {
 
     private AuthenticationCallback callback;
-    private final LockOptions options;
+    private final Options options;
 
     public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
 
@@ -73,9 +73,13 @@ public class Lock {
         }
     };
 
-    protected Lock(LockOptions options, AuthenticationCallback callback) {
+    private Lock(Options options, AuthenticationCallback callback) {
         this.options = options;
         this.callback = callback;
+    }
+
+    public Options getOptions() {
+        return options;
     }
 
     public static Builder newBuilder() {
@@ -155,11 +159,11 @@ public class Lock {
     }
 
     public static class Builder {
-        private LockOptions options;
+        private Options options;
         private AuthenticationCallback callback;
 
         public Builder() {
-            options = new LockOptions();
+            options = new Options();
         }
 
         public Lock build() {
