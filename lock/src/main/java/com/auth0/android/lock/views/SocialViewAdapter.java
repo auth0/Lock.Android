@@ -62,9 +62,6 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         viewHolder.socialButton.setSocialConfig(new SocialButtonConfig(context, item));
     }
 
-    private void getButtonColorForStrategy(Strategy strategy) {
-    }
-
     @Override
     public int getItemCount() {
         return strategyList.size();
@@ -74,23 +71,6 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     public void setCallback(ConnectionAuthenticationListener callback) {
         this.callback = callback;
     }
-
-    private String getTitleForStrategy(Strategy strategy) {
-        return strategy.getName();
-    }
-
-    @DrawableRes
-    private int getIconForStrategy(Strategy strategy) {
-        String name = strategy.getName().toLowerCase();
-        if (name.startsWith(Strategies.Facebook.getName())) {
-            return R.drawable.com_auth0_social_icon_facebook;
-        } else if (name.startsWith(Strategies.Twitter.getName())) {
-            return R.drawable.com_auth0_social_icon_twitter;
-        } else {
-            return R.drawable.com_auth0_social_icon_fitbit;
-        }
-    }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         SocialButton socialButton;
