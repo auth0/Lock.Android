@@ -30,6 +30,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.Log;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Strategies;
@@ -59,6 +60,7 @@ class SocialButtonConfig {
     }
 
     private void generateResourcesForStrategy(Resources resources, String pkgName, String strategyName) {
+        strategyName = strategyName.replace("-", "_");
         icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, strategyName), "drawable", pkgName);
         icon = icon == 0 ? R.drawable.com_auth0_social_icon_auth0 : icon;
 
