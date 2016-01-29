@@ -27,7 +27,6 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import android.widget.TextView;
 
 public class LockProgress extends RelativeLayout {
 
-    private static final String TAG = LockProgress.class.getSimpleName();
     private ProgressBar progress;
     private TextView message;
 
