@@ -34,10 +34,12 @@ import android.support.annotation.StringRes;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 
-/**
- * Created by lbalmaceda on 1/28/16.
- */
 class SocialButtonConfig {
+    private static final String ICON_RESOURCE_FORMAT = "com_auth0_social_icon_%s";
+    private static final String TITLE_RESOURCE_FORMAT = "com_auth0_social_%s";
+    private static final String TEXT_COLOR_RESOURCE_FORMAT = "com_auth0_social_%s";
+    private static final String BACKGROUND_COLOR_RESOURCE_FORMAT = "com_auth0_social_%s_text";
+
     @StringRes
     private int title;
     @ColorInt
@@ -56,11 +58,10 @@ class SocialButtonConfig {
     }
 
     private void generateResourcesForStrategy(Resources resources, String pkgName, String strategyName) {
-        String resPrefix = "com_auth0_social_";
-        icon = resources.getIdentifier(resPrefix + "icon_" + strategyName, "drawable", pkgName);
-        title = resources.getIdentifier(resPrefix + strategyName, "string", pkgName);
-        backgroundColor = resources.getColor(resources.getIdentifier(resPrefix + strategyName, "color", pkgName));
-        textColor = resources.getColor(resources.getIdentifier(resPrefix + strategyName + "_text", "color", pkgName));
+        icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, strategyName), "drawable", pkgName);
+        title = resources.getIdentifier(String.format(TITLE_RESOURCE_FORMAT, strategyName), "string", pkgName);
+        backgroundColor = resources.getColor(resources.getIdentifier(String.format(BACKGROUND_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName));
+        textColor = resources.getColor(resources.getIdentifier(String.format(TEXT_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName));
     }
 
     @StringRes

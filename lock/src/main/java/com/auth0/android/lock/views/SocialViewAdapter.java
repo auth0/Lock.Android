@@ -53,9 +53,6 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = new SocialButton(context);
-        int width = (int) context.getResources().getDimension(R.dimen.com_auth0_btn_social_big_width);
-        int height = (int) context.getResources().getDimension(R.dimen.com_auth0_btn_social_big_height);
-        view.setLayoutParams(new RecyclerView.LayoutParams(width, height));
         return new ViewHolder(view);
     }
 

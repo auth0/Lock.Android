@@ -36,7 +36,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.SocialConnectionEvent;
@@ -71,7 +72,7 @@ public class LockActivity extends AppCompatActivity {
     private Options options;
     private Handler handler;
     private Bus lockBus;
-    private FrameLayout rootView;
+    private RelativeLayout rootView;
     private LockProgress progress;
 
     private WebIdentityProvider lastIdp;
@@ -116,7 +117,7 @@ public class LockActivity extends AppCompatActivity {
 
         setContentView(R.layout.com_auth0_activity_lock);
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
-        rootView = (FrameLayout) findViewById(R.id.com_auth0_lock_content);
+        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
 
         if (application == null) {
             fetchApplicationInfo();
@@ -202,7 +203,7 @@ public class LockActivity extends AppCompatActivity {
         Configuration config = new Configuration(application, null, null);
         SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
         //TODO: add custom view for panels layout.
-        rootView.addView(sv);
+        rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
 

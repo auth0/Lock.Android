@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/com_auth0_lock_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#40000000">
+
+        <ImageView
+            android:id="@+id/com_auth0_lock_header_logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/com_auth0_social_icon_amazon" />
+
+        <TextView
+            android:id="@+id/com_auth0_lock_header_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/com_auth0_lock_header_logo"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Lock"
+            android:textSize="35sp"
+            tools:text="Lock title" />
+    </RelativeLayout>
 
     <com.auth0.android.lock.views.LockProgress
         android:id="@+id/com_auth0_lock_progress"
@@ -10,8 +39,11 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/com_auth0_lock_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/com_auth0_lock_header"
+        android:paddingTop="10dp" />
+
 </RelativeLayout>
