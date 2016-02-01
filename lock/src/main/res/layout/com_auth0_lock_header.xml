@@ -26,15 +26,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="@dimen/com_auth0_lock_header_height"
     android:background="?attr/Auth0.HeaderBackground"
     tools:background="#40000000"
     tools:context=".LockActivity">
 
     <ImageView
         android:id="@+id/com_auth0_lock_header_logo"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/com_auth0_lock_header_logo_size"
+        android:layout_height="@dimen/com_auth0_lock_header_logo_size"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:scaleType="center"
@@ -49,5 +49,5 @@
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:text="?attr/Auth0.HeaderText"
-        android:textSize="30sp" />
+        android:textSize="@dimen/com_auth0_lock_header_text_size" />
 </RelativeLayout>

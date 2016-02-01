@@ -202,7 +202,6 @@ public class LockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         Configuration config = new Configuration(application, null, null);
-        HeaderView hv = new HeaderView(this);
 
         //TODO: add custom view for panels layout.
         SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);

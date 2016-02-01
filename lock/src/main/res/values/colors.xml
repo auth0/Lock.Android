@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ colors.xml
   ~
   ~ Copyright (c) 2015 Auth0 (http://auth0.com)
@@ -94,4 +93,6 @@
     <color name="com_auth0_lock_social_yandex_text">#ffffff</color>
     <color name="com_auth0_lock_social_shopify_text">#ffffff</color>
     <color name="com_auth0_lock_social_dwolla_text">#ffffff</color>
+
+    <color name="com_auth0_lock_header_background">#E33B1B</color>
 </resources>
