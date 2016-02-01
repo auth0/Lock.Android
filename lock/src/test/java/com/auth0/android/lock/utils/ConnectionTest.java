@@ -1,7 +1,6 @@
 package com.auth0.android.lock.utils;
 
 import com.auth0.android.lock.BuildConfig;
-import com.auth0.android.lock.utils.Connection;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class ConnectionTest {
 
     public static final String CONNECTION_NAME = "Username-Password";

@@ -44,7 +44,7 @@ import static org.hamcrest.Matchers.is;
  * Created by lbalmaceda on 1/28/16.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class AuthorizeResultTest {
 
     private static final int REQUEST_CODE = 11;

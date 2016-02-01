@@ -58,6 +58,7 @@ class SocialConfig {
         generateResourcesForStrategy(context.getResources(), context.getPackageName(), strategy.getName());
     }
 
+    @SuppressWarnings("deprecation")
     private void generateResourcesForStrategy(Resources resources, String pkgName, String strategyName) {
         strategyName = strategyName.replace("-", "_");
         icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, strategyName), "drawable", pkgName);

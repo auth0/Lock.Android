@@ -45,7 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class SocialConfigTest {
 
     private Application application;
@@ -90,12 +90,14 @@ public class SocialConfigTest {
         assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_social_icon_facebook));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void shouldGetTextColor() {
         int expectedColor = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_facebook_text);
         assertThat(socialConfig.getTextColor(), is(equalTo(expectedColor)));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void shouldGetBackgroundColor() {
         int expectedColor = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_facebook);
