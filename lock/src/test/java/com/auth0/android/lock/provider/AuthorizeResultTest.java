@@ -28,10 +28,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.auth0.android.lock.BuildConfig;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -41,6 +44,7 @@ import static org.hamcrest.Matchers.is;
  * Created by lbalmaceda on 1/28/16.
  */
 @RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class AuthorizeResultTest {
 
     private static final int REQUEST_CODE = 11;
