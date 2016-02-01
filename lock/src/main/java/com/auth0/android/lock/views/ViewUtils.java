@@ -27,7 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.res.Resources;
 import android.util.TypedValue;
 
-class ViewUtils {
+abstract class ViewUtils {
 
     static float dipToPixels(Resources resources, int dip) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics());
