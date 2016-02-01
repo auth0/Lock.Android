@@ -18,7 +18,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/com_auth0_social_icon_amazon" />
+            android:src="@drawable/com_auth0_lock_social_icon_amazon" />
 
         <TextView
             android:id="@+id/com_auth0_lock_header_text"

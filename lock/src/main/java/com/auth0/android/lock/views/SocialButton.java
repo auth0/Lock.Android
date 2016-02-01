@@ -55,7 +55,7 @@ class SocialButton extends RelativeLayout {
 
     @SuppressWarnings("deprecation")
     private void init() {
-        inflate(getContext(), R.layout.com_auth0_btn_social_large, this);
+        inflate(getContext(), R.layout.com_auth0_lock_btn_social_large, this);
         setClickable(false);
 
         ImageView icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="com_auth0_btn_social_big_height">80dp</dimen>
-    <dimen name="com_auth0_btn_social_big_width">300dp</dimen>
+    <dimen name="com_auth0_lock_btn_social_big_height">80dp</dimen>
+    <dimen name="com_auth0_lock_btn_social_big_width">300dp</dimen>
 
-    <dimen name="com_auth0_webview_button_text_padding_left">10dp</dimen>
-    <dimen name="com_auth0_webview_button_text_size">13sp</dimen>
+    <dimen name="com_auth0_lock_webview_button_text_padding_left">10dp</dimen>
+    <dimen name="com_auth0_lock_webview_button_text_size">13sp</dimen>
 
-    <dimen name="com_auth0_webview_button_icon_label_size">50dp</dimen>
+    <dimen name="com_auth0_lock_webview_button_icon_label_size">50dp</dimen>
 
 </resources>

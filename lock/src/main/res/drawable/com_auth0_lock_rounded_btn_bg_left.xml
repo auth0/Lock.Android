@@ -27,5 +27,5 @@
         android:bottomLeftRadius="0dp"
         android:radius="100sp"
         android:topLeftRadius="0dp" />
-    <solid android:color="@color/com_auth0_social_facebook" />
+    <solid android:color="@color/com_auth0_lock_social_facebook" />
 </shape>

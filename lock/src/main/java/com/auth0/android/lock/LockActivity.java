@@ -115,7 +115,7 @@ public class LockActivity extends AppCompatActivity {
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
-        setContentView(R.layout.com_auth0_activity_lock);
+        setContentView(R.layout.com_auth0_lock_activity_lock);
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
         rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
 

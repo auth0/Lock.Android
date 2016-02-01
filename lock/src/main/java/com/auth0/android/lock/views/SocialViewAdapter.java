@@ -25,15 +25,12 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.auth0.android.lock.R;
-import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 
 import java.util.List;

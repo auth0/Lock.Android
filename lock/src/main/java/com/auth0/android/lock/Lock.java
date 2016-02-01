@@ -153,7 +153,7 @@ public class Lock {
         if (idToken != null && accessToken != null) {
             callback.onAuthentication(authentication);
         } else {
-            LockException up = new LockException(R.string.com_auth0_social_error_authentication);
+            LockException up = new LockException(R.string.com_auth0_lock_social_error_authentication);
             callback.onError(up);
             //throw up. haha
         }
