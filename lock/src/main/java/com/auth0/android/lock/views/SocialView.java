@@ -29,10 +29,19 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.PhoneStateListener;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.utils.Configuration;
+import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {
 
@@ -55,6 +64,42 @@ public class SocialView extends RecyclerView implements SocialViewAdapter.Connec
         setHasFixedSize(true);
         adapter.setCallback(this);
         setAdapter(adapter);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        ViewParent parent = getParent();
+        int leftPadding = 0;
+        int rightPadding = 0;
+
+        if (parent instanceof ViewGroup) {
+            leftPadding = ((ViewGroup) parent).getPaddingLeft();
+            rightPadding = ((ViewGroup) parent).getPaddingRight();
+        }
+        float desiredHeight = getHeight();
+        float desiredWidth = parentWidth - leftPadding - rightPadding;
+
+        int height = 0;
+        //Determine Height
+        switch (heightMode) {
+            case MeasureSpec.EXACTLY:
+                height = parentHeight;
+                break;
+            case MeasureSpec.AT_MOST:
+                height = Math.min((int) desiredHeight, parentHeight);
+                break;
+            case MeasureSpec.UNSPECIFIED:
+            default:
+                height = (int) desiredHeight;
+                break;
+        }
+        setMeasuredDimension((int) desiredWidth, height);
     }
 
     @Override

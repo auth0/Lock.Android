@@ -1,7 +1,6 @@
 package com.auth0.android.lock.utils;
 
 import com.auth0.android.lock.BuildConfig;
-import com.auth0.android.lock.utils.Strategies;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class StrategiesTest {
     @Test
     public void shouldReturnUnknownSocial() {

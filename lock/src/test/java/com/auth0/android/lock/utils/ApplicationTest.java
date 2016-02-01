@@ -1,10 +1,6 @@
 package com.auth0.android.lock.utils;
 
 import com.auth0.android.lock.BuildConfig;
-import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.Strategies;
-import com.auth0.android.lock.utils.Strategy;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,10 +22,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class ApplicationTest {
 
     public static final String ID = "ID";

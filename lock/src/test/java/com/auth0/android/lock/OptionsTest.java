@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class OptionsTest {
 
     private static final String CLIENT_ID = "CLIENT_ID";

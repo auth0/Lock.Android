@@ -39,8 +39,8 @@ import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.result.Authentication;
 
 public class DemoActivity extends AppCompatActivity implements AuthenticationCallback, View.OnClickListener {
-    private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
-    private static final String AUTH0_DOMAIN = "lbalmaceda.auth0.com";
+    private static final String AUTH0_CLIENT_ID = "1RUsvK047TGUp8trp9R2T6ubQy7c3Mrr";
+    private static final String AUTH0_DOMAIN = "overmind.auth0.com";
     private static final int AUTH_REQUEST = 333;
     private Lock lock;
 

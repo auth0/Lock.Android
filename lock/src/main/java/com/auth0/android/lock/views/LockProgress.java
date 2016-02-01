@@ -57,7 +57,6 @@ public class LockProgress extends RelativeLayout {
     }
 
     private void init() {
-        Log.i(TAG, "Init view");
         progress = new ProgressBar(getContext());
         message = new TextView(getContext());
         progress.setIndeterminate(true);
@@ -76,7 +75,6 @@ public class LockProgress extends RelativeLayout {
     }
 
     public void showResult(@Nullable String error) {
-        Log.i(TAG, "Showing result: " + error);
         if (error == null || error.isEmpty()) {
             message.setText("");
             message.setVisibility(View.GONE);

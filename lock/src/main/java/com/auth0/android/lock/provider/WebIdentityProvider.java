@@ -106,7 +106,7 @@ public class WebIdentityProvider implements IdentityProvider {
     public void start(Activity activity, @NonNull String connectionName) {
         if (account.getAuthorizeUrl() == null) {
             if (callback != null) {
-                callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_authorize_url, null);
+                callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_authorize_url, null);
             } else {
                 Log.w(TAG, "No callback set for web IdP authenticator");
             }
@@ -148,14 +148,14 @@ public class WebIdentityProvider implements IdentityProvider {
         if (values.containsKey(KEY_ERROR)) {
             Log.e(TAG, "Error, access denied.");
             if (callback != null) {
-                final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
-                callback.onFailure(R.string.com_auth0_social_error_title, message, null);
+                final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_lock_social_access_denied_message : R.string.com_auth0_lock_social_error_message;
+                callback.onFailure(R.string.com_auth0_lock_social_error_title, message, null);
             }
         } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
             Log.e(TAG, "Received state doesn't match");
             Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
             if (callback != null) {
-                callback.onFailure(R.string.com_auth0_social_error_title, R.string.com_auth0_social_invalid_state, null);
+                callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_state, null);
             }
         } else if (values.size() > 0) {
             Log.d(TAG, "Authenticated using web flow");

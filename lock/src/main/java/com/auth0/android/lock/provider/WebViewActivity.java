@@ -48,7 +48,7 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.com_auth0_activity_web_view);
+        setContentView(R.layout.com_auth0_lock_activity_web_view);
         final ActionBar bar = getSupportActionBar();
         if (bar != null) {
             String serviceName = getIntent().getStringExtra(CONNECTION_NAME_EXTRA);
