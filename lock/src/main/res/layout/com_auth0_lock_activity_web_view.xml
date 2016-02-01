@@ -28,17 +28,29 @@
     android:layout_height="match_parent"
     tools:context="com.auth0.android.lock.provider.WebViewActivity">
 
-    <ProgressBar
-        android:id="@+id/com_auth0_lock_progressbar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <WebView
         android:id="@+id/com_auth0_lock_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/com_auth0_lock_progressbar" />
+        android:layout_alignParentTop="true"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/com_auth0_lock_progressbar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/com_auth0_lock_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Retry"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
 </RelativeLayout>
