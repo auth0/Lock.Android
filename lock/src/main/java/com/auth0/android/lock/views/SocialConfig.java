@@ -35,7 +35,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 
-class SocialButtonConfig {
+class SocialConfig {
     private static final String ICON_RESOURCE_FORMAT = "com_auth0_lock_social_icon_%s";
     private static final String TITLE_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
     private static final String BACKGROUND_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
@@ -50,9 +50,9 @@ class SocialButtonConfig {
     @DrawableRes
     private int icon;
 
-    public SocialButtonConfig(Context context, @NonNull Strategy strategy) {
+    public SocialConfig(Context context, @NonNull Strategy strategy) {
         if (strategy.getType() != Strategies.Type.SOCIAL) {
-            throw new IllegalArgumentException("Only SOCIAL Strategies can have a SocialButtonConfig");
+            throw new IllegalArgumentException("Only SOCIAL Strategies can have a SocialConfig");
         }
 
         generateResourcesForStrategy(context.getResources(), context.getPackageName(), strategy.getName());

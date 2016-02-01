@@ -126,7 +126,7 @@ class SocialButton extends RelativeLayout {
      *
      * @param config contains the connection information.
      */
-    public void setSocialConfig(SocialButtonConfig config) {
+    public void setSocialConfig(SocialConfig config) {
         this.configured = true;
         this.titleRes = config.getTitle();
         this.iconRes = config.getIcon();

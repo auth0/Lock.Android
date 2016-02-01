@@ -56,7 +56,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Strategy item = strategyList.get(i);
-        viewHolder.socialButton.setSocialConfig(new SocialButtonConfig(context, item));
+        viewHolder.socialButton.setSocialConfig(new SocialConfig(context, item));
     }
 
     @Override
