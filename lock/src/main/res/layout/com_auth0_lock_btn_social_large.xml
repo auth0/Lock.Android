@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:scaleType="center"
             tools:background="#FF3333"
-            tools:src="@drawable/com_auth0_social_icon_facebook" />
+            tools:src="@drawable/com_auth0_lock_social_icon_auth0" />
 
         <TextView
             android:id="@+id/com_auth0_lock_text"

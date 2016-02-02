@@ -60,6 +60,7 @@ public class HeaderView extends RelativeLayout {
         init(attrs);
     }
 
+    @SuppressWarnings("deprecation")
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_header, this);
         header = findViewById(R.id.com_auth0_lock_header_background);
@@ -71,21 +72,18 @@ public class HeaderView extends RelativeLayout {
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_Theme);
         String headerTitle = a.getString(R.styleable.Lock_Theme_Auth0_HeaderText);
-        //TODO: Add default logo
         Drawable headerLogo = a.getDrawable(R.styleable.Lock_Theme_Auth0_HeaderLogo);
-        @SuppressWarnings("deprecation")
+        if (headerLogo == null) {
+            headerLogo = getResources().getDrawable(R.drawable.com_auth0_lock_header_logo);
+        }
         int defHeaderColor = getResources().getColor(R.color.com_auth0_lock_header_background);
         int headerColor = a.getColor(R.styleable.Lock_Theme_Auth0_HeaderBackground, defHeaderColor);
         if (headerTitle == null) {
             headerTitle = getResources().getString(R.string.com_auth0_lock_header_title);
         }
+        logo.setImageDrawable(headerLogo);
         text.setText(headerTitle);
         header.setBackgroundColor(headerColor);
-        if (Build.VERSION.SDK_INT >= 16) {
-            header.setBackground(headerLogo);
-        } else {
-            header.setBackgroundDrawable(headerLogo);
-        }
         a.recycle();
     }
 
