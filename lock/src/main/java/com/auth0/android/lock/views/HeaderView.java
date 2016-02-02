@@ -71,25 +71,8 @@ public class HeaderView extends RelativeLayout {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_Theme);
         String headerTitle = a.getString(R.styleable.Lock_Theme_Auth0_HeaderText);
         Drawable headerLogo = a.getDrawable(R.styleable.Lock_Theme_Auth0_HeaderLogo);
-        if (headerLogo == null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                headerLogo = getResources().getDrawable(R.drawable.com_auth0_lock_header_logo, getContext().getTheme());
-            } else {
-                //noinspection deprecation
-                headerLogo = getResources().getDrawable(R.drawable.com_auth0_lock_header_logo);
-            }
-        }
-        int defHeaderColor;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            defHeaderColor = getResources().getColor(R.color.com_auth0_lock_header_background, getContext().getTheme());
-        } else {
-            //noinspection deprecation
-            defHeaderColor = getResources().getColor(R.color.com_auth0_lock_header_background);
-        }
-        int headerColor = a.getColor(R.styleable.Lock_Theme_Auth0_HeaderBackground, defHeaderColor);
-        if (headerTitle == null) {
-            headerTitle = getResources().getString(R.string.com_auth0_lock_header_title);
-        }
+        int headerColor = a.getColor(R.styleable.Lock_Theme_Auth0_HeaderBackground, 0);
+
         logo.setImageDrawable(headerLogo);
         text.setText(headerTitle);
         header.setBackgroundColor(headerColor);
