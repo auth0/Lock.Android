@@ -58,7 +58,6 @@ public class WebViewActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private View errorView;
     private TextView errorMessage;
-    private boolean isShowingError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +79,12 @@ public class WebViewActivity extends AppCompatActivity {
         progressBar.setIndeterminate(true);
         progressBar.setMax(100);
         errorView = findViewById(R.id.com_auth0_lock_error_view);
+        errorView.setVisibility(View.GONE);
         errorMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         Button retryButton = (Button) findViewById(R.id.com_auth0_lock_retry);
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isShowingError = false;
                 errorView.setVisibility(View.GONE);
                 startUrlLoading();
             }
@@ -107,7 +106,7 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                if (newProgress > 10) {
+                if (newProgress > 0) {
                     progressBar.setIndeterminate(false);
                     progressBar.setProgress(newProgress);
                 }
@@ -132,6 +131,7 @@ public class WebViewActivity extends AppCompatActivity {
                 progressBar.setProgress(0);
                 progressBar.setIndeterminate(true);
                 progressBar.setVisibility(View.GONE);
+                final boolean isShowingError = errorView.getVisibility() == View.VISIBLE;
                 webView.setVisibility(isShowingError ? View.INVISIBLE : View.VISIBLE);
             }
 
@@ -139,7 +139,6 @@ public class WebViewActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 progressBar.setProgress(0);
-                progressBar.setIndeterminate(false);
                 progressBar.setVisibility(View.VISIBLE);
             }
 
@@ -165,7 +164,6 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     private void renderLoadError(String description) {
-        isShowingError = true;
         errorMessage.setText(description);
         webView.setVisibility(View.INVISIBLE);
         errorView.setVisibility(View.VISIBLE);
