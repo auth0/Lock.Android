@@ -47,6 +47,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Configuration;
+import com.auth0.android.lock.views.HeaderView;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.result.Token;
@@ -158,7 +159,7 @@ public class LockActivity extends AppCompatActivity {
     /**
      * Fetch application information from Auth0
      */
-    public void fetchApplicationInfo() {
+    private void fetchApplicationInfo() {
         OkHttpClient client = new OkHttpClient();
         Uri uri = Uri.parse(options.getAccount().getConfigurationUrl()).buildUpon().appendPath("client")
                 .appendPath(options.getAccount().getClientId() + ".js").build();
@@ -201,8 +202,9 @@ public class LockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         Configuration config = new Configuration(application, null, null);
-        SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
+
         //TODO: add custom view for panels layout.
+        SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
         rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 

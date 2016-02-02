@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_rounded_btn_bg_left_left.xml
+  ~ attrs.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,10 +22,10 @@
   ~ THE SOFTWARE.
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners
-        android:bottomLeftRadius="0dp"
-        android:radius="100sp"
-        android:topLeftRadius="0dp" />
-    <solid android:color="@color/com_auth0_lock_social_facebook" />
-</shape>
+<resources>
+    <declare-styleable name="Lock.Theme">
+        <attr name="Auth0.HeaderBackground" format="color|reference" />
+        <attr name="Auth0.HeaderLogo" format="reference" />
+        <attr name="Auth0.HeaderText" format="string|reference" />
+    </declare-styleable>
+</resources>

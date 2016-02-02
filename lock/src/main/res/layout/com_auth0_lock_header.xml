@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_btn_social_large.xml
+  ~ com_auth0_lock_header.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -24,38 +24,30 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_margin="3dp"
-    android:gravity="center_horizontal">
+    android:layout_height="@dimen/com_auth0_lock_header_height"
+    android:background="?attr/Auth0.HeaderBackground"
+    tools:background="#40000000"
+    tools:context=".LockActivity">
 
-    <LinearLayout
-        android:id="@+id/com_auth0_lock_touch_area"
+    <ImageView
+        android:id="@+id/com_auth0_lock_header_logo"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:scaleType="center"
+        android:src="?attr/Auth0.HeaderLogo" />
 
-        <ImageView
-            android:id="@+id/com_auth0_lock_icon"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:scaleType="center"
-            tools:background="#FF3333"
-            tools:src="@drawable/com_auth0_lock_social_icon_auth0" />
-
-        <TextView
-            android:id="@+id/com_auth0_lock_text"
-            android:layout_width="250dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:singleLine="true"
-            android:textAllCaps="true"
-            android:textSize="13sp"
-            tools:background="#90FF3333"
-            tools:text="Login with facebook"
-            tools:textColor="@android:color/white" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/com_auth0_lock_header_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/com_auth0_lock_header_logo"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="?attr/Auth0.HeaderText"
+        android:textSize="@dimen/com_auth0_lock_header_text_size" />
 </RelativeLayout>

@@ -99,4 +99,7 @@
     <string name="com_auth0_lock_social_icon_yandex">&amp;</string>
     <string name="com_auth0_lock_social_icon_shopify">s</string>
     <string name="com_auth0_lock_social_icon_dwolla">D</string>
+
+    <!-- Lock General -->
+    <string name="com_auth0_lock_header_title">Lock</string>
 </resources>

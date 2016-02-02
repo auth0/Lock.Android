@@ -1,5 +1,5 @@
 /*
- * LockProgress.java
+ * HeaderView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -25,61 +25,53 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class LockProgress extends RelativeLayout {
+import com.auth0.android.lock.R;
 
-    private ProgressBar progress;
-    private TextView message;
+public class HeaderView extends RelativeLayout {
+    private View header;
+    private ImageView logo;
+    private TextView text;
 
-    public LockProgress(Context context) {
+    public HeaderView(Context context) {
         super(context);
         init();
     }
 
-    public LockProgress(Context context, AttributeSet attrs) {
+    public HeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public LockProgress(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        progress = new ProgressBar(getContext());
-        message = new TextView(getContext());
-        progress.setIndeterminate(true);
-        progress.setVisibility(View.VISIBLE);
-        message.setVisibility(View.GONE);
-        message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        addView(progress, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        LayoutParams messageParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        messageParams.addRule(BELOW, progress.getId());
-        addView(message, messageParams);
-        if (isInEditMode()) {
-            return;
-        }
-
+        inflate(getContext(), R.layout.com_auth0_lock_header, this);
+        header = findViewById(R.id.com_auth0_lock_header_background);
+        logo = (ImageView) findViewById(R.id.com_auth0_lock_header_logo);
+        text = (TextView) findViewById(R.id.com_auth0_lock_header_text);
     }
 
-    public void showResult(@Nullable String error) {
-        if (error == null || error.isEmpty()) {
-            message.setText("");
-            message.setVisibility(View.GONE);
-        } else {
-            message.setText(error);
-            message.setVisibility(View.VISIBLE);
-        }
-        progress.setVisibility(View.GONE);
+    public void setColor(@ColorRes int color) {
+        this.header.setBackgroundColor(getResources().getColor(color));
+    }
+
+    public void setTitle(@StringRes int title) {
+        this.text.setText(getResources().getString(title));
+    }
+
+    public void setLogo(@DrawableRes int logo) {
+        this.logo.setImageResource(logo);
     }
 }
