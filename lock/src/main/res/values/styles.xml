@@ -26,7 +26,8 @@
 
     <style name="Lock.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
-        <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
+        <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_social_icon_auth0</item>
+        <!-- TODO: Change the HeaderLogo drawable -->
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
     </style>
 

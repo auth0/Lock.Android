@@ -27,5 +27,9 @@
         <attr name="Auth0.HeaderBackground" format="color|reference" />
         <attr name="Auth0.HeaderLogo" format="reference" />
         <attr name="Auth0.HeaderText" format="string|reference" />
+        <attr name="Auth0.InputHint" format="string|reference" />
+        <attr name="Auth0.InputIcon" format="reference" />
+        <attr name="Auth0.InputErrorIcon" format="reference" />
+        <attr name="Auth0.InputDataType" format="enum" />
     </declare-styleable>
 </resources>
