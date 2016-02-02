@@ -102,4 +102,5 @@
 
     <!-- Lock General -->
     <string name="com_auth0_lock_header_title">Lock</string>
+    <string name="com_auth0_lock_network_error">Network error</string>
 </resources>

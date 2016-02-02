@@ -24,12 +24,14 @@
 
 package com.auth0.android.lock.provider;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 
@@ -53,7 +56,9 @@ public class WebViewActivity extends AppCompatActivity {
 
     private WebView webView;
     private ProgressBar progressBar;
-    private Button retryButton;
+    private View errorView;
+    private TextView errorMessage;
+    private boolean isShowingError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +79,14 @@ public class WebViewActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
         progressBar.setIndeterminate(true);
         progressBar.setMax(100);
-        retryButton = (Button) findViewById(R.id.com_auth0_lock_retry);
+        errorView = findViewById(R.id.com_auth0_lock_error_view);
+        errorMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
+        Button retryButton = (Button) findViewById(R.id.com_auth0_lock_retry);
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                retryButton.setVisibility(View.GONE);
+                isShowingError = false;
+                errorView.setVisibility(View.GONE);
                 startUrlLoading();
             }
         });
@@ -88,7 +96,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     private void startUrlLoading() {
         if (!isNetworkAvailable()) {
-            renderNetworkError();
+            renderLoadError(getString(R.string.com_auth0_lock_network_error));
             return;
         }
 
@@ -99,7 +107,7 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                if (newProgress > 0) {
+                if (newProgress > 10) {
                     progressBar.setIndeterminate(false);
                     progressBar.setProgress(newProgress);
                 }
@@ -121,10 +129,10 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                progressBar.setProgress(100);
+                progressBar.setProgress(0);
                 progressBar.setIndeterminate(true);
                 progressBar.setVisibility(View.GONE);
-                webView.setVisibility(View.VISIBLE);
+                webView.setVisibility(isShowingError ? View.INVISIBLE : View.VISIBLE);
             }
 
             @Override
@@ -135,10 +143,18 @@ public class WebViewActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
             }
 
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                renderLoadError(description);
+                super.onReceivedError(view, errorCode, description, failingUrl);
+            }
+
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                renderLoadError(error.getDescription().toString());
                 super.onReceivedError(view, request, error);
-                renderNetworkError();
             }
 
         });
@@ -148,9 +164,11 @@ public class WebViewActivity extends AppCompatActivity {
         webView.loadUrl(uri.toString());
     }
 
-    private void renderNetworkError() {
+    private void renderLoadError(String description) {
+        isShowingError = true;
+        errorMessage.setText(description);
         webView.setVisibility(View.INVISIBLE);
-        retryButton.setVisibility(View.VISIBLE);
+        errorView.setVisibility(View.VISIBLE);
     }
 
     private boolean isNetworkAvailable() {
