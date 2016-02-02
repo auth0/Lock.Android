@@ -103,4 +103,7 @@
     <!-- Lock General -->
     <string name="com_auth0_lock_header_title">Lock</string>
     <string name="com_auth0_lock_network_error">Network error</string>
+    <string name="com_auth0_lock_hint_email">Email</string>
+    <string name="com_auth0_lock_hint_password">Password</string>
+    <string name="com_auth0_lock_hint_username">Username</string>
 </resources>

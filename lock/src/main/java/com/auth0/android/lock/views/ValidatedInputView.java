@@ -26,7 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
+import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Patterns;
@@ -42,10 +42,10 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     private static final int MIN_PASSWORD_LENGTH = 10;
     private static final int MIN_USERNAME_LENGTH = 8;
 
-    private Drawable inputIcon;
-    private Drawable inputErrorIcon;
     private ImageView icon;
     private EditText input;
+    private int inputIcon;
+    private int inputErrorIcon;
 
     private enum DataType {none, email, username, password}
 
@@ -68,48 +68,60 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     }
 
     private void init(AttributeSet attrs) {
-        inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, null);
+        inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
+        TextInputLayout inputLayout = (TextInputLayout) input.getParent();
 
-        input.setOnFocusChangeListener(this);
-        if (attrs == null) {
+        if (attrs == null || isInEditMode()) {
             return;
         }
 
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_Theme);
-        String hint = a.getString(R.styleable.Lock_Theme_Auth0_InputHint);
-        if (hint != null) {
-            input.setHint(hint);
-        }
-        inputIcon = a.getDrawable(R.styleable.Lock_Theme_Auth0_InputIcon);
-        if (inputIcon == null) {
-            inputIcon = getResources().getDrawable(R.drawable.com_auth0_lock_ic_username);
-        }
-        icon.setImageDrawable(inputIcon);
-        inputErrorIcon = a.getDrawable(R.styleable.Lock_Theme_Auth0_InputIcon);
-        if (inputErrorIcon == null) {
-            inputErrorIcon = getResources().getDrawable(R.drawable.com_auth0_lock_ic_username_error);
-        }
-        dataType = DataType.values()[a.getInt(R.styleable.Lock_Theme_Auth0_InputDataType, 0)];
+        input.setOnFocusChangeListener(this);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_ValidatedInput);
+        dataType = DataType.values()[a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0)];
+
+        String hint;
+
         switch (dataType) {
             case email:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                inputIcon = R.drawable.com_auth0_lock_ic_input_email;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_email_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_email);
                 break;
             case password:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                inputIcon = R.drawable.com_auth0_lock_ic_input_password;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_password_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_password);
+                break;
+            case username:
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                inputIcon = R.drawable.com_auth0_lock_ic_input_username;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
             default:
             case none:
-            case username:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                inputIcon = R.drawable.com_auth0_lock_social_icon_auth0;
+                inputErrorIcon = R.drawable.com_auth0_lock_social_icon_auth0;
+                hint = "";
                 break;
         }
         a.recycle();
+
+        inputLayout.setHint(hint);
     }
 
-    private void validate() {
-        //call on EditText focus change
+    /**
+     * Validates the input data and updates the icon. DataType must be set.
+     *
+     * @return whether the data is valid or not.
+     */
+    public boolean validate() {
+        //also called on EditText focus change
         boolean valid = true;
         String value = getText();
         switch (dataType) {
@@ -127,7 +139,8 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 break;
         }
 
-        icon.setImageDrawable(valid ? inputIcon : inputErrorIcon);
+        icon.setImageResource(valid ? inputIcon : inputErrorIcon);
+        return valid;
     }
 
     public String getText() {

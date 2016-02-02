@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ attrs.xml
+  ~ com_auth0_lock_db_login_form.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,19 +22,20 @@
   ~ THE SOFTWARE.
   -->
 
-<resources>
-    <declare-styleable name="Lock.Theme">
-        <attr name="Auth0.HeaderBackground" format="color|reference" />
-        <attr name="Auth0.HeaderLogo" format="reference" />
-        <attr name="Auth0.HeaderText" format="string|reference" />
-    </declare-styleable>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <declare-styleable name="Lock.ValidatedInput">
-        <attr name="Auth0.InputDataType" format="enum">
-            <enum name="none" value="0" />
-            <enum name="email" value="1" />
-            <enum name="username" value="2" />
-            <enum name="password" value="3" />
-        </attr>
-    </declare-styleable>
-</resources>
+    <com.auth0.android.lock.views.ValidatedInputView
+        android:layout_width="@dimen/com_auth0_lock_input_field_width"
+        android:layout_height="wrap_content"
+        app:Auth0.InputDataType="email" />
+
+    <com.auth0.android.lock.views.ValidatedInputView
+        android:layout_width="@dimen/com_auth0_lock_input_field_width"
+        android:layout_height="wrap_content"
+        app:Auth0.InputDataType="password" />
+
+</LinearLayout>

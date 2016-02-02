@@ -31,4 +31,8 @@
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
     </style>
 
+    <!-- TODO: Style the hint -->
+    <style name="Lock.Theme.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/com_auth0_lock_text_hint_color</item>
+    </style>
 </resources>
