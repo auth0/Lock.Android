@@ -26,7 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorRes;
@@ -60,7 +59,6 @@ public class HeaderView extends RelativeLayout {
         init(attrs);
     }
 
-    @SuppressWarnings("deprecation")
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_header, this);
         header = findViewById(R.id.com_auth0_lock_header_background);
@@ -74,9 +72,20 @@ public class HeaderView extends RelativeLayout {
         String headerTitle = a.getString(R.styleable.Lock_Theme_Auth0_HeaderText);
         Drawable headerLogo = a.getDrawable(R.styleable.Lock_Theme_Auth0_HeaderLogo);
         if (headerLogo == null) {
-            headerLogo = getResources().getDrawable(R.drawable.com_auth0_lock_header_logo);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                headerLogo = getResources().getDrawable(R.drawable.com_auth0_lock_header_logo, getContext().getTheme());
+            } else {
+                //noinspection deprecation
+                headerLogo = getResources().getDrawable(R.drawable.com_auth0_lock_header_logo);
+            }
         }
-        int defHeaderColor = getResources().getColor(R.color.com_auth0_lock_header_background);
+        int defHeaderColor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            defHeaderColor = getResources().getColor(R.color.com_auth0_lock_header_background, getContext().getTheme());
+        } else {
+            //noinspection deprecation
+            defHeaderColor = getResources().getColor(R.color.com_auth0_lock_header_background);
+        }
         int headerColor = a.getColor(R.styleable.Lock_Theme_Auth0_HeaderBackground, defHeaderColor);
         if (headerTitle == null) {
             headerTitle = getResources().getString(R.string.com_auth0_lock_header_title);
@@ -87,7 +96,6 @@ public class HeaderView extends RelativeLayout {
         a.recycle();
     }
 
-    @SuppressWarnings("deprecation")
     public void setColor(@ColorRes int color) {
         this.header.setBackgroundColor(getResources().getColor(color));
     }

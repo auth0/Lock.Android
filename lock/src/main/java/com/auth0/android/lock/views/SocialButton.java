@@ -22,6 +22,7 @@ import com.auth0.android.lock.R;
 class SocialButton extends RelativeLayout {
 
     private static final int BTN_CORNER_RADIUS = 5;
+
     private enum Corners {ONLY_LEFT, ONLY_RIGHT, ALL}
 
     @ColorInt
@@ -53,7 +54,6 @@ class SocialButton extends RelativeLayout {
         init();
     }
 
-    @SuppressWarnings("deprecation")
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_btn_social_large, this);
         setClickable(false);
@@ -78,8 +78,11 @@ class SocialButton extends RelativeLayout {
             title.setBackground(rightBackground);
             touchArea.setBackground(touchBackground);
         } else {
+            //noinspection deprecation
             icon.setBackgroundDrawable(leftBackground);
+            //noinspection deprecation
             title.setBackgroundDrawable(rightBackground);
+            //noinspection deprecation
             touchArea.setBackgroundDrawable(touchBackground);
         }
     }

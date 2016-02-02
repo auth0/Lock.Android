@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock.views;
 
+import android.os.Build;
+
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Application;
@@ -90,17 +92,29 @@ public class SocialConfigTest {
         assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_social_icon_facebook));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void shouldGetTextColor() {
-        int expectedColor = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_facebook_text);
+        android.app.Application context = RuntimeEnvironment.application;
+        int expectedColor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            expectedColor = context.getResources().getColor(R.color.com_auth0_lock_social_facebook_text, context.getTheme());
+        } else {
+            //noinspection deprecation
+            expectedColor = context.getResources().getColor(R.color.com_auth0_lock_social_facebook_text);
+        }
         assertThat(socialConfig.getTextColor(), is(equalTo(expectedColor)));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void shouldGetBackgroundColor() {
-        int expectedColor = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_facebook);
+        android.app.Application context = RuntimeEnvironment.application;
+        int expectedColor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            expectedColor = context.getResources().getColor(R.color.com_auth0_lock_social_facebook, context.getTheme());
+        } else {
+            //noinspection deprecation
+            expectedColor = context.getResources().getColor(R.color.com_auth0_lock_social_facebook);
+        }
         assertThat(socialConfig.getBackgroundColor(), is(equalTo(expectedColor)));
     }
 

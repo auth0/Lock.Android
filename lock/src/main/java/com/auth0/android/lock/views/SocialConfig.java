@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -55,12 +56,14 @@ class SocialConfig {
             throw new IllegalArgumentException("Only SOCIAL Strategies can have a SocialConfig");
         }
 
-        generateResourcesForStrategy(context.getResources(), context.getPackageName(), strategy.getName());
+        generateResourcesForStrategy(context, strategy.getName());
     }
 
-    @SuppressWarnings("deprecation")
-    private void generateResourcesForStrategy(Resources resources, String pkgName, String strategyName) {
+    private void generateResourcesForStrategy(Context context, String strategyName) {
+        final Resources resources = context.getResources();
+        final String pkgName = context.getPackageName();
         strategyName = strategyName.replace("-", "_");
+
         icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, strategyName), "drawable", pkgName);
         icon = icon == 0 ? R.drawable.com_auth0_lock_social_icon_auth0 : icon;
 
@@ -69,11 +72,19 @@ class SocialConfig {
 
         int backgroundColorRes = resources.getIdentifier(String.format(BACKGROUND_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName);
         backgroundColorRes = backgroundColorRes == 0 ? R.color.com_auth0_lock_social_unknown : backgroundColorRes;
-        backgroundColor = resources.getColor(backgroundColorRes);
 
         int textColorRes = resources.getIdentifier(String.format(TEXT_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName);
         textColorRes = textColorRes == 0 ? R.color.com_auth0_lock_social_unknown_text : textColorRes;
-        textColor = resources.getColor(textColorRes);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            backgroundColor = resources.getColor(backgroundColorRes, context.getTheme());
+            textColor = resources.getColor(textColorRes, context.getTheme());
+        } else {
+            //noinspection deprecation
+            backgroundColor = resources.getColor(backgroundColorRes);
+            //noinspection deprecation
+            textColor = resources.getColor(textColorRes);
+        }
     }
 
     @StringRes
