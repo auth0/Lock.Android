@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -46,8 +47,9 @@ import com.auth0.android.lock.R;
 
 public class WebViewActivity extends AppCompatActivity {
 
+    private static final String TAG = WebViewActivity.class.getSimpleName();
+    private static final String KEY_REDIRECT_URI = "redirect_uri";
     public static final String CONNECTION_NAME_EXTRA = "serviceName";
-    public static final String KEY_REDIRECT_URI = "redirect_uri";
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -152,8 +154,14 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     private boolean isNetworkAvailable() {
+        boolean available = true;
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+        try {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            available = activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+        } catch (SecurityException e) {
+            Log.w(TAG, "Could not check for Network status. Please, be sure to include the android.permission.ACCESS_NETWORK_STATE permission in the manifest");
+        }
+        return available;
     }
 }
