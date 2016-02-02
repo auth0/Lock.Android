@@ -25,9 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
@@ -46,37 +43,24 @@ public class HeaderView extends RelativeLayout {
 
     public HeaderView(Context context) {
         super(context);
-        init(null);
+        init();
     }
 
     public HeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init();
     }
 
     public HeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
+        init();
     }
 
-    private void init(AttributeSet attrs) {
+    private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_header, this);
         header = findViewById(R.id.com_auth0_lock_header_background);
         logo = (ImageView) findViewById(R.id.com_auth0_lock_header_logo);
         text = (TextView) findViewById(R.id.com_auth0_lock_header_text);
-        if (attrs == null) {
-            return;
-        }
-
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_Theme);
-        String headerTitle = a.getString(R.styleable.Lock_Theme_Auth0_HeaderText);
-        Drawable headerLogo = a.getDrawable(R.styleable.Lock_Theme_Auth0_HeaderLogo);
-        int headerColor = a.getColor(R.styleable.Lock_Theme_Auth0_HeaderBackground, 0);
-
-        logo.setImageDrawable(headerLogo);
-        text.setText(headerTitle);
-        header.setBackgroundColor(headerColor);
-        a.recycle();
     }
 
     public void setColor(@ColorRes int color) {
