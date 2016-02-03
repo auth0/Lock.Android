@@ -72,6 +72,11 @@ public class LockProgress extends RelativeLayout {
 
     }
 
+    public void showProgress() {
+        progress.setVisibility(View.VISIBLE);
+        message.setVisibility(View.GONE);
+    }
+
     public void showResult(@Nullable String error) {
         if (error == null || error.isEmpty()) {
             message.setText("");

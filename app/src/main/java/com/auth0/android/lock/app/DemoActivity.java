@@ -25,6 +25,7 @@
 package com.auth0.android.lock.app;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -36,12 +37,17 @@ import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.utils.LockException;
+import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
+
+import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements AuthenticationCallback, View.OnClickListener {
     private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
     private static final String AUTH0_DOMAIN = "lbalmaceda.auth0.com";
+    private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
     private static final int AUTH_REQUEST = 333;
+
     private Lock lock;
 
     @Override
@@ -112,11 +118,16 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         // create account
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
+        Map<String, Object> params = ParameterBuilder.newBuilder()
+                .setDevice(Build.MODEL)
+                .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
+                .asDictionary();
         // create/configure lock
         lock = Lock.newBuilder()
                 .withAccount(auth0)
                 .withCallback(this)
                 .useBrowser(useBrowser)
+                .withAuthenticationParameters(params)
                 .build();
         lock.onCreate(DemoActivity.this);
 

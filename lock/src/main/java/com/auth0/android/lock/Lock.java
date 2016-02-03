@@ -29,12 +29,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
+import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Token;
 import com.auth0.authentication.result.UserProfile;
@@ -166,6 +168,8 @@ public class Lock {
 
         public Builder() {
             options = new Options();
+            HashMap<String, Object> defaultParams = (HashMap<String, Object>) ParameterBuilder.newBuilder().setDevice(Build.MODEL).asDictionary();
+            options.setAuthenticationParameters(defaultParams);
         }
 
         public Lock build() {

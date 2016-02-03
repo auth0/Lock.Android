@@ -79,6 +79,7 @@ public class LockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
+    private Button loginBtn;
 
     private WebIdentityProvider lastIdp;
 
@@ -95,16 +96,9 @@ public class LockActivity extends AppCompatActivity {
 
         @Override
         public void onSuccess(@NonNull Token token) {
-            Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-            intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
-            intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
-            intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, token.getRefreshToken());
-            intent.putExtra(Lock.TOKEN_TYPE_EXTRA, token.getType());
-
-            LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
-
+            //TODO: Request profile and send back the token and the profile (see Authentication class)
             Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
-            LockActivity.this.finish();
+            deliverResult(token);
         }
     };
 
@@ -217,11 +211,14 @@ public class LockActivity extends AppCompatActivity {
             final FormView loginForm = new FormView(this);
             loginForm.setUsernameStyle(options.usernameStyle());
             rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            final Button loginBtn = new Button(this);
+            loginBtn = new Button(this);
             loginBtn.setText("Login");
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!loginForm.hasValidData()) {
+                        return;
+                    }
                     Log.i(TAG, "Login in");
                     onDatabaseAuthenticationRequest(loginForm.getUsernameOrEmail(), loginForm.getPassword());
                 }
@@ -256,6 +253,18 @@ public class LockActivity extends AppCompatActivity {
         } catch (IOException | JSONException e) {
             throw new Auth0Exception("Failed to parse response to request", e);
         }
+    }
+
+    private void deliverResult(Token token) {
+        Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
+        intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
+        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
+        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, token.getRefreshToken());
+        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, token.getType());
+
+        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+
+        LockActivity.this.finish();
     }
 
     @Override
@@ -299,23 +308,35 @@ public class LockActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onDatabaseAuthenticationRequest(String usernameOrEmail, String password) {
+    public void onDatabaseAuthenticationRequest(String usernameOrEmail, final String password) {
         if (options == null) {
             return;
         }
 
+        progress.showProgress();
+        loginBtn.setEnabled(false);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        apiClient.login(usernameOrEmail, password).start(new BaseCallback<Authentication>() {
-            @Override
-            public void onSuccess(Authentication payload) {
-                Log.e(TAG, "Login success: " + payload.getToken());
-            }
+        apiClient.login(usernameOrEmail, password)
+                .addParameters(options.getAuthenticationParameters())
+                .start(new BaseCallback<Authentication>() {
+                    @Override
+                    public void onSuccess(Authentication payload) {
+                        Log.e(TAG, "Login success: " + payload.getProfile());
+                        deliverResult(payload.getToken());
+                    }
 
-            @Override
-            public void onFailure(Auth0Exception error) {
-                Log.e(TAG, "Login failed");
-            }
-        });
+                    @Override
+                    public void onFailure(final Auth0Exception error) {
+                        Log.e(TAG, "Login failed");
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progress.showResult(error.getMessage());
+                                loginBtn.setEnabled(true);
+                            }
+                        });
+                    }
+                });
     }
 
 }

@@ -27,6 +27,7 @@ package com.auth0.android.lock;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
@@ -241,11 +242,12 @@ class Options implements Parcelable {
         this.enterpriseConnectionsUsingWebForm = enterpriseConnectionsUsingWebForm;
     }
 
+    @NonNull
     public HashMap<String, Object> getAuthenticationParameters() {
         return authenticationParameters;
     }
 
-    public void setAuthenticationParameters(HashMap<String, Object> authenticationParameters) {
+    public void setAuthenticationParameters(@NonNull HashMap<String, Object> authenticationParameters) {
         this.authenticationParameters = authenticationParameters;
     }
 }

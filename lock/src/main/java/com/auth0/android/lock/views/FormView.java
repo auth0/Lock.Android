@@ -86,4 +86,8 @@ public class FormView extends RelativeLayout {
     public String getPassword() {
         return bottomInput.getText();
     }
+
+    public boolean hasValidData() {
+        return topInput.validate() && bottomInput.validate();
+    }
 }
