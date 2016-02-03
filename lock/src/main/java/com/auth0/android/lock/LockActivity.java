@@ -51,6 +51,7 @@ import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Configuration;
 import com.auth0.android.lock.views.FormView;
 import com.auth0.android.lock.views.LockProgress;
+import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Token;
@@ -202,12 +203,12 @@ public class LockActivity extends AppCompatActivity {
         Configuration config = new Configuration(application, null, null);
         config.getDefaultDatabaseConnection();
         //TODO: add custom view for panels layout.
-//        if (!config.getSocialStrategies().isEmpty()) {
-//            SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
-//            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        }
-
-        if (config.getDefaultDatabaseConnection() != null) {
+        if (!config.getSocialStrategies().isEmpty() && config.getDefaultDatabaseConnection() != null) {
+            //Not implemented
+        } else if (!config.getSocialStrategies().isEmpty()) {
+            SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        } else if (config.getDefaultDatabaseConnection() != null) {
             final FormView loginForm = new FormView(this);
             loginForm.setUsernameStyle(options.usernameStyle());
             rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -224,6 +225,8 @@ public class LockActivity extends AppCompatActivity {
                 }
             });
             rootView.addView(loginBtn, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        } else if (!config.getEnterpriseStrategies().isEmpty()) {
+            //Not implemented
         }
     }
 
