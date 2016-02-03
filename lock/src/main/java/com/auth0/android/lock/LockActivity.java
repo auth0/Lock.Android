@@ -40,7 +40,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.SocialConnectionEvent;

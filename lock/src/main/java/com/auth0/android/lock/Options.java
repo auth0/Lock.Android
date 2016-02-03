@@ -29,6 +29,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.UsernameStyle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ class Options implements Parcelable {
     private boolean closable;
     private boolean fullscreen;
     private boolean sendSDKInfo;
-    private boolean useEmail;
+    private UsernameStyle usernameStyle;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private String defaultDatabaseConnection;
@@ -54,7 +55,7 @@ class Options implements Parcelable {
 
     public Options() {
         sendSDKInfo = true;
-        useEmail = false;
+        usernameStyle = UsernameStyle.DEFAULT;
         signUpEnabled = true;
         changePasswordEnabled = true;
     }
@@ -66,7 +67,6 @@ class Options implements Parcelable {
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
         sendSDKInfo = in.readByte() != WITHOUT_DATA;
-        useEmail = in.readByte() != WITHOUT_DATA;
         signUpEnabled = in.readByte() != WITHOUT_DATA;
         changePasswordEnabled = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
@@ -89,6 +89,11 @@ class Options implements Parcelable {
         } else {
             authenticationParameters = null;
         }
+        if (in.readByte() == HAS_DATA) {
+            usernameStyle = (UsernameStyle) in.readSerializable();
+        } else {
+            usernameStyle = null;
+        }
     }
 
     @Override
@@ -103,7 +108,6 @@ class Options implements Parcelable {
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (sendSDKInfo ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (useEmail ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
@@ -127,6 +131,12 @@ class Options implements Parcelable {
             Bundle mapBundle = new Bundle();
             mapBundle.putSerializable(KEY_AUTHENTICATION_PARAMETERS, authenticationParameters);
             dest.writeBundle(mapBundle);
+        }
+        if (usernameStyle == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            dest.writeSerializable(usernameStyle);
         }
     }
 
@@ -183,12 +193,12 @@ class Options implements Parcelable {
         this.sendSDKInfo = sendSDKInfo;
     }
 
-    public boolean useEmail() {
-        return useEmail;
+    public UsernameStyle usernameStyle() {
+        return usernameStyle;
     }
 
-    public void setUseEmail(boolean useEmail) {
-        this.useEmail = useEmail;
+    public void setUsernameStyle(UsernameStyle usernameStyle) {
+        this.usernameStyle = usernameStyle;
     }
 
     public boolean isSignUpEnabled() {

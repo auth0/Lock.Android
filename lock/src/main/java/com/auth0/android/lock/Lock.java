@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Token;
@@ -216,8 +217,8 @@ public class Lock {
             return this;
         }
 
-        public Builder useEmail() {
-            options.setUseEmail(true);
+        public Builder withUsernameStyle(UsernameStyle style) {
+            options.setUsernameStyle(style);
             return this;
         }
 
