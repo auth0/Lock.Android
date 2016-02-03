@@ -304,6 +304,7 @@ public class LockActivity extends AppCompatActivity {
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
         lastIdp.setUseBrowser(options.useBrowser());
+        lastIdp.setParameters(options.getAuthenticationParameters());
         lastIdp.start(LockActivity.this, event.getConnectionName());
     }
 
