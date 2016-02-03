@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.auth0.android.lock.views.HeaderView
-        android:id="@+id/com_auth0_lock_header"
-        style="@style/Lock.Theme"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true" />
+        android:layout_height="wrap_content">
 
-    <com.auth0.android.lock.views.LockProgress
-        android:id="@+id/com_auth0_lock_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/com_auth0_lock_header"
-        android:layout_centerHorizontal="true" />
+        <com.auth0.android.lock.views.HeaderView
+            android:id="@+id/com_auth0_lock_header"
+            style="@style/Lock.Theme"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true" />
 
-    <LinearLayout
-        android:id="@+id/com_auth0_lock_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/com_auth0_lock_progress"
-        android:orientation="vertical"
-        android:paddingTop="10dp" />
+        <com.auth0.android.lock.views.LockProgress
+            android:id="@+id/com_auth0_lock_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/com_auth0_lock_header"
+            android:layout_centerHorizontal="true" />
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/com_auth0_lock_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/com_auth0_lock_progress"
+            android:orientation="vertical"
+            android:paddingTop="10dp" />
+
+    </RelativeLayout>
+
+
+</ScrollView>

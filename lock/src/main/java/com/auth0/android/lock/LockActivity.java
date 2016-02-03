@@ -42,6 +42,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
@@ -80,7 +81,6 @@ public class LockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
-    private Button loginBtn;
 
     private WebIdentityProvider lastIdp;
 
@@ -210,21 +210,18 @@ public class LockActivity extends AppCompatActivity {
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         } else if (config.getDefaultDatabaseConnection() != null) {
             final FormView loginForm = new FormView(this);
-            loginForm.setUsernameStyle(options.usernameStyle());
+            loginForm.showChangePassword(options.usernameStyle());
+            loginForm.setBus(lockBus);
             rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            loginBtn = new Button(this);
-            loginBtn.setText("Login");
-            loginBtn.setOnClickListener(new View.OnClickListener() {
+            Button changeFormBtn = new Button(this);
+            changeFormBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!loginForm.hasValidData()) {
-                        return;
-                    }
-                    Log.i(TAG, "Login in");
-                    onDatabaseAuthenticationRequest(loginForm.getUsernameOrEmail(), loginForm.getPassword());
+                    loginForm.moveToNextForm(UsernameStyle.DEFAULT);
                 }
             });
-            rootView.addView(loginBtn, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            changeFormBtn.setText("Move to next form");
+            rootView.addView(changeFormBtn, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         } else if (!config.getEnterpriseStrategies().isEmpty()) {
             //Not implemented
         }
@@ -318,7 +315,6 @@ public class LockActivity extends AppCompatActivity {
         }
 
         progress.showProgress();
-        loginBtn.setEnabled(false);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.login(usernameOrEmail, password)
                 .addParameters(options.getAuthenticationParameters())
@@ -336,7 +332,6 @@ public class LockActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 progress.showResult(error.getMessage());
-                                loginBtn.setEnabled(true);
                             }
                         });
                     }

@@ -40,8 +40,8 @@ import com.auth0.android.lock.R;
 
 public class ValidatedInputView extends RelativeLayout implements View.OnFocusChangeListener {
 
-    private static final int MIN_PASSWORD_LENGTH = 10;
-    private static final int MIN_USERNAME_LENGTH = 8;
+    private static final int MIN_PASSWORD_LENGTH = 6;
+    private static final int MIN_USERNAME_LENGTH = 6;
 
     private ImageView icon;
     private EditText input;
@@ -142,32 +142,43 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
      */
     public boolean validate() {
         //also called on EditText focus change
-        boolean valid = true;
         String value = getText();
+        boolean valid;
+        int errMsg = 0;
         switch (dataType) {
             case EMAIL:
                 valid = !value.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(value).matches();
+                errMsg = R.string.com_auth0_lock_input_error_email;
                 break;
             case PASSWORD:
                 valid = !value.isEmpty() && value.length() >= MIN_PASSWORD_LENGTH;
+                errMsg = R.string.com_auth0_lock_input_error_password;
                 break;
             case USERNAME:
                 String withoutSpaces = value.replace(" ", "");
                 valid = !withoutSpaces.isEmpty() && withoutSpaces.length() >= MIN_USERNAME_LENGTH;
-                break;
-            case USERNAME_OR_EMAIL:
-                valid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
+                errMsg = R.string.com_auth0_lock_input_error_username;
                 break;
             default:
+            case USERNAME_OR_EMAIL:
+                valid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
+                errMsg = R.string.com_auth0_lock_input_error_username_email;
                 break;
         }
 
+        TextInputLayout inputLayout = (TextInputLayout) input.getParent();
+        inputLayout.setError(valid ? null : getResources().getString(errMsg));
         icon.setImageResource(valid ? inputIcon : inputErrorIcon);
         return valid;
     }
 
     public String getText() {
         return input.getText().toString().trim();
+    }
+
+    public void clearInput() {
+        input.setText("");
+        input.setError(null);
     }
 
     @Override
