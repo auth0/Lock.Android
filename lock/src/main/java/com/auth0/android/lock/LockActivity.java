@@ -72,7 +72,6 @@ public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String JSONP_PREFIX = "Auth0.setClient(";
-    private static final String DB_AUTHORIZE_URL = "https://%s.auth0.com/oauth/ro";
 
     private Application application;
     private Options options;

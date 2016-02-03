@@ -3,6 +3,7 @@ package com.auth0.android.lock;
 import android.os.Parcel;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -107,17 +108,45 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseEmail() {
+    public void shouldUseEmailUsernameStyle() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setUseEmail(true);
+        options.setUsernameStyle(UsernameStyle.EMAIL);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
+        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+    }
+
+    @Test
+    public void shouldUseUsernameUsernameStyle() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setUsernameStyle(UsernameStyle.USERNAME);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+    }
+
+    @Test
+    public void shouldUseDefaultUsernameStyle() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setUsernameStyle(UsernameStyle.DEFAULT);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
     }
 
     @Test
@@ -234,7 +263,7 @@ public class OptionsTest {
         options.setFullscreen(true);
         options.setSendSDKInfo(true);
         options.setUseBrowser(true);
-        options.setUseEmail(true);
+        options.setUsernameStyle(UsernameStyle.EMAIL);
         options.setSignUpEnabled(true);
 
 
@@ -248,7 +277,7 @@ public class OptionsTest {
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
-        assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
+        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
     }
 
@@ -262,7 +291,7 @@ public class OptionsTest {
         options.setFullscreen(false);
         options.setSendSDKInfo(false);
         options.setUseBrowser(false);
-        options.setUseEmail(false);
+        options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setSignUpEnabled(false);
 
 
@@ -276,7 +305,7 @@ public class OptionsTest {
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
-        assertThat(options.useEmail(), is(equalTo(parceledOptions.useEmail())));
+        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
     }
 
