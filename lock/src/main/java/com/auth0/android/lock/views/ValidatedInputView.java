@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.Patterns;
 import android.view.View;
@@ -47,7 +48,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     private int inputIcon;
     private int inputErrorIcon;
 
-    private enum DataType {none, email, username, password}
+    enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, PASSWORD}
 
     private DataType dataType;
 
@@ -71,8 +72,6 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
-        TextInputLayout inputLayout = (TextInputLayout) input.getParent();
-
         if (attrs == null || isInEditMode()) {
             return;
         }
@@ -81,38 +80,59 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_ValidatedInput);
         dataType = DataType.values()[a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0)];
 
-        String hint;
+        setupInputValidation();
+        a.recycle();
+    }
 
+    private void setupInputValidation() {
+        String hint;
+        input.setTransformationMethod(null);
         switch (dataType) {
-            case email:
+            case EMAIL:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_email;
                 inputErrorIcon = R.drawable.com_auth0_lock_ic_input_email_error;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_email);
                 break;
-            case password:
+            case PASSWORD:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 inputIcon = R.drawable.com_auth0_lock_ic_input_password;
                 inputErrorIcon = R.drawable.com_auth0_lock_ic_input_password_error;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_password);
                 break;
-            case username:
+            case USERNAME_OR_EMAIL:
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                inputIcon = R.drawable.com_auth0_lock_ic_input_username;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
+                break;
+            case USERNAME:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_username;
                 inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
             default:
-            case none:
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
                 inputIcon = R.drawable.com_auth0_lock_social_icon_auth0;
                 inputErrorIcon = R.drawable.com_auth0_lock_social_icon_auth0;
                 hint = "";
                 break;
         }
-        a.recycle();
-
+        TextInputLayout inputLayout = (TextInputLayout) input.getParent();
         inputLayout.setHint(hint);
+        icon.setImageResource(inputIcon);
+    }
+
+    /**
+     * Changes the type of input this view will validate.
+     *
+     * @param type a valid DataType
+     */
+    public void setDataType(DataType type) {
+        dataType = type;
+        setupInputValidation();
     }
 
     /**
@@ -125,17 +145,20 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
         boolean valid = true;
         String value = getText();
         switch (dataType) {
-            case email:
+            case EMAIL:
                 valid = !value.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(value).matches();
                 break;
-            case password:
+            case PASSWORD:
                 valid = !value.isEmpty() && value.length() >= MIN_PASSWORD_LENGTH;
                 break;
-            case username:
-                valid = !value.isEmpty() && value.length() >= MIN_USERNAME_LENGTH;
+            case USERNAME:
+                String withoutSpaces = value.replace(" ", "");
+                valid = !withoutSpaces.isEmpty() && withoutSpaces.length() >= MIN_USERNAME_LENGTH;
+                break;
+            case USERNAME_OR_EMAIL:
+                valid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
                 break;
             default:
-            case none:
                 break;
         }
 

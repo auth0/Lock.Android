@@ -36,7 +36,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.auth0.Auth0Exception;
@@ -47,10 +50,12 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Configuration;
-import com.auth0.android.lock.views.HeaderView;
+import com.auth0.android.lock.views.FormView;
 import com.auth0.android.lock.views.LockProgress;
-import com.auth0.android.lock.views.SocialView;
+import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Token;
+import com.auth0.callback.BaseCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -68,12 +73,13 @@ public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String JSONP_PREFIX = "Auth0.setClient(";
+    private static final String DB_AUTHORIZE_URL = "https://%s.auth0.com/oauth/ro";
 
     private Application application;
     private Options options;
     private Handler handler;
     private Bus lockBus;
-    private RelativeLayout rootView;
+    private LinearLayout rootView;
     private LockProgress progress;
 
     private WebIdentityProvider lastIdp;
@@ -118,7 +124,7 @@ public class LockActivity extends AppCompatActivity {
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
-        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
 
         if (application == null) {
             fetchApplicationInfo();
@@ -202,10 +208,28 @@ public class LockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         Configuration config = new Configuration(application, null, null);
-
+        config.getDefaultDatabaseConnection();
         //TODO: add custom view for panels layout.
-        SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
-        rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        if (!config.getSocialStrategies().isEmpty()) {
+//            SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
+//            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        }
+
+        if (config.getDefaultDatabaseConnection() != null) {
+            final FormView loginForm = new FormView(this);
+            loginForm.setUsernameStyle(options.usernameStyle());
+            rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            final Button loginBtn = new Button(this);
+            loginBtn.setText("Login");
+            loginBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG, "Login in");
+                    onDatabaseAuthenticationRequest(loginForm.getUsernameOrEmail(), loginForm.getPassword());
+                }
+            });
+            rootView.addView(loginBtn, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
 
@@ -274,6 +298,26 @@ public class LockActivity extends AppCompatActivity {
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
         lastIdp.setUseBrowser(options.useBrowser());
         lastIdp.start(LockActivity.this, event.getConnectionName());
+    }
+
+    @SuppressWarnings("unused")
+    public void onDatabaseAuthenticationRequest(String usernameOrEmail, String password) {
+        if (options == null) {
+            return;
+        }
+
+        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        apiClient.login(usernameOrEmail, password).start(new BaseCallback<Authentication>() {
+            @Override
+            public void onSuccess(Authentication payload) {
+                Log.e(TAG, "Login success: " + payload.getToken());
+            }
+
+            @Override
+            public void onFailure(Auth0Exception error) {
+                Log.e(TAG, "Login failed");
+            }
+        });
     }
 
 }
