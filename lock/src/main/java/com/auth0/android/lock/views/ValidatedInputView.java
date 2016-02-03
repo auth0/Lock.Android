@@ -43,8 +43,9 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int MIN_USERNAME_LENGTH = 6;
 
-    private ImageView icon;
+    private TextInputLayout inputLayout;
     private EditText input;
+    private ImageView icon;
     private int inputIcon;
     private int inputErrorIcon;
 
@@ -120,7 +121,8 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 hint = "";
                 break;
         }
-        TextInputLayout inputLayout = (TextInputLayout) input.getParent();
+        inputLayout = (TextInputLayout) input.getParent();
+        inputLayout.setErrorEnabled(true);
         inputLayout.setHint(hint);
         icon.setImageResource(inputIcon);
     }
@@ -166,7 +168,6 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 break;
         }
 
-        TextInputLayout inputLayout = (TextInputLayout) input.getParent();
         inputLayout.setError(valid ? null : getResources().getString(errMsg));
         icon.setImageResource(valid ? inputIcon : inputErrorIcon);
         return valid;
@@ -178,7 +179,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
 
     public void clearInput() {
         input.setText("");
-        input.setError(null);
+        inputLayout.setError(null);
     }
 
     @Override
