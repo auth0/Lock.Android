@@ -80,6 +80,7 @@ public class LockActivity extends AppCompatActivity {
     private static final String JSONP_PREFIX = "Auth0.setClient(";
 
     private Application application;
+    private Configuration configuration;
     private Options options;
     private Handler handler;
     private Bus lockBus;
@@ -204,15 +205,22 @@ public class LockActivity extends AppCompatActivity {
      * Show the LockUI with all the panels and custom widgets.
      */
     private void initLockUI() {
-        Configuration config = new Configuration(application, null, null);
-        config.getDefaultDatabaseConnection();
+        configuration = new Configuration(application, null, null);
         //TODO: add custom view for panels layout.
-        if (!config.getSocialStrategies().isEmpty() && config.getDefaultDatabaseConnection() != null) {
+
+        String dbConnectionName = null;
+        if (options.getDefaultDatabaseConnection() != null) {
+            dbConnectionName = options.getDefaultDatabaseConnection();
+        } else if (configuration.getDefaultDatabaseConnection() != null) {
+            dbConnectionName = configuration.getDefaultDatabaseConnection().getName();
+        }
+
+        if (!configuration.getSocialStrategies().isEmpty() && configuration.getDefaultDatabaseConnection() != null) {
             //Not implemented
-        } else if (!config.getSocialStrategies().isEmpty()) {
-            SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
+        } else if (!configuration.getSocialStrategies().isEmpty()) {
+            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        } else if (config.getDefaultDatabaseConnection() != null) {
+        } else if (dbConnectionName != null) {
             final FormView loginForm = new FormView(this);
             loginForm.showChangePassword(options.usernameStyle());
             loginForm.setBus(lockBus);
@@ -226,7 +234,7 @@ public class LockActivity extends AppCompatActivity {
             });
             changeFormBtn.setText("Move to next form");
             rootView.addView(changeFormBtn, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        } else if (!config.getEnterpriseStrategies().isEmpty()) {
+        } else if (!configuration.getEnterpriseStrategies().isEmpty()) {
             //Not implemented
         }
     }
@@ -318,10 +326,17 @@ public class LockActivity extends AppCompatActivity {
         if (options == null) {
             return;
         }
+        String dbConnectionName = null;
+        if (options.getDefaultDatabaseConnection() != null) {
+            dbConnectionName = options.getDefaultDatabaseConnection();
+        } else if (configuration.getDefaultDatabaseConnection() != null) {
+            dbConnectionName = configuration.getDefaultDatabaseConnection().getName();
+        }
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.login(event.getUsernameOrEmail(), event.getPassword())
+                .setConnection(dbConnectionName)
                 .addParameters(options.getAuthenticationParameters())
                 .start(new BaseCallback<Authentication>() {
                     @Override
