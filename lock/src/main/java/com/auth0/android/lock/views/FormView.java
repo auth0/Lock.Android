@@ -108,7 +108,7 @@ public class FormView extends RelativeLayout implements View.OnClickListener {
     }
 
     public String getPassword() {
-        return input3.getText();
+        return input2.getText();
     }
 
     public boolean hasValidData() {

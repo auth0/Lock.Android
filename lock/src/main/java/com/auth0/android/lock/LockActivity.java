@@ -40,9 +40,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.events.DbChangePasswordEvent;
+import com.auth0.android.lock.events.DbLoginEvent;
+import com.auth0.android.lock.events.DbSignUpEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
@@ -309,14 +313,15 @@ public class LockActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onDatabaseAuthenticationRequest(String usernameOrEmail, final String password) {
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DbLoginEvent event) {
         if (options == null) {
             return;
         }
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        apiClient.login(usernameOrEmail, password)
+        apiClient.login(event.getUsernameOrEmail(), event.getPassword())
                 .addParameters(options.getAuthenticationParameters())
                 .start(new BaseCallback<Authentication>() {
                     @Override
@@ -336,6 +341,18 @@ public class LockActivity extends AppCompatActivity {
                         });
                     }
                 });
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DbSignUpEvent event) {
+        Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DbChangePasswordEvent event) {
+        Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
 }
