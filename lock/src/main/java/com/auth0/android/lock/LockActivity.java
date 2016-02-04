@@ -307,17 +307,15 @@ public class LockActivity extends AppCompatActivity {
         if (options == null) {
             return;
         }
-        String dbConnectionName = null;
-        if (options.getDefaultDatabaseConnection() != null) {
-            dbConnectionName = options.getDefaultDatabaseConnection();
-        } else if (configuration.getDefaultDatabaseConnection() != null) {
-            dbConnectionName = configuration.getDefaultDatabaseConnection().getName();
+        if (configuration.getDefaultDatabaseConnection() == null) {
+            Log.e(TAG, "The specified Connection name was not found on your Auth0 Configuration.");
+            return;
         }
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.login(event.getUsernameOrEmail(), event.getPassword())
-                .setConnection(dbConnectionName)
+                .setConnection(configuration.getDefaultDatabaseConnection().getName())
                 .addParameters(options.getAuthenticationParameters())
                 .start(new BaseCallback<Authentication>() {
                     @Override

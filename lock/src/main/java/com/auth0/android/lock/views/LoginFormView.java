@@ -62,9 +62,6 @@ public class LoginFormView extends RelativeLayout implements View.OnClickListene
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
         actionButton.setText(R.string.com_auth0_lock_action_login);
-        if (isInEditMode()) {
-            return;
-        }
     }
 
     public String getUsernameOrEmail() {
