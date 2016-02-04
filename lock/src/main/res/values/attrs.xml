@@ -28,4 +28,13 @@
         <attr name="Auth0.HeaderLogo" format="reference" />
         <attr name="Auth0.HeaderText" format="string|reference" />
     </declare-styleable>
+
+    <declare-styleable name="Lock.ValidatedInput">
+        <attr name="Auth0.InputDataType" format="enum">
+            <enum name="username" value="0" />
+            <enum name="email" value="1" />
+            <enum name="username_or_email" value="2" />
+            <enum name="password" value="3" />
+        </attr>
+    </declare-styleable>
 </resources>

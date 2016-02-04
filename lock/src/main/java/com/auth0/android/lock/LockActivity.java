@@ -37,20 +37,26 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.events.DbChangePasswordEvent;
+import com.auth0.android.lock.events.DbLoginEvent;
+import com.auth0.android.lock.events.DbSignUpEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Configuration;
-import com.auth0.android.lock.views.HeaderView;
 import com.auth0.android.lock.views.LockProgress;
+import com.auth0.android.lock.views.LoginFormView;
 import com.auth0.android.lock.views.SocialView;
+import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Token;
+import com.auth0.callback.BaseCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -70,10 +76,11 @@ public class LockActivity extends AppCompatActivity {
     private static final String JSONP_PREFIX = "Auth0.setClient(";
 
     private Application application;
+    private Configuration configuration;
     private Options options;
     private Handler handler;
     private Bus lockBus;
-    private RelativeLayout rootView;
+    private LinearLayout rootView;
     private LockProgress progress;
 
     private WebIdentityProvider lastIdp;
@@ -91,16 +98,9 @@ public class LockActivity extends AppCompatActivity {
 
         @Override
         public void onSuccess(@NonNull Token token) {
-            Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-            intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
-            intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
-            intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, token.getRefreshToken());
-            intent.putExtra(Lock.TOKEN_TYPE_EXTRA, token.getType());
-
-            LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
-
+            //TODO: Request profile and send back the token and the profile (see Authentication class)
             Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
-            LockActivity.this.finish();
+            deliverResult(token);
         }
     };
 
@@ -118,7 +118,7 @@ public class LockActivity extends AppCompatActivity {
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
-        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
 
         if (application == null) {
             fetchApplicationInfo();
@@ -201,11 +201,16 @@ public class LockActivity extends AppCompatActivity {
      * Show the LockUI with all the panels and custom widgets.
      */
     private void initLockUI() {
-        Configuration config = new Configuration(application, null, null);
-
+        configuration = new Configuration(application, options);
         //TODO: add custom view for panels layout.
-        SocialView sv = new SocialView(this, lockBus, config, SocialView.Mode.List);
-        rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        if (!configuration.getSocialStrategies().isEmpty()) {
+            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        } else if (configuration.getDefaultDatabaseConnection() != null) {
+            final LoginFormView loginForm = new LoginFormView(this, lockBus, configuration);
+            rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
 
@@ -234,6 +239,18 @@ public class LockActivity extends AppCompatActivity {
         } catch (IOException | JSONException e) {
             throw new Auth0Exception("Failed to parse response to request", e);
         }
+    }
+
+    private void deliverResult(Token token) {
+        Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
+        intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
+        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
+        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, token.getRefreshToken());
+        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, token.getType());
+
+        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+
+        LockActivity.this.finish();
     }
 
     @Override
@@ -273,7 +290,57 @@ public class LockActivity extends AppCompatActivity {
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
         lastIdp.setUseBrowser(options.useBrowser());
+        lastIdp.setParameters(options.getAuthenticationParameters());
         lastIdp.start(LockActivity.this, event.getConnectionName());
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DbLoginEvent event) {
+        if (options == null) {
+            return;
+        }
+        if (configuration.getDefaultDatabaseConnection() == null) {
+            Log.e(TAG, "The specified Connection name was not found on your Auth0 Configuration.");
+            return;
+        }
+
+        progress.showProgress();
+        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        apiClient.login(event.getUsernameOrEmail(), event.getPassword())
+                .setConnection(configuration.getDefaultDatabaseConnection().getName())
+                .addParameters(options.getAuthenticationParameters())
+                .start(new BaseCallback<Authentication>() {
+                    @Override
+                    public void onSuccess(Authentication payload) {
+                        Log.e(TAG, "Login success: " + payload.getProfile());
+                        deliverResult(payload.getToken());
+                    }
+
+                    @Override
+                    public void onFailure(final Auth0Exception error) {
+                        Log.e(TAG, "Login failed");
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progress.showResult(error.getMessage());
+                            }
+                        });
+                    }
+                });
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DbSignUpEvent event) {
+        //TODO: receive identifier, username, and password. username can be null.
+        Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DbChangePasswordEvent event) {
+        Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -29,19 +29,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.PhoneStateListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.utils.Configuration;
-import com.auth0.android.lock.utils.Strategy;
+import com.auth0.android.lock.Configuration;
 import com.squareup.otto.Bus;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {
 

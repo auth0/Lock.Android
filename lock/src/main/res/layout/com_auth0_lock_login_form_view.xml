@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ styles.xml
-  ~
+  ~ com_auth0_lock_login_form_view.xmlew.xml
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,16 +21,32 @@
   ~ THE SOFTWARE.
   -->
 
-<resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <style name="Lock.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
-        <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
-        <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
-    </style>
+    <com.auth0.android.lock.views.ValidatedInputView
+        android:id="@+id/com_auth0_lock_input_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:Auth0.InputDataType="username_or_email">
 
-    <!-- TODO: Style the hint -->
-    <style name="Lock.Theme.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/com_auth0_lock_text_hint_color</item>
-    </style>
-</resources>
+        <requestFocus />
+    </com.auth0.android.lock.views.ValidatedInputView>
+
+    <com.auth0.android.lock.views.ValidatedInputView
+        android:id="@+id/com_auth0_lock_input_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:Auth0.InputDataType="password" />
+
+    <Button
+        android:id="@+id/com_auth0_lock_action_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Action" />
+
+</LinearLayout>
