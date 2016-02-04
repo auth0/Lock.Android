@@ -53,8 +53,7 @@ import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Configuration;
-import com.auth0.android.lock.views.FormView;
+import com.auth0.android.lock.views.LoginFormView;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
@@ -205,35 +204,17 @@ public class LockActivity extends AppCompatActivity {
      * Show the LockUI with all the panels and custom widgets.
      */
     private void initLockUI() {
-        configuration = new Configuration(application, null, null);
+        configuration = new Configuration(application, options);
         //TODO: add custom view for panels layout.
-
-        String dbConnectionName = null;
-        if (options.getDefaultDatabaseConnection() != null) {
-            dbConnectionName = options.getDefaultDatabaseConnection();
-        } else if (configuration.getDefaultDatabaseConnection() != null) {
-            dbConnectionName = configuration.getDefaultDatabaseConnection().getName();
-        }
 
         if (!configuration.getSocialStrategies().isEmpty() && configuration.getDefaultDatabaseConnection() != null) {
             //Not implemented
         } else if (!configuration.getSocialStrategies().isEmpty()) {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        } else if (dbConnectionName != null) {
-            final FormView loginForm = new FormView(this);
-            loginForm.showChangePassword(options.usernameStyle());
-            loginForm.setBus(lockBus);
+        } else if (configuration.getDefaultDatabaseConnection() != null) {
+            final LoginFormView loginForm = new LoginFormView(this, lockBus, configuration);
             rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            Button changeFormBtn = new Button(this);
-            changeFormBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    loginForm.moveToNextForm(UsernameStyle.DEFAULT);
-                }
-            });
-            changeFormBtn.setText("Move to next form");
-            rootView.addView(changeFormBtn, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         } else if (!configuration.getEnterpriseStrategies().isEmpty()) {
             //Not implemented
         }
@@ -361,6 +342,7 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DbSignUpEvent event) {
+        //TODO: receive identifier, username, and password. username can be null.
         Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 

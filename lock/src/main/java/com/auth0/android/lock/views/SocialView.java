@@ -33,7 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.utils.Configuration;
+import com.auth0.android.lock.Configuration;
 import com.squareup.otto.Bus;
 
 public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {

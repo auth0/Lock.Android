@@ -22,9 +22,15 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock;
 
 import android.support.annotation.NonNull;
+
+import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.utils.Connection;
+import com.auth0.android.lock.utils.Strategies;
+import com.auth0.android.lock.utils.Strategy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,6 +38,10 @@ import java.util.List;
 import java.util.Set;
 
 public class Configuration {
+
+    private static final String SHOW_SIGNUP_KEY = "showSignup";
+    private static final String SHOW_FORGOT_KEY = "showForgot";
+    private static final String REQUIRES_USERNAME_KEY = "requires_username";
 
     private Connection defaultDatabaseConnection;
 
@@ -45,7 +55,13 @@ public class Configuration {
 
     private Application application;
 
-    public Configuration(Application application, List<String> connections, String defaultDatabaseName) {
+    private boolean signUpEnabled;
+    private boolean changePasswordEnabled;
+    private boolean usernameRequired;
+
+    public Configuration(Application application, Options options) {
+        List<String> connections = options.getConnections();
+        String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
         this.enterpriseStrategies = filterEnterpriseStrategies(application.getEnterpriseStrategies(), connectionSet);
@@ -53,6 +69,7 @@ public class Configuration {
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
         this.application = application;
+        parseLocalOptions(options);
     }
 
     public Connection getDefaultDatabaseConnection() {
@@ -146,6 +163,26 @@ public class Configuration {
         return filtered;
     }
 
+    private void parseLocalOptions(Options options) {
+        if (getDefaultDatabaseConnection() == null) {
+            return;
+        }
+
+        //let user disable signUp only if connection have enabled it.
+        signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
+        if (signUpEnabled && !options.isSignUpEnabled()) {
+            signUpEnabled = false;
+        }
+
+        //let user disable signUp only if connection have enabled it.
+        changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
+        if (options.isChangePasswordEnabled() && !changePasswordEnabled) {
+            changePasswordEnabled = true;
+        }
+
+        usernameRequired = options.usernameStyle() == UsernameStyle.USERNAME || getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
+    }
+
     private boolean shouldSelect(Connection connection, Set<String> connections) {
         return connections.isEmpty() || connections.contains(connection.getName());
     }
@@ -156,5 +193,17 @@ public class Configuration {
         }
         final List<Connection> connections = activeDirectoryStrategy.getConnections();
         return !connections.isEmpty() ? connections.get(0) : null;
+    }
+
+    public boolean isSignUpEnabled() {
+        return signUpEnabled;
+    }
+
+    public boolean isChangePasswordEnabled() {
+        return changePasswordEnabled;
+    }
+
+    public boolean isUsernameRequired() {
+        return usernameRequired;
     }
 }
