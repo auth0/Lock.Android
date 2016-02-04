@@ -45,7 +45,7 @@ public class SignUpFormView extends FormView {
         super(context);
     }
 
-    public SignUpFormView(LockActivity context, Bus lockBus, Configuration configuration) {
+    public SignUpFormView(Context context, Bus lockBus, Configuration configuration) {
         super(context, lockBus, configuration);
     }
 
@@ -61,11 +61,6 @@ public class SignUpFormView extends FormView {
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_sign_up);
-
-        if (isInEditMode()) {
-            return;
-        }
-
         actionButton.setOnClickListener(this);
     }
 

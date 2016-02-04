@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.LockActivity;
 import com.squareup.otto.Bus;
 
 public abstract class FormView extends RelativeLayout implements View.OnClickListener {
@@ -39,7 +38,7 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
         super(context);
     }
 
-    public FormView(LockActivity context, Bus lockBus, Configuration configuration) {
+    public FormView(Context context, Bus lockBus, Configuration configuration) {
         super(context);
         this.bus = lockBus;
         init(configuration);

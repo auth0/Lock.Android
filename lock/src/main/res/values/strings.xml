@@ -114,4 +114,6 @@
     <string name="com_auth0_lock_action_sign_up">Sign Up</string>
     <string name="com_auth0_lock_action_change_password">Change password</string>
     <string name="com_auth0_lock_action_login">Login</string>
+    <string name="com_auth0_lock_action_forgot_password">Forgot password?</string>
+    <string name="com_auth0_lock_action_go_back">Go Back</string>
 </resources>

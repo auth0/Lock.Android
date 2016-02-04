@@ -50,8 +50,8 @@ import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.views.DbLayout;
 import com.auth0.android.lock.views.LockProgress;
-import com.auth0.android.lock.views.LoginFormView;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
@@ -103,6 +103,7 @@ public class LockActivity extends AppCompatActivity {
             deliverResult(token);
         }
     };
+    private DbLayout dbLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,6 +152,10 @@ public class LockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (dbLayout != null && dbLayout.onBackPressed()) {
+            return;
+        }
+
         Intent intent = new Intent(Lock.CANCELED_ACTION);
         LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
         super.onBackPressed();
@@ -208,8 +213,8 @@ public class LockActivity extends AppCompatActivity {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
-            final LoginFormView loginForm = new LoginFormView(this, lockBus, configuration);
-            rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dbLayout = new DbLayout(this, lockBus, configuration);
+            rootView.addView(dbLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -342,5 +347,6 @@ public class LockActivity extends AppCompatActivity {
     public void onDatabaseAuthenticationRequest(DbChangePasswordEvent event) {
         Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
     }
+
 
 }

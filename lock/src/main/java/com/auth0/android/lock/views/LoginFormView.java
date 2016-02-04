@@ -28,7 +28,6 @@ import android.content.Context;
 import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DbLoginEvent;
 import com.squareup.otto.Bus;
@@ -43,7 +42,7 @@ public class LoginFormView extends FormView {
         super(context);
     }
 
-    public LoginFormView(LockActivity context, Bus lockBus, Configuration configuration) {
+    public LoginFormView(Context context, Bus lockBus, Configuration configuration) {
         super(context, lockBus, configuration);
     }
 
