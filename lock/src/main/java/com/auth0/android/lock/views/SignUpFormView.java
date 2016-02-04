@@ -31,6 +31,7 @@ import android.widget.Button;
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DbSignUpEvent;
 import com.squareup.otto.Bus;
 
@@ -52,11 +53,23 @@ public class SignUpFormView extends FormView {
     @Override
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
+
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
-        usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+
+        if (configuration.isUsernameRequired()) {
+            emailInput.setVisibility(View.VISIBLE);
+            usernameInput.setVisibility(View.VISIBLE);
+        } else if (configuration.getUsernameStyle() == UsernameStyle.USERNAME) {
+            emailInput.setVisibility(View.GONE);
+            usernameInput.setVisibility(View.VISIBLE);
+        } else if (configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.USERNAME_OR_EMAIL) {
+            emailInput.setVisibility(View.VISIBLE);
+            usernameInput.setVisibility(View.GONE);
+        }
+
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);

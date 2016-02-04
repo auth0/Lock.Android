@@ -129,6 +129,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .withCallback(this)
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
+                .withUsernameStyle(UsernameStyle.USERNAME)
                 .build();
         lock.onCreate(DemoActivity.this);
 

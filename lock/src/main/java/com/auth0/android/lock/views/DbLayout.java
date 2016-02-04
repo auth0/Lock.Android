@@ -136,7 +136,7 @@ public class DbLayout extends RelativeLayout implements View.OnClickListener {
         params.addRule(CENTER_HORIZONTAL);
         params.addRule(ALIGN_PARENT_TOP);
         changePasswordBtn.setVisibility(View.VISIBLE);
-        signUpBtn.setVisibility(View.VISIBLE);
+        signUpBtn.setVisibility(configuration.isSignUpEnabled() ? View.VISIBLE : View.GONE);
         goBackBtn.setVisibility(View.GONE);
         this.addView(loginForm, 0, params);
     }

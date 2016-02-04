@@ -25,10 +25,12 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DbLoginEvent;
 import com.squareup.otto.Bus;
 
@@ -50,9 +52,26 @@ public class LoginFormView extends FormView {
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.setDataType(configuration.isUsernameRequired() ? ValidatedInputView.DataType.USERNAME_OR_EMAIL : ValidatedInputView.DataType.EMAIL);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+
+        switch (configuration.getUsernameStyle()) {
+            case EMAIL:
+                usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                break;
+            case USERNAME:
+                usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME);
+                break;
+            default:
+            case USERNAME_OR_EMAIL:
+                if (configuration.isUsernameRequired()) {
+                    usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME_OR_EMAIL);
+                } else {
+                    usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                }
+                break;
+        }
+
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
         actionButton.setOnClickListener(this);

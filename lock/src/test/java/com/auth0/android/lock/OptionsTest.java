@@ -139,7 +139,7 @@ public class OptionsTest {
     public void shouldUseDefaultUsernameStyle() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setUsernameStyle(UsernameStyle.DEFAULT);
+        options.setUsernameStyle(UsernameStyle.USERNAME_OR_EMAIL);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);

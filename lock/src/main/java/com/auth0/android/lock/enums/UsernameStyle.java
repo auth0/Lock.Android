@@ -30,5 +30,5 @@ package com.auth0.android.lock.enums;
 public enum UsernameStyle {
     EMAIL,
     USERNAME,
-    DEFAULT
+    USERNAME_OR_EMAIL
 }

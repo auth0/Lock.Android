@@ -61,6 +61,7 @@ public class Configuration {
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean usernameRequired;
+    private UsernameStyle usernameStyle;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
@@ -188,6 +189,7 @@ public class Configuration {
         }
 
         usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
+        usernameStyle = options.usernameStyle();
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {
@@ -212,5 +214,9 @@ public class Configuration {
 
     public boolean isUsernameRequired() {
         return usernameRequired;
+    }
+
+    public UsernameStyle getUsernameStyle() {
+        return usernameStyle;
     }
 }
