@@ -41,7 +41,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.events.DbChangePasswordEvent;
 import com.auth0.android.lock.events.DbLoginEvent;
 import com.auth0.android.lock.events.DbSignUpEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
@@ -55,6 +54,7 @@ import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.DatabaseUser;
 import com.auth0.authentication.result.Token;
 import com.auth0.callback.BaseCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,28 +82,9 @@ public class LockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
+    private DbLayout dbLayout;
 
     private WebIdentityProvider lastIdp;
-
-    private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
-        @Override
-        public void onFailure(@NonNull Dialog dialog) {
-            Log.w(TAG, "OnFailure called");
-        }
-
-        @Override
-        public void onFailure(int titleResource, int messageResource, Throwable cause) {
-            Log.w(TAG, "OnFailure called");
-        }
-
-        @Override
-        public void onSuccess(@NonNull Token token) {
-            //TODO: Request profile and send back the token and the profile (see Authentication class)
-            Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
-            deliverResult(token);
-        }
-    };
-    private DbLayout dbLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -302,11 +283,7 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DbLoginEvent event) {
-        if (options == null) {
-            return;
-        }
-        if (configuration.getDefaultDatabaseConnection() == null) {
-            Log.e(TAG, "The specified Connection name was not found on your Auth0 Configuration.");
+        if (options == null || configuration.getDefaultDatabaseConnection() == null) {
             return;
         }
 
@@ -315,38 +292,88 @@ public class LockActivity extends AppCompatActivity {
         apiClient.login(event.getUsernameOrEmail(), event.getPassword())
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
                 .addParameters(options.getAuthenticationParameters())
-                .start(new BaseCallback<Authentication>() {
-                    @Override
-                    public void onSuccess(Authentication payload) {
-                        Log.e(TAG, "Login success: " + payload.getProfile());
-                        deliverResult(payload.getToken());
-                    }
-
-                    @Override
-                    public void onFailure(final Auth0Exception error) {
-                        Log.e(TAG, "Login failed");
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                progress.showResult(error.getMessage());
-                            }
-                        });
-                    }
-                });
+                .start(authCallback);
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DbSignUpEvent event) {
-        //TODO: receive identifier, username, and password. username can be null.
-        Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
+        if (options == null || configuration.getDefaultDatabaseConnection() == null) {
+            return;
+        }
+
+        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
+
+        if (event.loginAfterSignUp()) {
+            apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername())
+                    .addAuthenticationParameters(options.getAuthenticationParameters())
+                    .start(authCallback);
+        } else {
+            apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername())
+                    .addParameters(options.getAuthenticationParameters())
+                    .start(createCallback);
+        }
+
     }
 
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onDatabaseAuthenticationRequest(DbChangePasswordEvent event) {
-        Toast.makeText(LockActivity.this, "Not implemented.", Toast.LENGTH_SHORT).show();
-    }
+
+    //Callbacks
+    private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
+        @Override
+        public void onFailure(@NonNull Dialog dialog) {
+            Log.w(TAG, "OnFailure called");
+        }
+
+        @Override
+        public void onFailure(int titleResource, int messageResource, Throwable cause) {
+            Log.w(TAG, "OnFailure called");
+        }
+
+        @Override
+        public void onSuccess(@NonNull Token token) {
+            //TODO: Request profile and send back the token and the profile (see Authentication class)
+            Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
+            deliverResult(token);
+        }
+    };
+
+    private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
+        @Override
+        public void onSuccess(Authentication payload) {
+            Log.e(TAG, "Login success: " + payload.getProfile());
+            deliverResult(payload.getToken());
+        }
+
+        @Override
+        public void onFailure(final Auth0Exception error) {
+            Log.e(TAG, "Login failed");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
+
+    private BaseCallback<DatabaseUser> createCallback = new BaseCallback<DatabaseUser>() {
+        @Override
+        public void onSuccess(DatabaseUser payload) {
+            Log.e(TAG, "User created, now login");
+        }
+
+        @Override
+        public void onFailure(final Auth0Exception error) {
+            Log.e(TAG, "User creation failed");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
 
 
 }

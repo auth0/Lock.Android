@@ -122,6 +122,20 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldNotLoginAfterSignUp() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setLoginAfterSignUp(false);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
+    }
+
+    @Test
     public void shouldUseUsernameUsernameStyle() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -250,6 +264,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(false));
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
+        assertThat(options.loginAfterSignUp(), is(true));
     }
 
 
@@ -265,6 +280,7 @@ public class OptionsTest {
         options.setUseBrowser(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
         options.setSignUpEnabled(true);
+        options.setLoginAfterSignUp(true);
 
 
         Parcel parcel = Parcel.obtain();
@@ -279,6 +295,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+        assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
     @Test
@@ -293,6 +310,7 @@ public class OptionsTest {
         options.setUseBrowser(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setSignUpEnabled(false);
+        options.setLoginAfterSignUp(false);
 
 
         Parcel parcel = Parcel.obtain();
@@ -307,6 +325,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+        assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
 

@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DbSignUpEvent;
@@ -41,6 +40,7 @@ public class SignUpFormView extends FormView {
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
+    private boolean loginAfterSignUp;
 
     public SignUpFormView(Context context) {
         super(context);
@@ -53,6 +53,7 @@ public class SignUpFormView extends FormView {
     @Override
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
+        loginAfterSignUp = configuration.loginAfterSignUp();
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
@@ -79,11 +80,15 @@ public class SignUpFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        return new DbSignUpEvent(getEmail(), getUsername(), getPassword());
+        return new DbSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
     }
 
     public String getUsername() {
-        return usernameInput.getText();
+        if (usernameInput.getVisibility()==VISIBLE){
+            return usernameInput.getText();
+        } else {
+            return emailInput.getText();
+        }
     }
 
     public String getEmail() {
@@ -96,9 +101,12 @@ public class SignUpFormView extends FormView {
 
     @Override
     protected boolean hasValidData() {
-        boolean valid = emailInput.validate() && passwordInput.validate();
+        boolean valid = passwordInput.validate();
         if (usernameInput.getVisibility() == VISIBLE) {
             valid = valid && usernameInput.validate();
+        }
+        if (emailInput.getVisibility() == VISIBLE) {
+            valid = valid && emailInput.validate();
         }
         return valid;
     }

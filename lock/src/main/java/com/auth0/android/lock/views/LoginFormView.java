@@ -25,12 +25,10 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DbLoginEvent;
 import com.squareup.otto.Bus;
 

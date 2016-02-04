@@ -240,5 +240,10 @@ public class Lock {
             options.useDatabaseConnection(connectionName);
             return this;
         }
+
+        public Builder loginAfterSignUp(boolean login){
+            options.setLoginAfterSignUp(login);
+            return this;
+        }
     }
 }

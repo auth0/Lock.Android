@@ -25,28 +25,42 @@
 package com.auth0.android.lock.events;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public class DbSignUpEvent {
 
+    @NonNull
     private String email;
+    @Nullable
     private String username;
+    @NonNull
     private String password;
+    private boolean loginAfterSignUp;
 
-    public DbSignUpEvent(String email, String username, String password) {
+    public DbSignUpEvent(@NonNull String email, @Nullable String username, @NonNull String password, boolean loginAfterSignUp) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.loginAfterSignUp = loginAfterSignUp;
     }
 
+    @NonNull
     public String getEmail() {
         return email;
     }
 
+    @Nullable
     public String getUsername() {
         return username;
     }
 
+    @NonNull
     public String getPassword() {
         return password;
     }
 
+    public boolean loginAfterSignUp() {
+        return loginAfterSignUp;
+    }
 }
