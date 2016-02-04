@@ -187,7 +187,7 @@ public class Configuration {
             changePasswordEnabled = true;
         }
 
-        usernameRequired = options.usernameStyle() == UsernameStyle.DEFAULT || getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
+        usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {
