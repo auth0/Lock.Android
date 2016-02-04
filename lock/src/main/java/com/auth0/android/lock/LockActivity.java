@@ -36,14 +36,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DbChangePasswordEvent;
 import com.auth0.android.lock.events.DbLoginEvent;
 import com.auth0.android.lock.events.DbSignUpEvent;
@@ -53,8 +50,8 @@ import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.views.LoginFormView;
 import com.auth0.android.lock.views.LockProgress;
+import com.auth0.android.lock.views.LoginFormView;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
@@ -207,16 +204,12 @@ public class LockActivity extends AppCompatActivity {
         configuration = new Configuration(application, options);
         //TODO: add custom view for panels layout.
 
-        if (!configuration.getSocialStrategies().isEmpty() && configuration.getDefaultDatabaseConnection() != null) {
-            //Not implemented
-        } else if (!configuration.getSocialStrategies().isEmpty()) {
+        if (!configuration.getSocialStrategies().isEmpty()) {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
             final LoginFormView loginForm = new LoginFormView(this, lockBus, configuration);
             rootView.addView(loginForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        } else if (!configuration.getEnterpriseStrategies().isEmpty()) {
-            //Not implemented
         }
     }
 

@@ -235,5 +235,10 @@ public class Lock {
             options.setChangePasswordEnabled(false);
             return this;
         }
+
+        public Builder setDefaultDatabaseConnection(String connectionName) {
+            options.useDatabaseConnection(connectionName);
+            return this;
+        }
     }
 }

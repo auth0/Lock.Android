@@ -182,7 +182,7 @@ public class OptionsTest {
     public void shouldSetDefaultDatabaseConnection() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setDefaultDatabaseConnection("default_db_connection");
+        options.useDatabaseConnection("default_db_connection");
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);

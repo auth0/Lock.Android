@@ -222,7 +222,7 @@ class Options implements Parcelable {
         return defaultDatabaseConnection;
     }
 
-    public void setDefaultDatabaseConnection(String defaultDatabaseConnection) {
+    public void useDatabaseConnection(String defaultDatabaseConnection) {
         this.defaultDatabaseConnection = defaultDatabaseConnection;
     }
 

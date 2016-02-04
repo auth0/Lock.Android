@@ -25,6 +25,7 @@
 package com.auth0.android.lock;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
@@ -38,6 +39,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Configuration {
+
+    private static final String TAG = Configuration.class.getSimpleName();
 
     private static final String SHOW_SIGNUP_KEY = "showSignup";
     private static final String SHOW_FORGOT_KEY = "showForgot";
@@ -116,6 +119,10 @@ public class Configuration {
                 connection = db;
                 break;
             }
+        }
+
+        if (connection == null || !connection.getName().equals(defaultDatabaseName)) {
+            Log.w(TAG, "Your chosen default database name was not found in your Auth0 connections configuration.");
         }
         return connection;
     }
