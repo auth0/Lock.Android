@@ -1,5 +1,5 @@
 /*
- * FormView.java
+ * SignUpFormView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -25,47 +25,61 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.events.DbLoginEvent;
+import com.auth0.android.lock.events.DbSignUpEvent;
 import com.squareup.otto.Bus;
 
-public class LoginFormView extends FormView {
+public class SignUpFormView extends FormView {
 
-    private static final String TAG = LoginFormView.class.getSimpleName();
-    private ValidatedInputView usernameEmailInput;
+    private static final String TAG = SignUpFormView.class.getSimpleName();
+    private ValidatedInputView usernameInput;
+    private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
 
-    public LoginFormView(Context context) {
+    public SignUpFormView(Context context) {
         super(context);
     }
 
-    public LoginFormView(LockActivity context, Bus lockBus, Configuration configuration) {
+    public SignUpFormView(LockActivity context, Bus lockBus, Configuration configuration) {
         super(context, lockBus, configuration);
     }
 
     @Override
     protected void init(Configuration configuration) {
-        inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
-        usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.setDataType(configuration.isUsernameRequired() ? ValidatedInputView.DataType.USERNAME_OR_EMAIL : ValidatedInputView.DataType.EMAIL);
+        inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
+        usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
+        usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);
+        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
+        emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton.setText(R.string.com_auth0_lock_action_sign_up);
+
+        if (isInEditMode()) {
+            return;
+        }
+
         actionButton.setOnClickListener(this);
     }
 
     @Override
     protected Object getActionEvent() {
-        return new DbLoginEvent(getUsernameOrEmail(), getPassword());
+        return new DbSignUpEvent(getEmail(), getUsername(), getPassword());
     }
 
-    public String getUsernameOrEmail() {
-        return usernameEmailInput.getText();
+    public String getUsername() {
+        return usernameInput.getText();
+    }
+
+    public String getEmail() {
+        return emailInput.getText();
     }
 
     public String getPassword() {
@@ -74,6 +88,10 @@ public class LoginFormView extends FormView {
 
     @Override
     protected boolean hasValidData() {
-        return usernameEmailInput.validate() && passwordInput.validate();
+        boolean valid = emailInput.validate() && passwordInput.validate();
+        if (usernameInput.getVisibility() == VISIBLE) {
+            valid = valid && usernameInput.validate();
+        }
+        return valid;
     }
 }
