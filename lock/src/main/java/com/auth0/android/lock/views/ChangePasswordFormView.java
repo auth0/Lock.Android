@@ -29,6 +29,7 @@ import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.squareup.otto.Bus;
 
@@ -49,7 +50,11 @@ public class ChangePasswordFormView extends FormView {
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
         usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        if (!configuration.isUsernameRequired() && configuration.getUsernameStyle() == UsernameStyle.USERNAME) {
+            usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        } else {
+            usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        }
 
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_change_password);
