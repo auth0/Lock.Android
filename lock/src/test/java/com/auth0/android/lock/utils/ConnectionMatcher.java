@@ -1,5 +1,5 @@
 /*
- * UsernameStyle.java
+ * ConnectionMatcher.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,10 +22,35 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.enums;
+package com.auth0.android.lock.utils;
 
-public enum UsernameStyle {
-    EMAIL,
-    USERNAME,
-    DEFAULT
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+
+public class ConnectionMatcher extends BaseMatcher<Connection> {
+
+    private final String name;
+
+    public ConnectionMatcher(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean matches(Object o) {
+        if (!(o instanceof Connection)) {
+            return false;
+        }
+        Connection connection = (Connection) o;
+        return name.equals(connection.getName());
+    }
+
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("connection with name ").appendValue(this.name);
+    }
+
+    public static ConnectionMatcher isConnection(String name) {
+        return new ConnectionMatcher(name);
+    }
 }
