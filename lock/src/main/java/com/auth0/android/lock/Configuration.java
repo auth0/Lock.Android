@@ -123,7 +123,7 @@ public class Configuration {
             }
         }
 
-        if (connection == null || !connection.getName().equals(defaultDatabaseName)) {
+        if (connection == null || (defaultDatabaseName != null && !connection.getName().equals(defaultDatabaseName))) {
             Log.w(TAG, "Your chosen default database name was not found in your Auth0 connections configuration.");
         }
         return connection;
