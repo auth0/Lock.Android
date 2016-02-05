@@ -1,5 +1,5 @@
 /*
- * DbConnectionEvent.java
+ * FormView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,24 +22,40 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.events;
+package com.auth0.android.lock.views;
 
+import android.content.Context;
+import android.view.View;
+import android.widget.RelativeLayout;
 
-public class DbLoginEvent {
+import com.auth0.android.lock.Configuration;
+import com.squareup.otto.Bus;
 
-    private String usernameOrEmail;
-    private String password;
+public abstract class FormView extends RelativeLayout implements View.OnClickListener {
+    private Bus bus;
 
-    public DbLoginEvent(String usernameOrEmail, String password) {
-        this.usernameOrEmail = usernameOrEmail;
-        this.password = password;
+    public FormView(Context context) {
+        super(context);
     }
 
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
+    public FormView(Context context, Bus lockBus, Configuration configuration) {
+        super(context);
+        this.bus = lockBus;
+        init(configuration);
     }
 
-    public String getPassword() {
-        return password;
+    protected abstract void init(Configuration configuration);
+
+    protected abstract Object getActionEvent();
+
+    protected abstract boolean hasValidData();
+
+    @Override
+    public void onClick(View v) {
+        if (!hasValidData()) {
+            return;
+        }
+        bus.post(getActionEvent());
     }
+
 }

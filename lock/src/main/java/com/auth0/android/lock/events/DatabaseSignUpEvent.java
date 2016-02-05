@@ -1,5 +1,5 @@
 /*
- * DbChangePasswordEvent.java
+ * DbSignUpEvent.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -25,21 +25,42 @@
 package com.auth0.android.lock.events;
 
 
-public class DbChangePasswordEvent {
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-    private String usernameOrEmail;
-    private String newPassword;
+public class DatabaseSignUpEvent {
 
-    public DbChangePasswordEvent(String usernameOrEmail, String newPassword) {
-        this.usernameOrEmail = usernameOrEmail;
-        this.newPassword = newPassword;
+    @NonNull
+    private String email;
+    @Nullable
+    private String username;
+    @NonNull
+    private String password;
+    private boolean loginAfterSignUp;
+
+    public DatabaseSignUpEvent(@NonNull String email, @Nullable String username, @NonNull String password, boolean loginAfterSignUp) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.loginAfterSignUp = loginAfterSignUp;
     }
 
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
+    @NonNull
+    public String getEmail() {
+        return email;
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    @Nullable
+    public String getUsername() {
+        return username;
+    }
+
+    @NonNull
+    public String getPassword() {
+        return password;
+    }
+
+    public boolean loginAfterSignUp() {
+        return loginAfterSignUp;
     }
 }

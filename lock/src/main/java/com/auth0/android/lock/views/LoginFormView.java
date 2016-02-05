@@ -25,70 +25,70 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.events.DbLoginEvent;
+import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.squareup.otto.Bus;
 
-public class LoginFormView extends RelativeLayout implements View.OnClickListener {
+public class LoginFormView extends FormView {
 
     private static final String TAG = LoginFormView.class.getSimpleName();
-    private ValidatedInputView input1;
-    private ValidatedInputView input2;
-    private Bus bus;
+    private ValidatedInputView usernameEmailInput;
+    private ValidatedInputView passwordInput;
 
     public LoginFormView(Context context) {
         super(context);
     }
 
-    public LoginFormView(LockActivity context, Bus lockBus, Configuration configuration) {
-        super(context);
-        this.bus = lockBus;
-        init(configuration);
-    }
-
-    private void init(Configuration configuration) {
-        inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
-        input1 = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_1);
-        input1.setDataType(configuration.isUsernameRequired() ? ValidatedInputView.DataType.USERNAME_OR_EMAIL : ValidatedInputView.DataType.EMAIL);
-        input2 = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_2);
-        input2.setDataType(ValidatedInputView.DataType.PASSWORD);
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setOnClickListener(this);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
-    }
-
-    public String getUsernameOrEmail() {
-        return input1.getText();
-    }
-
-    public String getPassword() {
-        return input2.getText();
-    }
-
-    public boolean hasValidData() {
-        boolean valid = true;
-        if (input1.getVisibility() == VISIBLE) {
-            valid = input1.validate();
-        }
-        if (input2.getVisibility() == VISIBLE) {
-            valid = valid && input2.validate();
-        }
-        return valid;
+    public LoginFormView(Context context, Bus lockBus, Configuration configuration) {
+        super(context, lockBus, configuration);
     }
 
     @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
+    protected void init(Configuration configuration) {
+        inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
+        usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+
+        switch (configuration.getUsernameStyle()) {
+            case EMAIL:
+                usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                break;
+            case USERNAME:
+                usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME);
+                break;
+            case DEFAULT:
+                if (configuration.isUsernameRequired()) {
+                    usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME_OR_EMAIL);
+                } else {
+                    usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                }
+                break;
         }
-        Log.i(TAG, "Action Button clicked");
-        bus.post(new DbLoginEvent(getUsernameOrEmail(), getPassword()));
+
+        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
+        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton.setOnClickListener(this);
+    }
+
+    @Override
+    protected Object getActionEvent() {
+        return new DatabaseLoginEvent(getUsernameOrEmail(), getPassword());
+    }
+
+    public String getUsernameOrEmail() {
+        return usernameEmailInput.getText();
+    }
+
+    public String getPassword() {
+        return passwordInput.getText();
+    }
+
+    @Override
+    protected boolean hasValidData() {
+        return usernameEmailInput.validate() && passwordInput.validate();
     }
 }

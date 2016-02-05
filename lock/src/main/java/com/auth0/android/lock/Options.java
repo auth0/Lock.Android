@@ -49,6 +49,7 @@ class Options implements Parcelable {
     private UsernameStyle usernameStyle;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
+    private boolean loginAfterSignUp;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -59,6 +60,7 @@ class Options implements Parcelable {
         usernameStyle = UsernameStyle.DEFAULT;
         signUpEnabled = true;
         changePasswordEnabled = true;
+        loginAfterSignUp = true;
     }
 
     protected Options(Parcel in) {
@@ -70,6 +72,7 @@ class Options implements Parcelable {
         sendSDKInfo = in.readByte() != WITHOUT_DATA;
         signUpEnabled = in.readByte() != WITHOUT_DATA;
         changePasswordEnabled = in.readByte() != WITHOUT_DATA;
+        loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<String>();
@@ -111,6 +114,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (sendSDKInfo ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
@@ -249,5 +253,13 @@ class Options implements Parcelable {
 
     public void setAuthenticationParameters(@NonNull HashMap<String, Object> authenticationParameters) {
         this.authenticationParameters = authenticationParameters;
+    }
+
+    public boolean loginAfterSignUp() {
+        return loginAfterSignUp;
+    }
+
+    public void setLoginAfterSignUp(boolean loginAfterSignUp) {
+        this.loginAfterSignUp = loginAfterSignUp;
     }
 }
