@@ -137,9 +137,11 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(Lock.CANCELED_ACTION);
-        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
-        super.onBackPressed();
+        if (options != null && options.isClosable()) {
+            Intent intent = new Intent(Lock.CANCELED_ACTION);
+            LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+            super.onBackPressed();
+        }
     }
 
     /**
