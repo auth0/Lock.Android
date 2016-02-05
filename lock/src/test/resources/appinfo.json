@@ -22,7 +22,14 @@
                                    "showSignup": true,
                                    "showForgot": true,
                                    "requires_username": false
-                                   }]
+                                   }, {
+                                   "name": "RestrictiveDatabase",
+                                   "forgot_password_url": "https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:RestrictiveDatabase",
+                                   "signup_url": "https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:RestrictiveDatabase",
+                                   "showSignup": false,
+                                   "showForgot": false,
+                                   "requires_username": false
+                                 }]
                    }, {
                    "name": "ad",
                    "connections": [{

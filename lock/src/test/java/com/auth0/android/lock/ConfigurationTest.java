@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock;
 
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.Strategy;
@@ -39,6 +40,7 @@ import org.robolectric.annotation.Config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.auth0.android.lock.utils.ConnectionMatcher.isConnection;
@@ -55,6 +57,7 @@ import static com.auth0.android.lock.utils.StrategyMatcher.isStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -66,12 +69,15 @@ import static org.mockito.Mockito.when;
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class ConfigurationTest {
 
+    private static final String RESTRICTIVE_DATABASE = "RestrictiveDatabase";
     private static final String CUSTOM_DATABASE = "CustomDatabase";
     private static final String USERNAME_PASSWORD_AUTHENTICATION = "Username-Password-Authentication";
     private static final String MY_AD = "MyAD";
     private static final String MY_SECOND_AD = "mySecondAD";
-    private Configuration configuration;
+    private static final String UNKNOWN_AD = "UnknownAD";
+    private static final String UNKNOWN_CONNECTION = "UnknownConnection";
 
+    private Configuration configuration;
     private Application application;
     private Options options;
 
@@ -81,6 +87,42 @@ public class ConfigurationTest {
         ObjectMapper mapper = new ObjectMapper();
         application = mapper.readValue(new File("src/test/resources/appinfo.json"), Application.class);
         options = new Options();
+    }
+
+    @Test
+    public void shouldKeepApplicationDefaultsIfOptionsAreNotModified() throws Exception {
+        configuration = new Configuration(application, options);
+        assertThat(configuration.isUsernameRequired(), is(false));
+        assertThat(configuration.isSignUpEnabled(), is(true));
+        assertThat(configuration.isChangePasswordEnabled(), is(true));
+        assertThat(configuration.loginAfterSignUp(), is(true));
+        assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
+    }
+
+    @Test
+    public void shouldMergeApplicationWithOptionsIfDefaultDatabaseExists() throws Exception {
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setSignUpEnabled(false);
+        options.setChangePasswordEnabled(false);
+        options.setLoginAfterSignUp(false);
+        options.setUsernameStyle(UsernameStyle.USERNAME);
+        configuration = new Configuration(application, options);
+        assertThat(configuration.isUsernameRequired(), is(false));
+        assertThat(configuration.isSignUpEnabled(), is(false));
+        assertThat(configuration.isChangePasswordEnabled(), is(false));
+        assertThat(configuration.loginAfterSignUp(), is(false));
+        assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
+    }
+
+
+    @Test
+    public void shouldNotMergeApplicationWithOptionsIfApplicationIsRestrictive() throws Exception {
+        options.setConnections(Collections.singletonList(RESTRICTIVE_DATABASE));
+        options.setSignUpEnabled(true);
+        options.setChangePasswordEnabled(true);
+        configuration = new Configuration(application, options);
+        assertThat(configuration.isSignUpEnabled(), is(false));
+        assertThat(configuration.isChangePasswordEnabled(), is(false));
     }
 
     @Test
@@ -106,7 +148,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldReturnNullDBConnectionWhenNoneMatch() throws Exception {
-        configuration = filteredConfigBy("UnknownConnection");
+        configuration = filteredConfigBy(UNKNOWN_CONNECTION);
         assertThat(configuration.getDefaultDatabaseConnection(), nullValue());
     }
 
@@ -132,7 +174,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldReturnNullADConnectionIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy("UnknownAD");
+        configuration = filteredConfigBy(UNKNOWN_AD);
         assertThat(configuration.getActiveDirectoryStrategy(), nullValue());
         assertThat(configuration.getDefaultActiveDirectoryConnection(), nullValue());
     }
