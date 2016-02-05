@@ -1,5 +1,5 @@
 /*
- * DbConnectionEvent.java
+ * DbChangePasswordEvent.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -25,21 +25,21 @@
 package com.auth0.android.lock.events;
 
 
-public class DbLoginEvent {
+public class DatabaseChangePasswordEvent {
 
     private String usernameOrEmail;
-    private String password;
+    private String newPassword;
 
-    public DbLoginEvent(String usernameOrEmail, String password) {
+    public DatabaseChangePasswordEvent(String usernameOrEmail, String newPassword) {
         this.usernameOrEmail = usernameOrEmail;
-        this.password = password;
+        this.newPassword = newPassword;
     }
 
     public String getUsernameOrEmail() {
         return usernameOrEmail;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNewPassword() {
+        return newPassword;
     }
 }

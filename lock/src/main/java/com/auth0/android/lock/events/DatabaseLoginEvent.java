@@ -1,5 +1,5 @@
 /*
- * DbSignUpEvent.java
+ * DbConnectionEvent.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -25,42 +25,21 @@
 package com.auth0.android.lock.events;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+public class DatabaseLoginEvent {
 
-public class DbSignUpEvent {
-
-    @NonNull
-    private String email;
-    @Nullable
-    private String username;
-    @NonNull
+    private String usernameOrEmail;
     private String password;
-    private boolean loginAfterSignUp;
 
-    public DbSignUpEvent(@NonNull String email, @Nullable String username, @NonNull String password, boolean loginAfterSignUp) {
-        this.email = email;
-        this.username = username;
+    public DatabaseLoginEvent(String usernameOrEmail, String password) {
+        this.usernameOrEmail = usernameOrEmail;
         this.password = password;
-        this.loginAfterSignUp = loginAfterSignUp;
     }
 
-    @NonNull
-    public String getEmail() {
-        return email;
+    public String getUsernameOrEmail() {
+        return usernameOrEmail;
     }
 
-    @Nullable
-    public String getUsername() {
-        return username;
-    }
-
-    @NonNull
     public String getPassword() {
         return password;
-    }
-
-    public boolean loginAfterSignUp() {
-        return loginAfterSignUp;
     }
 }

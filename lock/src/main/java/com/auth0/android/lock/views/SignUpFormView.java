@@ -31,7 +31,7 @@ import android.widget.Button;
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.events.DbSignUpEvent;
+import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.squareup.otto.Bus;
 
 public class SignUpFormView extends FormView {
@@ -66,7 +66,7 @@ public class SignUpFormView extends FormView {
         } else if (configuration.getUsernameStyle() == UsernameStyle.USERNAME) {
             emailInput.setVisibility(View.GONE);
             usernameInput.setVisibility(View.VISIBLE);
-        } else if (configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.USERNAME_OR_EMAIL) {
+        } else if (configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT) {
             emailInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(View.GONE);
         }
@@ -80,11 +80,11 @@ public class SignUpFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        return new DbSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
+        return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
     }
 
     public String getUsername() {
-        if (usernameInput.getVisibility()==VISIBLE){
+        if (usernameInput.getVisibility() == VISIBLE) {
             return usernameInput.getText();
         } else {
             return emailInput.getText();

@@ -35,7 +35,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class DbLayout extends RelativeLayout implements View.OnClickListener {
+public class DatabaseLayout extends RelativeLayout implements View.OnClickListener {
     private Bus bus;
     private Configuration configuration;
 
@@ -57,11 +57,11 @@ public class DbLayout extends RelativeLayout implements View.OnClickListener {
     private Button goBackBtn;
 
 
-    public DbLayout(Context context) {
+    public DatabaseLayout(Context context) {
         super(context);
     }
 
-    public DbLayout(Context context, Bus lockBus, Configuration configuration) {
+    public DatabaseLayout(Context context, Bus lockBus, Configuration configuration) {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;

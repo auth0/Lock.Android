@@ -29,7 +29,7 @@ import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.events.DbLoginEvent;
+import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.squareup.otto.Bus;
 
 public class LoginFormView extends FormView {
@@ -60,8 +60,7 @@ public class LoginFormView extends FormView {
             case USERNAME:
                 usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME);
                 break;
-            default:
-            case USERNAME_OR_EMAIL:
+            case DEFAULT:
                 if (configuration.isUsernameRequired()) {
                     usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME_OR_EMAIL);
                 } else {
@@ -77,7 +76,7 @@ public class LoginFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        return new DbLoginEvent(getUsernameOrEmail(), getPassword());
+        return new DatabaseLoginEvent(getUsernameOrEmail(), getPassword());
     }
 
     public String getUsernameOrEmail() {

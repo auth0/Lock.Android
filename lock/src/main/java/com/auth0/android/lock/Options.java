@@ -57,7 +57,7 @@ class Options implements Parcelable {
 
     public Options() {
         sendSDKInfo = true;
-        usernameStyle = UsernameStyle.USERNAME_OR_EMAIL;
+        usernameStyle = UsernameStyle.DEFAULT;
         signUpEnabled = true;
         changePasswordEnabled = true;
         loginAfterSignUp = true;

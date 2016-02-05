@@ -38,18 +38,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.events.DbLoginEvent;
-import com.auth0.android.lock.events.DbSignUpEvent;
+import com.auth0.android.lock.events.DatabaseLoginEvent;
+import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.views.DbLayout;
+import com.auth0.android.lock.views.DatabaseLayout;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
@@ -82,7 +81,7 @@ public class LockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
-    private DbLayout dbLayout;
+    private DatabaseLayout databaseLayout;
 
     private WebIdentityProvider lastIdp;
 
@@ -133,7 +132,7 @@ public class LockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (dbLayout != null && dbLayout.onBackPressed()) {
+        if (databaseLayout != null && databaseLayout.onBackPressed()) {
             return;
         }
 
@@ -194,8 +193,8 @@ public class LockActivity extends AppCompatActivity {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
-            dbLayout = new DbLayout(this, lockBus, configuration);
-            rootView.addView(dbLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            databaseLayout = new DatabaseLayout(this, lockBus, configuration);
+            rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -282,7 +281,7 @@ public class LockActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDatabaseAuthenticationRequest(DbLoginEvent event) {
+    public void onDatabaseAuthenticationRequest(DatabaseLoginEvent event) {
         if (options == null || configuration.getDefaultDatabaseConnection() == null) {
             return;
         }
@@ -297,7 +296,7 @@ public class LockActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDatabaseAuthenticationRequest(DbSignUpEvent event) {
+    public void onDatabaseAuthenticationRequest(DatabaseSignUpEvent event) {
         if (options == null || configuration.getDefaultDatabaseConnection() == null) {
             return;
         }

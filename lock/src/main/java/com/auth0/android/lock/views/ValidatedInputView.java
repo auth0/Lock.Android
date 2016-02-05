@@ -86,7 +86,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     }
 
     private void setupInputValidation() {
-        String hint;
+        String hint = "";
         input.setTransformationMethod(null);
         switch (dataType) {
             case EMAIL:
@@ -114,12 +114,6 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
-            default:
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
-                inputIcon = R.drawable.com_auth0_lock_social_icon_auth0;
-                inputErrorIcon = R.drawable.com_auth0_lock_social_icon_auth0;
-                hint = "";
-                break;
         }
         inputLayout = (TextInputLayout) input.getParent();
         inputLayout.setErrorEnabled(true);
@@ -145,7 +139,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     public boolean validate() {
         //also called on EditText focus change
         String value = getText();
-        boolean valid;
+        boolean valid = false;
         int errMsg = 0;
         switch (dataType) {
             case EMAIL:
@@ -161,7 +155,6 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 valid = !withoutSpaces.isEmpty() && withoutSpaces.length() >= MIN_USERNAME_LENGTH;
                 errMsg = R.string.com_auth0_lock_input_error_username;
                 break;
-            default:
             case USERNAME_OR_EMAIL:
                 valid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
                 errMsg = R.string.com_auth0_lock_input_error_username_email;
