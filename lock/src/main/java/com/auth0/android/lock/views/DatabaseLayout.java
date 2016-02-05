@@ -106,6 +106,7 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
                 showSignUpForm();
                 break;
             case CHANGE_PASSWORD_BTN_ID:
+                showChangePasswordForm();
                 break;
             case GO_BACK_BTN_ID:
                 showLoginForm();
@@ -125,6 +126,20 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
         changePasswordBtn.setVisibility(View.GONE);
         goBackBtn.setVisibility(View.VISIBLE);
         this.addView(signUpForm, 0, params);
+    }
+
+    private void showChangePasswordForm() {
+        this.removeView(findViewById(FORM_ID));
+
+        ChangePasswordFormView changePwdForm = new ChangePasswordFormView(getContext(), this.bus, this.configuration);
+        changePwdForm.setId(FORM_ID);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_HORIZONTAL);
+        params.addRule(ALIGN_PARENT_TOP);
+        signUpBtn.setVisibility(View.GONE);
+        changePasswordBtn.setVisibility(View.GONE);
+        goBackBtn.setVisibility(View.VISIBLE);
+        this.addView(changePwdForm, 0, params);
     }
 
     private void showLoginForm() {
