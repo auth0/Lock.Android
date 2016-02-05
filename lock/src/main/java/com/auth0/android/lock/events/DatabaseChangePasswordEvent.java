@@ -28,18 +28,12 @@ package com.auth0.android.lock.events;
 public class DatabaseChangePasswordEvent {
 
     private String usernameOrEmail;
-    private String newPassword;
 
-    public DatabaseChangePasswordEvent(String usernameOrEmail, String newPassword) {
+    public DatabaseChangePasswordEvent(String usernameOrEmail) {
         this.usernameOrEmail = usernameOrEmail;
-        this.newPassword = newPassword;
     }
 
     public String getUsernameOrEmail() {
         return usernameOrEmail;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
     }
 }

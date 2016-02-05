@@ -185,8 +185,8 @@ public class Configuration {
 
         //let user disable signUp only if connection have enabled it.
         changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
-        if (options.isChangePasswordEnabled() && !changePasswordEnabled) {
-            changePasswordEnabled = true;
+        if (changePasswordEnabled && !options.isChangePasswordEnabled()) {
+            changePasswordEnabled = false;
         }
 
         usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);

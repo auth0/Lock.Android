@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
@@ -136,9 +137,11 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(Lock.CANCELED_ACTION);
-        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
-        super.onBackPressed();
+        if (options != null && options.isClosable()) {
+            Intent intent = new Intent(Lock.CANCELED_ACTION);
+            LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -271,6 +274,7 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
+        progress.showProgress();
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
@@ -304,6 +308,7 @@ public class LockActivity extends AppCompatActivity {
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
 
+        progress.showProgress();
         if (event.loginAfterSignUp()) {
             apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername())
                     .addAuthenticationParameters(options.getAuthenticationParameters())
@@ -313,7 +318,21 @@ public class LockActivity extends AppCompatActivity {
                     .addParameters(options.getAuthenticationParameters())
                     .start(createCallback);
         }
+    }
 
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
+        if (options == null || configuration.getDefaultDatabaseConnection() == null) {
+            return;
+        }
+
+        progress.showProgress();
+        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
+        apiClient.changePassword(event.getUsernameOrEmail())
+                .addParameters(options.getAuthenticationParameters())
+                .start(changePwdCallback);
     }
 
 
@@ -340,7 +359,7 @@ public class LockActivity extends AppCompatActivity {
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
         public void onSuccess(Authentication payload) {
-            Log.e(TAG, "Login success: " + payload.getProfile());
+            Log.d(TAG, "Login success: " + payload.getProfile());
             deliverResult(payload.getToken());
         }
 
@@ -359,12 +378,43 @@ public class LockActivity extends AppCompatActivity {
     private BaseCallback<DatabaseUser> createCallback = new BaseCallback<DatabaseUser>() {
         @Override
         public void onSuccess(DatabaseUser payload) {
-            Log.e(TAG, "User created, now login");
+            Log.d(TAG, "User created, now login");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult("User created, now login");
+                }
+            });
         }
 
         @Override
         public void onFailure(final Auth0Exception error) {
             Log.e(TAG, "User creation failed");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
+
+    private BaseCallback<Void> changePwdCallback = new BaseCallback<Void>() {
+        @Override
+        public void onSuccess(Void payload) {
+            Log.d(TAG, "Change password accepted");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult("Change password accepted.");
+                }
+            });
+
+        }
+
+        @Override
+        public void onFailure(final Auth0Exception error) {
+            Log.d(TAG, "Change password failed");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
