@@ -57,8 +57,10 @@ import com.auth0.authentication.ChangePasswordRequest;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.DatabaseUser;
 import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
 import com.auth0.request.ParameterizableRequest;
+import com.auth0.request.Request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -232,13 +234,15 @@ public class LockActivity extends AppCompatActivity {
         }
     }
 
-    private void deliverResult(Token token) {
+    private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-        intent.putExtra(Lock.ID_TOKEN_EXTRA, token.getIdToken());
-        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, token.getAccessToken());
-        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, token.getRefreshToken());
-        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, token.getType());
+        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getToken().getIdToken());
+        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getToken().getAccessToken());
+        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getToken().getRefreshToken());
+        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getToken().getType());
+        intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
 
+        //TODO: Check if sendBroadcast works on background
         LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
 
         LockActivity.this.finish();
@@ -352,18 +356,35 @@ public class LockActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(@NonNull Token token) {
-            //TODO: Request profile and send back the token and the profile (see Authentication class)
+        public void onSuccess(@NonNull final Token token) {
             Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
-            deliverResult(token);
+            Request<UserProfile> request = new AuthenticationAPIClient(options.getAccount()).tokenInfo(token.getIdToken());
+            request.start(new BaseCallback<UserProfile>() {
+                @Override
+                public void onSuccess(UserProfile profile) {
+                    Authentication authentication = new Authentication(profile, token);
+                    deliverResult(authentication);
+                }
+
+                @Override
+                public void onFailure(final Auth0Exception error) {
+                    Log.w(TAG, "OnFailure called");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progress.showResult(error.getMessage());
+                        }
+                    });
+                }
+            });
         }
     };
 
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
-        public void onSuccess(Authentication payload) {
-            Log.d(TAG, "Login success: " + payload.getProfile());
-            deliverResult(payload.getToken());
+        public void onSuccess(Authentication authentication) {
+            Log.d(TAG, "Login success: " + authentication.getProfile());
+            deliverResult(authentication);
         }
 
         @Override
