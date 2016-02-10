@@ -168,7 +168,7 @@ public class Lock {
 
         public Builder() {
             options = new Options();
-            HashMap<String, Object> defaultParams = (HashMap<String, Object>) ParameterBuilder.newBuilder().setDevice(Build.MODEL).asDictionary();
+            HashMap<String, Object> defaultParams = (HashMap<String, Object>) ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary();
             options.setAuthenticationParameters(defaultParams);
         }
 
@@ -241,7 +241,7 @@ public class Lock {
             return this;
         }
 
-        public Builder loginAfterSignUp(boolean login){
+        public Builder loginAfterSignUp(boolean login) {
             options.setLoginAfterSignUp(login);
             return this;
         }

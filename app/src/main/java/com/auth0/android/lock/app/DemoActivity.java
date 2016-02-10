@@ -118,7 +118,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         // create account
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
-        Map<String, Object> params = ParameterBuilder.newBuilder()
+        Map<String, Object> params = ParameterBuilder.newAuthenticationBuilder()
                 .setDevice(Build.MODEL)
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();

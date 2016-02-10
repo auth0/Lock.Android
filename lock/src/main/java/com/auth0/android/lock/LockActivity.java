@@ -53,10 +53,12 @@ import com.auth0.android.lock.views.DatabaseLayout;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.ChangePasswordRequest;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.DatabaseUser;
 import com.auth0.authentication.result.Token;
 import com.auth0.callback.BaseCallback;
+import com.auth0.request.ParameterizableRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -315,9 +317,9 @@ public class LockActivity extends AppCompatActivity {
                     .addAuthenticationParameters(options.getAuthenticationParameters())
                     .start(authCallback);
         } else {
-            apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername())
-                    .addParameters(options.getAuthenticationParameters())
-                    .start(createCallback);
+            ParameterizableRequest<DatabaseUser> request = apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername());
+            request.getParameterBuilder().addAll(options.getAuthenticationParameters());
+            request.start(createCallback);
         }
     }
 
@@ -331,9 +333,9 @@ public class LockActivity extends AppCompatActivity {
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
-        apiClient.changePassword(event.getUsernameOrEmail())
-                .addParameters(options.getAuthenticationParameters())
-                .start(changePwdCallback);
+        ChangePasswordRequest request = apiClient.changePassword(event.getUsernameOrEmail());
+        request.getParameterBuilder().addAll(options.getAuthenticationParameters());
+        request.start(changePwdCallback);
     }
 
 
