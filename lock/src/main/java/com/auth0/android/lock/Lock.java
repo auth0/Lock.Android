@@ -165,8 +165,8 @@ public class Lock {
         private AuthenticationCallback callback;
 
         public Builder() {
+            HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             options = new Options();
-            HashMap<String, Object> defaultParams = (HashMap<String, Object>) ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary();
             options.setAuthenticationParameters(defaultParams);
         }
 

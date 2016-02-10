@@ -199,7 +199,7 @@ public class LockActivity extends AppCompatActivity {
 
         if (!configuration.getSocialStrategies().isEmpty()) {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
-            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, 300);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
             databaseLayout = new DatabaseLayout(this, lockBus, configuration);
             rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -357,11 +357,12 @@ public class LockActivity extends AppCompatActivity {
 
         @Override
         public void onSuccess(@NonNull final Token token) {
-            Log.d(TAG, "OnSuccess called with token: " + token.getIdToken());
+            Log.d(TAG, "Fetching user profile..");
             Request<UserProfile> request = new AuthenticationAPIClient(options.getAccount()).tokenInfo(token.getIdToken());
             request.start(new BaseCallback<UserProfile>() {
                 @Override
                 public void onSuccess(UserProfile profile) {
+                    Log.d(TAG, "OnSuccess called for user " + profile.getName());
                     Authentication authentication = new Authentication(profile, token);
                     deliverResult(authentication);
                 }
