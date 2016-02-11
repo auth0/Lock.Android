@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
