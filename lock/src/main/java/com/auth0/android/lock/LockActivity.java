@@ -50,6 +50,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.DatabaseLayout;
+import com.auth0.android.lock.views.EnterpriseLayout;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
@@ -87,6 +88,7 @@ public class LockActivity extends AppCompatActivity {
     private LinearLayout rootView;
     private LockProgress progress;
     private DatabaseLayout databaseLayout;
+    private EnterpriseLayout enterpriseLayout;
 
     private WebIdentityProvider lastIdp;
 
@@ -197,7 +199,10 @@ public class LockActivity extends AppCompatActivity {
         configuration = new Configuration(application, options);
         //TODO: add custom view for panels layout.
 
-        if (!configuration.getSocialStrategies().isEmpty()) {
+        if (configuration.getEnterpriseStrategies().isEmpty()) {
+            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
+            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        } else if (!configuration.getSocialStrategies().isEmpty()) {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
