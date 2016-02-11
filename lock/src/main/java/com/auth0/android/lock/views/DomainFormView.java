@@ -45,9 +45,8 @@ public class DomainFormView extends FormView {
     private static final String TAG = DomainFormView.class.getSimpleName();
     private ValidatedInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
-    private String currentDomain;
-    private String currentUsername;
     private Configuration configuration;
+    private Strategy currentStrategy;
 
     public DomainFormView(Context context) {
         super(context);
@@ -80,12 +79,12 @@ public class DomainFormView extends FormView {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String text = s.toString();
                 String domain = extractDomain(text);
-                currentUsername = extractUsername(text);
-                currentDomain = searchDomain(domain);
-                Log.d(TAG, "Username/Domain found: " + currentUsername + "/" + currentDomain);
-                if (currentDomain != null) {
+                String currentUsername = extractUsername(text);
+                currentStrategy = searchDomain(domain);
+                Log.d(TAG, "Username/Domain found: " + currentUsername + "/" + currentStrategy);
+                if (currentStrategy != null) {
                     actionButton.setEnabled(true);
-                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentDomain));
+                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentStrategy.getName()));
                 } else {
                     passwordInput.setVisibility(View.GONE);
                     actionButton.setEnabled(false);
@@ -136,7 +135,7 @@ public class DomainFormView extends FormView {
 
     @Override
     public void onClick(View v) {
-        if (passwordInput.getVisibility() == VISIBLE || !isResourceOwnerEnabled(currentDomain)) {
+        if (passwordInput.getVisibility() == VISIBLE || !currentStrategy.isResourceOwnerEnabled()) {
             super.onClick(v);
         } else {
             passwordInput.clearInput();
@@ -146,10 +145,10 @@ public class DomainFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        if (isResourceOwnerEnabled(currentDomain)) {
-            return new EnterpriseROLoginEvent(currentDomain, getUsernameOrEmail(), getPassword());
+        if (currentStrategy.isResourceOwnerEnabled()) {
+            return new EnterpriseROLoginEvent(currentStrategy.getConnections().get(0).getName(), getUsernameOrEmail(), getPassword());
         } else {
-            return new EnterpriseWebLoginEvent(currentDomain);
+            return new EnterpriseWebLoginEvent(currentStrategy.getConnections().get(0).getName());
         }
     }
 
@@ -166,13 +165,13 @@ public class DomainFormView extends FormView {
     }
 
     @Nullable
-    private String searchDomain(String domain) {
+    private Strategy searchDomain(String domain) {
         if (domain.isEmpty()) {
             return null;
         }
-        for (Strategies s : Strategies.values()) {
-            if (s.getType() == Strategies.Type.ENTERPRISE && s.getName().contains(domain.toLowerCase())) {
-                return s.getName();
+        for (Strategy s : configuration.getEnterpriseStrategies()) {
+            if (s.getType() == Strategies.Type.ENTERPRISE && domain.toLowerCase().contains(s.getName())) {
+                return s;
             }
         }
         return null;

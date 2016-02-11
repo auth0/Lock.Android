@@ -27,8 +27,8 @@ package com.auth0.android.lock.events;
 public class EnterpriseWebLoginEvent {
     private final String connectionName;
 
-    public EnterpriseWebLoginEvent(String strategyName) {
-        this.connectionName = strategyName;
+    public EnterpriseWebLoginEvent(String connectionName) {
+        this.connectionName = connectionName;
     }
 
     public String getConnectionName() {
