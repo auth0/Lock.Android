@@ -173,6 +173,9 @@ public class Configuration {
     }
 
     private void parseLocalOptions(Options options) {
+        usernameStyle = options.usernameStyle();
+        loginAfterSignUp = options.loginAfterSignUp();
+
         if (getDefaultDatabaseConnection() == null) {
             return;
         }
@@ -190,8 +193,6 @@ public class Configuration {
         }
 
         usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
-        usernameStyle = options.usernameStyle();
-        loginAfterSignUp = options.loginAfterSignUp();
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {

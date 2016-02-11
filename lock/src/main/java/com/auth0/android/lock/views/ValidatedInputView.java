@@ -171,6 +171,11 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
         return input.getText().toString().trim();
     }
 
+    public void setText(String text) {
+        input.setText(text);
+        validate();
+    }
+
     public void clearInput() {
         input.setText("");
         inputLayout.setError(null);

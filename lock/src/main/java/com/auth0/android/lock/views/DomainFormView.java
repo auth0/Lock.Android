@@ -40,13 +40,20 @@ import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
 
+import java.util.List;
+
 public class DomainFormView extends FormView {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
-    private ValidatedInputView usernameEmailInput;
+    private ValidatedInputView emailInput;
+    private ValidatedInputView usernameInput;
     private ValidatedInputView passwordInput;
-    private Configuration configuration;
     private Strategy currentStrategy;
+    private String currentUsername;
+    private List<Strategy> filteredEnterpriseStrategies;
+    private ValidatedInputView.DataType usernameEmailValidation;
+    private Button actionButton;
+    private Button goBackBtn;
 
     public DomainFormView(Context context) {
         super(context);
@@ -58,18 +65,31 @@ public class DomainFormView extends FormView {
 
     @Override
     protected void init(Configuration configuration) {
-        this.configuration = configuration;
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
+        filteredEnterpriseStrategies = configuration.getEnterpriseStrategies();
 
-        final Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
+        actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
         actionButton.setOnClickListener(this);
+        actionButton.setEnabled(false);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setVisibility(View.GONE);
+        usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
+        usernameInput.setVisibility(View.GONE);
+        goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
+        goBackBtn.setText(R.string.com_auth0_lock_action_go_back);
+        goBackBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emailInput.clearInput();
+                resetDomain();
+            }
+        });
+        goBackBtn.setVisibility(GONE);
 
-        usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
-        usernameEmailInput.addTextChangedListener(new TextWatcher() {
+        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -77,25 +97,54 @@ public class DomainFormView extends FormView {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String text = s.toString();
+                if (text.isEmpty()) {
+                    return;
+                }
                 String domain = extractDomain(text);
-                String currentUsername = extractUsername(text);
+                currentUsername = extractUsername(text);
                 currentStrategy = searchDomain(domain);
                 Log.d(TAG, "Username/Domain found: " + currentUsername + "/" + currentStrategy);
                 if (currentStrategy != null) {
                     actionButton.setEnabled(true);
                     actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentStrategy.getName()));
                 } else {
-                    passwordInput.setVisibility(View.GONE);
-                    actionButton.setEnabled(false);
-                    actionButton.setText(R.string.com_auth0_lock_action_login);
+                    resetDomain();
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
         });
+
+        switch (configuration.getUsernameStyle()) {
+            case EMAIL:
+                usernameEmailValidation = ValidatedInputView.DataType.EMAIL;
+                break;
+            case USERNAME:
+                usernameEmailValidation = ValidatedInputView.DataType.USERNAME;
+                break;
+            case DEFAULT:
+                if (configuration.isUsernameRequired()) {
+                    usernameEmailValidation = ValidatedInputView.DataType.USERNAME_OR_EMAIL;
+                } else {
+                    usernameEmailValidation = ValidatedInputView.DataType.EMAIL;
+                }
+                break;
+        }
+        usernameInput.setDataType(usernameEmailValidation);
+    }
+
+    private void resetDomain() {
+        goBackBtn.setVisibility(GONE);
+        emailInput.setVisibility(View.VISIBLE);
+        passwordInput.setVisibility(View.GONE);
+        passwordInput.clearInput();
+        usernameInput.setVisibility(View.GONE);
+        usernameInput.clearInput();
+        actionButton.setEnabled(false);
+        actionButton.setText(R.string.com_auth0_lock_action_login);
     }
 
     private String extractDomain(String email) {
@@ -125,7 +174,7 @@ public class DomainFormView extends FormView {
     }
 
     public String getUsernameOrEmail() {
-        return usernameEmailInput.getText();
+        return usernameInput.getText();
     }
 
     public String getPassword() {
@@ -135,11 +184,22 @@ public class DomainFormView extends FormView {
 
     @Override
     public void onClick(View v) {
+        if (!hasValidData()) {
+            return;
+        }
+
         if (passwordInput.getVisibility() == VISIBLE || !currentStrategy.isResourceOwnerEnabled()) {
             super.onClick(v);
         } else {
-            passwordInput.clearInput();
+            goBackBtn.setVisibility(VISIBLE);
             passwordInput.setVisibility(View.VISIBLE);
+            usernameInput.setVisibility(VISIBLE);
+            if (usernameEmailValidation == ValidatedInputView.DataType.USERNAME) {
+                usernameInput.setText(currentUsername);
+            } else {
+                usernameInput.setText(emailInput.getText());
+            }
+            emailInput.setVisibility(GONE);
         }
     }
 
@@ -154,12 +214,15 @@ public class DomainFormView extends FormView {
 
     @Override
     protected boolean hasValidData() {
-        boolean valid = false;
-        if (usernameEmailInput.getVisibility() == VISIBLE) {
-            valid = usernameEmailInput.validate();
+        boolean valid = true;
+        if (emailInput.getVisibility() == VISIBLE) {
+            valid = emailInput.validate();
+        }
+        if (usernameInput.getVisibility() == VISIBLE) {
+            valid = valid && usernameInput.validate();
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = passwordInput.validate();
+            valid = valid && passwordInput.validate();
         }
         return valid;
     }
@@ -169,17 +232,12 @@ public class DomainFormView extends FormView {
         if (domain.isEmpty()) {
             return null;
         }
-        for (Strategy s : configuration.getEnterpriseStrategies()) {
+        for (Strategy s : filteredEnterpriseStrategies) {
             if (s.getType() == Strategies.Type.ENTERPRISE && domain.toLowerCase().contains(s.getName())) {
                 return s;
             }
         }
         return null;
-    }
-
-    private boolean isResourceOwnerEnabled(String name) {
-        Strategy strategy = configuration.getApplication().strategyForName(name);
-        return strategy != null && strategy.isResourceOwnerEnabled();
     }
 
 }

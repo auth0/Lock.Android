@@ -46,9 +46,6 @@ public class EnterpriseLayout extends RelativeLayout implements View.OnClickList
     @IdRes
     int GO_BACK_BTN_ID = 11;
 
-    private Button goBackBtn;
-
-
     public EnterpriseLayout(Context context) {
         super(context);
     }
@@ -61,15 +58,6 @@ public class EnterpriseLayout extends RelativeLayout implements View.OnClickList
     }
 
     private void init() {
-        goBackBtn = new Button(getContext());
-        goBackBtn.setText(R.string.com_auth0_lock_action_go_back);
-        goBackBtn.setId(GO_BACK_BTN_ID);
-        goBackBtn.setOnClickListener(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_HORIZONTAL);
-        params.addRule(BELOW, FORM_ID);
-        this.addView(goBackBtn, params);
-
         showDomainForm();
     }
 
@@ -90,7 +78,6 @@ public class EnterpriseLayout extends RelativeLayout implements View.OnClickList
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(CENTER_HORIZONTAL);
         params.addRule(ALIGN_PARENT_TOP);
-        goBackBtn.setVisibility(View.GONE);
         this.addView(domainForm, 0, params);
     }
 

@@ -359,6 +359,7 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
+        progress.showProgress();
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
