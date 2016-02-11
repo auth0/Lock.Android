@@ -94,29 +94,4 @@ public class EnterpriseLayout extends RelativeLayout implements View.OnClickList
         this.addView(domainForm, 0, params);
     }
 
-    private void showLoginForm(String title) {
-        this.removeView(findViewById(FORM_ID));
-
-        LoginFormView loginForm = new LoginFormView(getContext(), this.bus, this.configuration);
-        loginForm.setId(FORM_ID);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_HORIZONTAL);
-        params.addRule(ALIGN_PARENT_TOP);
-        goBackBtn.setVisibility(View.VISIBLE);
-        this.addView(loginForm, 0, params);
-    }
-
-    /**
-     * Should be called to update the form layout.
-     *
-     * @return true if it was consumed, false otherwise.
-     */
-    public boolean onBackPressed() {
-        if (goBackBtn.getVisibility() == VISIBLE) {
-            showDomainForm();
-            return true;
-        }
-        return false;
-    }
-
 }

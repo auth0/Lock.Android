@@ -29,18 +29,25 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.EnterpriseROLoginEvent;
+import com.auth0.android.lock.events.EnterpriseWebLoginEvent;
 import com.auth0.android.lock.utils.Strategies;
+import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
 
 public class DomainFormView extends FormView {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
-    private ValidatedInputView emailInput;
+    private ValidatedInputView usernameEmailInput;
+    private ValidatedInputView passwordInput;
     private String currentDomain;
+    private String currentUsername;
+    private Configuration configuration;
 
     public DomainFormView(Context context) {
         super(context);
@@ -52,16 +59,18 @@ public class DomainFormView extends FormView {
 
     @Override
     protected void init(Configuration configuration) {
+        this.configuration = configuration;
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
 
         final Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
         actionButton.setOnClickListener(this);
+        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setVisibility(View.GONE);
 
-        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
-        emailInput.addTextChangedListener(new TextWatcher() {
-
+        usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        usernameEmailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -70,26 +79,16 @@ public class DomainFormView extends FormView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String text = s.toString();
-                int indexAt = text.indexOf("@") + 1;
-                if (indexAt == 0) {
-                    return;
-                }
-                int indexDot = text.indexOf(".", indexAt);
-                String domain;
-                if (indexDot == -1) {
-                    domain = text.substring(indexAt);
-                } else {
-                    domain = text.substring(indexAt, indexDot);
-                }
-                if (domain.isEmpty()) {
-                    return;
-                }
-
+                String domain = extractDomain(text);
+                currentUsername = extractUsername(text);
                 currentDomain = searchDomain(domain);
-                Log.d(TAG, "Domain found: " + currentDomain);
+                Log.d(TAG, "Username/Domain found: " + currentUsername + "/" + currentDomain);
                 if (currentDomain != null) {
+                    actionButton.setEnabled(true);
                     actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentDomain));
                 } else {
+                    passwordInput.setVisibility(View.GONE);
+                    actionButton.setEnabled(false);
                     actionButton.setText(R.string.com_auth0_lock_action_login);
                 }
             }
@@ -100,29 +99,88 @@ public class DomainFormView extends FormView {
         });
     }
 
+    private String extractDomain(String email) {
+        int indexAt = email.indexOf("@") + 1;
+        if (indexAt == 0) {
+            return "";
+        }
+        int indexDot = email.indexOf(".", indexAt);
+        String domain;
+        if (indexDot == -1) {
+            domain = email.substring(indexAt);
+        } else {
+            domain = email.substring(indexAt, indexDot);
+        }
+        if (domain.isEmpty()) {
+            return "";
+        }
+        return domain;
+    }
+
+    private String extractUsername(String email) {
+        int indexAt = email.indexOf("@");
+        if (indexAt == -1) {
+            return "";
+        }
+        return email.substring(0, indexAt);
+    }
+
+    public String getUsernameOrEmail() {
+        return usernameEmailInput.getText();
+    }
+
+    public String getPassword() {
+        return passwordInput.getText();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (passwordInput.getVisibility() == VISIBLE || !isResourceOwnerEnabled(currentDomain)) {
+            super.onClick(v);
+        } else {
+            passwordInput.clearInput();
+            passwordInput.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     protected Object getActionEvent() {
-        return null;
+        if (isResourceOwnerEnabled(currentDomain)) {
+            return new EnterpriseROLoginEvent(currentDomain, getUsernameOrEmail(), getPassword());
+        } else {
+            return new EnterpriseWebLoginEvent(currentDomain);
+        }
     }
 
     @Override
     protected boolean hasValidData() {
         boolean valid = false;
-        if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate();
+        if (usernameEmailInput.getVisibility() == VISIBLE) {
+            valid = usernameEmailInput.validate();
+        }
+        if (passwordInput.getVisibility() == VISIBLE) {
+            valid = passwordInput.validate();
         }
         return valid;
     }
 
-
     @Nullable
     private String searchDomain(String domain) {
+        if (domain.isEmpty()) {
+            return null;
+        }
         for (Strategies s : Strategies.values()) {
-            if (s.getType() == Strategies.Type.ENTERPRISE && s.getName().startsWith(domain.toLowerCase())) {
+            if (s.getType() == Strategies.Type.ENTERPRISE && s.getName().contains(domain.toLowerCase())) {
                 return s.getName();
             }
         }
         return null;
+    }
+
+    private boolean isResourceOwnerEnabled(String name) {
+        Strategy strategy = configuration.getApplication().strategyForName(name);
+        return strategy != null && strategy.isResourceOwnerEnabled();
     }
 
 }
