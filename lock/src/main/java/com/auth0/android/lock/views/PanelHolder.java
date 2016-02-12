@@ -36,7 +36,7 @@ public class PanelHolder extends LinearLayout {
 
     private final Bus bus;
     private final Configuration configuration;
-    private FormLayout databaseLayout;
+    private FormLayout formLayout;
 
     public PanelHolder(Context context) {
         super(context);
@@ -60,9 +60,9 @@ public class PanelHolder extends LinearLayout {
         if (showSocial && showLoginForm) {
             //TODO: merge db and enterprise form, see trello
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            databaseLayout = new FormLayout(getContext(), bus, configuration);
+            formLayout = new FormLayout(getContext(), bus, configuration);
         } else if (showLoginForm) {
-            databaseLayout = new FormLayout(getContext(), bus, configuration);
+            formLayout = new FormLayout(getContext(), bus, configuration);
         } else if (showSocial) {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
         }
@@ -70,12 +70,12 @@ public class PanelHolder extends LinearLayout {
         if (socialLayout != null) {
             addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.com_auth0_lock_social_container_height));
         }
-        if (databaseLayout != null) {
-            addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (formLayout != null) {
+            addView(formLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
     public boolean onBackPressed() {
-        return databaseLayout != null && databaseLayout.onBackPressed();
+        return formLayout != null && formLayout.onBackPressed();
     }
 }
