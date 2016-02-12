@@ -33,6 +33,7 @@ import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
@@ -50,13 +51,16 @@ public class DomainFormView extends FormView {
     private Button actionButton;
     private Button goBackBtn;
     private boolean singleConnection;
+    private boolean fallbackToDatabase;
 
     public DomainFormView(Context context) {
         super(context);
     }
 
-    public DomainFormView(Context context, Bus lockBus, Configuration configuration) {
+    public DomainFormView(Context context, Bus lockBus, Configuration configuration, boolean fallbackToDatabase) {
         super(context, lockBus, configuration);
+        this.fallbackToDatabase = fallbackToDatabase;
+        loadForm(configuration);
     }
 
     @Override
@@ -85,8 +89,10 @@ public class DomainFormView extends FormView {
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(configuration);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+    }
 
-        if (configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
+    private void loadForm(Configuration configuration) {
+        if (!fallbackToDatabase && configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
             setupSingleConnectionUI(configuration.getEnterpriseStrategies().get(0).getConnections().get(0));
         } else {
@@ -95,6 +101,10 @@ public class DomainFormView extends FormView {
     }
 
     private void setupMultipleConnectionUI() {
+        if (fallbackToDatabase) {
+            passwordInput.setVisibility(VISIBLE);
+            actionButton.setEnabled(true);
+        }
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -115,8 +125,14 @@ public class DomainFormView extends FormView {
                 currentUsername = domainParser.extractUsername(text);
                 Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
+                    passwordInput.setVisibility(GONE);
+                    //TODO: Show SSO message
                     actionButton.setEnabled(true);
                     actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getValueForKey("domain")));
+                } else if (fallbackToDatabase) {
+                    passwordInput.setVisibility(VISIBLE);
+                    actionButton.setEnabled(true);
+                    actionButton.setText(R.string.com_auth0_lock_action_login);
                 } else {
                     resetDomain();
                 }
@@ -147,7 +163,7 @@ public class DomainFormView extends FormView {
     }
 
     public String getUsername() {
-        return usernameInput.getText();
+        return currentConnection == null && fallbackToDatabase ? emailInput.getText() : usernameInput.getText();
     }
 
     public String getPassword() {
@@ -161,7 +177,9 @@ public class DomainFormView extends FormView {
             return;
         }
 
-        if (currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
+        if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
+            super.onClick(v);
+        } else if (currentConnection == null && fallbackToDatabase) {
             super.onClick(v);
         } else {
             goBackBtn.setVisibility(VISIBLE);
@@ -176,10 +194,12 @@ public class DomainFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        if (currentConnection.isActiveFlowEnabled()) {
+        if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
             return new EnterpriseLoginEvent(currentConnection.getName(), getUsername(), getPassword());
-        } else {
+        } else if (currentConnection != null) {
             return new EnterpriseLoginEvent(currentConnection.getName());
+        } else {
+            return new DatabaseLoginEvent(getUsername(), getPassword());
         }
     }
 
