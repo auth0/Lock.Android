@@ -201,16 +201,50 @@ public class LockActivity extends AppCompatActivity {
     private void initLockUI() {
         configuration = new Configuration(application, options);
         //TODO: add custom view for panels layout.
+        boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
+        boolean showSocial = !configuration.getSocialStrategies().isEmpty();
+        boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
 
-        if (!configuration.getEnterpriseStrategies().isEmpty()) {
-            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
-            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        } else if (!configuration.getSocialStrategies().isEmpty()) {
-            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
-            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
-        } else if (configuration.getDefaultDatabaseConnection() != null) {
+        if (showDatabase && showSocial && showEnterprise) {
+            //TODO: merge db and enterprise form, see trello
             databaseLayout = new DatabaseLayout(this, lockBus, configuration);
             rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
+
+            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
+            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        } else if (showDatabase && showEnterprise) {
+            databaseLayout = new DatabaseLayout(this, lockBus, configuration);
+            rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        } else if (showDatabase && showSocial) {
+            databaseLayout = new DatabaseLayout(this, lockBus, configuration);
+            rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
+
+        } else if (showEnterprise && showSocial) {
+            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
+            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
+
+        } else if (showDatabase) {
+            databaseLayout = new DatabaseLayout(this, lockBus, configuration);
+            rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        } else if (showSocial) {
+            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
+
+        } else if (showEnterprise) {
+            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
+            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
