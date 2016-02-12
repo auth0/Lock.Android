@@ -29,12 +29,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
 public class PanelHolder extends LinearLayout {
 
     private final Bus bus;
     private final Configuration configuration;
+    private FormLayout databaseLayout;
 
     public PanelHolder(Context context) {
         super(context);
@@ -52,43 +54,28 @@ public class PanelHolder extends LinearLayout {
     private void init() {
         setOrientation(VERTICAL);
         boolean showSocial = !configuration.getSocialStrategies().isEmpty();
-        boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
-        boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+        boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
 
-        DatabaseLayout databaseLayout = null;
-        EnterpriseLayout enterpriseLayout = null;
         SocialView socialLayout = null;
-        if (showSocial && showDatabase && showEnterprise) {
+        if (showSocial && showLoginForm) {
             //TODO: merge db and enterprise form, see trello
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            databaseLayout = new DatabaseLayout(getContext(), bus, configuration);
-            enterpriseLayout = new EnterpriseLayout(getContext(), bus, configuration);
-        } else if (showDatabase && showEnterprise) {
-            databaseLayout = new DatabaseLayout(getContext(), bus, configuration);
-            enterpriseLayout = new EnterpriseLayout(getContext(), bus, configuration);
-        } else if (showSocial && showDatabase) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            databaseLayout = new DatabaseLayout(getContext(), bus, configuration);
-        } else if (showSocial && showEnterprise) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            enterpriseLayout = new EnterpriseLayout(getContext(), bus, configuration);
-        } else if (showDatabase) {
-            databaseLayout = new DatabaseLayout(getContext(), bus, configuration);
+            databaseLayout = new FormLayout(getContext(), bus, configuration);
+        } else if (showLoginForm) {
+            databaseLayout = new FormLayout(getContext(), bus, configuration);
         } else if (showSocial) {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-        } else if (showEnterprise) {
-            enterpriseLayout = new EnterpriseLayout(getContext(), bus, configuration);
         }
 
         if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, 300);
+            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
         }
         if (databaseLayout != null) {
             addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
-        if (enterpriseLayout != null) {
-            addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
+    }
 
+    public boolean onBackPressed() {
+        return databaseLayout != null && databaseLayout.onBackPressed();
     }
 }

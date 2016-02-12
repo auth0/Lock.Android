@@ -34,7 +34,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class DatabaseLayout extends RelativeLayout implements View.OnClickListener {
+public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private Bus bus;
     private Configuration configuration;
 
@@ -43,12 +43,11 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
     private Button goBackBtn;
     private FrameLayout formContainer;
 
-
-    public DatabaseLayout(Context context) {
+    public FormLayout(Context context) {
         super(context);
     }
 
-    public DatabaseLayout(Context context, Bus lockBus, Configuration configuration) {
+    public FormLayout(Context context, Bus lockBus, Configuration configuration) {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;
@@ -65,7 +64,15 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
         goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
         goBackBtn.setOnClickListener(this);
 
-        showLoginForm();
+        boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
+        boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+
+
+        if (showDatabase && !showEnterprise) {
+            showLoginForm();
+        } else {
+//            showDomainForm();
+        }
     }
 
     @Override
