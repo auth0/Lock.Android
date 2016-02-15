@@ -57,9 +57,11 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
+        Button btnPasswordlessLink = (Button) findViewById(R.id.btn_social_browser);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
+        btnPasswordlessLink.setOnClickListener(this);
     }
 
 
@@ -106,7 +108,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
+            case R.id.btn_passwordless_link:
+                passwordlessLink();
+                break;
         }
+    }
+
+    private void passwordlessLink() {
     }
 
     /**
