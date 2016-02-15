@@ -199,7 +199,7 @@ public class LockActivity extends AppCompatActivity {
 
         if (!configuration.getSocialStrategies().isEmpty()) {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
-            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, 300);
+            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
             databaseLayout = new DatabaseLayout(this, lockBus, configuration);
             rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -243,9 +243,9 @@ public class LockActivity extends AppCompatActivity {
         intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
 
         //TODO: Check if sendBroadcast works on background
-        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        LockActivity.this.finish();
+        finish();
     }
 
     @Override
