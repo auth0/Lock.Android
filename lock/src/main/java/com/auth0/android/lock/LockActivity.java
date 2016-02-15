@@ -307,7 +307,7 @@ public class LockActivity extends AppCompatActivity {
         }
 
         progress.showProgress();
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.login(event.getUsernameOrEmail(), event.getPassword())
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
                 .addParameters(options.getAuthenticationParameters())
@@ -321,7 +321,7 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
 
         progress.showProgress();
@@ -381,7 +381,7 @@ public class LockActivity extends AppCompatActivity {
         }
 
         progress.showProgress();
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.setDefaultDbConnection(event.getConnectionName());
         AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword());
         request.addParameters(options.getAuthenticationParameters());
@@ -404,7 +404,7 @@ public class LockActivity extends AppCompatActivity {
         @Override
         public void onSuccess(@NonNull final Token token) {
             Log.d(TAG, "Fetching user profile..");
-            Request<UserProfile> request = new AuthenticationAPIClient(options.getAccount()).tokenInfo(token.getIdToken());
+            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(token.getIdToken());
             request.start(new BaseCallback<UserProfile>() {
                 @Override
                 public void onSuccess(UserProfile profile) {
