@@ -36,10 +36,13 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.EnterpriseROLoginEvent;
 import com.auth0.android.lock.events.EnterpriseWebLoginEvent;
+import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DomainFormView extends FormView {
@@ -67,7 +70,6 @@ public class DomainFormView extends FormView {
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
         filteredEnterpriseStrategies = configuration.getEnterpriseStrategies();
-
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
         actionButton.setOnClickListener(this);
@@ -228,13 +230,21 @@ public class DomainFormView extends FormView {
     }
 
     @Nullable
-    private Strategy searchDomain(String domain) {
+    private Connection searchDomain(String domain) {
         if (domain.isEmpty()) {
             return null;
         }
+        domain = domain.toLowerCase();
         for (Strategy s : filteredEnterpriseStrategies) {
-            if (s.getType() == Strategies.Type.ENTERPRISE && domain.toLowerCase().contains(s.getName())) {
-                return s;
+            if (s.getType() == Strategies.Type.ENTERPRISE) {
+                for (Connection c : s.getConnections()) {
+                    String mainDomain = c.getValueForKey("domain");
+                    String[] aliases = c.getValueForKey("domain_aliases");
+                    List<String> strings = Arrays.asList(aliases);
+                    if (strings.contains(domain) || mainDomain.equals(domain)) {
+                        return c;
+                    }
+                }
             }
         }
         return null;
