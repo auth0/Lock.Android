@@ -30,6 +30,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -48,6 +49,7 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private boolean sendSDKInfo;
     private UsernameStyle usernameStyle;
+    private PasswordlessMode passwordlessMode;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean loginAfterSignUp;
@@ -59,6 +61,7 @@ class Options implements Parcelable {
     public Options() {
         sendSDKInfo = true;
         usernameStyle = UsernameStyle.DEFAULT;
+        passwordlessMode = PasswordlessMode.DISABLED;
         signUpEnabled = true;
         changePasswordEnabled = true;
         loginAfterSignUp = true;
@@ -98,6 +101,11 @@ class Options implements Parcelable {
             usernameStyle = (UsernameStyle) in.readSerializable();
         } else {
             usernameStyle = null;
+        }
+        if (in.readByte() == HAS_DATA) {
+            passwordlessMode = (PasswordlessMode) in.readSerializable();
+        } else {
+            passwordlessMode = null;
         }
     }
 
@@ -143,6 +151,12 @@ class Options implements Parcelable {
         } else {
             dest.writeByte((byte) (HAS_DATA));
             dest.writeSerializable(usernameStyle);
+        }
+        if (passwordlessMode == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            dest.writeSerializable(passwordlessMode);
         }
     }
 
@@ -266,5 +280,13 @@ class Options implements Parcelable {
 
     public AuthenticationAPIClient getAuthenticationAPIClient() {
         return new AuthenticationAPIClient(account);
+    }
+
+    public void setPasswordlessMode(PasswordlessMode mode) {
+        this.passwordlessMode = mode;
+    }
+
+    public PasswordlessMode passwordlessMode() {
+        return this.passwordlessMode;
     }
 }
