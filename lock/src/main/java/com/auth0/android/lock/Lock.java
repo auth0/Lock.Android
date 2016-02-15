@@ -59,6 +59,7 @@ public class Lock {
     static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
     static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
     static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
+    static final String PROFILE_EXTRA = "com.auth0.android.lock.extra.Profile";
 
     /**
      * Listens to LockActivity broadcasts and fires the correct action on the AuthenticationCallback.
@@ -146,11 +147,8 @@ public class Lock {
         String tokenType = eventData.getStringExtra(Lock.TOKEN_TYPE_EXTRA);
         String refreshToken = eventData.getStringExtra(Lock.REFRESH_TOKEN_EXTRA);
         Token token = new Token(idToken, accessToken, tokenType, refreshToken);
+        UserProfile profile = (UserProfile) eventData.getSerializableExtra(Lock.PROFILE_EXTRA);
 
-        //TODO: Fetch UserProfile
-        HashMap<String, Object> profileData = new HashMap<String, Object>();
-        profileData.put("user_id", "1");
-        UserProfile profile = new UserProfile(profileData); //TODO. Ask api for profile?
         Authentication authentication = new Authentication(profile, token);
 
         if (idToken != null && accessToken != null) {
@@ -167,8 +165,8 @@ public class Lock {
         private AuthenticationCallback callback;
 
         public Builder() {
+            HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             options = new Options();
-            HashMap<String, Object> defaultParams = (HashMap<String, Object>) ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary();
             options.setAuthenticationParameters(defaultParams);
         }
 
