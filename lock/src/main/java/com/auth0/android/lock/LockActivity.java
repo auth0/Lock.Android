@@ -43,8 +43,7 @@ import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.events.EnterpriseROLoginEvent;
-import com.auth0.android.lock.events.EnterpriseWebLoginEvent;
+import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
@@ -353,41 +352,33 @@ public class LockActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onEnterpriseAuthenticationRequest(EnterpriseWebLoginEvent event) {
-        //same as social authentication
+    public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
         if (options == null) {
             return;
+        } else if (event.useRO()) {
+            if (event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null) {
+                return;
+            } else if (configuration.getEnterpriseStrategies().isEmpty()) {
+                return;
+            }
         }
 
         progress.showProgress();
-        String pkgName = getApplicationContext().getPackageName();
-        CallbackHelper helper = new CallbackHelper(pkgName);
-        lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
-        lastIdp.setUseBrowser(options.useBrowser());
-        lastIdp.setParameters(options.getAuthenticationParameters());
-        lastIdp.start(LockActivity.this, event.getConnectionName());
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onEnterpriseAuthenticationRequest(EnterpriseROLoginEvent event) {
-        //almost the same as database authentication
-        if (options == null) {
-            return;
-        } else if (event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null) {
-            return;
-        } else if (configuration.getEnterpriseStrategies().isEmpty()) {
-            return;
+        if (event.useRO()) {
+            AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
+            AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword());
+            request.setConnection(event.getConnectionName());
+            request.addParameters(options.getAuthenticationParameters());
+            request.start(authCallback);
+        } else {
+            String pkgName = getApplicationContext().getPackageName();
+            CallbackHelper helper = new CallbackHelper(pkgName);
+            lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
+            lastIdp.setUseBrowser(options.useBrowser());
+            lastIdp.setParameters(options.getAuthenticationParameters());
+            lastIdp.start(LockActivity.this, event.getConnectionName());
         }
-
-        progress.showProgress();
-        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword());
-        request.setConnection(event.getConnectionName());
-        request.addParameters(options.getAuthenticationParameters());
-        request.start(authCallback);
     }
-
 
     //Callbacks
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {

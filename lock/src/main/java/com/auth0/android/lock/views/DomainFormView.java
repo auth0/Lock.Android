@@ -33,8 +33,7 @@ import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.events.EnterpriseROLoginEvent;
-import com.auth0.android.lock.events.EnterpriseWebLoginEvent;
+import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EmailParser;
 import com.auth0.android.lock.utils.Strategy;
@@ -179,9 +178,9 @@ public class DomainFormView extends FormView {
     protected Object getActionEvent() {
         Strategy strategy = domainParser.strategyForConnection(currentConnection);
         if (strategy != null && strategy.isResourceOwnerEnabled()) {
-            return new EnterpriseROLoginEvent(currentConnection.getName(), getUsernameOrEmail(), getPassword());
+            return new EnterpriseLoginEvent(currentConnection.getName(), getUsernameOrEmail(), getPassword());
         } else {
-            return new EnterpriseWebLoginEvent(currentConnection.getName());
+            return new EnterpriseLoginEvent(currentConnection.getName());
         }
     }
 

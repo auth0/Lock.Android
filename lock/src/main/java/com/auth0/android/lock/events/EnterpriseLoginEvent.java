@@ -1,5 +1,5 @@
 /*
- * EnterpriseROLoginEvent.java
+ * EnterpriseLoginEvent.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,17 +24,25 @@
 
 package com.auth0.android.lock.events;
 
+public class EnterpriseLoginEvent {
 
-public class EnterpriseROLoginEvent {
+    private final String connectionName;
+    private final String usernameOrEmail;
+    private final String password;
+    private final boolean useRO;
 
-    private String connectionName;
-    private String usernameOrEmail;
-    private String password;
-
-    public EnterpriseROLoginEvent(String connectionName, String usernameOrEmail, String password) {
+    public EnterpriseLoginEvent(String connectionName, String usernameOrEmail, String password) {
         this.connectionName = connectionName;
         this.usernameOrEmail = usernameOrEmail;
         this.password = password;
+        this.useRO = true;
+    }
+
+    public EnterpriseLoginEvent(String connectionName) {
+        this.connectionName = connectionName;
+        this.usernameOrEmail = "";
+        this.password = "";
+        this.useRO = false;
     }
 
     public String getConnectionName() {
@@ -47,5 +55,9 @@ public class EnterpriseROLoginEvent {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean useRO() {
+        return useRO;
     }
 }
