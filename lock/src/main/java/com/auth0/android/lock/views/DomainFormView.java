@@ -147,7 +147,7 @@ public class DomainFormView extends FormView {
             goBackBtn.setVisibility(VISIBLE);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
-            if (usernameInput.getDataType() == ValidatedInputView.DataType.USERNAME) {
+            if (usernameInput.getDataType() == ValidatedInputView.DataType.USERNAME && currentUsername != null) {
                 usernameInput.setText(currentUsername);
             } else {
                 usernameInput.setText(emailInput.getText());

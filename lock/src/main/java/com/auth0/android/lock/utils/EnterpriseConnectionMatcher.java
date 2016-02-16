@@ -26,8 +26,6 @@ package com.auth0.android.lock.utils;
 
 import android.support.annotation.Nullable;
 
-import com.auth0.Auth0Exception;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +61,7 @@ public class EnterpriseConnectionMatcher {
     @Nullable
     public Connection parse(String email) {
         String domain = extractDomain(email);
-        if (domain.isEmpty()) {
+        if (domain == null) {
             return null;
         }
 
@@ -89,16 +87,31 @@ public class EnterpriseConnectionMatcher {
     }
 
     /**
+     * Extracts the username part from the email
+     *
+     * @param email to parse
+     * @return the username String if found, an empty String otherwise
+     */
+    @Nullable
+    public String extractUsername(String email) {
+        int indexAt = email.indexOf("@");
+        if (indexAt == -1) {
+            return null;
+        }
+        return email.substring(0, indexAt);
+    }
+
+    /**
      * Extracts the domain part from the email
      *
      * @param email to parse
      * @return the domain String if found, an empty String otherwise
      */
-
-    public String extractDomain(String email) {
+    @Nullable
+    private String extractDomain(String email) {
         int indexAt = email.indexOf("@") + 1;
         if (indexAt == 0) {
-            return "";
+            return null;
         }
         int indexDot = email.indexOf(".", indexAt);
         String domain;
@@ -108,24 +121,9 @@ public class EnterpriseConnectionMatcher {
             domain = email.substring(indexAt, indexDot);
         }
         if (domain.isEmpty()) {
-            return "";
+            return null;
         }
         return domain;
     }
-
-    /**
-     * Extracts the username part from the email
-     *
-     * @param email to parse
-     * @return the username String if found, an empty String otherwise
-     */
-    public String extractUsername(String email) {
-        int indexAt = email.indexOf("@");
-        if (indexAt == -1) {
-            return "";
-        }
-        return email.substring(0, indexAt);
-    }
-
 
 }

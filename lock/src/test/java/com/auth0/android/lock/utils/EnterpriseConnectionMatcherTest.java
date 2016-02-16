@@ -69,12 +69,6 @@ public class EnterpriseConnectionMatcherTest {
     }
 
     @Test
-    public void shouldExtractTheDomain() throws Exception {
-        String username = parser.extractDomain(SAMPLE_VALID_EMAIL);
-        assertThat(username, is(equalTo("pep")));
-    }
-
-    @Test
     public void shouldParseTheConnection() throws Exception {
         Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(not(nullValue())));
