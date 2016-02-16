@@ -45,9 +45,9 @@ public class Strategy {
                     @JsonProperty(value = "connections", required = true) List<Connection> connections) {
         this.name = name;
         this.strategyMetadata = Strategies.fromName(name);
-        boolean isRoEnabled = isResourceOwnerEnabled();
+        boolean isActiveFlowEnabled = isActiveFlowEnabled();
         for (Connection c : connections) {
-            c.setResourceOwnerEnabled(isRoEnabled);
+            c.setActiveFlowEnabled(isActiveFlowEnabled);
         }
         this.connections = connections;
     }
@@ -64,7 +64,7 @@ public class Strategy {
         return this.strategyMetadata.getType();
     }
 
-    public boolean isResourceOwnerEnabled() {
+    public boolean isActiveFlowEnabled() {
         return Strategies.ActiveDirectory.getName().equals(name)
                 || Strategies.ADFS.getName().equals(name)
                 || Strategies.Waad.getName().equals(name);

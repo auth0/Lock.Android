@@ -71,8 +71,8 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         Connection connection = new Connection(values);
-        connection.setResourceOwnerEnabled(true);
-        assertThat(connection.isResourceOwnerEnabled(), is(true));
+        connection.setActiveFlowEnabled(true);
+        assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         Connection connection = new Connection(values);
-        assertThat(connection.isResourceOwnerEnabled(), is(false));
+        assertThat(connection.isActiveFlowEnabled(), is(false));
     }
 
     @Test

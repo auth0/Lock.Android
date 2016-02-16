@@ -141,7 +141,7 @@ public class DomainFormView extends FormView {
             return;
         }
 
-        if (passwordInput.getVisibility() == VISIBLE || currentConnection.isResourceOwnerEnabled()) {
+        if (passwordInput.getVisibility() == VISIBLE || currentConnection.isActiveFlowEnabled()) {
             super.onClick(v);
         } else {
             goBackBtn.setVisibility(VISIBLE);
@@ -158,7 +158,7 @@ public class DomainFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        if (currentConnection.isResourceOwnerEnabled()) {
+        if (currentConnection.isActiveFlowEnabled()) {
             return new EnterpriseLoginEvent(currentConnection.getName(), getUsernameOrEmail(), getPassword());
         } else {
             return new EnterpriseLoginEvent(currentConnection.getName());

@@ -48,19 +48,19 @@ public class StrategyTest {
     @Test
     public void shouldHaveResourceOwnerEnabledIfADFS() throws Exception {
         Strategy strategy = new Strategy("adfs", Collections.singletonList(connection));
-        assertThat(strategy.isResourceOwnerEnabled(), is(true));
+        assertThat(strategy.isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfWaad() throws Exception {
         Strategy strategy = new Strategy("waad", Collections.singletonList(connection));
-        assertThat(strategy.isResourceOwnerEnabled(), is(true));
+        assertThat(strategy.isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfActiveDirectory() throws Exception {
         Strategy strategy = new Strategy("ad", Collections.singletonList(connection));
-        assertThat(strategy.isResourceOwnerEnabled(), is(true));
+        assertThat(strategy.isActiveFlowEnabled(), is(true));
     }
 
     @Test
@@ -75,15 +75,15 @@ public class StrategyTest {
         Strategy strategySAMLP = new Strategy("samlp", Collections.singletonList(connection));
         Strategy strategySharepoint = new Strategy("sharepoint", Collections.singletonList(connection));
 
-        assertThat(strategyAuth0LDAP.isResourceOwnerEnabled(), is(false));
-        assertThat(strategyCustom.isResourceOwnerEnabled(), is(false));
-        assertThat(strategyGoogleApps.isResourceOwnerEnabled(), is(false));
-        assertThat(strategyGoogleOpenId.isResourceOwnerEnabled(), is(false));
-        assertThat(strategyIp.isResourceOwnerEnabled(), is(false));
-        assertThat(strategyOffice365.isResourceOwnerEnabled(), is(false));
-        assertThat(strategyPingFederate.isResourceOwnerEnabled(), is(false));
-        assertThat(strategySAMLP.isResourceOwnerEnabled(), is(false));
-        assertThat(strategySharepoint.isResourceOwnerEnabled(), is(false));
+        assertThat(strategyAuth0LDAP.isActiveFlowEnabled(), is(false));
+        assertThat(strategyCustom.isActiveFlowEnabled(), is(false));
+        assertThat(strategyGoogleApps.isActiveFlowEnabled(), is(false));
+        assertThat(strategyGoogleOpenId.isActiveFlowEnabled(), is(false));
+        assertThat(strategyIp.isActiveFlowEnabled(), is(false));
+        assertThat(strategyOffice365.isActiveFlowEnabled(), is(false));
+        assertThat(strategyPingFederate.isActiveFlowEnabled(), is(false));
+        assertThat(strategySAMLP.isActiveFlowEnabled(), is(false));
+        assertThat(strategySharepoint.isActiveFlowEnabled(), is(false));
     }
 
 }

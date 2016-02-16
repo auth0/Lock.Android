@@ -103,7 +103,7 @@ public class Configuration {
 
     public boolean shouldUseNativeAuthentication(Connection connection, @NonNull List<String> enterpriseConnectionsUsingWebForm) {
         final Strategy strategy = getApplication().strategyForConnection(connection);
-        return strategy.isResourceOwnerEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
+        return strategy.isActiveFlowEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
     }
 
     private Connection filterDatabaseConnections(Strategy databaseStrategy, Set<String> connections, String defaultDatabaseName) {
