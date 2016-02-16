@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -46,11 +47,12 @@ public class EmailParserTest {
     private static final String NAME_KEY = "name";
     private static final String DOMAIN_KEY = "domain";
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
-    private static final String SAMPLE_VALID_EMAIL = "username@adsf.com";
+    private static final String SAMPLE_VALID_EMAIL = "username@pep.com";
+    private static final String SAMPLE_UNKNOWN_EMAIL = "username@unknown.net";
     private static final String SAMPLE_INVALID_EMAIL = "usern!p_epom";
-    public static final String NAME_VALUE = "default";
-    public static final String DOMAIN_VALUE = "pepe.com";
-    public static final String[] DOMAIN_ALIASES_VALUE = new String[]{DOMAIN_VALUE, "pep.com", "pe.pe"};
+    private static final String NAME_VALUE = "default";
+    private static final String DOMAIN_VALUE = "pepe.com";
+    private static final String[] DOMAIN_ALIASES_VALUE = new String[]{DOMAIN_VALUE, "pep.com", "pe.pe"};
 
     private EmailParser parser;
 
@@ -71,38 +73,49 @@ public class EmailParserTest {
     @Test
     public void shouldExtractTheDomain() throws Exception {
         String username = parser.extractDomain(SAMPLE_VALID_EMAIL);
-        assertThat(username, is(equalTo("adsf")));
+        assertThat(username, is(equalTo("pep")));
     }
 
     @Test
     public void shouldParseTheConnection() throws Exception {
         Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(not(nullValue())));
-        assertThat((String) connection.getValueForKey(NAME_KEY), is(equalTo(NAME_VALUE)));
-        assertThat((String) connection.getValueForKey(DOMAIN_KEY), is(equalTo(NAME_VALUE)));
+        assertThat(connection.getName(), is(equalTo(NAME_VALUE)));
+        assertThat((String) connection.getValueForKey(DOMAIN_KEY), is(equalTo(DOMAIN_VALUE)));
         assertThat((String[]) connection.getValueForKey(DOMAIN_ALIASES_KEY),
                 is(equalTo(DOMAIN_ALIASES_VALUE)));
     }
 
-
     @Test
-    public void shouldNotFindABannedDomain() throws Exception {
-        Connection connection = parser.parse(SAMPLE_INVALID_EMAIL);
+    public void shouldNotFindAnUnknownDomain() throws Exception {
+        Connection connection = parser.parse(SAMPLE_UNKNOWN_EMAIL);
         assertThat(connection, is(nullValue()));
-    }
-
-    @Test
-    public void shouldThrowExceptionIfWrongInstantiated() throws Exception {
-        try {
-            EmailParser parser = new EmailParser(null);
-        } catch (Auth0Exception e) {
-        }
     }
 
     @Test
     public void shouldFailToGetConnectionIfNotValidDomain() throws Exception {
         Connection connection = parser.parse(SAMPLE_INVALID_EMAIL);
         assertThat(connection, is(nullValue()));
+    }
+
+    @Test
+    public void shouldThrowExceptionIfInstantiatedWithNullStrategies() throws Exception {
+        try {
+            EmailParser parser = new EmailParser(null);
+            fail("Should throw Exception if instantiated with null strategies.");
+        } catch (Auth0Exception e) {
+            assertThat(e.getMessage(), is("You must provide a valid list of Strategies."));
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionIfInstantiatedWithEmptyStrategies() throws Exception {
+        try {
+            EmailParser parser = new EmailParser(new ArrayList<Strategy>());
+            fail("Should throw Exception if instantiated with empty strategies.");
+        } catch (Auth0Exception e) {
+            assertThat(e.getMessage(), is("You must provide a valid list of Strategies."));
+        }
     }
 
     private Strategy createStrategy() {

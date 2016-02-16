@@ -46,7 +46,13 @@ public class EmailParser {
         if (strategies == null || strategies.isEmpty()) {
             throw new Auth0Exception("You must provide a valid list of Strategies.");
         }
-        this.strategies = strategies;
+
+        this.strategies = new ArrayList<>();
+        for (Strategy s : strategies) {
+            if (s.getType() == Strategies.Type.ENTERPRISE) {
+                this.strategies.add(s);
+            }
+        }
     }
 
     /**
@@ -64,17 +70,19 @@ public class EmailParser {
 
         domain = domain.toLowerCase();
         for (Strategy s : strategies) {
-            if (s.getType() != Strategies.Type.ENTERPRISE) {
-                continue;
-            }
             for (Connection c : s.getConnections()) {
                 String mainDomain = c.getValueForKey(DOMAIN_KEY);
-                String[] aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
-                List<String> strings;
-                strings = aliases == null ? new ArrayList<String>() : Arrays.asList(aliases);
-
-                if (strings.contains(domain) || domain.equals(mainDomain)) {
+                if (mainDomain != null && mainDomain.contains(domain)) {
                     return c;
+                }
+
+                String[] aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
+                if (aliases != null) {
+                    for (String d : aliases) {
+                        if (d.contains(domain)) {
+                            return c;
+                        }
+                    }
                 }
             }
         }
@@ -114,6 +122,7 @@ public class EmailParser {
      * @param email to parse
      * @return the domain String if found, an empty String otherwise
      */
+
     public String extractDomain(String email) {
         int indexAt = email.indexOf("@") + 1;
         if (indexAt == 0) {
