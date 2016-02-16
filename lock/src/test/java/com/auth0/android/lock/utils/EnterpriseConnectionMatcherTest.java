@@ -41,7 +41,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class EmailParserTest {
+public class EnterpriseConnectionMatcherTest {
 
     private static final String ENTERPRISE_STRATEGY = "adfs";
     private static final String NAME_KEY = "name";
@@ -54,14 +54,14 @@ public class EmailParserTest {
     private static final String DOMAIN_VALUE = "pepe.com";
     private static final String[] DOMAIN_ALIASES_VALUE = new String[]{DOMAIN_VALUE, "pep.com", "pe.pe"};
 
-    private EmailParser parser;
+    private EnterpriseConnectionMatcher parser;
 
     @Before
     public void setUp() throws Exception {
         List<Strategy> strategies = new ArrayList<>();
         Strategy strategy = createStrategy();
         strategies.add(strategy);
-        parser = new EmailParser(strategies);
+        parser = new EnterpriseConnectionMatcher(strategies);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class EmailParserTest {
     @Test
     public void shouldThrowExceptionIfInstantiatedWithNullStrategies() throws Exception {
         try {
-            EmailParser parser = new EmailParser(null);
+            EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(null);
             fail("Should throw Exception if instantiated with null strategies.");
         } catch (Auth0Exception e) {
             assertThat(e.getMessage(), is("You must provide a valid list of Strategies."));
@@ -111,7 +111,7 @@ public class EmailParserTest {
     @Test
     public void shouldThrowExceptionIfInstantiatedWithEmptyStrategies() throws Exception {
         try {
-            EmailParser parser = new EmailParser(new ArrayList<Strategy>());
+            EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<Strategy>());
             fail("Should throw Exception if instantiated with empty strategies.");
         } catch (Auth0Exception e) {
             assertThat(e.getMessage(), is("You must provide a valid list of Strategies."));

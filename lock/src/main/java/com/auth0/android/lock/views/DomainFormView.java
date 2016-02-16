@@ -35,7 +35,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.EmailParser;
+import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
 
@@ -48,7 +48,7 @@ public class DomainFormView extends FormView {
     private Connection currentConnection;
     private String currentUsername;
     private ValidatedInputView.DataType usernameEmailValidation;
-    private EmailParser domainParser;
+    private EnterpriseConnectionMatcher domainParser;
     private Button actionButton;
     private Button goBackBtn;
 
@@ -63,7 +63,7 @@ public class DomainFormView extends FormView {
     @Override
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
-        domainParser = new EmailParser(configuration.getEnterpriseStrategies());
+        domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
         actionButton.setOnClickListener(this);

@@ -29,20 +29,19 @@ import android.support.annotation.Nullable;
 import com.auth0.Auth0Exception;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Helper class to find out which email domains can be valid for the current Auth0 configuration.
  */
-public class EmailParser {
+public class EnterpriseConnectionMatcher {
 
     private static final String DOMAIN_KEY = "domain";
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
 
     private List<Strategy> strategies;
 
-    public EmailParser(List<Strategy> strategies) {
+    public EnterpriseConnectionMatcher(List<Strategy> strategies) {
         if (strategies == null || strategies.isEmpty()) {
             throw new Auth0Exception("You must provide a valid list of Strategies.");
         }
