@@ -36,15 +36,12 @@ public class PasswordlessFormView extends FormView {
 
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
     private ValidatedInputView passwordlessInput;
-    private PasswordlessMode choosenMode;
-
-    public PasswordlessFormView(Context context) {
-        super(context);
-    }
+    private final PasswordlessMode choosenMode;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
         super(context, lockBus, null);
         choosenMode = passwordlessMode;
+        selectPasswordlessMode();
     }
 
     @Override
@@ -53,6 +50,12 @@ public class PasswordlessFormView extends FormView {
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
         passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
 
+        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
+        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton.setOnClickListener(this);
+    }
+
+    private void selectPasswordlessMode() {
         switch (choosenMode) {
             case EMAIL_CODE:
             case EMAIL_LINK:
@@ -62,10 +65,6 @@ public class PasswordlessFormView extends FormView {
             case SMS_LINK:
                 break;
         }
-
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
-        actionButton.setOnClickListener(this);
     }
 
     @Override

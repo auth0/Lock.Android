@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -53,9 +54,12 @@ import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.PanelHolder;
+import com.auth0.android.lock.views.PasswordlessFormView;
+import com.auth0.android.lock.views.PasswordlessLoginEvent;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.ChangePasswordRequest;
+import com.auth0.authentication.PasswordlessType;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.DatabaseUser;
 import com.auth0.authentication.result.Token;
@@ -108,7 +112,10 @@ public class LockActivity extends AppCompatActivity {
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
         rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
 
-        if (application == null) {
+        if (options.passwordlessMode() == PasswordlessMode.DISABLED) {
+            progress.showResult("");
+            initLockUI();
+        } else if (application == null) {
             fetchApplicationInfo();
         }
     }
@@ -196,9 +203,14 @@ public class LockActivity extends AppCompatActivity {
      * Show the LockUI with all the panels and custom widgets.
      */
     private void initLockUI() {
-        configuration = new Configuration(application, options);
-        panelHolder = new PanelHolder(LockActivity.this, lockBus, configuration);
-        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (options.passwordlessMode() == PasswordlessMode.DISABLED) {
+            configuration = new Configuration(application, options);
+            panelHolder = new PanelHolder(LockActivity.this, lockBus, configuration);
+            rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        } else {
+            PasswordlessFormView passwordlessView = new PasswordlessFormView(this, lockBus, PasswordlessMode.EMAIL_CODE);
+            rootView.addView(passwordlessView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
 
@@ -367,6 +379,28 @@ public class LockActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
+        //almost the same as database authentication
+        if (options == null) {
+            return;
+        } else if (event.getEmailOrNumber().isEmpty()) {
+            return;
+        }
+
+        progress.showProgress();
+        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        ParameterizableRequest<Void> request;
+        if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+            request = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
+        } else {
+            request = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        }
+        request.start(passwordlessCallback);
+    }
+
+
     //Callbacks
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
         @Override
@@ -464,6 +498,30 @@ public class LockActivity extends AppCompatActivity {
         @Override
         public void onFailure(final Auth0Exception error) {
             Log.d(TAG, "Change password failed");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
+
+    private BaseCallback<Void> passwordlessCallback = new BaseCallback<Void>() {
+        @Override
+        public void onSuccess(Void payload) {
+            Log.d(TAG, "Passwordless authentication succeeded");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult("Passwordless authentication succeeded");
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(final Auth0Exception error) {
+            Log.d(TAG, "Passwordless authentication failed");
             handler.post(new Runnable() {
                 @Override
                 public void run() {

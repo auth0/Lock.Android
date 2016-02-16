@@ -28,7 +28,20 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 
 public class PasswordlessLoginEvent {
 
+    private final PasswordlessMode mode;
+    private final String emailOrNumber;
+
     public PasswordlessLoginEvent(PasswordlessMode mode, String emailOrNumber) {
 
+        this.mode = mode;
+        this.emailOrNumber = emailOrNumber;
+    }
+
+    public PasswordlessMode getMode() {
+        return mode;
+    }
+
+    public String getEmailOrNumber() {
+        return emailOrNumber;
     }
 }
