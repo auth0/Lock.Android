@@ -41,12 +41,11 @@ import com.squareup.otto.Bus;
 public class DomainFormView extends FormView {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
-    private ValidatedInputView emailInput;
-    private ValidatedInputView usernameInput;
+    private ValidatedUsernameInputView emailInput;
+    private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
     private Connection currentConnection;
     private String currentUsername;
-    private ValidatedInputView.DataType usernameEmailValidation;
     private EnterpriseConnectionMatcher domainParser;
     private Button actionButton;
     private Button goBackBtn;
@@ -69,7 +68,7 @@ public class DomainFormView extends FormView {
         actionButton.setEnabled(false);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setVisibility(View.GONE);
-        usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
+        usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setVisibility(View.GONE);
         goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
         goBackBtn.setText(R.string.com_auth0_lock_action_go_back);
@@ -82,8 +81,7 @@ public class DomainFormView extends FormView {
         });
         goBackBtn.setVisibility(GONE);
 
-        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -112,23 +110,9 @@ public class DomainFormView extends FormView {
                 }
             }
         });
+        emailInput.chooseDataType(configuration);
+        usernameInput.chooseDataType(configuration);
 
-        switch (configuration.getUsernameStyle()) {
-            case EMAIL:
-                usernameEmailValidation = ValidatedInputView.DataType.EMAIL;
-                break;
-            case USERNAME:
-                usernameEmailValidation = ValidatedInputView.DataType.USERNAME;
-                break;
-            case DEFAULT:
-                if (configuration.isUsernameRequired()) {
-                    usernameEmailValidation = ValidatedInputView.DataType.USERNAME_OR_EMAIL;
-                } else {
-                    usernameEmailValidation = ValidatedInputView.DataType.EMAIL;
-                }
-                break;
-        }
-        usernameInput.setDataType(usernameEmailValidation);
     }
 
     private void resetDomain() {
@@ -163,7 +147,7 @@ public class DomainFormView extends FormView {
             goBackBtn.setVisibility(VISIBLE);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
-            if (usernameEmailValidation == ValidatedInputView.DataType.USERNAME) {
+            if (usernameInput.getDataType() == ValidatedInputView.DataType.USERNAME) {
                 usernameInput.setText(currentUsername);
             } else {
                 usernameInput.setText(emailInput.getText());

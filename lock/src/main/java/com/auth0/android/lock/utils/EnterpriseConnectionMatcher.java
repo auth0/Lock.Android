@@ -75,7 +75,7 @@ public class EnterpriseConnectionMatcher {
                     return c;
                 }
 
-                String[] aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
+                List<String> aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
                 if (aliases != null) {
                     for (String d : aliases) {
                         if (d.contains(domain)) {

@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class EnterpriseConnectionMatcherTest {
     private static final String SAMPLE_INVALID_EMAIL = "usern!p_epom";
     private static final String NAME_VALUE = "default";
     private static final String DOMAIN_VALUE = "pepe.com";
-    private static final String[] DOMAIN_ALIASES_VALUE = new String[]{DOMAIN_VALUE, "pep.com", "pe.pe"};
+    private final List<String> DOMAIN_ALIASES_VALUE = new ArrayList<>(Arrays.asList(DOMAIN_VALUE, "pep.com", "pe.pe"));
 
     private EnterpriseConnectionMatcher parser;
 
@@ -79,7 +80,7 @@ public class EnterpriseConnectionMatcherTest {
         assertThat(connection, is(not(nullValue())));
         assertThat(connection.getName(), is(equalTo(NAME_VALUE)));
         assertThat((String) connection.getValueForKey(DOMAIN_KEY), is(equalTo(DOMAIN_VALUE)));
-        assertThat((String[]) connection.getValueForKey(DOMAIN_ALIASES_KEY),
+        assertThat((List<String>) connection.getValueForKey(DOMAIN_ALIASES_KEY),
                 is(equalTo(DOMAIN_ALIASES_VALUE)));
     }
 
