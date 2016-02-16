@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,13 +36,9 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.EnterpriseROLoginEvent;
 import com.auth0.android.lock.events.EnterpriseWebLoginEvent;
 import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.Strategies;
+import com.auth0.android.lock.utils.EmailParser;
 import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class DomainFormView extends FormView {
 
@@ -51,10 +46,10 @@ public class DomainFormView extends FormView {
     private ValidatedInputView emailInput;
     private ValidatedInputView usernameInput;
     private ValidatedInputView passwordInput;
-    private Strategy currentStrategy;
+    private Connection currentConnection;
     private String currentUsername;
-    private List<Strategy> filteredEnterpriseStrategies;
     private ValidatedInputView.DataType usernameEmailValidation;
+    private EmailParser domainParser;
     private Button actionButton;
     private Button goBackBtn;
 
@@ -69,7 +64,7 @@ public class DomainFormView extends FormView {
     @Override
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
-        filteredEnterpriseStrategies = configuration.getEnterpriseStrategies();
+        domainParser = new EmailParser(configuration.getEnterpriseStrategies());
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
         actionButton.setOnClickListener(this);
@@ -107,13 +102,13 @@ public class DomainFormView extends FormView {
                 if (text.isEmpty()) {
                     return;
                 }
-                String domain = extractDomain(text);
-                currentUsername = extractUsername(text);
-                currentStrategy = searchDomain(domain);
-                Log.d(TAG, "Username/Domain found: " + currentUsername + "/" + currentStrategy);
-                if (currentStrategy != null) {
+
+                currentConnection = domainParser.parse(text);
+                currentUsername = domainParser.extractUsername(text);
+                Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
+                if (currentConnection != null) {
                     actionButton.setEnabled(true);
-                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentStrategy.getName()));
+                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getName()));
                 } else {
                     resetDomain();
                 }
@@ -149,32 +144,6 @@ public class DomainFormView extends FormView {
         actionButton.setText(R.string.com_auth0_lock_action_login);
     }
 
-    private String extractDomain(String email) {
-        int indexAt = email.indexOf("@") + 1;
-        if (indexAt == 0) {
-            return "";
-        }
-        int indexDot = email.indexOf(".", indexAt);
-        String domain;
-        if (indexDot == -1) {
-            domain = email.substring(indexAt);
-        } else {
-            domain = email.substring(indexAt, indexDot);
-        }
-        if (domain.isEmpty()) {
-            return "";
-        }
-        return domain;
-    }
-
-    private String extractUsername(String email) {
-        int indexAt = email.indexOf("@");
-        if (indexAt == -1) {
-            return "";
-        }
-        return email.substring(0, indexAt);
-    }
-
     public String getUsernameOrEmail() {
         return usernameInput.getText();
     }
@@ -190,7 +159,8 @@ public class DomainFormView extends FormView {
             return;
         }
 
-        if (passwordInput.getVisibility() == VISIBLE || !currentStrategy.isResourceOwnerEnabled()) {
+        Strategy strategy = domainParser.strategyForConnection(currentConnection);
+        if (passwordInput.getVisibility() == VISIBLE || (strategy != null && strategy.isResourceOwnerEnabled())) {
             super.onClick(v);
         } else {
             goBackBtn.setVisibility(VISIBLE);
@@ -207,10 +177,11 @@ public class DomainFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        if (currentStrategy.isResourceOwnerEnabled()) {
-            return new EnterpriseROLoginEvent(currentStrategy.getConnections().get(0).getName(), getUsernameOrEmail(), getPassword());
+        Strategy strategy = domainParser.strategyForConnection(currentConnection);
+        if (strategy != null && strategy.isResourceOwnerEnabled()) {
+            return new EnterpriseROLoginEvent(currentConnection.getName(), getUsernameOrEmail(), getPassword());
         } else {
-            return new EnterpriseWebLoginEvent(currentStrategy.getConnections().get(0).getName());
+            return new EnterpriseWebLoginEvent(currentConnection.getName());
         }
     }
 
@@ -227,27 +198,6 @@ public class DomainFormView extends FormView {
             valid = valid && passwordInput.validate();
         }
         return valid;
-    }
-
-    @Nullable
-    private Connection searchDomain(String domain) {
-        if (domain.isEmpty()) {
-            return null;
-        }
-        domain = domain.toLowerCase();
-        for (Strategy s : filteredEnterpriseStrategies) {
-            if (s.getType() == Strategies.Type.ENTERPRISE) {
-                for (Connection c : s.getConnections()) {
-                    String mainDomain = c.getValueForKey("domain");
-                    String[] aliases = c.getValueForKey("domain_aliases");
-                    List<String> strings = Arrays.asList(aliases);
-                    if (strings.contains(domain) || mainDomain.equals(domain)) {
-                        return c;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
 }
