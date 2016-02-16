@@ -45,6 +45,11 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
         super(context, attrs, defStyleAttr);
     }
 
+    /**
+     * Choose username or email DataType, according to the Configuration
+     *
+     * @param configuration of the instance
+     */
     public void chooseDataType(Configuration configuration) {
         ValidatedInputView.DataType type = null;
         switch (configuration.getUsernameStyle()) {

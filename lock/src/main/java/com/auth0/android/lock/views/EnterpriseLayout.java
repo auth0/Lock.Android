@@ -36,10 +36,6 @@ public class EnterpriseLayout extends RelativeLayout {
     private Bus bus;
     private Configuration configuration;
 
-    private static final
-    @IdRes
-    int FORM_ID = 8;
-
     public EnterpriseLayout(Context context) {
         super(context);
     }
@@ -56,10 +52,7 @@ public class EnterpriseLayout extends RelativeLayout {
     }
 
     private void showDomainForm() {
-        this.removeView(findViewById(FORM_ID));
-
         DomainFormView domainForm = new DomainFormView(getContext(), this.bus, this.configuration);
-        domainForm.setId(FORM_ID);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(CENTER_HORIZONTAL);
         params.addRule(ALIGN_PARENT_TOP);
