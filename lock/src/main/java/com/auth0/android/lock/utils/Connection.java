@@ -41,10 +41,12 @@ public class Connection {
 
     protected String name;
     protected Map<String, Object> values;
+    protected boolean roEnabled;
 
     protected Connection(Connection connection) {
         name = connection.name;
         values = connection.values;
+        roEnabled = connection.roEnabled;
     }
 
     protected Connection() {
@@ -63,6 +65,7 @@ public class Connection {
         CheckHelper.checkArgument(name != null, "Must have a non-null name");
         this.name = name;
         this.values = values;
+        this.roEnabled = isResourceOwnerEnabled();
     }
 
     /**
@@ -76,6 +79,24 @@ public class Connection {
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns if this Connection can use resource owner to authenticate
+     *
+     * @return if resource owner is enabled.
+     */
+    public boolean isResourceOwnerEnabled() {
+        return roEnabled;
+    }
+
+    /**
+     * Sets if this Connection can use resource owner to authenticate
+     *
+     * @param enabled if resource owner is enabled.
+     */
+    public void setResourceOwnerEnabled(boolean enabled) {
+        this.roEnabled = enabled;
     }
 
     /**

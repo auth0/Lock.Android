@@ -44,8 +44,12 @@ public class Strategy {
     public Strategy(@JsonProperty(value = "name", required = true) String name,
                     @JsonProperty(value = "connections", required = true) List<Connection> connections) {
         this.name = name;
-        this.connections = connections;
         this.strategyMetadata = Strategies.fromName(name);
+        boolean isRoEnabled = isResourceOwnerEnabled();
+        for (Connection c : connections) {
+            c.setResourceOwnerEnabled(isRoEnabled);
+        }
+        this.connections = connections;
     }
 
     public String getName() {

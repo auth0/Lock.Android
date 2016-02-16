@@ -36,7 +36,6 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.utils.Strategy;
 import com.squareup.otto.Bus;
 
 public class DomainFormView extends FormView {
@@ -158,8 +157,7 @@ public class DomainFormView extends FormView {
             return;
         }
 
-        Strategy strategy = domainParser.strategyForConnection(currentConnection);
-        if (passwordInput.getVisibility() == VISIBLE || (strategy != null && strategy.isResourceOwnerEnabled())) {
+        if (passwordInput.getVisibility() == VISIBLE || currentConnection.isResourceOwnerEnabled()) {
             super.onClick(v);
         } else {
             goBackBtn.setVisibility(VISIBLE);
@@ -176,8 +174,7 @@ public class DomainFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        Strategy strategy = domainParser.strategyForConnection(currentConnection);
-        if (strategy != null && strategy.isResourceOwnerEnabled()) {
+        if (currentConnection.isResourceOwnerEnabled()) {
             return new EnterpriseLoginEvent(currentConnection.getName(), getUsernameOrEmail(), getPassword());
         } else {
             return new EnterpriseLoginEvent(currentConnection.getName());

@@ -24,8 +24,6 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.Auth0Exception;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;

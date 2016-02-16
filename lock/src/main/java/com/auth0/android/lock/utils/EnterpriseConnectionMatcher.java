@@ -88,33 +88,6 @@ public class EnterpriseConnectionMatcher {
         return null;
     }
 
-
-    /**
-     * Tries to find the Strategy holder of the given connection.
-     *
-     * @param connection to search for.
-     * @return a Strategy if found, null otherwise.
-     */
-    @Nullable
-    public Strategy strategyForConnection(Connection connection) {
-        if (connection == null) {
-            return null;
-        }
-
-        for (Strategy s : strategies) {
-            if (s.getType() != Strategies.Type.ENTERPRISE) {
-                continue;
-            }
-            for (Connection c : s.getConnections()) {
-                if (c.equals(connection)) {
-                    return s;
-                }
-            }
-        }
-        return null;
-    }
-
-
     /**
      * Extracts the domain part from the email
      *
