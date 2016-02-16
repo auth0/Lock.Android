@@ -99,23 +99,17 @@ public class EnterpriseConnectionMatcherTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfInstantiatedWithNullStrategies() throws Exception {
-        try {
-            EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(null);
-            fail("Should throw Exception if instantiated with null strategies.");
-        } catch (Auth0Exception e) {
-            assertThat(e.getMessage(), is("You must provide a valid list of Strategies."));
-        }
+    public void shouldFailToGetConnectionIfInstantiatedWithNullStrategies() throws Exception {
+        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(null);
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        assertThat(connection, is(nullValue()));
     }
 
     @Test
-    public void shouldThrowExceptionIfInstantiatedWithEmptyStrategies() throws Exception {
-        try {
-            EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<Strategy>());
-            fail("Should throw Exception if instantiated with empty strategies.");
-        } catch (Auth0Exception e) {
-            assertThat(e.getMessage(), is("You must provide a valid list of Strategies."));
-        }
+    public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() throws Exception {
+        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<Strategy>());
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        assertThat(connection, is(nullValue()));
     }
 
     private Strategy createStrategy() {

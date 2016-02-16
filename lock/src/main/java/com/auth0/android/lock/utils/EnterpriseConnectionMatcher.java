@@ -42,11 +42,11 @@ public class EnterpriseConnectionMatcher {
     private List<Strategy> strategies;
 
     public EnterpriseConnectionMatcher(List<Strategy> strategies) {
-        if (strategies == null || strategies.isEmpty()) {
-            throw new Auth0Exception("You must provide a valid list of Strategies.");
+        this.strategies = new ArrayList<>();
+        if (strategies == null) {
+            return;
         }
 
-        this.strategies = new ArrayList<>();
         for (Strategy s : strategies) {
             if (s.getType() == Strategies.Type.ENTERPRISE) {
                 this.strategies.add(s);
