@@ -26,25 +26,19 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.IdRes;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class EnterpriseLayout extends RelativeLayout implements View.OnClickListener {
+public class EnterpriseLayout extends RelativeLayout {
     private Bus bus;
     private Configuration configuration;
 
     private static final
     @IdRes
     int FORM_ID = 8;
-    private static final
-    @IdRes
-    int GO_BACK_BTN_ID = 11;
 
     public EnterpriseLayout(Context context) {
         super(context);
@@ -59,15 +53,6 @@ public class EnterpriseLayout extends RelativeLayout implements View.OnClickList
 
     private void init() {
         showDomainForm();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case GO_BACK_BTN_ID:
-                showDomainForm();
-                break;
-        }
     }
 
     private void showDomainForm() {
