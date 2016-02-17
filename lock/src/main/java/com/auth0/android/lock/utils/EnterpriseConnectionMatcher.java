@@ -69,7 +69,7 @@ public class EnterpriseConnectionMatcher {
         domain = domain.toLowerCase();
         for (Strategy s : strategies) {
             for (Connection c : s.getConnections()) {
-                String mainDomain = c.getValueForKey(DOMAIN_KEY);
+                String mainDomain = domainForConnection(c);
                 if (mainDomain != null && mainDomain.equalsIgnoreCase(domain)) {
                     return c;
                 }
@@ -121,4 +121,13 @@ public class EnterpriseConnectionMatcher {
         return domain;
     }
 
+    /**
+     * Extracts the Connection's main domain.
+     *
+     * @param connection to extract the domain from
+     * @return the main domain.
+     */
+    public String domainForConnection(Connection connection) {
+        return connection.getValueForKey(DOMAIN_KEY);
+    }
 }

@@ -85,6 +85,12 @@ public class EnterpriseConnectionMatcherTest {
     }
 
     @Test
+    public void shouldReturnTheMainDomain() throws Exception {
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        assertThat(parser.domainForConnection(connection), is(equalTo(DOMAIN_VALUE)));
+    }
+
+    @Test
     public void shouldFailToGetConnectionIfNotValidDomain() throws Exception {
         Connection connection = parser.parse(SAMPLE_INVALID_EMAIL);
         assertThat(connection, is(nullValue()));

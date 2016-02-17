@@ -49,6 +49,7 @@ public class DomainFormView extends FormView {
     private EnterpriseConnectionMatcher domainParser;
     private Button actionButton;
     private Button goBackBtn;
+    private boolean singleConnection;
 
     public DomainFormView(Context context) {
         super(context);
@@ -82,10 +83,21 @@ public class DomainFormView extends FormView {
         goBackBtn.setVisibility(GONE);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        emailInput.chooseDataType(configuration);
+        usernameInput.chooseDataType(configuration);
+
+        if (configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
+            singleConnection = true;
+            setupSingleConnectionUI(configuration.getEnterpriseStrategies().get(0).getConnections().get(0));
+        } else {
+            setupMultipleConnectionUI();
+        }
+    }
+
+    private void setupMultipleConnectionUI() {
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -104,15 +116,23 @@ public class DomainFormView extends FormView {
                 Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
                     actionButton.setEnabled(true);
-                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getName()));
+                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getValueForKey("domain")));
                 } else {
                     resetDomain();
                 }
             }
         });
-        emailInput.chooseDataType(configuration);
-        usernameInput.chooseDataType(configuration);
+    }
 
+    private void setupSingleConnectionUI(Connection connection) {
+        currentConnection = connection;
+        actionButton.setEnabled(true);
+        actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), domainParser.domainForConnection(connection)));
+        if (connection.isActiveFlowEnabled()) {
+            passwordInput.setVisibility(View.VISIBLE);
+        }
+        usernameInput.setVisibility(VISIBLE);
+        emailInput.setVisibility(GONE);
     }
 
     private void resetDomain() {
@@ -141,7 +161,7 @@ public class DomainFormView extends FormView {
             return;
         }
 
-        if (passwordInput.getVisibility() == VISIBLE || currentConnection.isActiveFlowEnabled()) {
+        if (currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
             super.onClick(v);
         } else {
             goBackBtn.setVisibility(VISIBLE);
