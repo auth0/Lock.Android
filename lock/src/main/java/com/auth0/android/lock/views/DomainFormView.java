@@ -84,7 +84,7 @@ public class DomainFormView extends FormView {
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(configuration);
-        usernameInput.chooseDataType(configuration);
+        usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
         if (configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
@@ -146,7 +146,7 @@ public class DomainFormView extends FormView {
         actionButton.setText(R.string.com_auth0_lock_action_login);
     }
 
-    public String getUsernameOrEmail() {
+    public String getUsername() {
         return usernameInput.getText();
     }
 
@@ -167,10 +167,8 @@ public class DomainFormView extends FormView {
             goBackBtn.setVisibility(VISIBLE);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
-            if (usernameInput.getDataType() == ValidatedInputView.DataType.USERNAME && currentUsername != null) {
+            if (currentUsername != null) {
                 usernameInput.setText(currentUsername);
-            } else {
-                usernameInput.setText(emailInput.getText());
             }
             emailInput.setVisibility(GONE);
         }
@@ -179,7 +177,7 @@ public class DomainFormView extends FormView {
     @Override
     protected Object getActionEvent() {
         if (currentConnection.isActiveFlowEnabled()) {
-            return new EnterpriseLoginEvent(currentConnection.getName(), getUsernameOrEmail(), getPassword());
+            return new EnterpriseLoginEvent(currentConnection.getName(), getUsername(), getPassword());
         } else {
             return new EnterpriseLoginEvent(currentConnection.getName());
         }
