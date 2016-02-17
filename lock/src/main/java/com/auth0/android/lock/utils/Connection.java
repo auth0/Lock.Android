@@ -41,10 +41,12 @@ public class Connection {
 
     protected String name;
     protected Map<String, Object> values;
+    protected boolean activeFlowEnabled;
 
     protected Connection(Connection connection) {
         name = connection.name;
         values = connection.values;
+        activeFlowEnabled = connection.activeFlowEnabled;
     }
 
     protected Connection() {
@@ -63,6 +65,7 @@ public class Connection {
         CheckHelper.checkArgument(name != null, "Must have a non-null name");
         this.name = name;
         this.values = values;
+        this.activeFlowEnabled = isActiveFlowEnabled();
     }
 
     /**
@@ -76,6 +79,24 @@ public class Connection {
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns if this Connection can use Resource Owner to authenticate
+     *
+     * @return if the Active Flow (Resource Owner) is enabled.
+     */
+    public boolean isActiveFlowEnabled() {
+        return activeFlowEnabled;
+    }
+
+    /**
+     * Sets if this Connection can use Resource Owner to authenticate
+     *
+     * @param enabled if the Active Flow (Resource Owner) is enabled.
+     */
+    public void setActiveFlowEnabled(boolean enabled) {
+        this.activeFlowEnabled = enabled;
     }
 
     /**

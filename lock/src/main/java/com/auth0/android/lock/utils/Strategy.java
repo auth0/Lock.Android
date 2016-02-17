@@ -44,8 +44,12 @@ public class Strategy {
     public Strategy(@JsonProperty(value = "name", required = true) String name,
                     @JsonProperty(value = "connections", required = true) List<Connection> connections) {
         this.name = name;
-        this.connections = connections;
         this.strategyMetadata = Strategies.fromName(name);
+        boolean isActiveFlowEnabled = isActiveFlowEnabled();
+        for (Connection c : connections) {
+            c.setActiveFlowEnabled(isActiveFlowEnabled);
+        }
+        this.connections = connections;
     }
 
     public String getName() {
@@ -60,7 +64,7 @@ public class Strategy {
         return this.strategyMetadata.getType();
     }
 
-    public boolean isResourceOwnerEnabled() {
+    public boolean isActiveFlowEnabled() {
         return Strategies.ActiveDirectory.getName().equals(name)
                 || Strategies.ADFS.getName().equals(name)
                 || Strategies.Waad.getName().equals(name);

@@ -103,7 +103,7 @@ public class Configuration {
 
     public boolean shouldUseNativeAuthentication(Connection connection, @NonNull List<String> enterpriseConnectionsUsingWebForm) {
         final Strategy strategy = getApplication().strategyForConnection(connection);
-        return strategy.isResourceOwnerEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
+        return strategy.isActiveFlowEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
     }
 
     private Connection filterDatabaseConnections(Strategy databaseStrategy, Set<String> connections, String defaultDatabaseName) {
@@ -173,6 +173,9 @@ public class Configuration {
     }
 
     private void parseLocalOptions(Options options) {
+        usernameStyle = options.usernameStyle();
+        loginAfterSignUp = options.loginAfterSignUp();
+
         if (getDefaultDatabaseConnection() == null) {
             return;
         }
@@ -190,8 +193,6 @@ public class Configuration {
         }
 
         usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
-        usernameStyle = options.usernameStyle();
-        loginAfterSignUp = options.loginAfterSignUp();
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {

@@ -67,6 +67,23 @@ public class ConnectionTest {
     }
 
     @Test
+    public void shouldSetResourceOwnerEnabled() throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", CONNECTION_NAME);
+        Connection connection = new Connection(values);
+        connection.setActiveFlowEnabled(true);
+        assertThat(connection.isActiveFlowEnabled(), is(true));
+    }
+
+    @Test
+    public void shouldNotHaveResourceOwnerEnabledByDefault() throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", CONNECTION_NAME);
+        Connection connection = new Connection(values);
+        assertThat(connection.isActiveFlowEnabled(), is(false));
+    }
+
+    @Test
     public void shouldReturnValueFromKey() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);

@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.Patterns;
@@ -170,6 +171,11 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
         return input.getText().toString().trim();
     }
 
+    public void setText(String text) {
+        input.setText(text);
+        validate();
+    }
+
     public void clearInput() {
         input.setText("");
         inputLayout.setError(null);
@@ -181,4 +187,14 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
             validate();
         }
     }
+
+    /**
+     * Adds the given TextWatcher to this view EditText.
+     *
+     * @param watcher to add to the EditText.
+     */
+    public void addTextChangedListener(TextWatcher watcher) {
+        input.addTextChangedListener(watcher);
+    }
+
 }

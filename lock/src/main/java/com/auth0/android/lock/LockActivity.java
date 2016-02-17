@@ -43,16 +43,20 @@ import com.auth0.Auth0Exception;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.DatabaseLayout;
+import com.auth0.android.lock.views.EnterpriseLayout;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.SocialView;
 import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.ChangePasswordRequest;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.DatabaseUser;
@@ -87,6 +91,7 @@ public class LockActivity extends AppCompatActivity {
     private LinearLayout rootView;
     private LockProgress progress;
     private DatabaseLayout databaseLayout;
+    private EnterpriseLayout enterpriseLayout;
 
     private WebIdentityProvider lastIdp;
 
@@ -197,7 +202,10 @@ public class LockActivity extends AppCompatActivity {
         configuration = new Configuration(application, options);
         //TODO: add custom view for panels layout.
 
-        if (!configuration.getSocialStrategies().isEmpty()) {
+        if (!configuration.getEnterpriseStrategies().isEmpty()) {
+            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
+            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        } else if (!configuration.getSocialStrategies().isEmpty()) {
             SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
             rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
         } else if (configuration.getDefaultDatabaseConnection() != null) {
@@ -298,7 +306,7 @@ public class LockActivity extends AppCompatActivity {
         }
 
         progress.showProgress();
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.login(event.getUsernameOrEmail(), event.getPassword())
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
                 .addParameters(options.getAuthenticationParameters())
@@ -312,7 +320,7 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
 
         progress.showProgress();
@@ -342,6 +350,35 @@ public class LockActivity extends AppCompatActivity {
         request.start(changePwdCallback);
     }
 
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
+        if (options == null) {
+            return;
+        } else if (event.useRO()) {
+            if (event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null) {
+                return;
+            } else if (configuration.getEnterpriseStrategies().isEmpty()) {
+                return;
+            }
+        }
+
+        progress.showProgress();
+        if (event.useRO()) {
+            AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
+            AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword());
+            request.setConnection(event.getConnectionName());
+            request.addParameters(options.getAuthenticationParameters());
+            request.start(authCallback);
+        } else {
+            String pkgName = getApplicationContext().getPackageName();
+            CallbackHelper helper = new CallbackHelper(pkgName);
+            lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
+            lastIdp.setUseBrowser(options.useBrowser());
+            lastIdp.setParameters(options.getAuthenticationParameters());
+            lastIdp.start(LockActivity.this, event.getConnectionName());
+        }
+    }
 
     //Callbacks
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
@@ -358,7 +395,7 @@ public class LockActivity extends AppCompatActivity {
         @Override
         public void onSuccess(@NonNull final Token token) {
             Log.d(TAG, "Fetching user profile..");
-            Request<UserProfile> request = new AuthenticationAPIClient(options.getAccount()).tokenInfo(token.getIdToken());
+            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(token.getIdToken());
             request.start(new BaseCallback<UserProfile>() {
                 @Override
                 public void onSuccess(UserProfile profile) {

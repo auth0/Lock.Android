@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_login_form_view.xmlew.xml
+  ~ com_auth0_lock_database_layout.xml
+  ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,32 +22,41 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username_email"
+    <FrameLayout
+        android:id="@+id/com_auth0_lock_form_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:Auth0.InputDataType="username_or_email">
-
-        <requestFocus />
-    </com.auth0.android.lock.views.ValidatedUsernameInputView>
-
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:Auth0.InputDataType="password" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/com_auth0_lock_action_btn"
-        android:layout_width="match_parent"
+        android:id="@+id/com_auth0_lock_sign_up_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Action" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/com_auth0_lock_form_layout"
+        android:text="@string/com_auth0_lock_action_sign_up" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/com_auth0_lock_change_password_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/com_auth0_lock_form_layout"
+        android:layout_toRightOf="@id/com_auth0_lock_sign_up_btn"
+        android:text="@string/com_auth0_lock_action_forgot_password" />
+
+    <Button
+        android:id="@+id/com_auth0_lock_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/com_auth0_lock_form_layout"
+        android:layout_centerHorizontal="true"
+        android:text="@string/com_auth0_lock_action_go_back" />
+
+
+</RelativeLayout>

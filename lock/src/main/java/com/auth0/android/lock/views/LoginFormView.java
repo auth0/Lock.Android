@@ -35,7 +35,7 @@ import com.squareup.otto.Bus;
 public class LoginFormView extends FormView {
 
     private static final String TAG = LoginFormView.class.getSimpleName();
-    private ValidatedInputView usernameEmailInput;
+    private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
     public LoginFormView(Context context) {
@@ -49,25 +49,10 @@ public class LoginFormView extends FormView {
     @Override
     protected void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
-        usernameEmailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        usernameEmailInput.chooseDataType(configuration);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
-
-        switch (configuration.getUsernameStyle()) {
-            case EMAIL:
-                usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
-                break;
-            case USERNAME:
-                usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME);
-                break;
-            case DEFAULT:
-                if (configuration.isUsernameRequired()) {
-                    usernameEmailInput.setDataType(ValidatedInputView.DataType.USERNAME_OR_EMAIL);
-                } else {
-                    usernameEmailInput.setDataType(ValidatedInputView.DataType.EMAIL);
-                }
-                break;
-        }
 
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);

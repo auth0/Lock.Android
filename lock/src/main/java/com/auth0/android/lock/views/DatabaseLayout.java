@@ -25,10 +25,9 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
@@ -39,22 +38,10 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
     private Bus bus;
     private Configuration configuration;
 
-    private static final
-    @IdRes
-    int FORM_ID = 8;
-    private static final
-    @IdRes
-    int SIGN_UP_BTN_ID = 9;
-    private static final
-    @IdRes
-    int CHANGE_PASSWORD_BTN_ID = 10;
-    private static final
-    @IdRes
-    int GO_BACK_BTN_ID = 11;
-
     private Button signUpBtn;
     private Button changePasswordBtn;
     private Button goBackBtn;
+    private FrameLayout formContainer;
 
 
     public DatabaseLayout(Context context) {
@@ -69,91 +56,69 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
     }
 
     private void init() {
-        signUpBtn = new Button(getContext());
-        signUpBtn.setText(R.string.com_auth0_lock_action_sign_up);
-        signUpBtn.setId(SIGN_UP_BTN_ID);
+        inflate(getContext(), R.layout.com_auth0_lock_database_layout, this);
+        formContainer = (FrameLayout) findViewById(R.id.com_auth0_lock_form_layout);
+        signUpBtn = (Button) findViewById(R.id.com_auth0_lock_sign_up_btn);
         signUpBtn.setOnClickListener(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(ALIGN_PARENT_LEFT);
-        params.addRule(BELOW, FORM_ID);
-        this.addView(signUpBtn, params);
-
-        changePasswordBtn = new Button(getContext());
-        changePasswordBtn.setText(R.string.com_auth0_lock_action_forgot_password);
-        changePasswordBtn.setId(CHANGE_PASSWORD_BTN_ID);
+        changePasswordBtn = (Button) findViewById(R.id.com_auth0_lock_change_password_btn);
         changePasswordBtn.setOnClickListener(this);
-        params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(ALIGN_PARENT_RIGHT);
-        params.addRule(BELOW, FORM_ID);
-        this.addView(changePasswordBtn, params);
-
-        goBackBtn = new Button(getContext());
-        goBackBtn.setText(R.string.com_auth0_lock_action_go_back);
-        goBackBtn.setId(GO_BACK_BTN_ID);
+        goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
         goBackBtn.setOnClickListener(this);
-        params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_HORIZONTAL);
-        params.addRule(BELOW, FORM_ID);
-        this.addView(goBackBtn, params);
 
         showLoginForm();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case SIGN_UP_BTN_ID:
-                showSignUpForm();
-                break;
-            case CHANGE_PASSWORD_BTN_ID:
-                showChangePasswordForm();
-                break;
-            case GO_BACK_BTN_ID:
-                showLoginForm();
-                break;
+        int id = v.getId();
+        if (id == R.id.com_auth0_lock_sign_up_btn) {
+            showSignUpForm();
+        } else if (id == R.id.com_auth0_lock_change_password_btn) {
+            showChangePasswordForm();
+        } else if (id == R.id.com_auth0_lock_back_btn) {
+            showLoginForm();
         }
     }
 
     private void showSignUpForm() {
-        this.removeView(findViewById(FORM_ID));
+        removePreviousForm();
 
         SignUpFormView signUpForm = new SignUpFormView(getContext(), this.bus, this.configuration);
-        signUpForm.setId(FORM_ID);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_HORIZONTAL);
-        params.addRule(ALIGN_PARENT_TOP);
+        formContainer.addView(signUpForm);
+
         signUpBtn.setVisibility(View.GONE);
         changePasswordBtn.setVisibility(View.GONE);
         goBackBtn.setVisibility(View.VISIBLE);
-        this.addView(signUpForm, 0, params);
     }
 
     private void showChangePasswordForm() {
-        this.removeView(findViewById(FORM_ID));
+        removePreviousForm();
 
         ChangePasswordFormView changePwdForm = new ChangePasswordFormView(getContext(), this.bus, this.configuration);
-        changePwdForm.setId(FORM_ID);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_HORIZONTAL);
-        params.addRule(ALIGN_PARENT_TOP);
+        formContainer.addView(changePwdForm);
+
         signUpBtn.setVisibility(View.GONE);
         changePasswordBtn.setVisibility(View.GONE);
         goBackBtn.setVisibility(View.VISIBLE);
-        this.addView(changePwdForm, 0, params);
     }
 
     private void showLoginForm() {
-        this.removeView(findViewById(FORM_ID));
+        removePreviousForm();
 
         LoginFormView loginForm = new LoginFormView(getContext(), this.bus, this.configuration);
-        loginForm.setId(FORM_ID);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_HORIZONTAL);
-        params.addRule(ALIGN_PARENT_TOP);
+        formContainer.addView(loginForm);
+
         changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
         signUpBtn.setVisibility(configuration.isSignUpEnabled() ? View.VISIBLE : View.GONE);
         goBackBtn.setVisibility(View.GONE);
-        this.addView(loginForm, 0, params);
+    }
+
+
+    private void removePreviousForm() {
+        View existingForm = formContainer.getChildAt(0);
+        if (existingForm != null) {
+            formContainer.removeView(existingForm);
+        }
     }
 
     /**

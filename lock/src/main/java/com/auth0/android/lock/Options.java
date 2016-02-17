@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.authentication.AuthenticationAPIClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -261,5 +262,9 @@ class Options implements Parcelable {
 
     public void setLoginAfterSignUp(boolean loginAfterSignUp) {
         this.loginAfterSignUp = loginAfterSignUp;
+    }
+
+    public AuthenticationAPIClient getAuthenticationAPIClient() {
+        return new AuthenticationAPIClient(account);
     }
 }
