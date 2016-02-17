@@ -36,6 +36,7 @@ public class EnterpriseConnectionMatcher {
 
     private static final String DOMAIN_KEY = "domain";
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
+    private static final String AT_SYMBOL = "@";
 
     private List<Strategy> strategies;
 
@@ -69,14 +70,14 @@ public class EnterpriseConnectionMatcher {
         for (Strategy s : strategies) {
             for (Connection c : s.getConnections()) {
                 String mainDomain = c.getValueForKey(DOMAIN_KEY);
-                if (mainDomain != null && mainDomain.contains(domain)) {
+                if (mainDomain != null && mainDomain.equalsIgnoreCase(domain)) {
                     return c;
                 }
 
                 List<String> aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
                 if (aliases != null) {
                     for (String d : aliases) {
-                        if (d.contains(domain)) {
+                        if (d.equalsIgnoreCase(domain)) {
                             return c;
                         }
                     }
@@ -94,7 +95,7 @@ public class EnterpriseConnectionMatcher {
      */
     @Nullable
     public String extractUsername(String email) {
-        int indexAt = email.indexOf("@");
+        int indexAt = email.indexOf(AT_SYMBOL);
         if (indexAt == -1) {
             return null;
         }
@@ -109,17 +110,11 @@ public class EnterpriseConnectionMatcher {
      */
     @Nullable
     private String extractDomain(String email) {
-        int indexAt = email.indexOf("@") + 1;
+        int indexAt = email.indexOf(AT_SYMBOL) + 1;
         if (indexAt == 0) {
             return null;
         }
-        int indexDot = email.indexOf(".", indexAt);
-        String domain;
-        if (indexDot == -1) {
-            domain = email.substring(indexAt);
-        } else {
-            domain = email.substring(indexAt, indexDot);
-        }
+        String domain = email.substring(indexAt);
         if (domain.isEmpty()) {
             return null;
         }
