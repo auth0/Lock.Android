@@ -36,7 +36,10 @@ public class PasswordlessFormView extends FormView {
 
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
     private ValidatedInputView passwordlessInput;
+    private Button actionButton;
     private final PasswordlessMode choosenMode;
+    private boolean waitingForCode;
+    private String emailOrPhone;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
         super(context, lockBus, null);
@@ -50,8 +53,8 @@ public class PasswordlessFormView extends FormView {
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
         passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
 
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
+        actionButton.setText(R.string.com_auth0_lock_action_send_code);
         actionButton.setOnClickListener(this);
     }
 
@@ -69,7 +72,19 @@ public class PasswordlessFormView extends FormView {
 
     @Override
     protected Object getActionEvent() {
-        return new PasswordlessLoginEvent(choosenMode, getInputText());
+        if (waitingForCode) {
+            return new PasswordlessLoginEvent(choosenMode, emailOrPhone, getInputText());
+        } else {
+            PasswordlessLoginEvent event = new PasswordlessLoginEvent(choosenMode, getInputText());
+            if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
+                waitingForCode = true;
+                emailOrPhone = getInputText();
+                passwordlessInput.setDataType(ValidatedInputView.DataType.CODE);
+                passwordlessInput.clearInput();
+                actionButton.setText(R.string.com_auth0_lock_action_login);
+            }
+            return event;
+        }
     }
 
     public String getInputText() {

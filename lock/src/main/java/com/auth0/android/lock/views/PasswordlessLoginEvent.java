@@ -30,11 +30,18 @@ public class PasswordlessLoginEvent {
 
     private final PasswordlessMode mode;
     private final String emailOrNumber;
+    private final String code;
 
     public PasswordlessLoginEvent(PasswordlessMode mode, String emailOrNumber) {
-
         this.mode = mode;
         this.emailOrNumber = emailOrNumber;
+        this.code = null;
+    }
+
+    public PasswordlessLoginEvent(PasswordlessMode choosenMode, String emailOrNumber, String code) {
+        this.mode = choosenMode;
+        this.emailOrNumber = emailOrNumber;
+        this.code = code;
     }
 
     public PasswordlessMode getMode() {
@@ -43,5 +50,9 @@ public class PasswordlessLoginEvent {
 
     public String getEmailOrNumber() {
         return emailOrNumber;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

@@ -79,6 +79,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class LockActivity extends AppCompatActivity {
 
@@ -391,13 +392,25 @@ public class LockActivity extends AppCompatActivity {
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        ParameterizableRequest<Void> request;
-        if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
-            request = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
-        } else {
-            request = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        if (event.getCode() != null) {
+            AuthenticationRequest answerRequest = null;
+            if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+                answerRequest = apiClient.loginWithEmail(event.getEmailOrNumber(), event.getCode());
+            }
+            HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
+            authenticationParameters.put("device", Build.PRODUCT);
+            answerRequest.addParameters(authenticationParameters);
+            answerRequest.start(authCallback);
+            return;
         }
-        request.start(passwordlessCallback);
+
+        ParameterizableRequest<Void> codeRequest;
+        if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+            codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
+        } else {
+            codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        }
+        codeRequest.start(passwordlessCallback);
     }
 
 
