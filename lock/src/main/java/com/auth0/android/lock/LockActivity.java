@@ -366,7 +366,7 @@ public class LockActivity extends AppCompatActivity {
         progress.showProgress();
         if (event.useRO()) {
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-            AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword());
+            AuthenticationRequest request = apiClient.login(event.getUsername(), event.getPassword());
             request.setConnection(event.getConnectionName());
             request.addParameters(options.getAuthenticationParameters());
             request.start(authCallback);

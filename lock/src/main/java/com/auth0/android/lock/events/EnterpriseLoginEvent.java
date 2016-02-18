@@ -27,20 +27,20 @@ package com.auth0.android.lock.events;
 public class EnterpriseLoginEvent {
 
     private final String connectionName;
-    private final String usernameOrEmail;
+    private final String username;
     private final String password;
     private final boolean useRO;
 
-    public EnterpriseLoginEvent(String connectionName, String usernameOrEmail, String password) {
+    public EnterpriseLoginEvent(String connectionName, String username, String password) {
         this.connectionName = connectionName;
-        this.usernameOrEmail = usernameOrEmail;
+        this.username = username;
         this.password = password;
         this.useRO = true;
     }
 
     public EnterpriseLoginEvent(String connectionName) {
         this.connectionName = connectionName;
-        this.usernameOrEmail = "";
+        this.username = "";
         this.password = "";
         this.useRO = false;
     }
@@ -49,8 +49,8 @@ public class EnterpriseLoginEvent {
         return connectionName;
     }
 
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {

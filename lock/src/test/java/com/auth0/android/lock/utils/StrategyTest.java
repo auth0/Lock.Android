@@ -49,18 +49,21 @@ public class StrategyTest {
     public void shouldHaveResourceOwnerEnabledIfADFS() throws Exception {
         Strategy strategy = new Strategy("adfs", Collections.singletonList(connection));
         assertThat(strategy.isActiveFlowEnabled(), is(true));
+        assertThat(strategy.getConnections().get(0).isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfWaad() throws Exception {
         Strategy strategy = new Strategy("waad", Collections.singletonList(connection));
         assertThat(strategy.isActiveFlowEnabled(), is(true));
+        assertThat(strategy.getConnections().get(0).isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfActiveDirectory() throws Exception {
         Strategy strategy = new Strategy("ad", Collections.singletonList(connection));
         assertThat(strategy.isActiveFlowEnabled(), is(true));
+        assertThat(strategy.getConnections().get(0).isActiveFlowEnabled(), is(true));
     }
 
     @Test
@@ -84,6 +87,16 @@ public class StrategyTest {
         assertThat(strategyPingFederate.isActiveFlowEnabled(), is(false));
         assertThat(strategySAMLP.isActiveFlowEnabled(), is(false));
         assertThat(strategySharepoint.isActiveFlowEnabled(), is(false));
+
+        assertThat(strategyAuth0LDAP.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategyCustom.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategyGoogleApps.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategyGoogleOpenId.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategyIp.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategyOffice365.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategyPingFederate.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategySAMLP.getConnections().get(0).isActiveFlowEnabled(), is(false));
+        assertThat(strategySharepoint.getConnections().get(0).isActiveFlowEnabled(), is(false));
     }
 
 }
