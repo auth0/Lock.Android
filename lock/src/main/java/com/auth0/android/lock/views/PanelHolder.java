@@ -68,7 +68,7 @@ public class PanelHolder extends LinearLayout {
         }
 
         if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
+            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.com_auth0_lock_social_container_height));
         }
         if (databaseLayout != null) {
             addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
