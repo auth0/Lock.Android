@@ -58,11 +58,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
-        Button btnPasswordlessLink = (Button) findViewById(R.id.btn_passwordless_link);
+        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_email_code);
+        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_email_link);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
-        btnPasswordlessLink.setOnClickListener(this);
+        btnPasswordlessEmailCode.setOnClickListener(this);
+        btnPasswordlessEmailLink.setOnClickListener(this);
     }
 
 
@@ -109,23 +111,28 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
-            case R.id.btn_passwordless_link:
-                passwordlessLink();
+            case R.id.btn_passwordless_email_code:
+                passwordless(PasswordlessMode.EMAIL_CODE);
+                break;
+            case R.id.btn_passwordless_email_link:
+                passwordless(PasswordlessMode.EMAIL_LINK);
                 break;
         }
     }
 
     /**
      * Launches the login flow showing only the Passwordless widget.
+     *
+     * @param mode
      */
-    private void passwordlessLink() {
+    private void passwordless(PasswordlessMode mode) {
         // create account
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
         lock = Lock.newBuilder()
                 .withAccount(auth0)
                 .withCallback(this)
-                .usePasswordless(PasswordlessMode.EMAIL_LINK)
+                .usePasswordless(mode)
                 .build();
         lock.onCreate(DemoActivity.this);
 
