@@ -30,6 +30,7 @@ import android.widget.Button;
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.squareup.otto.Bus;
 
 public class PasswordlessFormView extends FormView {
@@ -37,14 +38,13 @@ public class PasswordlessFormView extends FormView {
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
     private ValidatedInputView passwordlessInput;
     private Button actionButton;
-    private final PasswordlessMode choosenMode;
+    private PasswordlessMode choosenMode;
     private boolean waitingForCode;
     private String emailOrPhone;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
         super(context, lockBus, null);
-        choosenMode = passwordlessMode;
-        selectPasswordlessMode();
+        selectPasswordlessMode(passwordlessMode);
     }
 
     @Override
@@ -54,14 +54,18 @@ public class PasswordlessFormView extends FormView {
         passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
 
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_send_code);
         actionButton.setOnClickListener(this);
     }
 
-    private void selectPasswordlessMode() {
+    private void selectPasswordlessMode(PasswordlessMode mode) {
+        this.choosenMode = mode;
         switch (choosenMode) {
             case EMAIL_CODE:
+                passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                actionButton.setText(R.string.com_auth0_lock_action_send_code);
+                break;
             case EMAIL_LINK:
+                actionButton.setText(R.string.com_auth0_lock_action_send_link);
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 break;
             case SMS_CODE:
@@ -82,6 +86,9 @@ public class PasswordlessFormView extends FormView {
                 passwordlessInput.setDataType(ValidatedInputView.DataType.CODE);
                 passwordlessInput.clearInput();
                 actionButton.setText(R.string.com_auth0_lock_action_login);
+            } else {
+                actionButton.setText(R.string.com_auth0_lock_action_click_link);
+                actionButton.setEnabled(false);
             }
             return event;
         }

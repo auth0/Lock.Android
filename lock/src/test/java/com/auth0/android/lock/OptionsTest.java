@@ -168,7 +168,7 @@ public class OptionsTest {
     public void shouldUsePasswordlessMode() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setPasswordlessMode(PasswordlessMode.EMAIL_CODE);
+        options.setPasswordlessMode(PasswordlessMode.EMAIL_LINK);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.views;
+package com.auth0.android.lock.events;
 
 import com.auth0.android.lock.enums.PasswordlessMode;
 

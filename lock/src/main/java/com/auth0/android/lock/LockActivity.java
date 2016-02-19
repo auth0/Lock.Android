@@ -55,7 +55,7 @@ import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.PanelHolder;
 import com.auth0.android.lock.views.PasswordlessFormView;
-import com.auth0.android.lock.views.PasswordlessLoginEvent;
+import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.ChangePasswordRequest;
@@ -79,7 +79,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class LockActivity extends AppCompatActivity {
 
@@ -96,6 +95,7 @@ public class LockActivity extends AppCompatActivity {
     private PanelHolder panelHolder;
 
     private WebIdentityProvider lastIdp;
+    private String lastPasswordlessEmailOrNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -209,7 +209,7 @@ public class LockActivity extends AppCompatActivity {
             panelHolder = new PanelHolder(LockActivity.this, lockBus, configuration);
             rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         } else {
-            PasswordlessFormView passwordlessView = new PasswordlessFormView(this, lockBus, PasswordlessMode.EMAIL_CODE);
+            PasswordlessFormView passwordlessView = new PasswordlessFormView(this, lockBus, options.passwordlessMode());
             rootView.addView(passwordlessView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
@@ -259,11 +259,7 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
-        if (lastIdp != null) {
-            //Deliver result to the IDP
-            AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
-            lastIdp.authorize(LockActivity.this, result);
-        }
+        processIncomingIntent(data);
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -272,13 +268,24 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "OnNewIntent called with intent: " + intent);
+        processIncomingIntent(intent);
+        super.onNewIntent(intent);
+    }
+
+    private void processIncomingIntent(Intent intent) {
         if (lastIdp != null) {
             //Deliver result to the IDP
             AuthorizeResult result = new AuthorizeResult(intent);
             lastIdp.authorize(LockActivity.this, result);
+        } else if (options.passwordlessMode() == PasswordlessMode.EMAIL_LINK) {
+            String code = intent.getData().getQueryParameter("code");
+            if (code == null || code.isEmpty() || lastPasswordlessEmailOrNumber == null) {
+                Log.w(TAG, "Code was invalid.");
+            } else {
+                PasswordlessLoginEvent event = new PasswordlessLoginEvent(options.passwordlessMode(), lastPasswordlessEmailOrNumber, code);
+                onPasswordlessAuthenticationRequest(event);
+            }
         }
-
-        super.onNewIntent(intent);
     }
 
     @SuppressWarnings("unused")
@@ -394,20 +401,18 @@ public class LockActivity extends AppCompatActivity {
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         if (event.getCode() != null) {
             AuthenticationRequest answerRequest = null;
-            if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+            if (event.getMode() == PasswordlessMode.EMAIL_CODE || event.getMode() == PasswordlessMode.EMAIL_LINK) {
                 answerRequest = apiClient.loginWithEmail(event.getEmailOrNumber(), event.getCode());
             }
-            HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
-            authenticationParameters.put("device", Build.PRODUCT);
-            answerRequest.addParameters(authenticationParameters);
+            answerRequest.addParameters(options.getAuthenticationParameters());
             answerRequest.start(authCallback);
             return;
         }
-
-        ParameterizableRequest<Void> codeRequest;
+        lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
+        ParameterizableRequest<Void> codeRequest = null;
         if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
             codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
-        } else {
+        } else if (event.getMode() == PasswordlessMode.EMAIL_LINK) {
             codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
         }
         codeRequest.start(passwordlessCallback);
