@@ -125,7 +125,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         lock = Lock.newBuilder()
                 .withAccount(auth0)
                 .withCallback(this)
-                .usePasswordless(PasswordlessMode.EMAIL_CODE)
+                .usePasswordless(PasswordlessMode.EMAIL_LINK)
                 .build();
         lock.onCreate(DemoActivity.this);
 
