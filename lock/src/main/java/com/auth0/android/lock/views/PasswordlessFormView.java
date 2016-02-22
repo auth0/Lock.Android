@@ -38,6 +38,9 @@ public class PasswordlessFormView extends FormView {
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
+    private Button actionButton;
+    private boolean waitingForCode;
+    private String emailOrNumber;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
         super(context, lockBus, null);
@@ -50,24 +53,39 @@ public class PasswordlessFormView extends FormView {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_form_view, this);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
 
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
     }
 
     private void selectPasswordlessMode() {
         switch (choosenMode) {
             case EMAIL_CODE:
-            case EMAIL_LINK:
+                actionButton.setText(R.string.com_auth0_lock_action_send_code);
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 break;
-            default:
+            case EMAIL_LINK:
+                passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                actionButton.setText(R.string.com_auth0_lock_action_send_link);
+                break;
         }
+        passwordlessInput.clearInput();
     }
 
     @Override
     protected Object getActionEvent() {
-        return new PasswordlessLoginEvent(choosenMode, getInputText());
+        if (waitingForCode) {
+            return new PasswordlessLoginEvent(choosenMode, emailOrNumber, getInputText());
+        } else {
+            PasswordlessLoginEvent event = new PasswordlessLoginEvent(choosenMode, getInputText());
+            if (choosenMode == PasswordlessMode.EMAIL_CODE) {
+                waitingForCode = true;
+                emailOrNumber = getInputText();
+                passwordlessInput.setDataType(ValidatedInputView.DataType.CODE);
+                passwordlessInput.clearInput();
+                actionButton.setText(R.string.com_auth0_lock_action_login);
+            }
+            return event;
+        }
     }
 
     public String getInputText() {
@@ -77,5 +95,20 @@ public class PasswordlessFormView extends FormView {
     @Override
     protected boolean hasValidData() {
         return passwordlessInput.validate();
+    }
+
+    /**
+     * Triggers the 'back' action on this form
+     *
+     * @return true if the event was handled.
+     */
+    public boolean onBackPressed() {
+        if (waitingForCode) {
+            waitingForCode = false;
+            selectPasswordlessMode();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

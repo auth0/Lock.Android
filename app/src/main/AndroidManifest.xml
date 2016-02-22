@@ -41,6 +41,15 @@
         </activity>
         <!--Auth0 Lock End-->
 
+        <!--Auth0 PasswordlessLock-->
+        <activity
+            android:name="com.auth0.android.lock.PasswordlessLockActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyLock.Theme" />
+        <!--Auth0 PasswordlessLock End-->
+
 
         <!--Auth0 Lock Embedded WebView-->
         <activity

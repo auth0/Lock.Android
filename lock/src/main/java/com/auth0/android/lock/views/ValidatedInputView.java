@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -43,6 +44,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
 
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int MIN_USERNAME_LENGTH = 6;
+    private static final int CODE_LENGTH = 6;
 
     private TextInputLayout inputLayout;
     private EditText input;
@@ -50,7 +52,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     private int inputIcon;
     private int inputErrorIcon;
 
-    enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, PASSWORD}
+    enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, CODE, PASSWORD}
 
     private DataType dataType;
 
@@ -115,6 +117,14 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
+            case CODE:
+                input.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                //Fixme: Code length is configured in the dashboard. How can we get this value?
+                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(CODE_LENGTH)});
+                inputIcon = R.drawable.com_auth0_lock_ic_input_password;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_password_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_code);
+                break;
         }
         inputLayout = (TextInputLayout) input.getParent();
         inputLayout.setErrorEnabled(true);
@@ -159,6 +169,10 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
             case USERNAME_OR_EMAIL:
                 valid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
                 errMsg = R.string.com_auth0_lock_input_error_username_email;
+                break;
+            case CODE:
+                valid = value.length() == CODE_LENGTH;
+                errMsg = R.string.com_auth0_lock_input_error_code;
                 break;
         }
 

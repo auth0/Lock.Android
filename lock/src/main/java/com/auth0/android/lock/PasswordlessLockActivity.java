@@ -26,12 +26,14 @@ package com.auth0.android.lock;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -41,12 +43,15 @@ import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.PasswordlessFormView;
 import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.PasswordlessType;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.callback.BaseCallback;
 import com.auth0.request.ParameterizableRequest;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import java.util.HashMap;
 
 public class PasswordlessLockActivity extends AppCompatActivity {
 
@@ -57,6 +62,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
+    private PasswordlessFormView passwordlessForm;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +78,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
+        progress.showResult("");
         rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
+        initLockUI();
     }
 
     private boolean isLaunchConfigValid() {
@@ -88,6 +96,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (passwordlessForm != null && passwordlessForm.onBackPressed()) {
+            return;
+        }
         if (options != null && options.isClosable()) {
             Intent intent = new Intent(Lock.CANCELED_ACTION);
             LocalBroadcastManager.getInstance(PasswordlessLockActivity.this).sendBroadcast(intent);
@@ -135,7 +146,6 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        //almost the same as database authentication
         if (options == null) {
             return;
         } else if (event.getEmailOrNumber().isEmpty()) {
@@ -144,18 +154,30 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        ParameterizableRequest<Void> request;
-        if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
-            request = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
-        } else {
-            request = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        if (event.getCode() != null) {
+            AuthenticationRequest answerRequest = null;
+            if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+                answerRequest = apiClient.loginWithEmail(event.getEmailOrNumber(), event.getCode());
+            }
+            HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
+            authenticationParameters.put("device", Build.PRODUCT);
+            answerRequest.addParameters(authenticationParameters);
+            answerRequest.start(authCallback);
+            return;
         }
-        request.start(passwordlessCallback);
+
+        ParameterizableRequest<Void> codeRequest;
+        if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+            codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
+        } else {
+            codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        }
+        codeRequest.start(passwordlessCodeCallback);
     }
 
     //Callbacks
 
-    private BaseCallback<Void> passwordlessCallback = new BaseCallback<Void>() {
+    private BaseCallback<Void> passwordlessCodeCallback = new BaseCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             Log.d(TAG, "Passwordless authentication succeeded");
@@ -179,4 +201,22 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
     };
 
+    private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
+        @Override
+        public void onSuccess(Authentication authentication) {
+            Log.d(TAG, "Login success: " + authentication.getProfile());
+            deliverResult(authentication);
+        }
+
+        @Override
+        public void onFailure(final Auth0Exception error) {
+            Log.e(TAG, "Login failed");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
 }
