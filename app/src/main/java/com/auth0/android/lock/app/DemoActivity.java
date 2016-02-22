@@ -36,6 +36,7 @@ import android.widget.Button;
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -57,11 +58,11 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
-        Button btnPasswordlessLink = (Button) findViewById(R.id.btn_social_browser);
+        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_email_link);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
-        btnPasswordlessLink.setOnClickListener(this);
+        btnPasswordlessEmailLink.setOnClickListener(this);
     }
 
 
@@ -108,13 +109,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
-            case R.id.btn_passwordless_link:
-                passwordlessLink();
+            case R.id.btn_passwordless_email_link:
+                passwordlessLogin(PasswordlessMode.EMAIL_LINK);
                 break;
         }
     }
 
-    private void passwordlessLink() {
+    private void passwordlessLogin(PasswordlessMode mode) {
     }
 
     /**
