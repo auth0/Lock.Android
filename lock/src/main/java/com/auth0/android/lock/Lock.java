@@ -87,8 +87,8 @@ public class Lock {
         return options;
     }
 
-    public static Builder newBuilder() {
-        return new Lock.Builder();
+    public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
+        return new Lock.Builder(account, callback);
     }
 
     /**
@@ -164,24 +164,22 @@ public class Lock {
         private Options options;
         private AuthenticationCallback callback;
 
-        public Builder() {
+        public Builder(Auth0 account, AuthenticationCallback callback) {
             HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
+            this.callback = callback;
             options = new Options();
+            options.setAccount(account);
             options.setAuthenticationParameters(defaultParams);
         }
 
         public Lock build() {
+            if (options.getAccount() == null) {
+                throw new IllegalArgumentException("Missing Auth0 account information.");
+            }
+            if (callback == null) {
+                throw new IllegalArgumentException("Missing AuthenticationCallback.");
+            }
             return new Lock(options, callback);
-        }
-
-        public Builder withAccount(@NonNull Auth0 account) {
-            options.setAccount(account);
-            return this;
-        }
-
-        public Builder withCallback(@NonNull AuthenticationCallback callback) {
-            this.callback = callback;
-            return this;
         }
 
         public Builder useBrowser(boolean useBrowser) {

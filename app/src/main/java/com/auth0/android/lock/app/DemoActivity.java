@@ -132,9 +132,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
         // create/configure lock
-        lock = Lock.newBuilder()
-                .withAccount(auth0)
-                .withCallback(this)
+        lock = Lock.newBuilder(auth0, this)
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
                 .loginAfterSignUp(false)
