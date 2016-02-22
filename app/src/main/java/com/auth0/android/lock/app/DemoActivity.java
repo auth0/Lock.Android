@@ -36,6 +36,7 @@ import android.widget.Button;
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -57,9 +58,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
+        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_email_code);
+        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_email_link);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
+        btnPasswordlessEmailCode.setOnClickListener(this);
+        btnPasswordlessEmailLink.setOnClickListener(this);
     }
 
 
@@ -106,7 +111,33 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
+            case R.id.btn_passwordless_email_code:
+                passwordless(PasswordlessMode.EMAIL_CODE);
+                break;
+            case R.id.btn_passwordless_email_link:
+                passwordless(PasswordlessMode.EMAIL_LINK);
+                break;
         }
+    }
+
+    /**
+     * Launches the login flow showing only the Passwordless widget.
+     *
+     * @param mode
+     */
+    private void passwordless(PasswordlessMode mode) {
+        // create account
+        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+
+        lock = Lock.newBuilder()
+                .withAccount(auth0)
+                .withCallback(this)
+                .usePasswordless(mode)
+                .build();
+        lock.onCreate(DemoActivity.this);
+
+        // launch, the results will be received in the callback
+        startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
     }
 
     /**

@@ -34,9 +34,21 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="lbalmaceda.auth0.com"
-                    android:pathPrefix="/android/com.auth0.android.lock.app/callback"
+                    android:host="@string/auth0_domain"
+                    android:pathPrefix="/android/com.auth0.android.lock.app/email"
                     android:scheme="https" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data
+                    android:host="@string/auth0_domain"
+                    android:pathPrefix="/android/com.auth0.android.lock.app/email" />
             </intent-filter>
         </activity>
         <!--Auth0 Lock End-->

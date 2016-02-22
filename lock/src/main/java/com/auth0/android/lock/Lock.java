@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -34,6 +35,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
@@ -241,6 +243,11 @@ public class Lock {
 
         public Builder loginAfterSignUp(boolean login) {
             options.setLoginAfterSignUp(login);
+            return this;
+        }
+
+        public Builder usePasswordless(PasswordlessMode mode) {
+            options.setPasswordlessMode(mode);
             return this;
         }
     }

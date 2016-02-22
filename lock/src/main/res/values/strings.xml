@@ -107,14 +107,19 @@
     <string name="com_auth0_lock_hint_password">Password</string>
     <string name="com_auth0_lock_hint_username">Username</string>
     <string name="com_auth0_lock_hint_username_or_email">Username/Email</string>
+    <string name="com_auth0_lock_hint_code">Code</string>
     <string name="com_auth0_lock_input_error_email">Email not valid</string>
     <string name="com_auth0_lock_input_error_password">Must have at least 6 chars</string>
     <string name="com_auth0_lock_input_error_username">Must have at least 6 chars and no spaces</string>
     <string name="com_auth0_lock_input_error_username_email">Must be a valid email or have at least 6 chars and no spaces</string>
+    <string name="com_auth0_lock_input_error_code">Must have 6 chars</string>
     <string name="com_auth0_lock_action_sign_up">Sign Up</string>
     <string name="com_auth0_lock_action_change_password">Change password</string>
     <string name="com_auth0_lock_action_login">Login</string>
     <string name="com_auth0_lock_action_forgot_password">Forgot password?</string>
     <string name="com_auth0_lock_action_go_back">Go Back</string>
     <string name="com_auth0_lock_action_login_with">Login with %s</string>
+    <string name="com_auth0_lock_action_send_code">Send Code</string>
+    <string name="com_auth0_lock_action_send_link">Send Link</string>
+    <string name="com_auth0_lock_action_click_link">Open the link to login</string>
 </resources>
