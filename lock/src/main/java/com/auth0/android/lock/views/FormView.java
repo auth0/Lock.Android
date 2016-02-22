@@ -25,6 +25,8 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -32,6 +34,7 @@ import com.auth0.android.lock.Configuration;
 import com.squareup.otto.Bus;
 
 public abstract class FormView extends RelativeLayout implements View.OnClickListener {
+    private static final String TAG = FormView.class.getSimpleName();
     private Bus bus;
 
     public FormView(Context context) {
@@ -46,6 +49,7 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
 
     protected abstract void init(Configuration configuration);
 
+    @Nullable
     protected abstract Object getActionEvent();
 
     protected abstract boolean hasValidData();
@@ -55,7 +59,12 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
         if (!hasValidData()) {
             return;
         }
-        bus.post(getActionEvent());
+        Object event = getActionEvent();
+        if (event != null) {
+            bus.post(event);
+        } else {
+            Log.w(TAG, "Received login event was null.");
+        }
     }
 
 }

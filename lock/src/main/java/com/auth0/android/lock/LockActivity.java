@@ -51,10 +51,8 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Strategies;
-import com.auth0.android.lock.views.DatabaseLayout;
-import com.auth0.android.lock.views.EnterpriseLayout;
 import com.auth0.android.lock.views.LockProgress;
-import com.auth0.android.lock.views.SocialView;
+import com.auth0.android.lock.views.PanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.ChangePasswordRequest;
@@ -90,8 +88,7 @@ public class LockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
-    private DatabaseLayout databaseLayout;
-    private EnterpriseLayout enterpriseLayout;
+    private PanelHolder panelHolder;
 
     private WebIdentityProvider lastIdp;
 
@@ -142,7 +139,7 @@ public class LockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (databaseLayout != null && databaseLayout.onBackPressed()) {
+        if (panelHolder != null && panelHolder.onBackPressed()) {
             return;
         }
 
@@ -200,18 +197,8 @@ public class LockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
-        //TODO: add custom view for panels layout.
-
-        if (!configuration.getEnterpriseStrategies().isEmpty()) {
-            enterpriseLayout = new EnterpriseLayout(this, lockBus, configuration);
-            rootView.addView(enterpriseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        } else if (!configuration.getSocialStrategies().isEmpty()) {
-            SocialView sv = new SocialView(this, lockBus, configuration, SocialView.Mode.List);
-            rootView.addView(sv, ViewGroup.LayoutParams.MATCH_PARENT, R.dimen.com_auth0_lock_social_container_height);
-        } else if (configuration.getDefaultDatabaseConnection() != null) {
-            databaseLayout = new DatabaseLayout(this, lockBus, configuration);
-            rootView.addView(databaseLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
+        panelHolder = new PanelHolder(LockActivity.this, lockBus, configuration);
+        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
 

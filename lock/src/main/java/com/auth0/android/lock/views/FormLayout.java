@@ -34,7 +34,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class DatabaseLayout extends RelativeLayout implements View.OnClickListener {
+public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private Bus bus;
     private Configuration configuration;
 
@@ -42,13 +42,19 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
     private Button changePasswordBtn;
     private Button goBackBtn;
     private FrameLayout formContainer;
+    private boolean showDatabase;
+    private boolean showEnterprise;
 
+    private LoginFormView loginForm;
+    private SignUpFormView signUpForm;
+    private ChangePasswordFormView changePwdForm;
+    private DomainFormView domainForm;
 
-    public DatabaseLayout(Context context) {
+    public FormLayout(Context context) {
         super(context);
     }
 
-    public DatabaseLayout(Context context, Bus lockBus, Configuration configuration) {
+    public FormLayout(Context context, Bus lockBus, Configuration configuration) {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;
@@ -65,7 +71,10 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
         goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
         goBackBtn.setOnClickListener(this);
 
-        showLoginForm();
+        showDatabase = configuration.getDefaultDatabaseConnection() != null;
+        showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+
+        moveToFirstForm();
     }
 
     @Override
@@ -76,14 +85,16 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
         } else if (id == R.id.com_auth0_lock_change_password_btn) {
             showChangePasswordForm();
         } else if (id == R.id.com_auth0_lock_back_btn) {
-            showLoginForm();
+            moveToFirstForm();
         }
     }
 
     private void showSignUpForm() {
         removePreviousForm();
 
-        SignUpFormView signUpForm = new SignUpFormView(getContext(), this.bus, this.configuration);
+        if (signUpForm == null) {
+            signUpForm = new SignUpFormView(getContext(), this.bus, this.configuration);
+        }
         formContainer.addView(signUpForm);
 
         signUpBtn.setVisibility(View.GONE);
@@ -94,7 +105,9 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
     private void showChangePasswordForm() {
         removePreviousForm();
 
-        ChangePasswordFormView changePwdForm = new ChangePasswordFormView(getContext(), this.bus, this.configuration);
+        if (changePwdForm == null) {
+            changePwdForm = new ChangePasswordFormView(getContext(), this.bus, this.configuration);
+        }
         formContainer.addView(changePwdForm);
 
         signUpBtn.setVisibility(View.GONE);
@@ -105,7 +118,9 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
     private void showLoginForm() {
         removePreviousForm();
 
-        LoginFormView loginForm = new LoginFormView(getContext(), this.bus, this.configuration);
+        if (loginForm == null) {
+            loginForm = new LoginFormView(getContext(), this.bus, this.configuration);
+        }
         formContainer.addView(loginForm);
 
         changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
@@ -113,11 +128,31 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
         goBackBtn.setVisibility(View.GONE);
     }
 
+    private void showDomainForm(boolean fallbackToDatabase) {
+        removePreviousForm();
+
+        if (domainForm == null) {
+            domainForm = new DomainFormView(getContext(), this.bus, this.configuration, fallbackToDatabase);
+        }
+        formContainer.addView(domainForm);
+
+        changePasswordBtn.setVisibility(fallbackToDatabase && configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
+        signUpBtn.setVisibility(fallbackToDatabase && configuration.isSignUpEnabled() ? View.VISIBLE : View.GONE);
+        goBackBtn.setVisibility(View.GONE);
+    }
 
     private void removePreviousForm() {
         View existingForm = formContainer.getChildAt(0);
         if (existingForm != null) {
             formContainer.removeView(existingForm);
+        }
+    }
+
+    private void moveToFirstForm() {
+        if (showDatabase && !showEnterprise) {
+            showLoginForm();
+        } else {
+            showDomainForm(showDatabase);
         }
     }
 
@@ -128,7 +163,7 @@ public class DatabaseLayout extends RelativeLayout implements View.OnClickListen
      */
     public boolean onBackPressed() {
         if (goBackBtn.getVisibility() == VISIBLE) {
-            showLoginForm();
+            moveToFirstForm();
             return true;
         }
         return false;
