@@ -3,6 +3,7 @@ package com.auth0.android.lock;
 import android.os.Parcel;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -164,6 +165,33 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldUsePasswordlessMode() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setPasswordlessMode(PasswordlessMode.EMAIL_CODE);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.passwordlessMode(), is(equalTo(parceledOptions.passwordlessMode())));
+    }
+
+    @Test
+    public void shouldDisablePasswordlessByDefault() {
+        Options options = new Options();
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.passwordlessMode(), is(equalTo(parceledOptions.passwordlessMode())));
+    }
+
+    @Test
     public void shouldBeSignUpEnabled() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -265,6 +293,7 @@ public class OptionsTest {
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
+        assertThat(options.passwordlessMode(), is(PasswordlessMode.DISABLED));
     }
 
 

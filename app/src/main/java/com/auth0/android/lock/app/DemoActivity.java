@@ -36,6 +36,7 @@ import android.widget.Button;
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -57,9 +58,11 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
+        Button btnPasswordlessLink = (Button) findViewById(R.id.btn_passwordless_link);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
+        btnPasswordlessLink.setOnClickListener(this);
     }
 
 
@@ -106,7 +109,28 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
+            case R.id.btn_passwordless_link:
+                passwordlessLink();
+                break;
         }
+    }
+
+    /**
+     * Launches the login flow showing only the Passwordless widget.
+     */
+    private void passwordlessLink() {
+        // create account
+        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+
+        lock = Lock.newBuilder()
+                .withAccount(auth0)
+                .withCallback(this)
+                .usePasswordless(PasswordlessMode.EMAIL_CODE)
+                .build();
+        lock.onCreate(DemoActivity.this);
+
+        // launch, the results will be received in the callback
+        startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
     }
 
     /**
