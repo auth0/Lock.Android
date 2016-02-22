@@ -36,6 +36,7 @@ import android.widget.Button;
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
+import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
@@ -50,6 +51,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     private static final int AUTH_REQUEST = 333;
 
     private Lock lock;
+    private PasswordlessLock passwordlessLock;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +72,10 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     public void onDestroy() {
         super.onDestroy();
         if (lock != null) {
-            lock.onDestroy(DemoActivity.this);
+            lock.onDestroy(this);
+        }
+        if (passwordlessLock != null) {
+            passwordlessLock.onDestroy(this);
         }
     }
 
@@ -78,7 +83,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //should we ask for null lock?
         if (lock != null && requestCode == AUTH_REQUEST) {
-            lock.onActivityResult(DemoActivity.this, resultCode, data);
+            lock.onActivityResult(this, resultCode, data);
             return;
         }
 
@@ -116,6 +121,14 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     }
 
     private void passwordlessLogin(PasswordlessMode mode) {
+        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+
+        passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
+                .withMode(mode)
+                .build();
+        passwordlessLock.onCreate(this);
+
+        startActivity(lock.newIntent(this));
     }
 
     /**
@@ -137,7 +150,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .withAuthenticationParameters(params)
                 .loginAfterSignUp(false)
                 .build();
-        lock.onCreate(DemoActivity.this);
+        lock.onCreate(this);
 
         // launch, the results will be received in the callback
         if (useBrowser) {

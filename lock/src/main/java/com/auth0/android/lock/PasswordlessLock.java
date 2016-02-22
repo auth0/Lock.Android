@@ -32,10 +32,10 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -43,7 +43,6 @@ import com.auth0.authentication.result.Token;
 import com.auth0.authentication.result.UserProfile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PasswordlessLock {
@@ -63,7 +62,7 @@ public class PasswordlessLock {
     static final String PROFILE_EXTRA = "com.auth0.android.lock.extra.Profile";
 
     /**
-     * Listens to LockPasswordlessActivity broadcasts and fires the correct action on the AuthenticationCallback.
+     * Listens to PasswordlessLockActivity broadcasts and fires the correct action on the AuthenticationCallback.
      */
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -101,7 +100,7 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public Intent newIntent(Activity activity) {
-        Intent lockIntent = new Intent(activity, LockActivity.class);
+        Intent lockIntent = new Intent(activity, PasswordlessLockActivity.class);
         lockIntent.putExtra(OPTIONS_EXTRA, options);
         return lockIntent;
     }
@@ -162,6 +161,7 @@ public class PasswordlessLock {
     }
 
     public static class Builder {
+        private static final String TAG = Builder.class.getSimpleName();
         private Options options;
         private AuthenticationCallback callback;
 
@@ -175,12 +175,15 @@ public class PasswordlessLock {
 
         public PasswordlessLock build() {
             if (options.getAccount() == null) {
+                Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
                 throw new IllegalArgumentException("Missing Auth0 account information.");
             }
             if (callback == null) {
+                Log.e(TAG, "You need to specify the com.auth0.android.lock.AuthenticationCallback object to receive the Authentication result.");
                 throw new IllegalArgumentException("Missing AuthenticationCallback.");
             }
             if (options.passwordlessMode() == null) {
+                Log.e(TAG, "You need to specify the com.auth0.android.lock.enums.PasswordlessMode to use in the Passwordless Authentication.");
                 throw new IllegalArgumentException("Missing PasswordlessMode.");
             }
             return new PasswordlessLock(options, callback);

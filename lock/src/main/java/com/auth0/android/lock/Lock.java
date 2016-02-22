@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
@@ -166,6 +167,7 @@ public class Lock {
     }
 
     public static class Builder {
+        private static final String TAG = Builder.class.getSimpleName();
         private Options options;
         private AuthenticationCallback callback;
 
@@ -179,9 +181,11 @@ public class Lock {
 
         public Lock build() {
             if (options.getAccount() == null) {
+                Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
                 throw new IllegalArgumentException("Missing Auth0 account information.");
             }
             if (callback == null) {
+                Log.e(TAG, "You need to specify the com.auth0.android.lock.AuthenticationCallback object to receive the Authentication result.");
                 throw new IllegalArgumentException("Missing AuthenticationCallback.");
             }
             return new Lock(options, callback);
