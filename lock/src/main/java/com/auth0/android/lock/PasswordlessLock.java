@@ -1,5 +1,5 @@
 /*
- * Lock.java
+ * PasswordlessLock.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
@@ -45,7 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Lock {
+public class PasswordlessLock {
 
     private AuthenticationCallback callback;
     private final Options options;
@@ -62,7 +63,7 @@ public class Lock {
     static final String PROFILE_EXTRA = "com.auth0.android.lock.extra.Profile";
 
     /**
-     * Listens to LockActivity broadcasts and fires the correct action on the AuthenticationCallback.
+     * Listens to LockPasswordlessActivity broadcasts and fires the correct action on the AuthenticationCallback.
      */
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -70,15 +71,15 @@ public class Lock {
         public void onReceive(Context context, Intent data) {
             // Get extra data included in the Intent
             String action = data.getAction();
-            if (action.equals(Lock.AUTHENTICATION_ACTION)) {
+            if (action.equals(PasswordlessLock.AUTHENTICATION_ACTION)) {
                 processEvent(data);
-            } else if (action.equals(Lock.CANCELED_ACTION)) {
+            } else if (action.equals(PasswordlessLock.CANCELED_ACTION)) {
                 callback.onCanceled();
             }
         }
     };
 
-    private Lock(Options options, AuthenticationCallback callback) {
+    private PasswordlessLock(Options options, AuthenticationCallback callback) {
         this.options = options;
         this.callback = callback;
     }
@@ -89,7 +90,7 @@ public class Lock {
 
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
-        return new Lock.Builder(account, callback);
+        return new PasswordlessLock.Builder(account, callback);
     }
 
     /**
@@ -107,14 +108,9 @@ public class Lock {
 
     @SuppressWarnings("unused")
     public void onCreate(Activity activity) {
-        // nikolaseu: register broadcast listener only when callback is set?
-        //            i.e. when NOT using startForResult
-        //  L= lets leave this as an improvement
-
-        //if (callback != null) //can the callback be optional?
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Lock.AUTHENTICATION_ACTION);
-        filter.addAction(Lock.CANCELED_ACTION);
+        filter.addAction(PasswordlessLock.AUTHENTICATION_ACTION);
+        filter.addAction(PasswordlessLock.CANCELED_ACTION);
         LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
@@ -147,12 +143,12 @@ public class Lock {
      * @param eventData the intent received at the end of the login process.
      */
     private void processEvent(Intent eventData) {
-        String idToken = eventData.getStringExtra(Lock.ID_TOKEN_EXTRA);
-        String accessToken = eventData.getStringExtra(Lock.ACCESS_TOKEN_EXTRA);
-        String tokenType = eventData.getStringExtra(Lock.TOKEN_TYPE_EXTRA);
-        String refreshToken = eventData.getStringExtra(Lock.REFRESH_TOKEN_EXTRA);
+        String idToken = eventData.getStringExtra(PasswordlessLock.ID_TOKEN_EXTRA);
+        String accessToken = eventData.getStringExtra(PasswordlessLock.ACCESS_TOKEN_EXTRA);
+        String tokenType = eventData.getStringExtra(PasswordlessLock.TOKEN_TYPE_EXTRA);
+        String refreshToken = eventData.getStringExtra(PasswordlessLock.REFRESH_TOKEN_EXTRA);
         Token token = new Token(idToken, accessToken, tokenType, refreshToken);
-        UserProfile profile = (UserProfile) eventData.getSerializableExtra(Lock.PROFILE_EXTRA);
+        UserProfile profile = (UserProfile) eventData.getSerializableExtra(PasswordlessLock.PROFILE_EXTRA);
 
         Authentication authentication = new Authentication(profile, token);
 
@@ -177,18 +173,21 @@ public class Lock {
             options.setAuthenticationParameters(defaultParams);
         }
 
-        public Lock build() {
+        public PasswordlessLock build() {
             if (options.getAccount() == null) {
                 throw new IllegalArgumentException("Missing Auth0 account information.");
             }
             if (callback == null) {
                 throw new IllegalArgumentException("Missing AuthenticationCallback.");
             }
-            return new Lock(options, callback);
+            if (options.passwordlessMode() == null) {
+                throw new IllegalArgumentException("Missing PasswordlessMode.");
+            }
+            return new PasswordlessLock(options, callback);
         }
 
-        public Builder useBrowser(boolean useBrowser) {
-            options.setUseBrowser(useBrowser);
+        public Builder withMode(@NonNull PasswordlessMode mode){
+            options.setPasswordlessMode(mode);
             return this;
         }
 
@@ -209,41 +208,6 @@ public class Lock {
                 options.setAuthenticationParameters(new HashMap<String, Object>(authenticationParameters));
             }
 
-            return this;
-        }
-
-        public Builder onlyUseConnections(List<String> connections) {
-            options.setConnections(connections);
-            return this;
-        }
-
-        public Builder doNotSendSDKInfo() {
-            options.setSendSDKInfo(false);
-            return this;
-        }
-
-        public Builder withUsernameStyle(UsernameStyle style) {
-            options.setUsernameStyle(style);
-            return this;
-        }
-
-        public Builder disableSignUp() {
-            options.setSignUpEnabled(false);
-            return this;
-        }
-
-        public Builder disableChangePassword() {
-            options.setChangePasswordEnabled(false);
-            return this;
-        }
-
-        public Builder setDefaultDatabaseConnection(String connectionName) {
-            options.useDatabaseConnection(connectionName);
-            return this;
-        }
-
-        public Builder loginAfterSignUp(boolean login) {
-            options.setLoginAfterSignUp(login);
             return this;
         }
     }
