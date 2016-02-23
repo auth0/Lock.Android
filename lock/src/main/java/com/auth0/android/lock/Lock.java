@@ -221,11 +221,11 @@ public class Lock {
         public Lock build() {
             if (options.getAccount() == null) {
                 Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
-                throw new IllegalArgumentException("Missing Auth0 account information.");
+                throw new IllegalStateException("Missing Auth0 account information.");
             }
             if (callback == null) {
-                Log.e(TAG, "You need to specify the com.auth0.android.lock.AuthenticationCallback object to receive the Authentication result.");
-                throw new IllegalArgumentException("Missing AuthenticationCallback.");
+                Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
+                throw new IllegalStateException("Missing AuthenticationCallback.");
             }
             return new Lock(options, callback);
         }

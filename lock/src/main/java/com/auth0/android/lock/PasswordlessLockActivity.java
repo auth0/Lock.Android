@@ -26,14 +26,13 @@ package com.auth0.android.lock;
 
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -50,8 +49,6 @@ import com.auth0.callback.BaseCallback;
 import com.auth0.request.ParameterizableRequest;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-
-import java.util.HashMap;
 
 public class PasswordlessLockActivity extends AppCompatActivity {
 
@@ -87,9 +84,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private boolean isLaunchConfigValid() {
         options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
         if (options == null) {
-            Log.e(TAG, "You need to specify the com.auth0.android.lock.Options in the Lock.OPTIONS_EXTRA of the Intent for PasswordlessLockActivity to launch. " +
-                    "Use com.auth0.android.lock.PasswordlessLock.Builder to generate one.");
-            throw new IllegalArgumentException("Missing com.auth0.android.lock.Options in intent");
+            Log.e(TAG, "Lock Options are missing in the received Intent and PasswordlessLockActivity will not launch. " +
+                    "Use the PasswordlessLock.Builder to generate a valid Intent.");
+            finish();
+            return false;
         }
 
         return true;
@@ -147,14 +145,17 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     }
 
     private void processIncomingIntent(Intent intent) {
-        if (options != null && options.passwordlessMode() == PasswordlessMode.EMAIL_LINK) {
+        if (options != null && lastPasswordlessEmailOrNumber != null && options.passwordlessMode() == PasswordlessMode.EMAIL_LINK) {
             String code = intent.getData().getQueryParameter("code");
-            if (code == null || code.isEmpty() || lastPasswordlessEmailOrNumber == null) {
-                Log.w(TAG, "Code was invalid.");
+            if (code == null || code.isEmpty()) {
+                Log.w(TAG, "Passwordless Code is missing or could not be parsed");
+                Snackbar.make(rootView, R.string.com_auth0_lock_error_parsing_passwordless_code, Snackbar.LENGTH_LONG).show();
             } else {
                 PasswordlessLoginEvent event = new PasswordlessLoginEvent(options.passwordlessMode(), lastPasswordlessEmailOrNumber, code);
                 onPasswordlessAuthenticationRequest(event);
             }
+        } else {
+            progress.showResult(getString(R.string.com_auth0_lock_error_unexpected_passwordless_intent));
         }
     }
 
@@ -180,7 +181,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
-        ParameterizableRequest<Void> codeRequest=null;
+        ParameterizableRequest<Void> codeRequest = null;
         if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
             codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
         } else if (event.getMode() == PasswordlessMode.EMAIL_LINK) {

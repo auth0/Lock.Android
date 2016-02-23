@@ -220,15 +220,15 @@ public class PasswordlessLock {
         public PasswordlessLock build() {
             if (options.getAccount() == null) {
                 Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
-                throw new IllegalArgumentException("Missing Auth0 account information.");
+                throw new IllegalStateException("Missing Auth0 account information.");
             }
             if (callback == null) {
-                Log.e(TAG, "You need to specify the com.auth0.android.lock.AuthenticationCallback object to receive the Authentication result.");
-                throw new IllegalArgumentException("Missing AuthenticationCallback.");
+                Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
+                throw new IllegalStateException("Missing AuthenticationCallback.");
             }
             if (options.passwordlessMode() == null) {
-                Log.e(TAG, "You need to specify the com.auth0.android.lock.enums.PasswordlessMode to use in the Passwordless Authentication.");
-                throw new IllegalArgumentException("Missing PasswordlessMode.");
+                Log.e(TAG, "You need to specify the PasswordlessMode to use in the Passwordless Authentication.");
+                throw new IllegalStateException("Missing PasswordlessMode.");
             }
             return new PasswordlessLock(options, callback);
         }
