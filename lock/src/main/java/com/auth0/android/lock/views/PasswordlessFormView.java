@@ -80,7 +80,7 @@ public class PasswordlessFormView extends FormView {
             if (choosenMode == PasswordlessMode.EMAIL_CODE) {
                 waitingForCode = true;
                 emailOrNumber = getInputText();
-                passwordlessInput.setDataType(ValidatedInputView.DataType.CODE);
+                passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
                 passwordlessInput.clearInput();
                 actionButton.setText(R.string.com_auth0_lock_action_login);
             } else {
