@@ -237,9 +237,7 @@ public class LockActivity extends AppCompatActivity {
         intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getToken().getType());
         intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
 
-        //TODO: Check if sendBroadcast works on background
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
         finish();
     }
 

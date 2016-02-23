@@ -124,4 +124,5 @@
     <string name="com_auth0_lock_action_click_link">Open the Link to Login</string>
     <string name="com_auth0_lock_error_unexpected_passwordless_intent">Unexpected Passwordless Intent received. You can close this window.</string>
     <string name="com_auth0_lock_error_parsing_passwordless_code">Error parsing the Passwordless Code</string>
+    <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
 </resources>
