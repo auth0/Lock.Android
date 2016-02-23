@@ -24,7 +24,13 @@
 
 package com.auth0.android.lock.events;
 
+import android.support.annotation.Nullable;
+
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.AuthenticationRequest;
+import com.auth0.authentication.PasswordlessType;
+import com.auth0.request.ParameterizableRequest;
 
 public class PasswordlessLoginEvent {
     private final PasswordlessMode mode;
@@ -53,5 +59,35 @@ public class PasswordlessLoginEvent {
 
     public String getCode() {
         return code;
+    }
+
+    /**
+     * Creates the ParameterizableRequest that will initiate the Passwordless Authentication flow.
+     *
+     * @param apiClient the API Client instance
+     * @return the Passwordless code request request.
+     */
+    @Nullable
+    public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient) {
+        if (getMode() == PasswordlessMode.EMAIL_CODE) {
+            return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
+        } else if (getMode() == PasswordlessMode.EMAIL_LINK) {
+            return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        }
+        return null;
+    }
+
+    /**
+     * Creates the AuthenticationRequest that will finish the Passwordless Authentication flow.
+     *
+     * @param apiClient the API Client instance
+     * @return the Passwordless login request.
+     */
+    @Nullable
+    public AuthenticationRequest getLoginRequest(AuthenticationAPIClient apiClient) {
+        if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
+            return apiClient.loginWithEmail(getEmailOrNumber(), getCode());
+        }
+        return null;
     }
 }

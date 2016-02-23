@@ -171,23 +171,19 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         if (event.getCode() != null) {
-            AuthenticationRequest answerRequest = null;
-            if (event.getMode() == PasswordlessMode.EMAIL_CODE || event.getMode() == PasswordlessMode.EMAIL_LINK) {
-                answerRequest = apiClient.loginWithEmail(event.getEmailOrNumber(), event.getCode());
+            AuthenticationRequest loginRequest = event.getLoginRequest(apiClient);
+            if (loginRequest != null) {
+                loginRequest.addParameters(options.getAuthenticationParameters());
+                loginRequest.start(authCallback);
             }
-            answerRequest.addParameters(options.getAuthenticationParameters());
-            answerRequest.start(authCallback);
             return;
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
-        ParameterizableRequest<Void> codeRequest = null;
-        if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
-            codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
-        } else if (event.getMode() == PasswordlessMode.EMAIL_LINK) {
-            codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
+        if (codeRequest != null) {
+            codeRequest.start(passwordlessCodeCallback);
         }
-        codeRequest.start(passwordlessCodeCallback);
     }
 
     //Callbacks
