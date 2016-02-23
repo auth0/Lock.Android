@@ -58,7 +58,6 @@ public class PanelHolder extends LinearLayout {
 
         SocialView socialLayout = null;
         if (showSocial && showLoginForm) {
-            //TODO: merge db and enterprise form, see trello
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
             formLayout = new FormLayout(getContext(), bus, configuration);
         } else if (showLoginForm) {
