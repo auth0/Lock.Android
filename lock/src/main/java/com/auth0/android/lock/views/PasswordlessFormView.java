@@ -83,6 +83,9 @@ public class PasswordlessFormView extends FormView {
                 passwordlessInput.setDataType(ValidatedInputView.DataType.CODE);
                 passwordlessInput.clearInput();
                 actionButton.setText(R.string.com_auth0_lock_action_login);
+            } else {
+                actionButton.setText(R.string.com_auth0_lock_action_click_link);
+                actionButton.setEnabled(false);
             }
             return event;
         }

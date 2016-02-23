@@ -24,5 +24,10 @@
         android:layout_height="wrap_content"
         android:text="Passwordless Email Code" />
 
+    <Button
+        android:id="@+id/btn_passwordless_email_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Passwordless Email Link" />
 
 </LinearLayout>

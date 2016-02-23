@@ -63,6 +63,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private LinearLayout rootView;
     private LockProgress progress;
     private PasswordlessFormView passwordlessForm;
+    private String lastPasswordlessEmailOrNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,8 +112,8 @@ public class PasswordlessLockActivity extends AppCompatActivity {
      * Show the LockUI with all the panels and custom widgets.
      */
     private void initLockUI() {
-        PasswordlessFormView passwordlessFormView = new PasswordlessFormView(PasswordlessLockActivity.this, lockBus, options.passwordlessMode());
-        rootView.addView(passwordlessFormView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        passwordlessForm = new PasswordlessFormView(PasswordlessLockActivity.this, lockBus, options.passwordlessMode());
+        rootView.addView(passwordlessForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     private void deliverResult(Authentication result) {
@@ -132,6 +133,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
+        processIncomingIntent(data);
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -139,8 +141,21 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "OnNewIntent called with intent: " + intent);
+        processIncomingIntent(intent);
 
         super.onNewIntent(intent);
+    }
+
+    private void processIncomingIntent(Intent intent) {
+        if (options != null && options.passwordlessMode() == PasswordlessMode.EMAIL_LINK) {
+            String code = intent.getData().getQueryParameter("code");
+            if (code == null || code.isEmpty() || lastPasswordlessEmailOrNumber == null) {
+                Log.w(TAG, "Code was invalid.");
+            } else {
+                PasswordlessLoginEvent event = new PasswordlessLoginEvent(options.passwordlessMode(), lastPasswordlessEmailOrNumber, code);
+                onPasswordlessAuthenticationRequest(event);
+            }
+        }
     }
 
     @SuppressWarnings("unused")
@@ -156,20 +171,19 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         if (event.getCode() != null) {
             AuthenticationRequest answerRequest = null;
-            if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
+            if (event.getMode() == PasswordlessMode.EMAIL_CODE || event.getMode() == PasswordlessMode.EMAIL_LINK) {
                 answerRequest = apiClient.loginWithEmail(event.getEmailOrNumber(), event.getCode());
             }
-            HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
-            authenticationParameters.put("device", Build.PRODUCT);
-            answerRequest.addParameters(authenticationParameters);
+            answerRequest.addParameters(options.getAuthenticationParameters());
             answerRequest.start(authCallback);
             return;
         }
 
-        ParameterizableRequest<Void> codeRequest;
+        lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
+        ParameterizableRequest<Void> codeRequest=null;
         if (event.getMode() == PasswordlessMode.EMAIL_CODE) {
             codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.CODE);
-        } else {
+        } else if (event.getMode() == PasswordlessMode.EMAIL_LINK) {
             codeRequest = apiClient.passwordlessWithEmail(event.getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
         }
         codeRequest.start(passwordlessCodeCallback);
