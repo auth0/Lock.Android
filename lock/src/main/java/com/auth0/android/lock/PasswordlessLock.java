@@ -83,17 +83,29 @@ public class PasswordlessLock {
         this.callback = callback;
     }
 
+    /**
+     * Lock.Options holds the configuration used in the Auth0 Passwordless Authentication API.
+     *
+     * @return the Lock.Options for this Lock instance.
+     */
     public Options getOptions() {
         return options;
     }
 
+    /**
+     * Creates a new Lock.Builder instance with the given account and callback.
+     *
+     * @param account  details to use against the Auth0 Authentication API.
+     * @param callback that will receive the authentication results.
+     * @return a new Lock.Builder instance.
+     */
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
         return new PasswordlessLock.Builder(account, callback);
     }
 
     /**
-     * Builds a new intent to launch LockActivity with the given options
+     * Builds a new intent to launch LockActivity with the previously configured options
      *
      * @param activity a valid Activity context
      * @return the intent to which the user has to call startActivity or startActivityForResult
@@ -105,6 +117,12 @@ public class PasswordlessLock {
         return lockIntent;
     }
 
+    /**
+     * Should be called on the Activity holding the Lock instance's OnCreate method, as it
+     * ensures the correct Lock lifecycle handling.
+     *
+     * @param activity a valid Activity context
+     */
     @SuppressWarnings("unused")
     public void onCreate(Activity activity) {
         IntentFilter filter = new IntentFilter();
@@ -113,6 +131,12 @@ public class PasswordlessLock {
         LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
+    /**
+     * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
+     * ensures the correct Lock lifecycle handling.
+     *
+     * @param activity a valid Activity context
+     */
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
         // unregister listener (if something was registered)
@@ -122,9 +146,14 @@ public class PasswordlessLock {
         }
     }
 
-    /*
-    Evaluate changing the name of this method: parseActivityResult? processResult?
-    */
+    /**
+     * Should be called on the Activity holding the Lock instance's OnActivityResult method, as
+     * it ensures the correct parsing of the received Authentication data.
+     *
+     * @param activity   a valid Activity context
+     * @param resultCode received in the OnActivityResult call
+     * @param data       intent received in the OnActivityResult call
+     */
     @SuppressWarnings("unused")
     public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -160,11 +189,20 @@ public class PasswordlessLock {
         }
     }
 
+    /**
+     * Helper Builder to generate the Lock.Options to use on the Auth0 Passwordless Authentication.
+     */
     public static class Builder {
         private static final String TAG = Builder.class.getSimpleName();
         private Options options;
         private AuthenticationCallback callback;
 
+        /**
+         * Creates a new Lock.Builder instance with the given account and callback.
+         *
+         * @param account  details to use against the Auth0 Authentication API.
+         * @param callback that will receive the authentication results.
+         */
         public Builder(Auth0 account, AuthenticationCallback callback) {
             HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
@@ -173,6 +211,12 @@ public class PasswordlessLock {
             options.setAuthenticationParameters(defaultParams);
         }
 
+        /**
+         * Finishes the construction of the Lock.Options and generates a new Lock instance
+         * with those Lock.Options.
+         *
+         * @return a new Lock instance configured as in the Builder.
+         */
         public PasswordlessLock build() {
             if (options.getAccount() == null) {
                 Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
@@ -189,21 +233,45 @@ public class PasswordlessLock {
             return new PasswordlessLock(options, callback);
         }
 
-        public Builder withMode(@NonNull PasswordlessMode mode){
+        /**
+         * Defines the Passwordless mode to use in the Authentication.
+         *
+         * @param mode a valid PasswordlessMode
+         * @return the current Builder instance
+         */
+        public Builder withMode(@NonNull PasswordlessMode mode) {
             options.setPasswordlessMode(mode);
             return this;
         }
 
+        /**
+         * Whether the PasswordlessLockActivity can be closed when pressing the Back key or not.
+         *
+         * @param closable or not. By default, the LockActivity is not closable.
+         * @return the current builder instance
+         */
         public Builder closable(boolean closable) {
             options.setClosable(closable);
             return this;
         }
 
+        /**
+         * Whether the PasswordlessLockActivity will go fullscreen or will show the status bar.
+         *
+         * @param fullscreen or not. By default, the LockActivity will not be Fullscreen.
+         * @return the current builder instance
+         */
         public Builder fullscreen(boolean fullscreen) {
             options.setFullscreen(fullscreen);
             return this;
         }
 
+        /**
+         * Additional Authentication parameters can be set to use with different Identity Providers.
+         *
+         * @param authenticationParameters a non-null Map containing the parameters as Key-Values
+         * @return the current builder instance
+         */
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             if (authenticationParameters instanceof HashMap) {
                 options.setAuthenticationParameters((HashMap<String, Object>) authenticationParameters);

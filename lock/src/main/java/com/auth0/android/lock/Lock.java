@@ -84,17 +84,29 @@ public class Lock {
         this.callback = callback;
     }
 
+    /**
+     * Lock.Options holds the configuration used in the Auth0 Authentication API.
+     *
+     * @return the Lock.Options for this Lock instance.
+     */
     public Options getOptions() {
         return options;
     }
 
+    /**
+     * Creates a new Lock.Builder instance with the given account and callback.
+     *
+     * @param account  details to use against the Auth0 Authentication API.
+     * @param callback that will receive the authentication results.
+     * @return a new Lock.Builder instance.
+     */
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
         return new Lock.Builder(account, callback);
     }
 
     /**
-     * Builds a new intent to launch LockActivity with the given options
+     * Builds a new intent to launch LockActivity with the previously configured options
      *
      * @param activity a valid Activity context
      * @return the intent to which the user has to call startActivity or startActivityForResult
@@ -106,19 +118,26 @@ public class Lock {
         return lockIntent;
     }
 
+    /**
+     * Should be called on the Activity holding the Lock instance's OnCreate method, as it
+     * ensures the correct Lock lifecycle handling.
+     *
+     * @param activity a valid Activity context
+     */
     @SuppressWarnings("unused")
     public void onCreate(Activity activity) {
-        // nikolaseu: register broadcast listener only when callback is set?
-        //            i.e. when NOT using startForResult
-        //  L= lets leave this as an improvement
-
-        //if (callback != null) //can the callback be optional?
         IntentFilter filter = new IntentFilter();
         filter.addAction(Lock.AUTHENTICATION_ACTION);
         filter.addAction(Lock.CANCELED_ACTION);
         LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
+    /**
+     * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
+     * ensures the correct Lock lifecycle handling.
+     *
+     * @param activity a valid Activity context
+     */
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
         // unregister listener (if something was registered)
@@ -128,9 +147,14 @@ public class Lock {
         }
     }
 
-    /*
-    Evaluate changing the name of this method: parseActivityResult? processResult?
-    */
+    /**
+     * Should be called on the Activity holding the Lock instance's OnActivityResult method, as
+     * it ensures the correct parsing of the received Authentication data.
+     *
+     * @param activity   a valid Activity context
+     * @param resultCode received in the OnActivityResult call
+     * @param data       intent received in the OnActivityResult call
+     */
     @SuppressWarnings("unused")
     public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -166,11 +190,20 @@ public class Lock {
         }
     }
 
+    /**
+     * Helper Builder to generate the Lock.Options to use on the Auth0 Authentication.
+     */
     public static class Builder {
         private static final String TAG = Builder.class.getSimpleName();
         private Options options;
         private AuthenticationCallback callback;
 
+        /**
+         * Creates a new Lock.Builder instance with the given account and callback.
+         *
+         * @param account  details to use against the Auth0 Authentication API.
+         * @param callback that will receive the authentication results.
+         */
         public Builder(Auth0 account, AuthenticationCallback callback) {
             HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
@@ -179,6 +212,12 @@ public class Lock {
             options.setAuthenticationParameters(defaultParams);
         }
 
+        /**
+         * Finishes the construction of the Lock.Options and generates a new Lock instance
+         * with those Lock.Options.
+         *
+         * @return a new Lock instance configured as in the Builder.
+         */
         public Lock build() {
             if (options.getAccount() == null) {
                 Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
@@ -191,21 +230,45 @@ public class Lock {
             return new Lock(options, callback);
         }
 
+        /**
+         * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
+         *
+         * @param useBrowser or WebView. By default, the Authentication flow will use the WebView.
+         * @return the current Builder instance
+         */
         public Builder useBrowser(boolean useBrowser) {
             options.setUseBrowser(useBrowser);
             return this;
         }
 
+        /**
+         * Whether the LockActivity can be closed when pressing the Back key or not.
+         *
+         * @param closable or not. By default, the LockActivity is not closable.
+         * @return the current builder instance
+         */
         public Builder closable(boolean closable) {
             options.setClosable(closable);
             return this;
         }
 
+        /**
+         * Whether the LockActivity will go fullscreen or will show the status bar.
+         *
+         * @param fullscreen or not. By default, the LockActivity will not be Fullscreen.
+         * @return the current builder instance
+         */
         public Builder fullscreen(boolean fullscreen) {
             options.setFullscreen(fullscreen);
             return this;
         }
 
+        /**
+         * Additional Authentication parameters can be set to use with different Identity Providers.
+         *
+         * @param authenticationParameters a non-null Map containing the parameters as Key-Values
+         * @return the current builder instance
+         */
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             if (authenticationParameters instanceof HashMap) {
                 options.setAuthenticationParameters((HashMap<String, Object>) authenticationParameters);
@@ -216,36 +279,78 @@ public class Lock {
             return this;
         }
 
-        public Builder onlyUseConnections(List<String> connections) {
+        /**
+         * Locally filters the Auth0 Connections that are shown in the login widgets.
+         *
+         * @param connections a non-null List containing the allowed Auth0 Connections.
+         * @return the current builder instance
+         */
+        public Builder onlyUseConnections(@NonNull List<String> connections) {
             options.setConnections(connections);
             return this;
         }
 
+        /**
+         * SDK information sent to the Auth0 API with each request can be disabled here. By default,
+         * sending the SDK information is enabled.
+         *
+         * @return the current builder instance
+         */
         public Builder doNotSendSDKInfo() {
             options.setSendSDKInfo(false);
             return this;
         }
 
+        /**
+         * Username style to use in the Login and Sign Up text fields. Defaults to the Dashboard
+         * configuration of "requires_username".
+         *
+         * @param style a valid UsernameStyle.
+         * @return the current builder instance
+         */
         public Builder withUsernameStyle(UsernameStyle style) {
             options.setUsernameStyle(style);
             return this;
         }
 
+        /**
+         * Sign Up can be disabled locally, regardless the Dashboard configuration.
+         *
+         * @return the current builder instance
+         */
         public Builder disableSignUp() {
             options.setSignUpEnabled(false);
             return this;
         }
 
+        /**
+         * Password change can be disabled locally, regardless the Dashboard configuration.
+         *
+         * @return the current builder instance
+         */
         public Builder disableChangePassword() {
             options.setChangePasswordEnabled(false);
             return this;
         }
 
+        /**
+         * Change the connection name to use on the Database authentication flow.
+         * Defaults to the first Database connection found.
+         *
+         * @param connectionName Must exist in the Application configuration on the Dashboard.
+         * @return the current builder instance
+         */
         public Builder setDefaultDatabaseConnection(String connectionName) {
             options.useDatabaseConnection(connectionName);
             return this;
         }
 
+        /**
+         * Whether to login after a successful sign up callback. Defaults to true.
+         *
+         * @param login after sign up or not
+         * @return the current builder instance
+         */
         public Builder loginAfterSignUp(boolean login) {
             options.setLoginAfterSignUp(login);
             return this;
