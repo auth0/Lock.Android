@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -42,6 +44,9 @@ class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
+    private static final String SCOPE_KEY = "scope";
+    private static final String DEVICE_KEY = "device";
+    private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
 
     private Auth0 account;
     private boolean useBrowser;
@@ -267,6 +272,12 @@ class Options implements Parcelable {
     }
 
     public void setAuthenticationParameters(@NonNull HashMap<String, Object> authenticationParameters) {
+        final String scope = (String) authenticationParameters.get(SCOPE_KEY);
+        final String device = (String) authenticationParameters.get(DEVICE_KEY);
+
+        if (scope != null && scope.contains(SCOPE_OFFLINE_ACCESS) && device == null) {
+            authenticationParameters.put(DEVICE_KEY, Build.MODEL);
+        }
         this.authenticationParameters = authenticationParameters;
     }
 
