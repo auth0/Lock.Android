@@ -35,7 +35,8 @@
             <enum name="email" value="1" />
             <enum name="username_or_email" value="2" />
             <enum name="number" value="3" />
-            <enum name="password" value="4" />
+            <enum name="phone_number" value="4" />
+            <enum name="password" value="5" />
         </attr>
     </declare-styleable>
 </resources>
