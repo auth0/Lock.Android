@@ -290,7 +290,7 @@ public class OptionsTest {
         Options options = new Options();
         options.setAccount(auth0);
         HashMap<String, Object> params = new HashMap<>();
-        params.put(DEVICE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
+        params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
         options.setAuthenticationParameters(params);
 
         Parcel parcel = Parcel.obtain();
