@@ -1,5 +1,5 @@
 /*
- * FormView.java
+ * PasswordlessMode.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,46 +22,8 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.views;
+package com.auth0.android.lock.enums;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
-
-import com.auth0.android.lock.Configuration;
-import com.squareup.otto.Bus;
-
-public abstract class FormView extends RelativeLayout implements View.OnClickListener {
-    private static final String TAG = FormView.class.getSimpleName();
-    private Bus bus;
-
-    public FormView(Context context) {
-        super(context);
-    }
-
-    public FormView(Context context, Bus lockBus) {
-        super(context);
-        this.bus = lockBus;
-    }
-
-    @Nullable
-    protected abstract Object getActionEvent();
-
-    protected abstract boolean hasValidData();
-
-    @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
-        }
-        Object event = getActionEvent();
-        if (event != null) {
-            bus.post(event);
-        } else {
-            Log.w(TAG, "The Action Event received from the FormView was null.");
-        }
-    }
-
+public enum PasswordlessMode {
+    SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE
 }

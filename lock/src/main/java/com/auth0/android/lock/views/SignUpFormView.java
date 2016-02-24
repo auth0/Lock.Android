@@ -47,11 +47,11 @@ public class SignUpFormView extends FormView {
     }
 
     public SignUpFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus, configuration);
+        super(context, lockBus);
+        init(configuration);
     }
 
-    @Override
-    protected void init(Configuration configuration) {
+    private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
         loginAfterSignUp = configuration.loginAfterSignUp();
 
@@ -83,7 +83,7 @@ public class SignUpFormView extends FormView {
         return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
     }
 
-    public String getUsername() {
+    private String getUsername() {
         if (usernameInput.getVisibility() == VISIBLE) {
             return usernameInput.getText();
         } else {
@@ -91,11 +91,11 @@ public class SignUpFormView extends FormView {
         }
     }
 
-    public String getEmail() {
+    private String getEmail() {
         return emailInput.getText();
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return passwordInput.getText();
     }
 

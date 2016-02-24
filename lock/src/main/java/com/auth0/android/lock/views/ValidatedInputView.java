@@ -43,6 +43,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
 
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int MIN_USERNAME_LENGTH = 6;
+    private static final int MIN_PHONE_NUMBER_LENGTH = 10;
 
     private TextInputLayout inputLayout;
     private EditText input;
@@ -50,7 +51,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
     private int inputIcon;
     private int inputErrorIcon;
 
-    enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, PASSWORD}
+    enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD}
 
     private DataType dataType;
 
@@ -115,6 +116,18 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
                 inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
+            case NUMBER:
+                input.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                inputIcon = R.drawable.com_auth0_lock_ic_input_password;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_password_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_code);
+                break;
+            case PHONE_NUMBER:
+                input.setInputType(InputType.TYPE_CLASS_PHONE);
+                inputIcon = R.drawable.com_auth0_lock_ic_input_username;
+                inputErrorIcon = R.drawable.com_auth0_lock_ic_input_username_error;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
+                break;
         }
         inputLayout = (TextInputLayout) input.getParent();
         inputLayout.setErrorEnabled(true);
@@ -159,6 +172,14 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
             case USERNAME_OR_EMAIL:
                 valid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
                 errMsg = R.string.com_auth0_lock_input_error_username_email;
+                break;
+            case NUMBER:
+                valid = !value.isEmpty();
+                errMsg = R.string.com_auth0_lock_input_error_code;
+                break;
+            case PHONE_NUMBER:
+                value = value.replace(" ", "").replace("-", "");
+                valid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
                 break;
         }
 

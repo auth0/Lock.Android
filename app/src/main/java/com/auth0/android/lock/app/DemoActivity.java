@@ -36,6 +36,8 @@ import android.widget.Button;
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
+import com.auth0.android.lock.PasswordlessLock;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -49,6 +51,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     private static final int AUTH_REQUEST = 333;
 
     private Lock lock;
+    private PasswordlessLock passwordlessLock;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,9 +60,17 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
+        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_email_code);
+        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_email_link);
+        Button btnPasswordlessSmsCode = (Button) findViewById(R.id.btn_passwordless_sms_code);
+        Button btnPasswordlessSmsLink = (Button) findViewById(R.id.btn_passwordless_sms_link);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
+        btnPasswordlessEmailCode.setOnClickListener(this);
+        btnPasswordlessEmailLink.setOnClickListener(this);
+        btnPasswordlessSmsCode.setOnClickListener(this);
+        btnPasswordlessSmsLink.setOnClickListener(this);
     }
 
 
@@ -67,7 +78,10 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     public void onDestroy() {
         super.onDestroy();
         if (lock != null) {
-            lock.onDestroy(DemoActivity.this);
+            lock.onDestroy(this);
+        }
+        if (passwordlessLock != null) {
+            passwordlessLock.onDestroy(this);
         }
     }
 
@@ -75,7 +89,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //should we ask for null lock?
         if (lock != null && requestCode == AUTH_REQUEST) {
-            lock.onActivityResult(DemoActivity.this, resultCode, data);
+            lock.onActivityResult(this, resultCode, data);
             return;
         }
 
@@ -106,7 +120,35 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
+            case R.id.btn_passwordless_email_code:
+                passwordlessLogin(PasswordlessMode.EMAIL_CODE);
+                break;
+            case R.id.btn_passwordless_email_link:
+                passwordlessLogin(PasswordlessMode.EMAIL_LINK);
+                break;
+            case R.id.btn_passwordless_sms_code:
+                passwordlessLogin(PasswordlessMode.SMS_CODE);
+                break;
+            case R.id.btn_passwordless_sms_link:
+                passwordlessLogin(PasswordlessMode.SMS_LINK);
+                break;
         }
+    }
+
+    /**
+     * Launches the login flow showing only the Passwordless widget.
+     *
+     * @param mode to use in the Passwordless authentication.
+     */
+    private void passwordlessLogin(PasswordlessMode mode) {
+        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+
+        passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
+                .withMode(mode)
+                .build();
+        passwordlessLock.onCreate(this);
+
+        startActivity(passwordlessLock.newIntent(this));
     }
 
     /**
@@ -123,14 +165,12 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
         // create/configure lock
-        lock = Lock.newBuilder()
-                .withAccount(auth0)
-                .withCallback(this)
+        lock = Lock.newBuilder(auth0, this)
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
                 .loginAfterSignUp(false)
                 .build();
-        lock.onCreate(DemoActivity.this);
+        lock.onCreate(this);
 
         // launch, the results will be received in the callback
         if (useBrowser) {

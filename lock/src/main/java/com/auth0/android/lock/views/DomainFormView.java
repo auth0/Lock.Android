@@ -30,6 +30,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
@@ -45,6 +46,7 @@ public class DomainFormView extends FormView {
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
+    private TextView ssoMessage;
     private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
@@ -58,14 +60,14 @@ public class DomainFormView extends FormView {
     }
 
     public DomainFormView(Context context, Bus lockBus, Configuration configuration, boolean fallbackToDatabase) {
-        super(context, lockBus, configuration);
+        super(context, lockBus);
         this.fallbackToDatabase = fallbackToDatabase;
-        loadForm(configuration);
+        init(configuration);
     }
 
-    @Override
-    protected void init(Configuration configuration) {
+    private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
+        ssoMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setText(R.string.com_auth0_lock_action_login);
@@ -89,9 +91,7 @@ public class DomainFormView extends FormView {
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(configuration);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
-    }
 
-    private void loadForm(Configuration configuration) {
         if (!fallbackToDatabase && configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
             setupSingleConnectionUI(configuration.getEnterpriseStrategies().get(0).getConnections().get(0));
@@ -126,11 +126,12 @@ public class DomainFormView extends FormView {
                 Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
                     passwordInput.setVisibility(GONE);
-                    //TODO: Show SSO message
+                    ssoMessage.setVisibility(View.VISIBLE);
                     actionButton.setEnabled(true);
                     actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getValueForKey("domain")));
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
+                    ssoMessage.setVisibility(View.GONE);
                     actionButton.setEnabled(true);
                     actionButton.setText(R.string.com_auth0_lock_action_login);
                 } else {
@@ -149,6 +150,7 @@ public class DomainFormView extends FormView {
         }
         usernameInput.setVisibility(VISIBLE);
         emailInput.setVisibility(GONE);
+        ssoMessage.setVisibility(View.GONE);
     }
 
     private void resetDomain() {
@@ -162,11 +164,11 @@ public class DomainFormView extends FormView {
         actionButton.setText(R.string.com_auth0_lock_action_login);
     }
 
-    public String getUsername() {
+    private String getUsername() {
         return currentConnection == null && fallbackToDatabase ? emailInput.getText() : usernameInput.getText();
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return passwordInput.getText();
     }
 
