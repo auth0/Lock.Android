@@ -43,11 +43,11 @@ public class LoginFormView extends FormView {
     }
 
     public LoginFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus, configuration);
+        super(context, lockBus);
+        init(configuration);
     }
 
-    @Override
-    protected void init(Configuration configuration) {
+    private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(configuration);

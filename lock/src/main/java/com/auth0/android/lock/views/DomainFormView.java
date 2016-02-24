@@ -25,13 +25,11 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.preference.EditTextPreference;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
@@ -62,13 +60,12 @@ public class DomainFormView extends FormView {
     }
 
     public DomainFormView(Context context, Bus lockBus, Configuration configuration, boolean fallbackToDatabase) {
-        super(context, lockBus, configuration);
+        super(context, lockBus);
         this.fallbackToDatabase = fallbackToDatabase;
-        loadForm(configuration);
+        init(configuration);
     }
 
-    @Override
-    protected void init(Configuration configuration) {
+    private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
         ssoMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
@@ -94,9 +91,7 @@ public class DomainFormView extends FormView {
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(configuration);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
-    }
 
-    private void loadForm(Configuration configuration) {
         if (!fallbackToDatabase && configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
             setupSingleConnectionUI(configuration.getEnterpriseStrategies().get(0).getConnections().get(0));
