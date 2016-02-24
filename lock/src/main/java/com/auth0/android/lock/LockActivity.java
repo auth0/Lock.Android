@@ -116,9 +116,9 @@ public class LockActivity extends AppCompatActivity {
     private boolean isLaunchConfigValid() {
         options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
         if (options == null) {
-            Log.e(TAG, "You need to specify the com.auth0.android.lock.Options in the Lock.OPTIONS_EXTRA of the Intent for LockActivity to launch. " +
-                    "Use com.auth0.android.lock.Lock.Builder to generate one.");
-            throw new IllegalArgumentException("Missing com.auth0.android.lock.Options in intent");
+            Log.e(TAG, "Lock Options are missing in the received Intent and LockActivity will not launch. " +
+                    "Use the PasswordlessLock.Builder to generate a valid Intent.");
+            finish();
         }
 
         boolean launchedForResult = getCallingActivity() != null;

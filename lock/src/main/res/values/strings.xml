@@ -117,4 +117,11 @@
     <string name="com_auth0_lock_action_forgot_password">Forgot password?</string>
     <string name="com_auth0_lock_action_go_back">Go Back</string>
     <string name="com_auth0_lock_action_login_with">Login with %s</string>
+    <string name="com_auth0_lock_action_send_code">Send Code</string>
+    <string name="com_auth0_lock_input_error_code">Code must not be empty</string>
+    <string name="com_auth0_lock_hint_code">Code</string>
+    <string name="com_auth0_lock_action_send_link">Send Link</string>
+    <string name="com_auth0_lock_action_click_link">Open the Link to Login</string>
+    <string name="com_auth0_lock_error_unexpected_passwordless_intent">Unexpected Passwordless Intent received. You can close this window.</string>
+    <string name="com_auth0_lock_error_parsing_passwordless_code">Error parsing the Passwordless Code</string>
 </resources>
