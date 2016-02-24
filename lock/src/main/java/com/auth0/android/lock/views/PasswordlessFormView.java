@@ -61,11 +61,19 @@ public class PasswordlessFormView extends FormView {
     private void selectPasswordlessMode() {
         switch (choosenMode) {
             case EMAIL_CODE:
-                actionButton.setText(R.string.com_auth0_lock_action_send_code);
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                actionButton.setText(R.string.com_auth0_lock_action_send_code);
                 break;
             case EMAIL_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
+                actionButton.setText(R.string.com_auth0_lock_action_send_link);
+                break;
+            case SMS_CODE:
+                passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
+                actionButton.setText(R.string.com_auth0_lock_action_send_code);
+                break;
+            case SMS_LINK:
+                passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 actionButton.setText(R.string.com_auth0_lock_action_send_link);
                 break;
         }
@@ -92,8 +100,12 @@ public class PasswordlessFormView extends FormView {
         }
     }
 
-    public String getInputText() {
-        return passwordlessInput.getText();
+    private String getInputText() {
+        if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
+            return passwordlessInput.getText().replace(" ", "").replace("-", "");
+        } else {
+            return passwordlessInput.getText().replace(" ", "");
+        }
     }
 
     @Override
