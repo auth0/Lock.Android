@@ -61,7 +61,7 @@ public class ChangePasswordFormView extends FormView {
         return new DatabaseChangePasswordEvent(getUsernameOrEmail());
     }
 
-    public String getUsernameOrEmail() {
+    private String getUsernameOrEmail() {
         return usernameEmailInput.getText();
     }
 
