@@ -271,9 +271,9 @@ public class Lock {
          */
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             if (authenticationParameters instanceof HashMap) {
-                options.setAuthenticationParameters((HashMap<String, Object>) authenticationParameters);
+                options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             } else {
-                options.setAuthenticationParameters(new HashMap<String, Object>(authenticationParameters));
+                options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             }
 
             return this;
