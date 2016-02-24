@@ -26,22 +26,37 @@ package com.auth0.android.lock.events;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.utils.Application;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
+import com.auth0.authentication.PasswordlessType;
 import com.auth0.request.ParameterizableRequest;
 
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.MockSettings;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class PasswordlessLoginEventTest {
 
     private static final String CLIENT_ID = "client_id";
@@ -53,6 +68,11 @@ public class PasswordlessLoginEventTest {
     private static final String EMAIL_KEY = "email";
     private static final String SEND_KEY = "send";
     private static final String CONNECTION_KEY = "connection";
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void shouldHaveNullCodeByDefault() throws Exception {
@@ -74,25 +94,25 @@ public class PasswordlessLoginEventTest {
 
     @Test
     public void shouldGetCodeRequest() throws Exception {
-        Auth0 account = new Auth0(CLIENT_ID, DOMAIN);
-        AuthenticationAPIClient client = new AuthenticationAPIClient(account);
-        PasswordlessLoginEvent event = new PasswordlessLoginEvent(PasswordlessMode.EMAIL_CODE, EMAIL);
-        ParameterizableRequest<Void> codeRequest = event.getCodeRequest(client);
-        Map<String, Object> parameters = codeRequest.getParameterBuilder().asDictionary();
+        AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
+        PasswordlessLoginEvent emailCodeEvent = new PasswordlessLoginEvent(PasswordlessMode.EMAIL_CODE, EMAIL);
+        emailCodeEvent.getCodeRequest(client);
+        verify(client).passwordlessWithEmail(EMAIL, PasswordlessType.CODE);
 
-        assertThat(codeRequest, is(not(nullValue())));
-        assertThat((String) parameters.get(EMAIL_KEY), is(equalTo(EMAIL)));
-        assertThat((String) parameters.get(SEND_KEY), is(equalTo(CODE_MODE)));
-        assertThat(parameters, IsMapContaining.hasKey(CONNECTION_KEY));
+        PasswordlessLoginEvent emailLinkEvent = new PasswordlessLoginEvent(PasswordlessMode.EMAIL_LINK, EMAIL);
+        emailLinkEvent.getCodeRequest(client);
+        verify(client).passwordlessWithEmail(EMAIL, PasswordlessType.LINK_ANDROID);
     }
 
     @Test
     public void shouldGetLoginRequest() throws Exception {
-        Auth0 account = new Auth0(CLIENT_ID, DOMAIN);
-        AuthenticationAPIClient client = new AuthenticationAPIClient(account);
-        PasswordlessLoginEvent event = new PasswordlessLoginEvent(PasswordlessMode.EMAIL_LINK, EMAIL);
-        AuthenticationRequest loginRequest = event.getLoginRequest(client);
+        AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
+        PasswordlessLoginEvent emailCodeEvent = new PasswordlessLoginEvent(PasswordlessMode.EMAIL_CODE, EMAIL, CODE);
+        emailCodeEvent.getLoginRequest(client);
+        verify(client).loginWithEmail(EMAIL, CODE);
 
-        assertThat(loginRequest, is(not(nullValue())));
+        PasswordlessLoginEvent emailLinkEvent = new PasswordlessLoginEvent(PasswordlessMode.EMAIL_LINK, EMAIL);
+        emailLinkEvent.getLoginRequest(client);
+        verify(client).loginWithEmail(EMAIL, CODE);
     }
 }

@@ -27,6 +27,9 @@ package com.auth0.android.lock.utils;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 public class ConnectionMatcher extends BaseMatcher<Connection> {
 
