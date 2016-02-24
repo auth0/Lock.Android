@@ -180,6 +180,7 @@ public class ValidatedInputView extends RelativeLayout implements View.OnFocusCh
             case PHONE_NUMBER:
                 value = value.replace(" ", "").replace("-", "");
                 valid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
+                errMsg = R.string.com_auth0_lock_input_error_phone_number;
                 break;
         }
 

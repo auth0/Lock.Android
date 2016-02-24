@@ -25,13 +25,22 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.support.v7.widget.AppCompatSpinner;
 import android.widget.Button;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.adapters.Country;
+import com.auth0.android.lock.adapters.CountryCodeAdapter;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
+import com.auth0.android.lock.utils.LoadCountriesTask;
 import com.squareup.otto.Bus;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class PasswordlessFormView extends FormView {
 
@@ -41,6 +50,8 @@ public class PasswordlessFormView extends FormView {
     private Button actionButton;
     private boolean waitingForCode;
     private String emailOrNumber;
+    private AppCompatSpinner countryCodesSpinner;
+    private LoadCountriesTask loadCountriesTask;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
         super(context, lockBus);
@@ -51,11 +62,44 @@ public class PasswordlessFormView extends FormView {
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_form_view, this);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
+        countryCodesSpinner = (AppCompatSpinner) findViewById(R.id.com_auth0_lock_input_country_codes);
+
+        if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
+            loadCountryCodes();
+        }
 
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
-
         selectPasswordlessMode();
+    }
+
+    private void loadCountryCodes() {
+        if (loadCountriesTask != null && !loadCountriesTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+            return;
+        }
+        loadCountriesTask = new LoadCountriesTask(getContext()) {
+            @Override
+            protected void onPostExecute(Map<String, String> result) {
+                loadCountriesTask = null;
+                if (result != null) {
+                    final ArrayList<String> names = new ArrayList<>(result.keySet());
+                    Collections.sort(names);
+                    final List<Country> countries = new ArrayList<>(names.size());
+                    for (String name : names) {
+                        countries.add(new Country(name, result.get(name)));
+                    }
+                    getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (countryCodesSpinner != null) {
+                                countryCodesSpinner.setAdapter(new CountryCodeAdapter(getContext(), countries));
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        loadCountriesTask.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
     }
 
     private void selectPasswordlessMode() {
@@ -63,18 +107,22 @@ public class PasswordlessFormView extends FormView {
             case EMAIL_CODE:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 actionButton.setText(R.string.com_auth0_lock_action_send_code);
+                countryCodesSpinner.setVisibility(GONE);
                 break;
             case EMAIL_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 actionButton.setText(R.string.com_auth0_lock_action_send_link);
+                countryCodesSpinner.setVisibility(GONE);
                 break;
             case SMS_CODE:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 actionButton.setText(R.string.com_auth0_lock_action_send_code);
+                countryCodesSpinner.setVisibility(VISIBLE);
                 break;
             case SMS_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 actionButton.setText(R.string.com_auth0_lock_action_send_link);
+                countryCodesSpinner.setVisibility(VISIBLE);
                 break;
         }
         passwordlessInput.clearInput();
@@ -85,8 +133,9 @@ public class PasswordlessFormView extends FormView {
         if (waitingForCode) {
             return new PasswordlessLoginEvent(choosenMode, emailOrNumber, getInputText());
         } else {
+            countryCodesSpinner.setVisibility(GONE);
             PasswordlessLoginEvent event = new PasswordlessLoginEvent(choosenMode, getInputText());
-            if (choosenMode == PasswordlessMode.EMAIL_CODE) {
+            if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
                 waitingForCode = true;
                 emailOrNumber = getInputText();
                 passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
@@ -102,7 +151,12 @@ public class PasswordlessFormView extends FormView {
 
     private String getInputText() {
         if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
-            return passwordlessInput.getText().replace(" ", "").replace("-", "");
+            if (countryCodesSpinner != null && countryCodesSpinner.getCount() > 0) {
+                Country country = (Country) countryCodesSpinner.getSelectedItem();
+                return country.getCode() + passwordlessInput.getText().replace(" ", "").replace("-", "");
+            } else {
+                return passwordlessInput.getText().replace(" ", "").replace("-", "");
+            }
         } else {
             return passwordlessInput.getText().replace(" ", "");
         }
@@ -124,6 +178,9 @@ public class PasswordlessFormView extends FormView {
             selectPasswordlessMode();
             return true;
         } else {
+            if (loadCountriesTask != null) {
+                loadCountriesTask = null;
+            }
             return false;
         }
     }

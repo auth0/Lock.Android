@@ -126,4 +126,5 @@
     <string name="com_auth0_lock_error_parsing_passwordless_code">Error parsing the Passwordless Code</string>
     <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
     <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
+    <string name="com_auth0_lock_input_error_phone_number">The phone number cannot be empty</string>
 </resources>
