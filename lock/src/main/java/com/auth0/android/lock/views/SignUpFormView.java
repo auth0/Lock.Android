@@ -47,11 +47,11 @@ public class SignUpFormView extends FormView {
     }
 
     public SignUpFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus, configuration);
+        super(context, lockBus);
+        init(configuration);
     }
 
-    @Override
-    protected void init(Configuration configuration) {
+    private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
         loginAfterSignUp = configuration.loginAfterSignUp();
 
