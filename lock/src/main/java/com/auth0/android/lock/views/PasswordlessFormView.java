@@ -43,18 +43,19 @@ public class PasswordlessFormView extends FormView {
     private String emailOrNumber;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
-        super(context, lockBus, null);
+        super(context, lockBus);
         choosenMode = passwordlessMode;
-        selectPasswordlessMode();
+        init();
     }
 
-    @Override
-    protected void init(Configuration configuration) {
+    private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_form_view, this);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
 
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
+
+        selectPasswordlessMode();
     }
 
     private void selectPasswordlessMode() {
