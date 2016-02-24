@@ -83,7 +83,7 @@ public class SignUpFormView extends FormView {
         return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
     }
 
-    public String getUsername() {
+    private String getUsername() {
         if (usernameInput.getVisibility() == VISIBLE) {
             return usernameInput.getText();
         } else {
@@ -91,11 +91,11 @@ public class SignUpFormView extends FormView {
         }
     }
 
-    public String getEmail() {
+    private String getEmail() {
         return emailInput.getText();
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return passwordInput.getText();
     }
 
