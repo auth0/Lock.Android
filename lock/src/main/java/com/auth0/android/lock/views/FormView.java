@@ -41,13 +41,10 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
         super(context);
     }
 
-    public FormView(Context context, Bus lockBus, Configuration configuration) {
+    public FormView(Context context, Bus lockBus) {
         super(context);
         this.bus = lockBus;
-        init(configuration);
     }
-
-    protected abstract void init(Configuration configuration);
 
     @Nullable
     protected abstract Object getActionEvent();
@@ -63,7 +60,7 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
         if (event != null) {
             bus.post(event);
         } else {
-            Log.w(TAG, "Received login event was null.");
+            Log.w(TAG, "The Action Event received from the FormView was null.");
         }
     }
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Lock</string>
+    <string name="auth0_domain">lbalmaceda.auth0.com</string>
 </resources>

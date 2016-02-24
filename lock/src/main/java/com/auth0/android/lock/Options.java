@@ -24,12 +24,15 @@
 
 package com.auth0.android.lock;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -41,6 +44,9 @@ class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
+    private static final String SCOPE_KEY = "scope";
+    private static final String DEVICE_KEY = "device";
+    private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
 
     private Auth0 account;
     private boolean useBrowser;
@@ -48,6 +54,7 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private boolean sendSDKInfo;
     private UsernameStyle usernameStyle;
+    private PasswordlessMode passwordlessMode;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean loginAfterSignUp;
@@ -59,6 +66,7 @@ class Options implements Parcelable {
     public Options() {
         sendSDKInfo = true;
         usernameStyle = UsernameStyle.DEFAULT;
+        passwordlessMode = null;
         signUpEnabled = true;
         changePasswordEnabled = true;
         loginAfterSignUp = true;
@@ -98,6 +106,11 @@ class Options implements Parcelable {
             usernameStyle = (UsernameStyle) in.readSerializable();
         } else {
             usernameStyle = null;
+        }
+        if (in.readByte() == HAS_DATA) {
+            passwordlessMode = (PasswordlessMode) in.readSerializable();
+        } else {
+            passwordlessMode = null;
         }
     }
 
@@ -143,6 +156,12 @@ class Options implements Parcelable {
         } else {
             dest.writeByte((byte) (HAS_DATA));
             dest.writeSerializable(usernameStyle);
+        }
+        if (passwordlessMode == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            dest.writeSerializable(passwordlessMode);
         }
     }
 
@@ -253,6 +272,12 @@ class Options implements Parcelable {
     }
 
     public void setAuthenticationParameters(@NonNull HashMap<String, Object> authenticationParameters) {
+        final String scope = (String) authenticationParameters.get(SCOPE_KEY);
+        final String device = (String) authenticationParameters.get(DEVICE_KEY);
+
+        if (scope != null && scope.contains(SCOPE_OFFLINE_ACCESS) && device == null) {
+            authenticationParameters.put(DEVICE_KEY, Build.MODEL);
+        }
         this.authenticationParameters = authenticationParameters;
     }
 
@@ -266,5 +291,13 @@ class Options implements Parcelable {
 
     public AuthenticationAPIClient getAuthenticationAPIClient() {
         return new AuthenticationAPIClient(account);
+    }
+
+    public void setPasswordlessMode(PasswordlessMode mode) {
+        this.passwordlessMode = mode;
+    }
+
+    public PasswordlessMode passwordlessMode() {
+        return passwordlessMode;
     }
 }

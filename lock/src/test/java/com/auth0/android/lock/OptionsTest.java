@@ -1,8 +1,11 @@
 package com.auth0.android.lock;
 
+import android.os.Build;
 import android.os.Parcel;
+import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -17,6 +20,9 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -28,6 +34,9 @@ public class OptionsTest {
     private static final String CLIENT_ID = "CLIENT_ID";
     private static final String DOMAIN = "https://my-domain.auth0.com";
     private static final String CONFIG_DOMAIN = "https://my-cdn.auth0.com";
+    private static final String SCOPE_KEY = "scope";
+    private static final String DEVICE_KEY = "device";
+    private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
 
     private Auth0 auth0;
 
@@ -191,6 +200,33 @@ public class OptionsTest {
         assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
     }
 
+    @Test
+    public void shouldUsePasswordlessMode() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setPasswordlessMode(PasswordlessMode.EMAIL_CODE);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.passwordlessMode(), is(equalTo(parceledOptions.passwordlessMode())));
+    }
+
+    @Test
+    public void shouldNotHavePasswordlessModeByDefault() {
+        Options options = new Options();
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.passwordlessMode(), is(nullValue()));
+        assertThat(parceledOptions.passwordlessMode(), is(nullValue()));
+    }
 
     @Test
     public void shouldSetDefaultDatabaseConnection() {
@@ -250,6 +286,45 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetDeviceParameterIfUsingOfflineAccessScope() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
+        options.setAuthenticationParameters(params);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAuthenticationParameters().get(DEVICE_KEY), is(notNullValue()));
+        assertThat((String) options.getAuthenticationParameters().get(DEVICE_KEY), is(Build.MODEL));
+        assertThat(parceledOptions.getAuthenticationParameters().get(DEVICE_KEY), is(notNullValue()));
+        assertThat((String) parceledOptions.getAuthenticationParameters().get(DEVICE_KEY), is(Build.MODEL));
+    }
+
+    @Test
+    public void shouldNotOverrideDeviceParameterIfAlreadySet() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
+        params.put(DEVICE_KEY, "my_device 2016");
+        options.setAuthenticationParameters(params);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAuthenticationParameters().get(DEVICE_KEY), is(notNullValue()));
+        assertThat((String) options.getAuthenticationParameters().get(DEVICE_KEY), is(not(Build.MODEL)));
+        assertThat(parceledOptions.getAuthenticationParameters().get(DEVICE_KEY), is(notNullValue()));
+        assertThat((String) parceledOptions.getAuthenticationParameters().get(DEVICE_KEY), is(not(Build.MODEL)));
+    }
+
+    @Test
     public void shouldSetDefaultValues() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -265,6 +340,7 @@ public class OptionsTest {
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
+        assertThat(options.passwordlessMode(), is(nullValue()));
     }
 
 

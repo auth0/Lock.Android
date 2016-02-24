@@ -1,5 +1,5 @@
 /*
- * CallbackHelperTest.java
+ * PasswordlessMode.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,35 +22,8 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.android.lock.enums;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.annotation.Config;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
-public class CallbackHelperTest {
-
-    private static final String PACKAGE_NAME = "com.auth0.lock.android.app";
-    private static final String DOMAIN = "https://my-domain.auth0.com";
-
-    private CallbackHelper helper;
-
-    @Before
-    public void setUp() throws Exception {
-        helper = new CallbackHelper(PACKAGE_NAME);
-    }
-
-    @Test
-    public void shouldGetCallbackURI() throws Exception {
-        String expected = DOMAIN + "/android/" + PACKAGE_NAME + "/callback";
-        String uri = helper.getCallbackURI(DOMAIN);
-        assertThat(uri, equalTo(expected));
-    }
+public enum PasswordlessMode {
+    SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE
 }
