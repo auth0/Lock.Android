@@ -81,7 +81,7 @@ public class ApplicationTest {
 
     @Test
     public void shouldReturnPasswordlessStrategies() throws Exception {
-        Application application = newApplicationWithStrategies(Email, SMS, Facebook, Auth0);
+        Application application = newApplicationWithStrategies(Email, SMS, Facebook, Auth0, SAMLP);
         assertThat(application.getPasswordlessStrategies().size(), equalTo(2));
     }
 
