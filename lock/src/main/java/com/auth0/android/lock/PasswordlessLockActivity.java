@@ -124,8 +124,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
-        passwordlessForm = new PasswordlessFormView(PasswordlessLockActivity.this, lockBus, configuration.getPasswordlessMode());
-        rootView.addView(passwordlessForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (!configuration.getPasswordlessStrategies().isEmpty()) {
+            passwordlessForm = new PasswordlessFormView(PasswordlessLockActivity.this, lockBus, configuration.getPasswordlessMode());
+            rootView.addView(passwordlessForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
     private void deliverResult(Authentication result) {
