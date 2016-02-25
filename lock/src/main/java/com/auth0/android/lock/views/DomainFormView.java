@@ -164,11 +164,11 @@ public class DomainFormView extends FormView {
         actionButton.setText(R.string.com_auth0_lock_action_login);
     }
 
-    public String getUsername() {
+    private String getUsername() {
         return currentConnection == null && fallbackToDatabase ? emailInput.getText() : usernameInput.getText();
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return passwordInput.getText();
     }
 

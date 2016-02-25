@@ -64,11 +64,11 @@ public class LoginFormView extends FormView {
         return new DatabaseLoginEvent(getUsernameOrEmail(), getPassword());
     }
 
-    public String getUsernameOrEmail() {
+    private String getUsernameOrEmail() {
         return usernameEmailInput.getText();
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return passwordInput.getText();
     }
 

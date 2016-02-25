@@ -31,8 +31,6 @@ import com.auth0.android.lock.Configuration;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
-    private DataType dataType;
-
     public ValidatedUsernameInputView(Context context) {
         super(context);
     }
@@ -67,11 +65,6 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
                 }
                 break;
         }
-        this.dataType = type;
         setDataType(type);
-    }
-
-    public DataType getDataType() {
-        return dataType;
     }
 }

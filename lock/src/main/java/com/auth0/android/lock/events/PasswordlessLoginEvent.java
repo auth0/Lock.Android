@@ -73,8 +73,11 @@ public class PasswordlessLoginEvent {
             return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
         } else if (getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+        } else if (getMode() == PasswordlessMode.SMS_CODE) {
+            return apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.CODE);
+        } else {
+            return apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
         }
-        return null;
     }
 
     /**
@@ -87,7 +90,8 @@ public class PasswordlessLoginEvent {
     public AuthenticationRequest getLoginRequest(AuthenticationAPIClient apiClient) {
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.loginWithEmail(getEmailOrNumber(), getCode());
+        } else {
+            return apiClient.loginWithPhoneNumber(getEmailOrNumber(), getCode());
         }
-        return null;
     }
 }
