@@ -24,8 +24,8 @@
 
 package com.auth0.android.lock;
 
-import android.hardware.camera2.params.Face;
-
+import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -118,7 +118,6 @@ public class ConfigurationTest {
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
     }
 
-
     @Test
     public void shouldNotMergeApplicationWithOptionsIfApplicationIsRestrictive() throws Exception {
         options.setConnections(Collections.singletonList(RESTRICTIVE_DATABASE));
@@ -127,6 +126,69 @@ public class ConfigurationTest {
         configuration = new Configuration(application, options);
         assertThat(configuration.isSignUpEnabled(), is(false));
         assertThat(configuration.isChangePasswordEnabled(), is(false));
+    }
+
+    @Test
+    public void shouldPreferPasswordlessEmailOverSMSWhenBothAvailable() throws Exception {
+        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setConnections(Arrays.asList(SMS.getName(), Email.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
+
+        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setConnections(Arrays.asList(SMS.getName(), Email.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_LINK));
+    }
+
+    @Test
+    public void shouldSetCorrectPasswordlessTypeWhenUsingEmail() throws Exception {
+        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setConnections(Arrays.asList(Email.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
+
+        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setConnections(Arrays.asList(Email.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_LINK));
+    }
+
+
+    @Test
+    public void shouldSetCorrectPasswordlessTypeWhenUsingSMS() throws Exception {
+        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setConnections(Arrays.asList(SMS.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
+
+        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setConnections(Arrays.asList(SMS.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_LINK));
+    }
+
+    @Test
+    public void shouldNotHavePasswordlessModeOnNoConnections() throws Exception {
+        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setConnections(Collections.singletonList(Facebook.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldNotHavePasswordlessModeWhenTypeMissingFromOptions() throws Exception {
+        options.setConnections(Collections.singletonList(SMS.getName()));
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getPasswordlessMode(), is(nullValue()));
     }
 
     @Test

@@ -6,6 +6,7 @@ import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -201,21 +202,21 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUsePasswordlessMode() {
+    public void shouldUsePasswordlessType() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setPasswordlessMode(PasswordlessMode.EMAIL_CODE);
+        options.setPasswordlessType(PasswordlessType.LINK);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.passwordlessMode(), is(equalTo(parceledOptions.passwordlessMode())));
+        assertThat(options.passwordlessType(), is(equalTo(parceledOptions.passwordlessType())));
     }
 
     @Test
-    public void shouldNotHavePasswordlessModeByDefault() {
+    public void shouldNotHavePasswordlessTypeByDefault() {
         Options options = new Options();
         options.setAccount(auth0);
 
@@ -224,8 +225,8 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.passwordlessMode(), is(nullValue()));
-        assertThat(parceledOptions.passwordlessMode(), is(nullValue()));
+        assertThat(options.passwordlessType(), is(nullValue()));
+        assertThat(parceledOptions.passwordlessType(), is(nullValue()));
     }
 
     @Test
@@ -340,7 +341,7 @@ public class OptionsTest {
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
-        assertThat(options.passwordlessMode(), is(nullValue()));
+        assertThat(options.passwordlessType(), is(nullValue()));
     }
 
 

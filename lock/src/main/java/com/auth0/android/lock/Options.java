@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -54,7 +55,7 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private boolean sendSDKInfo;
     private UsernameStyle usernameStyle;
-    private PasswordlessMode passwordlessMode;
+    private PasswordlessType passwordlessType;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean loginAfterSignUp;
@@ -66,7 +67,7 @@ class Options implements Parcelable {
     public Options() {
         sendSDKInfo = true;
         usernameStyle = UsernameStyle.DEFAULT;
-        passwordlessMode = null;
+        passwordlessType = null;
         signUpEnabled = true;
         changePasswordEnabled = true;
         loginAfterSignUp = true;
@@ -108,9 +109,9 @@ class Options implements Parcelable {
             usernameStyle = null;
         }
         if (in.readByte() == HAS_DATA) {
-            passwordlessMode = (PasswordlessMode) in.readSerializable();
+            passwordlessType = (PasswordlessType) in.readSerializable();
         } else {
-            passwordlessMode = null;
+            passwordlessType = null;
         }
     }
 
@@ -157,11 +158,11 @@ class Options implements Parcelable {
             dest.writeByte((byte) (HAS_DATA));
             dest.writeSerializable(usernameStyle);
         }
-        if (passwordlessMode == null) {
+        if (passwordlessType == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
             dest.writeByte((byte) (HAS_DATA));
-            dest.writeSerializable(passwordlessMode);
+            dest.writeSerializable(passwordlessType);
         }
     }
 
@@ -293,11 +294,11 @@ class Options implements Parcelable {
         return new AuthenticationAPIClient(account);
     }
 
-    public void setPasswordlessMode(PasswordlessMode mode) {
-        this.passwordlessMode = mode;
+    public void setPasswordlessType(PasswordlessType type) {
+        this.passwordlessType = type;
     }
 
-    public PasswordlessMode passwordlessMode() {
-        return passwordlessMode;
+    public PasswordlessType passwordlessType() {
+        return passwordlessType;
     }
 }

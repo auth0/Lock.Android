@@ -25,8 +25,11 @@
 package com.auth0.android.lock;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -64,6 +67,7 @@ public class Configuration {
     private boolean changePasswordEnabled;
     private boolean usernameRequired;
     private UsernameStyle usernameStyle;
+    private PasswordlessMode passwordlessMode;
     private boolean loginAfterSignUp;
 
     public Configuration(Application application, Options options) {
@@ -196,23 +200,52 @@ public class Configuration {
         usernameStyle = options.usernameStyle();
         loginAfterSignUp = options.loginAfterSignUp();
 
-        if (getDefaultDatabaseConnection() == null) {
-            return;
+        if (getDefaultDatabaseConnection() != null) {
+            //let user disable signUp only if connection have enabled it.
+            signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
+            if (signUpEnabled && !options.isSignUpEnabled()) {
+                signUpEnabled = false;
+            }
+
+            //let user disable signUp only if connection have enabled it.
+            changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
+            if (changePasswordEnabled && !options.isChangePasswordEnabled()) {
+                changePasswordEnabled = false;
+            }
+
+            usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
         }
 
-        //let user disable signUp only if connection have enabled it.
-        signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
-        if (signUpEnabled && !options.isSignUpEnabled()) {
-            signUpEnabled = false;
+        PasswordlessType passwordlessType = options.passwordlessType();
+        if (getPasswordlessStrategies().isEmpty()) {
+            passwordlessMode = null;
+            passwordlessType = null;
         }
-
-        //let user disable signUp only if connection have enabled it.
-        changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
-        if (changePasswordEnabled && !options.isChangePasswordEnabled()) {
-            changePasswordEnabled = false;
+        if (passwordlessType != null) {
+            switch (passwordlessType) {
+                case CODE:
+                    if (getPasswordlessStrategies().size() >= 2) {
+                        passwordlessMode = PasswordlessMode.EMAIL_CODE;
+                    } else if (getPasswordlessStrategies().size() == 1) {
+                        if (getPasswordlessStrategies().get(0).getName().equals(Strategies.Email.getName())) {
+                            passwordlessMode = PasswordlessMode.EMAIL_CODE;
+                        } else {
+                            passwordlessMode = PasswordlessMode.SMS_CODE;
+                        }
+                    }
+                    break;
+                case LINK:
+                    if (getPasswordlessStrategies().size() >= 2) {
+                        passwordlessMode = PasswordlessMode.EMAIL_LINK;
+                    } else if (getPasswordlessStrategies().size() == 1) {
+                        if (getPasswordlessStrategies().get(0).getName().equals(Strategies.Email.getName())) {
+                            passwordlessMode = PasswordlessMode.EMAIL_LINK;
+                        } else {
+                            passwordlessMode = PasswordlessMode.SMS_LINK;
+                        }
+                    }
+            }
         }
-
-        usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {
@@ -241,6 +274,11 @@ public class Configuration {
 
     public UsernameStyle getUsernameStyle() {
         return usernameStyle;
+    }
+
+    @Nullable
+    public PasswordlessMode getPasswordlessMode() {
+        return passwordlessMode;
     }
 
     public boolean loginAfterSignUp() {
