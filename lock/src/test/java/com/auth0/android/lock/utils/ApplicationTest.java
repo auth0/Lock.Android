@@ -13,9 +13,11 @@ import java.util.List;
 
 import static com.auth0.android.lock.utils.Strategies.ADFS;
 import static com.auth0.android.lock.utils.Strategies.Auth0;
+import static com.auth0.android.lock.utils.Strategies.Email;
 import static com.auth0.android.lock.utils.Strategies.Facebook;
 import static com.auth0.android.lock.utils.Strategies.Office365;
 import static com.auth0.android.lock.utils.Strategies.SAMLP;
+import static com.auth0.android.lock.utils.Strategies.SMS;
 import static com.auth0.android.lock.utils.Strategies.Twitter;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -75,6 +77,12 @@ public class ApplicationTest {
     public void shouldReturnEnterpriseStrategies() throws Exception {
         Application application = newApplicationWithStrategies(Auth0, ADFS, SAMLP, Office365);
         assertThat(application.getEnterpriseStrategies().size(), equalTo(3));
+    }
+
+    @Test
+    public void shouldReturnPasswordlessStrategies() throws Exception {
+        Application application = newApplicationWithStrategies(Email, SMS, Facebook, Auth0);
+        assertThat(application.getSocialStrategies().size(), equalTo(2));
     }
 
     private static Strategy newStrategyFor(Strategies strategyMetadata) {
