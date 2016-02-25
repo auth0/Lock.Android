@@ -82,7 +82,7 @@ public class ApplicationTest {
     @Test
     public void shouldReturnPasswordlessStrategies() throws Exception {
         Application application = newApplicationWithStrategies(Email, SMS, Facebook, Auth0);
-        assertThat(application.getSocialStrategies().size(), equalTo(2));
+        assertThat(application.getPasswordlessStrategies().size(), equalTo(2));
     }
 
     private static Strategy newStrategyFor(Strategies strategyMetadata) {
