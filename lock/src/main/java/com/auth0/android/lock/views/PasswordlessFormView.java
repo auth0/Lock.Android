@@ -179,6 +179,7 @@ public class PasswordlessFormView extends FormView {
             return true;
         } else {
             if (loadCountriesTask != null) {
+                loadCountriesTask.cancel(true);
                 loadCountriesTask = null;
             }
             return false;
