@@ -37,7 +37,7 @@ import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.PasswordlessLock;
-import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -60,17 +60,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         setContentView(R.layout.demo_activity);
         Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
         Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
-        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_email_code);
-        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_email_link);
-        Button btnPasswordlessSmsCode = (Button) findViewById(R.id.btn_passwordless_sms_code);
-        Button btnPasswordlessSmsLink = (Button) findViewById(R.id.btn_passwordless_sms_link);
+        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_code);
+        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_link);
 
         btnWebView.setOnClickListener(this);
         btnBrowser.setOnClickListener(this);
         btnPasswordlessEmailCode.setOnClickListener(this);
         btnPasswordlessEmailLink.setOnClickListener(this);
-        btnPasswordlessSmsCode.setOnClickListener(this);
-        btnPasswordlessSmsLink.setOnClickListener(this);
     }
 
 
@@ -120,17 +116,11 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             case R.id.btn_social_browser:
                 socialOnlyLogin(true);
                 break;
-            case R.id.btn_passwordless_email_code:
-                passwordlessLogin(PasswordlessMode.EMAIL_CODE);
+            case R.id.btn_passwordless_code:
+                passwordlessLogin(PasswordlessType.CODE);
                 break;
-            case R.id.btn_passwordless_email_link:
-                passwordlessLogin(PasswordlessMode.EMAIL_LINK);
-                break;
-            case R.id.btn_passwordless_sms_code:
-                passwordlessLogin(PasswordlessMode.SMS_CODE);
-                break;
-            case R.id.btn_passwordless_sms_link:
-                passwordlessLogin(PasswordlessMode.SMS_LINK);
+            case R.id.btn_passwordless_link:
+                passwordlessLogin(PasswordlessType.LINK);
                 break;
         }
     }
@@ -138,13 +128,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     /**
      * Launches the login flow showing only the Passwordless widget.
      *
-     * @param mode to use in the Passwordless authentication.
+     * @param type to use in the Passwordless authentication.
      */
-    private void passwordlessLogin(PasswordlessMode mode) {
+    private void passwordlessLogin(PasswordlessType type) {
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
         passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
-                .withMode(mode)
+                .withType(type)
                 .build();
         passwordlessLock.onCreate(this);
 

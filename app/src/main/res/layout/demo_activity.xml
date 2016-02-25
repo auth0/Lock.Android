@@ -19,27 +19,15 @@
         android:text="Social only (Browser)" />
 
     <Button
-        android:id="@+id/btn_passwordless_email_code"
+        android:id="@+id/btn_passwordless_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Passwordless Email Code" />
+        android:text="Passwordless with Code" />
 
     <Button
-        android:id="@+id/btn_passwordless_email_link"
+        android:id="@+id/btn_passwordless_link"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Passwordless Email Link" />
-
-    <Button
-        android:id="@+id/btn_passwordless_sms_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Passwordless SMS Code" />
-
-    <Button
-        android:id="@+id/btn_passwordless_sms_link"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Passwordless SMS Link" />
+        android:text="Passwordless with Link" />
 
 </LinearLayout>

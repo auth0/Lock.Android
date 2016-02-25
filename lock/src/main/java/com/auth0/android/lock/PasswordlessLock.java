@@ -35,7 +35,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.auth0.Auth0;
-import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -226,21 +226,21 @@ public class PasswordlessLock {
                 Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing AuthenticationCallback.");
             }
-            if (options.passwordlessMode() == null) {
-                Log.e(TAG, "You need to specify the PasswordlessMode to use in the Passwordless Authentication.");
-                throw new IllegalStateException("Missing PasswordlessMode.");
+            if (options.passwordlessType() == null) {
+                Log.e(TAG, "You need to specify the PasswordlessType to use in the Passwordless Authentication.");
+                throw new IllegalStateException("Missing PasswordlessType.");
             }
             return new PasswordlessLock(options, callback);
         }
 
         /**
-         * Defines the Passwordless mode to use in the Authentication.
+         * Defines the Passwordless type to use in the Authentication.
          *
-         * @param mode a valid PasswordlessMode
+         * @param type a valid PasswordlessType
          * @return the current Builder instance
          */
-        public Builder withMode(@NonNull PasswordlessMode mode) {
-            options.setPasswordlessMode(mode);
+        public Builder withType(@NonNull PasswordlessType type) {
+            options.setPasswordlessType(type);
             return this;
         }
 
