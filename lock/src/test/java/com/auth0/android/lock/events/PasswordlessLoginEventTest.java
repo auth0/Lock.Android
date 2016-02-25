@@ -24,36 +24,23 @@
 
 package com.auth0.android.lock.events;
 
-import com.auth0.Auth0;
 import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.utils.Application;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.PasswordlessType;
-import com.auth0.request.ParameterizableRequest;
 
-import org.hamcrest.collection.IsMapContaining;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockSettings;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
