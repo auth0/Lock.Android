@@ -27,7 +27,6 @@ package com.auth0.android.lock;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +49,7 @@ import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicPanelHolder;
 import com.auth0.android.lock.views.LockProgress;
@@ -63,25 +63,15 @@ import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
 import com.auth0.request.ParameterizableRequest;
 import com.auth0.request.Request;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.IOException;
 
 public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
-    private static final String JSONP_PREFIX = "Auth0.setClient(";
 
     private Application application;
+    private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
     private Options options;
     private Handler handler;
@@ -108,8 +98,9 @@ public class LockActivity extends AppCompatActivity {
         progress = (LockProgress) findViewById(R.id.com_auth0_lock_progress);
         rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
 
-        if (application == null) {
-            fetchApplicationInfo();
+        if (application == null && applicationFetcher == null) {
+            applicationFetcher = new ApplicationFetcher(options.getAccount());
+            applicationFetcher.fetch(applicationCallback);
         }
     }
 
@@ -152,81 +143,12 @@ public class LockActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetch application information from Auth0
-     */
-    private void fetchApplicationInfo() {
-        OkHttpClient client = new OkHttpClient();
-        Uri uri = Uri.parse(options.getAccount().getConfigurationUrl()).buildUpon().appendPath("client")
-                .appendPath(options.getAccount().getClientId() + ".js").build();
-
-        com.squareup.okhttp.Request req = new com.squareup.okhttp.Request.Builder()
-                .url(uri.toString())
-                .build();
-
-        client.newCall(req).enqueue(new Callback() {
-            @Override
-            public void onFailure(com.squareup.okhttp.Request request, final IOException e) {
-                Log.e(TAG, "Failed to fetchApplication: " + e.getMessage());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progress.showResult(e.getMessage());
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                application = parseJSONP(response);
-                Log.i(TAG, "Application received!: " + application.getId());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //this will trigger a hide
-                        progress.showResult("");
-                        initLockUI();
-                    }
-                });
-            }
-        });
-
-    }
-
-    /**
      * Show the LockUI with all the panels and custom widgets.
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
         panelHolder = new ClassicPanelHolder(this, lockBus, configuration);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    }
-
-
-    /**
-     * Parses the Application JSONP received from the API.
-     */
-    private Application parseJSONP(Response response) {
-        try {
-            String json = response.body().string();
-            final int length = JSONP_PREFIX.length();
-            if (json.length() < length) {
-                throw new JSONException("Invalid App Info JSONP");
-            }
-            json = json.substring(length);
-            JSONTokener tokenizer = new JSONTokener(json);
-            if (!tokenizer.more()) {
-                throw tokenizer.syntaxError("Invalid App Info JSONP");
-            }
-            Object nextValue = tokenizer.nextValue();
-            if (!(nextValue instanceof JSONObject)) {
-                tokenizer.back();
-                throw tokenizer.syntaxError("Invalid JSON value of App Info");
-            }
-            JSONObject jsonObject = (JSONObject) nextValue;
-            return new ObjectMapper().reader(Application.class).readValue(jsonObject.toString());
-        } catch (IOException | JSONException e) {
-            throw new Auth0Exception("Failed to parse response to request", e);
-        }
     }
 
     private void deliverResult(Authentication result) {
@@ -366,6 +288,31 @@ public class LockActivity extends AppCompatActivity {
     }
 
     //Callbacks
+    private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
+        @Override
+        public void onSuccess(Application app) {
+            application = app;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult("");
+                    initLockUI();
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(final Auth0Exception error) {
+            applicationFetcher = null;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
+
     private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
         @Override
         public void onFailure(@NonNull Dialog dialog) {
