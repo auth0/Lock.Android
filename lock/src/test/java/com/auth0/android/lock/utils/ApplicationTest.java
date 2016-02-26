@@ -19,6 +19,8 @@ import static com.auth0.android.lock.utils.Strategies.Office365;
 import static com.auth0.android.lock.utils.Strategies.SAMLP;
 import static com.auth0.android.lock.utils.Strategies.SMS;
 import static com.auth0.android.lock.utils.Strategies.Twitter;
+import static com.auth0.android.lock.utils.StrategyMatcher.isStrategy;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -71,18 +73,21 @@ public class ApplicationTest {
     public void shouldReturnSocialStrategies() throws Exception {
         Application application = newApplicationWithStrategies(Facebook, Twitter, Auth0);
         assertThat(application.getSocialStrategies().size(), equalTo(2));
+        assertThat(application.getSocialStrategies(), containsInAnyOrder(isStrategy(Facebook), isStrategy(Twitter)));
     }
 
     @Test
     public void shouldReturnEnterpriseStrategies() throws Exception {
         Application application = newApplicationWithStrategies(Auth0, ADFS, SAMLP, Office365);
         assertThat(application.getEnterpriseStrategies().size(), equalTo(3));
+        assertThat(application.getEnterpriseStrategies(), containsInAnyOrder(isStrategy(ADFS), isStrategy(SAMLP), isStrategy(Office365)));
     }
 
     @Test
     public void shouldReturnPasswordlessStrategies() throws Exception {
         Application application = newApplicationWithStrategies(Email, SMS, Facebook, Auth0, SAMLP);
         assertThat(application.getPasswordlessStrategies().size(), equalTo(2));
+        assertThat(application.getPasswordlessStrategies(), containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
     }
 
     private static Strategy newStrategyFor(Strategies strategyMetadata) {
