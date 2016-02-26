@@ -52,13 +52,13 @@ public class Configuration {
 
     private Connection defaultActiveDirectoryConnection;
 
+    private Strategy passwordlessStrategy;
+
     private Strategy activeDirectoryStrategy;
 
     private List<Strategy> socialStrategies;
 
     private List<Strategy> enterpriseStrategies;
-
-    private List<Strategy> passwordlessStrategies;
 
     private Application application;
 
@@ -66,8 +66,8 @@ public class Configuration {
     private boolean changePasswordEnabled;
     private boolean usernameRequired;
     private UsernameStyle usernameStyle;
-    private PasswordlessMode passwordlessMode;
     private boolean loginAfterSignUp;
+    private PasswordlessMode passwordlessMode;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
@@ -75,7 +75,7 @@ public class Configuration {
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
         this.enterpriseStrategies = filterEnterpriseStrategies(application.getEnterpriseStrategies(), connectionSet);
-        this.passwordlessStrategies = filterPasswordlessStrategies(application.getPasswordlessStrategies(), connectionSet);
+        this.passwordlessStrategy = filterPasswordlessStrategies(application.getPasswordlessStrategies(), connectionSet);
         this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
@@ -91,6 +91,11 @@ public class Configuration {
         return defaultActiveDirectoryConnection;
     }
 
+    @Nullable
+    public Strategy getPasswordlessStrategy() {
+        return passwordlessStrategy;
+    }
+
     public Strategy getActiveDirectoryStrategy() {
         return activeDirectoryStrategy;
     }
@@ -101,10 +106,6 @@ public class Configuration {
 
     public List<Strategy> getEnterpriseStrategies() {
         return enterpriseStrategies;
-    }
-
-    public List<Strategy> getPasswordlessStrategies() {
-        return passwordlessStrategies;
     }
 
     public Application getApplication() {
@@ -182,17 +183,45 @@ public class Configuration {
         return filtered;
     }
 
-    private List<Strategy> filterPasswordlessStrategies(List<Strategy> strategies, Set<String> connections) {
-        if (strategies == null || connections.isEmpty()) {
-            return strategies;
+    private Strategy filterPasswordlessStrategies(List<Strategy> strategies, Set<String> connections) {
+        if (strategies == null || strategies.isEmpty()) {
+            return null;
         }
-        List<Strategy> filtered = new ArrayList<>(strategies.size());
-        for (Strategy strategy : strategies) {
-            if (connections.contains(strategy.getName())) {
-                filtered.add(strategy);
+
+        if (connections.isEmpty()) {
+            for (Strategy s : strategies) {
+                if (s.getName().equals(Strategies.Email.getName())) {
+                    return s;
+                }
+            }
+
+            for (Strategy s : strategies) {
+                if (s.getName().equals(Strategies.SMS.getName())) {
+                    return s;
+                }
+            }
+        } else {
+            for (Strategy s : strategies) {
+                if (s.getName().equals(Strategies.Email.getName())) {
+                    for (Connection c : s.getConnections()) {
+                        if (connections.contains(c.getName())) {
+                            return s;
+                        }
+                    }
+                }
+            }
+
+            for (Strategy s : strategies) {
+                if (s.getName().equals(Strategies.SMS.getName())) {
+                    for (Connection c : s.getConnections()) {
+                        if (connections.contains(c.getName())) {
+                            return s;
+                        }
+                    }
+                }
             }
         }
-        return filtered;
+        return null;
     }
 
     private void parseLocalOptions(Options options) {
@@ -215,31 +244,14 @@ public class Configuration {
             usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
         }
 
-        if (getPasswordlessStrategies().isEmpty()) {
-            passwordlessMode = null;
+        if (getPasswordlessStrategy() == null) {
             return;
         }
 
-        if (options.useCodePasswordless()) {
-            if (getPasswordlessStrategies().size() >= 2) {
-                passwordlessMode = PasswordlessMode.EMAIL_CODE;
-            } else if (getPasswordlessStrategies().size() == 1) {
-                if (getPasswordlessStrategies().get(0).getName().equals(Strategies.Email.getName())) {
-                    passwordlessMode = PasswordlessMode.EMAIL_CODE;
-                } else {
-                    passwordlessMode = PasswordlessMode.SMS_CODE;
-                }
-            }
-        } else {
-            if (getPasswordlessStrategies().size() >= 2) {
-                passwordlessMode = PasswordlessMode.EMAIL_LINK;
-            } else if (getPasswordlessStrategies().size() == 1) {
-                if (getPasswordlessStrategies().get(0).getName().equals(Strategies.Email.getName())) {
-                    passwordlessMode = PasswordlessMode.EMAIL_LINK;
-                } else {
-                    passwordlessMode = PasswordlessMode.SMS_LINK;
-                }
-            }
+        if (getPasswordlessStrategy().getName().equals(Strategies.Email.getName())) {
+            passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
+        } else if (getPasswordlessStrategy().getName().equals(Strategies.SMS.getName())) {
+            passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
         }
     }
 

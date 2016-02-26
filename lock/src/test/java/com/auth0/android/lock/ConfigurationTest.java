@@ -256,21 +256,24 @@ public class ConfigurationTest {
     @Test
     public void shouldReturnUnfilteredPasswordlessStrategies() throws Exception {
         configuration = unfilteredConfig();
-        final List<Strategy> strategies = configuration.getPasswordlessStrategies();
-        assertThat(strategies, containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
+        Strategy strategy = configuration.getPasswordlessStrategy();
+        assertThat(strategy, is(notNullValue()));
+        assertThat(strategy.getName(), equalTo(Email.getName()));
     }
 
     @Test
     public void shouldReturnFilteredPasswordlessStrategies() throws Exception {
         configuration = filteredConfigBy(SMS.getName());
-        assertThat(configuration.getPasswordlessStrategies(), contains(isStrategy(SMS)));
-        assertThat(configuration.getPasswordlessStrategies().size(), is(1));
+        Strategy strategy = configuration.getPasswordlessStrategy();
+        assertThat(strategy, is(notNullValue()));
+        assertThat(strategy.getName(), equalTo(SMS.getName()));
     }
 
     @Test
     public void shouldReturnEmptyPasswordlessStrategiesIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Facebook.getName());
-        assertThat(configuration.getPasswordlessStrategies(), emptyIterable());
+        Strategy strategy = configuration.getPasswordlessStrategy();
+        assertThat(strategy, is(nullValue()));
     }
 
     @Test
