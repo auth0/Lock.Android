@@ -88,6 +88,11 @@
                                    "name": "sms"
                                    }]
                    }, {
+                   "name": "email",
+                   "connections": [{
+                                   "name": "email"
+                                   }]
+                   }, {
                    "name": "twitter",
                    "connections": [{
                                    "name": "twitter"

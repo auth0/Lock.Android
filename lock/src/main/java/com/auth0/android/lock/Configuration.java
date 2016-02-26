@@ -56,6 +56,8 @@ public class Configuration {
 
     private List<Strategy> enterpriseStrategies;
 
+    private List<Strategy> passwordlessStrategies;
+
     private Application application;
 
     private boolean signUpEnabled;
@@ -70,6 +72,7 @@ public class Configuration {
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
         this.enterpriseStrategies = filterEnterpriseStrategies(application.getEnterpriseStrategies(), connectionSet);
+        this.passwordlessStrategies = filterPasswordlessStrategies(application.getPasswordlessStrategies(), connectionSet);
         this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
@@ -95,6 +98,10 @@ public class Configuration {
 
     public List<Strategy> getEnterpriseStrategies() {
         return enterpriseStrategies;
+    }
+
+    public List<Strategy> getPasswordlessStrategies() {
+        return passwordlessStrategies;
     }
 
     public Application getApplication() {
@@ -167,6 +174,19 @@ public class Configuration {
             Strategy str = filterStrategy(strategy, connections);
             if (str != null) {
                 filtered.add(str);
+            }
+        }
+        return filtered;
+    }
+
+    private List<Strategy> filterPasswordlessStrategies(List<Strategy> strategies, Set<String> connections) {
+        if (strategies == null || connections.isEmpty()) {
+            return strategies;
+        }
+        List<Strategy> filtered = new ArrayList<>(strategies.size());
+        for (Strategy strategy : strategies) {
+            if (connections.contains(strategy.getName())) {
+                filtered.add(strategy);
             }
         }
         return filtered;

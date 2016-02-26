@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock;
 
+import android.hardware.camera2.params.Face;
+
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -45,10 +47,12 @@ import java.util.List;
 
 import static com.auth0.android.lock.utils.ConnectionMatcher.isConnection;
 import static com.auth0.android.lock.utils.Strategies.ActiveDirectory;
+import static com.auth0.android.lock.utils.Strategies.Email;
 import static com.auth0.android.lock.utils.Strategies.Facebook;
 import static com.auth0.android.lock.utils.Strategies.GoogleApps;
 import static com.auth0.android.lock.utils.Strategies.GooglePlus;
 import static com.auth0.android.lock.utils.Strategies.Instagram;
+import static com.auth0.android.lock.utils.Strategies.SMS;
 import static com.auth0.android.lock.utils.Strategies.Twitter;
 import static com.auth0.android.lock.utils.Strategies.Yahoo;
 import static com.auth0.android.lock.utils.Strategies.Yammer;
@@ -186,6 +190,26 @@ public class ConfigurationTest {
         assertThat(strategy, notNullValue());
         assertThat(configuration.getDefaultActiveDirectoryConnection(), isConnection(MY_AD));
         assertThat(strategy.getConnections(), containsInAnyOrder(isConnection(MY_AD), isConnection(MY_SECOND_AD)));
+    }
+
+    @Test
+    public void shouldReturnUnfilteredPasswordlessStrategies() throws Exception {
+        configuration = unfilteredConfig();
+        final List<Strategy> strategies = configuration.getPasswordlessStrategies();
+        assertThat(strategies, containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
+    }
+
+    @Test
+    public void shouldReturnFilteredPasswordlessStrategies() throws Exception {
+        configuration = filteredConfigBy(SMS.getName());
+        assertThat(configuration.getPasswordlessStrategies(), contains(isStrategy(SMS)));
+        assertThat(configuration.getPasswordlessStrategies().size(), is(1));
+    }
+
+    @Test
+    public void shouldReturnEmptyPasswordlessStrategiesIfNoneMatch() throws Exception {
+        configuration = filteredConfigBy(Facebook.getName());
+        assertThat(configuration.getPasswordlessStrategies(), emptyIterable());
     }
 
     @Test

@@ -48,6 +48,7 @@ public class Application {
     private List<Strategy> strategies;
     private List<Strategy> socialStrategies;
     private List<Strategy> enterpriseStrategies;
+    private List<Strategy> passwordlessStrategies;
     private Strategy databaseStrategy;
 
     public Application(Application application) {
@@ -60,6 +61,7 @@ public class Application {
         strategies = application.strategies;
         socialStrategies = application.socialStrategies;
         enterpriseStrategies = application.enterpriseStrategies;
+        passwordlessStrategies = application.passwordlessStrategies;
         databaseStrategy = application.databaseStrategy;
     }
 
@@ -95,6 +97,7 @@ public class Application {
         this.strategies = strategies;
         this.socialStrategies = new ArrayList<>();
         this.enterpriseStrategies = new ArrayList<>();
+        this.passwordlessStrategies = new ArrayList<>();
         for (Strategy strategy : strategies) {
             if (Strategies.Auth0.getName().equals(strategy.getName())) {
                 this.databaseStrategy = strategy;
@@ -106,6 +109,8 @@ public class Application {
                     case ENTERPRISE:
                         this.enterpriseStrategies.add(strategy);
                         break;
+                    case PASSWORDLESS:
+                        this.passwordlessStrategies.add(strategy);
                 }
             }
         }
@@ -199,6 +204,15 @@ public class Application {
      */
     public List<Strategy> getEnterpriseStrategies() {
         return new ArrayList<>(enterpriseStrategies);
+    }
+
+    /**
+     * Returns the passwordless strategies of the app.
+     *
+     * @return list of passwordless strategies
+     */
+    public List<Strategy> getPasswordlessStrategies() {
+        return new ArrayList<>(passwordlessStrategies);
     }
 
     /**
