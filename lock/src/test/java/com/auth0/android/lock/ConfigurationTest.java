@@ -25,7 +25,6 @@
 package com.auth0.android.lock;
 
 import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -130,13 +129,13 @@ public class ConfigurationTest {
 
     @Test
     public void shouldPreferPasswordlessEmailOverSMSWhenBothAvailable() throws Exception {
-        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setUseCodePasswordless(true);
         options.setConnections(Arrays.asList(SMS.getName(), Email.getName()));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
 
-        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setUseCodePasswordless(false);
         options.setConnections(Arrays.asList(SMS.getName(), Email.getName()));
         configuration = new Configuration(application, options);
 
@@ -145,13 +144,13 @@ public class ConfigurationTest {
 
     @Test
     public void shouldSetCorrectPasswordlessTypeWhenUsingEmail() throws Exception {
-        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setUseCodePasswordless(true);
         options.setConnections(Arrays.asList(Email.getName()));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
 
-        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setUseCodePasswordless(false);
         options.setConnections(Arrays.asList(Email.getName()));
         configuration = new Configuration(application, options);
 
@@ -161,13 +160,13 @@ public class ConfigurationTest {
 
     @Test
     public void shouldSetCorrectPasswordlessTypeWhenUsingSMS() throws Exception {
-        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setUseCodePasswordless(true);
         options.setConnections(Arrays.asList(SMS.getName()));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
 
-        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setUseCodePasswordless(false);
         options.setConnections(Arrays.asList(SMS.getName()));
         configuration = new Configuration(application, options);
 
@@ -176,7 +175,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldNotHavePasswordlessModeOnNoConnections() throws Exception {
-        options.setPasswordlessType(PasswordlessType.CODE);
+        options.setUseCodePasswordless(true);
         options.setConnections(Collections.singletonList(Facebook.getName()));
         configuration = new Configuration(application, options);
 
@@ -184,11 +183,11 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void shouldNotHavePasswordlessModeWhenTypeMissingFromOptions() throws Exception {
+    public void shouldDefaultToCodePasswordlessWhenTypeMissingFromOptions() throws Exception {
         options.setConnections(Collections.singletonList(SMS.getName()));
         configuration = new Configuration(application, options);
 
-        assertThat(configuration.getPasswordlessMode(), is(nullValue()));
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
     }
 
     @Test

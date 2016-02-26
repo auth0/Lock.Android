@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.Auth0;
-import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -202,21 +200,21 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUsePasswordlessType() {
+    public void shouldUsePasswordlessCode() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setPasswordlessType(PasswordlessType.LINK);
+        options.setUseCodePasswordless(false);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.passwordlessType(), is(equalTo(parceledOptions.passwordlessType())));
+        assertThat(options.useCodePasswordless(), is(equalTo(parceledOptions.useCodePasswordless())));
     }
 
     @Test
-    public void shouldNotHavePasswordlessTypeByDefault() {
+    public void shouldHavePasswordlessCodeByDefault() {
         Options options = new Options();
         options.setAccount(auth0);
 
@@ -225,8 +223,8 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.passwordlessType(), is(nullValue()));
-        assertThat(parceledOptions.passwordlessType(), is(nullValue()));
+        assertThat(options.useCodePasswordless(), is(true));
+        assertThat(parceledOptions.useCodePasswordless(), is(true));
     }
 
     @Test
@@ -341,7 +339,7 @@ public class OptionsTest {
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
-        assertThat(options.passwordlessType(), is(nullValue()));
+        assertThat(options.useCodePasswordless(), is(true));
     }
 
 

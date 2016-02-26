@@ -37,7 +37,6 @@ import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.PasswordlessLock;
-import com.auth0.android.lock.enums.PasswordlessType;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -117,10 +116,10 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 socialOnlyLogin(true);
                 break;
             case R.id.btn_passwordless_code:
-                passwordlessLogin(PasswordlessType.CODE);
+                passwordlessLogin(true);
                 break;
             case R.id.btn_passwordless_link:
-                passwordlessLogin(PasswordlessType.LINK);
+                passwordlessLogin(false);
                 break;
         }
     }
@@ -128,14 +127,21 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     /**
      * Launches the login flow showing only the Passwordless widget.
      *
-     * @param type to use in the Passwordless authentication.
+     * @param useCode on Passwordless Authentication.
      */
-    private void passwordlessLogin(PasswordlessType type) {
+    private void passwordlessLogin(boolean useCode) {
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
-        passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
-                .withType(type)
-                .build();
+        if (useCode) {
+            passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
+                    .useCode()
+                    .build();
+        } else {
+            passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
+                    .useLink()
+                    .build();
+        }
+
         passwordlessLock.onCreate(this);
 
         startActivity(passwordlessLock.newIntent(this));
