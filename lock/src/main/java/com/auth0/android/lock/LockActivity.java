@@ -63,6 +63,7 @@ import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
 import com.auth0.request.ParameterizableRequest;
 import com.auth0.request.Request;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -99,7 +100,7 @@ public class LockActivity extends AppCompatActivity {
         rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
 
         if (application == null && applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options.getAccount());
+            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
     }

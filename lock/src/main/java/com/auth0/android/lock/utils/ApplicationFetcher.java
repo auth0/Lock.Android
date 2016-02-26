@@ -34,6 +34,7 @@ import com.auth0.callback.BaseCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
@@ -48,14 +49,16 @@ public class ApplicationFetcher {
     private static final String TAG = ApplicationFetcher.class.getSimpleName();
 
     private final Auth0 account;
+    private final OkHttpClient client;
 
     /**
      * Helper class to fetch the Application from Auth0 Dashboard.
      *
      * @param account credentials to use against the Auth0 API.
      */
-    public ApplicationFetcher(@NonNull Auth0 account) {
+    public ApplicationFetcher(@NonNull Auth0 account, @NonNull OkHttpClient client) {
         this.account = account;
+        this.client = client;
     }
 
     /**
@@ -68,17 +71,16 @@ public class ApplicationFetcher {
     }
 
     private void makeApplicationRequest(final BaseCallback<Application> callback) {
-        OkHttpClient client = new OkHttpClient();
         Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
                 .appendPath(account.getClientId() + ".js").build();
 
-        com.squareup.okhttp.Request req = new com.squareup.okhttp.Request.Builder()
+        Request req = new Request.Builder()
                 .url(uri.toString())
                 .build();
 
         client.newCall(req).enqueue(new Callback() {
             @Override
-            public void onFailure(com.squareup.okhttp.Request request, final IOException e) {
+            public void onFailure(Request request, final IOException e) {
                 Log.e(TAG, "Failed to fetchApplication: " + e.getMessage());
                 Auth0Exception exception = new Auth0Exception("Failed to fetchApplication: " + e.getMessage());
                 callback.onFailure(exception);
