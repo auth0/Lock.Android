@@ -7,16 +7,16 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_social_webview"
+        android:id="@+id/btn_normal_webview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Social only (WebView)" />
+        android:text="Normal (WebView)" />
 
     <Button
-        android:id="@+id/btn_social_browser"
+        android:id="@+id/btn_normal_browser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Social only (Browser)" />
+        android:text="Normal (Browser)" />
 
     <Button
         android:id="@+id/btn_passwordless_code"

@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.LockActivity;
+import com.auth0.android.lock.PasswordlessLockActivity;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
@@ -37,6 +39,8 @@ public class PanelHolder extends LinearLayout {
     private final Bus bus;
     private final Configuration configuration;
     private FormLayout formLayout;
+    private PasswordlessFormView passwordlessLayout;
+    private boolean usingPasswordless;
 
     public PanelHolder(Context context) {
         super(context);
@@ -44,10 +48,19 @@ public class PanelHolder extends LinearLayout {
         configuration = null;
     }
 
-    public PanelHolder(Context context, Bus lockBus, Configuration configuration) {
+    public PanelHolder(PasswordlessLockActivity context, Bus lockBus, Configuration configuration) {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;
+        this.usingPasswordless = true;
+        init();
+    }
+
+    public PanelHolder(LockActivity context, Bus lockBus, Configuration configuration) {
+        super(context);
+        this.bus = lockBus;
+        this.configuration = configuration;
+        this.usingPasswordless = false;
         init();
     }
 
@@ -55,13 +68,19 @@ public class PanelHolder extends LinearLayout {
         setOrientation(VERTICAL);
         boolean showSocial = !configuration.getSocialStrategies().isEmpty();
         boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
+        boolean showPasswordless = configuration.getPasswordlessStrategy() != null;
 
         SocialView socialLayout = null;
-        if (showSocial && showLoginForm) {
+        if (showSocial && showLoginForm && !usingPasswordless) {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
             formLayout = new FormLayout(getContext(), bus, configuration);
-        } else if (showLoginForm) {
+        } else if (showLoginForm && !usingPasswordless) {
             formLayout = new FormLayout(getContext(), bus, configuration);
+        } else if (showSocial && showPasswordless && usingPasswordless) {
+            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
+            passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
+        } else if (showPasswordless && usingPasswordless) {
+            passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
         } else if (showSocial) {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
         }
@@ -72,9 +91,16 @@ public class PanelHolder extends LinearLayout {
         if (formLayout != null) {
             addView(formLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+        if (passwordlessLayout != null) {
+            addView(passwordlessLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
     public boolean onBackPressed() {
-        return formLayout != null && formLayout.onBackPressed();
+        if (usingPasswordless) {
+            return passwordlessLayout != null && passwordlessLayout.onBackPressed();
+        } else {
+            return formLayout != null && formLayout.onBackPressed();
+        }
     }
 }

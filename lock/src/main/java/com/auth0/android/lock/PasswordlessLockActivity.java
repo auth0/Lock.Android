@@ -28,6 +28,7 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -49,6 +50,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.LockProgress;
+import com.auth0.android.lock.views.PanelHolder;
 import com.auth0.android.lock.views.PasswordlessFormView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
@@ -84,9 +86,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
-    private PasswordlessFormView passwordlessForm;
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
+    private PanelHolder panelHolder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,12 +117,26 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return false;
         }
 
+        boolean launchedForResult = getCallingActivity() != null;
+        if (options.useBrowser() && launchedForResult) {
+            Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
+            return false;
+        }
+        boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
+            if (options.useBrowser() && !launchedAsSingleTask) {
+                Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
+                return false;
+            }
+        }
+
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (passwordlessForm != null && passwordlessForm.onBackPressed()) {
+        if (panelHolder != null && panelHolder.onBackPressed()) {
             return;
         }
         if (options != null && options.isClosable()) {
@@ -136,9 +152,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
-        if (configuration.getDefaultPasswordlessStrategy() != null) {
-            passwordlessForm = new PasswordlessFormView(PasswordlessLockActivity.this, lockBus, configuration.getPasswordlessMode());
-            rootView.addView(passwordlessForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (configuration.getPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
+            panelHolder = new PanelHolder(this, lockBus, configuration);
+            rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 

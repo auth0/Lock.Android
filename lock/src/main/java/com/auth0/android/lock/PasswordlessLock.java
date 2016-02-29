@@ -42,6 +42,7 @@ import com.auth0.authentication.result.Token;
 import com.auth0.authentication.result.UserProfile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PasswordlessLock {
@@ -249,6 +250,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
+         *
+         * @param useBrowser or WebView. By default, the Authentication flow will use the WebView.
+         * @return the current Builder instance
+         */
+        public Builder useBrowser(boolean useBrowser) {
+            options.setUseBrowser(useBrowser);
+            return this;
+        }
+
+        /**
          * Whether the PasswordlessLockActivity can be closed when pressing the Back key or not.
          *
          * @param closable or not. By default, the LockActivity is not closable.
@@ -283,6 +295,28 @@ public class PasswordlessLock {
                 options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             }
 
+            return this;
+        }
+
+        /**
+         * Locally filters the Auth0 Connections that are shown in the login widgets.
+         *
+         * @param connections a non-null List containing the allowed Auth0 Connections.
+         * @return the current builder instance
+         */
+        public Builder onlyUseConnections(@NonNull List<String> connections) {
+            options.setConnections(connections);
+            return this;
+        }
+
+        /**
+         * SDK information sent to the Auth0 API with each request can be disabled here. By default,
+         * sending the SDK information is enabled.
+         *
+         * @return the current builder instance
+         */
+        public Builder doNotSendSDKInfo() {
+            options.setSendSDKInfo(false);
             return this;
         }
     }
