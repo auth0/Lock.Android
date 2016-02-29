@@ -52,17 +52,12 @@ public class ApplicationAPI {
         return server.takeRequest();
     }
 
-    public ApplicationAPI willReturnValidApplicationResponse() {
+    public ApplicationAPI willReturnValidJSONPResponse() {
         return willReturnApplicationResponseWithBody("Auth0.setClient({\"id\":\"CLIENTID\",\"tenant\":\"overmind\",\"subscription\":\"free\",\"authorize\":\"https://samples.auth0.com/authorize\",\"callback\":\"http://localhost:3000/\",\"hasAllowedOrigins\":true,\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]});", 200);
     }
 
     public ApplicationAPI willReturnInvalidJSONPLengthResponse() {
         server.enqueue(responseWithJSON("SHORTJSON", 200));
-        return this;
-    }
-
-    public ApplicationAPI willReturnInvalidApplicationResponse2() {
-        server.enqueue(responseWithJSON("NOT REALLY A JSON", 200));
         return this;
     }
 

@@ -61,4 +61,8 @@ public class MockBaseCallback<T> implements BaseCallback<T> {
             }
         };
     }
+
+    public Auth0Exception getError() {
+        return error;
+    }
 }
