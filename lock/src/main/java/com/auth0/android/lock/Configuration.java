@@ -97,21 +97,23 @@ public class Configuration {
 
     @Nullable
     public Strategy getDefaultPasswordlessStrategy() {
+        if (passwordlessStrategies.isEmpty()) {
+            return null;
+        }
+
         if (passwordlessStrategies.size() == 1) {
             return passwordlessStrategies.get(0);
-        } else if (passwordlessStrategies.size() > 1) {
-            for (Strategy s : passwordlessStrategies) {
-                if (s.getName().equals(Strategies.Email.getName())) {
-                    return s;
-                }
-            }
-            for (Strategy s : passwordlessStrategies) {
-                if (s.getName().equals(Strategies.SMS.getName())) {
-                    return s;
-                }
+        }
+
+        Strategy strategy = null;
+        for (Strategy s : passwordlessStrategies) {
+            if (s.getName().equals(Strategies.Email.getName())) {
+                strategy = s;
+                break;
             }
         }
-        return null;
+
+        return strategy != null ? strategy : passwordlessStrategies.get(0);
     }
 
     public List<Strategy> getSocialStrategies() {
