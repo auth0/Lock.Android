@@ -51,7 +51,6 @@ import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.PanelHolder;
-import com.auth0.android.lock.views.PasswordlessFormView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.result.Authentication;
@@ -72,7 +71,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class PasswordlessLockActivity extends AppCompatActivity {
 
