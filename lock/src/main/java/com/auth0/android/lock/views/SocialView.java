@@ -60,42 +60,6 @@ public class SocialView extends RecyclerView implements SocialViewAdapter.Connec
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-
-        ViewParent parent = getParent();
-        int leftPadding = 0;
-        int rightPadding = 0;
-
-        if (parent instanceof ViewGroup) {
-            leftPadding = ((ViewGroup) parent).getPaddingLeft();
-            rightPadding = ((ViewGroup) parent).getPaddingRight();
-        }
-        float desiredHeight = getHeight();
-        float desiredWidth = parentWidth - leftPadding - rightPadding;
-
-        int height = 0;
-        //Determine Height
-        switch (heightMode) {
-            case MeasureSpec.EXACTLY:
-                height = parentHeight;
-                break;
-            case MeasureSpec.AT_MOST:
-                height = Math.min((int) desiredHeight, parentHeight);
-                break;
-            case MeasureSpec.UNSPECIFIED:
-            default:
-                height = (int) desiredHeight;
-                break;
-        }
-        setMeasuredDimension((int) desiredWidth, height);
-    }
-
-    @Override
     public void onConnectionClicked(String connectionName) {
         bus.post(new SocialConnectionEvent(connectionName));
     }

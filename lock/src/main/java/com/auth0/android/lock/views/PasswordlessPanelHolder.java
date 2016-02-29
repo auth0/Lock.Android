@@ -67,7 +67,7 @@ public class PasswordlessPanelHolder extends LinearLayout {
         }
 
         if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.com_auth0_lock_social_container_height));
+            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         if (passwordlessLayout != null) {
             addView(passwordlessLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
