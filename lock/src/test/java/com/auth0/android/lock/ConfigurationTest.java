@@ -61,6 +61,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -79,6 +80,7 @@ public class ConfigurationTest {
     private static final String MY_SECOND_AD = "mySecondAD";
     private static final String UNKNOWN_AD = "UnknownAD";
     private static final String UNKNOWN_CONNECTION = "UnknownConnection";
+    private static final String CUSTOM_PASSWORDLESS_CONNECTION = "my-sms-connection";
 
     private Configuration configuration;
     private Application application;
@@ -256,23 +258,36 @@ public class ConfigurationTest {
     @Test
     public void shouldReturnUnfilteredPasswordlessStrategies() throws Exception {
         configuration = unfilteredConfig();
-        Strategy strategy = configuration.getPasswordlessStrategy();
-        assertThat(strategy, is(notNullValue()));
-        assertThat(strategy.getName(), equalTo(Email.getName()));
+        List<Strategy> strategies = configuration.getPasswordlessStrategies();
+        assertThat(strategies, is(notNullValue()));
+        assertThat(strategies, containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
     }
 
     @Test
     public void shouldReturnFilteredPasswordlessStrategies() throws Exception {
-        configuration = filteredConfigBy(SMS.getName());
-        Strategy strategy = configuration.getPasswordlessStrategy();
+        configuration = filteredConfigBy(CUSTOM_PASSWORDLESS_CONNECTION);
+        Strategy strategy = configuration.getDefaultPasswordlessStrategy();
         assertThat(strategy, is(notNullValue()));
-        assertThat(strategy.getName(), equalTo(SMS.getName()));
+        assertThat(strategy, isStrategy(SMS));
+        assertThat(strategy.getConnections(), hasSize(1));
+        assertThat(strategy.getConnections().get(0), isConnection(CUSTOM_PASSWORDLESS_CONNECTION));
+    }
+
+    @Test
+    public void shouldPreferEmailPasswordlessStrategy() throws Exception {
+        configuration = unfilteredConfig();
+        Strategy strategy = configuration.getDefaultPasswordlessStrategy();
+        List<Strategy> strategies = configuration.getPasswordlessStrategies();
+        assertThat(strategy, is(notNullValue()));
+        assertThat(strategy.getName(), equalTo(Email.getName()));
+        assertThat(strategies, containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
+        assertThat(strategies, hasSize(2));
     }
 
     @Test
     public void shouldReturnEmptyPasswordlessStrategiesIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Facebook.getName());
-        Strategy strategy = configuration.getPasswordlessStrategy();
+        Strategy strategy = configuration.getDefaultPasswordlessStrategy();
         assertThat(strategy, is(nullValue()));
     }
 

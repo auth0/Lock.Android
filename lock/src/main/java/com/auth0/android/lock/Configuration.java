@@ -52,7 +52,7 @@ public class Configuration {
 
     private Connection defaultActiveDirectoryConnection;
 
-    private Strategy passwordlessStrategy;
+    private List<Strategy> passwordlessStrategies;
 
     private Strategy activeDirectoryStrategy;
 
@@ -74,8 +74,8 @@ public class Configuration {
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
-        this.enterpriseStrategies = filterEnterpriseStrategies(application.getEnterpriseStrategies(), connectionSet);
-        this.passwordlessStrategy = filterPasswordlessStrategies(application.getPasswordlessStrategies(), connectionSet);
+        this.enterpriseStrategies = filterStrategiesByConnections(application.getEnterpriseStrategies(), connectionSet);
+        this.passwordlessStrategies = filterStrategiesByConnections(application.getPasswordlessStrategies(), connectionSet);
         this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
@@ -91,13 +91,27 @@ public class Configuration {
         return defaultActiveDirectoryConnection;
     }
 
-    @Nullable
-    public Strategy getPasswordlessStrategy() {
-        return passwordlessStrategy;
-    }
-
     public Strategy getActiveDirectoryStrategy() {
         return activeDirectoryStrategy;
+    }
+
+    @Nullable
+    public Strategy getDefaultPasswordlessStrategy() {
+        if (passwordlessStrategies.size() == 1) {
+            return passwordlessStrategies.get(0);
+        } else if (passwordlessStrategies.size() > 1) {
+            for (Strategy s : passwordlessStrategies) {
+                if (s.getName().equals(Strategies.Email.getName())) {
+                    return s;
+                }
+            }
+            for (Strategy s : passwordlessStrategies) {
+                if (s.getName().equals(Strategies.SMS.getName())) {
+                    return s;
+                }
+            }
+        }
+        return null;
     }
 
     public List<Strategy> getSocialStrategies() {
@@ -106,6 +120,10 @@ public class Configuration {
 
     public List<Strategy> getEnterpriseStrategies() {
         return enterpriseStrategies;
+    }
+
+    public List<Strategy> getPasswordlessStrategies() {
+        return passwordlessStrategies;
     }
 
     public Application getApplication() {
@@ -169,7 +187,7 @@ public class Configuration {
         return filtered;
     }
 
-    private List<Strategy> filterEnterpriseStrategies(List<Strategy> strategies, Set<String> connections) {
+    private List<Strategy> filterStrategiesByConnections(List<Strategy> strategies, Set<String> connections) {
         if (strategies == null || connections.isEmpty()) {
             return strategies;
         }
@@ -181,47 +199,6 @@ public class Configuration {
             }
         }
         return filtered;
-    }
-
-    private Strategy filterPasswordlessStrategies(List<Strategy> strategies, Set<String> connections) {
-        if (strategies == null || strategies.isEmpty()) {
-            return null;
-        }
-
-        if (connections.isEmpty()) {
-            for (Strategy s : strategies) {
-                if (s.getName().equals(Strategies.Email.getName())) {
-                    return s;
-                }
-            }
-
-            for (Strategy s : strategies) {
-                if (s.getName().equals(Strategies.SMS.getName())) {
-                    return s;
-                }
-            }
-        } else {
-            for (Strategy s : strategies) {
-                if (s.getName().equals(Strategies.Email.getName())) {
-                    for (Connection c : s.getConnections()) {
-                        if (connections.contains(c.getName())) {
-                            return s;
-                        }
-                    }
-                }
-            }
-
-            for (Strategy s : strategies) {
-                if (s.getName().equals(Strategies.SMS.getName())) {
-                    for (Connection c : s.getConnections()) {
-                        if (connections.contains(c.getName())) {
-                            return s;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     private void parseLocalOptions(Options options) {
@@ -243,15 +220,13 @@ public class Configuration {
 
             usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
         }
-
-        if (getPasswordlessStrategy() == null) {
-            return;
-        }
-
-        if (getPasswordlessStrategy().getName().equals(Strategies.Email.getName())) {
-            passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
-        } else if (getPasswordlessStrategy().getName().equals(Strategies.SMS.getName())) {
-            passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
+        Strategy passwordlessStrategy = getDefaultPasswordlessStrategy();
+        if (passwordlessStrategy != null) {
+            if (passwordlessStrategy.getName().equals(Strategies.Email.getName())) {
+                passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
+            } else if (passwordlessStrategy.getName().equals(Strategies.SMS.getName())) {
+                passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
+            }
         }
     }
 

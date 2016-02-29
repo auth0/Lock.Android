@@ -86,6 +86,9 @@
                    "name": "sms",
                    "connections": [{
                                    "name": "sms"
+                                   },
+                                   {
+                                   "name": "my-sms-connection"
                                    }]
                    }, {
                    "name": "email",
