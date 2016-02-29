@@ -246,7 +246,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        if (options == null || configuration.getPasswordlessStrategy() == null) {
+        if (options == null || configuration.getDefaultPasswordlessStrategy() == null) {
             return;
         } else if (event.getEmailOrNumber().isEmpty()) {
             return;
@@ -258,7 +258,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             AuthenticationRequest loginRequest = event.getLoginRequest(apiClient);
             if (loginRequest != null) {
                 HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
-                authenticationParameters.put("connection", configuration.getPasswordlessStrategy().getConnections().get(0).getName());
+                authenticationParameters.put("connection", configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
                 loginRequest.addParameters(authenticationParameters);
                 loginRequest.start(authCallback);
             }
@@ -268,7 +268,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
         ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
         if (codeRequest != null) {
-            codeRequest.getParameterBuilder().setConnection(configuration.getPasswordlessStrategy().getConnections().get(0).getName());
+            codeRequest.getParameterBuilder().setConnection(configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
             codeRequest.start(passwordlessCodeCallback);
         }
     }
