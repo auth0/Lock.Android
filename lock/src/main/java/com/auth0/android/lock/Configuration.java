@@ -25,8 +25,10 @@
 package com.auth0.android.lock;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -50,13 +52,13 @@ public class Configuration {
 
     private Connection defaultActiveDirectoryConnection;
 
+    private List<Strategy> passwordlessStrategies;
+
     private Strategy activeDirectoryStrategy;
 
     private List<Strategy> socialStrategies;
 
     private List<Strategy> enterpriseStrategies;
-
-    private List<Strategy> passwordlessStrategies;
 
     private Application application;
 
@@ -65,14 +67,15 @@ public class Configuration {
     private boolean usernameRequired;
     private UsernameStyle usernameStyle;
     private boolean loginAfterSignUp;
+    private PasswordlessMode passwordlessMode;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
-        this.enterpriseStrategies = filterEnterpriseStrategies(application.getEnterpriseStrategies(), connectionSet);
-        this.passwordlessStrategies = filterPasswordlessStrategies(application.getPasswordlessStrategies(), connectionSet);
+        this.enterpriseStrategies = filterStrategiesByConnections(application.getEnterpriseStrategies(), connectionSet);
+        this.passwordlessStrategies = filterStrategiesByConnections(application.getPasswordlessStrategies(), connectionSet);
         this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
@@ -90,6 +93,27 @@ public class Configuration {
 
     public Strategy getActiveDirectoryStrategy() {
         return activeDirectoryStrategy;
+    }
+
+    @Nullable
+    public Strategy getDefaultPasswordlessStrategy() {
+        if (passwordlessStrategies.isEmpty()) {
+            return null;
+        }
+
+        if (passwordlessStrategies.size() == 1) {
+            return passwordlessStrategies.get(0);
+        }
+
+        Strategy strategy = null;
+        for (Strategy s : passwordlessStrategies) {
+            if (s.getName().equals(Strategies.Email.getName())) {
+                strategy = s;
+                break;
+            }
+        }
+
+        return strategy != null ? strategy : passwordlessStrategies.get(0);
     }
 
     public List<Strategy> getSocialStrategies() {
@@ -165,7 +189,7 @@ public class Configuration {
         return filtered;
     }
 
-    private List<Strategy> filterEnterpriseStrategies(List<Strategy> strategies, Set<String> connections) {
+    private List<Strategy> filterStrategiesByConnections(List<Strategy> strategies, Set<String> connections) {
         if (strategies == null || connections.isEmpty()) {
             return strategies;
         }
@@ -179,40 +203,33 @@ public class Configuration {
         return filtered;
     }
 
-    private List<Strategy> filterPasswordlessStrategies(List<Strategy> strategies, Set<String> connections) {
-        if (strategies == null || connections.isEmpty()) {
-            return strategies;
-        }
-        List<Strategy> filtered = new ArrayList<>(strategies.size());
-        for (Strategy strategy : strategies) {
-            if (connections.contains(strategy.getName())) {
-                filtered.add(strategy);
-            }
-        }
-        return filtered;
-    }
-
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();
         loginAfterSignUp = options.loginAfterSignUp();
 
-        if (getDefaultDatabaseConnection() == null) {
-            return;
-        }
+        if (getDefaultDatabaseConnection() != null) {
+            //let user disable signUp only if connection have enabled it.
+            signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
+            if (signUpEnabled && !options.isSignUpEnabled()) {
+                signUpEnabled = false;
+            }
 
-        //let user disable signUp only if connection have enabled it.
-        signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
-        if (signUpEnabled && !options.isSignUpEnabled()) {
-            signUpEnabled = false;
-        }
+            //let user disable signUp only if connection have enabled it.
+            changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
+            if (changePasswordEnabled && !options.isChangePasswordEnabled()) {
+                changePasswordEnabled = false;
+            }
 
-        //let user disable signUp only if connection have enabled it.
-        changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
-        if (changePasswordEnabled && !options.isChangePasswordEnabled()) {
-            changePasswordEnabled = false;
+            usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
         }
-
-        usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
+        Strategy passwordlessStrategy = getDefaultPasswordlessStrategy();
+        if (passwordlessStrategy != null) {
+            if (passwordlessStrategy.getName().equals(Strategies.Email.getName())) {
+                passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
+            } else if (passwordlessStrategy.getName().equals(Strategies.SMS.getName())) {
+                passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
+            }
+        }
     }
 
     private boolean shouldSelect(Connection connection, Set<String> connections) {
@@ -241,6 +258,11 @@ public class Configuration {
 
     public UsernameStyle getUsernameStyle() {
         return usernameStyle;
+    }
+
+    @Nullable
+    public PasswordlessMode getPasswordlessMode() {
+        return passwordlessMode;
     }
 
     public boolean loginAfterSignUp() {

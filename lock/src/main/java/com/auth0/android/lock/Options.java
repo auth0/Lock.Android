@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -32,7 +31,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
-import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -54,7 +52,7 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private boolean sendSDKInfo;
     private UsernameStyle usernameStyle;
-    private PasswordlessMode passwordlessMode;
+    private boolean useCodePasswordless;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean loginAfterSignUp;
@@ -66,10 +64,10 @@ class Options implements Parcelable {
     public Options() {
         sendSDKInfo = true;
         usernameStyle = UsernameStyle.DEFAULT;
-        passwordlessMode = null;
         signUpEnabled = true;
         changePasswordEnabled = true;
         loginAfterSignUp = true;
+        useCodePasswordless = true;
     }
 
     protected Options(Parcel in) {
@@ -82,6 +80,7 @@ class Options implements Parcelable {
         signUpEnabled = in.readByte() != WITHOUT_DATA;
         changePasswordEnabled = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
+        useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<String>();
@@ -107,11 +106,6 @@ class Options implements Parcelable {
         } else {
             usernameStyle = null;
         }
-        if (in.readByte() == HAS_DATA) {
-            passwordlessMode = (PasswordlessMode) in.readSerializable();
-        } else {
-            passwordlessMode = null;
-        }
     }
 
     @Override
@@ -129,6 +123,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
@@ -156,12 +151,6 @@ class Options implements Parcelable {
         } else {
             dest.writeByte((byte) (HAS_DATA));
             dest.writeSerializable(usernameStyle);
-        }
-        if (passwordlessMode == null) {
-            dest.writeByte((byte) (WITHOUT_DATA));
-        } else {
-            dest.writeByte((byte) (HAS_DATA));
-            dest.writeSerializable(passwordlessMode);
         }
     }
 
@@ -293,11 +282,11 @@ class Options implements Parcelable {
         return new AuthenticationAPIClient(account);
     }
 
-    public void setPasswordlessMode(PasswordlessMode mode) {
-        this.passwordlessMode = mode;
+    public void setUseCodePasswordless(boolean useCode) {
+        this.useCodePasswordless = useCode;
     }
 
-    public PasswordlessMode passwordlessMode() {
-        return passwordlessMode;
+    public boolean useCodePasswordless() {
+        return this.useCodePasswordless;
     }
 }
