@@ -50,7 +50,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.LockProgress;
-import com.auth0.android.lock.views.PanelHolder;
+import com.auth0.android.lock.views.PasswordlessPanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.result.Authentication;
@@ -86,7 +86,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private LockProgress progress;
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
-    private PanelHolder panelHolder;
+    private PasswordlessPanelHolder panelHolder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,7 +151,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private void initLockUI() {
         configuration = new Configuration(application, options);
         if (configuration.getDefaultPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
-            panelHolder = new PanelHolder(this, lockBus, configuration);
+            panelHolder = new PasswordlessPanelHolder(this, lockBus, configuration);
             rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
