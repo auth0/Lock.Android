@@ -128,6 +128,10 @@ public class Configuration {
         return passwordlessStrategies;
     }
 
+    public String getFirstConnectionOfStrategy(@NonNull Strategy strategy) {
+        return strategy.getConnections().get(0).getName();
+    }
+
     public Application getApplication() {
         return application;
     }

@@ -60,6 +60,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class PasswordlessLockActivity extends AppCompatActivity {
 
@@ -244,7 +245,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        if (options == null) {
+        if (options == null || configuration.getDefaultPasswordlessStrategy() == null) {
             return;
         } else if (event.getEmailOrNumber().isEmpty()) {
             return;
@@ -252,20 +253,19 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
             AuthenticationRequest loginRequest = event.getLoginRequest(apiClient);
-            if (loginRequest != null) {
-                loginRequest.addParameters(options.getAuthenticationParameters());
-                loginRequest.start(authCallback);
-            }
+            loginRequest.addParameters(options.getAuthenticationParameters());
+            loginRequest.setConnection(connectionName);
+            loginRequest.start(authCallback);
             return;
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
         ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
-        if (codeRequest != null) {
-            codeRequest.start(passwordlessCodeCallback);
-        }
+        codeRequest.getParameterBuilder().setConnection(connectionName);
+        codeRequest.start(passwordlessCodeCallback);
     }
 
     //Callbacks
