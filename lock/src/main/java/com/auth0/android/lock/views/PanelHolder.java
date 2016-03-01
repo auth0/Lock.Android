@@ -68,7 +68,7 @@ public class PanelHolder extends LinearLayout {
         setOrientation(VERTICAL);
         boolean showSocial = !configuration.getSocialStrategies().isEmpty();
         boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
-        boolean showPasswordless = configuration.getPasswordlessStrategy() != null;
+        boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
 
         SocialView socialLayout = null;
         if (showSocial && showLoginForm && !usingPasswordless) {

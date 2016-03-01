@@ -152,7 +152,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
-        if (configuration.getPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
+        if (configuration.getDefaultPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
             panelHolder = new PanelHolder(this, lockBus, configuration);
             rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
