@@ -61,7 +61,6 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class PasswordlessLockActivity extends AppCompatActivity {
 
@@ -256,21 +255,17 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         if (event.getCode() != null) {
             AuthenticationRequest loginRequest = event.getLoginRequest(apiClient);
-            if (loginRequest != null) {
-                HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
-                authenticationParameters.put("connection", configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
-                loginRequest.addParameters(authenticationParameters);
-                loginRequest.start(authCallback);
-            }
+            HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
+            authenticationParameters.put("connection", configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
+            loginRequest.addParameters(authenticationParameters);
+            loginRequest.start(authCallback);
             return;
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
         ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
-        if (codeRequest != null) {
-            codeRequest.getParameterBuilder().setConnection(configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
-            codeRequest.start(passwordlessCodeCallback);
-        }
+        codeRequest.getParameterBuilder().setConnection(configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
+        codeRequest.start(passwordlessCodeCallback);
     }
 
     //Callbacks

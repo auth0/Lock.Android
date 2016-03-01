@@ -24,8 +24,6 @@
 
 package com.auth0.android.lock.events;
 
-import android.support.annotation.Nullable;
-
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
@@ -67,7 +65,6 @@ public class PasswordlessLoginEvent {
      * @param apiClient the API Client instance
      * @return the Passwordless code request request.
      */
-    @Nullable
     public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient) {
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
             return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
@@ -86,7 +83,6 @@ public class PasswordlessLoginEvent {
      * @param apiClient the API Client instance
      * @return the Passwordless login request.
      */
-    @Nullable
     public AuthenticationRequest getLoginRequest(AuthenticationAPIClient apiClient) {
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.loginWithEmail(getEmailOrNumber(), getCode());
