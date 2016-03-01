@@ -51,8 +51,8 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Strategies;
+import com.auth0.android.lock.views.ClassicPanelHolder;
 import com.auth0.android.lock.views.LockProgress;
-import com.auth0.android.lock.views.PanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.ChangePasswordRequest;
@@ -88,7 +88,7 @@ public class LockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
-    private PanelHolder panelHolder;
+    private ClassicPanelHolder panelHolder;
 
     private WebIdentityProvider lastIdp;
 
@@ -197,7 +197,7 @@ public class LockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
-        panelHolder = new PanelHolder(LockActivity.this, lockBus, configuration);
+        panelHolder = new ClassicPanelHolder(this, lockBus, configuration);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 

@@ -57,8 +57,8 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.demo_activity);
-        Button btnWebView = (Button) findViewById(R.id.btn_social_webview);
-        Button btnBrowser = (Button) findViewById(R.id.btn_social_browser);
+        Button btnWebView = (Button) findViewById(R.id.btn_normal_webview);
+        Button btnBrowser = (Button) findViewById(R.id.btn_normal_browser);
         Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_code);
         Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_link);
 
@@ -109,11 +109,11 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_social_webview:
-                socialOnlyLogin(false);
+            case R.id.btn_normal_webview:
+                normalLogin(false);
                 break;
-            case R.id.btn_social_browser:
-                socialOnlyLogin(true);
+            case R.id.btn_normal_browser:
+                normalLogin(true);
                 break;
             case R.id.btn_passwordless_code:
                 passwordlessLogin(true);
@@ -152,7 +152,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
      *
      * @param useBrowser whether to use the webview (default) or the browser.
      */
-    private void socialOnlyLogin(boolean useBrowser) {
+    private void normalLogin(boolean useBrowser) {
         // create account
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 

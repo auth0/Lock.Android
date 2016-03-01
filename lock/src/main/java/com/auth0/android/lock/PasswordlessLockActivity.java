@@ -25,10 +25,13 @@
 package com.auth0.android.lock;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -40,14 +43,22 @@ import android.widget.LinearLayout;
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.provider.AuthorizeResult;
+import com.auth0.android.lock.provider.CallbackHelper;
+import com.auth0.android.lock.provider.IdentityProviderCallback;
+import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.views.LockProgress;
-import com.auth0.android.lock.views.PasswordlessFormView;
+import com.auth0.android.lock.views.PasswordlessPanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
 import com.auth0.request.ParameterizableRequest;
+import com.auth0.request.Request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -60,7 +71,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class PasswordlessLockActivity extends AppCompatActivity {
 
@@ -74,8 +84,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private Bus lockBus;
     private LinearLayout rootView;
     private LockProgress progress;
-    private PasswordlessFormView passwordlessForm;
     private String lastPasswordlessEmailOrNumber;
+    private WebIdentityProvider lastIdp;
+    private PasswordlessPanelHolder panelHolder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,12 +115,26 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return false;
         }
 
+        boolean launchedForResult = getCallingActivity() != null;
+        if (options.useBrowser() && launchedForResult) {
+            Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
+            return false;
+        }
+        boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
+            if (options.useBrowser() && !launchedAsSingleTask) {
+                Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
+                return false;
+            }
+        }
+
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (passwordlessForm != null && passwordlessForm.onBackPressed()) {
+        if (panelHolder != null && panelHolder.onBackPressed()) {
             return;
         }
         if (options != null && options.isClosable()) {
@@ -125,9 +150,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
      */
     private void initLockUI() {
         configuration = new Configuration(application, options);
-        if (configuration.getDefaultPasswordlessStrategy() != null) {
-            passwordlessForm = new PasswordlessFormView(PasswordlessLockActivity.this, lockBus, configuration.getPasswordlessMode());
-            rootView.addView(passwordlessForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (configuration.getDefaultPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
+            panelHolder = new PasswordlessPanelHolder(this, lockBus, configuration);
+            rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -237,6 +262,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 PasswordlessLoginEvent event = new PasswordlessLoginEvent(configuration.getPasswordlessMode(), lastPasswordlessEmailOrNumber, code);
                 onPasswordlessAuthenticationRequest(event);
             }
+        } else if (options != null && lastIdp != null) {
+            AuthorizeResult result = new AuthorizeResult(intent);
+            lastIdp.authorize(PasswordlessLockActivity.this, result);
         } else {
             progress.showResult(getString(R.string.com_auth0_lock_error_unexpected_passwordless_intent));
         }
@@ -266,6 +294,23 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
         codeRequest.getParameterBuilder().setConnection(connectionName);
         codeRequest.start(passwordlessCodeCallback);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
+        //called on social button click
+        if (options == null) {
+            return;
+        }
+
+        progress.showProgress();
+        String pkgName = getApplicationContext().getPackageName();
+        CallbackHelper helper = new CallbackHelper(pkgName);
+        lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
+        lastIdp.setUseBrowser(options.useBrowser());
+        lastIdp.setParameters(options.getAuthenticationParameters());
+        lastIdp.start(PasswordlessLockActivity.this, event.getConnectionName());
     }
 
     //Callbacks
@@ -308,6 +353,43 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     progress.showResult(error.getMessage());
+                }
+            });
+        }
+    };
+
+    private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
+        @Override
+        public void onFailure(@NonNull Dialog dialog) {
+            Log.w(TAG, "OnFailure called");
+        }
+
+        @Override
+        public void onFailure(int titleResource, int messageResource, Throwable cause) {
+            Log.w(TAG, "OnFailure called");
+        }
+
+        @Override
+        public void onSuccess(@NonNull final Token token) {
+            Log.d(TAG, "Fetching user profile..");
+            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(token.getIdToken());
+            request.start(new BaseCallback<UserProfile>() {
+                @Override
+                public void onSuccess(UserProfile profile) {
+                    Log.d(TAG, "OnSuccess called for user " + profile.getName());
+                    Authentication authentication = new Authentication(profile, token);
+                    deliverResult(authentication);
+                }
+
+                @Override
+                public void onFailure(final Auth0Exception error) {
+                    Log.w(TAG, "OnFailure called");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progress.showResult(error.getMessage());
+                        }
+                    });
                 }
             });
         }
