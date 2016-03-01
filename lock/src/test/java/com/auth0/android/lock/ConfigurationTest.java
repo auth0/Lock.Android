@@ -63,6 +63,7 @@ import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -271,6 +272,15 @@ public class ConfigurationTest {
         assertThat(strategy, isStrategy(SMS));
         assertThat(strategy.getConnections(), hasSize(1));
         assertThat(strategy.getConnections().get(0), isConnection(CUSTOM_PASSWORDLESS_CONNECTION));
+    }
+
+    @Test
+    public void shouldReturnFirstConnectionForStrategy() throws Exception {
+        configuration = unfilteredConfig();
+        Strategy smsStrategy = configuration.getPasswordlessStrategies().get(0);
+        String name = configuration.getFirstConnectionOfStrategy(smsStrategy);
+        assertThat(name, is(equalTo(SMS.getName())));
+        assertThat(name, is(not(equalTo(CUSTOM_PASSWORDLESS_CONNECTION))));
     }
 
     @Test

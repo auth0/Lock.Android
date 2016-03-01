@@ -253,18 +253,18 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
             AuthenticationRequest loginRequest = event.getLoginRequest(apiClient);
-            HashMap<String, Object> authenticationParameters = options.getAuthenticationParameters();
-            authenticationParameters.put("connection", configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
-            loginRequest.addParameters(authenticationParameters);
+            loginRequest.addParameters(options.getAuthenticationParameters());
+            loginRequest.setConnection(connectionName);
             loginRequest.start(authCallback);
             return;
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
         ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
-        codeRequest.getParameterBuilder().setConnection(configuration.getDefaultPasswordlessStrategy().getConnections().get(0).getName());
+        codeRequest.getParameterBuilder().setConnection(connectionName);
         codeRequest.start(passwordlessCodeCallback);
     }
 
