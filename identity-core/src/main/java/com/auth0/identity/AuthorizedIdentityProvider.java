@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.auth0.core.Application;
 import com.auth0.identity.util.PermissionCallback;
 import com.auth0.identity.util.PermissionHandler;
 
@@ -48,6 +49,11 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider, Pe
     @Override
     public void setCallback(IdentityProviderCallback callback) {
         identityProvider.setCallback(callback);
+    }
+
+    @Override
+    public void start(Activity activity, IdentityProviderRequest request, Application application){
+        checkPermissions(activity, request.getServiceName());
     }
 
     @Override
