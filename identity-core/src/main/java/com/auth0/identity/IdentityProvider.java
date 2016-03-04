@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.auth0.core.Application;
+import com.auth0.identity.util.PermissionCallback;
 
 /**
  * Interface for the object that can handle authentication against an Identity Provider.
@@ -40,14 +41,16 @@ public interface IdentityProvider {
 
     /**
      * Sets the callback that will report the result of the authentication
+     *
      * @param callback a callback
      */
     void setCallback(IdentityProviderCallback callback);
 
     /**
      * Starts the authentication process for an identity provider.
-     * @param activity activity that starts the process (and will receive its response)
-     * @param request request information
+     *
+     * @param activity    activity that starts the process (and will receive its response)
+     * @param request     request information
      * @param application Auth0 application.
      * @deprecated
      */
@@ -55,7 +58,8 @@ public interface IdentityProvider {
 
     /**
      * Starts the authentication process for an identity provider.
-     * @param activity activity that starts the process (and will receive its response)
+     *
+     * @param activity    activity that starts the process (and will receive its response)
      * @param serviceName of the IdP to authenticate with
      */
     void start(Activity activity, String serviceName);
@@ -67,10 +71,11 @@ public interface IdentityProvider {
 
     /**
      * Called with the result of the authorization.
-     * @param activity activity that will receive the result.
+     *
+     * @param activity    activity that will receive the result.
      * @param requestCode code of the authentication request
-     * @param resultCode result code
-     * @param data authentication paylod
+     * @param resultCode  result code
+     * @param data        authentication paylod
      * @return if the result is valid or not.
      */
     boolean authorize(Activity activity, int requestCode, int resultCode, Intent data);
