@@ -32,6 +32,8 @@ import com.auth0.core.Application;
 import com.auth0.identity.util.PermissionCallback;
 import com.auth0.identity.util.PermissionHandler;
 
+import java.util.List;
+
 /**
  * Interface for allowing an IdentityProvider to request specific permissions
  * before calling start.
@@ -41,6 +43,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider, Pe
     protected IdentityProvider identityProvider;
     private Activity activity;
     private String serviceName;
+    private PermissionHandler handler;
 
     public AuthorizedIdentityProvider(@NonNull IdentityProvider provider) {
         this.identityProvider = provider;
@@ -52,13 +55,13 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider, Pe
     }
 
     @Override
-    public void start(Activity activity, IdentityProviderRequest request, Application application){
-        checkPermissions(activity, request.getServiceName());
+    public void start(Activity activity, IdentityProviderRequest request, Application application) {
+        checkPermissions(activity, request.getServiceName(), true);
     }
 
     @Override
     public void start(Activity activity, @NonNull String connectionName) {
-        checkPermissions(activity, connectionName);
+        checkPermissions(activity, connectionName, true);
     }
 
     @Override
@@ -81,35 +84,63 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider, Pe
      *
      * @return the required permissions
      */
-    abstract String[] getRequiredPermissions();
+    public abstract String[] getRequiredPermissions();
+
+    /**
+     * Retry the last permission request issued to the user. If there is no recent
+     * request, this method will do nothing.
+     */
+    public void retryLastPermissionRequest() {
+        if (activity == null || serviceName == null) {
+            return;
+        }
+        checkPermissions(activity, serviceName, false);
+    }
 
     /**
      * Checks if the required permissions have been granted by the user and starts the authentication process
      *
-     * @param activity    activity that starts the process (and will receive its response)
-     * @param serviceName of the IdentityProvider to authenticate with
+     * @param activity        activity that starts the process (and will receive its response)
+     * @param serviceName     of the IdentityProvider to authenticate with
+     * @param explainIfNeeded the reason why we need the permission
      */
-    private void checkPermissions(Activity activity, @NonNull String serviceName) {
+    private void checkPermissions(Activity activity, @NonNull String serviceName, boolean explainIfNeeded) {
         String[] permissions = getRequiredPermissions();
         if (permissions.length == 0) {
             identityProvider.start(activity, serviceName);
             return;
         }
-        PermissionHandler handler = new PermissionHandler(activity, this);
+        handler = new PermissionHandler(activity, this);
         if (handler.areAllPermissionsGranted(permissions)) {
             identityProvider.start(activity, serviceName);
         } else {
             this.activity = activity;
             this.serviceName = serviceName;
-            handler.requestPermissions(permissions);
+            handler.requestPermissions(permissions, explainIfNeeded);
+        }
+    }
+
+    /**
+     * Should be called from the activity that initiated the permission request,
+     * when the method #onRequestPermissionResult is called on that activity.
+     *
+     * @param requestCode  the permission request code
+     * @param permissions  the permissions requested
+     * @param grantResults the grant results for each permission
+     */
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (handler != null) {
+            handler.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     @Override
-    public void onPermissionsResult(String[] permissionsGranted, String[] permissionsDeclined) {
-        if (permissionsDeclined.length == 0 && activity != null && serviceName != null) {
+    public void onPermissionsResult(List<String> permissionsGranted, List<String> permissionsDeclined) {
+        if (permissionsDeclined.isEmpty() && activity != null && serviceName != null) {
             //continue with the Authentication flow
             identityProvider.start(activity, serviceName);
+        } else {
+            onPermissionRequireExplanation(permissionsDeclined.get(0));
         }
     }
 }

@@ -8,9 +8,14 @@ import android.support.v4.content.PermissionChecker;
 
 import com.auth0.identity.AuthorizedIdentityProvider;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class PermissionHandler implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final int PERMISSION_REQ_CODE = 324;
+    private static final int PERMISSION_REQ_CODE = 211;
 
     private final Activity context;
     private final AuthorizedIdentityProvider callback;
@@ -49,18 +54,17 @@ public class PermissionHandler implements ActivityCompat.OnRequestPermissionsRes
     /**
      * Starts the async request of the given permission.
      *
-     * @param permissions to request to the user
+     * @param permissions     to request to the user
+     * @param explainIfNeeded the reason why we need the permission
      */
-    public void requestPermissions(@NonNull String[] permissions) {
-        boolean explanationRequired = false;
-        for (String p : permissions) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context, p)) {
-                explanationRequired = true;
-                callback.onPermissionRequireExplanation(p);
+    public void requestPermissions(@NonNull String[] permissions, boolean explainIfNeeded) {
+        if (explainIfNeeded) {
+            for (String p : permissions) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(context, p)) {
+                    callback.onPermissionRequireExplanation(p);
+                    return;
+                }
             }
-        }
-        if (explanationRequired) {
-            return;
         }
 
         ActivityCompat.requestPermissions(context,
@@ -79,22 +83,19 @@ public class PermissionHandler implements ActivityCompat.OnRequestPermissionsRes
         if (requestCode != PERMISSION_REQ_CODE) {
             return;
         } else if (permissions.length == 0 && grantResults.length == 0) {
-            callback.onPermissionsResult(new String[]{}, permissions);
+            callback.onPermissionsResult(Collections.<String>emptyList(), Arrays.asList(permissions));
             return;
         }
-        int grantedIndex = 0;
-        int declinedIndex = 0;
-        String[] permissionsGranted = new String[]{};
-        String[] permissionsDeclined = new String[]{};
+        List<String> grantedPermissions = new ArrayList<>();
+        List<String> declinedPermissions = new ArrayList<>();
+
         for (int i = 0; i < permissions.length; i++) {
             if (grantResults[i] == PermissionChecker.PERMISSION_GRANTED) {
-                permissionsGranted[grantedIndex] = permissions[i];
-                grantedIndex++;
+                grantedPermissions.add(permissions[i]);
             } else {
-                permissionsDeclined[declinedIndex] = permissions[i];
-                declinedIndex++;
+                declinedPermissions.add(permissions[i]);
             }
         }
-        callback.onPermissionsResult(permissionsGranted, permissionsDeclined);
+        callback.onPermissionsResult(grantedPermissions, declinedPermissions);
     }
 }

@@ -24,6 +24,8 @@
 
 package com.auth0.identity.util;
 
+import java.util.List;
+
 public interface PermissionCallback {
 
     /**
@@ -39,5 +41,5 @@ public interface PermissionCallback {
      * @param permissionsGranted  the user just accepted.
      * @param permissionsDeclined the user just declined.
      */
-    void onPermissionsResult(String[] permissionsGranted, String[] permissionsDeclined);
+    void onPermissionsResult(List<String> permissionsGranted, List<String> permissionsDeclined);
 }
