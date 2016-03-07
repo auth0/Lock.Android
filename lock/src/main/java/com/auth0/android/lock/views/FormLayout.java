@@ -50,6 +50,8 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private ChangePasswordFormView changePwdForm;
     private DomainFormView domainForm;
 
+    public enum FormMode {LOG_IN, SIGN_UP}
+
     public FormLayout(Context context) {
         super(context);
     }
@@ -86,6 +88,22 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
             showChangePasswordForm();
         } else if (id == R.id.com_auth0_lock_back_btn) {
             moveToFirstForm();
+        }
+    }
+
+    /**
+     * Change the current form mode
+     *
+     * @param mode the new FormMode to change to
+     */
+    public void changeFormMode(FormMode mode) {
+        switch (mode) {
+            case LOG_IN:
+                moveToFirstForm();
+                break;
+            case SIGN_UP:
+                showSignUpForm();
+                break;
         }
     }
 

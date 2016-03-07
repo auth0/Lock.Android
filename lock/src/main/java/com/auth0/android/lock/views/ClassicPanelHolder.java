@@ -32,7 +32,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends LinearLayout {
+public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -66,6 +66,10 @@ public class ClassicPanelHolder extends LinearLayout {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
         }
 
+        if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
+            ModeSelectionView modeSelectionView = new ModeSelectionView(getContext(), this);
+            addView(modeSelectionView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
         if (socialLayout != null) {
             addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
@@ -76,5 +80,12 @@ public class ClassicPanelHolder extends LinearLayout {
 
     public boolean onBackPressed() {
         return formLayout != null && formLayout.onBackPressed();
+    }
+
+    @Override
+    public void onFormModeChanged(FormLayout.FormMode mode) {
+        if (formLayout != null) {
+            formLayout.changeFormMode(mode);
+        }
     }
 }

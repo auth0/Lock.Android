@@ -97,4 +97,7 @@
     <color name="com_auth0_lock_header_background">#E33B1B</color>
     <color name="com_auth0_lock_input_icon_background">#f0f0f0</color>
     <color name="com_auth0_lock_text_hint_color">#4433FF</color>
+
+    <color name="com_auth0_lock_radio_button_checked_color">#5C666F</color>
+    <color name="com_auth0_lock_radio_button_unchecked_color">#FFFFFF</color>
 </resources>
