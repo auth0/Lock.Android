@@ -9,8 +9,11 @@ android:
   - extra-google-m2repository
   - extra-android-m2repository
   - addon-google_apis-google-23
+install:
+  - ./gradlew --version # show version and download Gradle Wrapper when is not present in cache
+  - ./gradlew clean # clean project and download Android dependencies when are not present in cache
 script:
-  - "./gradlew clean test --continue"
+  - ./gradlew test --continue
 branches:
   only:
   - master
