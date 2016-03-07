@@ -68,16 +68,34 @@ public class BuilderTest {
     private Lock.Builder builder;
     private Lock lock;
 
-    @Mock private CredentialStore store;
-    @Mock private IdentityProvider identityProvider;
+    @Mock
+    private CredentialStore store;
+    @Mock
+    private IdentityProvider identityProvider;
 
-    @Rule public ExpectedException expectedException = ExpectedException.none();
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         builder = new LockBuilder();
         lock = null;
+    }
+
+    @Test
+    public void shouldCreateLockWithDefaultValues() throws Exception {
+        lock = basicBuilder().build();
+        assertThat(lock, is(notNullValue()));
+
+        assertThat(lock.shouldUseWebView(), is(false));
+        assertThat(lock.isClosable(), is(false));
+        assertThat(lock.shouldLoginAfterSignUp(), is(true));
+        assertThat(lock.shouldUseEmail(), is(true));
+        assertThat(lock.isFullScreen(), is(false));
+        assertThat(lock.isSignUpEnabled(), is(true));
+        assertThat(lock.isChangePasswordEnabled(), is(true));
+        assertThat(lock.shouldRequirePasswordOnPasswordReset(), is(false));
     }
 
     @Test
@@ -239,8 +257,8 @@ public class BuilderTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage(equalToIgnoringCase("Missing Auth0 credentials. Please make sure you supplied at least ClientID and Domain."));
         builder
-            .clientId(CLIENT_ID)
-            .build();
+                .clientId(CLIENT_ID)
+                .build();
     }
 
     @Test
@@ -264,6 +282,14 @@ public class BuilderTest {
                 .disableChangePassword(true)
                 .build();
         assertThat(lock.isChangePasswordEnabled(), is(false));
+    }
+
+    @Test
+    public void shouldRequirePasswordOnPasswordReset() throws Exception {
+        lock = basicBuilder()
+                .requirePasswordOnPasswordReset()
+                .build();
+        assertThat(lock.shouldRequirePasswordOnPasswordReset(), is(true));
     }
 
     @Test

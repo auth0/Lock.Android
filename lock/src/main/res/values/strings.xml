@@ -2,7 +2,7 @@
 <resources>
 
     <string name="com_auth0_auth0_lock">Lock</string>
-    <string name="com_auth0_loading_title"/>
+    <string name="com_auth0_loading_title" />
     <string name="com_auth0_email_placeholder">Email</string>
     <string name="com_auth0_username_placeholder">Username</string>
     <string name="com_auth0_password_placeholder">Password</string>
@@ -29,7 +29,7 @@
     <string name="com_auth0_application_load_failed_message">Couldn\'t obtain application configuration. Please check your Auth0 configuration and try again.</string>
     <string name="com_auth0_application_load_no_connection_message">No Internet connection found. Please check your Internet configuration and try again.</string>
     <string name="com_auth0_application_retry_button_text">Retry</string>
-    
+
     <!-- Validation Errors -->
     <string name="com_auth0_invalid_credentials_title">Invalid credentials</string>
     <string name="com_auth0_invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
@@ -47,6 +47,7 @@
     <!-- Change Password -->
     <string name="com_auth0_database_change_password_title">Reset Password</string>
     <string name="com_auth0_db_reset_password_title_message">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
+    <string name="com_auth0_db_reset_password_by_link_title_message">Please enter your email. We will send you the link to the change password form.</string>
     <string name="com_auth0_db_change_password_btn_text">SEND</string>
     <string name="com_auth0_db_change_password_error_title">Could\'nt change your password</string>
     <string name="com_auth0_db_change_password_error_message">There was an error processing the reset password.</string>

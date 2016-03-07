@@ -27,9 +27,7 @@ package com.auth0.lock.util;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.auth0.core.Application;
 import com.auth0.core.Connection;
-import com.auth0.core.Strategies;
 import com.auth0.core.Strategy;
 import com.auth0.lock.Configuration;
 import com.auth0.lock.Lock;
@@ -68,6 +66,7 @@ public class LockFragmentBuilder {
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
         arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.shouldUseEmail());
+        arguments.putBoolean(DatabaseChangePasswordFragment.REQUIRE_PASSWORD_NOW, lock.shouldRequirePasswordOnPasswordReset());
         fragment.setArguments(arguments);
         return fragment;
     }
