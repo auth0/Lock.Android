@@ -51,7 +51,6 @@ public class DomainFormView extends FormView {
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
     private Button actionButton;
-    private Button goBackBtn;
     private boolean singleConnection;
     private boolean fallbackToDatabase;
 
@@ -77,16 +76,6 @@ public class DomainFormView extends FormView {
         passwordInput.setVisibility(View.GONE);
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setVisibility(View.GONE);
-        goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
-        goBackBtn.setText(R.string.com_auth0_lock_action_go_back);
-        goBackBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                emailInput.clearInput();
-                resetDomain();
-            }
-        });
-        goBackBtn.setVisibility(GONE);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(configuration);
@@ -154,7 +143,6 @@ public class DomainFormView extends FormView {
     }
 
     private void resetDomain() {
-        goBackBtn.setVisibility(GONE);
         emailInput.setVisibility(View.VISIBLE);
         passwordInput.setVisibility(View.GONE);
         passwordInput.clearInput();
@@ -184,7 +172,6 @@ public class DomainFormView extends FormView {
         } else if (currentConnection == null && fallbackToDatabase) {
             super.onClick(v);
         } else {
-            goBackBtn.setVisibility(VISIBLE);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
             if (currentUsername != null) {

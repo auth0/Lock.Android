@@ -58,12 +58,6 @@
         android:layout_height="wrap_content"
         tools:text="Action" />
 
-    <Button
-        android:id="@+id/com_auth0_lock_back_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Back" />
-
     <TextView
         android:id="@+id/com_auth0_lock_sso_message"
         android:layout_width="wrap_content"

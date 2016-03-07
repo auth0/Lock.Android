@@ -38,9 +38,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private Bus bus;
     private Configuration configuration;
 
-    private Button signUpBtn;
     private Button changePasswordBtn;
-    private Button goBackBtn;
     private FrameLayout formContainer;
     private boolean showDatabase;
     private boolean showEnterprise;
@@ -49,6 +47,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private SignUpFormView signUpForm;
     private ChangePasswordFormView changePwdForm;
     private DomainFormView domainForm;
+    private FormMode currentFormMode;
 
     public enum FormMode {LOG_IN, SIGN_UP}
 
@@ -60,18 +59,15 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;
+        this.currentFormMode = FormMode.LOG_IN;
         init();
     }
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_database_layout, this);
         formContainer = (FrameLayout) findViewById(R.id.com_auth0_lock_form_layout);
-        signUpBtn = (Button) findViewById(R.id.com_auth0_lock_sign_up_btn);
-        signUpBtn.setOnClickListener(this);
         changePasswordBtn = (Button) findViewById(R.id.com_auth0_lock_change_password_btn);
         changePasswordBtn.setOnClickListener(this);
-        goBackBtn = (Button) findViewById(R.id.com_auth0_lock_back_btn);
-        goBackBtn.setOnClickListener(this);
 
         showDatabase = configuration.getDefaultDatabaseConnection() != null;
         showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
@@ -82,12 +78,8 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.com_auth0_lock_sign_up_btn) {
-            showSignUpForm();
-        } else if (id == R.id.com_auth0_lock_change_password_btn) {
+        if (id == R.id.com_auth0_lock_change_password_btn) {
             showChangePasswordForm();
-        } else if (id == R.id.com_auth0_lock_back_btn) {
-            moveToFirstForm();
         }
     }
 
@@ -105,6 +97,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
                 showSignUpForm();
                 break;
         }
+        currentFormMode = mode;
     }
 
     private void showSignUpForm() {
@@ -115,9 +108,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         }
         formContainer.addView(signUpForm);
 
-        signUpBtn.setVisibility(View.GONE);
         changePasswordBtn.setVisibility(View.GONE);
-        goBackBtn.setVisibility(View.VISIBLE);
     }
 
     private void showChangePasswordForm() {
@@ -128,9 +119,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         }
         formContainer.addView(changePwdForm);
 
-        signUpBtn.setVisibility(View.GONE);
         changePasswordBtn.setVisibility(View.GONE);
-        goBackBtn.setVisibility(View.VISIBLE);
     }
 
     private void showLoginForm() {
@@ -142,8 +131,6 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         formContainer.addView(loginForm);
 
         changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
-        signUpBtn.setVisibility(configuration.isSignUpEnabled() ? View.VISIBLE : View.GONE);
-        goBackBtn.setVisibility(View.GONE);
     }
 
     private void showDomainForm(boolean fallbackToDatabase) {
@@ -155,8 +142,6 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         formContainer.addView(domainForm);
 
         changePasswordBtn.setVisibility(fallbackToDatabase && configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
-        signUpBtn.setVisibility(fallbackToDatabase && configuration.isSignUpEnabled() ? View.VISIBLE : View.GONE);
-        goBackBtn.setVisibility(View.GONE);
     }
 
     private void removePreviousForm() {
@@ -180,7 +165,8 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
      * @return true if it was consumed, false otherwise.
      */
     public boolean onBackPressed() {
-        if (goBackBtn.getVisibility() == VISIBLE) {
+        if (changePwdForm != null && currentFormMode == FormMode.LOG_IN) {
+            changePwdForm = null;
             moveToFirstForm();
             return true;
         }
