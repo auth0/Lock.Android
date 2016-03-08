@@ -25,18 +25,20 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener {
+public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener, FormLayout.ChangePasswordListener {
 
     private final Bus bus;
     private final Configuration configuration;
     private FormLayout formLayout;
+    private ModeSelectionView modeSelectionView;
+    private SocialView socialLayout;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -56,18 +58,17 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         boolean showSocial = !configuration.getSocialStrategies().isEmpty();
         boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
 
-        SocialView socialLayout = null;
         if (showSocial && showLoginForm) {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            formLayout = new FormLayout(getContext(), bus, configuration);
+            formLayout = new FormLayout(getContext(), bus, configuration, this);
         } else if (showLoginForm) {
-            formLayout = new FormLayout(getContext(), bus, configuration);
+            formLayout = new FormLayout(getContext(), bus, configuration, this);
         } else if (showSocial) {
             socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
         }
 
         if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
-            ModeSelectionView modeSelectionView = new ModeSelectionView(getContext(), this);
+            modeSelectionView = new ModeSelectionView(getContext(), this);
             addView(modeSelectionView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         if (socialLayout != null) {
@@ -79,13 +80,28 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     }
 
     public boolean onBackPressed() {
-        return formLayout != null && formLayout.onBackPressed();
+        boolean handled = formLayout != null && formLayout.onBackPressed();
+        if (handled) {
+            modeSelectionView.setVisibility(View.VISIBLE);
+            if (socialLayout != null) {
+                socialLayout.setVisibility(View.VISIBLE);
+            }
+        }
+        return handled;
     }
 
     @Override
     public void onFormModeChanged(FormLayout.FormMode mode) {
         if (formLayout != null) {
             formLayout.changeFormMode(mode);
+        }
+    }
+
+    @Override
+    public void onShowChangePassword() {
+        modeSelectionView.setVisibility(View.GONE);
+        if (socialLayout != null) {
+            socialLayout.setVisibility(View.GONE);
         }
     }
 }

@@ -37,6 +37,7 @@ import com.squareup.otto.Bus;
 public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private Bus bus;
     private Configuration configuration;
+    private ChangePasswordListener callback;
 
     private Button changePasswordBtn;
     private FrameLayout formContainer;
@@ -55,11 +56,12 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         super(context);
     }
 
-    public FormLayout(Context context, Bus lockBus, Configuration configuration) {
+    public FormLayout(Context context, Bus lockBus, Configuration configuration, ChangePasswordListener callback) {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;
         this.currentFormMode = FormMode.LOG_IN;
+        this.callback = callback;
         init();
     }
 
@@ -120,6 +122,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         formContainer.addView(changePwdForm);
 
         changePasswordBtn.setVisibility(View.GONE);
+        callback.onShowChangePassword();
     }
 
     private void showLoginForm() {
@@ -171,6 +174,10 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
             return true;
         }
         return false;
+    }
+
+    public interface ChangePasswordListener {
+        void onShowChangePassword();
     }
 
 }
