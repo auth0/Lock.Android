@@ -50,7 +50,7 @@ import com.auth0.lock.widget.CredentialField;
 public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
     private static final String TAG = DatabaseChangePasswordFragment.class.getName();
-    public static final String REQUIRE_PASSWORD_NOW = "REQUIRE_PASSWORD_NOW";
+    public static final String USE_LEGACY_RESET_PASSWORD = "USE_LEGACY_RESET_PASSWORD";
 
     CredentialField usernameField;
     CredentialField passwordField;
@@ -66,7 +66,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
-        requirePasswordNow = arguments != null && arguments.getBoolean(REQUIRE_PASSWORD_NOW);
+        requirePasswordNow = arguments != null && arguments.getBoolean(USE_LEGACY_RESET_PASSWORD);
     }
 
     @Override

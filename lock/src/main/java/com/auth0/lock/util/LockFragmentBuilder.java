@@ -66,7 +66,7 @@ public class LockFragmentBuilder {
         Bundle arguments = new Bundle();
         arguments.putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(lock.getAuthenticationParameters()));
         arguments.putBoolean(BaseTitledFragment.AUTHENTICATION_USES_EMAIL_ARGUMENT, lock.shouldUseEmail());
-        arguments.putBoolean(DatabaseChangePasswordFragment.REQUIRE_PASSWORD_NOW, lock.shouldRequirePasswordOnPasswordReset());
+        arguments.putBoolean(DatabaseChangePasswordFragment.USE_LEGACY_RESET_PASSWORD, lock.useLegacyPasswordReset());
         fragment.setArguments(arguments);
         return fragment;
     }

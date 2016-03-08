@@ -119,13 +119,14 @@ public class Lock {
     private String defaultDatabaseConnection;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
-    private boolean requirePasswordOnPasswordReset;
+    private boolean legacyPasswordReset;
     private CredentialStore credentialStore;
 
     Lock(Auth0 auth0) {
         this.useWebView = false;
         this.closable = false;
         this.loginAfterSignUp = true;
+
         this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
@@ -135,7 +136,7 @@ public class Lock {
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
-        this.requirePasswordOnPasswordReset = false;
+        this.legacyPasswordReset = false;
         this.credentialStore = new NullCredentialStore();
         this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
     }
@@ -315,8 +316,8 @@ public class Lock {
      *
      * @return if the new password is required when resetting the old password.
      */
-    public boolean shouldRequirePasswordOnPasswordReset() {
-        return requirePasswordOnPasswordReset;
+    public boolean useLegacyPasswordReset() {
+        return legacyPasswordReset;
     }
 
     /**
@@ -388,7 +389,7 @@ public class Lock {
         private boolean fullscreen;
         private boolean disableSignUp;
         private boolean disableChangePassword;
-        private boolean requirePasswordOnPasswordReset;
+        private boolean legacyPasswordReset;
         private CredentialStore store;
         private Map<String, IdentityProvider> providers;
         private boolean sendSdkInfo;
@@ -403,7 +404,7 @@ public class Lock {
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
             this.sendSdkInfo = true;
-            this.requirePasswordOnPasswordReset = false;
+            this.legacyPasswordReset = false;
         }
 
         /**
@@ -572,8 +573,9 @@ public class Lock {
          *
          * @return the Builder instance being used
          */
-        public Builder requirePasswordOnPasswordReset() {
-            this.requirePasswordOnPasswordReset = true;
+        @Deprecated
+        public Builder useLegacyPasswordReset() {
+            this.legacyPasswordReset = true;
             return this;
         }
 
@@ -646,7 +648,7 @@ public class Lock {
             lock.fullScreen = fullscreen;
             lock.signUpEnabled = !disableSignUp;
             lock.changePasswordEnabled = !disableChangePassword;
-            lock.requirePasswordOnPasswordReset = requirePasswordOnPasswordReset;
+            lock.legacyPasswordReset = legacyPasswordReset;
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
             if (sendSdkInfo) {
