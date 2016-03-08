@@ -28,7 +28,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.auth0.core.Application;
-import com.auth0.identity.util.PermissionCallback;
 
 /**
  * Interface for the object that can handle authentication against an Identity Provider.

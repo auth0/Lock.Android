@@ -29,20 +29,28 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.auth0.core.Application;
-import com.auth0.identity.util.PermissionCallback;
 import com.auth0.identity.util.PermissionHandler;
 
 import java.util.List;
 
 /**
- * Interface for allowing an IdentityProvider to request specific permissions
- * before calling start.
+ * This class allows an IdentityProvider to request specific Android Manifest Permissions
+ * before calling start. This provider handles the Runtime Permissions introduced by Android M.
+ * <p/>
+ * If the device is running Android 5.1 or lower, or your app's target SDK is 22 or lower,
+ * then the user must grant all the required permissions when they install the app, so this provider
+ * will fallback to work as a simple IdentityProvider.
+ * If the device is running Android 6.0 or higher, and your app's target SDK is 23 or higher,
+ * the app must request the user each required dangerous permission before trying to use it.
+ * <p/>
+ * For more information about normal and dangerous permissions, along with Android M Runtime
+ * Permissions, check http://developer.android.com/training/permissions/requesting.html
  */
-public abstract class AuthorizedIdentityProvider implements IdentityProvider, PermissionCallback {
+public abstract class AuthorizedIdentityProvider implements IdentityProvider {
 
     protected IdentityProvider identityProvider;
     private Activity activity;
-    private String serviceName;
+    private String connectionName;
     private PermissionHandler handler;
 
     public AuthorizedIdentityProvider(@NonNull IdentityProvider provider) {
@@ -67,6 +75,8 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider, Pe
     @Override
     public void stop() {
         identityProvider.stop();
+        activity = null;
+        connectionName = null;
     }
 
     @Override
@@ -80,67 +90,70 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider, Pe
     }
 
     /**
-     * Defines which permissions are required by this Identity Provider to work
+     * Defines which Android Manifest Permissions are required by this Identity Provider to work.
+     * ex: Manifest.permission.GET_ACCOUNTS
      *
-     * @return the required permissions
+     * @return the required Android Manifest.permissions
      */
     public abstract String[] getRequiredPermissions();
 
     /**
-     * Retry the last permission request issued to the user. If there is no recent
-     * request, this method will do nothing.
-     */
-    public void retryLastPermissionRequest() {
-        if (activity == null || serviceName == null) {
-            return;
-        }
-        checkPermissions(activity, serviceName, false);
-    }
-
-    /**
-     * Checks if the required permissions have been granted by the user and starts the authentication process
+     * Called when one or more Android Manifest Permissions has been declined but are needed
+     * for this Identity Provider to work. You are supposed to show the user a Dialog explaining
+     * why you need the permissions and how you are going to use them, and offer an option to
+     * retry the recent request by calling retryLastPermissionRequest()
      *
-     * @param activity        activity that starts the process (and will receive its response)
-     * @param serviceName     of the IdentityProvider to authenticate with
-     * @param explainIfNeeded the reason why we need the permission
+     * @param permissions the required Android Manifest.permissions that were declined.
      */
-    private void checkPermissions(Activity activity, @NonNull String serviceName, boolean explainIfNeeded) {
-        String[] permissions = getRequiredPermissions();
-        if (permissions.length == 0) {
-            identityProvider.start(activity, serviceName);
+    public abstract void onPermissionsRequireExplanation(List<String> permissions);
+
+    /**
+     * Retries the last Android Manifest Permissions request issued to the user.
+     * This is useful when a Dialog is shown to explain the need for permissions to the user,
+     * with an option to retry the request.
+     * <p/>
+     * If there is no recent request, this method will do nothing.
+     */
+    @SuppressWarnings("unused")
+    public void retryLastPermissionRequest() {
+        if (activity == null || connectionName == null) {
             return;
         }
-        handler = new PermissionHandler(activity, this);
-        if (handler.areAllPermissionsGranted(permissions)) {
-            identityProvider.start(activity, serviceName);
-        } else {
-            this.activity = activity;
-            this.serviceName = serviceName;
-            handler.requestPermissions(permissions, explainIfNeeded);
-        }
+        checkPermissions(activity, connectionName, false);
     }
 
     /**
-     * Should be called from the activity that initiated the permission request,
+     * Should be called from the activity that initiated the Android Manifest.permission request,
      * when the method #onRequestPermissionResult is called on that activity.
      *
-     * @param requestCode  the permission request code
-     * @param permissions  the permissions requested
+     * @param requestCode  the request code
+     * @param permissions  the requested permissions
      * @param grantResults the grant results for each permission
      */
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (handler != null) {
-            handler.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            List<String> declinedPermissions = handler.parseRequestResult(requestCode, permissions, grantResults);
+            if (declinedPermissions.isEmpty()) {
+                identityProvider.start(activity, connectionName);
+            } else {
+                onPermissionsRequireExplanation(declinedPermissions);
+            }
         }
     }
 
-    @Override
-    public void onPermissionsResult(List<String> permissionsGranted, List<String> permissionsDeclined) {
-        if (permissionsDeclined.isEmpty() && activity != null && serviceName != null) {
-            //continue with the Authentication flow
-            identityProvider.start(activity, serviceName);
+    private void checkPermissions(Activity activity, @NonNull String connectionName, boolean shouldExplainIfNeeded) {
+        String[] permissions = getRequiredPermissions();
+        if (permissions.length == 0) {
+            identityProvider.start(activity, connectionName);
+            return;
+        }
+        handler = new PermissionHandler();
+        if (handler.areAllPermissionsGranted(activity, permissions)) {
+            identityProvider.start(activity, connectionName);
         } else {
-            onPermissionRequireExplanation(permissionsDeclined.get(0));
+            this.activity = activity;
+            this.connectionName = connectionName;
+            handler.requestPermissions(activity, permissions, shouldExplainIfNeeded);
         }
     }
 }

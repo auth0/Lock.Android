@@ -6,45 +6,39 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 
-import com.auth0.identity.AuthorizedIdentityProvider;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class PermissionHandler implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PermissionHandler {
 
     private static final int PERMISSION_REQ_CODE = 211;
 
-    private final Activity context;
-    private final AuthorizedIdentityProvider callback;
-
-    public PermissionHandler(@NonNull Activity context, @NonNull AuthorizedIdentityProvider callback) {
-        this.context = context;
-        this.callback = callback;
+    public PermissionHandler() {
     }
 
     /**
-     * Checks if the given permission has been granted by the user to this application before.
+     * Checks if the given Android Manifest Permission has been granted by the user to this application before.
      *
+     * @param activity   the caller activity
      * @param permission to check availability for
-     * @return true if the permission is currently granted, false otherwise.
+     * @return true if the Android Manifest Permission is currently granted, false otherwise.
      */
-    public boolean isPermissionGranted(@NonNull String permission) {
-        int result = ContextCompat.checkSelfPermission(context, permission);
+    public boolean isPermissionGranted(@NonNull Activity activity, @NonNull String permission) {
+        int result = ContextCompat.checkSelfPermission(activity, permission);
         return result == PermissionChecker.PERMISSION_GRANTED;
     }
 
     /**
-     * Checks if the given permissions have been granted by the user to this application before.
+     * Checks if the given Android Manifest Permissions have been granted by the user to this application before.
      *
+     * @param activity    the caller activity
      * @param permissions to check availability for
-     * @return true if all the permissions are currently granted, false otherwise.
+     * @return true if all the Android Manifest Permissions are currently granted, false otherwise.
      */
-    public boolean areAllPermissionsGranted(@NonNull String[] permissions) {
+    public boolean areAllPermissionsGranted(@NonNull Activity activity, @NonNull String[] permissions) {
         for (String p : permissions) {
-            if (!isPermissionGranted(p)) {
+            if (!isPermissionGranted(activity, p)) {
                 return false;
             }
         }
@@ -52,50 +46,55 @@ public class PermissionHandler implements ActivityCompat.OnRequestPermissionsRes
     }
 
     /**
-     * Starts the async request of the given permission.
+     * Starts the request of the given Android Manifest Permissions.
      *
-     * @param permissions     to request to the user
-     * @param explainIfNeeded the reason why we need the permission
+     * @param activity              the caller activity
+     * @param permissions           to request to the user
+     * @param shouldExplainIfNeeded the reason why we need the Android Manifest Permissions
+     * @return the Android Manifest Permissions that were previously declined by the user and may
+     * now require an usage explanation
      */
-    public void requestPermissions(@NonNull String[] permissions, boolean explainIfNeeded) {
-        if (explainIfNeeded) {
+    public List<String> requestPermissions(@NonNull Activity activity, @NonNull String[] permissions, boolean shouldExplainIfNeeded) {
+        List<String> permissionsToExplain = new ArrayList<>();
+        if (shouldExplainIfNeeded) {
             for (String p : permissions) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(context, p)) {
-                    callback.onPermissionRequireExplanation(p);
-                    return;
+                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, p)) {
+                    permissionsToExplain.add(p);
                 }
+            }
+            if (!permissionsToExplain.isEmpty()) {
+                return permissionsToExplain;
             }
         }
 
-        ActivityCompat.requestPermissions(context,
+
+        ActivityCompat.requestPermissions(activity,
                 permissions,
                 PERMISSION_REQ_CODE);
+        return permissionsToExplain;
     }
 
     /**
-     * Called when there is a new response for a Permission request
+     * Called when there is a new response for a Android Manifest Permission request
      *
-     * @param requestCode  received
-     * @param permissions  the permissions that were requested
+     * @param requestCode  received.
+     * @param permissions  the Android Manifest Permissions that were requested
      * @param grantResults the grant result for each permission
+     * @return the list of Android Manifest Permissions that were declined by the user.
      */
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public List<String> parseRequestResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != PERMISSION_REQ_CODE) {
-            return;
+            return Arrays.asList(permissions);
         } else if (permissions.length == 0 && grantResults.length == 0) {
-            callback.onPermissionsResult(Collections.<String>emptyList(), Arrays.asList(permissions));
-            return;
+            return Arrays.asList(permissions);
         }
-        List<String> grantedPermissions = new ArrayList<>();
-        List<String> declinedPermissions = new ArrayList<>();
 
+        List<String> declinedPermissions = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
-            if (grantResults[i] == PermissionChecker.PERMISSION_GRANTED) {
-                grantedPermissions.add(permissions[i]);
-            } else {
+            if (grantResults[i] != PermissionChecker.PERMISSION_GRANTED) {
                 declinedPermissions.add(permissions[i]);
             }
         }
-        callback.onPermissionsResult(grantedPermissions, declinedPermissions);
+        return declinedPermissions;
     }
 }
