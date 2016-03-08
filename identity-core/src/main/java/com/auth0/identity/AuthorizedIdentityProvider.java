@@ -54,7 +54,12 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
     private PermissionHandler handler;
 
     public AuthorizedIdentityProvider(@NonNull IdentityProvider provider) {
+        this(provider, new PermissionHandler());
+    }
+
+    AuthorizedIdentityProvider(@NonNull IdentityProvider provider, PermissionHandler handler) {
         this.identityProvider = provider;
+        this.handler = handler;
     }
 
     @Override
@@ -131,23 +136,16 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
      * @param grantResults the grant results for each permission
      */
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (handler != null) {
-            List<String> declinedPermissions = handler.parseRequestResult(requestCode, permissions, grantResults);
-            if (declinedPermissions.isEmpty()) {
-                identityProvider.start(activity, connectionName);
-            } else {
-                onPermissionsRequireExplanation(declinedPermissions);
-            }
+        List<String> declinedPermissions = handler.parseRequestResult(requestCode, permissions, grantResults);
+        if (declinedPermissions.isEmpty()) {
+            identityProvider.start(activity, connectionName);
+        } else {
+            onPermissionsRequireExplanation(declinedPermissions);
         }
     }
 
     private void checkPermissions(Activity activity, @NonNull String connectionName, boolean shouldExplainIfNeeded) {
         String[] permissions = getRequiredPermissions();
-        if (permissions.length == 0) {
-            identityProvider.start(activity, connectionName);
-            return;
-        }
-        handler = new PermissionHandler();
         if (handler.areAllPermissionsGranted(activity, permissions)) {
             identityProvider.start(activity, connectionName);
         } else {
