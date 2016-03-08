@@ -28,15 +28,15 @@
 
     <RadioGroup
         android:id="@+id/com_auth0_lock_form_radio_mode_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/com_auth0_lock_mode_log_in"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_weight=".5"
@@ -45,12 +45,13 @@
             android:checked="true"
             android:gravity="center_horizontal"
             android:padding="5dp"
-            android:text="@string/com_auth0_lock_action_login"
+            android:text="@string/com_auth0_lock_action_log_in"
+            android:textAllCaps="true"
             android:textColor="@drawable/com_auth0_lock_radio_button_text_color" />
 
         <RadioButton
             android:id="@+id/com_auth0_lock_mode_sign_up"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="2dp"
             android:layout_weight=".5"
@@ -59,6 +60,7 @@
             android:gravity="center_horizontal"
             android:padding="5dp"
             android:text="@string/com_auth0_lock_action_sign_up"
+            android:textAllCaps="true"
             android:textColor="@drawable/com_auth0_lock_radio_button_text_color" />
 
     </RadioGroup>

@@ -69,7 +69,7 @@ public class DomainFormView extends FormView {
         ssoMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
         actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton.setText(R.string.com_auth0_lock_action_log_in);
         actionButton.setOnClickListener(this);
         actionButton.setEnabled(false);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
@@ -122,7 +122,7 @@ public class DomainFormView extends FormView {
                     passwordInput.setVisibility(VISIBLE);
                     ssoMessage.setVisibility(View.GONE);
                     actionButton.setEnabled(true);
-                    actionButton.setText(R.string.com_auth0_lock_action_login);
+                    actionButton.setText(R.string.com_auth0_lock_action_log_in);
                 } else {
                     resetDomain();
                 }
@@ -149,7 +149,7 @@ public class DomainFormView extends FormView {
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
         actionButton.setEnabled(false);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton.setText(R.string.com_auth0_lock_action_log_in);
     }
 
     private String getUsername() {

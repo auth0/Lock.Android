@@ -44,7 +44,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
     private boolean showDatabase;
     private boolean showEnterprise;
 
-    private LoginFormView loginForm;
+    private LogInFormView loginForm;
     private SignUpFormView signUpForm;
     private ChangePasswordFormView changePwdForm;
     private DomainFormView domainForm;
@@ -129,7 +129,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         removePreviousForm();
 
         if (loginForm == null) {
-            loginForm = new LoginFormView(getContext(), this.bus, this.configuration);
+            loginForm = new LogInFormView(getContext(), this.bus, this.configuration);
         }
         formContainer.addView(loginForm);
 

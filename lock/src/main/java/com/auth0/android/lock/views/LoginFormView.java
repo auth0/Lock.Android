@@ -32,17 +32,17 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.squareup.otto.Bus;
 
-public class LoginFormView extends FormView {
+public class LogInFormView extends FormView {
 
-    private static final String TAG = LoginFormView.class.getSimpleName();
+    private static final String TAG = LogInFormView.class.getSimpleName();
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
-    public LoginFormView(Context context) {
+    public LogInFormView(Context context) {
         super(context);
     }
 
-    public LoginFormView(Context context, Bus lockBus, Configuration configuration) {
+    public LogInFormView(Context context, Bus lockBus, Configuration configuration) {
         super(context, lockBus);
         init(configuration);
     }
@@ -55,7 +55,7 @@ public class LoginFormView extends FormView {
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
 
         Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_login);
+        actionButton.setText(R.string.com_auth0_lock_action_log_in);
         actionButton.setOnClickListener(this);
     }
 
