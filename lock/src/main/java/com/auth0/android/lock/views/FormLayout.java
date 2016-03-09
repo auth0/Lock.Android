@@ -172,6 +172,8 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
             changePwdForm = null;
             moveToFirstForm();
             return true;
+        } else if (domainForm != null && domainForm.onBackPressed()) {
+            return true;
         }
         return false;
     }

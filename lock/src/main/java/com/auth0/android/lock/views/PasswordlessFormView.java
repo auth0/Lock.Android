@@ -164,7 +164,7 @@ public class PasswordlessFormView extends FormView {
 
     @Override
     protected boolean hasValidData() {
-        return passwordlessInput.validate();
+        return passwordlessInput.validate(true);
     }
 
     /**

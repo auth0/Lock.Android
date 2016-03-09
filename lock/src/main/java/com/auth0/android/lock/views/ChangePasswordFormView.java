@@ -25,7 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
@@ -51,8 +51,7 @@ public class ChangePasswordFormView extends FormView {
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(configuration);
 
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_change_password);
+        ImageView actionButton = (ImageView) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
     }
 
@@ -67,6 +66,6 @@ public class ChangePasswordFormView extends FormView {
 
     @Override
     protected boolean hasValidData() {
-        return usernameEmailInput.validate();
+        return usernameEmailInput.validate(true);
     }
 }

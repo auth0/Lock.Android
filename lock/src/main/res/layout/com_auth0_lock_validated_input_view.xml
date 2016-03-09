@@ -23,10 +23,10 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/com_auth0_lock_input_icon_background"
+    android:layout_margin="2dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -35,21 +35,22 @@
         android:layout_height="@dimen/com_auth0_lock_input_icon_width"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:background="@color/com_auth0_lock_input_field_border_normal"
+        android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
         android:scaleType="center"
-        android:src="@drawable/com_auth0_lock_social_icon_auth0" />
+        android:src="@drawable/com_auth0_lock_ic_input_email" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+    <EditText
+        android:id="@+id/com_auth0_lock_input"
+        android:layout_width="@dimen/com_auth0_lock_input_field_width"
+        android:layout_height="@dimen/com_auth0_lock_input_icon_width"
         android:layout_toRightOf="@id/com_auth0_lock_icon"
-        app:hintTextAppearance="@style/Lock.Theme.TextInputLayout">
-
-        <EditText
-            android:id="@+id/com_auth0_lock_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp" />
-    </android.support.design.widget.TextInputLayout>
+        android:background="@null"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:textSize="14sp"
+        tools:text="email@domain.com"
+        android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
+        android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width" />
 
 </RelativeLayout>

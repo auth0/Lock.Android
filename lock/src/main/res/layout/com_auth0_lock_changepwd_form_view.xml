@@ -24,24 +24,17 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:Auth0.InputDataType="username_or_email">
+        style="@style/Lock.Theme.Input"
+        app:Auth0.InputDataType="username_or_email" />
 
-        <requestFocus />
-    </com.auth0.android.lock.views.ValidatedUsernameInputView>
-
-    <Button
+    <ImageView
         android:id="@+id/com_auth0_lock_action_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Action" />
+        style="@style/Lock.Theme.LoginButton" />
 
 </LinearLayout>

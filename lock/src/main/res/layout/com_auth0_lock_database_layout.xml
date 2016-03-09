@@ -37,8 +37,8 @@
         android:id="@+id/com_auth0_lock_change_password_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/com_auth0_lock_form_layout"
+        android:layout_centerHorizontal="true"
         android:text="@string/com_auth0_lock_action_forgot_password" />
 
 </RelativeLayout>

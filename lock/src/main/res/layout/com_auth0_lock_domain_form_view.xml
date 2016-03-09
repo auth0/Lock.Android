@@ -29,42 +29,34 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:Auth0.InputDataType="username_or_email">
-
-        <requestFocus />
-    </com.auth0.android.lock.views.ValidatedUsernameInputView>
-
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:Auth0.InputDataType="username" />
-
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:Auth0.InputDataType="password" />
-
-    <Button
-        android:id="@+id/com_auth0_lock_action_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Action" />
-
     <TextView
-        android:id="@+id/com_auth0_lock_sso_message"
+        android:id="@+id/com_auth0_lock_top_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/com_auth0_lock_single_sign_on_enabled"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <com.auth0.android.lock.views.ValidatedUsernameInputView
+        android:id="@+id/com_auth0_lock_input_username_email"
+        style="@style/Lock.Theme.Input"
+        app:Auth0.InputDataType="username_or_email" />
+
+    <com.auth0.android.lock.views.ValidatedUsernameInputView
+        android:id="@+id/com_auth0_lock_input_username"
+        style="@style/Lock.Theme.Input"
+        android:visibility="gone"
+        app:Auth0.InputDataType="username" />
+
+    <com.auth0.android.lock.views.ValidatedInputView
+        android:id="@+id/com_auth0_lock_input_password"
+        style="@style/Lock.Theme.Input"
+        android:visibility="gone"
+        app:Auth0.InputDataType="password" />
+
+    <ImageView
+        android:id="@+id/com_auth0_lock_action_btn"
+        style="@style/Lock.Theme.LoginButton" />
 
 </LinearLayout>

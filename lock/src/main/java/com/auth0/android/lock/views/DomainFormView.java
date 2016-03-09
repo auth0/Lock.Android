@@ -29,7 +29,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
@@ -46,13 +46,14 @@ public class DomainFormView extends FormView {
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
-    private TextView ssoMessage;
+    private TextView topMessage;
     private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
-    private Button actionButton;
+    private ImageView actionButton;
     private boolean singleConnection;
     private boolean fallbackToDatabase;
+    private boolean corporateSSO;
 
     public DomainFormView(Context context) {
         super(context);
@@ -66,10 +67,9 @@ public class DomainFormView extends FormView {
 
     private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
-        ssoMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
+        topMessage = (TextView) findViewById(R.id.com_auth0_lock_top_message);
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
-        actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_log_in);
+        actionButton = (ImageView) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
         actionButton.setEnabled(false);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
@@ -115,14 +115,13 @@ public class DomainFormView extends FormView {
                 Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
                     passwordInput.setVisibility(GONE);
-                    ssoMessage.setVisibility(View.VISIBLE);
+                    topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
+                    topMessage.setVisibility(View.VISIBLE);
                     actionButton.setEnabled(true);
-                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getValueForKey("domain")));
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
-                    ssoMessage.setVisibility(View.GONE);
+                    topMessage.setVisibility(View.GONE);
                     actionButton.setEnabled(true);
-                    actionButton.setText(R.string.com_auth0_lock_action_log_in);
                 } else {
                     resetDomain();
                 }
@@ -133,13 +132,14 @@ public class DomainFormView extends FormView {
     private void setupSingleConnectionUI(Connection connection) {
         currentConnection = connection;
         actionButton.setEnabled(true);
-        actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), domainParser.domainForConnection(connection)));
+        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
+        topMessage.setText(loginWithCorporate);
         if (connection.isActiveFlowEnabled()) {
             passwordInput.setVisibility(View.VISIBLE);
         }
         usernameInput.setVisibility(VISIBLE);
         emailInput.setVisibility(GONE);
-        ssoMessage.setVisibility(View.GONE);
+        topMessage.setVisibility(View.VISIBLE);
     }
 
     private void resetDomain() {
@@ -149,7 +149,8 @@ public class DomainFormView extends FormView {
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
         actionButton.setEnabled(false);
-        actionButton.setText(R.string.com_auth0_lock_action_log_in);
+        topMessage.setVisibility(GONE);
+        corporateSSO = false;
     }
 
     private String getUsername() {
@@ -172,12 +173,15 @@ public class DomainFormView extends FormView {
         } else if (currentConnection == null && fallbackToDatabase) {
             super.onClick(v);
         } else {
+            String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
+            topMessage.setText(loginWithCorporate);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
-            if (currentUsername != null) {
+            if (currentUsername != null && !currentUsername.isEmpty()) {
                 usernameInput.setText(currentUsername);
             }
             emailInput.setVisibility(GONE);
+            corporateSSO = true;
         }
     }
 
@@ -196,15 +200,25 @@ public class DomainFormView extends FormView {
     protected boolean hasValidData() {
         boolean valid = true;
         if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate();
+            valid = emailInput.validate(true);
         }
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = valid && usernameInput.validate();
+            valid = usernameInput.validate(true) && valid;
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = valid && passwordInput.validate();
+            valid = passwordInput.validate(true) && valid;
         }
         return valid;
+    }
+
+    public boolean onBackPressed() {
+        if (!singleConnection && corporateSSO) {
+            resetDomain();
+            topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
+            topMessage.setVisibility(VISIBLE);
+            return true;
+        }
+        return false;
     }
 
 }

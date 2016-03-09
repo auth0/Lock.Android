@@ -116,7 +116,7 @@
     <string name="com_auth0_lock_action_log_in">Log In</string>
     <string name="com_auth0_lock_action_forgot_password">Forgot password?</string>
     <string name="com_auth0_lock_action_go_back">Go Back</string>
-    <string name="com_auth0_lock_action_login_with">Login with %s</string>
+    <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
     <string name="com_auth0_lock_action_send_code">Send Code</string>
     <string name="com_auth0_lock_input_error_code">Code must not be empty</string>
     <string name="com_auth0_lock_hint_code">Code</string>

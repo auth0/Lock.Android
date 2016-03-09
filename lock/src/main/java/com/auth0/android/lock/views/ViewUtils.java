@@ -24,12 +24,27 @@
 
 package com.auth0.android.lock.views;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.util.TypedValue;
 
 abstract class ViewUtils {
 
     static float dipToPixels(Resources resources, int dip) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics());
+    }
+
+    @ColorInt
+    static int obtainColor(Context context, int colorRes) {
+        int color;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            color = context.getResources().getColor(colorRes, context.getTheme());
+        } else {
+            //noinspection deprecation
+            color = context.getResources().getColor(colorRes);
+        }
+        return color;
     }
 }
