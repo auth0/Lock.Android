@@ -23,13 +23,14 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="@dimen/com_auth0_lock_max_widget_width"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="true">
 
     <RadioGroup
         android:id="@+id/com_auth0_lock_form_radio_mode_group"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">

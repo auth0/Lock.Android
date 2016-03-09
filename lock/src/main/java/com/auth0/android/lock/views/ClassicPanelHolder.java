@@ -69,7 +69,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
 
         if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
             modeSelectionView = new ModeSelectionView(getContext(), this);
-            addView(modeSelectionView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            addView(modeSelectionView);
         }
         if (socialLayout != null) {
             addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

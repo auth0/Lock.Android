@@ -26,18 +26,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/com_auth0_lock_header_height"
+    android:layout_height="wrap_content"
     android:background="?attr/Auth0.HeaderBackground"
+    android:minHeight="@dimen/com_auth0_lock_header_height"
     tools:background="#40000000"
     tools:context=".LockActivity">
 
     <ImageView
         android:id="@+id/com_auth0_lock_header_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/com_auth0_lock_header_logo_size"
+        android:layout_height="@dimen/com_auth0_lock_header_logo_size"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:scaleType="center"
+        android:layout_marginTop="15dp"
+        android:scaleType="fitCenter"
         android:src="?attr/Auth0.HeaderLogo" />
 
     <TextView
@@ -45,8 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/com_auth0_lock_header_logo"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
         android:text="?attr/Auth0.HeaderText"
         android:textSize="@dimen/com_auth0_lock_header_text_size" />

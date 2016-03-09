@@ -41,11 +41,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.auth0.android.lock.R;
 
-public class ValidatedInputView extends RelativeLayout implements View.OnFocusChangeListener {
+public class ValidatedInputView extends LinearLayout implements View.OnFocusChangeListener {
 
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int MIN_USERNAME_LENGTH = 6;
