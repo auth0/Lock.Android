@@ -68,7 +68,7 @@ import java.util.Map;
  *              .build();
  *     </code>
  * </pre>
- *
+ * <p/>
  * Then just invoke the login activity:
  * <pre>
  *     <code>
@@ -119,12 +119,14 @@ public class Lock {
     private String defaultDatabaseConnection;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
+    private boolean legacyPasswordReset;
     private CredentialStore credentialStore;
 
     Lock(Auth0 auth0) {
         this.useWebView = false;
         this.closable = false;
         this.loginAfterSignUp = true;
+
         this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
@@ -134,6 +136,7 @@ public class Lock {
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
+        this.legacyPasswordReset = false;
         this.credentialStore = new NullCredentialStore();
         this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
     }
@@ -151,6 +154,7 @@ public class Lock {
 
     /**
      * An API client for Auth0 authentication API
+     *
      * @return
      */
     public AuthenticationAPIClient getAuthenticationAPIClient() {
@@ -279,6 +283,7 @@ public class Lock {
     /**
      * If Lock is displayed in fullscreen mode.
      * By default is false
+     *
      * @return if lock will be displayed in fullscreen
      */
     public boolean isFullScreen() {
@@ -288,6 +293,7 @@ public class Lock {
     /**
      * If Lock has SignUp action enabled
      * By default is true
+     *
      * @return if the sign up action is enabled
      */
     public boolean isSignUpEnabled() {
@@ -297,10 +303,21 @@ public class Lock {
     /**
      * If Lock has Change Password action enabled
      * By default is true
+     *
      * @return if the change password action is enabled
      */
     public boolean isChangePasswordEnabled() {
         return changePasswordEnabled;
+    }
+
+    /**
+     * If Lock will ask for the new password when resetting the old one (previous behaviour)
+     * By default is false
+     *
+     * @return if the new password is required when resetting the old password.
+     */
+    public boolean useLegacyPasswordReset() {
+        return legacyPasswordReset;
     }
 
     /**
@@ -328,9 +345,8 @@ public class Lock {
      *
      * @param activity that needs Lock instance
      * @return a Lock instance
-     *
-     * @deprecated Please use {@link com.auth0.lock.LockContext}
      * @see com.auth0.lock.LockContext
+     * @deprecated Please use {@link com.auth0.lock.LockContext}
      */
     @Deprecated
     public static Lock getLock(Activity activity) {
@@ -373,6 +389,7 @@ public class Lock {
         private boolean fullscreen;
         private boolean disableSignUp;
         private boolean disableChangePassword;
+        private boolean legacyPasswordReset;
         private CredentialStore store;
         private Map<String, IdentityProvider> providers;
         private boolean sendSdkInfo;
@@ -387,6 +404,7 @@ public class Lock {
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
             this.sendSdkInfo = true;
+            this.legacyPasswordReset = false;
         }
 
         /**
@@ -530,6 +548,7 @@ public class Lock {
 
         /**
          * Disables Sign Up action
+         *
          * @param disableSignUp or not
          * @return the Builder instance being used
          */
@@ -540,11 +559,23 @@ public class Lock {
 
         /**
          * Disables Change Password action
+         *
          * @param disableChangePassword or not
          * @return the Builder instance being used
          */
         public Builder disableChangePassword(boolean disableChangePassword) {
             this.disableChangePassword = disableChangePassword;
+            return this;
+        }
+
+        /**
+         * If Lock will ask for the password now (old behaviour). By default is  <code>false</code>
+         *
+         * @return the Builder instance being used
+         */
+        @Deprecated
+        public Builder useLegacyPasswordReset() {
+            this.legacyPasswordReset = true;
             return this;
         }
 
@@ -577,7 +608,7 @@ public class Lock {
         /**
          * Sets a native handler for a specific Identity Provider (IdP), e.g.: Facebook
          *
-         * @param strategy Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
+         * @param strategy         Auth0 strategy to handle. (For all valid values check {@link com.auth0.core.Strategies}
          * @param identityProvider IdP handler
          * @return the Builder instance being used
          */
@@ -588,6 +619,7 @@ public class Lock {
 
         /**
          * Avoid sending SDK info with API requests
+         *
          * @return the Builder instance being used
          */
         @SuppressWarnings("unused")
@@ -598,6 +630,7 @@ public class Lock {
 
         /**
          * Create a {@link com.auth0.lock.Lock} instance with the values stored.
+         *
          * @return a new Lock instance`
          */
         public Lock build() {
@@ -615,6 +648,7 @@ public class Lock {
             lock.fullScreen = fullscreen;
             lock.signUpEnabled = !disableSignUp;
             lock.changePasswordEnabled = !disableChangePassword;
+            lock.legacyPasswordReset = legacyPasswordReset;
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
             if (sendSdkInfo) {

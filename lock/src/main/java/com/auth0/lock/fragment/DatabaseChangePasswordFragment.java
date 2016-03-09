@@ -38,7 +38,6 @@ import android.widget.TextView;
 import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Connection;
-import com.auth0.lock.Lock;
 import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
@@ -51,6 +50,7 @@ import com.auth0.lock.widget.CredentialField;
 public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
     private static final String TAG = DatabaseChangePasswordFragment.class.getName();
+    public static final String USE_LEGACY_RESET_PASSWORD = "USE_LEGACY_RESET_PASSWORD";
 
     CredentialField usernameField;
     CredentialField passwordField;
@@ -60,6 +60,14 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
     ProgressBar progressBar;
 
     private Validator validator;
+    private boolean requirePasswordNow;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle arguments = getArguments();
+        requirePasswordNow = arguments != null && arguments.getBoolean(USE_LEGACY_RESET_PASSWORD);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +77,8 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        TextView changePasswordHeader = (TextView) view.findViewById(R.id.com_auth0_db_reset_password_title);
+        changePasswordHeader.setText(requirePasswordNow ? R.string.com_auth0_db_reset_password_title_message : R.string.com_auth0_db_reset_password_by_link_title_message);
         usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_username_field);
         if (!useEmail) {
             usernameField.setHint(R.string.com_auth0_username_placeholder);
@@ -102,7 +112,9 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
                 return false;
             }
         });
-        validator = new ResetPasswordValidator(useEmail);
+        validator = requirePasswordNow ? new ResetPasswordValidator(useEmail) : ResetPasswordValidator.validatorThatUseEmail(useEmail);
+        passwordField.setVisibility(requirePasswordNow ? View.VISIBLE : View.GONE);
+        repeatPasswordField.setVisibility(requirePasswordNow ? View.VISIBLE : View.GONE);
         Connection connection = LockContext.getLock(getActivity()).getConfiguration().getDefaultDatabaseConnection();
         if (connection != null) {
             authenticationParameters = ParameterBuilder.newBuilder()
@@ -127,6 +139,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
             bus.post(error);
         }
     }
+
     private void performChange() {
         sendButton.setEnabled(false);
         sendButton.setText("");
