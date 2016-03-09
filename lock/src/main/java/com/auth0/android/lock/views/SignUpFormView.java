@@ -26,8 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
@@ -42,6 +40,7 @@ public class SignUpFormView extends FormView {
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
     private boolean loginAfterSignUp;
+    private ActionButton actionButton;
 
     public SignUpFormView(Context context) {
         super(context);
@@ -74,7 +73,7 @@ public class SignUpFormView extends FormView {
 
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
-        ImageView actionButton = (ImageView) findViewById(R.id.com_auth0_lock_action_btn);
+        actionButton = (ActionButton) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
     }
 
@@ -109,5 +108,10 @@ public class SignUpFormView extends FormView {
             valid = emailInput.validate(true) && valid;
         }
         return valid;
+    }
+
+    @Override
+    public void showProgress(boolean show) {
+        actionButton.showProgress(show);
     }
 }

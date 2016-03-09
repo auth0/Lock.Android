@@ -25,66 +25,46 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-public class LockProgress extends RelativeLayout {
+import com.auth0.android.lock.R;
+
+public class ActionButton extends FrameLayout {
 
     private ProgressBar progress;
-    private TextView message;
+    private ImageView icon;
 
-    public LockProgress(Context context) {
+    public ActionButton(Context context) {
         super(context);
         init();
     }
 
-    public LockProgress(Context context, AttributeSet attrs) {
+    public ActionButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public LockProgress(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        progress = new ProgressBar(getContext());
-        message = new TextView(getContext());
-        progress.setIndeterminate(true);
-        progress.setVisibility(View.VISIBLE);
-        message.setVisibility(View.GONE);
-        message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        addView(progress, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        LayoutParams messageParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        messageParams.addRule(BELOW, progress.getId());
-        addView(message, messageParams);
-        if (isInEditMode()) {
-            return;
-        }
-
-    }
-
-    public void showProgress() {
-        progress.setVisibility(View.VISIBLE);
-        message.setVisibility(View.GONE);
-    }
-
-    public void showResult(@Nullable String error) {
-        if (error == null || error.isEmpty()) {
-            message.setText("");
-            message.setVisibility(View.GONE);
-        } else {
-            message.setText(error);
-            message.setVisibility(View.VISIBLE);
-        }
+        inflate(getContext(), R.layout.com_auth0_lock_action_button, this);
+        progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
+        icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
     }
+
+    public void showProgress(boolean show) {
+        setEnabled(!show);
+        progress.setVisibility(show ? VISIBLE : GONE);
+        icon.setVisibility(show ? GONE : VISIBLE);
+    }
+
 }

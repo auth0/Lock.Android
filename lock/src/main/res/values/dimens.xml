@@ -37,10 +37,13 @@
     <dimen name="com_auth0_lock_input_field_width">240dp</dimen>
     <dimen name="com_auth0_lock_input_field_stroke_width">1dp</dimen>
     <dimen name="com_auth0_lock_widget_with_text_horizontal_padding">20dp</dimen>
-    <dimen name="com_auth0_lock_login_height">60dp</dimen>
-    <dimen name="com_auth0_lock_input_field_vertical_margin">10dp</dimen>
+    <dimen name="com_auth0_lock_login_height">80dp</dimen>
+    <dimen name="com_auth0_lock_input_field_vertical_margin_small">10dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_big">15dp</dimen>
 
     <dimen name="com_auth0_lock_max_widget_width">300dp</dimen>
     <dimen name="com_auth0_lock_widget_height">40dp</dimen>
+    <dimen name="com_auth0_lock_error_message_height">50dp</dimen>
+    <dimen name="com_auth0_lock_widget_small_margin">3dp</dimen>
 
 </resources>

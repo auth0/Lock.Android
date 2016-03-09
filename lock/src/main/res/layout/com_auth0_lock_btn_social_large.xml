@@ -26,7 +26,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/com_auth0_lock_widget_height"
-    android:layout_margin="3dp"
+    android:layout_margin="@dimen/com_auth0_lock_widget_small_margin"
     android:gravity="center_horizontal">
 
     <LinearLayout

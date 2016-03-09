@@ -51,6 +51,14 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
 
     protected abstract boolean hasValidData();
 
+    /**
+     * Displays a progress bar on top of the action button. This will also
+     * enable or disable the action button.
+     *
+     * @param show whether to show or hide the action bar.
+     */
+    public abstract void showProgress(boolean show);
+
     @Override
     public void onClick(View v) {
         if (!hasValidData()) {

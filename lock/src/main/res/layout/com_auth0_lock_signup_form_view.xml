@@ -43,8 +43,9 @@
         style="@style/Lock.Theme.Input"
         app:Auth0.InputDataType="password" />
 
-    <ImageView
+    <com.auth0.android.lock.views.ActionButton
         android:id="@+id/com_auth0_lock_action_btn"
-        style="@style/Lock.Theme.LoginButton" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

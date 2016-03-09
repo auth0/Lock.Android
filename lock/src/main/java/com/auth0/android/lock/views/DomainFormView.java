@@ -50,7 +50,7 @@ public class DomainFormView extends FormView {
     private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
-    private ImageView actionButton;
+    private ActionButton actionButton;
     private boolean singleConnection;
     private boolean fallbackToDatabase;
     private boolean corporateSSO;
@@ -67,9 +67,9 @@ public class DomainFormView extends FormView {
 
     private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
-        topMessage = (TextView) findViewById(R.id.com_auth0_lock_top_message);
+        topMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
-        actionButton = (ImageView) findViewById(R.id.com_auth0_lock_action_btn);
+        actionButton = (ActionButton) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
         actionButton.setEnabled(false);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
@@ -219,6 +219,11 @@ public class DomainFormView extends FormView {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void showProgress(boolean show) {
+        actionButton.showProgress(show);
     }
 
 }

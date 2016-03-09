@@ -114,7 +114,7 @@
     <string name="com_auth0_lock_action_sign_up">Sign Up</string>
     <string name="com_auth0_lock_action_change_password">Change password</string>
     <string name="com_auth0_lock_action_log_in">Log In</string>
-    <string name="com_auth0_lock_action_forgot_password">Forgot password?</string>
+    <string name="com_auth0_lock_action_forgot_password">Don\'t remember your password?</string>
     <string name="com_auth0_lock_action_go_back">Go Back</string>
     <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
     <string name="com_auth0_lock_action_send_code">Send Code</string>
@@ -127,4 +127,5 @@
     <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
     <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
     <string name="com_auth0_lock_input_error_phone_number">The phone number cannot be empty</string>
+    <string name="com_auth0_lock_forms_separator">Or</string>
 </resources>

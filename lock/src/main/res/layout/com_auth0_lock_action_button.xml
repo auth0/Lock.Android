@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_login_form_view.xmlew.xml
+  ~ com_auth0_lock_action_button.xml
+  ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,25 +22,24 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="@dimen/com_auth0_lock_login_height"
+    android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_big"
+    android:background="@color/com_auth0_lock_login_background">
 
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username_email"
-        style="@style/Lock.Theme.Input"
-        app:Auth0.InputDataType="username_or_email" />
+    <ImageView
+        android:id="@+id/com_auth0_lock_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:scaleType="center"
+        android:src="@android:drawable/stat_sys_phone_call_forward" />
 
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_password"
-        style="@style/Lock.Theme.Input"
-        app:Auth0.InputDataType="password" />
-
-    <com.auth0.android.lock.views.ActionButton
-        android:id="@+id/com_auth0_lock_action_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/com_auth0_lock_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+</FrameLayout>

@@ -30,7 +30,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/com_auth0_lock_top_message"
+        android:id="@+id/com_auth0_lock_sso_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -55,8 +55,9 @@
         android:visibility="gone"
         app:Auth0.InputDataType="password" />
 
-    <ImageView
+    <com.auth0.android.lock.views.ActionButton
         android:id="@+id/com_auth0_lock_action_btn"
-        style="@style/Lock.Theme.LoginButton" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

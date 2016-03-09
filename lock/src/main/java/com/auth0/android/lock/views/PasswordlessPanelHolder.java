@@ -77,4 +77,8 @@ public class PasswordlessPanelHolder extends LinearLayout {
     public boolean onBackPressed() {
         return passwordlessLayout != null && passwordlessLayout.onBackPressed();
     }
+
+    public void showProgress(boolean show) {
+        //TODO: Implement passwordless form progress
+    }
 }

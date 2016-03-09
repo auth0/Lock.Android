@@ -102,6 +102,24 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
         currentFormMode = mode;
     }
 
+    /**
+     * Displays a progress bar on top of the action button. This will also
+     * enable or disable the action button.
+     *
+     * @param show whether to show or hide the action bar.
+     */
+    public void showProgress(boolean show) {
+        if (loginForm != null && currentFormMode == FormMode.LOG_IN) {
+            loginForm.showProgress(show);
+        } else if (signUpForm != null && currentFormMode == FormMode.SIGN_UP) {
+            signUpForm.showProgress(show);
+        } else if (domainForm != null && currentFormMode == FormMode.LOG_IN) {
+            domainForm.showProgress(show);
+        } else if (changePwdForm != null) {
+            changePwdForm.showProgress(show);
+        }
+    }
+
     private void showSignUpForm() {
         removePreviousForm();
 

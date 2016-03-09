@@ -167,6 +167,11 @@ public class PasswordlessFormView extends FormView {
         return passwordlessInput.validate(true);
     }
 
+    @Override
+    public void showProgress(boolean show) {
+        //TODO: Implement
+    }
+
     /**
      * Triggers the 'back' action on this form
      *

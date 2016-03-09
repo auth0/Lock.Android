@@ -25,7 +25,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/com_auth0_lock_max_widget_width"
     android:layout_height="match_parent"
-    android:layout_centerHorizontal="true">
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_big"
+    android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_big">
 
     <RadioGroup
         android:id="@+id/com_auth0_lock_form_radio_mode_group"

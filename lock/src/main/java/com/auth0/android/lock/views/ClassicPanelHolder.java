@@ -25,11 +25,14 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
 public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener, FormLayout.ChangePasswordListener {
@@ -74,6 +77,14 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         if (socialLayout != null) {
             addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+        if (socialLayout != null && formLayout != null) {
+            TextView orSeparatorMessage = new TextView(getContext());
+            orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
+            orSeparatorMessage.setGravity(Gravity.CENTER);
+            int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
+            orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
+            addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
         if (formLayout != null) {
             addView(formLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
@@ -88,6 +99,24 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
             }
         }
         return handled;
+    }
+
+    /**
+     * Displays a progress bar on top of the action button. This will also
+     * enable or disable the action button.
+     *
+     * @param show whether to show or hide the action bar.
+     */
+    public void showProgress(boolean show) {
+        if (formLayout != null) {
+            formLayout.showProgress(show);
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setEnabled(!show);
+        }
+        if (socialLayout != null) {
+            socialLayout.setEnabled(!show);
+        }
     }
 
     @Override

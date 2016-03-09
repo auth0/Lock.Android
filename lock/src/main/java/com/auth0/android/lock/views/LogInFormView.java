@@ -77,4 +77,9 @@ public class LogInFormView extends FormView {
         valid = passwordInput.validate(true) && valid;
         return valid;
     }
+
+    @Override
+    public void showProgress(boolean show) {
+
+    }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,21 +13,31 @@
             android:id="@+id/com_auth0_lock_header"
             style="@style/Lock.Theme"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true" />
 
-        <com.auth0.android.lock.views.LockProgress
-            android:id="@+id/com_auth0_lock_progress"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/com_auth0_lock_error_message"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/com_auth0_lock_header"
-            android:layout_centerHorizontal="true" />
+            android:background="@color/com_auth0_lock_error_message_background"
+            android:gravity="center"
+            android:minHeight="@dimen/com_auth0_lock_error_message_height"
+            android:paddingBottom="@dimen/com_auth0_lock_widget_small_margin"
+            android:paddingTop="@dimen/com_auth0_lock_widget_small_margin"
+            android:textColor="@color/com_auth0_lock_error_message"
+            android:textSize="17sp"
+            android:visibility="gone"
+            tools:text="There was an error"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/com_auth0_lock_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/com_auth0_lock_progress"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/com_auth0_lock_error_message"
             android:orientation="vertical"
             android:paddingTop="10dp" />
 
