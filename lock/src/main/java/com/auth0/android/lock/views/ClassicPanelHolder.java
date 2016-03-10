@@ -42,6 +42,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     private FormLayout formLayout;
     private ModeSelectionView modeSelectionView;
     private SocialView socialLayout;
+    private TextView orSeparatorMessage;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -78,7 +79,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
             addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         if (socialLayout != null && formLayout != null) {
-            TextView orSeparatorMessage = new TextView(getContext());
+            orSeparatorMessage = new TextView(getContext());
             orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
             orSeparatorMessage.setGravity(Gravity.CENTER);
             int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
@@ -94,6 +95,9 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         boolean handled = formLayout != null && formLayout.onBackPressed();
         if (handled) {
             modeSelectionView.setVisibility(View.VISIBLE);
+            if (socialLayout != null && formLayout != null) {
+                orSeparatorMessage.setVisibility(View.VISIBLE);
+            }
             if (socialLayout != null) {
                 socialLayout.setVisibility(View.VISIBLE);
             }
@@ -129,6 +133,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     @Override
     public void onShowChangePassword() {
         modeSelectionView.setVisibility(View.GONE);
+        orSeparatorMessage.setVisibility(View.GONE);
         if (socialLayout != null) {
             socialLayout.setVisibility(View.GONE);
         }
