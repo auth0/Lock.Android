@@ -151,7 +151,10 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
         } else {
             this.activity = activity;
             this.connectionName = connectionName;
-            handler.requestPermissions(activity, permissions, shouldExplainIfNeeded);
+            List<String> permissionsToExplain = handler.requestPermissions(activity, permissions, shouldExplainIfNeeded);
+            if (!permissionsToExplain.isEmpty()) {
+                onPermissionsRequireExplanation(permissionsToExplain);
+            }
         }
     }
 }
