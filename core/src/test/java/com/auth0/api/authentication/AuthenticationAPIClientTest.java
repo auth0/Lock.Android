@@ -64,6 +64,7 @@ import static com.auth0.util.CallbackMatcher.hasPayload;
 import static com.auth0.util.CallbackMatcher.hasPayloadOfType;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -167,8 +168,8 @@ public class AuthenticationAPIClientTest {
                 .setScope(ParameterBuilder.SCOPE_OPENID)
                 .asDictionary();
         client.loginWithResourceOwner()
-            .addParameters(parameters)
-            .start(callback);
+                .addParameters(parameters)
+                .start(callback);
 
         assertThat(callback, hasPayloadOfType(Token.class));
 
@@ -204,12 +205,12 @@ public class AuthenticationAPIClientTest {
     @Test
     public void shouldLoginWithUserAndPassword() throws Exception {
         mockAPI
-            .willReturnSuccessfulLogin()
-            .willReturnTokenInfo();
+                .willReturnSuccessfulLogin()
+                .willReturnTokenInfo();
         final MockAuthenticationCallback callback = new MockAuthenticationCallback();
 
         client.login("support@auth0.com", "voidpassword")
-            .start(callback);
+                .start(callback);
 
         assertThat(callback, hasTokenAndProfile());
     }
@@ -220,7 +221,7 @@ public class AuthenticationAPIClientTest {
         final MockBaseCallback<UserProfile> callback = new MockBaseCallback<>();
 
         client.tokenInfo("ID_TOKEN")
-            .start(callback);
+                .start(callback);
 
         assertThat(callback, hasPayloadOfType(UserProfile.class));
 
@@ -389,7 +390,26 @@ public class AuthenticationAPIClientTest {
         Map<String, String> body = bodyFromRequest(request);
         assertThat(body, hasEntry("email", "support@auth0.com"));
         assertThat(body, not(hasEntry("username", "support")));
-        assertThat(body, hasEntry("password", "123123123"));
+        assertThat(body, not(hasEntry("password", "123123123")));
+
+        assertThat(callback, hasNoError());
+    }
+
+    @Test
+    public void shouldChangePasswordByEmail() throws Exception {
+        mockAPI.willReturnSuccessfulChangePassword();
+
+        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        client.changePassword("support@auth0.com")
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/dbconnections/change_password"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("email", "support@auth0.com"));
+        assertThat(body, not(hasEntry("username", "support")));
+        assertThat(body, not(hasKey("password")));
 
         assertThat(callback, hasNoError());
     }
@@ -581,6 +601,7 @@ public class AuthenticationAPIClientTest {
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
-        return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {});
+        return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {
+        });
     }
 }
