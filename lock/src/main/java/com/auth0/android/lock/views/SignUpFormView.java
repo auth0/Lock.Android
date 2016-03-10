@@ -31,7 +31,6 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.squareup.otto.Bus;
 
 public class SignUpFormView extends FormView {
 
@@ -46,9 +45,9 @@ public class SignUpFormView extends FormView {
         super(context);
     }
 
-    public SignUpFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus);
-        init(configuration);
+    public SignUpFormView(LockWidget lockWidget) {
+        super(lockWidget.getContext(), lockWidget.getBus());
+        init(lockWidget.getConfiguration());
     }
 
     private void init(Configuration configuration) {

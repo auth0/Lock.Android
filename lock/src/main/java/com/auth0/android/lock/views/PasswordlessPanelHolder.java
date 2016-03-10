@@ -29,10 +29,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class PasswordlessPanelHolder extends LinearLayout {
+public class PasswordlessPanelHolder extends LinearLayout implements LockWidget {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -58,12 +57,12 @@ public class PasswordlessPanelHolder extends LinearLayout {
 
         SocialView socialLayout = null;
         if (showSocial && showPasswordless) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
+            socialLayout = new SocialView(this, SocialView.Mode.List);
             passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
         } else if (showPasswordless) {
             passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
         } else if (showSocial) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
+            socialLayout = new SocialView(this, SocialView.Mode.List);
         }
 
         if (socialLayout != null) {
@@ -80,5 +79,20 @@ public class PasswordlessPanelHolder extends LinearLayout {
 
     public void showProgress(boolean show) {
         //TODO: Implement passwordless form progress
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public Bus getBus() {
+        return bus;
+    }
+
+    @Override
+    public void showChangePasswordForm() {
+        //Not valid for passwordless
     }
 }

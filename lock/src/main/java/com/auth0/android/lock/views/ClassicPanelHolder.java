@@ -35,7 +35,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener, FormLayout.ChangePasswordListener {
+public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener, LockWidget {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -64,12 +64,12 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
 
         if (showSocial && showLoginForm) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            formLayout = new FormLayout(getContext(), bus, configuration, this);
+            socialLayout = new SocialView(this, SocialView.Mode.List);
+            formLayout = new FormLayout(this);
         } else if (showLoginForm) {
-            formLayout = new FormLayout(getContext(), bus, configuration, this);
+            formLayout = new FormLayout(this);
         } else if (showSocial) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
+            socialLayout = new SocialView(this, SocialView.Mode.List);
         }
 
         if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
@@ -160,7 +160,17 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     }
 
     @Override
-    public void onShowChangePassword() {
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public Bus getBus() {
+        return bus;
+    }
+
+    @Override
+    public void showChangePasswordForm() {
         showChangePasswordForm(true);
     }
 }

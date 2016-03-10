@@ -28,41 +28,36 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
-import com.squareup.otto.Bus;
 
 public class LogInFormView extends FormView {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
-    private final FormLayout.ChangePasswordListener changePasswordCallback;
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
     public LogInFormView(Context context) {
         super(context);
-        changePasswordCallback = null;
     }
 
-    public LogInFormView(Context context, Bus lockBus, Configuration configuration, FormLayout.ChangePasswordListener callback) {
-        super(context, lockBus);
-        this.changePasswordCallback = callback;
-        init(configuration);
+    public LogInFormView(LockWidget lockWidget) {
+        super(lockWidget.getContext(), lockWidget.getBus());
+        init(lockWidget);
     }
 
-    private void init(Configuration configuration) {
+    private void init(final LockWidget lockWidget) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.chooseDataType(configuration);
+        usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         View changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
-        changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
+        changePasswordBtn.setVisibility(lockWidget.getConfiguration().isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                changePasswordCallback.onShowChangePassword();
+                lockWidget.showChangePasswordForm();
             }
         });
 

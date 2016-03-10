@@ -29,14 +29,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
-import com.squareup.otto.Bus;
 
 public class FormLayout extends RelativeLayout {
-    private Bus bus;
-    private Configuration configuration;
-    private final ChangePasswordListener changePasswordCallback;
+    private final LockWidget lockWidget;
 
     private FrameLayout formContainer;
     private boolean showDatabase;
@@ -51,15 +47,13 @@ public class FormLayout extends RelativeLayout {
 
     public FormLayout(Context context) {
         super(context);
-        changePasswordCallback = null;
+        lockWidget = null;
     }
 
-    public FormLayout(Context context, Bus lockBus, Configuration configuration, ChangePasswordListener changePasswordCallback) {
-        super(context);
-        this.bus = lockBus;
-        this.configuration = configuration;
+    public FormLayout(LockWidget lockWidget) {
+        super(lockWidget.getContext());
+        this.lockWidget = lockWidget;
         this.currentFormMode = FormMode.LOG_IN;
-        this.changePasswordCallback = changePasswordCallback;
         init();
     }
 
@@ -67,8 +61,8 @@ public class FormLayout extends RelativeLayout {
         inflate(getContext(), R.layout.com_auth0_lock_database_layout, this);
         formContainer = (FrameLayout) findViewById(R.id.com_auth0_lock_form_layout);
 
-        showDatabase = configuration.getDefaultDatabaseConnection() != null;
-        showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+        showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
+        showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
 
         moveToFirstForm();
     }
@@ -110,7 +104,7 @@ public class FormLayout extends RelativeLayout {
         removePreviousForm();
 
         if (signUpForm == null) {
-            signUpForm = new SignUpFormView(getContext(), this.bus, this.configuration);
+            signUpForm = new SignUpFormView(lockWidget);
         }
         formContainer.addView(signUpForm);
     }
@@ -119,16 +113,16 @@ public class FormLayout extends RelativeLayout {
         removePreviousForm();
 
         if (loginForm == null) {
-            loginForm = new LogInFormView(getContext(), this.bus, this.configuration, changePasswordCallback);
+            loginForm = new LogInFormView(lockWidget);
         }
         formContainer.addView(loginForm);
     }
 
-    private void showDomainForm(boolean fallbackToDatabase) {
+    private void showDomainForm() {
         removePreviousForm();
 
         if (domainForm == null) {
-            domainForm = new DomainFormView(getContext(), this.bus, this.configuration, fallbackToDatabase, changePasswordCallback);
+            domainForm = new DomainFormView(lockWidget);
         }
         formContainer.addView(domainForm);
     }
@@ -144,7 +138,7 @@ public class FormLayout extends RelativeLayout {
         if (showDatabase && !showEnterprise) {
             showLoginForm();
         } else {
-            showDomainForm(showDatabase);
+            showDomainForm();
         }
     }
 
@@ -158,10 +152,6 @@ public class FormLayout extends RelativeLayout {
             return true;
         }
         return false;
-    }
-
-    public interface ChangePasswordListener {
-        void onShowChangePassword();
     }
 
 }

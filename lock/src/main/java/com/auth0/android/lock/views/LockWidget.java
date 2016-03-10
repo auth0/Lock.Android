@@ -1,5 +1,5 @@
 /*
- * SocialView.java
+ * LockWidgets.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,40 +24,19 @@
 
 package com.auth0.android.lock.views;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.squareup.otto.Bus;
 
-public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {
+public interface LockWidget {
 
-    private Bus bus;
+    Context getContext();
 
-    public enum Mode {
-        Grid, List
-    }
+    Configuration getConfiguration();
 
-    public SocialView(LockWidget lockWidget, @NonNull Mode mode) {
-        super(lockWidget.getContext());
-        this.bus = lockWidget.getBus();
-        init(lockWidget.getConfiguration(), mode);
-    }
+    Bus getBus();
 
-    private void init(Configuration configuration, Mode mode) {
-        SocialViewAdapter adapter = new SocialViewAdapter(getContext(), configuration.getSocialStrategies());
-        LayoutManager lm = mode == Mode.Grid ? new GridLayoutManager(getContext(), 3) : new LinearLayoutManager(getContext());
-        setLayoutManager(lm);
-        setHasFixedSize(true);
-        adapter.setCallback(this);
-        setAdapter(adapter);
-    }
+    void showChangePasswordForm();
 
-    @Override
-    public void onConnectionClicked(String connectionName) {
-        bus.post(new SocialConnectionEvent(connectionName));
-    }
 }
