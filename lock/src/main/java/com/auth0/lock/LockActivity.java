@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -15,6 +16,7 @@ import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
+import com.auth0.identity.AuthorizedIdentityProvider;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.lock.error.ErrorDialogBuilder;
@@ -52,22 +54,22 @@ import com.squareup.otto.Subscribe;
  *      </intent-filter>
  * </activity>
  * }</pre>
- *
+ * <p/>
  * Then just start it like any other Android activity:
  * <pre>{@code
  * Intent lockIntent = new Intent(this, LockActivity.class);
  * startActivity(lockIntent);
  * }
  * </pre>
- *
+ * <p/>
  * And finally register listeners in {@link android.support.v4.content.LocalBroadcastManager} for these actions:
  * <ul>
- *     <li><b>Lock.Authentication</b>: Sent on a successful authentication with {@link com.auth0.core.UserProfile} and {@link com.auth0.core.Token}.
- *     Or both {@code null} when {@link Lock#loginAfterSignUp} is {@code false} </li>
- *     <li><b>Lock.Cancel</b>: Sent when the user's closes the activity by pressing the back button without authenticating. (Only if {@link Lock#closable} is {@code true}</li>
- *     <li><b>Lock.ChangePassword</b>: Sent when the user changes the password successfully.</li>
+ * <li><b>Lock.Authentication</b>: Sent on a successful authentication with {@link com.auth0.core.UserProfile} and {@link com.auth0.core.Token}.
+ * Or both {@code null} when {@link Lock#loginAfterSignUp} is {@code false} </li>
+ * <li><b>Lock.Cancel</b>: Sent when the user's closes the activity by pressing the back button without authenticating. (Only if {@link Lock#closable} is {@code true}</li>
+ * <li><b>Lock.ChangePassword</b>: Sent when the user changes the password successfully.</li>
  * </ul>
- *
+ * <p/>
  * All these action names are defined in these constants: {@link Lock#AUTHENTICATION_ACTION}, {@link Lock#CANCEL_ACTION} and {@link com.auth0.lock.Lock#CHANGE_PASSWORD_ACTION}.
  */
 public class LockActivity extends FragmentActivity {
@@ -166,6 +168,13 @@ public class LockActivity extends FragmentActivity {
         lock.getCredentialStore().onActivityResult(this, requestCode, resultCode, data);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (identity != null && identity instanceof AuthorizedIdentityProvider) {
+            AuthorizedIdentityProvider authorizedIdP = (AuthorizedIdentityProvider) identity;
+            authorizedIdP.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -179,7 +188,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onApplicationLoaded(Application application) {
+    @Subscribe
+    public void onApplicationLoaded(Application application) {
         Log.d(TAG, "Application configuration loaded for id " + application.getId());
         Configuration configuration = new Configuration(application, lock.getConnections(), lock.getDefaultDatabaseConnection());
         lock.setConfiguration(configuration);
@@ -189,7 +199,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onAuthentication(AuthenticationEvent event) {
+    @Subscribe
+    public void onAuthentication(AuthenticationEvent event) {
         UserProfile profile = event.getProfile();
         Token token = event.getToken();
         Log.i(TAG, "Authenticated user " + profile.getName());
@@ -202,7 +213,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onSignUpEvent(SignUpEvent event) {
+    @Subscribe
+    public void onSignUpEvent(SignUpEvent event) {
         Log.i(TAG, "Signed up user " + event.getUsername());
         broadcastManager.sendBroadcast(new Intent(Lock.AUTHENTICATION_ACTION));
         dismissProgressDialog();
@@ -210,7 +222,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onResetPassword(ChangePasswordEvent event) {
+    @Subscribe
+    public void onResetPassword(ChangePasswordEvent event) {
         Log.d(TAG, "Changed password");
         ErrorDialogBuilder.showAlertDialog(this, event);
         broadcastManager.sendBroadcast(new Intent(Lock.CHANGE_PASSWORD_ACTION));
@@ -218,7 +231,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onAuthenticationError(AuthenticationError error) {
+    @Subscribe
+    public void onAuthenticationError(AuthenticationError error) {
         Log.e(TAG, "Failed to authenticate user", error.getThrowable());
         if (identity != null) {
             identity.clearSession();
@@ -228,14 +242,16 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onSystemError(SystemErrorEvent event) {
+    @Subscribe
+    public void onSystemError(SystemErrorEvent event) {
         Log.e(TAG, "Android System error", event.getError());
         dismissProgressDialog();
         event.getErrorDialog().show();
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onNavigationEvent(NavigationEvent event) {
+    @Subscribe
+    public void onNavigationEvent(NavigationEvent event) {
         Log.v(TAG, "About to handle navigation " + event);
         if (NavigationEvent.BACK.equals(event)) {
             getSupportFragmentManager().popBackStack();
@@ -261,7 +277,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onEnterpriseAuthenticationRequest(EnterpriseAuthenticationRequest event) {
+    @Subscribe
+    public void onEnterpriseAuthenticationRequest(EnterpriseAuthenticationRequest event) {
         Fragment fragment = builder.enterpriseLoginWithConnection(event.getConnection());
         getSupportFragmentManager()
                 .beginTransaction()
@@ -271,7 +288,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {
+    @Subscribe
+    public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {
         Log.v(TAG, "About to authenticate with service " + event.getServiceName());
         identity = lock.providerForName(event.getServiceName());
         identity.setCallback(callback);
@@ -283,7 +301,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onSocialAuthentication(IdentityProviderAuthenticationEvent event) {
+    @Subscribe
+    public void onSocialAuthentication(IdentityProviderAuthenticationEvent event) {
         final Token token = event.getToken();
         lock.getAuthenticationAPIClient()
                 .tokenInfo(token.getIdToken())
@@ -301,7 +320,8 @@ public class LockActivity extends FragmentActivity {
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onSocialCredentialEvent(SocialCredentialEvent event) {
+    @Subscribe
+    public void onSocialCredentialEvent(SocialCredentialEvent event) {
         Log.v(TAG, "Received social accessToken " + event.getAccessToken());
         lock.getAuthenticationAPIClient()
                 .loginWithOAuthAccessToken(event.getAccessToken(), event.getService())
