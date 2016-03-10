@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
@@ -43,6 +42,7 @@ import com.squareup.otto.Bus;
 public class DomainFormView extends FormView {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
+    private final FormLayout.ChangePasswordListener changePasswordCallback;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
@@ -57,16 +57,19 @@ public class DomainFormView extends FormView {
 
     public DomainFormView(Context context) {
         super(context);
+        changePasswordCallback = null;
     }
 
-    public DomainFormView(Context context, Bus lockBus, Configuration configuration, boolean fallbackToDatabase) {
+    public DomainFormView(Context context, Bus lockBus, Configuration configuration, boolean fallbackToDatabase, FormLayout.ChangePasswordListener callback) {
         super(context, lockBus);
         this.fallbackToDatabase = fallbackToDatabase;
+        this.changePasswordCallback = callback;
         init(configuration);
     }
 
     private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
+        View changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
         actionButton = (ActionButton) findViewById(R.id.com_auth0_lock_action_btn);
@@ -81,6 +84,13 @@ public class DomainFormView extends FormView {
         emailInput.chooseDataType(configuration);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
+        changePasswordBtn.setVisibility(fallbackToDatabase && configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
+        changePasswordBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changePasswordCallback.onShowChangePassword();
+            }
+        });
         if (!fallbackToDatabase && configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
             setupSingleConnectionUI(configuration.getEnterpriseStrategies().get(0).getConnections().get(0));
@@ -216,6 +226,7 @@ public class DomainFormView extends FormView {
             resetDomain();
             topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
             topMessage.setVisibility(VISIBLE);
+            actionButton.setEnabled(true);
             return true;
         }
         return false;

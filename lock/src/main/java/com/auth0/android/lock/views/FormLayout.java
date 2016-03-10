@@ -26,7 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -34,19 +33,17 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.squareup.otto.Bus;
 
-public class FormLayout extends RelativeLayout implements View.OnClickListener {
+public class FormLayout extends RelativeLayout {
     private Bus bus;
     private Configuration configuration;
-    private ChangePasswordListener callback;
+    private final ChangePasswordListener changePasswordCallback;
 
-    private Button changePasswordBtn;
     private FrameLayout formContainer;
     private boolean showDatabase;
     private boolean showEnterprise;
 
     private LogInFormView loginForm;
     private SignUpFormView signUpForm;
-    private ChangePasswordFormView changePwdForm;
     private DomainFormView domainForm;
     private FormMode currentFormMode;
 
@@ -54,35 +51,26 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
 
     public FormLayout(Context context) {
         super(context);
+        changePasswordCallback = null;
     }
 
-    public FormLayout(Context context, Bus lockBus, Configuration configuration, ChangePasswordListener callback) {
+    public FormLayout(Context context, Bus lockBus, Configuration configuration, ChangePasswordListener changePasswordCallback) {
         super(context);
         this.bus = lockBus;
         this.configuration = configuration;
         this.currentFormMode = FormMode.LOG_IN;
-        this.callback = callback;
+        this.changePasswordCallback = changePasswordCallback;
         init();
     }
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_database_layout, this);
         formContainer = (FrameLayout) findViewById(R.id.com_auth0_lock_form_layout);
-        changePasswordBtn = (Button) findViewById(R.id.com_auth0_lock_change_password_btn);
-        changePasswordBtn.setOnClickListener(this);
 
         showDatabase = configuration.getDefaultDatabaseConnection() != null;
         showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
 
         moveToFirstForm();
-    }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.com_auth0_lock_change_password_btn) {
-            showChangePasswordForm();
-        }
     }
 
     /**
@@ -115,8 +103,6 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
             signUpForm.showProgress(show);
         } else if (domainForm != null && currentFormMode == FormMode.LOG_IN) {
             domainForm.showProgress(show);
-        } else if (changePwdForm != null) {
-            changePwdForm.showProgress(show);
         }
     }
 
@@ -127,42 +113,24 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
             signUpForm = new SignUpFormView(getContext(), this.bus, this.configuration);
         }
         formContainer.addView(signUpForm);
-
-        changePasswordBtn.setVisibility(View.GONE);
-    }
-
-    private void showChangePasswordForm() {
-        removePreviousForm();
-
-        if (changePwdForm == null) {
-            changePwdForm = new ChangePasswordFormView(getContext(), this.bus, this.configuration);
-        }
-        formContainer.addView(changePwdForm);
-
-        changePasswordBtn.setVisibility(View.GONE);
-        callback.onShowChangePassword();
     }
 
     private void showLoginForm() {
         removePreviousForm();
 
         if (loginForm == null) {
-            loginForm = new LogInFormView(getContext(), this.bus, this.configuration);
+            loginForm = new LogInFormView(getContext(), this.bus, this.configuration, changePasswordCallback);
         }
         formContainer.addView(loginForm);
-
-        changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
     }
 
     private void showDomainForm(boolean fallbackToDatabase) {
         removePreviousForm();
 
         if (domainForm == null) {
-            domainForm = new DomainFormView(getContext(), this.bus, this.configuration, fallbackToDatabase);
+            domainForm = new DomainFormView(getContext(), this.bus, this.configuration, fallbackToDatabase, changePasswordCallback);
         }
         formContainer.addView(domainForm);
-
-        changePasswordBtn.setVisibility(fallbackToDatabase && configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
     }
 
     private void removePreviousForm() {
@@ -186,11 +154,7 @@ public class FormLayout extends RelativeLayout implements View.OnClickListener {
      * @return true if it was consumed, false otherwise.
      */
     public boolean onBackPressed() {
-        if (changePwdForm != null && currentFormMode == FormMode.LOG_IN) {
-            changePwdForm = null;
-            moveToFirstForm();
-            return true;
-        } else if (domainForm != null && domainForm.onBackPressed()) {
+        if (domainForm != null && domainForm.onBackPressed()) {
             return true;
         }
         return false;

@@ -43,6 +43,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     private ModeSelectionView modeSelectionView;
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
+    private ChangePasswordFormView changePwdForm;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -91,7 +92,35 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         }
     }
 
+    private void showChangePasswordForm(boolean show) {
+        if (formLayout != null) {
+            formLayout.setVisibility(show ? GONE : VISIBLE);
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
+        }
+        if (socialLayout != null) {
+            socialLayout.setVisibility(show ? GONE : VISIBLE);
+        }
+
+        if (orSeparatorMessage != null) {
+            orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
+        }
+
+        if (changePwdForm == null && show) {
+            changePwdForm = new ChangePasswordFormView(getContext(), this.bus, this.configuration);
+            addView(changePwdForm);
+        } else if (changePwdForm != null && !show) {
+            removeView(changePwdForm);
+            changePwdForm = null;
+        }
+    }
+
     public boolean onBackPressed() {
+        if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
+            showChangePasswordForm(false);
+            return true;
+        }
         boolean handled = formLayout != null && formLayout.onBackPressed();
         if (handled) {
             modeSelectionView.setVisibility(View.VISIBLE);
@@ -132,10 +161,6 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
 
     @Override
     public void onShowChangePassword() {
-        modeSelectionView.setVisibility(View.GONE);
-        orSeparatorMessage.setVisibility(View.GONE);
-        if (socialLayout != null) {
-            socialLayout.setVisibility(View.GONE);
-        }
+        showChangePasswordForm(true);
     }
 }

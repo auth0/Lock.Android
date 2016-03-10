@@ -55,6 +55,10 @@
         android:visibility="gone"
         app:Auth0.InputDataType="password" />
 
+    <TextView
+        android:id="@+id/com_auth0_lock_change_password_btn"
+        style="@style/com_auth0_lock_forgot_password_text" />
+
     <com.auth0.android.lock.views.ActionButton
         android:id="@+id/com_auth0_lock_action_btn"
         android:layout_width="match_parent"

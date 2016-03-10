@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.auth0.android.lock.Configuration;
@@ -35,15 +36,18 @@ import com.squareup.otto.Bus;
 public class LogInFormView extends FormView {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
+    private final FormLayout.ChangePasswordListener changePasswordCallback;
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
     public LogInFormView(Context context) {
         super(context);
+        changePasswordCallback = null;
     }
 
-    public LogInFormView(Context context, Bus lockBus, Configuration configuration) {
+    public LogInFormView(Context context, Bus lockBus, Configuration configuration, FormLayout.ChangePasswordListener callback) {
         super(context, lockBus);
+        this.changePasswordCallback = callback;
         init(configuration);
     }
 
@@ -53,6 +57,14 @@ public class LogInFormView extends FormView {
         usernameEmailInput.chooseDataType(configuration);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        View changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
+        changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
+        changePasswordBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changePasswordCallback.onShowChangePassword();
+            }
+        });
 
         ImageView actionButton = (ImageView) findViewById(R.id.com_auth0_lock_action_btn);
         actionButton.setOnClickListener(this);
