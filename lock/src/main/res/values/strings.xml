@@ -46,7 +46,6 @@
 
     <!-- Change Password -->
     <string name="com_auth0_database_change_password_title">Reset Password</string>
-    <string name="com_auth0_db_reset_password_title_message">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
     <string name="com_auth0_db_reset_password_by_link_title_message">Please enter your email. We will send you the link to the change password form.</string>
     <string name="com_auth0_db_change_password_btn_text">SEND</string>
     <string name="com_auth0_db_change_password_error_title">Could\'nt change your password</string>

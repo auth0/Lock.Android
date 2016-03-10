@@ -40,6 +40,7 @@ import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
+
 import java.util.Map;
 
 import static com.auth0.api.ParameterBuilder.GRANT_TYPE_PASSWORD;
@@ -309,6 +310,7 @@ public class AuthenticationAPIClient {
      * @param newPassword to use
      * @return a request to configure and start
      */
+    @Deprecated
     public ParameterizableRequest<Void> changePassword(String email, String newPassword) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("dbconnections")
@@ -317,13 +319,22 @@ public class AuthenticationAPIClient {
 
         Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
-                .set(PASSWORD_KEY, newPassword)
                 .setClientId(getClientId())
                 .setConnection(defaultDbConnection)
                 .asDictionary();
 
         return RequestFactory.POST(url, client, handler, mapper)
                 .addParameters(parameters);
+    }
+
+    /**
+     * Perform a change password request using <a href="https://auth0.com/docs/auth-api#!#post--dbconnections-change_password">'/dbconnections/change_password'</a>
+     * @param email of the user that changes the password. It's also where the confirmation email will be sent
+     * @return a request to configure and start
+     */
+    public ParameterizableRequest<Void> changePassword(String email) {
+        //noinspection deprecation
+        return changePassword(email, null);
     }
 
     /**

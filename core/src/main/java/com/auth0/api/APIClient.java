@@ -248,14 +248,26 @@ public class APIClient extends BaseAPIClient {
      * @param parameters additional parameters additional parameters sent to the API like 'scope'
      * @param callback callback that will notify if the user password request was sent or not.
      */
+    @Deprecated
     public void changePassword(final String email, String newPassword, Map<String, Object> parameters, BaseCallback<Void> callback) {
         Map<String, Object> request = ParameterBuilder.newBuilder()
                 .setConnection(getDBConnectionName())
                 .addAll(parameters)
                 .asDictionary();
-        newClient.changePassword(email, newPassword)
+        newClient.changePassword(email)
                 .addParameters(request)
                 .start(callback);
+    }
+
+    /**
+     * Request a change for the user's password using a Database connection.
+     * @param email user's email
+     * @param parameters additional parameters additional parameters sent to the API like 'scope'
+     * @param callback callback that will notify if the user password request was sent or not.
+     */
+    public void changePassword(final String email, Map<String, Object> parameters, BaseCallback<Void> callback) {
+        //noinspection deprecation
+        changePassword(email, null, parameters, callback);
     }
 
     /**
