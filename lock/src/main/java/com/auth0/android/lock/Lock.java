@@ -70,6 +70,9 @@ public class Lock {
         @Override
         public void onReceive(Context context, Intent data) {
             // Get extra data included in the Intent
+            if (callback == null) {
+                return;
+            }
             String action = data.getAction();
             if (action.equals(Lock.AUTHENTICATION_ACTION)) {
                 processEvent(data);
@@ -157,6 +160,9 @@ public class Lock {
      */
     @SuppressWarnings("unused")
     public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
+        if (callback == null) {
+            return;
+        }
         if (resultCode == Activity.RESULT_OK) {
             processEvent(data);
             return;
@@ -188,6 +194,7 @@ public class Lock {
             callback.onError(up);
             //throw up. haha
         }
+        callback = null;
     }
 
     /**
