@@ -24,12 +24,12 @@
 
 package com.auth0.api.authentication;
 
-import com.auth0.api.ParameterBuilder;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.DatabaseUser;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,6 +37,7 @@ import java.util.Map;
  */
 public class SignUpRequest {
 
+    private static final String CONNECTION = "connection";
     private final ParameterizableRequest<DatabaseUser> signUpRequest;
     private final AuthenticationRequest authenticationRequest;
 
@@ -62,6 +63,12 @@ public class SignUpRequest {
      */
     public SignUpRequest addAuthenticationParameters(Map<String, Object> parameters) {
         authenticationRequest.addParameters(parameters);
+        if (parameters.containsKey(CONNECTION)) {
+            String connection = (String) parameters.get(CONNECTION);
+            Map<String, Object> signUpParams = new HashMap<>();
+            signUpParams.put(CONNECTION, connection);
+            signUpRequest.addParameters(signUpParams);
+        }
         return this;
     }
 
@@ -76,12 +83,15 @@ public class SignUpRequest {
     }
 
     /**
-     * Set the connection used to authenticate
+     * Set the connection used to create and authenticate the user
      * @param connection name
      * @return itself
      */
     public SignUpRequest setConnection(String connection) {
         authenticationRequest.setConnection(connection);
+        Map<String, Object> signUpParams = new HashMap<>();
+        signUpParams.put(CONNECTION, connection);
+        signUpRequest.addParameters(signUpParams);
         return this;
     }
 
