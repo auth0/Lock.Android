@@ -50,24 +50,13 @@ import com.auth0.lock.widget.CredentialField;
 public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
     private static final String TAG = DatabaseChangePasswordFragment.class.getName();
-    public static final String USE_LEGACY_RESET_PASSWORD = "USE_LEGACY_RESET_PASSWORD";
 
     CredentialField usernameField;
-    CredentialField passwordField;
-    CredentialField repeatPasswordField;
 
     Button sendButton;
     ProgressBar progressBar;
 
     private Validator validator;
-    private boolean requirePasswordNow;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        final Bundle arguments = getArguments();
-        requirePasswordNow = arguments != null && arguments.getBoolean(USE_LEGACY_RESET_PASSWORD);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +66,6 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView changePasswordHeader = (TextView) view.findViewById(R.id.com_auth0_db_reset_password_title);
-        changePasswordHeader.setText(requirePasswordNow ? R.string.com_auth0_db_reset_password_title_message : R.string.com_auth0_db_reset_password_by_link_title_message);
         usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_username_field);
         if (!useEmail) {
             usernameField.setHint(R.string.com_auth0_username_placeholder);
@@ -86,8 +73,6 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
             usernameField.setErrorIconResource(R.drawable.com_auth0_ic_person_error);
             usernameField.refresh();
         }
-        passwordField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_password_field);
-        repeatPasswordField = (CredentialField) view.findViewById(R.id.com_auth0_db_change_password_repeat_password_field);
         sendButton = (Button) view.findViewById(R.id.com_auth0_db_reset_button);
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_db_change_password_progress_indicator);
         Button cancelButton = (Button) view.findViewById(R.id.com_auth0_db_change_password_cancel_button);
@@ -103,7 +88,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
                 changePassword();
             }
         });
-        repeatPasswordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        usernameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -112,9 +97,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
                 return false;
             }
         });
-        validator = requirePasswordNow ? new ResetPasswordValidator(useEmail) : ResetPasswordValidator.validatorThatUseEmail(useEmail);
-        passwordField.setVisibility(requirePasswordNow ? View.VISIBLE : View.GONE);
-        repeatPasswordField.setVisibility(requirePasswordNow ? View.VISIBLE : View.GONE);
+        validator = ResetPasswordValidator.validatorThatUseEmail(useEmail);
         Connection connection = LockContext.getLock(getActivity()).getConfiguration().getDefaultDatabaseConnection();
         if (connection != null) {
             authenticationParameters = ParameterBuilder.newBuilder()
@@ -145,8 +128,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
         sendButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
         String username = usernameField.getText().toString().trim();
-        String password = passwordField.getText().toString();
-        client.changePassword(username, password)
+        client.changePassword(username)
                 .addParameters(authenticationParameters)
                 .start(new BaseCallback<Void>() {
                     @Override
