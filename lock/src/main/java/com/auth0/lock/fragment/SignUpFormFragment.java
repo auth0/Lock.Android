@@ -59,10 +59,12 @@ import com.auth0.lock.validation.SignUpValidator;
 import com.auth0.lock.widget.CredentialField;
 import com.squareup.otto.Bus;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SignUpFormFragment extends Fragment {
 
+    private static final String CONNECTION = "connection";
     private static final String AUTHENTICATION_PARAMETER_ARGUMENT = "AUTHENTICATION_PARAMETER_ARGUMENT";
     private static final String USE_EMAIL_SIGNUP_ARGUMENT = "USE_EMAIL";
     private static final String LOGIN_AFTER_SIGNUP_ARGUMENT = "LOGIN_AFTER_SIGN_UP";
@@ -186,7 +188,12 @@ public class SignUpFormFragment extends Fragment {
                     .addAuthenticationParameters(authenticationParameters)
                     .start(new SignUpAuthenticationCallback(password));
         } else {
+            String connectionName = (String) authenticationParameters.get(CONNECTION);
+            Map<String, Object> connectionParams = new HashMap<>();
+            connectionParams.put(CONNECTION, connectionName);
+
             client.createUser(email, password, username)
+                    .addParameters(connectionParams)
                     .start(new SignUpCallback(email, username, password));
         }
     }
