@@ -30,7 +30,7 @@
     <dimen name="com_auth0_lock_webview_button_text_size">13sp</dimen>
     <dimen name="com_auth0_lock_webview_button_icon_label_size">50dp</dimen>
 
-    <dimen name="com_auth0_lock_header_height">120dp</dimen>
+    <dimen name="com_auth0_lock_header_height">100dp</dimen>
     <dimen name="com_auth0_lock_header_text_size">25sp</dimen>
     <dimen name="com_auth0_lock_header_logo_size">60sp</dimen>
 
@@ -40,7 +40,7 @@
     <dimen name="com_auth0_lock_input_field_width">240dp</dimen>
     <dimen name="com_auth0_lock_input_field_stroke_width">1dp</dimen>
     <dimen name="com_auth0_lock_widget_with_text_horizontal_padding">20dp</dimen>
-    <dimen name="com_auth0_lock_login_height">80dp</dimen>
+    <dimen name="com_auth0_lock_login_height">50dp</dimen>
     <dimen name="com_auth0_lock_input_field_vertical_margin_small">10dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_medium">15dp</dimen>
 
