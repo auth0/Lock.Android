@@ -26,27 +26,27 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
+import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
 
-public class LogInFormView extends FormView {
+public class LoginFormView extends FormView {
 
-    private static final String TAG = LogInFormView.class.getSimpleName();
+    private static final String TAG = LoginFormView.class.getSimpleName();
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
-    public LogInFormView(Context context) {
+    public LoginFormView(Context context) {
         super(context);
     }
 
-    public LogInFormView(LockWidget lockWidget) {
-        super(lockWidget.getContext(), lockWidget.getBus());
+    public LoginFormView(LockWidgetDatabase lockWidget) {
+        super(lockWidget.getContext());
         init(lockWidget);
     }
 
-    private void init(final LockWidget lockWidget) {
+    private void init(final LockWidgetDatabase lockWidget) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
@@ -60,13 +60,10 @@ public class LogInFormView extends FormView {
                 lockWidget.showChangePasswordForm();
             }
         });
-
-        ImageView actionButton = (ImageView) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setOnClickListener(this);
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         return new DatabaseLoginEvent(getUsernameOrEmail(), getPassword());
     }
 
@@ -79,14 +76,10 @@ public class LogInFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
+    public boolean hasValidData() {
         boolean valid = usernameEmailInput.validate(true);
         valid = passwordInput.validate(true) && valid;
         return valid;
     }
 
-    @Override
-    public void showProgress(boolean show) {
-
-    }
 }

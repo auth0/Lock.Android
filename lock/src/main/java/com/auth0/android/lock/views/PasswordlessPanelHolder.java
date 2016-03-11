@@ -29,9 +29,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessPanelHolder extends LinearLayout implements LockWidget {
+public class PasswordlessPanelHolder extends LinearLayout implements LockWidgetSocial {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -87,12 +89,7 @@ public class PasswordlessPanelHolder extends LinearLayout implements LockWidget 
     }
 
     @Override
-    public Bus getBus() {
-        return bus;
-    }
-
-    @Override
-    public void showChangePasswordForm() {
-        //Not valid for passwordless
+    public void onSocialLogin(SocialConnectionEvent event) {
+        bus.post(event);
     }
 }

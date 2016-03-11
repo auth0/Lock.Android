@@ -29,26 +29,25 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.squareup.otto.Bus;
+import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {
 
-    private Bus bus;
+    private LockWidgetSocial lockWidget;
 
     public enum Mode {
         Grid, List
     }
 
-    public SocialView(LockWidget lockWidget, @NonNull Mode mode) {
+    public SocialView(LockWidgetSocial lockWidget, @NonNull Mode mode) {
         super(lockWidget.getContext());
-        this.bus = lockWidget.getBus();
-        init(lockWidget.getConfiguration(), mode);
+        this.lockWidget = lockWidget;
+        init(mode);
     }
 
-    private void init(Configuration configuration, Mode mode) {
-        SocialViewAdapter adapter = new SocialViewAdapter(getContext(), configuration.getSocialStrategies());
+    private void init(Mode mode) {
+        SocialViewAdapter adapter = new SocialViewAdapter(getContext(), lockWidget.getConfiguration().getSocialStrategies());
         LayoutManager lm = mode == Mode.Grid ? new GridLayoutManager(getContext(), 3) : new LinearLayoutManager(getContext());
         setLayoutManager(lm);
         setHasFixedSize(true);
@@ -58,6 +57,6 @@ public class SocialView extends RecyclerView implements SocialViewAdapter.Connec
 
     @Override
     public void onConnectionClicked(String connectionName) {
-        bus.post(new SocialConnectionEvent(connectionName));
+        lockWidget.onSocialLogin(new SocialConnectionEvent(connectionName));
     }
 }

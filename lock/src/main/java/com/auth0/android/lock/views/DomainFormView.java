@@ -36,6 +36,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
+import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
 
 public class DomainFormView extends FormView {
 
@@ -48,7 +49,6 @@ public class DomainFormView extends FormView {
     private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
-    private ActionButton actionButton;
     private boolean singleConnection;
     private boolean fallbackToDatabase;
     private boolean corporateSSO;
@@ -58,19 +58,16 @@ public class DomainFormView extends FormView {
         super(context);
     }
 
-    public DomainFormView(LockWidget lockWidget) {
-        super(lockWidget.getContext(), lockWidget.getBus());
+    public DomainFormView(LockWidgetDatabase lockWidget) {
+        super(lockWidget.getContext());
         init(lockWidget);
     }
 
-    private void init(final LockWidget lockWidget) {
+    private void init(final LockWidgetDatabase lockWidget) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
-        actionButton = (ActionButton) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setOnClickListener(this);
-        actionButton.setEnabled(false);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setVisibility(View.GONE);
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
@@ -100,7 +97,7 @@ public class DomainFormView extends FormView {
     private void setupMultipleConnectionUI() {
         if (fallbackToDatabase) {
             passwordInput.setVisibility(VISIBLE);
-            actionButton.setEnabled(true);
+//            actionButton.setEnabled(true);
         }
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -126,11 +123,11 @@ public class DomainFormView extends FormView {
                     topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
                     topMessage.setVisibility(View.VISIBLE);
                     changePasswordBtn.setVisibility(GONE);
-                    actionButton.setEnabled(true);
+//                    actionButton.setEnabled(true);
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
                     topMessage.setVisibility(View.GONE);
-                    actionButton.setEnabled(true);
+//                    actionButton.setEnabled(true);
                     if (changePasswordEnabled) {
                         changePasswordBtn.setVisibility(VISIBLE);
                     }
@@ -143,7 +140,7 @@ public class DomainFormView extends FormView {
 
     private void setupSingleConnectionUI(Connection connection) {
         currentConnection = connection;
-        actionButton.setEnabled(true);
+//        actionButton.setEnabled(true);
         String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
         topMessage.setText(loginWithCorporate);
         if (connection.isActiveFlowEnabled()) {
@@ -160,7 +157,7 @@ public class DomainFormView extends FormView {
         passwordInput.clearInput();
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
-        actionButton.setEnabled(false);
+//        actionButton.setEnabled(false);
         topMessage.setVisibility(GONE);
         corporateSSO = false;
     }
@@ -199,7 +196,7 @@ public class DomainFormView extends FormView {
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
             return new EnterpriseLoginEvent(currentConnection.getName(), getUsername(), getPassword());
         } else if (currentConnection != null) {
@@ -210,7 +207,7 @@ public class DomainFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
+    public boolean hasValidData() {
         boolean valid = true;
         if (emailInput.getVisibility() == VISIBLE) {
             valid = emailInput.validate(true);
@@ -229,18 +226,13 @@ public class DomainFormView extends FormView {
             resetDomain();
             topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
             topMessage.setVisibility(VISIBLE);
-            actionButton.setEnabled(true);
+//            actionButton.setEnabled(true);
             if (changePasswordEnabled && currentConnection == null) {
                 changePasswordBtn.setVisibility(VISIBLE);
             }
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void showProgress(boolean show) {
-        actionButton.showProgress(show);
     }
 
 }

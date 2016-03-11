@@ -35,14 +35,13 @@ public class ChangePasswordFormView extends FormView {
 
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
     private ValidatedUsernameInputView usernameEmailInput;
-    private ActionButton actionButton;
 
     public ChangePasswordFormView(Context context) {
         super(context);
     }
 
     public ChangePasswordFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus);
+        super(context);
         init(configuration);
     }
 
@@ -50,13 +49,10 @@ public class ChangePasswordFormView extends FormView {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(configuration);
-
-        actionButton = (ActionButton) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setOnClickListener(this);
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         return new DatabaseChangePasswordEvent(getUsernameOrEmail());
     }
 
@@ -65,12 +61,8 @@ public class ChangePasswordFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
+    public boolean hasValidData() {
         return usernameEmailInput.validate(true);
     }
 
-    @Override
-    public void showProgress(boolean show) {
-        actionButton.showProgress(show);
-    }
 }

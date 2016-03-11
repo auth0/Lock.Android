@@ -54,7 +54,7 @@ public class PasswordlessFormView extends FormView {
     private LoadCountriesTask loadCountriesTask;
 
     public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
-        super(context, lockBus);
+        super(context);
         choosenMode = passwordlessMode;
         init();
     }
@@ -129,7 +129,7 @@ public class PasswordlessFormView extends FormView {
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         if (waitingForCode) {
             return new PasswordlessLoginEvent(choosenMode, emailOrNumber, getInputText());
         } else {
@@ -163,13 +163,8 @@ public class PasswordlessFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
+    public boolean hasValidData() {
         return passwordlessInput.validate(true);
-    }
-
-    @Override
-    public void showProgress(boolean show) {
-        //TODO: Implement
     }
 
     /**

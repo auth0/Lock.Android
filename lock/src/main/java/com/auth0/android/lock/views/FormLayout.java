@@ -25,23 +25,23 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
 
 public class FormLayout extends RelativeLayout {
-    private final LockWidget lockWidget;
+    private final LockWidgetDatabase lockWidget;
 
-    private FrameLayout formContainer;
+    private RelativeLayout formContainer;
     private boolean showDatabase;
     private boolean showEnterprise;
 
-    private LogInFormView loginForm;
+    private LoginFormView loginForm;
     private SignUpFormView signUpForm;
     private DomainFormView domainForm;
-    private FormMode currentFormMode;
 
     public enum FormMode {LOG_IN, SIGN_UP}
 
@@ -50,16 +50,15 @@ public class FormLayout extends RelativeLayout {
         lockWidget = null;
     }
 
-    public FormLayout(LockWidget lockWidget) {
+    public FormLayout(LockWidgetDatabase lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        this.currentFormMode = FormMode.LOG_IN;
         init();
     }
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_database_layout, this);
-        formContainer = (FrameLayout) findViewById(R.id.com_auth0_lock_form_layout);
+        formContainer = (RelativeLayout) findViewById(R.id.com_auth0_lock_form_layout);
 
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
@@ -81,23 +80,6 @@ public class FormLayout extends RelativeLayout {
                 showSignUpForm();
                 break;
         }
-        currentFormMode = mode;
-    }
-
-    /**
-     * Displays a progress bar on top of the action button. This will also
-     * enable or disable the action button.
-     *
-     * @param show whether to show or hide the action bar.
-     */
-    public void showProgress(boolean show) {
-        if (loginForm != null && currentFormMode == FormMode.LOG_IN) {
-            loginForm.showProgress(show);
-        } else if (signUpForm != null && currentFormMode == FormMode.SIGN_UP) {
-            signUpForm.showProgress(show);
-        } else if (domainForm != null && currentFormMode == FormMode.LOG_IN) {
-            domainForm.showProgress(show);
-        }
     }
 
     private void showSignUpForm() {
@@ -113,7 +95,7 @@ public class FormLayout extends RelativeLayout {
         removePreviousForm();
 
         if (loginForm == null) {
-            loginForm = new LogInFormView(lockWidget);
+            loginForm = new LoginFormView(lockWidget);
         }
         formContainer.addView(loginForm);
     }
@@ -154,4 +136,21 @@ public class FormLayout extends RelativeLayout {
         return false;
     }
 
+    /**
+     * ActionButton has been clicked, and validation should be run on the current
+     * visible form. If this validation passes, an action event will be returned.
+     *
+     * @return the action event of the current visible form or null if validation failed
+     */
+    @Nullable
+    public Object onActionPressed() {
+        View existingForm = formContainer.getChildAt(0);
+        if (existingForm != null) {
+            FormView form = (FormView) existingForm;
+            if (form.hasValidData()) {
+                return form.getActionEvent();
+            }
+        }
+        return null;
+    }
 }

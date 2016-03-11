@@ -1,5 +1,5 @@
 /*
- * FormView.java
+ * LockWidgets.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,40 +22,16 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.views;
+package com.auth0.android.lock.views.interfaces;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.squareup.otto.Bus;
 
-public abstract class FormView extends RelativeLayout implements View.OnClickListener {
-    private static final String TAG = FormView.class.getSimpleName();
+public interface LockWidget {
 
-    public FormView(Context context) {
-        super(context);
-    }
+    Context getContext();
 
-    @Nullable
-    public abstract Object getActionEvent();
-
-    public abstract boolean hasValidData();
-
-    @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
-        }
-        Object event = getActionEvent();
-        if (event != null) {
-            //TODO
-        } else {
-            Log.w(TAG, "The Action Event received from the FormView was null.");
-        }
-    }
+    Configuration getConfiguration();
 
 }

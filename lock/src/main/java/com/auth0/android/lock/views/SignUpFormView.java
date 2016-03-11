@@ -31,6 +31,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.views.interfaces.LockWidget;
 
 public class SignUpFormView extends FormView {
 
@@ -39,14 +40,13 @@ public class SignUpFormView extends FormView {
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
     private boolean loginAfterSignUp;
-    private ActionButton actionButton;
 
     public SignUpFormView(Context context) {
         super(context);
     }
 
     public SignUpFormView(LockWidget lockWidget) {
-        super(lockWidget.getContext(), lockWidget.getBus());
+        super(lockWidget.getContext());
         init(lockWidget.getConfiguration());
     }
 
@@ -72,12 +72,10 @@ public class SignUpFormView extends FormView {
 
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
-        actionButton = (ActionButton) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setOnClickListener(this);
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
     }
 
@@ -98,7 +96,7 @@ public class SignUpFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
+    public boolean hasValidData() {
         boolean valid = passwordInput.validate(true);
         if (usernameInput.getVisibility() == VISIBLE) {
             valid = usernameInput.validate(true) && valid;
@@ -109,8 +107,4 @@ public class SignUpFormView extends FormView {
         return valid;
     }
 
-    @Override
-    public void showProgress(boolean show) {
-        actionButton.showProgress(show);
-    }
 }

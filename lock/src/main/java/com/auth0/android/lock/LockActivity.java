@@ -38,6 +38,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
@@ -74,7 +75,7 @@ public class LockActivity extends AppCompatActivity {
     private Options options;
     private Handler handler;
     private Bus lockBus;
-    private LinearLayout rootView;
+    private RelativeLayout rootView;
     private ClassicPanelHolder panelHolder;
 
     private WebIdentityProvider lastIdp;
@@ -94,7 +95,7 @@ public class LockActivity extends AppCompatActivity {
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         errorMessage = (TextView) findViewById(R.id.com_auth0_lock_error_message);
-        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
+        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
 
         if (application == null && applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
@@ -146,7 +147,7 @@ public class LockActivity extends AppCompatActivity {
     private void initLockUI() {
         configuration = new Configuration(application, options);
         panelHolder = new ClassicPanelHolder(this, lockBus, configuration);
-        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private void deliverResult(Authentication result) {

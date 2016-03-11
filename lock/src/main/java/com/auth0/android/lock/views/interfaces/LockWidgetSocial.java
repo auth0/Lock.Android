@@ -1,5 +1,5 @@
 /*
- * LockWidgets.java
+ * LockWidgetSocial.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,21 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.views;
+package com.auth0.android.lock.views.interfaces;
 
-import android.content.Context;
+import com.auth0.android.lock.events.SocialConnectionEvent;
 
-import com.auth0.android.lock.Configuration;
-import com.squareup.otto.Bus;
+public interface LockWidgetSocial extends LockWidget {
 
-public interface LockWidget {
-
-    Context getContext();
-
-    Configuration getConfiguration();
-
-    Bus getBus();
-
-    void showChangePasswordForm();
+    void onSocialLogin(SocialConnectionEvent event);
 
 }

@@ -28,14 +28,17 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
+import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener, LockWidget {
+public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionView.FormModeChangedListener, LockWidgetSocial, LockWidgetDatabase, View.OnClickListener {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -44,6 +47,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
     private ChangePasswordFormView changePwdForm;
+    private ActionButton actionButton;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -59,10 +63,8 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     }
 
     private void init() {
-        setOrientation(VERTICAL);
         boolean showSocial = !configuration.getSocialStrategies().isEmpty();
         boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
-
         if (showSocial && showLoginForm) {
             socialLayout = new SocialView(this, SocialView.Mode.List);
             formLayout = new FormLayout(this);
@@ -73,22 +75,38 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         }
 
         if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
+            RelativeLayout.LayoutParams swicherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            swicherParams.addRule(ALIGN_PARENT_TOP, TRUE);
             modeSelectionView = new ModeSelectionView(getContext(), this);
-            addView(modeSelectionView);
+            addView(modeSelectionView, swicherParams);
         }
+        RelativeLayout.LayoutParams socialParams;
         if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            socialParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            socialParams.addRule(CENTER_IN_PARENT, TRUE);
+            addView(socialLayout, socialParams);
         }
         if (socialLayout != null && formLayout != null) {
+            RelativeLayout.LayoutParams separatorParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            separatorParams.addRule(CENTER_IN_PARENT, TRUE);
             orSeparatorMessage = new TextView(getContext());
             orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
             orSeparatorMessage.setGravity(Gravity.CENTER);
             int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
             orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-            addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            addView(orSeparatorMessage, separatorParams);
         }
         if (formLayout != null) {
-            addView(formLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
+            actionButton = new ActionButton(getContext());
+            actionButton.setId(R.id.com_auth0_lock_action_btn);
+            actionButton.setOnClickListener(this);
+            addView(actionButton, actionParams);
+
+            RelativeLayout.LayoutParams formParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            formParams.addRule(ABOVE, R.id.com_auth0_lock_action_btn);
+            addView(formLayout, formParams);
         }
     }
 
@@ -141,8 +159,8 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
      * @param show whether to show or hide the action bar.
      */
     public void showProgress(boolean show) {
-        if (formLayout != null) {
-            formLayout.showProgress(show);
+        if (actionButton != null) {
+            actionButton.showProgress(show);
         }
         if (modeSelectionView != null) {
             modeSelectionView.setEnabled(!show);
@@ -165,13 +183,19 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
     }
 
     @Override
-    public Bus getBus() {
-        //TODO: Instead of this, hold the bus here and make a method to receive each event.
-        return bus;
+    public void onClick(View v) {
+        if (formLayout != null) {
+            formLayout.onActionPressed();
+        }
     }
 
     @Override
     public void showChangePasswordForm() {
         showChangePasswordForm(true);
+    }
+
+    @Override
+    public void onSocialLogin(SocialConnectionEvent event) {
+        bus.post(event);
     }
 }
