@@ -60,9 +60,9 @@ public class PasswordlessPanelHolder extends LinearLayout implements LockWidgetS
         SocialView socialLayout = null;
         if (showSocial && showPasswordless) {
             socialLayout = new SocialView(this, SocialView.Mode.List);
-            passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
+            passwordlessLayout = new PasswordlessFormView(this, configuration.getPasswordlessMode());
         } else if (showPasswordless) {
-            passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
+            passwordlessLayout = new PasswordlessFormView(this, configuration.getPasswordlessMode());
         } else if (showSocial) {
             socialLayout = new SocialView(this, SocialView.Mode.List);
         }

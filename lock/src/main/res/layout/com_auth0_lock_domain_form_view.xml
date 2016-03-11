@@ -34,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:text="@string/com_auth0_lock_single_sign_on_enabled"
         android:visibility="gone"
@@ -42,7 +43,6 @@
     <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username_email"
         style="@style/Lock.Theme.Input"
-        android:layout_alignParentTop="true"
         android:layout_below="@id/com_auth0_lock_sso_message"
         app:Auth0.InputDataType="username_or_email" />
 

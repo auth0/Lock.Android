@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -36,7 +37,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class DomainFormView extends FormView {
 
@@ -58,12 +59,12 @@ public class DomainFormView extends FormView {
         super(context);
     }
 
-    public DomainFormView(LockWidgetDatabase lockWidget) {
+    public DomainFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         init(lockWidget);
     }
 
-    private void init(final LockWidgetDatabase lockWidget) {
+    private void init(final LockWidgetForm lockWidget) {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
@@ -170,18 +171,19 @@ public class DomainFormView extends FormView {
         return passwordInput.getText();
     }
 
-
+    @Nullable
     @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
+    public Object submitForm() {
+        if (!validateForm()) {
+            return null;
         }
 
         if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
-            super.onClick(v);
+            return getActionEvent();
         } else if (currentConnection == null && fallbackToDatabase) {
-            super.onClick(v);
+            return getActionEvent();
         } else {
+            //TODO: This stopped working
             String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
             topMessage.setText(loginWithCorporate);
             passwordInput.setVisibility(View.VISIBLE);
@@ -193,6 +195,7 @@ public class DomainFormView extends FormView {
             changePasswordBtn.setVisibility(GONE);
             corporateSSO = true;
         }
+        return null;
     }
 
     @Override
@@ -207,7 +210,7 @@ public class DomainFormView extends FormView {
     }
 
     @Override
-    public boolean hasValidData() {
+    public boolean validateForm() {
         boolean valid = true;
         if (emailInput.getVisibility() == VISIBLE) {
             valid = emailInput.validate(true);

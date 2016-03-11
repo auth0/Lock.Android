@@ -25,11 +25,12 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
-import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class LoginFormView extends FormView {
 
@@ -41,12 +42,12 @@ public class LoginFormView extends FormView {
         super(context);
     }
 
-    public LoginFormView(LockWidgetDatabase lockWidget) {
+    public LoginFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         init(lockWidget);
     }
 
-    private void init(final LockWidgetDatabase lockWidget) {
+    private void init(final LockWidgetForm lockWidget) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
@@ -76,10 +77,16 @@ public class LoginFormView extends FormView {
     }
 
     @Override
-    public boolean hasValidData() {
+    public boolean validateForm() {
         boolean valid = usernameEmailInput.validate(true);
         valid = passwordInput.validate(true) && valid;
         return valid;
+    }
+
+    @Nullable
+    @Override
+    public Object submitForm() {
+        return validateForm() ? getActionEvent() : null;
     }
 
 }

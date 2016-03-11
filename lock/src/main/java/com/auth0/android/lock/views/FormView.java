@@ -33,7 +33,7 @@ import android.widget.RelativeLayout;
 import com.auth0.android.lock.Configuration;
 import com.squareup.otto.Bus;
 
-public abstract class FormView extends RelativeLayout implements View.OnClickListener {
+public abstract class FormView extends RelativeLayout {
     private static final String TAG = FormView.class.getSimpleName();
 
     public FormView(Context context) {
@@ -43,19 +43,16 @@ public abstract class FormView extends RelativeLayout implements View.OnClickLis
     @Nullable
     public abstract Object getActionEvent();
 
-    public abstract boolean hasValidData();
+    public abstract boolean validateForm();
 
-    @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
-        }
-        Object event = getActionEvent();
-        if (event != null) {
-            //TODO
-        } else {
-            Log.w(TAG, "The Action Event received from the FormView was null.");
-        }
-    }
+
+    /**
+     * ActionButton has been clicked, and validation should be run on the current
+     * visible form. If this validation passes, an action event will be returned.
+     *
+     * @return the action event of the current visible form or null if validation failed
+     */
+    @Nullable
+    public abstract Object submitForm();
 
 }

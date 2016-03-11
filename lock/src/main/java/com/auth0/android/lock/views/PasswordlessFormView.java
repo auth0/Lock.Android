@@ -24,10 +24,9 @@
 
 package com.auth0.android.lock.views;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSpinner;
-import android.widget.Button;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
@@ -35,7 +34,7 @@ import com.auth0.android.lock.adapters.CountryCodeAdapter;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.utils.LoadCountriesTask;
-import com.squareup.otto.Bus;
+import com.auth0.android.lock.views.interfaces.LockWidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,14 +46,13 @@ public class PasswordlessFormView extends FormView {
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
-    private Button actionButton;
     private boolean waitingForCode;
     private String emailOrNumber;
     private AppCompatSpinner countryCodesSpinner;
     private LoadCountriesTask loadCountriesTask;
 
-    public PasswordlessFormView(Context context, Bus lockBus, PasswordlessMode passwordlessMode) {
-        super(context);
+    public PasswordlessFormView(LockWidget lockWidget, PasswordlessMode passwordlessMode) {
+        super(lockWidget.getContext());
         choosenMode = passwordlessMode;
         init();
     }
@@ -68,8 +66,6 @@ public class PasswordlessFormView extends FormView {
             loadCountryCodes();
         }
 
-        actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setOnClickListener(this);
         selectPasswordlessMode();
     }
 
@@ -106,22 +102,18 @@ public class PasswordlessFormView extends FormView {
         switch (choosenMode) {
             case EMAIL_CODE:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
-                actionButton.setText(R.string.com_auth0_lock_action_send_code);
                 countryCodesSpinner.setVisibility(GONE);
                 break;
             case EMAIL_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
-                actionButton.setText(R.string.com_auth0_lock_action_send_link);
                 countryCodesSpinner.setVisibility(GONE);
                 break;
             case SMS_CODE:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
-                actionButton.setText(R.string.com_auth0_lock_action_send_code);
                 countryCodesSpinner.setVisibility(VISIBLE);
                 break;
             case SMS_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
-                actionButton.setText(R.string.com_auth0_lock_action_send_link);
                 countryCodesSpinner.setVisibility(VISIBLE);
                 break;
         }
@@ -140,10 +132,9 @@ public class PasswordlessFormView extends FormView {
                 emailOrNumber = getInputText();
                 passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
                 passwordlessInput.clearInput();
-                actionButton.setText(R.string.com_auth0_lock_action_log_in);
             } else {
-                actionButton.setText(R.string.com_auth0_lock_action_click_link);
-                actionButton.setEnabled(false);
+                //FIXME: Check this
+//                actionButton.setText(R.string.com_auth0_lock_action_click_link);
             }
             return event;
         }
@@ -163,8 +154,14 @@ public class PasswordlessFormView extends FormView {
     }
 
     @Override
-    public boolean hasValidData() {
+    public boolean validateForm() {
         return passwordlessInput.validate(true);
+    }
+
+    @Nullable
+    @Override
+    public Object submitForm() {
+        return validateForm() ? getActionEvent() : null;
     }
 
     /**

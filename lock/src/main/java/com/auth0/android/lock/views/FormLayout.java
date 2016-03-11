@@ -26,16 +26,18 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.views.interfaces.LockWidgetDatabase;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class FormLayout extends RelativeLayout {
-    private final LockWidgetDatabase lockWidget;
+public class FormLayout extends LinearLayout {
+    private final LockWidgetForm lockWidget;
 
-    private RelativeLayout formContainer;
     private boolean showDatabase;
     private boolean showEnterprise;
 
@@ -50,20 +52,40 @@ public class FormLayout extends RelativeLayout {
         lockWidget = null;
     }
 
-    public FormLayout(LockWidgetDatabase lockWidget) {
+    public FormLayout(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
     }
 
     private void init() {
-        inflate(getContext(), R.layout.com_auth0_lock_database_layout, this);
-        formContainer = (RelativeLayout) findViewById(R.id.com_auth0_lock_form_layout);
-
+        setOrientation(VERTICAL);
+        boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
+        if (showSocial) {
+            addSocialLayout();
+        }
+        if (showDatabase || showEnterprise) {
+            if (showSocial) {
+                addSeparator();
+            }
+            addFormLayout();
+        }
+    }
 
-        moveToFirstForm();
+    private void addSocialLayout() {
+        SocialView socialLayout = new SocialView(lockWidget, SocialView.Mode.List);
+        addView(socialLayout);
+    }
+
+    private void addSeparator() {
+        TextView orSeparatorMessage = new TextView(getContext());
+        orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
+        orSeparatorMessage.setGravity(Gravity.CENTER);
+        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
+        orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
+        addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     /**
@@ -74,7 +96,7 @@ public class FormLayout extends RelativeLayout {
     public void changeFormMode(FormMode mode) {
         switch (mode) {
             case LOG_IN:
-                moveToFirstForm();
+                addFormLayout();
                 break;
             case SIGN_UP:
                 showSignUpForm();
@@ -88,39 +110,39 @@ public class FormLayout extends RelativeLayout {
         if (signUpForm == null) {
             signUpForm = new SignUpFormView(lockWidget);
         }
-        formContainer.addView(signUpForm);
+        addView(signUpForm);
     }
 
-    private void showLoginForm() {
+    private void showDatabaseLoginForm() {
         removePreviousForm();
 
         if (loginForm == null) {
             loginForm = new LoginFormView(lockWidget);
         }
-        formContainer.addView(loginForm);
+        addView(loginForm);
     }
 
-    private void showDomainForm() {
+    private void showEnterpriseForm() {
         removePreviousForm();
 
         if (domainForm == null) {
             domainForm = new DomainFormView(lockWidget);
         }
-        formContainer.addView(domainForm);
+        addView(domainForm);
     }
 
     private void removePreviousForm() {
-        View existingForm = formContainer.getChildAt(0);
+        View existingForm = getChildAt(getChildCount() == 1 ? 0 : 2);
         if (existingForm != null) {
-            formContainer.removeView(existingForm);
+            removeView(existingForm);
         }
     }
 
-    private void moveToFirstForm() {
+    private void addFormLayout() {
         if (showDatabase && !showEnterprise) {
-            showLoginForm();
+            showDatabaseLoginForm();
         } else {
-            showDomainForm();
+            showEnterpriseForm();
         }
     }
 
@@ -144,12 +166,10 @@ public class FormLayout extends RelativeLayout {
      */
     @Nullable
     public Object onActionPressed() {
-        View existingForm = formContainer.getChildAt(0);
+        View existingForm = getChildAt(getChildCount() == 1 ? 0 : 2);
         if (existingForm != null) {
             FormView form = (FormView) existingForm;
-            if (form.hasValidData()) {
-                return form.getActionEvent();
-            }
+            return form.submitForm();
         }
         return null;
     }

@@ -29,5 +29,4 @@ import com.auth0.android.lock.events.SocialConnectionEvent;
 public interface LockWidgetSocial extends LockWidget {
 
     void onSocialLogin(SocialConnectionEvent event);
-
 }

@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.views.interfaces;
 
-public interface LockWidgetDatabase extends LockWidget {
+public interface LockWidgetForm extends LockWidgetSocial {
 
     void showChangePasswordForm();
 }

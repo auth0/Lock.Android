@@ -33,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_medium"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_large"
         android:gravity="center_horizontal"
         android:text="@string/com_auth0_lock_title_change_password"
         android:textSize="16sp" />

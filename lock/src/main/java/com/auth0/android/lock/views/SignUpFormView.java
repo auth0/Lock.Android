@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.auth0.android.lock.Configuration;
@@ -96,7 +97,7 @@ public class SignUpFormView extends FormView {
     }
 
     @Override
-    public boolean hasValidData() {
+    public boolean validateForm() {
         boolean valid = passwordInput.validate(true);
         if (usernameInput.getVisibility() == VISIBLE) {
             valid = usernameInput.validate(true) && valid;
@@ -105,6 +106,12 @@ public class SignUpFormView extends FormView {
             valid = emailInput.validate(true) && valid;
         }
         return valid;
+    }
+
+    @Nullable
+    @Override
+    public Object submitForm() {
+        return validateForm() ? getActionEvent() : null;
     }
 
 }
