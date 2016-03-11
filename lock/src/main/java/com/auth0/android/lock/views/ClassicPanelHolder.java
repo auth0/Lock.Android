@@ -166,6 +166,7 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
 
     @Override
     public Bus getBus() {
+        //TODO: Instead of this, hold the bus here and make a method to receive each event.
         return bus;
     }
 
