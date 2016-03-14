@@ -26,11 +26,17 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.util.TypedValue;
 
 abstract class ViewUtils {
+
+    static final int CORNER_RADIUS = 5;
+
+    enum Corners {ONLY_LEFT, ONLY_RIGHT, ALL}
 
     static float dipToPixels(Resources resources, int dip) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics());
@@ -46,5 +52,26 @@ abstract class ViewUtils {
             color = context.getResources().getColor(colorRes);
         }
         return color;
+    }
+
+    static ShapeDrawable getRoundedBackground(Resources resources, @ColorInt int color, Corners corners) {
+        float r = ViewUtils.dipToPixels(resources, CORNER_RADIUS);
+        float[] outerR = new float[0];
+        switch (corners) {
+            case ONLY_LEFT:
+                outerR = new float[]{r, r, 0, 0, 0, 0, r, r};
+                break;
+            case ONLY_RIGHT:
+                outerR = new float[]{0, 0, r, r, r, r, 0, 0};
+                break;
+            case ALL:
+                outerR = new float[]{r, r, r, r, r, r, r, r};
+                break;
+        }
+
+        RoundRectShape rr = new RoundRectShape(outerR, null, null);
+        ShapeDrawable drawable = new ShapeDrawable(rr);
+        drawable.getPaint().setColor(color);
+        return drawable;
     }
 }

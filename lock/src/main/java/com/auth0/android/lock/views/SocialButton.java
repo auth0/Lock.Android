@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -70,8 +69,9 @@ class SocialButton extends RelativeLayout {
         title.setTextColor(textColor);
         title.setText(titleRes);
 
-        Drawable leftBackground = getRoundedBackground(backgroundColor, Corners.ONLY_LEFT);
-        Drawable rightBackground = getRoundedBackground(backgroundColor, Corners.ONLY_RIGHT);
+        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_LEFT);
+        ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
+        rightBackground.getPaint().setAlpha(230);
         Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             icon.setBackground(leftBackground);
@@ -87,32 +87,8 @@ class SocialButton extends RelativeLayout {
         }
     }
 
-    private ShapeDrawable getRoundedBackground(@ColorInt int color, Corners corners) {
-        float r = ViewUtils.dipToPixels(getResources(), BTN_CORNER_RADIUS);
-        float[] outerR = new float[0];
-        switch (corners) {
-            case ONLY_LEFT:
-                outerR = new float[]{r, r, 0, 0, 0, 0, r, r};
-                break;
-            case ONLY_RIGHT:
-                outerR = new float[]{0, 0, r, r, r, r, 0, 0};
-                break;
-            case ALL:
-                outerR = new float[]{r, r, r, r, r, r, r, r};
-                break;
-        }
-
-        RoundRectShape rr = new RoundRectShape(outerR, null, null);
-        ShapeDrawable drawable = new ShapeDrawable(rr);
-        drawable.getPaint().setColor(color);
-        if (corners == Corners.ONLY_RIGHT) {
-            drawable.getPaint().setAlpha(230);
-        }
-        return drawable;
-    }
-
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int color) {
-        Drawable background = getRoundedBackground(color, Corners.ALL);
+        Drawable background = ViewUtils.getRoundedBackground(getResources(), color, ViewUtils.Corners.ALL);
 
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed},

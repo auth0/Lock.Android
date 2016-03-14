@@ -28,10 +28,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
-import android.support.annotation.ColorInt;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -54,10 +51,6 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     private EditText input;
     private ImageView icon;
     private int inputIcon;
-
-    private static final int CORNER_RADIUS = 5;
-
-    private enum Corners {ONLY_LEFT, ONLY_RIGHT, ALL}
 
     enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD}
 
@@ -84,8 +77,8 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
 
-        Drawable leftBackground = getRoundedBackground(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), Corners.ONLY_LEFT);
-        Drawable rightBackground = getRoundedBackground(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_background), Corners.ONLY_RIGHT);
+        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_background), ViewUtils.Corners.ONLY_RIGHT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             icon.setBackground(leftBackground);
             input.setBackground(rightBackground);
@@ -150,32 +143,11 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         icon.setImageResource(inputIcon);
     }
 
-    private ShapeDrawable getRoundedBackground(@ColorInt int color, Corners corners) {
-        float r = ViewUtils.dipToPixels(getResources(), CORNER_RADIUS);
-        float[] outerR = new float[0];
-        switch (corners) {
-            case ONLY_LEFT:
-                outerR = new float[]{r, r, 0, 0, 0, 0, r, r};
-                break;
-            case ONLY_RIGHT:
-                outerR = new float[]{0, 0, r, r, r, r, 0, 0};
-                break;
-            case ALL:
-                outerR = new float[]{r, r, r, r, r, r, r, r};
-                break;
-        }
-
-        RoundRectShape rr = new RoundRectShape(outerR, null, null);
-        ShapeDrawable drawable = new ShapeDrawable(rr);
-        drawable.getPaint().setColor(color);
-        return drawable;
-    }
-
     private void updateBorder(boolean showError) {
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
-        gd.setCornerRadius(ViewUtils.dipToPixels(getResources(), CORNER_RADIUS));
+        gd.setCornerRadius(ViewUtils.dipToPixels(getResources(), ViewUtils.CORNER_RADIUS));
         int strokeColor = showError ? R.color.com_auth0_lock_input_field_border_error : R.color.com_auth0_lock_input_field_border_normal;
         gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ViewUtils.obtainColor(getContext(), strokeColor));
         gd.setColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));

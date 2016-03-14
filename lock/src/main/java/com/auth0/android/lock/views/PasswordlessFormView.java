@@ -26,7 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -47,8 +46,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private TextView topMessage;
     private TextView resendButton;
     private int sentMessage;
-    private Button countryCodeSelector;
-    private Country selectedCountry;
+    private CountryCodeSelectorView countryCodeSelector;
 
     public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
         super(lockWidget.getContext());
@@ -65,7 +63,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         resendButton.setOnClickListener(this);
         topMessage.setVisibility(GONE);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
-        countryCodeSelector = (Button) findViewById(R.id.com_auth0_lock_country_code);
+        countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
 
         selectPasswordlessMode();
@@ -111,8 +109,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
 
     private String getInputText() {
         if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
-            if (selectedCountry != null) {
-                return selectedCountry.getDialCode() + passwordlessInput.getText().replace(" ", "").replace("-", "");
+            if (countryCodeSelector != null) {
+                return countryCodeSelector.getSelectedCountry().getDialCode().replace(" ", "").replace("-", "") + passwordlessInput.getText().replace(" ", "").replace("-", "");
             } else {
                 return passwordlessInput.getText().replace(" ", "").replace("-", "");
             }
@@ -170,8 +168,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     }
 
     public void onCountryCodeSelected(String country, String dialCode) {
-        selectedCountry = new Country(country, dialCode);
-        countryCodeSelector.setText(dialCode + " " + country);
+        Country selectedCountry = new Country(country, dialCode);
+        countryCodeSelector.setSelectedCountry(selectedCountry);
     }
 
     @Override
@@ -184,7 +182,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 passwordlessInput.setText(emailOrNumber);
                 callback.onPasswordlessRetry();
             }
-        } else if (id == R.id.com_auth0_lock_country_code) {
+        } else if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
         }
     }
