@@ -39,6 +39,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
@@ -72,7 +73,8 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private Options options;
     private Handler handler;
     private Bus lockBus;
-    private LinearLayout rootView;
+    private RelativeLayout rootView;
+    private LinearLayout passwordlessSuccessCover;
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
     private PasswordlessPanelHolder panelHolder;
@@ -90,8 +92,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
-        setContentView(R.layout.com_auth0_lock_activity_lock);
-        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_content);
+        setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
+        passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
+        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         errorMessage = (TextView) findViewById(R.id.com_auth0_lock_error_message);
         if (application == null && applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
@@ -127,7 +130,8 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (panelHolder != null && panelHolder.onBackPressed()) {
+        boolean showingLinkSuccess = passwordlessSuccessCover != null && passwordlessSuccessCover.getVisibility() == View.VISIBLE;
+        if (!showingLinkSuccess && panelHolder != null && panelHolder.onBackPressed()) {
             return;
         }
         if (options != null && options.isClosable()) {
@@ -153,8 +157,21 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         configuration = new Configuration(application, options);
         if (configuration.getDefaultPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
             panelHolder = new PasswordlessPanelHolder(this, lockBus, configuration);
-            rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+    }
+
+    private void showLinkSentLayout() {
+        TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
+        successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_email_sent), lastPasswordlessEmailOrNumber));
+        TextView resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                passwordlessSuccessCover.setVisibility(View.GONE);
+            }
+        });
+        passwordlessSuccessCover.setVisibility(View.VISIBLE);
     }
 
     private void deliverResult(Authentication result) {
@@ -196,6 +213,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 onPasswordlessAuthenticationRequest(event);
             }
         } else if (options != null && lastIdp != null) {
+            if (panelHolder != null && intent == null) {
+                panelHolder.showProgress(false);
+            }
             AuthorizeResult result = new AuthorizeResult(intent);
             lastIdp.authorize(PasswordlessLockActivity.this, result);
         } else {
@@ -241,6 +261,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         if (panelHolder != null) {
             panelHolder.showProgress(true);
         }
+        lastPasswordlessEmailOrNumber = null;
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
@@ -283,6 +304,14 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     setErrorMessage("Passwordless authentication succeeded");
+                    if (panelHolder != null) {
+                        panelHolder.showProgress(false);
+                        if (options.useCodePasswordless()) {
+                            panelHolder.codeSent();
+                        } else {
+                            showLinkSentLayout();
+                        }
+                    }
                 }
             });
         }
@@ -294,6 +323,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     setErrorMessage(error.getMessage());
+                    if (panelHolder != null) {
+                        panelHolder.showProgress(false);
+                    }
+
                 }
             });
         }

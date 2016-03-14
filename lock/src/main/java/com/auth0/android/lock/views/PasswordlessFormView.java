@@ -26,7 +26,11 @@ package com.auth0.android.lock.views;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatSpinner;
+import android.telecom.Call;
+import android.view.View;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
@@ -44,21 +48,40 @@ import java.util.Map;
 public class PasswordlessFormView extends FormView {
 
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
+    private final OnPasswordlessRetryListener callback;
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
     private boolean waitingForCode;
     private String emailOrNumber;
     private AppCompatSpinner countryCodesSpinner;
     private LoadCountriesTask loadCountriesTask;
+    private TextView topMessage;
+    private TextView resendButton;
+    private int sentMessage;
 
-    public PasswordlessFormView(LockWidget lockWidget, PasswordlessMode passwordlessMode) {
+    public PasswordlessFormView(LockWidget lockWidget, OnPasswordlessRetryListener callback) {
         super(lockWidget.getContext());
-        choosenMode = passwordlessMode;
+        choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
+        this.callback = callback;
         init();
     }
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_form_view, this);
+        topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
+        resendButton = (TextView) findViewById(R.id.com_auth0_lock_resend);
+        resendButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    waitingForCode = false;
+                    selectPasswordlessMode();
+                    passwordlessInput.setText(emailOrNumber);
+                    callback.onPasswordlessRetry();
+                }
+            }
+        });
+        topMessage.setVisibility(GONE);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
         countryCodesSpinner = (AppCompatSpinner) findViewById(R.id.com_auth0_lock_input_country_codes);
 
@@ -103,21 +126,27 @@ public class PasswordlessFormView extends FormView {
             case EMAIL_CODE:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodesSpinner.setVisibility(GONE);
+                sentMessage = R.string.com_auth0_lock_title_passwordless_code_email_sent;
                 break;
             case EMAIL_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodesSpinner.setVisibility(GONE);
+                sentMessage = R.string.com_auth0_lock_title_passwordless_link_email_sent;
                 break;
             case SMS_CODE:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodesSpinner.setVisibility(VISIBLE);
+                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 break;
             case SMS_LINK:
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodesSpinner.setVisibility(VISIBLE);
+                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 break;
         }
+        passwordlessInput.setVisibility(VISIBLE);
         passwordlessInput.clearInput();
+        showTopMessage(false);
     }
 
     @Override
@@ -125,18 +154,7 @@ public class PasswordlessFormView extends FormView {
         if (waitingForCode) {
             return new PasswordlessLoginEvent(choosenMode, emailOrNumber, getInputText());
         } else {
-            countryCodesSpinner.setVisibility(GONE);
-            PasswordlessLoginEvent event = new PasswordlessLoginEvent(choosenMode, getInputText());
-            if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
-                waitingForCode = true;
-                emailOrNumber = getInputText();
-                passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
-                passwordlessInput.clearInput();
-            } else {
-                //FIXME: Check this
-//                actionButton.setText(R.string.com_auth0_lock_action_click_link);
-            }
-            return event;
+            return new PasswordlessLoginEvent(choosenMode, getInputText());
         }
     }
 
@@ -151,6 +169,15 @@ public class PasswordlessFormView extends FormView {
         } else {
             return passwordlessInput.getText().replace(" ", "");
         }
+    }
+
+    private void showTopMessage(boolean show) {
+        if (show) {
+            String text = String.format(getResources().getString(sentMessage), emailOrNumber);
+            topMessage.setText(text);
+        }
+        topMessage.setVisibility(show ? VISIBLE : GONE);
+        resendButton.setVisibility(show ? VISIBLE : GONE);
     }
 
     @Override
@@ -181,5 +208,23 @@ public class PasswordlessFormView extends FormView {
             }
             return false;
         }
+    }
+
+    public void codeSent() {
+        countryCodesSpinner.setVisibility(GONE);
+        emailOrNumber = getInputText();
+        showTopMessage(true);
+        if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
+            passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
+            passwordlessInput.clearInput();
+        } else {
+            passwordlessInput.setVisibility(GONE);
+        }
+
+        waitingForCode = true;
+    }
+
+    public interface OnPasswordlessRetryListener {
+        void onPasswordlessRetry();
     }
 }

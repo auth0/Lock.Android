@@ -25,19 +25,22 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessPanelHolder extends LinearLayout implements LockWidgetSocial {
+public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, View.OnClickListener {
 
     private final Bus bus;
     private final Configuration configuration;
-    private PasswordlessFormView passwordlessLayout;
+    private PasswordlessFormLayout formLayout;
+    private ActionButton actionButton;
 
     public PasswordlessPanelHolder(Context context) {
         super(context);
@@ -53,34 +56,28 @@ public class PasswordlessPanelHolder extends LinearLayout implements LockWidgetS
     }
 
     private void init() {
-        setOrientation(VERTICAL);
-        boolean showSocial = !configuration.getSocialStrategies().isEmpty();
-        boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
+        formLayout = new PasswordlessFormLayout(this);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        addView(formLayout, params);
 
-        SocialView socialLayout = null;
-        if (showSocial && showPasswordless) {
-            socialLayout = new SocialView(this, SocialView.Mode.List);
-            passwordlessLayout = new PasswordlessFormView(this, configuration.getPasswordlessMode());
-        } else if (showPasswordless) {
-            passwordlessLayout = new PasswordlessFormView(this, configuration.getPasswordlessMode());
-        } else if (showSocial) {
-            socialLayout = new SocialView(this, SocialView.Mode.List);
-        }
-
-        if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        if (passwordlessLayout != null) {
-            addView(passwordlessLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
+        RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
+        actionButton = new ActionButton(getContext());
+        actionButton.setOnClickListener(this);
+        addView(actionButton, actionParams);
     }
 
     public boolean onBackPressed() {
-        return passwordlessLayout != null && passwordlessLayout.onBackPressed();
+        return formLayout.onBackPressed();
     }
 
     public void showProgress(boolean show) {
-        //TODO: Implement passwordless form progress
+        actionButton.showProgress(show);
+    }
+
+    public void codeSent() {
+        formLayout.codeSent();
     }
 
     @Override
@@ -91,5 +88,14 @@ public class PasswordlessPanelHolder extends LinearLayout implements LockWidgetS
     @Override
     public void onSocialLogin(SocialConnectionEvent event) {
         bus.post(event);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object event = formLayout.onActionPressed();
+        if (event != null) {
+            bus.post(event);
+            actionButton.showProgress(true);
+        }
     }
 }

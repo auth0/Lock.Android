@@ -175,6 +175,9 @@ public class LockActivity extends AppCompatActivity {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
         if (lastIdp != null) {
             //Deliver result to the IDP
+            if (panelHolder != null && data == null) {
+                panelHolder.showProgress(false);
+            }
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
             lastIdp.authorize(LockActivity.this, result);
         }
