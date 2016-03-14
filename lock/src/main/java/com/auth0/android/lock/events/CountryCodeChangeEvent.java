@@ -1,5 +1,5 @@
 /*
- * Country.java
+ * CountryCodeEventRequest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,34 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.adapters;
+package com.auth0.android.lock.events;
 
-import java.util.Locale;
-
-public class Country implements Comparable<Country> {
-    private String isoCode;
-    private String dialCode;
-
-    public Country(String isoCode, String dialCode) {
-        this.isoCode = isoCode;
-        this.dialCode = dialCode;
-    }
-
-    public String getDialCode() {
-        return dialCode;
-    }
-
-    public String getIsoCode() {
-        return isoCode;
-    }
-
-    public String getDisplayName() {
-        Locale locale = new Locale("", isoCode);
-        return locale.getDisplayName();
-    }
-
-    @Override
-    public int compareTo(Country another) {
-        return getDisplayName().compareToIgnoreCase(another.getDisplayName());
-    }
+public class CountryCodeChangeEvent {
 }

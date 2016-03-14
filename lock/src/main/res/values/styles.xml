@@ -30,6 +30,9 @@
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
     </style>
 
+    <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+
     <style name="Lock.Theme.Input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

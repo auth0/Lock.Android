@@ -45,6 +45,7 @@ import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
@@ -67,6 +68,7 @@ import com.squareup.otto.Subscribe;
 public class PasswordlessLockActivity extends AppCompatActivity {
 
     private static final String TAG = PasswordlessLockActivity.class.getSimpleName();
+    private static final int COUNTRY_CODE_REQUEST = 120;
 
     private Application application;
     private ApplicationFetcher applicationFetcher;
@@ -192,6 +194,17 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
+        if (requestCode == COUNTRY_CODE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE);
+                String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE);
+                Log.d(TAG, "Picked country " + country);
+                if (panelHolder != null) {
+                    panelHolder.onCountryCodeSelected(country, dialCode);
+                }
+            }
+            return;
+        }
         processIncomingIntent(data);
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -224,6 +237,13 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         } else {
             setErrorMessage(getString(R.string.com_auth0_lock_error_unexpected_passwordless_intent));
         }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onCountryCodeChangeRequest(CountryCodeChangeEvent event) {
+        Intent intent = new Intent(this, CountryCodeActivity.class);
+        startActivityForResult(intent, COUNTRY_CODE_REQUEST);
     }
 
     @SuppressWarnings("unused")

@@ -1,5 +1,5 @@
 /*
- * CountryCodeAdapter.java
+ * LockWidgetPasswordless.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,16 +22,9 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.adapters;
+package com.auth0.android.lock.views.interfaces;
 
-import android.content.Context;
-import android.widget.ArrayAdapter;
+public interface LockWidgetPasswordless extends LockWidget {
 
-import java.util.List;
-
-public class CountryCodeAdapter extends ArrayAdapter {
-
-    public CountryCodeAdapter(Context context, List countries) {
-        super(context, android.R.layout.simple_spinner_item, countries);
-    }
+    void onCountryCodeChangeRequest();
 }

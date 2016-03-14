@@ -33,10 +33,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.views.interfaces.LockWidget;
+import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 public class PasswordlessFormLayout extends LinearLayout implements PasswordlessFormView.OnPasswordlessRetryListener {
-    private final LockWidgetSocial lockWidget;
+    private final LockWidget lockWidget;
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
     private PasswordlessFormView passwordlessLayout;
@@ -46,7 +48,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         lockWidget = null;
     }
 
-    public PasswordlessFormLayout(LockWidgetSocial lockWidget) {
+    public PasswordlessFormLayout(LockWidget lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -69,7 +71,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     private void addSocialLayout() {
-        socialLayout = new SocialView(lockWidget, SocialView.Mode.List);
+        socialLayout = new SocialView((LockWidgetSocial) lockWidget, SocialView.Mode.List);
         //TODO: Social display mode should be decided by the Holder, depending on the size
         addView(socialLayout);
     }
@@ -84,7 +86,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     private void addPasswordlessLayout() {
-        passwordlessLayout = new PasswordlessFormView(lockWidget, this);
+        passwordlessLayout = new PasswordlessFormView((LockWidgetPasswordless) lockWidget, this);
         addView(passwordlessLayout);
     }
 
@@ -142,5 +144,9 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(VISIBLE);
         }
+    }
+
+    public void onCountryCodeSelected(String country, String dialCode) {
+        passwordlessLayout.onCountryCodeSelected(country, dialCode);
     }
 }

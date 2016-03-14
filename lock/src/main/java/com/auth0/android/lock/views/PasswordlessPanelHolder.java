@@ -30,12 +30,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, View.OnClickListener {
+public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -97,5 +98,14 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
             bus.post(event);
             actionButton.showProgress(true);
         }
+    }
+
+    @Override
+    public void onCountryCodeChangeRequest() {
+        bus.post(new CountryCodeChangeEvent());
+    }
+
+    public void onCountryCodeSelected(String country, String dialCode) {
+        formLayout.onCountryCodeSelected(country, dialCode);
     }
 }
