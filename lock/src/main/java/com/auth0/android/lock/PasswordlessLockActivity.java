@@ -39,6 +39,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -79,6 +80,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private WebIdentityProvider lastIdp;
     private PasswordlessPanelHolder panelHolder;
     private TextView errorMessage;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +95,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
+        progressBar = (ProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         errorMessage = (TextView) findViewById(R.id.com_auth0_lock_error_message);
@@ -278,6 +281,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    progressBar.setVisibility(View.GONE);
                     setErrorMessage("");
                     initLockUI();
                 }
@@ -290,6 +294,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    progressBar.setVisibility(View.GONE);
                     setErrorMessage(error.getMessage());
                 }
             });
