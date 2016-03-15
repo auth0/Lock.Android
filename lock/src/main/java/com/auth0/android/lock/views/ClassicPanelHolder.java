@@ -25,12 +25,9 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
@@ -75,6 +72,7 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
         formLayout.setId(R.id.com_auth0_lock_form_layout);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_medium);
+        params.alignWithParent = true;
         params.setMargins(0, verticalMargin, 0, verticalMargin);
         params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
@@ -93,6 +91,7 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
         View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
         termsLayout.setId(R.id.com_auth0_lock_terms_layout);
         addView(termsLayout, termsParams);
+
         onModeSelected(FormLayout.DatabaseForm.LOG_IN);
     }
 

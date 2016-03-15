@@ -40,6 +40,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
 
     private final Context context;
     private final List<Strategy> strategyList;
+    private boolean useSmallButtons;
     private ConnectionAuthenticationListener callback;
 
     public SocialViewAdapter(Context context, @NonNull List<Strategy> strategyList) {
@@ -49,7 +50,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = new SocialButton(context);
+        View view = new SocialButton(context, useSmallButtons);
         return new ViewHolder(view);
     }
 
@@ -64,6 +65,9 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         return strategyList.size();
     }
 
+    public void setButtonSize(boolean useSmall) {
+        this.useSmallButtons = useSmall;
+    }
 
     public void setCallback(ConnectionAuthenticationListener callback) {
         this.callback = callback;

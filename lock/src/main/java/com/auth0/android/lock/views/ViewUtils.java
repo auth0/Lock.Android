@@ -26,11 +26,13 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.util.TypedValue;
+import android.view.View;
 
 abstract class ViewUtils {
 
@@ -73,5 +75,14 @@ abstract class ViewUtils {
         ShapeDrawable drawable = new ShapeDrawable(rr);
         drawable.getPaint().setColor(color);
         return drawable;
+    }
+
+    static void setBackground(View view, Drawable background) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(background);
+        } else {
+            //noinspection deprecation
+            view.setBackgroundDrawable(background);
+        }
     }
 }

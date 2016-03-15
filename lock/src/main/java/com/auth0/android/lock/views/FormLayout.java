@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
@@ -66,7 +65,7 @@ public class FormLayout extends LinearLayout {
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
         if (showSocial) {
-            addSocialLayout();
+            addSocialLayout(showDatabase || showEnterprise);
         }
         if (showDatabase || showEnterprise) {
             if (showSocial) {
@@ -76,8 +75,8 @@ public class FormLayout extends LinearLayout {
         }
     }
 
-    private void addSocialLayout() {
-        SocialView socialLayout = new SocialView(lockWidget, SocialView.Mode.List);
+    private void addSocialLayout(boolean smallButtons) {
+        SocialView socialLayout = new SocialView(lockWidget, smallButtons);
         addView(socialLayout);
     }
 
@@ -96,6 +95,9 @@ public class FormLayout extends LinearLayout {
      * @param mode the new DatabaseForm to change to
      */
     public void changeFormMode(DatabaseForm mode) {
+        if (!showDatabase && !showEnterprise) {
+            return;
+        }
         switch (mode) {
             case LOG_IN:
                 addFormLayout();

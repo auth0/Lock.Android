@@ -24,35 +24,48 @@
 
 package com.auth0.android.lock.views;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.utils.Strategy;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
-public class SocialView extends RecyclerView implements SocialViewAdapter.ConnectionAuthenticationListener {
+import java.util.List;
+
+import static android.support.v7.widget.RecyclerView.LayoutManager;
+
+public class SocialView extends LinearLayout implements SocialViewAdapter.ConnectionAuthenticationListener {
 
     private LockWidgetSocial lockWidget;
 
-    public enum Mode {
-        Grid, List
-    }
-
-    public SocialView(LockWidgetSocial lockWidget, @NonNull Mode mode) {
+    public SocialView(LockWidgetSocial lockWidget, boolean smallButtons) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        init(mode);
+        init(smallButtons);
     }
 
-    private void init(Mode mode) {
-        SocialViewAdapter adapter = new SocialViewAdapter(getContext(), lockWidget.getConfiguration().getSocialStrategies());
-        LayoutManager lm = mode == Mode.Grid ? new GridLayoutManager(getContext(), 3) : new LinearLayoutManager(getContext());
-        setLayoutManager(lm);
-        setHasFixedSize(true);
+    private void init(boolean smallButtons) {
+        int maxWidth = getResources().getDimensionPixelOffset(R.dimen.com_auth0_lock_max_widget_width);
+        setOrientation(VERTICAL);
+        setGravity(Gravity.CENTER);
+        RecyclerView recycler = new RecyclerView(getContext());
+        List<Strategy> socialStrategies = lockWidget.getConfiguration().getSocialStrategies();
+        SocialViewAdapter adapter = new SocialViewAdapter(getContext(), socialStrategies);
+        adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
-        setAdapter(adapter);
+        LayoutManager lm = new GridLayoutManager(getContext(), 1, smallButtons ? HORIZONTAL : VERTICAL, false);
+        recycler.setLayoutManager(lm);
+        recycler.setHasFixedSize(true);
+        recycler.setAdapter(adapter);
+        recycler.setOverScrollMode(OVER_SCROLL_NEVER);
+        LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        addView(recycler, recyclerParams);
+        setLayoutParams(new ViewGroup.LayoutParams(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override

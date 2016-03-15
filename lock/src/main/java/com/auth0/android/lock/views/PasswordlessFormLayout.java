@@ -72,8 +72,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     private void addSocialLayout() {
-        socialLayout = new SocialView((LockWidgetSocial) lockWidget, SocialView.Mode.List);
-        //TODO: Social display mode should be decided by the Holder, depending on the size
+        socialLayout = new SocialView((LockWidgetSocial) lockWidget, false);
         addView(socialLayout);
     }
 

@@ -98,7 +98,6 @@ public class DomainFormView extends FormView {
     private void setupMultipleConnectionUI() {
         if (fallbackToDatabase) {
             passwordInput.setVisibility(VISIBLE);
-//            actionButton.setEnabled(true);
         }
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -124,11 +123,9 @@ public class DomainFormView extends FormView {
                     topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
                     topMessage.setVisibility(View.VISIBLE);
                     changePasswordBtn.setVisibility(GONE);
-//                    actionButton.setEnabled(true);
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
                     topMessage.setVisibility(View.GONE);
-//                    actionButton.setEnabled(true);
                     if (changePasswordEnabled) {
                         changePasswordBtn.setVisibility(VISIBLE);
                     }
@@ -141,7 +138,6 @@ public class DomainFormView extends FormView {
 
     private void setupSingleConnectionUI(Connection connection) {
         currentConnection = connection;
-//        actionButton.setEnabled(true);
         String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
         topMessage.setText(loginWithCorporate);
         if (connection.isActiveFlowEnabled()) {
@@ -158,7 +154,6 @@ public class DomainFormView extends FormView {
         passwordInput.clearInput();
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
-//        actionButton.setEnabled(false);
         topMessage.setVisibility(GONE);
         corporateSSO = false;
     }
@@ -229,7 +224,6 @@ public class DomainFormView extends FormView {
             resetDomain();
             topMessage.setText(R.string.com_auth0_lock_single_sign_on_enabled);
             topMessage.setVisibility(VISIBLE);
-//            actionButton.setEnabled(true);
             if (changePasswordEnabled && currentConnection == null) {
                 changePasswordBtn.setVisibility(VISIBLE);
             }
