@@ -134,4 +134,5 @@
     <string name="com_auth0_lock_title_passwordless_link_email_sent">We sent you a link to sign in to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_retry">Did not get the code?</string>
     <string name="com_auth0_lock_title_passwordless_link_retry">Resend</string>
+    <string name="com_auth0_lock_sign_up_terms">By signing up, you agree to our terms of service and privacy policy</string>
 </resources>

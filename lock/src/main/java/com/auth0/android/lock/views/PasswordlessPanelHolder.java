@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
@@ -57,16 +58,21 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     private void init() {
-        formLayout = new PasswordlessFormLayout(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_IN_PARENT, TRUE);
-        addView(formLayout, params);
-
         RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
         actionButton = new ActionButton(getContext());
+        actionButton.setId(R.id.com_auth0_lock_action_button);
         actionButton.setOnClickListener(this);
         addView(actionButton, actionParams);
+
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_medium);
+        formLayout = new PasswordlessFormLayout(this);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, verticalMargin, 0, verticalMargin);
+        params.addRule(ALIGN_PARENT_TOP, TRUE);
+        params.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        addView(formLayout, params);
     }
 
     public boolean onBackPressed() {

@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
@@ -60,6 +61,7 @@ public class FormLayout extends LinearLayout {
 
     private void init() {
         setOrientation(VERTICAL);
+        setGravity(Gravity.CENTER);
         boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();

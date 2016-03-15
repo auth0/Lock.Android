@@ -31,8 +31,7 @@
         android:id="@+id/com_auth0_lock_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/com_auth0_lock_error_message"
-        android:paddingTop="10dp" />
+        android:layout_below="@id/com_auth0_lock_error_message"/>
 
     <ProgressBar
         android:id="@+id/com_auth0_lock_progressbar"

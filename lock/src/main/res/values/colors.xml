@@ -95,6 +95,8 @@
     <color name="com_auth0_lock_social_dwolla_text">#ffffff</color>
 
     <color name="com_auth0_lock_header_background">#EEEEEE</color>
+    <color name="com_auth0_lock_terms_background">#EEEEEE</color>
+    <color name="com_auth0_lock_terms_text">#666666</color>
 
     <color name="com_auth0_lock_radio_button_checked_color">#5C666F</color>
     <color name="com_auth0_lock_radio_button_unchecked_color">#FFFFFF</color>

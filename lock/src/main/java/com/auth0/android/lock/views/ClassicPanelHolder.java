@@ -25,11 +25,15 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -43,6 +47,7 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
     private ModeSelectionView modeSelectionView;
     private ChangePasswordFormView changePwdForm;
     private ActionButton actionButton;
+    private LayoutParams termsParams;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -59,22 +64,36 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
 
     private void init() {
         if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
-            RelativeLayout.LayoutParams swicherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            swicherParams.addRule(ALIGN_PARENT_TOP, TRUE);
+            RelativeLayout.LayoutParams switcherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            switcherParams.addRule(ALIGN_PARENT_TOP, TRUE);
             modeSelectionView = new ModeSelectionView(getContext(), this);
-            addView(modeSelectionView, swicherParams);
+            modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
+            addView(modeSelectionView, switcherParams);
         }
 
         formLayout = new FormLayout(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        formLayout.setId(R.id.com_auth0_lock_form_layout);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_medium);
+        params.setMargins(0, verticalMargin, 0, verticalMargin);
+        params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
         params.addRule(CENTER_IN_PARENT, TRUE);
         addView(formLayout, params);
 
         RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
         actionButton = new ActionButton(getContext());
+        actionButton.setId(R.id.com_auth0_lock_action_button);
         actionButton.setOnClickListener(this);
         addView(actionButton, actionParams);
+
+        termsParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        termsParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+        termsLayout.setId(R.id.com_auth0_lock_terms_layout);
+        addView(termsLayout, termsParams);
+        onModeSelected(FormLayout.DatabaseForm.LOG_IN);
     }
 
     private void showChangePasswordForm(boolean show) {
@@ -126,6 +145,8 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
     @Override
     public void onModeSelected(FormLayout.DatabaseForm mode) {
         formLayout.changeFormMode(mode);
+        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_terms_height);
+        termsParams.height = mode == FormLayout.DatabaseForm.SIGN_UP ? height : 0;
     }
 
     @Override
