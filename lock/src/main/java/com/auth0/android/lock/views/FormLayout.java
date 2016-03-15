@@ -45,7 +45,7 @@ public class FormLayout extends LinearLayout {
     private SignUpFormView signUpForm;
     private DomainFormView domainForm;
 
-    public enum FormMode {LOG_IN, SIGN_UP}
+    public enum DatabaseForm {LOG_IN, SIGN_UP}
 
     public FormLayout(Context context) {
         super(context);
@@ -91,9 +91,9 @@ public class FormLayout extends LinearLayout {
     /**
      * Change the current form mode
      *
-     * @param mode the new FormMode to change to
+     * @param mode the new DatabaseForm to change to
      */
-    public void changeFormMode(FormMode mode) {
+    public void changeFormMode(DatabaseForm mode) {
         switch (mode) {
             case LOG_IN:
                 addFormLayout();

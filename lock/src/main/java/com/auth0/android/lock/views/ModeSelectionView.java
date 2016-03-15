@@ -29,17 +29,16 @@ import android.support.annotation.NonNull;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 
 public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
 
     private static final String TAG = ModeSelectionView.class.getSimpleName();
-    private final FormModeChangedListener callback;
+    private final ModeSelectedListener callback;
 
-    public ModeSelectionView(Context context, @NonNull FormModeChangedListener callback) {
+    public ModeSelectionView(Context context, @NonNull ModeSelectedListener listener) {
         super(context);
-        this.callback = callback;
+        this.callback = listener;
         init();
     }
 
@@ -52,13 +51,13 @@ public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCh
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if (checkedId == R.id.com_auth0_lock_mode_log_in) {
-            callback.onFormModeChanged(FormLayout.FormMode.LOG_IN);
+            callback.onModeSelected(FormLayout.DatabaseForm.LOG_IN);
         } else if (checkedId == R.id.com_auth0_lock_mode_sign_up) {
-            callback.onFormModeChanged(FormLayout.FormMode.SIGN_UP);
+            callback.onModeSelected(FormLayout.DatabaseForm.SIGN_UP);
         }
     }
 
-    public interface FormModeChangedListener {
-        void onFormModeChanged(FormLayout.FormMode mode);
+    public interface ModeSelectedListener {
+        void onModeSelected(FormLayout.DatabaseForm mode);
     }
 }

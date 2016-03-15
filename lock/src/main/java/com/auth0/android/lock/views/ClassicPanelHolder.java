@@ -30,13 +30,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.Configuration;
-import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionView.FormModeChangedListener, LockWidgetForm, View.OnClickListener, LockWidget {
+public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionView.ModeSelectedListener, LockWidgetForm, View.OnClickListener, LockWidget {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -125,7 +124,7 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
     }
 
     @Override
-    public void onFormModeChanged(FormLayout.FormMode mode) {
+    public void onModeSelected(FormLayout.DatabaseForm mode) {
         formLayout.changeFormMode(mode);
     }
 
