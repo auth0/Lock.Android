@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
@@ -78,11 +79,17 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     private void addSeparator() {
         orSeparatorMessage = new TextView(getContext());
-        orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
+        PasswordlessMode passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
+        int stringRes = R.string.com_auth0_lock_passwordless_email_forms_separator;
+        if (passwordlessMode != null && (passwordlessMode == PasswordlessMode.SMS_LINK || passwordlessMode == PasswordlessMode.SMS_CODE)) {
+            stringRes = R.string.com_auth0_lock_passwordless_sms_forms_separator;
+        }
+        orSeparatorMessage.setText(stringRes);
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
+        int maxWidth = (int) getResources().getDimension(R.dimen.com_auth0_lock_max_widget_width);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-        addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        addView(orSeparatorMessage, maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     private void addPasswordlessLayout() {

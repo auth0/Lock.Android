@@ -128,6 +128,8 @@
     <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
     <string name="com_auth0_lock_input_error_phone_number">The phone number cannot be empty</string>
     <string name="com_auth0_lock_forms_separator">Or</string>
+    <string name="com_auth0_lock_passwordless_sms_forms_separator">Otherwise, enter your phone to sign in or create an account</string>
+    <string name="com_auth0_lock_passwordless_email_forms_separator">Otherwise, enter your email to sign in or create an account</string>
     <string name="com_auth0_lock_title_change_password">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
     <string name="com_auth0_lock_title_passwordless_code_email_sent">An email with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
@@ -135,4 +137,6 @@
     <string name="com_auth0_lock_title_passwordless_code_retry">Did not get the code?</string>
     <string name="com_auth0_lock_title_passwordless_link_retry">Resend</string>
     <string name="com_auth0_lock_sign_up_terms">By signing up, you agree to our terms of service and privacy policy</string>
+    <string name="com_auth0_lock_title_passwordless_email">Enter your email address to sign in or create an account</string>
+    <string name="com_auth0_lock_title_passwordless_sms">Enter your phone to sign in or create an account</string>
 </resources>

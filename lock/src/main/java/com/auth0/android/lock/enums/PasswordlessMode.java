@@ -25,5 +25,5 @@
 package com.auth0.android.lock.enums;
 
 public enum PasswordlessMode {
-    SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE
+    SMS_LINK, SMS_CODE, EMAIL_LINK, passwordlessMode, EMAIL_CODE
 }

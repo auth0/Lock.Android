@@ -42,6 +42,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
     private boolean waitingForCode;
+    private final boolean showTitle;
     private String emailOrNumber;
     private TextView topMessage;
     private TextView resendButton;
@@ -51,6 +52,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
         super(lockWidget.getContext());
         choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
+        showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         this.lockWidget = lockWidget;
         this.callback = callback;
         init();
@@ -61,7 +63,6 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         resendButton = (TextView) findViewById(R.id.com_auth0_lock_resend);
         resendButton.setOnClickListener(this);
-        topMessage.setVisibility(GONE);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
         countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
@@ -71,31 +72,37 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
 
 
     private void selectPasswordlessMode() {
+        int titleMessage = 0;
         switch (choosenMode) {
             case EMAIL_CODE:
+                titleMessage = R.string.com_auth0_lock_title_passwordless_email;
+                sentMessage = R.string.com_auth0_lock_title_passwordless_code_email_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodeSelector.setVisibility(GONE);
-                sentMessage = R.string.com_auth0_lock_title_passwordless_code_email_sent;
                 break;
             case EMAIL_LINK:
+                titleMessage = R.string.com_auth0_lock_title_passwordless_email;
+                sentMessage = R.string.com_auth0_lock_title_passwordless_link_email_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodeSelector.setVisibility(GONE);
-                sentMessage = R.string.com_auth0_lock_title_passwordless_link_email_sent;
                 break;
             case SMS_CODE:
+                titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
+                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodeSelector.setVisibility(VISIBLE);
-                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 break;
             case SMS_LINK:
+                titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
+                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodeSelector.setVisibility(VISIBLE);
-                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 break;
         }
         passwordlessInput.setVisibility(VISIBLE);
         passwordlessInput.clearInput();
-        showTopMessage(false);
+        resendButton.setVisibility(GONE);
+        setTopMessage(showTitle ? getResources().getString(titleMessage) : null);
     }
 
     @Override
@@ -117,15 +124,6 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         } else {
             return passwordlessInput.getText().replace(" ", "");
         }
-    }
-
-    private void showTopMessage(boolean show) {
-        if (show) {
-            String text = String.format(getResources().getString(sentMessage), emailOrNumber);
-            topMessage.setText(text);
-        }
-        topMessage.setVisibility(show ? VISIBLE : GONE);
-        resendButton.setVisibility(show ? VISIBLE : GONE);
     }
 
     @Override
@@ -156,7 +154,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     public void codeSent() {
         countryCodeSelector.setVisibility(GONE);
         emailOrNumber = getInputText();
-        showTopMessage(true);
+        setTopMessage(String.format(getResources().getString(sentMessage), emailOrNumber));
+        resendButton.setVisibility(VISIBLE);
         if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
             passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
             passwordlessInput.clearInput();
@@ -184,6 +183,15 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
             }
         } else if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
+        }
+    }
+
+    private void setTopMessage(String text) {
+        if (text == null) {
+            topMessage.setVisibility(View.GONE);
+        } else {
+            topMessage.setText(text);
+            topMessage.setVisibility(View.VISIBLE);
         }
     }
 
