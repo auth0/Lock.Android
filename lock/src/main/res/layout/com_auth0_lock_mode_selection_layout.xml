@@ -47,7 +47,8 @@
             android:padding="5dp"
             android:text="@string/com_auth0_lock_action_log_in"
             android:textAllCaps="true"
-            android:textColor="@drawable/com_auth0_lock_radio_button_text_color" />
+            android:textColor="@drawable/com_auth0_lock_radio_button_text_color"
+            android:textSize="@dimen/com_auth0_lock_switcher_text" />
 
         <RadioButton
             android:id="@+id/com_auth0_lock_mode_sign_up"
@@ -61,7 +62,8 @@
             android:padding="5dp"
             android:text="@string/com_auth0_lock_action_sign_up"
             android:textAllCaps="true"
-            android:textColor="@drawable/com_auth0_lock_radio_button_text_color" />
+            android:textColor="@drawable/com_auth0_lock_radio_button_text_color"
+            android:textSize="@dimen/com_auth0_lock_switcher_text" />
 
     </RadioGroup>
 

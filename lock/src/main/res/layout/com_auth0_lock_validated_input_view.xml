@@ -49,7 +49,7 @@
         android:background="@null"
         android:paddingLeft="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
         android:paddingRight="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
-        android:textSize="14sp"
+        android:textSize="@dimen/com_auth0_lock_small_text"
         tools:text="email@domain.com" />
 
 </LinearLayout>

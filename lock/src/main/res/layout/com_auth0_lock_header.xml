@@ -50,6 +50,6 @@
         android:layout_marginTop="@dimen/com_auth0_lock_widget_small_margin"
         android:gravity="center_horizontal"
         android:text="?attr/Auth0.HeaderText"
-        android:textSize="@dimen/com_auth0_lock_header_text_size"
+        android:textSize="@dimen/com_auth0_lock_header_text"
         tools:text="Auth0" />
 </RelativeLayout>

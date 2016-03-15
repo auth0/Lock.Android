@@ -54,7 +54,7 @@
             android:paddingRight="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
             android:singleLine="true"
             android:textAllCaps="true"
-            android:textSize="13sp"
+            android:textSize="@dimen/com_auth0_lock_social_button_text"
             tools:background="#90FF3333"
             tools:text="Login with facebook"
             tools:textColor="@android:color/white" />

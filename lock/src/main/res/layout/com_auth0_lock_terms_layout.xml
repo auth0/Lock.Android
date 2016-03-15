@@ -33,8 +33,8 @@
         android:layout_width="@dimen/com_auth0_lock_max_widget_width"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="13sp"
         android:text="@string/com_auth0_lock_sign_up_terms"
-        android:textColor="@color/com_auth0_lock_terms_text" />
+        android:textColor="@color/com_auth0_lock_terms_text"
+        android:textSize="@dimen/com_auth0_lock_small_text" />
 
 </LinearLayout>
