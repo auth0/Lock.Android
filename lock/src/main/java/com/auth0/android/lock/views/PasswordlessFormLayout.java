@@ -62,7 +62,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessStrategy() != null;
 
         if (showSocial) {
-            addSocialLayout();
+            addSocialLayout(showPasswordless);
         }
         if (showPasswordless) {
             if (showSocial) {
@@ -72,8 +72,8 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
     }
 
-    private void addSocialLayout() {
-        socialLayout = new SocialView((LockWidgetSocial) lockWidget, false);
+    private void addSocialLayout(boolean smallButtons) {
+        SocialView socialLayout = new SocialView((LockWidgetSocial) lockWidget, smallButtons);
         addView(socialLayout);
     }
 
