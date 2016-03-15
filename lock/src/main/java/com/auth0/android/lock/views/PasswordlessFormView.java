@@ -140,7 +140,7 @@ public class PasswordlessFormView extends FormView {
                 emailOrNumber = getInputText();
                 passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
                 passwordlessInput.clearInput();
-                actionButton.setText(R.string.com_auth0_lock_action_login);
+                actionButton.setText(R.string.com_auth0_lock_action_log_in);
             } else {
                 actionButton.setText(R.string.com_auth0_lock_action_click_link);
                 actionButton.setEnabled(false);
