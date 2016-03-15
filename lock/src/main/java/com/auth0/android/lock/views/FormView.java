@@ -26,12 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
 import android.widget.RelativeLayout;
-
-import com.auth0.android.lock.Configuration;
-import com.squareup.otto.Bus;
 
 public abstract class FormView extends RelativeLayout {
     private static final String TAG = FormView.class.getSimpleName();

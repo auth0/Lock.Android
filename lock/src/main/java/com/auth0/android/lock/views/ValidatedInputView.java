@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -79,15 +78,8 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
 
         Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_background), ViewUtils.Corners.ONLY_RIGHT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            icon.setBackground(leftBackground);
-            input.setBackground(rightBackground);
-        } else {
-            //noinspection deprecation
-            icon.setBackgroundDrawable(leftBackground);
-            //noinspection deprecation
-            input.setBackgroundDrawable(rightBackground);
-        }
+        ViewUtils.setBackground(icon, leftBackground);
+        ViewUtils.setBackground(input, rightBackground);
 
         if (attrs == null || isInEditMode()) {
             return;

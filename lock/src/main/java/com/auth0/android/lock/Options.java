@@ -83,13 +83,13 @@ class Options implements Parcelable {
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         if (in.readByte() == HAS_DATA) {
-            connections = new ArrayList<String>();
+            connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
         } else {
             connections = null;
         }
         if (in.readByte() == HAS_DATA) {
-            enterpriseConnectionsUsingWebForm = new ArrayList<String>();
+            enterpriseConnectionsUsingWebForm = new ArrayList<>();
             in.readList(enterpriseConnectionsUsingWebForm, String.class.getClassLoader());
         } else {
             enterpriseConnectionsUsingWebForm = null;

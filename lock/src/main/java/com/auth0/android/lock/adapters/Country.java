@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock.adapters;
 
+import android.support.annotation.NonNull;
+
 import java.util.Locale;
 
 public class Country implements Comparable<Country> {
@@ -49,7 +51,7 @@ public class Country implements Comparable<Country> {
     }
 
     @Override
-    public int compareTo(Country another) {
+    public int compareTo(@NonNull Country another) {
         return getDisplayName().compareToIgnoreCase(another.getDisplayName());
     }
 }

@@ -27,7 +27,6 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -77,22 +76,15 @@ public class CountryCodeSelectorView extends LinearLayout {
     private void setupBackground() {
         Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            icon.setBackground(leftBackground);
-            countryTextView.setBackground(rightBackground);
-        } else {
-            //noinspection deprecation
-            icon.setBackgroundDrawable(leftBackground);
-            //noinspection deprecation
-            countryTextView.setBackgroundDrawable(rightBackground);
-        }
+        ViewUtils.setBackground(icon, leftBackground);
+        ViewUtils.setBackground(countryTextView, rightBackground);
         ViewGroup parent = ((ViewGroup) countryTextView.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
         gd.setCornerRadius(ViewUtils.dipToPixels(getResources(), ViewUtils.CORNER_RADIUS));
         gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         gd.setColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
-        parent.setBackgroundDrawable(gd);
+        ViewUtils.setBackground(parent, gd);
     }
 
     private void prepareTask() {
