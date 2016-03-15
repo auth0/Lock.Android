@@ -30,9 +30,9 @@
     <dimen name="com_auth0_lock_webview_button_text_size">13sp</dimen>
     <dimen name="com_auth0_lock_webview_button_icon_label_size">50dp</dimen>
 
-    <dimen name="com_auth0_lock_header_height">100dp</dimen>
+    <dimen name="com_auth0_lock_header_height">120dp</dimen>
     <dimen name="com_auth0_lock_header_text_size">25sp</dimen>
-    <dimen name="com_auth0_lock_header_logo_size">60sp</dimen>
+    <dimen name="com_auth0_lock_header_logo_size">70sp</dimen>
 
     <dimen name="com_auth0_lock_forgot_password_text">15sp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_large">35dp</dimen>
