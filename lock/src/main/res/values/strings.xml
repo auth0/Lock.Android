@@ -127,10 +127,11 @@
     <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
     <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
     <string name="com_auth0_lock_input_error_phone_number">The phone number cannot be empty</string>
-    <string name="com_auth0_lock_forms_separator">Or</string>
+    <string name="com_auth0_lock_forms_separator">OR</string>
     <string name="com_auth0_lock_passwordless_sms_forms_separator">Otherwise, enter your phone to sign in or create an account</string>
     <string name="com_auth0_lock_passwordless_email_forms_separator">Otherwise, enter your email to sign in or create an account</string>
-    <string name="com_auth0_lock_title_change_password">Please enter your email and the new password. We will send you an email to confirm the password change.</string>
+    <string name="com_auth0_lock_title_change_password">Reset Password</string>
+    <string name="com_auth0_lock_description_change_password">Please enter your email and the new\n password. We will send you an email to\n confirm the password change.</string>
     <string name="com_auth0_lock_title_passwordless_code_email_sent">An email with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_link_email_sent">We sent you a link to sign in to %s</string>
