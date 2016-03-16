@@ -33,10 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class FormLayout extends LinearLayout {
-    private final LockWidgetForm lockWidget;
+    private final LockWidgetEnterprise lockWidget;
 
     private boolean showDatabase;
     private boolean showEnterprise;
@@ -44,6 +45,8 @@ public class FormLayout extends LinearLayout {
     private LoginFormView loginForm;
     private SignUpFormView signUpForm;
     private DomainFormView domainForm;
+    private SocialView socialLayout;
+    private TextView orSeparatorMessage;
 
     public enum DatabaseForm {LOG_IN, SIGN_UP}
 
@@ -52,7 +55,7 @@ public class FormLayout extends LinearLayout {
         lockWidget = null;
     }
 
-    public FormLayout(LockWidgetForm lockWidget) {
+    public FormLayout(LockWidgetEnterprise lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -76,12 +79,12 @@ public class FormLayout extends LinearLayout {
     }
 
     private void addSocialLayout(boolean smallButtons) {
-        SocialView socialLayout = new SocialView(lockWidget, smallButtons);
+        socialLayout = new SocialView(lockWidget, smallButtons);
         addView(socialLayout);
     }
 
     private void addSeparator() {
-        TextView orSeparatorMessage = new TextView(getContext());
+        orSeparatorMessage = new TextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_small);
@@ -105,6 +108,15 @@ public class FormLayout extends LinearLayout {
             case SIGN_UP:
                 showSignUpForm();
                 break;
+        }
+    }
+
+    public void showOnlyEnterprise(boolean show) {
+        if (socialLayout != null) {
+            socialLayout.setVisibility(show ? GONE : VISIBLE);
+        }
+        if (orSeparatorMessage != null) {
+            orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
         }
     }
 

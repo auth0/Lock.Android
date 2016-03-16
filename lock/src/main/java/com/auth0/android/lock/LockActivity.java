@@ -286,6 +286,15 @@ public class LockActivity extends AppCompatActivity {
     public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
         if (options == null) {
             return;
+        } else if (event.getConnectionName() == null) {
+            Log.w(TAG, "No enterprise matched connection");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    setErrorMessage("No connection found for that domain.");
+                }
+            });
+            return;
         } else if (event.useRO()) {
             if (event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null) {
                 return;

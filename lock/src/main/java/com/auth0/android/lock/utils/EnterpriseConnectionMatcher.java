@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.utils;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class EnterpriseConnectionMatcher {
      * @param connection to extract the domain from
      * @return the main domain.
      */
-    public String domainForConnection(Connection connection) {
+    public String domainForConnection(@NonNull Connection connection) {
         return connection.getValueForKey(DOMAIN_KEY);
     }
 }

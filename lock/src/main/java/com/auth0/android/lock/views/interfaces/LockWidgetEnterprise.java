@@ -1,5 +1,5 @@
 /*
- * EnterpriseLoginEvent.java
+ * LockWidgetEnterprise.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,45 +22,9 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.events;
+package com.auth0.android.lock.views.interfaces;
 
-import android.support.annotation.Nullable;
+public interface LockWidgetEnterprise extends LockWidgetForm {
 
-public class EnterpriseLoginEvent {
-
-    private final String connectionName;
-    private final String username;
-    private final String password;
-    private final boolean useRO;
-
-    public EnterpriseLoginEvent(@Nullable String connectionName, String username, String password) {
-        this.connectionName = connectionName;
-        this.username = username;
-        this.password = password;
-        this.useRO = true;
-    }
-
-    public EnterpriseLoginEvent(@Nullable String connectionName) {
-        this.connectionName = connectionName;
-        this.username = "";
-        this.password = "";
-        this.useRO = false;
-    }
-
-    @Nullable
-    public String getConnectionName() {
-        return connectionName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public boolean useRO() {
-        return useRO;
-    }
+    void showSSOEnabledMessage(boolean show);
 }

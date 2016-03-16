@@ -33,10 +33,11 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
+import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionView.ModeSelectedListener, LockWidgetForm, View.OnClickListener, LockWidget {
+public class ClassicPanelHolder extends RelativeLayout implements View.OnClickListener, ModeSelectionView.ModeSelectedListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
 
     private final Bus bus;
     private final Configuration configuration;
@@ -45,6 +46,8 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
     private ChangePasswordFormView changePwdForm;
     private ActionButton actionButton;
     private LayoutParams termsParams;
+    private LayoutParams ssoParams;
+    private View ssoLayout;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -94,6 +97,16 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
         termsLayout.setId(R.id.com_auth0_lock_terms_layout);
         addView(termsLayout, termsParams);
 
+        ssoParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        if (modeSelectionView == null) {
+            ssoParams.addRule(ALIGN_PARENT_TOP, TRUE);
+        } else {
+            ssoParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        }
+        ssoLayout = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
+        ssoLayout.setId(R.id.com_auth0_lock_sso_layout);
+        addView(ssoLayout, ssoParams);
+
         onModeSelected(FormLayout.DatabaseForm.LOG_IN);
     }
 
@@ -127,8 +140,8 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
             return true;
         }
         boolean handled = formLayout != null && formLayout.onBackPressed();
-        if (handled) {
-            modeSelectionView.setVisibility(View.VISIBLE);
+        if (handled && modeSelectionView != null) {
+            modeSelectionView.setVisibility(ssoLayout.getVisibility() == VISIBLE ? GONE : VISIBLE);
         }
         return handled;
     }
@@ -153,6 +166,17 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
         formLayout.changeFormMode(mode);
         int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_terms_height);
         termsParams.height = mode == FormLayout.DatabaseForm.SIGN_UP ? height : 0;
+    }
+
+    @Override
+    public void showSSOEnabledMessage(boolean show) {
+        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
+        ssoParams.height = show ? height : 0;
+        ssoLayout.setLayoutParams(ssoParams);
+        formLayout.showOnlyEnterprise(show);
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
+        }
     }
 
     @Override
