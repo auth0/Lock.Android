@@ -84,7 +84,7 @@ public class FormLayout extends LinearLayout {
         TextView orSeparatorMessage = new TextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
         orSeparatorMessage.setGravity(Gravity.CENTER);
-        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
+        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_small);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
         addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }

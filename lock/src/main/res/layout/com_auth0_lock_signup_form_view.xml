@@ -31,6 +31,7 @@
     <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_username"
         style="@style/Lock.Theme.Input"
+        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin"
         app:Auth0.InputDataType="username" />
 
     <com.auth0.android.lock.views.ValidatedInputView
@@ -41,5 +42,6 @@
     <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_password"
         style="@style/Lock.Theme.Input"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
         app:Auth0.InputDataType="password" />
 </LinearLayout>

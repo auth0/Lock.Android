@@ -44,7 +44,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_login_height</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_medium</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
         <item name="android:background">@color/com_auth0_lock_login_background</item>
         <item name="android:scaleType">center</item>
     </style>
@@ -55,7 +55,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_medium</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
         <item name="android:padding">@dimen/com_auth0_lock_widget_small_margin</item>
         <item name="android:textSize">@dimen/com_auth0_lock_small_text</item>
     </style>

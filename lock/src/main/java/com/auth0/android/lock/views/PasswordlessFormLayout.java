@@ -73,7 +73,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     private void addSocialLayout(boolean smallButtons) {
-        SocialView socialLayout = new SocialView((LockWidgetSocial) lockWidget, smallButtons);
+        socialLayout = new SocialView((LockWidgetSocial) lockWidget, smallButtons);
         addView(socialLayout);
     }
 
@@ -86,10 +86,9 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
         orSeparatorMessage.setText(stringRes);
         orSeparatorMessage.setGravity(Gravity.CENTER);
-        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_vertical_margin_small);
-        int maxWidth = (int) getResources().getDimension(R.dimen.com_auth0_lock_max_widget_width);
+        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_small);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-        addView(orSeparatorMessage, maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     private void addPasswordlessLayout() {

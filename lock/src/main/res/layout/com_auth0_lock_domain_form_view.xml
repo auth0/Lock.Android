@@ -36,6 +36,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:text="@string/com_auth0_lock_single_sign_on_enabled"
         android:textSize="@dimen/com_auth0_lock_sso_text"
         android:visibility="gone"
@@ -51,6 +52,7 @@
         android:id="@+id/com_auth0_lock_input_username"
         style="@style/Lock.Theme.Input"
         android:layout_below="@id/com_auth0_lock_input_username_email"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
         android:visibility="gone"
         app:Auth0.InputDataType="username" />
 
@@ -58,6 +60,7 @@
         android:id="@+id/com_auth0_lock_input_password"
         style="@style/Lock.Theme.Input"
         android:layout_below="@id/com_auth0_lock_input_username"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
         android:visibility="gone"
         app:Auth0.InputDataType="password" />
 

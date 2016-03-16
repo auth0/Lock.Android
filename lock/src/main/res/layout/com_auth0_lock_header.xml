@@ -37,7 +37,7 @@
         android:layout_width="@dimen/com_auth0_lock_header_logo_size"
         android:layout_height="@dimen/com_auth0_lock_header_logo_size"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/com_auth0_lock_input_field_vertical_margin_small"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_small"
         android:scaleType="fitCenter"
         android:src="?attr/Auth0.HeaderLogo"
         tools:src="@drawable/com_auth0_lock_header_logo" />

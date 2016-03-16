@@ -58,6 +58,8 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     private void init() {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
         actionButton = new ActionButton(getContext());
@@ -65,10 +67,9 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         actionButton.setOnClickListener(this);
         addView(actionButton, actionParams);
 
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_medium);
         formLayout = new PasswordlessFormLayout(this);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, verticalMargin, 0, verticalMargin);
+        params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         params.addRule(ALIGN_PARENT_TOP, TRUE);
         params.addRule(ABOVE, R.id.com_auth0_lock_action_button);
         params.addRule(CENTER_IN_PARENT, TRUE);

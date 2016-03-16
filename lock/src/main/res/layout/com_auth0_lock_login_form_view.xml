@@ -35,6 +35,7 @@
     <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_password"
         style="@style/Lock.Theme.Input"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
         app:Auth0.InputDataType="password" />
 
     <TextView

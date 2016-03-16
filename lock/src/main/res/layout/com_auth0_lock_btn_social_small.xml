@@ -26,8 +26,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/com_auth0_lock_widget_height"
     android:layout_height="@dimen/com_auth0_lock_widget_height"
-    android:gravity="center"
-    android:layout_margin="6dp">
+    android:layout_marginBottom="@dimen/com_auth0_lock_widget_small_margin"
+    android:layout_marginLeft="@dimen/com_auth0_lock_widget_horizontal_margin_small"
+    android:layout_marginRight="@dimen/com_auth0_lock_widget_horizontal_margin_small"
+    android:layout_marginTop="@dimen/com_auth0_lock_widget_small_margin"
+    android:gravity="center">
 
     <ImageView
         android:id="@+id/com_auth0_lock_icon"

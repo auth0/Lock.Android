@@ -60,9 +60,12 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
     }
 
     private void init() {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
             RelativeLayout.LayoutParams switcherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             switcherParams.addRule(ALIGN_PARENT_TOP, TRUE);
+            switcherParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
             modeSelectionView = new ModeSelectionView(getContext(), this);
             modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
             addView(modeSelectionView, switcherParams);
@@ -71,9 +74,8 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
         formLayout = new FormLayout(this);
         formLayout.setId(R.id.com_auth0_lock_form_layout);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_medium);
         params.alignWithParent = true;
-        params.setMargins(0, verticalMargin, 0, verticalMargin);
+        params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
         params.addRule(CENTER_IN_PARENT, TRUE);
@@ -96,6 +98,8 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
     }
 
     private void showChangePasswordForm(boolean show) {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         if (formLayout != null) {
             formLayout.setVisibility(show ? GONE : VISIBLE);
         }
@@ -105,7 +109,10 @@ public class ClassicPanelHolder extends RelativeLayout implements ModeSelectionV
 
         if (changePwdForm == null && show) {
             changePwdForm = new ChangePasswordFormView(this);
-            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+            params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+            params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
             params.addRule(CENTER_IN_PARENT, TRUE);
             addView(changePwdForm, params);
         } else if (changePwdForm != null && !show) {
