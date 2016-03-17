@@ -74,6 +74,16 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
             addView(modeSelectionView, switcherParams);
         }
 
+        ssoParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        if (modeSelectionView == null) {
+            ssoParams.addRule(ALIGN_PARENT_TOP, TRUE);
+        } else {
+            ssoParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        }
+        ssoLayout = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
+        ssoLayout.setId(R.id.com_auth0_lock_sso_layout);
+        addView(ssoLayout, ssoParams);
+
         formLayout = new FormLayout(this);
         formLayout.setId(R.id.com_auth0_lock_form_layout);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -96,16 +106,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
         termsLayout.setId(R.id.com_auth0_lock_terms_layout);
         addView(termsLayout, termsParams);
-
-        ssoParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        if (modeSelectionView == null) {
-            ssoParams.addRule(ALIGN_PARENT_TOP, TRUE);
-        } else {
-            ssoParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
-        }
-        ssoLayout = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
-        ssoLayout.setId(R.id.com_auth0_lock_sso_layout);
-        addView(ssoLayout, ssoParams);
 
         onModeSelected(FormLayout.DatabaseForm.LOG_IN);
     }
@@ -170,10 +170,14 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showSSOEnabledMessage(boolean show) {
-        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
-        ssoParams.height = show ? height : 0;
-        ssoLayout.setLayoutParams(ssoParams);
-        formLayout.showOnlyEnterprise(show);
+        if (ssoParams != null && ssoLayout != null) {
+            int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
+            ssoParams.height = show ? height : 0;
+            ssoLayout.setLayoutParams(ssoParams);
+        }
+        if (formLayout != null) {
+            formLayout.showOnlyEnterprise(show);
+        }
         if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
