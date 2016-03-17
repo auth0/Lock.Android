@@ -32,17 +32,17 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class LoginFormView extends FormView {
+public class LogInFormView extends FormView {
 
-    private static final String TAG = LoginFormView.class.getSimpleName();
+    private static final String TAG = LogInFormView.class.getSimpleName();
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
-    public LoginFormView(Context context) {
+    public LogInFormView(Context context) {
         super(context);
     }
 
-    public LoginFormView(LockWidgetForm lockWidget) {
+    public LogInFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         init(lockWidget);
     }

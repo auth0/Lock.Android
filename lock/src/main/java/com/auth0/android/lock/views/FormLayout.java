@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
-import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class FormLayout extends LinearLayout {
     private final LockWidgetEnterprise lockWidget;
@@ -42,7 +41,7 @@ public class FormLayout extends LinearLayout {
     private boolean showDatabase;
     private boolean showEnterprise;
 
-    private LoginFormView loginForm;
+    private LogInFormView loginForm;
     private SignUpFormView signUpForm;
     private DomainFormView domainForm;
     private SocialView socialLayout;
@@ -133,7 +132,7 @@ public class FormLayout extends LinearLayout {
         removePreviousForm();
 
         if (loginForm == null) {
-            loginForm = new LoginFormView(lockWidget);
+            loginForm = new LogInFormView(lockWidget);
         }
         addView(loginForm);
     }
