@@ -63,14 +63,29 @@ public class HeaderView extends RelativeLayout {
         text = (TextView) findViewById(R.id.com_auth0_lock_header_text);
     }
 
+    /**
+     * Setter for the Header's background color.
+     *
+     * @param color the color to use
+     */
     public void setColor(@ColorRes int color) {
         this.header.setBackgroundColor(getResources().getColor(color));
     }
 
+    /**
+     * Setter for the Header's title.
+     *
+     * @param title the title to use
+     */
     public void setTitle(@StringRes int title) {
         this.text.setText(getResources().getString(title));
     }
 
+    /**
+     * Setter for the Header's logo.
+     *
+     * @param logo the logo to use
+     */
     public void setLogo(@DrawableRes int logo) {
         this.logo.setImageResource(logo);
     }

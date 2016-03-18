@@ -29,7 +29,7 @@ public class CallbackHelper {
     }
 
     private Map<String, String> asMap(@NonNull String valueString) {
-        final String[] entries = valueString != null && valueString.length() > 0 ? valueString.split("&") : new String[]{};
+        final String[] entries = valueString.length() > 0 ? valueString.split("&") : new String[]{};
         Map<String, String> values = new HashMap<>(entries.length);
         for (String entry : entries) {
             final String[] value = entry.split("=");

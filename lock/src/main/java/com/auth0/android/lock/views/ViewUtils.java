@@ -31,21 +31,45 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.util.TypedValue;
 import android.view.View;
 
 abstract class ViewUtils {
 
+    /**
+     * Default corner radius used by the project.
+     */
     static final int CORNER_RADIUS = 5;
 
-    enum Corners {ONLY_LEFT, ONLY_RIGHT, ALL}
+    /**
+     * Enum used by the getRoundedBackground method. It defines which corners to set as rounded
+     * in the drawable.
+     */
+    enum Corners {
+        ONLY_LEFT, ONLY_RIGHT, ALL
+    }
 
+    /**
+     * Converts dp into px.
+     *
+     * @param resources the context's current resources.
+     * @param dip       the dp value to convert to px.
+     * @return the result px value.
+     */
     static float dipToPixels(Resources resources, int dip) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics());
     }
 
+    /**
+     * Gets a color from the given context, safely using the latest available sdk method.
+     *
+     * @param context  a valid context
+     * @param colorRes the color resource to get
+     * @return the color int value
+     */
     @ColorInt
-    static int obtainColor(Context context, int colorRes) {
+    static int obtainColor(Context context, @ColorRes int colorRes) {
         int color;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             color = context.getResources().getColor(colorRes, context.getTheme());
@@ -56,6 +80,14 @@ abstract class ViewUtils {
         return color;
     }
 
+    /**
+     * Generates a rounded drawable with the given background color and the specified corners.
+     *
+     * @param resources the context's current resources.
+     * @param color     the color to use as background.
+     * @param corners   the rounded corners this drawable will have. Can be one of ONLY_LEFT, ONLY_RIGHT, ALL
+     * @return the rounded drawable.
+     */
     static ShapeDrawable getRoundedBackground(Resources resources, @ColorInt int color, Corners corners) {
         float r = ViewUtils.dipToPixels(resources, CORNER_RADIUS);
         float[] outerR = new float[0];
@@ -77,6 +109,12 @@ abstract class ViewUtils {
         return drawable;
     }
 
+    /**
+     * Sets a background drawable to a view, safely using the latest available sdk method.
+     *
+     * @param view       the view to set the background drawable to.
+     * @param background the drawable to use as background.
+     */
     static void setBackground(View view, Drawable background) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(background);

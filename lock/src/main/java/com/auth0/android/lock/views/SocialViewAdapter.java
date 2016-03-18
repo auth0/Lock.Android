@@ -65,10 +65,21 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         return strategyList.size();
     }
 
+    /**
+     * Sets the size of the buttons this list will hold. Use large buttons if you want it to
+     * scroll vertically, or small buttons if you want it to scroll horizontally.
+     *
+     * @param useSmall whether to use small or large buttons.
+     */
     public void setButtonSize(boolean useSmall) {
         this.useSmallButtons = useSmall;
     }
 
+    /**
+     * Sets the callback to notify when the user clicks a SocialButton.
+     *
+     * @param callback the callback
+     */
     public void setCallback(ConnectionAuthenticationListener callback) {
         this.callback = callback;
     }

@@ -138,9 +138,9 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     }
 
     /**
-     * Triggers the 'back' action on this form
+     * Triggers the back action on the form.
      *
-     * @return true if the event was handled.
+     * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
         if (waitingForCode) {
@@ -151,6 +151,10 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         return false;
     }
 
+    /**
+     * Notifies the form that the code was correctly sent and it should now wait
+     * for the user to input the valid code.
+     */
     public void codeSent() {
         countryCodeSelector.setVisibility(GONE);
         emailOrNumber = getInputText();
@@ -166,6 +170,12 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         waitingForCode = true;
     }
 
+    /**
+     * Notifies the form that a new country code was selected by the user.
+     *
+     * @param country  the selected country iso code (2 chars).
+     * @param dialCode the dial code for this country
+     */
     public void onCountryCodeSelected(String country, String dialCode) {
         Country selectedCountry = new Country(country, dialCode);
         countryCodeSelector.setSelectedCountry(selectedCountry);
@@ -196,6 +206,10 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     }
 
     public interface OnPasswordlessRetryListener {
+        /**
+         * Called when the form needs to remove the "Waiting for the code" view and show
+         * the email/phone input again.
+         */
         void onPasswordlessRetry();
     }
 }

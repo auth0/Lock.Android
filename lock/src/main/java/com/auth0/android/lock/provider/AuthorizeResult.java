@@ -26,7 +26,6 @@ package com.auth0.android.lock.provider;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 public class AuthorizeResult {
@@ -67,8 +66,7 @@ public class AuthorizeResult {
      * @return whether if the received uri data can be parsed or not.
      */
     public boolean isValid(int expectedRequestCode) {
-        Uri uri = intent != null ? intent.getData() : null;
-        if (uri == null) {
+        if (intent.getData() == null) {
             return false;
         }
 

@@ -117,15 +117,17 @@ public class CountryCodeActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Map<String, String> result) {
                 task = null;
-                if (result != null) {
-                    final ArrayList<String> names = new ArrayList<>(result.keySet());
-                    Collections.sort(names);
-                    List<Country> countries = new ArrayList<>(names.size());
-                    for (String name : names) {
-                        countries.add(new Country(name, result.get(name)));
-                    }
-                    listView.setAdapter(new CountryAdapter(getContext(), countries));
+                if (result == null) {
+                    return;
                 }
+
+                final ArrayList<String> names = new ArrayList<>(result.keySet());
+                Collections.sort(names);
+                List<Country> countries = new ArrayList<>(names.size());
+                for (String name : names) {
+                    countries.add(new Country(name, result.get(name)));
+                }
+                listView.setAdapter(new CountryAdapter(getContext(), countries));
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);

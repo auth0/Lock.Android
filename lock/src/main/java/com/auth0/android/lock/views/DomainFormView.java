@@ -225,6 +225,11 @@ public class DomainFormView extends FormView {
         return valid;
     }
 
+    /**
+     * Triggers the back action on the form.
+     *
+     * @return true if it was handled, false otherwise
+     */
     public boolean onBackPressed() {
         if (!singleConnection && corporateSSO) {
             resetDomain();

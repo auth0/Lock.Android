@@ -297,7 +297,7 @@ public class PasswordlessLock {
         /**
          * Locally filters the Auth0 Connections that are shown in the login widgets.
          *
-         * @param connections a non-null SMALL_ICONS containing the allowed Auth0 Connections.
+         * @param connections a non-null List containing the allowed Auth0 Connections.
          * @return the current builder instance
          */
         public Builder onlyUseConnections(@NonNull List<String> connections) {

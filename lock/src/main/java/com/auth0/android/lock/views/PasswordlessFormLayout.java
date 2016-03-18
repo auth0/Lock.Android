@@ -97,9 +97,9 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     /**
-     * Should be called to update the form layout.
+     * Triggers the back action on the form.
      *
-     * @return true if it was consumed, false otherwise.
+     * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
         if (passwordlessLayout != null && passwordlessLayout.onBackPressed()) {
@@ -114,6 +114,10 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         return false;
     }
 
+    /**
+     * Notifies the form that the code was correctly sent and it should now wait
+     * for the user to input the valid code.
+     */
     public void codeSent() {
         if (passwordlessLayout != null) {
             if (socialLayout != null) {
@@ -152,6 +156,12 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
     }
 
+    /**
+     * Notifies the form that a new country code was selected by the user.
+     *
+     * @param country  the selected country iso code (2 chars).
+     * @param dialCode the dial code for this country
+     */
     public void onCountryCodeSelected(String country, String dialCode) {
         passwordlessLayout.onCountryCodeSelected(country, dialCode);
     }

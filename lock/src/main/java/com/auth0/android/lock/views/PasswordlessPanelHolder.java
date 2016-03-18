@@ -138,16 +138,31 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         addView(errorLayout, params);
     }
 
+    /**
+     * Triggers the back action on the form.
+     *
+     * @return true if it was handled, false otherwise
+     */
     public boolean onBackPressed() {
         return formLayout != null && formLayout.onBackPressed();
     }
 
+    /**
+     * Displays a progress bar on top of the action button. This will also
+     * enable or disable the action button.
+     *
+     * @param show whether to show or hide the action bar.
+     */
     public void showProgress(boolean show) {
         if (actionButton != null) {
             actionButton.showProgress(show);
         }
     }
 
+    /**
+     * Notifies the form that the code was correctly sent and it should now wait
+     * for the user to input the valid code.
+     */
     public void codeSent() {
         formLayout.codeSent();
     }
@@ -176,6 +191,12 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         bus.post(new CountryCodeChangeEvent());
     }
 
+    /**
+     * Notifies the form that a new country code was selected by the user.
+     *
+     * @param country  the selected country iso code (2 chars).
+     * @param dialCode the dial code for this country
+     */
     public void onCountryCodeSelected(String country, String dialCode) {
         formLayout.onCountryCodeSelected(country, dialCode);
     }

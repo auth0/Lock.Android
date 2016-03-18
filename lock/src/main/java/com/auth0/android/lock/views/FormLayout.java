@@ -162,9 +162,9 @@ public class FormLayout extends LinearLayout {
     }
 
     /**
-     * Should be called to update the form layout.
+     * Triggers the back action on the form.
      *
-     * @return true if it was consumed, false otherwise.
+     * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
         if (domainForm != null && domainForm.onBackPressed()) {

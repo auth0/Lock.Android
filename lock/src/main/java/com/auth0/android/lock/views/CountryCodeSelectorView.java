@@ -109,11 +109,21 @@ public class CountryCodeSelectorView extends LinearLayout {
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
     }
 
+    /**
+     * Sets the current Country to the one given.
+     *
+     * @param country the country to set.
+     */
     public void setSelectedCountry(Country country) {
         countryTextView.setText(country.getDialCode() + " " + country.getDisplayName());
         selectedCountry = country;
     }
 
+    /**
+     * Gets the currently selected Country.
+     *
+     * @return the country that is currently set.
+     */
     public Country getSelectedCountry() {
         return selectedCountry;
     }

@@ -134,6 +134,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         onModeSelected(FormLayout.DatabaseForm.LOG_IN);
     }
 
+    /**
+     * Setup the panel to show the correct forms by reading the Auth0 Configuration.
+     *
+     * @param configuration the configuration to use on this panel, or null if it is missing.
+     */
     public void configurePanel(@Nullable Configuration configuration) {
         removeView(loadingProgressBar);
         loadingProgressBar = null;
@@ -196,6 +201,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         }
     }
 
+    /**
+     * Triggers the back action on the form.
+     *
+     * @return true if it was handled, false otherwise
+     */
     public boolean onBackPressed() {
         if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
             showChangePasswordForm(false);

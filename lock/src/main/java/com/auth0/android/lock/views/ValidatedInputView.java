@@ -94,7 +94,6 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         updateBorder(false);
     }
 
-
     private void setupInputValidation() {
         String hint = "";
         input.setTransformationMethod(null);
@@ -197,16 +196,29 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         return isValid;
     }
 
+    /**
+     * Gets the current text from the input field, without spaces at the end.
+     *
+     * @return the current text
+     */
     public String getText() {
         return input.getText().toString().trim();
     }
 
+    /**
+     * Updates the input field text.
+     *
+     * @param text the new text to set.
+     */
     public void setText(String text) {
         input.setText("");
         input.append(text);
         validate(false);
     }
 
+    /**
+     * Removes any text present on the input field and clears any validation error, if present.
+     */
     public void clearInput() {
         input.setText("");
         updateBorder(false);

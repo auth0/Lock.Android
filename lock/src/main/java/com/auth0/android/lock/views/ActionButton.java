@@ -60,6 +60,11 @@ public class ActionButton extends FrameLayout {
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
     }
 
+    /**
+     * Used to display a progress bar and disable the button.
+     *
+     * @param show whether to show the progress bar or not.
+     */
     public void showProgress(boolean show) {
         setEnabled(!show);
         progress.setVisibility(show ? VISIBLE : GONE);
