@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/auth0/Lock.Android/tree/HEAD)
-
-[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.13.0...HEAD)
+## [1.14.0](https://github.com/auth0/Lock.Android/tree/1.14.0) (2016-03-18)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.13.0...1.14.0)
 
 **Closed issues:**
 
@@ -10,9 +9,11 @@
 
 **Merged pull requests:**
 
-- Social layout [\#190](https://github.com/auth0/Lock.Android/pull/190) ([lbalmaceda](https://github.com/lbalmaceda))
-- Fetch application [\#189](https://github.com/auth0/Lock.Android/pull/189) ([lbalmaceda](https://github.com/lbalmaceda))
-- Add LockOptions test [\#186](https://github.com/auth0/Lock.Android/pull/186) ([nikolaseu](https://github.com/nikolaseu))
+- Set the proper connection when creating a new user [\#223](https://github.com/auth0/Lock.Android/pull/223) ([lbalmaceda](https://github.com/lbalmaceda))
+- Change password: Remove old flow and layout [\#222](https://github.com/auth0/Lock.Android/pull/222) ([lbalmaceda](https://github.com/lbalmaceda))
+- send the link to the email for password reset by default [\#220](https://github.com/auth0/Lock.Android/pull/220) ([lbalmaceda](https://github.com/lbalmaceda))
+- handle M permissions on permission required providers [\#219](https://github.com/auth0/Lock.Android/pull/219) ([lbalmaceda](https://github.com/lbalmaceda))
+- Bug fixing [\#198](https://github.com/auth0/Lock.Android/pull/198) ([lbalmaceda](https://github.com/lbalmaceda))
 - Fix license and readme [\#163](https://github.com/auth0/Lock.Android/pull/163) ([aguerere](https://github.com/aguerere))
 
 ## [1.13.0](https://github.com/auth0/Lock.Android/tree/1.13.0) (2015-12-23)
