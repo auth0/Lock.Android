@@ -38,7 +38,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,6 +46,7 @@ import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
+import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
@@ -71,18 +71,15 @@ public class LockActivity extends AppCompatActivity {
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final long RESULT_MESSAGE_DURATION = 3000;
 
-    private Application application;
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
     private Options options;
     private Handler handler;
-    private Bus lockBus;
-    private RelativeLayout rootView;
+
     private ClassicPanelHolder panelHolder;
-    private ProgressBar progressBar;
+    private TextView resultMessage;
 
     private WebIdentityProvider lastIdp;
-    private TextView resultMessage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,16 +89,21 @@ public class LockActivity extends AppCompatActivity {
             return;
         }
 
-        lockBus = new Bus();
+        Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
-        progressBar = (ProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
-        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        panelHolder = new ClassicPanelHolder(this, lockBus);
+        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        if (application == null && applicationFetcher == null) {
+        fetchApplication();
+    }
+
+    private void fetchApplication() {
+        if (configuration == null && applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
@@ -133,25 +135,16 @@ public class LockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (panelHolder != null && panelHolder.onBackPressed()) {
+        if (panelHolder.onBackPressed()) {
             return;
         }
 
-        if (options != null && options.isClosable()) {
+        if (options.isClosable()) {
             Intent intent = new Intent(Lock.CANCELED_ACTION);
             LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
             return;
         }
         super.onBackPressed();
-    }
-
-    /**
-     * Show the LockUI with all the panels and custom widgets.
-     */
-    private void initLockUI() {
-        configuration = new Configuration(application, options);
-        panelHolder = new ClassicPanelHolder(this, lockBus, configuration);
-        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private void deliverResult(Authentication result) {
@@ -171,9 +164,7 @@ public class LockActivity extends AppCompatActivity {
         resultMessage.setBackgroundColor(getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(text);
-        if (panelHolder != null) {
-            panelHolder.showProgress(false);
-        }
+        panelHolder.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -181,54 +172,49 @@ public class LockActivity extends AppCompatActivity {
     private Runnable resultMessageHider = new Runnable() {
         @Override
         public void run() {
-            if (resultMessage != null) {
-                resultMessage.setVisibility(View.GONE);
-            }
+            resultMessage.setVisibility(View.GONE);
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
-        if (lastIdp != null) {
+        if (lastIdp != null && data != null) {
             //Deliver result to the IDP
-            if (panelHolder != null && data == null) {
-                panelHolder.showProgress(false);
-            }
+            panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
-            boolean handled = lastIdp.authorize(LockActivity.this, result);
-            if (handled) {
+            if (!lastIdp.authorize(LockActivity.this, result)) {
                 setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
             }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "OnNewIntent called with intent: " + intent);
-        if (lastIdp != null) {
+        if (lastIdp != null && intent != null) {
             //Deliver result to the IDP
+            panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
-            lastIdp.authorize(LockActivity.this, result);
+            if (!lastIdp.authorize(LockActivity.this, result)) {
+                setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+            }
         }
-
         super.onNewIntent(intent);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onFetchApplicationRequest(FetchApplicationEvent event) {
+        fetchApplication();
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
         //called on social button click
-        if (options == null) {
-            return;
-        }
-
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
@@ -240,13 +226,11 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseLoginEvent event) {
-        if (options == null || configuration.getDefaultDatabaseConnection() == null) {
+        if (configuration.getDefaultDatabaseConnection() == null) {
             return;
         }
 
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.getProfileAfter(apiClient.login(event.getUsernameOrEmail(), event.getPassword()))
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
@@ -257,16 +241,14 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseSignUpEvent event) {
-        if (options == null || configuration.getDefaultDatabaseConnection() == null) {
+        if (configuration.getDefaultDatabaseConnection() == null) {
             return;
         }
 
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
 
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         if (event.loginAfterSignUp()) {
             apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
                     .addParameters(options.getAuthenticationParameters())
@@ -281,13 +263,11 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
-        if (options == null || configuration.getDefaultDatabaseConnection() == null) {
+        if (configuration.getDefaultDatabaseConnection() == null) {
             return;
         }
 
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
         apiClient.requestChangePassword(event.getUsernameOrEmail())
@@ -298,9 +278,7 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
-        if (options == null) {
-            return;
-        } else if (event.getConnectionName() == null) {
+        if (event.getConnectionName() == null) {
             Log.w(TAG, "No enterprise matched connection");
             handler.post(new Runnable() {
                 @Override
@@ -317,9 +295,7 @@ public class LockActivity extends AppCompatActivity {
             }
         }
 
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         if (event.useRO()) {
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
             apiClient.getProfileAfter(apiClient.login(event.getUsername(), event.getPassword()))
@@ -339,12 +315,11 @@ public class LockActivity extends AppCompatActivity {
     private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
-            application = app;
+            configuration = new Configuration(app, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    initLockUI();
+                    panelHolder.configurePanel(configuration);
                 }
             });
         }
@@ -355,7 +330,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(View.GONE);
+                    panelHolder.configurePanel(null);
                     setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
                 }
             });

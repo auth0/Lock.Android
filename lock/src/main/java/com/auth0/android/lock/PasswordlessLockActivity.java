@@ -39,13 +39,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
+import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthorizeResult;
@@ -71,19 +71,17 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private static final int COUNTRY_CODE_REQUEST = 120;
     private static final long RESULT_MESSAGE_DURATION = 3000;
 
-    private Application application;
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
     private Options options;
     private Handler handler;
-    private Bus lockBus;
-    private RelativeLayout rootView;
+
+    private PasswordlessPanelHolder panelHolder;
     private LinearLayout passwordlessSuccessCover;
+    private TextView resultMessage;
+
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
-    private PasswordlessPanelHolder panelHolder;
-    private TextView resultMessage;
-    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,16 +91,22 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return;
         }
 
-        lockBus = new Bus();
+        Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
-        progressBar = (ProgressBar) findViewById(R.id.com_auth0_lock_progressbar);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
-        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
-        if (application == null && applicationFetcher == null) {
+        panelHolder = new PasswordlessPanelHolder(this, lockBus);
+        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        fetchApplication();
+    }
+
+    private void fetchApplication() {
+        if (configuration == null && applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
@@ -122,9 +126,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
             return false;
         }
-        boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
+            boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
             if (options.useBrowser() && !launchedAsSingleTask) {
                 Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
                 return false;
@@ -136,11 +140,11 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        boolean showingLinkSuccess = passwordlessSuccessCover != null && passwordlessSuccessCover.getVisibility() == View.VISIBLE;
-        if (!showingLinkSuccess && panelHolder != null && panelHolder.onBackPressed()) {
+        boolean showingSuccessLayout = passwordlessSuccessCover != null && passwordlessSuccessCover.getVisibility() == View.VISIBLE;
+        if (!showingSuccessLayout && panelHolder.onBackPressed()) {
             return;
         }
-        if (options != null && options.isClosable()) {
+        if (options.isClosable()) {
             Intent intent = new Intent(Lock.CANCELED_ACTION);
             LocalBroadcastManager.getInstance(PasswordlessLockActivity.this).sendBroadcast(intent);
             return;
@@ -149,13 +153,19 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     }
 
     private void setResultMessage(@StringRes int stringId, boolean isSuccess) {
+        //TODO: This can be extracted to a custom view (reusable in the 2 activities)
+        int backgroundColor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            backgroundColor = getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background, getTheme());
+        } else {
+            //noinspection deprecation
+            backgroundColor = getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background);
+        }
         String text = getResources().getString(stringId);
-        resultMessage.setBackgroundColor(getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background));
+        resultMessage.setBackgroundColor(backgroundColor);
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(text);
-        if (panelHolder != null) {
-            panelHolder.showProgress(false);
-        }
+        panelHolder.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -163,22 +173,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private Runnable resultMessageHider = new Runnable() {
         @Override
         public void run() {
-            if (resultMessage != null) {
-                resultMessage.setVisibility(View.GONE);
-            }
+            resultMessage.setVisibility(View.GONE);
         }
     };
-
-    /**
-     * Show the LockUI with all the panels and custom widgets.
-     */
-    private void initLockUI() {
-        configuration = new Configuration(application, options);
-        if (configuration.getDefaultPasswordlessStrategy() != null || !configuration.getSocialStrategies().isEmpty()) {
-            panelHolder = new PasswordlessPanelHolder(this, lockBus, configuration);
-            rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        }
-    }
 
     private void showLinkSentLayout() {
         TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
@@ -213,9 +210,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE);
                 String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE);
                 Log.d(TAG, "Picked country " + country);
-                if (panelHolder != null) {
-                    panelHolder.onCountryCodeSelected(country, dialCode);
-                }
+                panelHolder.onCountryCodeSelected(country, dialCode);
             }
             return;
         }
@@ -233,31 +228,37 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     }
 
     private void processIncomingIntent(Intent intent) {
-        if (options != null && lastIdp != null) {
-            if (panelHolder != null && intent == null) {
-                panelHolder.showProgress(false);
-            }
-            if (intent != null) {
-                AuthorizeResult result = new AuthorizeResult(intent);
-                if (lastIdp.authorize(PasswordlessLockActivity.this, result)) {
-                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
-                    return;
-                }
-            }
+        panelHolder.showProgress(false);
+        if (intent == null) {
+            setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+            return;
         }
 
-        if (options != null && lastPasswordlessEmailOrNumber != null && configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK) {
+        if (lastIdp != null) {
+            AuthorizeResult result = new AuthorizeResult(intent);
+            if (!lastIdp.authorize(PasswordlessLockActivity.this, result)) {
+                setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+            }
+            return;
+        }
+
+        boolean useMagicLink = configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK || configuration.getPasswordlessMode() == PasswordlessMode.SMS_LINK;
+        if (lastPasswordlessEmailOrNumber != null && useMagicLink) {
             String code = intent.getData().getQueryParameter("code");
             if (code == null || code.isEmpty()) {
                 Log.w(TAG, "Passwordless Code is missing or could not be parsed");
                 setResultMessage(R.string.com_auth0_lock_result_message_error_parsing_passwordless_code, false);
-            } else {
-                PasswordlessLoginEvent event = new PasswordlessLoginEvent(configuration.getPasswordlessMode(), lastPasswordlessEmailOrNumber, code);
-                onPasswordlessAuthenticationRequest(event);
+                return;
             }
-        } else {
-            setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+            PasswordlessLoginEvent event = new PasswordlessLoginEvent(configuration.getPasswordlessMode(), lastPasswordlessEmailOrNumber, code);
+            onPasswordlessAuthenticationRequest(event);
         }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onFetchApplicationRequest(FetchApplicationEvent event) {
+        fetchApplication();
     }
 
     @SuppressWarnings("unused")
@@ -270,15 +271,11 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        if (options == null || configuration.getDefaultPasswordlessStrategy() == null) {
-            return;
-        } else if (event.getEmailOrNumber().isEmpty()) {
+        if (configuration.getDefaultPasswordlessStrategy() == null || event.getEmailOrNumber().isEmpty()) {
             return;
         }
 
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
@@ -297,14 +294,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        //called on social button click
-        if (options == null) {
-            return;
-        }
-
-        if (panelHolder != null) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(true);
         lastPasswordlessEmailOrNumber = null;
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
@@ -318,12 +308,11 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
-            application = app;
+            configuration = new Configuration(app, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    initLockUI();
+                    panelHolder.configurePanel(configuration);
                 }
             });
         }
@@ -334,7 +323,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(View.GONE);
+                    panelHolder.configurePanel(null);
                     setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
                 }
             });
@@ -348,13 +337,11 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (panelHolder != null) {
-                        panelHolder.showProgress(false);
-                        if (options.useCodePasswordless()) {
-                            panelHolder.codeSent();
-                        } else {
-                            showLinkSentLayout();
-                        }
+                    panelHolder.showProgress(false);
+                    if (options.useCodePasswordless()) {
+                        panelHolder.codeSent();
+                    } else {
+                        showLinkSentLayout();
                     }
                 }
             });
@@ -367,10 +354,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
-                    if (panelHolder != null) {
-                        panelHolder.showProgress(false);
-                    }
-
+                    panelHolder.showProgress(false);
                 }
             });
         }

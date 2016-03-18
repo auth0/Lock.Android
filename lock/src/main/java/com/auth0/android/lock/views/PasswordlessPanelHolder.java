@@ -25,13 +25,20 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
+import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
@@ -40,24 +47,39 @@ import com.squareup.otto.Bus;
 public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
     private final Bus bus;
-    private final Configuration configuration;
+    private Configuration configuration;
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
+    private ProgressBar loadingProgressBar;
 
     public PasswordlessPanelHolder(Context context) {
         super(context);
         bus = null;
-        configuration = null;
     }
 
-    public PasswordlessPanelHolder(Context context, Bus lockBus, Configuration configuration) {
+    public PasswordlessPanelHolder(Context context, Bus lockBus) {
         super(context);
         this.bus = lockBus;
-        this.configuration = configuration;
-        init();
+        showWaitForConfigurationLayout();
     }
 
     private void init() {
+        if (configuration == null) {
+            showConfigurationMissingLayout();
+        } else {
+            showPanelLayout();
+        }
+    }
+
+    private void showWaitForConfigurationLayout() {
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        loadingProgressBar = new ProgressBar(getContext());
+        loadingProgressBar.setIndeterminate(true);
+        addView(loadingProgressBar, params);
+    }
+
+    private void showPanelLayout() {
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -76,12 +98,54 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         addView(formLayout, params);
     }
 
+    public void configurePanel(@Nullable Configuration configuration) {
+        removeView(loadingProgressBar);
+        loadingProgressBar = null;
+        this.configuration = configuration;
+        if (configuration != null) {
+            init();
+            return;
+        }
+        showConfigurationMissingLayout();
+    }
+
+    private void showConfigurationMissingLayout() {
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        final LinearLayout errorLayout = new LinearLayout(getContext());
+        errorLayout.setOrientation(LinearLayout.VERTICAL);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+
+        TextView errorText = new TextView(getContext());
+        errorText.setText(R.string.com_auth0_lock_result_message_error_retrieving_configuration);
+        errorText.setGravity(CENTER_IN_PARENT);
+
+        Button retryButton = new Button(getContext());
+        retryButton.setText(R.string.com_auth0_lock_action_retry);
+        retryButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bus.post(new FetchApplicationEvent());
+                removeView(errorLayout);
+                showWaitForConfigurationLayout();
+            }
+        });
+        LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        childParams.gravity = Gravity.CENTER;
+        errorLayout.addView(errorText, childParams);
+        errorLayout.addView(retryButton, childParams);
+        addView(errorLayout, params);
+    }
+
     public boolean onBackPressed() {
-        return formLayout.onBackPressed();
+        return formLayout != null && formLayout.onBackPressed();
     }
 
     public void showProgress(boolean show) {
-        actionButton.showProgress(show);
+        if (actionButton != null) {
+            actionButton.showProgress(show);
+        }
     }
 
     public void codeSent() {

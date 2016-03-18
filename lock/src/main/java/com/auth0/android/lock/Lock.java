@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class Lock {
 
-    private AuthenticationCallback callback;
+    private final AuthenticationCallback callback;
     private final Options options;
 
     public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
@@ -65,14 +65,11 @@ public class Lock {
     /**
      * Listens to LockActivity broadcasts and fires the correct action on the AuthenticationCallback.
      */
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent data) {
             // Get extra data included in the Intent
-            if (callback == null) {
-                return;
-            }
             String action = data.getAction();
             if (action.equals(Lock.AUTHENTICATION_ACTION)) {
                 processEvent(data);
@@ -144,10 +141,7 @@ public class Lock {
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
         // unregister listener (if something was registered)
-        if (this.receiver != null) {
-            LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
-            this.receiver = null;
-        }
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     }
 
     /**
@@ -160,9 +154,6 @@ public class Lock {
      */
     @SuppressWarnings("unused")
     public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
-        if (callback == null) {
-            return;
-        }
         if (resultCode == Activity.RESULT_OK) {
             processEvent(data);
             return;
@@ -194,7 +185,6 @@ public class Lock {
             callback.onError(up);
             //throw up. haha
         }
-        callback = null;
     }
 
     /**

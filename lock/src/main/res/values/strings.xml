@@ -118,6 +118,7 @@
     <string name="com_auth0_lock_action_go_back">Go Back</string>
     <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
     <string name="com_auth0_lock_action_send_code">Send Code</string>
+    <string name="com_auth0_lock_action_retry">Retry</string>
     <string name="com_auth0_lock_input_error_code">Code must not be empty</string>
     <string name="com_auth0_lock_hint_code">Code</string>
     <string name="com_auth0_lock_action_send_link">Send Link</string>
@@ -148,4 +149,5 @@
     <string name="com_auth0_lock_result_message_generic_error">Failed due to an error</string>
     <string name="com_auth0_lock_result_message_unexpected_passwordless_intent">Unexpected Passwordless Intent received. You can close this window.</string>
     <string name="com_auth0_lock_result_message_error_parsing_passwordless_code">Error parsing the Passwordless Code</string>
+    <string name="com_auth0_lock_result_message_error_retrieving_configuration">Error retrieving the Dashboard configuration</string>
 </resources>
