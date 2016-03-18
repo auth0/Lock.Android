@@ -52,12 +52,10 @@ import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.android.lock.views.PasswordlessPanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.result.Authentication;
-import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
-import com.auth0.request.ParameterizableRequest;
 import com.auth0.request.Request;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
@@ -152,10 +150,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getToken().getIdToken());
-        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getToken().getAccessToken());
-        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getToken().getRefreshToken());
-        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getToken().getType());
+        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
+        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
+        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
+        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
         intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -209,17 +207,16 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
-            AuthenticationRequest loginRequest = event.getLoginRequest(apiClient);
-            loginRequest.addParameters(options.getAuthenticationParameters());
-            loginRequest.setConnection(connectionName);
-            loginRequest.start(authCallback);
+            event.getLoginRequest(apiClient)
+                    .addParameters(options.getAuthenticationParameters())
+                    .setConnection(connectionName)
+                    .start(authCallback);
             return;
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
-        ParameterizableRequest<Void> codeRequest = event.getCodeRequest(apiClient);
-        codeRequest.getParameterBuilder().setConnection(connectionName);
-        codeRequest.start(passwordlessCodeCallback);
+        event.getCodeRequest(apiClient, connectionName)
+                .start(passwordlessCodeCallback);
     }
 
     @SuppressWarnings("unused")
@@ -320,14 +317,14 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(@NonNull final Token token) {
+        public void onSuccess(@NonNull final Credentials credentials) {
             Log.d(TAG, "Fetching user profile..");
-            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(token.getIdToken());
+            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken());
             request.start(new BaseCallback<UserProfile>() {
                 @Override
                 public void onSuccess(UserProfile profile) {
                     Log.d(TAG, "OnSuccess called for user " + profile.getName());
-                    Authentication authentication = new Authentication(profile, token);
+                    Authentication authentication = new Authentication(profile, credentials);
                     deliverResult(authentication);
                 }
 

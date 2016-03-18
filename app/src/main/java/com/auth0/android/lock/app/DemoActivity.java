@@ -93,7 +93,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
 
     @Override
     public void onAuthentication(Authentication authentication) {
-        showResult("OK > " + authentication.getProfile().getName() + " > " + authentication.getToken().getIdToken());
+        showResult("OK > " + authentication.getProfile().getName() + " > " + authentication.getCredentials().getIdToken());
     }
 
     @Override

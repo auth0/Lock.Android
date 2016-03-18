@@ -54,15 +54,11 @@ import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicPanelHolder;
 import com.auth0.android.lock.views.LockProgress;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.AuthenticationRequest;
-import com.auth0.authentication.ChangePasswordRequest;
 import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.DatabaseUser;
-import com.auth0.authentication.result.Token;
 import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
-import com.auth0.request.ParameterizableRequest;
-import com.auth0.request.Request;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -154,10 +150,10 @@ public class LockActivity extends AppCompatActivity {
 
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getToken().getIdToken());
-        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getToken().getAccessToken());
-        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getToken().getRefreshToken());
-        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getToken().getType());
+        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
+        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
+        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
+        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
         intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -215,7 +211,7 @@ public class LockActivity extends AppCompatActivity {
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        apiClient.login(event.getUsernameOrEmail(), event.getPassword())
+        apiClient.getProfileAfter(apiClient.login(event.getUsernameOrEmail(), event.getPassword()))
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
                 .addParameters(options.getAuthenticationParameters())
                 .start(authCallback);
@@ -229,17 +225,17 @@ public class LockActivity extends AppCompatActivity {
         }
 
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
+        apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
 
         progress.showProgress();
         if (event.loginAfterSignUp()) {
-            apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername())
-                    .addAuthenticationParameters(options.getAuthenticationParameters())
+            apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
+                    .addParameters(options.getAuthenticationParameters())
                     .start(authCallback);
         } else {
-            ParameterizableRequest<DatabaseUser> request = apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername());
-            request.getParameterBuilder().addAll(options.getAuthenticationParameters());
-            request.start(createCallback);
+            apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername())
+                    .addParameters(options.getAuthenticationParameters())
+                    .start(createCallback);
         }
     }
 
@@ -252,10 +248,10 @@ public class LockActivity extends AppCompatActivity {
 
         progress.showProgress();
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        apiClient.setDefaultDbConnection(configuration.getDefaultDatabaseConnection().getName());
-        ChangePasswordRequest request = apiClient.changePassword(event.getUsernameOrEmail());
-        request.getParameterBuilder().addAll(options.getAuthenticationParameters());
-        request.start(changePwdCallback);
+        apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
+        apiClient.requestChangePassword(event.getUsernameOrEmail())
+                .addParameters(options.getAuthenticationParameters())
+                .start(changePwdCallback);
     }
 
     @SuppressWarnings("unused")
@@ -274,14 +270,13 @@ public class LockActivity extends AppCompatActivity {
         progress.showProgress();
         if (event.useRO()) {
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-            AuthenticationRequest request = apiClient.login(event.getUsername(), event.getPassword());
-            request.setConnection(event.getConnectionName());
-            request.addParameters(options.getAuthenticationParameters());
-            request.start(authCallback);
+            apiClient.getProfileAfter(apiClient.login(event.getUsername(), event.getPassword()))
+                    .setConnection(event.getConnectionName())
+                    .addParameters(options.getAuthenticationParameters())
+                    .start(authCallback);
         } else {
             String pkgName = getApplicationContext().getPackageName();
-            CallbackHelper helper = new CallbackHelper(pkgName);
-            lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
+            lastIdp = new WebIdentityProvider(new CallbackHelper(pkgName), options.getAccount(), idpCallback);
             lastIdp.setUseBrowser(options.useBrowser());
             lastIdp.setParameters(options.getAuthenticationParameters());
             lastIdp.start(LockActivity.this, event.getConnectionName());
@@ -326,28 +321,28 @@ public class LockActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(@NonNull final Token token) {
+        public void onSuccess(@NonNull final Credentials credentials) {
             Log.d(TAG, "Fetching user profile..");
-            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(token.getIdToken());
-            request.start(new BaseCallback<UserProfile>() {
-                @Override
-                public void onSuccess(UserProfile profile) {
-                    Log.d(TAG, "OnSuccess called for user " + profile.getName());
-                    Authentication authentication = new Authentication(profile, token);
-                    deliverResult(authentication);
-                }
-
-                @Override
-                public void onFailure(final Auth0Exception error) {
-                    Log.w(TAG, "OnFailure called");
-                    handler.post(new Runnable() {
+            options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
+                    .start(new BaseCallback<UserProfile>() {
                         @Override
-                        public void run() {
-                            progress.showResult(error.getMessage());
+                        public void onSuccess(UserProfile profile) {
+                            Log.d(TAG, "OnSuccess called for user " + profile.getName());
+                            Authentication authentication = new Authentication(profile, credentials);
+                            deliverResult(authentication);
+                        }
+
+                        @Override
+                        public void onFailure(final Auth0Exception error) {
+                            Log.w(TAG, "OnFailure called");
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progress.showResult(error.getMessage());
+                                }
+                            });
                         }
                     });
-                }
-            });
         }
     };
 

@@ -36,7 +36,7 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.R;
-import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -160,7 +160,7 @@ public class WebIdentityProvider implements IdentityProvider {
         } else if (values.size() > 0) {
             Log.d(TAG, "Authenticated using web flow");
             if (callback != null) {
-                callback.onSuccess(new Token(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
+                callback.onSuccess(new Credentials(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
             }
         }
         return true;

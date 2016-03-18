@@ -54,6 +54,7 @@ public class Auth0Parcelable implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(auth0.getClientId());
+        dest.writeString(auth0.getClientSecret());
         dest.writeString(auth0.getDomainUrl());
         dest.writeString(auth0.getConfigurationUrl());
     }
@@ -71,8 +72,9 @@ public class Auth0Parcelable implements Parcelable {
 
     private Auth0Parcelable(Parcel in) {
         String clientId = in.readString();
+        String clientSecret = in.readString();
         String domain = in.readString();
         String configurationDomain = in.readString();
-        this.auth0 = new Auth0(clientId, domain, configurationDomain);
+        this.auth0 = new Auth0(clientId, clientSecret, domain, configurationDomain);
     }
 }

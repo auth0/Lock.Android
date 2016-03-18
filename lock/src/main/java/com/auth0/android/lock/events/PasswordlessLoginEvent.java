@@ -26,11 +26,12 @@ package com.auth0.android.lock.events;
 
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.AuthenticationRequest;
 import com.auth0.authentication.PasswordlessType;
+import com.auth0.authentication.ProfileRequest;
 import com.auth0.request.ParameterizableRequest;
 
 public class PasswordlessLoginEvent {
+    private static final String KEY_CONNECTION = "connection";
     private final PasswordlessMode mode;
     private final String emailOrNumber;
     private final String code;
@@ -65,16 +66,18 @@ public class PasswordlessLoginEvent {
      * @param apiClient the API Client instance
      * @return the Passwordless code request request.
      */
-    public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient) {
+    public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
+        ParameterizableRequest<Void> request;
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
-            return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
+            request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
         } else if (getMode() == PasswordlessMode.EMAIL_LINK) {
-            return apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+            request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
         } else if (getMode() == PasswordlessMode.SMS_CODE) {
-            return apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.CODE);
+            request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.CODE);
         } else {
-            return apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+            request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
         }
+        return request.addParameter(KEY_CONNECTION, connectionName);
     }
 
     /**
@@ -83,11 +86,11 @@ public class PasswordlessLoginEvent {
      * @param apiClient the API Client instance
      * @return the Passwordless login request.
      */
-    public AuthenticationRequest getLoginRequest(AuthenticationAPIClient apiClient) {
+    public ProfileRequest getLoginRequest(AuthenticationAPIClient apiClient) {
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
-            return apiClient.loginWithEmail(getEmailOrNumber(), getCode());
+            return apiClient.getProfileAfter(apiClient.loginWithEmail(getEmailOrNumber(), getCode()));
         } else {
-            return apiClient.loginWithPhoneNumber(getEmailOrNumber(), getCode());
+            return apiClient.getProfileAfter(apiClient.loginWithPhoneNumber(getEmailOrNumber(), getCode()));
         }
     }
 }

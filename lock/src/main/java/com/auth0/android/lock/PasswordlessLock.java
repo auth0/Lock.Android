@@ -38,7 +38,7 @@ import com.auth0.Auth0;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
-import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
 
 import java.util.HashMap;
@@ -175,10 +175,10 @@ public class PasswordlessLock {
         String accessToken = eventData.getStringExtra(PasswordlessLock.ACCESS_TOKEN_EXTRA);
         String tokenType = eventData.getStringExtra(PasswordlessLock.TOKEN_TYPE_EXTRA);
         String refreshToken = eventData.getStringExtra(PasswordlessLock.REFRESH_TOKEN_EXTRA);
-        Token token = new Token(idToken, accessToken, tokenType, refreshToken);
+        Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken);
         UserProfile profile = (UserProfile) eventData.getSerializableExtra(PasswordlessLock.PROFILE_EXTRA);
 
-        Authentication authentication = new Authentication(profile, token);
+        Authentication authentication = new Authentication(profile, credentials);
 
         if (idToken != null && accessToken != null) {
             callback.onAuthentication(authentication);

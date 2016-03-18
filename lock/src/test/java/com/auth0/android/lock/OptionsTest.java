@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 public class OptionsTest {
 
     private static final String CLIENT_ID = "CLIENT_ID";
+    private static final String CLIENT_SECRET = "CLIENT_SECRET";
     private static final String DOMAIN = "https://my-domain.auth0.com";
     private static final String CONFIG_DOMAIN = "https://my-cdn.auth0.com";
     private static final String SCOPE_KEY = "scope";
@@ -41,7 +42,7 @@ public class OptionsTest {
 
     @Before
     public void setUp() throws Exception {
-        auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        auth0 = new Auth0(CLIENT_ID, CLIENT_SECRET, DOMAIN, CONFIG_DOMAIN);
     }
 
     @Test
@@ -55,6 +56,7 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getAccount().getClientId(), is(equalTo(parceledOptions.getAccount().getClientId())));
+        assertThat(options.getAccount().getClientSecret(), is(equalTo(parceledOptions.getAccount().getClientSecret())));
         assertThat(options.getAccount().getConfigurationUrl(), is(equalTo(parceledOptions.getAccount().getConfigurationUrl())));
         assertThat(options.getAccount().getDomainUrl(), is(equalTo(parceledOptions.getAccount().getDomainUrl())));
     }

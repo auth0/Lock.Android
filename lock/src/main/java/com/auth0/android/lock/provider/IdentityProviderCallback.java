@@ -27,7 +27,7 @@ package com.auth0.android.lock.provider;
 import android.app.Dialog;
 import android.support.annotation.NonNull;
 
-import com.auth0.authentication.result.Token;
+import com.auth0.authentication.result.Credentials;
 
 /**
  * Callback called on success/failure of an Identity Provider authentication.
@@ -54,7 +54,7 @@ public interface IdentityProviderCallback {
     /**
      * Called when the authentication is successful using web authentication against Auth0
      *
-     * @param token Auth0 token information (id_token, refresh_token, etc).
+     * @param credentials Auth0 credentials information (id_token, refresh_token, etc).
      */
-    void onSuccess(@NonNull Token token);
+    void onSuccess(@NonNull Credentials credentials);
 }
