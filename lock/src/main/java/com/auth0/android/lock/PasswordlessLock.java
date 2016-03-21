@@ -35,6 +35,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.provider.ProviderResolver;
+import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -313,6 +315,17 @@ public class PasswordlessLock {
          */
         public Builder doNotSendSDKInfo() {
             options.setSendSDKInfo(false);
+            return this;
+        }
+
+        /**
+         * Uses the given ProviderResolver to ask for Native IdentityProviders.
+         *
+         * @param resolver the ProviderResolver to use
+         * @return the current builder instance
+         */
+        public Builder withProviderResolver(@NonNull ProviderResolver resolver) {
+            ProviderResolverManager.set(resolver);
             return this;
         }
     }
