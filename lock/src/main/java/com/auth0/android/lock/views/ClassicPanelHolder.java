@@ -245,7 +245,9 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
         ssoParams.height = show ? height : 0;
         ssoLayout.setLayoutParams(ssoParams);
-        formLayout.showOnlyEnterprise(show);
+        if (formLayout != null) {
+            formLayout.showOnlyEnterprise(show);
+        }
         if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
