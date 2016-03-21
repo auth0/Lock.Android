@@ -43,7 +43,7 @@ public abstract class ProviderResolverManager {
         resolver = providerResolver;
     }
 
-    private static class FallbackProviderResolver implements ProviderResolver {
+    static class FallbackProviderResolver implements ProviderResolver {
         @Nullable
         @Override
         public IdentityProvider onIdentityProviderRequest(Context context, IdentityProviderCallback callback, String connectionName) {
