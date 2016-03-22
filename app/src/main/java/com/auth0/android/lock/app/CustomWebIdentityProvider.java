@@ -40,6 +40,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -77,6 +78,15 @@ public class CustomWebIdentityProvider implements IdentityProvider {
         this.helper = new CallbackHelper("com.auth0.android.lock.app");
         this.account = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
         this.parameters = new HashMap<>();
+    }
+
+    @Override
+    public String[] getRequiredAndroidPermissions() {
+        return new String[]{};
+    }
+
+    @Override
+    public void onAndroidPermissionsRequireExplanation(List<String> permissions) {
     }
 
     public void setCallback(@Nullable IdentityProviderCallback callback) {

@@ -27,6 +27,7 @@
 
 package com.auth0.android.lock.provider;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import com.auth0.android.lock.R;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -100,6 +102,16 @@ public class WebIdentityProvider implements IdentityProvider {
 
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
+    }
+
+    @Override
+    public String[] getRequiredAndroidPermissions() {
+        return new String[]{Manifest.permission.GET_ACCOUNTS};
+    }
+
+    @Override
+    public void onAndroidPermissionsRequireExplanation(List<String> permissions) {
+        Log.e("Explain me ", permissions.size()+"");
     }
 
     @Override
