@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,7 +61,6 @@ import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
-import com.auth0.request.Request;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -82,6 +82,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
+    private ProgressDialog idpLoginProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,6 +201,20 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
+    }
+
+    private void showProgressDialog(final boolean show) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (show) {
+                    idpLoginProgressDialog = ProgressDialog.show(PasswordlessLockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
+                } else if (idpLoginProgressDialog != null) {
+                    idpLoginProgressDialog.dismiss();
+                    idpLoginProgressDialog = null;
+                }
+            }
+        });
     }
 
     @Override
@@ -405,26 +420,29 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         @Override
         public void onSuccess(@NonNull final Credentials credentials) {
             Log.d(TAG, "Fetching user profile..");
-            Request<UserProfile> request = options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken());
-            request.start(new BaseCallback<UserProfile>() {
-                @Override
-                public void onSuccess(UserProfile profile) {
-                    Log.d(TAG, "OnSuccess called for user " + profile.getName());
-                    Authentication authentication = new Authentication(profile, credentials);
-                    deliverResult(authentication);
-                }
-
-                @Override
-                public void onFailure(final Auth0Exception error) {
-                    Log.w(TAG, "OnFailure called");
-                    handler.post(new Runnable() {
+            showProgressDialog(true);
+            options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
+                    .start(new BaseCallback<UserProfile>() {
                         @Override
-                        public void run() {
-                            setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                        public void onSuccess(UserProfile profile) {
+                            Log.d(TAG, "OnSuccess called for user " + profile.getName());
+                            showProgressDialog(false);
+                            Authentication authentication = new Authentication(profile, credentials);
+                            deliverResult(authentication);
+                        }
+
+                        @Override
+                        public void onFailure(final Auth0Exception error) {
+                            Log.w(TAG, "OnFailure called");
+                            showProgressDialog(false);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                                }
+                            });
                         }
                     });
-                }
-            });
         }
     };
 }

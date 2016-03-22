@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -79,6 +80,7 @@ public class LockActivity extends AppCompatActivity {
     private ClassicPanelHolder panelHolder;
     private TextView resultMessage;
 
+    private ProgressDialog idpLoginProgressDialog;
     private WebIdentityProvider lastIdp;
 
     @Override
@@ -175,6 +177,20 @@ public class LockActivity extends AppCompatActivity {
             resultMessage.setVisibility(View.GONE);
         }
     };
+
+    private void showProgressDialog(final boolean show) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (show) {
+                    idpLoginProgressDialog = ProgressDialog.show(LockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
+                } else if (idpLoginProgressDialog != null) {
+                    idpLoginProgressDialog.dismiss();
+                    idpLoginProgressDialog = null;
+                }
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -363,11 +379,13 @@ public class LockActivity extends AppCompatActivity {
         @Override
         public void onSuccess(@NonNull final Credentials credentials) {
             Log.d(TAG, "Fetching user profile..");
+            showProgressDialog(true);
             options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
                     .start(new BaseCallback<UserProfile>() {
                         @Override
                         public void onSuccess(UserProfile profile) {
                             Log.d(TAG, "OnSuccess called for user " + profile.getName());
+                            showProgressDialog(false);
                             Authentication authentication = new Authentication(profile, credentials);
                             deliverResult(authentication);
                         }
@@ -375,6 +393,7 @@ public class LockActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(final Auth0Exception error) {
                             Log.w(TAG, "OnFailure called");
+                            showProgressDialog(false);
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
