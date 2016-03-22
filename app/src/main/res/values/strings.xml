@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="auth0_domain">lbalmaceda.auth0.com</string>
+    <string name="native_idp_message_canceled">Canceled</string>
+    <string name="native_idp_title">Native Identity Provider</string>
+    <string name="native_idp_message_start">About to start the authentication with a Native Identity Provider. Click next to continue or cancel to go back.</string>
+    <string name="native_idp_action_cancel">Cancel</string>
+    <string name="native_idp_action_continue">Continue</string>
+    <string name="native_idp_message_failed">Native authentication failed!</string>
+    <string name="native_idp_message_succeeded">Native authentication succeeded!</string>
 </resources>
