@@ -43,11 +43,12 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private PasswordlessMode choosenMode;
     private boolean waitingForCode;
     private final boolean showTitle;
-    private String emailOrNumber;
     private TextView topMessage;
     private TextView resendButton;
     private int sentMessage;
     private CountryCodeSelectorView countryCodeSelector;
+    private String submitedEmailOrNumber;
+    private String previousInput;
 
     public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
         super(lockWidget.getContext());
@@ -108,21 +109,25 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     @Override
     public Object getActionEvent() {
         if (waitingForCode) {
-            return new PasswordlessLoginEvent(choosenMode, emailOrNumber, getInputText());
+            return new PasswordlessLoginEvent(choosenMode, submitedEmailOrNumber, getInputText());
         } else {
             return new PasswordlessLoginEvent(choosenMode, getInputText());
         }
     }
 
     private String getInputText() {
+        String withoutBlanks = passwordlessInput.getText().replace(" ", "");
         if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
-            if (countryCodeSelector != null) {
-                return countryCodeSelector.getSelectedCountry().getDialCode().replace(" ", "").replace("-", "") + passwordlessInput.getText().replace(" ", "").replace("-", "");
+            String withoutDashes = withoutBlanks.replace("-", "");
+            if (countryCodeSelector != null && countryCodeSelector.getVisibility() == VISIBLE) {
+                previousInput = withoutDashes;
+                submitedEmailOrNumber = countryCodeSelector.getSelectedCountry().getDialCode() + withoutDashes;
+                return submitedEmailOrNumber;
             } else {
-                return passwordlessInput.getText().replace(" ", "").replace("-", "");
+                return withoutDashes;
             }
         } else {
-            return passwordlessInput.getText().replace(" ", "");
+            return withoutBlanks;
         }
     }
 
@@ -157,8 +162,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
      */
     public void codeSent() {
         countryCodeSelector.setVisibility(GONE);
-        emailOrNumber = getInputText();
-        setTopMessage(String.format(getResources().getString(sentMessage), emailOrNumber));
+        setTopMessage(String.format(getResources().getString(sentMessage), submitedEmailOrNumber));
         resendButton.setVisibility(VISIBLE);
         if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
             passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
@@ -188,7 +192,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
             if (callback != null) {
                 waitingForCode = false;
                 selectPasswordlessMode();
-                passwordlessInput.setText(emailOrNumber);
+                passwordlessInput.setText(previousInput);
                 callback.onPasswordlessRetry();
             }
         } else if (id == R.id.com_auth0_lock_country_code_selector) {
