@@ -110,4 +110,5 @@
     <color name="com_auth0_lock_result_message_error_background">#FF3E00</color>
     <color name="com_auth0_lock_error_message">#ffffff</color>
     <color name="com_auth0_lock_result_message_success_background">#7ED321</color>
+    <color name="com_auth0_lock_normal_text">#000000</color>
 </resources>
