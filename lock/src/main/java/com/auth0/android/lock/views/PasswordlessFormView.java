@@ -83,7 +83,6 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 break;
             case EMAIL_LINK:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_email;
-                sentMessage = R.string.com_auth0_lock_title_passwordless_link_email_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodeSelector.setVisibility(GONE);
                 break;
@@ -95,7 +94,6 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 break;
             case SMS_LINK:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
-                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodeSelector.setVisibility(VISIBLE);
                 break;
@@ -162,9 +160,9 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
      */
     public void codeSent() {
         countryCodeSelector.setVisibility(GONE);
-        setTopMessage(String.format(getResources().getString(sentMessage), submitedEmailOrNumber));
         resendButton.setVisibility(VISIBLE);
         if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
+            setTopMessage(String.format(getResources().getString(sentMessage), submitedEmailOrNumber));
             passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
             passwordlessInput.clearInput();
         } else {

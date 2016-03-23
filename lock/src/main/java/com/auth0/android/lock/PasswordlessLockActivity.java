@@ -331,7 +331,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                     if (options.useCodePasswordless()) {
                         panelHolder.codeSent();
                     } else {
-                        passwordlessSuccessCover.setVisibility(View.VISIBLE);
+                        showLinkSentLayout();
                     }
                 }
             });
@@ -349,6 +349,12 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             });
         }
     };
+
+    private void showLinkSentLayout() {
+        TextView textView = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
+        textView.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessEmailOrNumber));
+        passwordlessSuccessCover.setVisibility(View.VISIBLE);
+    }
 
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
