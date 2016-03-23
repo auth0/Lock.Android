@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scaleType="center"
-        android:src="@android:drawable/stat_sys_phone_call_forward" />
+        android:src="@drawable/com_auth0_lock_ic_submit" />
 
     <ProgressBar
         android:id="@+id/com_auth0_lock_progress"
