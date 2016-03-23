@@ -30,6 +30,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -85,10 +86,12 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             stringRes = R.string.com_auth0_lock_passwordless_sms_forms_separator;
         }
         orSeparatorMessage.setText(stringRes);
+        orSeparatorMessage.setLineSpacing(getResources().getDimension(R.dimen.com_auth0_lock_normal_text_spacing), 1);
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_small);
-        orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-        addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, verticalPadding, 0, verticalPadding);
+        addView(orSeparatorMessage, params);
     }
 
     private void addPasswordlessLayout() {
