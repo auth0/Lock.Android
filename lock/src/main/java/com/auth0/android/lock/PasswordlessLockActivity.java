@@ -163,19 +163,6 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
     };
 
-    private void showLinkSentLayout() {
-        TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
-        successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_email_sent), lastPasswordlessEmailOrNumber));
-        TextView resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
-        resendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                passwordlessSuccessCover.setVisibility(View.GONE);
-            }
-        });
-        passwordlessSuccessCover.setVisibility(View.VISIBLE);
-    }
-
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
         intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
@@ -344,7 +331,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                     if (options.useCodePasswordless()) {
                         panelHolder.codeSent();
                     } else {
-                        showLinkSentLayout();
+                        passwordlessSuccessCover.setVisibility(View.VISIBLE);
                     }
                 }
             });
