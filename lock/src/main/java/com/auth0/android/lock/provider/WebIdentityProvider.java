@@ -106,12 +106,11 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public String[] getRequiredAndroidPermissions() {
-        return new String[]{Manifest.permission.GET_ACCOUNTS};
+        return new String[0];
     }
 
     @Override
     public void onAndroidPermissionsRequireExplanation(List<String> permissions) {
-        Log.e("Explain me ", permissions.size()+"");
     }
 
     @Override
