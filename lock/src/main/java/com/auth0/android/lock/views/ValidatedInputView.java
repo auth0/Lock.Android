@@ -99,28 +99,28 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         input.setTransformationMethod(null);
         switch (dataType) {
             case EMAIL:
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_email;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_email);
                 break;
             case PASSWORD:
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 input.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 inputIcon = R.drawable.com_auth0_lock_ic_input_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_password);
                 break;
             case USERNAME_OR_EMAIL:
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
                 break;
             case USERNAME:
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
             case NUMBER:
-                input.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
                 break;
