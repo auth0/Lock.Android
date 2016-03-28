@@ -199,7 +199,7 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
-        if (lastIdp != null && data != null) {
+        if (lastIdp != null) {
             //Deliver result to the IDP
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
@@ -213,7 +213,7 @@ public class LockActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "OnNewIntent called with intent: " + intent);
-        if (lastIdp != null && intent != null) {
+        if (lastIdp != null) {
             //Deliver result to the IDP
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
@@ -237,7 +237,9 @@ public class LockActivity extends AppCompatActivity {
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
         //called on social button click
-        panelHolder.showProgress(true);
+        if (!options.useBrowser()) {
+            panelHolder.showProgress(true);
+        }
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
