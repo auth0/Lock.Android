@@ -36,8 +36,10 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 
 public class FormLayout extends LinearLayout {
-    private final LockWidgetEnterprise lockWidget;
+    private static final int SINGLE_FORM_POSITION = 0;
+    private static final int MULTIPLE_FORMS_POSITION = 2;
 
+    private final LockWidgetEnterprise lockWidget;
     private boolean showDatabase;
     private boolean showEnterprise;
 
@@ -147,7 +149,7 @@ public class FormLayout extends LinearLayout {
     }
 
     private void removePreviousForm() {
-        View existingForm = getChildAt(getChildCount() == 1 ? 0 : 2);
+        View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
         if (existingForm != null) {
             removeView(existingForm);
         }
@@ -181,7 +183,7 @@ public class FormLayout extends LinearLayout {
      */
     @Nullable
     public Object onActionPressed() {
-        View existingForm = getChildAt(getChildCount() == 1 ? 0 : 2);
+        View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
         if (existingForm != null) {
             FormView form = (FormView) existingForm;
             return form.submitForm();

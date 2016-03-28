@@ -80,7 +80,7 @@ public class LockActivity extends AppCompatActivity {
     private ClassicPanelHolder panelHolder;
     private TextView resultMessage;
 
-    private ProgressDialog idpLoginProgressDialog;
+    private ProgressDialog progressDialog;
     private WebIdentityProvider lastIdp;
 
     @Override
@@ -101,14 +101,7 @@ public class LockActivity extends AppCompatActivity {
         panelHolder = new ClassicPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        fetchApplication();
-    }
-
-    private void fetchApplication() {
-        if (configuration == null && applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
-            applicationFetcher.fetch(applicationCallback);
-        }
+        lockBus.post(new FetchApplicationEvent());
     }
 
     private boolean isLaunchConfigValid() {
@@ -161,15 +154,26 @@ public class LockActivity extends AppCompatActivity {
         finish();
     }
 
-    private void setResultMessage(@StringRes int stringId, boolean isSuccess) {
+    private void showSuccessMessage(@StringRes int stringId) {
         String text = getResources().getString(stringId);
-        resultMessage.setBackgroundColor(getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background));
+        resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_success_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(text);
         panelHolder.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
+
+    private void showErrorMessage(@StringRes int stringId) {
+        String text = getResources().getString(stringId);
+        resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_error_background));
+        resultMessage.setVisibility(View.VISIBLE);
+        resultMessage.setText(text);
+        panelHolder.showProgress(false);
+        handler.removeCallbacks(resultMessageHider);
+        handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
+    }
+
 
     private Runnable resultMessageHider = new Runnable() {
         @Override
@@ -183,10 +187,10 @@ public class LockActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (show) {
-                    idpLoginProgressDialog = ProgressDialog.show(LockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
-                } else if (idpLoginProgressDialog != null) {
-                    idpLoginProgressDialog.dismiss();
-                    idpLoginProgressDialog = null;
+                    progressDialog = ProgressDialog.show(LockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
+                } else if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
                 }
             }
         });
@@ -200,7 +204,7 @@ public class LockActivity extends AppCompatActivity {
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
             if (!lastIdp.authorize(LockActivity.this, result)) {
-                setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -214,7 +218,7 @@ public class LockActivity extends AppCompatActivity {
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
             if (!lastIdp.authorize(LockActivity.this, result)) {
-                setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             }
         }
         super.onNewIntent(intent);
@@ -223,7 +227,10 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
-        fetchApplication();
+        if (configuration == null && applicationFetcher == null) {
+            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
+            applicationFetcher.fetch(applicationCallback);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -299,14 +306,14 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_no_matched_connection, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_no_matched_connection);
                 }
             });
             return;
         } else if (event.useRO()) {
-            if (event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null) {
-                return;
-            } else if (configuration.getEnterpriseStrategies().isEmpty()) {
+            boolean missingADConfiguration = event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null;
+            boolean missingEnterpriseConfiguration = configuration.getEnterpriseStrategies().isEmpty();
+            if (missingADConfiguration || missingEnterpriseConfiguration) {
                 return;
             }
         }
@@ -347,7 +354,7 @@ public class LockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     panelHolder.configurePanel(null);
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_application_fetch_error);
                 }
             });
         }
@@ -360,7 +367,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
                 }
             });
         }
@@ -371,7 +378,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
                 }
             });
         }
@@ -397,7 +404,7 @@ public class LockActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
                                 }
                             });
                         }
@@ -418,7 +425,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
                 }
             });
         }
@@ -431,7 +438,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_sign_up_success, true);
+                    showSuccessMessage(R.string.com_auth0_lock_result_message_sign_up_success);
                 }
             });
         }
@@ -442,7 +449,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_sign_up_error);
                 }
             });
         }
@@ -455,7 +462,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_sign_up_success, true);
+                    showSuccessMessage(R.string.com_auth0_lock_result_message_change_password_success);
                 }
             });
 
@@ -467,7 +474,7 @@ public class LockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_change_password_error);
                 }
             });
         }

@@ -82,7 +82,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
-    private ProgressDialog idpLoginProgressDialog;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,14 +103,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         panelHolder = new PasswordlessPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        fetchApplication();
-    }
-
-    private void fetchApplication() {
-        if (configuration == null && applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
-            applicationFetcher.fetch(applicationCallback);
-        }
+        lockBus.post(new FetchApplicationEvent());
     }
 
     private boolean isLaunchConfigValid() {
@@ -153,17 +146,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private void setResultMessage(@StringRes int stringId, boolean isSuccess) {
-        //TODO: This can be extracted to a custom view (reusable in the 2 activities)
-        int backgroundColor;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            backgroundColor = getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background, getTheme());
-        } else {
-            //noinspection deprecation
-            backgroundColor = getResources().getColor(isSuccess ? R.color.com_auth0_lock_result_message_success_background : R.color.com_auth0_lock_result_message_error_background);
-        }
+    private void showErrorMessage(@StringRes int stringId) {
         String text = getResources().getString(stringId);
-        resultMessage.setBackgroundColor(backgroundColor);
+        resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(text);
         panelHolder.showProgress(false);
@@ -208,10 +193,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (show) {
-                    idpLoginProgressDialog = ProgressDialog.show(PasswordlessLockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
-                } else if (idpLoginProgressDialog != null) {
-                    idpLoginProgressDialog.dismiss();
-                    idpLoginProgressDialog = null;
+                    progressDialog = ProgressDialog.show(PasswordlessLockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
+                } else if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
                 }
             }
         });
@@ -245,14 +230,14 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private void processIncomingIntent(Intent intent) {
         panelHolder.showProgress(false);
         if (intent == null) {
-            setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+            showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             return;
         }
 
         if (lastIdp != null) {
             AuthorizeResult result = new AuthorizeResult(intent);
             if (!lastIdp.authorize(PasswordlessLockActivity.this, result)) {
-                setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             }
             return;
         }
@@ -262,7 +247,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             String code = intent.getData().getQueryParameter("code");
             if (code == null || code.isEmpty()) {
                 Log.w(TAG, "Passwordless Code is missing or could not be parsed");
-                setResultMessage(R.string.com_auth0_lock_result_message_error_parsing_passwordless_code, false);
+                showErrorMessage(R.string.com_auth0_lock_result_message_error_parsing_passwordless_code);
                 return;
             }
             PasswordlessLoginEvent event = new PasswordlessLoginEvent(configuration.getPasswordlessMode(), lastPasswordlessEmailOrNumber, code);
@@ -273,7 +258,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
-        fetchApplication();
+        if (configuration == null && applicationFetcher == null) {
+            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
+            applicationFetcher.fetch(applicationCallback);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -339,7 +327,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     panelHolder.configurePanel(null);
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_application_fetch_error);
                 }
             });
         }
@@ -368,7 +356,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_passwordless_request_code_error);
                     panelHolder.showProgress(false);
                 }
             });
@@ -388,7 +376,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_generic_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
                 }
             });
         }
@@ -401,7 +389,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
                 }
             });
         }
@@ -412,7 +400,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
                 }
             });
         }
@@ -438,7 +426,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    setResultMessage(R.string.com_auth0_lock_result_message_social_authentication_error, false);
+                                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
                                 }
                             });
                         }
