@@ -29,7 +29,10 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,7 +44,7 @@ import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class DomainFormView extends FormView {
+public class DomainFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
     private final LockWidgetEnterprise lockWidget;
@@ -74,10 +77,11 @@ public class DomainFormView extends FormView {
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
-        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setVisibility(View.GONE);
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setVisibility(View.GONE);
+        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setVisibility(View.GONE);
+        passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
@@ -104,6 +108,7 @@ public class DomainFormView extends FormView {
         if (fallbackToDatabase) {
             passwordInput.setVisibility(VISIBLE);
         }
+        emailInput.setOnEditorActionListener(this);
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -242,4 +247,11 @@ public class DomainFormView extends FormView {
         return false;
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT && currentConnection != null) {
+            lockWidget.onFormSubmit();
+        }
+        return false;
+    }
 }

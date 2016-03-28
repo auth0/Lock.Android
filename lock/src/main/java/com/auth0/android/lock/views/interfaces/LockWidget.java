@@ -34,4 +34,6 @@ public interface LockWidget {
 
     Configuration getConfiguration();
 
+    void onFormSubmit();
+
 }

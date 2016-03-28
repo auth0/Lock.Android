@@ -25,7 +25,9 @@
 package com.auth0.android.lock.views;
 
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -34,7 +36,7 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
-public class PasswordlessFormView extends FormView implements View.OnClickListener {
+public class PasswordlessFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
     private final LockWidgetPasswordless lockWidget;
@@ -65,6 +67,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         resendButton = (TextView) findViewById(R.id.com_auth0_lock_resend);
         resendButton.setOnClickListener(this);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
+        passwordlessInput.setOnEditorActionListener(this);
         countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
 
@@ -195,6 +198,14 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
             topMessage.setText(text);
             topMessage.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            lockWidget.onFormSubmit();
+        }
+        return false;
     }
 
     public interface OnPasswordlessRetryListener {

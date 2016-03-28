@@ -173,6 +173,11 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     @Override
+    public void onFormSubmit() {
+        actionButton.callOnClick();
+    }
+
+    @Override
     public void onSocialLogin(SocialConnectionEvent event) {
         bus.post(event);
     }

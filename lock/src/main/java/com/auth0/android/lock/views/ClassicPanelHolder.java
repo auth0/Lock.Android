@@ -259,6 +259,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     @Override
+    public void onFormSubmit() {
+        actionButton.callOnClick();
+    }
+
+    @Override
     public void onClick(View v) {
         Object event;
         if (changePwdForm != null) {

@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 
@@ -238,5 +239,9 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      */
     public void addTextChangedListener(TextWatcher watcher) {
         input.addTextChangedListener(watcher);
+    }
+
+    public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
+        input.setOnEditorActionListener(listener);
     }
 }

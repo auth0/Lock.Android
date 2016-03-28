@@ -26,35 +26,44 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
+import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class LogInFormView extends FormView {
+public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
+    private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
 
     public LogInFormView(Context context) {
         super(context);
+        lockWidget = null;
     }
 
     public LogInFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
-        init(lockWidget);
+        this.lockWidget = lockWidget;
+        init();
     }
 
-    private void init(final LockWidgetForm lockWidget) {
+    private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
+        Configuration configuration = lockWidget.getConfiguration();
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
+        usernameEmailInput.chooseDataType(configuration);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordInput.setOnEditorActionListener(this);
         View changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
-        changePasswordBtn.setVisibility(lockWidget.getConfiguration().isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
+        changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +96,14 @@ public class LogInFormView extends FormView {
     @Override
     public Object submitForm() {
         return validateForm() ? getActionEvent() : null;
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            lockWidget.onFormSubmit();
+        }
+        return false;
     }
 
 }
