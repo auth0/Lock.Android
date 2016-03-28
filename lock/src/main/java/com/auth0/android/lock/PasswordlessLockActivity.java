@@ -134,7 +134,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        boolean showingSuccessLayout = passwordlessSuccessCover != null && passwordlessSuccessCover.getVisibility() == View.VISIBLE;
+        boolean showingSuccessLayout = passwordlessSuccessCover.getVisibility() == View.VISIBLE;
         if (!showingSuccessLayout && panelHolder.onBackPressed()) {
             return;
         }
@@ -370,6 +370,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
+                    passwordlessSuccessCover.setVisibility(View.GONE);
                 }
             });
         }
