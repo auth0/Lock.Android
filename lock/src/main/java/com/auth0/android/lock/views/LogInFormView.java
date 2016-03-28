@@ -42,6 +42,8 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
+    private View changePasswordBtn;
+    private boolean changePasswordEnabled;
 
     public LogInFormView(Context context) {
         super(context);
@@ -57,12 +59,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         Configuration configuration = lockWidget.getConfiguration();
+        changePasswordEnabled = configuration.isChangePasswordEnabled();
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(configuration);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         passwordInput.setOnEditorActionListener(this);
-        View changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
+        changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         changePasswordBtn.setVisibility(configuration.isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -106,4 +109,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         return false;
     }
 
+    public void onKeyboardStateChanged(boolean isOpen) {
+        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : GONE);
+    }
 }

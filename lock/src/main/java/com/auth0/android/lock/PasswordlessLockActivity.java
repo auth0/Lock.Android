@@ -28,6 +28,7 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +58,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
+import com.auth0.android.lock.views.HeaderView;
 import com.auth0.android.lock.views.PasswordlessPanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
@@ -83,6 +87,8 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
     private ProgressDialog progressDialog;
+    private boolean keyboardIsShown;
+    private HeaderView headerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,11 +98,14 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return;
         }
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
+        ViewGroup rootContainer = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
+        headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
@@ -104,6 +113,29 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         lockBus.post(new FetchApplicationEvent());
+        setupKeyboardListener(rootContainer);
+    }
+
+    private void setupKeyboardListener(final ViewGroup container) {
+        container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                container.getWindowVisibleDisplayFrame(r);
+                int screenHeight = container.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+                onKeyboardStateChanged(keypadHeight > screenHeight * 0.15);
+            }
+        });
+    }
+
+    private void onKeyboardStateChanged(boolean isOpen) {
+        if (isOpen == keyboardIsShown) {
+            return;
+        }
+        keyboardIsShown = isOpen;
+        headerView.onKeyboardStateChanged(isOpen);
+        panelHolder.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {

@@ -90,7 +90,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         addView(actionButton, actionParams);
 
         formLayout = new PasswordlessFormLayout(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         params.addRule(ALIGN_PARENT_TOP, TRUE);
         params.addRule(ABOVE, R.id.com_auth0_lock_action_button);
@@ -204,5 +204,13 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      */
     public void onCountryCodeSelected(String country, String dialCode) {
         formLayout.onCountryCodeSelected(country, dialCode);
+    }
+
+    public void onKeyboardStateChanged(boolean isOpen) {
+        if (configuration == null) {
+            return;
+        }
+        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        formLayout.onKeyboardStateChanged(isOpen);
     }
 }

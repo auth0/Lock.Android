@@ -168,4 +168,16 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     public void onCountryCodeSelected(String country, String dialCode) {
         passwordlessLayout.onCountryCodeSelected(country, dialCode);
     }
+
+    public void onKeyboardStateChanged(boolean isOpen) {
+        if (orSeparatorMessage != null) {
+            orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (socialLayout != null) {
+            socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (passwordlessLayout!=null){
+            passwordlessLayout.onKeyboardStateChanged(isOpen);
+        }
+    }
 }

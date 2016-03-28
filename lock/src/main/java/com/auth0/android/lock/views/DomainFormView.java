@@ -254,4 +254,8 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         }
         return false;
     }
+
+    public void onKeyboardStateChanged(boolean isOpen) {
+        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : GONE);
+    }
 }

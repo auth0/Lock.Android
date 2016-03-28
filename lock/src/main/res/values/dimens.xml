@@ -59,5 +59,6 @@
     <dimen name="com_auth0_lock_title_text_spacing">12dp</dimen>
     <dimen name="com_auth0_lock_normal_text_spacing">8dp</dimen>
     <dimen name="com_auth0_lock_small_text_spacing">4dp</dimen>
+    <dimen name="com_auth0_lock_header_height_keyboard">48dp</dimen>
 
 </resources>

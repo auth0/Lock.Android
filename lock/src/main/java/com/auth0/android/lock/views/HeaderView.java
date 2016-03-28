@@ -30,6 +30,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -88,5 +89,14 @@ public class HeaderView extends RelativeLayout {
      */
     public void setLogo(@DrawableRes int logo) {
         this.logo.setImageResource(logo);
+    }
+
+    public void onKeyboardStateChanged(boolean isOpen) {
+        logo.setVisibility(isOpen ? GONE : VISIBLE);
+        text.setVisibility(isOpen ? GONE : VISIBLE);
+        int headerHeightNormal = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height);
+        int headerHeightKeyboard = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height_keyboard);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, isOpen ? headerHeightKeyboard : headerHeightNormal);
+        setLayoutParams(params);
     }
 }

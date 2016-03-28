@@ -208,6 +208,12 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         return false;
     }
 
+    public void onKeyboardStateChanged(boolean isOpen) {
+        if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
+            countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+    }
+
     public interface OnPasswordlessRetryListener {
         /**
          * Called when the form needs to remove the "Waiting for the code" view and show

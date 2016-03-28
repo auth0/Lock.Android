@@ -163,6 +163,21 @@ public class FormLayout extends LinearLayout {
         }
     }
 
+    public void onKeyboardStateChanged(boolean isOpen) {
+        if (orSeparatorMessage != null) {
+            orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (socialLayout != null) {
+            socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (domainForm!=null){
+            domainForm.onKeyboardStateChanged(isOpen);
+        }
+        if (loginForm!=null){
+            loginForm.onKeyboardStateChanged(isOpen);
+        }
+    }
+
     /**
      * Triggers the back action on the form.
      *

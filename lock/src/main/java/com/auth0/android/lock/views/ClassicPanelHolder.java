@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     private LayoutParams ssoParams;
     private View ssoLayout;
     private ProgressBar loadingProgressBar;
+    private FormLayout.DatabaseForm currentMode;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -127,6 +129,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
         termsParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         termsParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        termsParams.alignWithParent = true;
         View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
         termsLayout.setId(R.id.com_auth0_lock_terms_layout);
         addView(termsLayout, termsParams);
@@ -235,9 +238,14 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onModeSelected(FormLayout.DatabaseForm mode) {
+        currentMode = mode;
         formLayout.changeFormMode(mode);
+        showSignUpTerms(mode == FormLayout.DatabaseForm.SIGN_UP);
+    }
+
+    private void showSignUpTerms(boolean show) {
         int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_terms_height);
-        termsParams.height = mode == FormLayout.DatabaseForm.SIGN_UP ? height : 0;
+        termsParams.height = show ? height : 0;
     }
 
     @Override
@@ -284,5 +292,18 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     @Override
     public void onSocialLogin(SocialConnectionEvent event) {
         bus.post(event);
+    }
+
+    public void onKeyboardStateChanged(boolean isOpen) {
+        if (configuration == null) {
+            return;
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        formLayout.onKeyboardStateChanged(isOpen);
+
+        showSignUpTerms(!isOpen && currentMode == FormLayout.DatabaseForm.SIGN_UP);
     }
 }
