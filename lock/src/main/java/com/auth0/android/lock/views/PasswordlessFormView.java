@@ -192,12 +192,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     }
 
     private void setTopMessage(String text) {
-        if (text == null) {
-            topMessage.setVisibility(View.GONE);
-        } else {
-            topMessage.setText(text);
-            topMessage.setVisibility(View.VISIBLE);
-        }
+        topMessage.setText(text);
+        topMessage.setVisibility(text == null ? GONE : VISIBLE);
     }
 
     @Override
@@ -220,10 +216,17 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         }
         if (waitingForCode) {
             resendButton.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (topMessage.getText().length() > 0) {
             topMessage.setVisibility(isOpen ? GONE : VISIBLE);
         }
     }
 
+    /**
+     * Getter for the "waiting for code" state.
+     *
+     * @return Whether the form is waiting for the user to input a code or not.
+     */
     public boolean isWaitingForCode() {
         return waitingForCode;
     }
