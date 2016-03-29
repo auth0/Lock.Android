@@ -170,17 +170,21 @@ public class FormLayout extends LinearLayout {
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
+        if (loginForm != null) {
+            loginForm.onKeyboardStateChanged(isOpen);
+        }
+        if (domainForm != null) {
+            domainForm.onKeyboardStateChanged(isOpen);
+            if (domainForm.isEnterpriseDomainMatch()) {
+                isOpen = true;
+            }
+        }
+
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (socialLayout != null) {
             socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-        if (domainForm != null) {
-            domainForm.onKeyboardStateChanged(isOpen);
-        }
-        if (loginForm != null) {
-            loginForm.onKeyboardStateChanged(isOpen);
         }
     }
 

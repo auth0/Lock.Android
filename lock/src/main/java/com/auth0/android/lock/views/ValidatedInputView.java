@@ -116,7 +116,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
                 break;
             case USERNAME:
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;

@@ -57,6 +57,8 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     private View ssoLayout;
     private ProgressBar loadingProgressBar;
     private FormLayout.DatabaseForm currentMode;
+    private boolean keyboardIsOpen;
+    private boolean ssoMessageShown;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -249,13 +251,14 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showSSOEnabledMessage(boolean show) {
+        ssoMessageShown = show;
         int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
         ssoParams.height = show ? height : 0;
         ssoLayout.setLayoutParams(ssoParams);
-        if (formLayout != null) {
+        if (formLayout != null && !keyboardIsOpen) {
             formLayout.showOnlyEnterprise(show);
         }
-        if (modeSelectionView != null) {
+        if (modeSelectionView != null && !keyboardIsOpen) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
     }
@@ -303,7 +306,8 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (configuration == null) {
             return;
         }
-        if (modeSelectionView != null && changePwdForm == null) {
+        keyboardIsOpen = isOpen;
+        if (modeSelectionView != null && changePwdForm == null && !ssoMessageShown) {
             modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (changePwdForm != null) {

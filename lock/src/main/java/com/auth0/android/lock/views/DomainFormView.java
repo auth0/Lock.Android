@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -128,13 +129,9 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
                 if (currentConnection != null) {
                     passwordInput.setVisibility(GONE);
                     lockWidget.showSSOEnabledMessage(true);
-                    changePasswordBtn.setVisibility(GONE);
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
                     lockWidget.showSSOEnabledMessage(false);
-                    if (changePasswordEnabled) {
-                        changePasswordBtn.setVisibility(VISIBLE);
-                    }
                 } else {
                     resetDomain();
                 }
@@ -161,6 +158,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         passwordInput.clearInput();
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
+        topMessage.setText(null);
         topMessage.setVisibility(View.GONE);
         lockWidget.showSSOEnabledMessage(false);
         corporateSSO = false;
@@ -197,6 +195,9 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
             emailInput.setVisibility(GONE);
             changePasswordBtn.setVisibility(GONE);
             corporateSSO = true;
+            usernameInput.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
         }
         return null;
     }
@@ -259,6 +260,16 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : GONE);
+        changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
+        topMessage.setVisibility(isOpen && topMessage.getText().length() > 0 ? GONE : VISIBLE);
+    }
+
+    /**
+     * Getter for the current state of enterprise matched domain.
+     *
+     * @return whether there is currently a domain match or not.
+     */
+    public boolean isEnterpriseDomainMatch() {
+        return currentConnection != null;
     }
 }
