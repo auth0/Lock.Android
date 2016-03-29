@@ -41,17 +41,20 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 public class PasswordlessFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
-    private static final int CODE_TTL = 1000 * 60 * 2;
+    private static final long CODE_TTL = 1000 * 60 * 2;
+    private static final long RESEND_TIMEOUT = 20 * 1000;
     private static final String LAST_PASSWORDLESS_TIME_KEY = "last_passwordless_time";
     private static final String LAST_PASSWORDLESS_EMAIL_NUMBER_KEY = "last_passwordless_email_number";
     private static final String LAST_PASSWORDLESS_COUNTRY_KEY = "last_passwordless_country";
     private static final String LOCK_PREFERENCES_NAME = "Lock";
     private static final String COUNTRY_DATA_DIV = "@";
+
     private final LockWidgetPasswordless lockWidget;
     private final OnPasswordlessRetryListener callback;
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
     private boolean waitingForCode;
+    private boolean resendButtonShown;
     private final boolean showTitle;
     private TextView topMessage;
     private TextView resendButton;
@@ -220,16 +223,27 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
 //        submittedEmailOrNumber = getInputText();
         if (persistTime) {
             persistRecentlyUsedEmailOrNumber();
+            removeCallbacks(resendTimeoutShower);
+            postDelayed(resendTimeoutShower, RESEND_TIMEOUT);
         }
         countryCodeSelector.setVisibility(GONE);
         setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
-        resendButton.setVisibility(VISIBLE);
         gotCodeButton.setVisibility(GONE);
         passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
         passwordlessInput.clearInput();
 
         waitingForCode = true;
     }
+
+    final Runnable resendTimeoutShower = new Runnable() {
+        @Override
+        public void run() {
+            resendButtonShown = true;
+            if (waitingForCode) {
+                resendButton.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     /**
      * Notifies the form that a new country code was selected by the user.
@@ -253,6 +267,9 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 callback.onPasswordlessRetry();
             }
         } else if (id == R.id.com_auth0_lock_got_code) {
+            if (resendButtonShown) {
+                resendButton.setVisibility(View.VISIBLE);
+            }
             codeSent(false);
         } else if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
@@ -282,7 +299,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         if (!waitingForCode && (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE)) {
             countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
         }
-        if (waitingForCode) {
+        if (waitingForCode && resendButtonShown) {
             resendButton.setVisibility(isOpen ? GONE : VISIBLE);
         } else if (shouldShowGotCodeButton()) {
             gotCodeButton.setVisibility(isOpen ? GONE : VISIBLE);

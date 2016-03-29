@@ -75,6 +75,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private static final int COUNTRY_CODE_REQUEST = 120;
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
+    private static final long RESEND_TIMEOUT = 20 * 1000;
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -94,6 +95,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
     private Bus lockBus;
     private RelativeLayout rootView;
+    private TextView resendButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -224,7 +226,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
-        TextView resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
+        resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
         resendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,7 +242,18 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             }
         });
         passwordlessSuccessCover.setVisibility(View.VISIBLE);
+        handler.removeCallbacks(resendTimeoutShower);
+        handler.postDelayed(resendTimeoutShower, RESEND_TIMEOUT);
     }
+
+    final Runnable resendTimeoutShower = new Runnable() {
+        @Override
+        public void run() {
+            if (resendButton != null) {
+                resendButton.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
