@@ -241,6 +241,11 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         input.addTextChangedListener(watcher);
     }
 
+    /**
+     * Sets the given OnEditorActionListener to this view EditText.
+     *
+     * @param listener to set to the EditText.
+     */
     public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
         input.setOnEditorActionListener(listener);
     }

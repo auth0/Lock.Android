@@ -163,6 +163,12 @@ public class FormLayout extends LinearLayout {
         }
     }
 
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
     public void onKeyboardStateChanged(boolean isOpen) {
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
@@ -170,10 +176,10 @@ public class FormLayout extends LinearLayout {
         if (socialLayout != null) {
             socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
         }
-        if (domainForm!=null){
+        if (domainForm != null) {
             domainForm.onKeyboardStateChanged(isOpen);
         }
-        if (loginForm!=null){
+        if (loginForm != null) {
             loginForm.onKeyboardStateChanged(isOpen);
         }
     }

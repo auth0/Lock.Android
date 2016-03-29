@@ -293,6 +293,12 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         bus.post(event);
     }
 
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
     public void onKeyboardStateChanged(boolean isOpen) {
         if (configuration == null) {
             return;

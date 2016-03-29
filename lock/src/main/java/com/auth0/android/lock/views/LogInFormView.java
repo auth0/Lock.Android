@@ -109,6 +109,12 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         return false;
     }
 
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
     public void onKeyboardStateChanged(boolean isOpen) {
         changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : GONE);
     }

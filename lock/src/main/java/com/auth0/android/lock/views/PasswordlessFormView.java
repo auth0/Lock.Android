@@ -208,10 +208,24 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         return false;
     }
 
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
     public void onKeyboardStateChanged(boolean isOpen) {
         if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
             countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
         }
+        if (waitingForCode) {
+            resendButton.setVisibility(isOpen ? GONE : VISIBLE);
+            topMessage.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+    }
+
+    public boolean isWaitingForCode() {
+        return waitingForCode;
     }
 
     public interface OnPasswordlessRetryListener {
