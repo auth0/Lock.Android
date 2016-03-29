@@ -47,6 +47,7 @@ public class CountryCodeSelectorView extends LinearLayout {
 
     private ImageView icon;
     private TextView countryTextView;
+    private ImageView chevron;
 
     public CountryCodeSelectorView(Context context) {
         super(context);
@@ -66,6 +67,7 @@ public class CountryCodeSelectorView extends LinearLayout {
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_country_code_selector, this);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+        chevron = (ImageView) findViewById(R.id.com_auth0_lock_chevron);
         countryTextView = (TextView) findViewById(R.id.com_auth0_lock_text);
         Country initialCountry = new Country("US", "+1");
         setSelectedCountry(initialCountry);
@@ -77,7 +79,7 @@ public class CountryCodeSelectorView extends LinearLayout {
         Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
-        ViewUtils.setBackground(countryTextView, rightBackground);
+        ViewUtils.setBackground(chevron, rightBackground);
         ViewGroup parent = ((ViewGroup) countryTextView.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
@@ -115,7 +117,7 @@ public class CountryCodeSelectorView extends LinearLayout {
      * @param country the country to set.
      */
     public void setSelectedCountry(Country country) {
-        countryTextView.setText(country.getDialCode() + " " + country.getDisplayName());
+        countryTextView.setText(country.getDisplayName() + " " + country.getDialCode());
         selectedCountry = country;
     }
 
