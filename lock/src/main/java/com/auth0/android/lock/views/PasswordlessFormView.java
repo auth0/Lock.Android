@@ -225,13 +225,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
         resendButton.setVisibility(VISIBLE);
         gotCodeButton.setVisibility(GONE);
-        if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
-            setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
-            passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
-            passwordlessInput.clearInput();
-        } else {
-            passwordlessInput.setVisibility(GONE);
-        }
+        passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
+        passwordlessInput.clearInput();
 
         waitingForCode = true;
     }

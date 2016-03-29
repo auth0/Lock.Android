@@ -92,6 +92,8 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private HeaderView headerView;
     private ViewGroup contentView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
+    private Bus lockBus;
+    private RelativeLayout rootView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,7 +104,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        Bus lockBus = new Bus();
+        lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
@@ -110,7 +112,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
-        RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         panelHolder = new PasswordlessPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -211,6 +213,34 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             resultMessage.setVisibility(View.GONE);
         }
     };
+
+    private void showLinkSentLayout() {
+        TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
+        successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessEmailOrNumber));
+        TextView gotCodeButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_got_code);
+        gotCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                passwordlessSuccessCover.setVisibility(View.GONE);
+            }
+        });
+        TextView resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rootView.removeView(panelHolder);
+                panelHolder = new PasswordlessPanelHolder(PasswordlessLockActivity.this, lockBus);
+                if (configuration != null) {
+                    panelHolder.configurePanel(configuration);
+                } else {
+                    lockBus.post(new FetchApplicationEvent());
+                }
+                rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                passwordlessSuccessCover.setVisibility(View.GONE);
+            }
+        });
+        passwordlessSuccessCover.setVisibility(View.VISIBLE);
+    }
 
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
@@ -377,9 +407,8 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     panelHolder.showProgress(false);
-                    if (options.useCodePasswordless()) {
-                        panelHolder.codeSent();
-                    } else {
+                    panelHolder.codeSent();
+                    if (!options.useCodePasswordless()) {
                         showLinkSentLayout();
                     }
                 }
@@ -398,12 +427,6 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             });
         }
     };
-
-    private void showLinkSentLayout() {
-        TextView textView = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
-        textView.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessEmailOrNumber));
-        passwordlessSuccessCover.setVisibility(View.VISIBLE);
-    }
 
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
