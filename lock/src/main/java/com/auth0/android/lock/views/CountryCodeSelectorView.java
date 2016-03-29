@@ -69,8 +69,6 @@ public class CountryCodeSelectorView extends LinearLayout {
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         chevron = (ImageView) findViewById(R.id.com_auth0_lock_chevron);
         countryTextView = (TextView) findViewById(R.id.com_auth0_lock_text);
-        Country initialCountry = new Country("US", "+1");
-        setSelectedCountry(initialCountry);
         prepareTask();
         setupBackground();
     }
@@ -95,7 +93,7 @@ public class CountryCodeSelectorView extends LinearLayout {
             protected void onPostExecute(Map<String, String> result) {
                 String defaultCountry = Locale.getDefault().getCountry();
                 task = null;
-                if (result != null) {
+                if (result != null && selectedCountry == null) {
                     final ArrayList<String> names = new ArrayList<>(result.keySet());
                     for (String name : names) {
                         if (name.equalsIgnoreCase(defaultCountry)) {
@@ -104,8 +102,10 @@ public class CountryCodeSelectorView extends LinearLayout {
                         }
                     }
                 }
+                if (selectedCountry == null) {
+                    selectedCountry = new Country("US", "+1");
+                }
                 setSelectedCountry(selectedCountry);
-                countryTextView.setVisibility(VISIBLE);
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);

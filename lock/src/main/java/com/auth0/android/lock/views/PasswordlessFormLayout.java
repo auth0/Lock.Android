@@ -133,6 +133,15 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     /**
+     * Notifies the form that the authentication has succeed, for it to erase state data.
+     */
+    public void onAuthenticationSucceed() {
+        if (passwordlessLayout != null) {
+            passwordlessLayout.onAuthenticationSucceed();
+        }
+    }
+
+    /**
      * ActionButton has been clicked, and validation should be run on the current
      * visible form. If this validation passes, an action event will be returned.
      *

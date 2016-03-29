@@ -167,6 +167,15 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         formLayout.codeSent();
     }
 
+    /**
+     * Notifies the form that the authentication has succeed, for it to erase state data.
+     */
+    public void onAuthenticationSucceed() {
+        if (formLayout != null) {
+            formLayout.onAuthenticationSucceed();
+        }
+    }
+
     @Override
     public Configuration getConfiguration() {
         return configuration;

@@ -409,6 +409,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         @Override
         public void onSuccess(Authentication authentication) {
             Log.d(TAG, "Login success: " + authentication.getProfile());
+            panelHolder.onAuthenticationSucceed();
             deliverResult(authentication);
         }
 

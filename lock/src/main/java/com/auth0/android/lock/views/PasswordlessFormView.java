@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock.views;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
@@ -39,6 +41,12 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 public class PasswordlessFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessFormView.class.getSimpleName();
+    private static final int CODE_TTL = 1000 * 60 * 2;
+    private static final String LAST_PASSWORDLESS_TIME_KEY = "last_passwordless_time";
+    private static final String LAST_PASSWORDLESS_EMAIL_NUMBER_KEY = "last_passwordless_email_number";
+    private static final String LAST_PASSWORDLESS_COUNTRY_KEY = "last_passwordless_country";
+    private static final String LOCK_PREFERENCES_NAME = "Lock";
+    private static final String COUNTRY_DATA_DIV = "@";
     private final LockWidgetPasswordless lockWidget;
     private final OnPasswordlessRetryListener callback;
     private ValidatedInputView passwordlessInput;
@@ -51,6 +59,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private CountryCodeSelectorView countryCodeSelector;
     private String submittedEmailOrNumber;
     private String previousInput;
+    private TextView gotCodeButton;
+    private SharedPreferences sp;
 
     public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
         super(lockWidget.getContext());
@@ -63,6 +73,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_form_view, this);
+        sp = getContext().getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         resendButton = (TextView) findViewById(R.id.com_auth0_lock_resend);
         resendButton.setOnClickListener(this);
@@ -70,6 +81,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         passwordlessInput.setOnEditorActionListener(this);
         countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
+        gotCodeButton = (TextView) findViewById(R.id.com_auth0_lock_got_code);
+        gotCodeButton.setOnClickListener(this);
 
         selectPasswordlessMode();
     }
@@ -105,6 +118,53 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         passwordlessInput.clearInput();
         resendButton.setVisibility(GONE);
         setTopMessage(showTitle ? getResources().getString(titleMessage) : null);
+        if (shouldShowGotCodeButton()) {
+            gotCodeButton.setVisibility(VISIBLE);
+            reloadPreviouslyUsedData();
+        }
+    }
+
+    private boolean shouldShowGotCodeButton() {
+        long d = sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) - System.currentTimeMillis() + CODE_TTL;
+        return d > 0;
+    }
+
+    private void reloadPreviouslyUsedData() {
+        String text = sp.getString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "");
+        submittedEmailOrNumber = text;
+        String countryInfo = sp.getString(LAST_PASSWORDLESS_COUNTRY_KEY, null);
+        if (countryInfo != null) {
+            String isoCode = countryInfo.split(COUNTRY_DATA_DIV)[0];
+            String dialCode = countryInfo.split(COUNTRY_DATA_DIV)[1];
+            if (text.startsWith(dialCode)) {
+                text = text.substring(dialCode.length());
+            }
+            countryCodeSelector.setSelectedCountry(new Country(isoCode, dialCode));
+        }
+        passwordlessInput.setText(text);
+    }
+
+    private void persistRecentlyUsedEmailOrNumber() {
+        String countryData = null;
+        if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
+            countryData = countryCodeSelector.getSelectedCountry().getIsoCode() + COUNTRY_DATA_DIV + countryCodeSelector.getSelectedCountry().getDialCode();
+        }
+        sp.edit()
+                .putLong(LAST_PASSWORDLESS_TIME_KEY, System.currentTimeMillis())
+                .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, submittedEmailOrNumber)
+                .putString(LAST_PASSWORDLESS_COUNTRY_KEY, countryData)
+                .apply();
+    }
+
+    /**
+     * Notifies the form that the authentication has succeed, for it to erase state data.
+     */
+    public void onAuthenticationSucceed() {
+        sp.edit()
+                .putLong(LAST_PASSWORDLESS_TIME_KEY, 0)
+                .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "")
+                .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
+                .apply();
     }
 
     @Override
@@ -153,7 +213,18 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
      */
     public void codeSent() {
         countryCodeSelector.setVisibility(GONE);
+        codeSent(true);
+    }
+
+    private void codeSent(boolean persistTime) {
+//        submittedEmailOrNumber = getInputText();
+        if (persistTime) {
+            persistRecentlyUsedEmailOrNumber();
+        }
+        countryCodeSelector.setVisibility(GONE);
+        setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
         resendButton.setVisibility(VISIBLE);
+        gotCodeButton.setVisibility(GONE);
         if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
             setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
             passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
@@ -186,6 +257,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 passwordlessInput.setText(previousInput);
                 callback.onPasswordlessRetry();
             }
+        } else if (id == R.id.com_auth0_lock_got_code) {
+            codeSent(false);
         } else if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
         }
@@ -211,11 +284,13 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
+        if (!waitingForCode && (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE)) {
             countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (waitingForCode) {
             resendButton.setVisibility(isOpen ? GONE : VISIBLE);
+        } else if (shouldShowGotCodeButton()) {
+            gotCodeButton.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (topMessage.getText().length() > 0) {
             topMessage.setVisibility(isOpen ? GONE : VISIBLE);
