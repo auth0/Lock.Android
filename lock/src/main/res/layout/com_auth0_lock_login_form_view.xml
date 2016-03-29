@@ -23,30 +23,23 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:Auth0.InputDataType="username_or_email">
-
-        <requestFocus />
-    </com.auth0.android.lock.views.ValidatedUsernameInputView>
+        style="@style/Lock.Theme.Input"
+        app:Auth0.InputDataType="username_or_email" />
 
     <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Lock.Theme.Input"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
         app:Auth0.InputDataType="password" />
 
-    <Button
-        android:id="@+id/com_auth0_lock_action_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Action" />
+    <TextView
+        android:id="@+id/com_auth0_lock_change_password_btn"
+        style="@style/com_auth0_lock_forgot_password_text" />
 
 </LinearLayout>

@@ -59,15 +59,6 @@ public class AuthorizeResultTest {
     }
 
     @Test
-    public void shouldNotBeValidForNullIntent() throws Exception {
-        AuthorizeResult authorizeResult = new AuthorizeResult(null);
-
-        boolean isValid = authorizeResult.isValid(OTHER_REQUEST_CODE);
-
-        assertThat(isValid, is(false));
-    }
-
-    @Test
     public void shouldNotBeValidForNullUri() throws Exception {
         intent.setData(null);
         AuthorizeResult authorizeResult = new AuthorizeResult(intent);

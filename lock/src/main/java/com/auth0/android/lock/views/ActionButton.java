@@ -1,5 +1,5 @@
 /*
- * ModeSelectionView.java
+ * LockProgress.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -25,39 +25,50 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.auth0.android.lock.R;
 
-public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
+public class ActionButton extends FrameLayout {
 
-    private static final String TAG = ModeSelectionView.class.getSimpleName();
-    private final ModeSelectedListener callback;
+    private ProgressBar progress;
+    private ImageView icon;
 
-    public ModeSelectionView(Context context, @NonNull ModeSelectedListener listener) {
+    public ActionButton(Context context) {
         super(context);
-        this.callback = listener;
+        init();
+    }
+
+    public ActionButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public ActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        inflate(getContext(), R.layout.com_auth0_lock_mode_selection_layout, this);
-        RadioGroup modeGroup = (RadioGroup) findViewById(R.id.com_auth0_lock_form_radio_mode_group);
-        modeGroup.setOnCheckedChangeListener(this);
+        inflate(getContext(), R.layout.com_auth0_lock_action_button, this);
+        progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
+        progress.setVisibility(View.GONE);
+        icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        if (checkedId == R.id.com_auth0_lock_mode_log_in) {
-            callback.onModeSelected(FormLayout.DatabaseForm.LOG_IN);
-        } else if (checkedId == R.id.com_auth0_lock_mode_sign_up) {
-            callback.onModeSelected(FormLayout.DatabaseForm.SIGN_UP);
-        }
+    /**
+     * Used to display a progress bar and disable the button.
+     *
+     * @param show whether to show the progress bar or not.
+     */
+    public void showProgress(boolean show) {
+        setEnabled(!show);
+        progress.setVisibility(show ? VISIBLE : GONE);
+        icon.setVisibility(show ? GONE : VISIBLE);
     }
 
-    public interface ModeSelectedListener {
-        void onModeSelected(FormLayout.DatabaseForm mode);
-    }
 }

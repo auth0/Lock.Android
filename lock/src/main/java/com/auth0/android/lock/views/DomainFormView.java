@@ -25,65 +25,76 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.squareup.otto.Bus;
+import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class DomainFormView extends FormView {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
+    private final LockWidgetEnterprise lockWidget;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
-    private TextView ssoMessage;
+    private View changePasswordBtn;
+    private TextView topMessage;
     private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
-    private Button actionButton;
     private boolean singleConnection;
     private boolean fallbackToDatabase;
+    private boolean corporateSSO;
+    private boolean changePasswordEnabled;
 
     public DomainFormView(Context context) {
         super(context);
+        lockWidget = null;
     }
 
-    public DomainFormView(Context context, Bus lockBus, Configuration configuration, boolean fallbackToDatabase) {
-        super(context, lockBus);
-        this.fallbackToDatabase = fallbackToDatabase;
-        init(configuration);
+    public DomainFormView(LockWidgetEnterprise lockWidget) {
+        super(lockWidget.getContext());
+        this.lockWidget = lockWidget;
+        init();
     }
 
-    private void init(Configuration configuration) {
+    private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
-        ssoMessage = (TextView) findViewById(R.id.com_auth0_lock_sso_message);
-        domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseStrategies());
-        actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_log_in);
-        actionButton.setOnClickListener(this);
-        actionButton.setEnabled(false);
+        changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
+        topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
+        domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setVisibility(View.GONE);
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setVisibility(View.GONE);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        emailInput.chooseDataType(configuration);
+        emailInput.chooseDataType(lockWidget.getConfiguration());
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
-        if (!fallbackToDatabase && configuration.getEnterpriseStrategies().size() == 1 && configuration.getEnterpriseStrategies().get(0).getConnections().size() == 1) {
+        fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
+        changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().isChangePasswordEnabled();
+        changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
+        changePasswordBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lockWidget.showChangePasswordForm();
+            }
+        });
+        if (!fallbackToDatabase && lockWidget.getConfiguration().getEnterpriseStrategies().size() == 1 && lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
-            setupSingleConnectionUI(configuration.getEnterpriseStrategies().get(0).getConnections().get(0));
+            setupSingleConnectionUI(lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().get(0));
         } else {
             setupMultipleConnectionUI();
         }
@@ -92,7 +103,6 @@ public class DomainFormView extends FormView {
     private void setupMultipleConnectionUI() {
         if (fallbackToDatabase) {
             passwordInput.setVisibility(VISIBLE);
-            actionButton.setEnabled(true);
         }
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -115,14 +125,14 @@ public class DomainFormView extends FormView {
                 Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
                     passwordInput.setVisibility(GONE);
-                    ssoMessage.setVisibility(View.VISIBLE);
-                    actionButton.setEnabled(true);
-                    actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), currentConnection.getValueForKey("domain")));
+                    lockWidget.showSSOEnabledMessage(true);
+                    changePasswordBtn.setVisibility(GONE);
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
-                    ssoMessage.setVisibility(View.GONE);
-                    actionButton.setEnabled(true);
-                    actionButton.setText(R.string.com_auth0_lock_action_log_in);
+                    lockWidget.showSSOEnabledMessage(false);
+                    if (changePasswordEnabled) {
+                        changePasswordBtn.setVisibility(VISIBLE);
+                    }
                 } else {
                     resetDomain();
                 }
@@ -132,14 +142,15 @@ public class DomainFormView extends FormView {
 
     private void setupSingleConnectionUI(Connection connection) {
         currentConnection = connection;
-        actionButton.setEnabled(true);
-        actionButton.setText(String.format(getResources().getString(R.string.com_auth0_lock_action_login_with), domainParser.domainForConnection(connection)));
+        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
+        lockWidget.showSSOEnabledMessage(true);
+        topMessage.setText(loginWithCorporate);
         if (connection.isActiveFlowEnabled()) {
             passwordInput.setVisibility(View.VISIBLE);
         }
         usernameInput.setVisibility(VISIBLE);
         emailInput.setVisibility(GONE);
-        ssoMessage.setVisibility(View.GONE);
+        topMessage.setVisibility(View.VISIBLE);
     }
 
     private void resetDomain() {
@@ -148,8 +159,9 @@ public class DomainFormView extends FormView {
         passwordInput.clearInput();
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
-        actionButton.setEnabled(false);
-        actionButton.setText(R.string.com_auth0_lock_action_log_in);
+        topMessage.setVisibility(View.GONE);
+        lockWidget.showSSOEnabledMessage(false);
+        corporateSSO = false;
     }
 
     private String getUsername() {
@@ -160,51 +172,74 @@ public class DomainFormView extends FormView {
         return passwordInput.getText();
     }
 
-
+    @Nullable
     @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
+    public Object submitForm() {
+        if (!validateForm()) {
+            return null;
         }
 
         if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
-            super.onClick(v);
-        } else if (currentConnection == null && fallbackToDatabase) {
-            super.onClick(v);
+            return getActionEvent();
+        } else if (currentConnection == null) {
+            return getActionEvent();
         } else {
+            String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
+            topMessage.setText(loginWithCorporate);
+            topMessage.setVisibility(View.VISIBLE);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
-            if (currentUsername != null) {
+            if (currentUsername != null && !currentUsername.isEmpty()) {
                 usernameInput.setText(currentUsername);
             }
             emailInput.setVisibility(GONE);
+            changePasswordBtn.setVisibility(GONE);
+            corporateSSO = true;
         }
+        return null;
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
             return new EnterpriseLoginEvent(currentConnection.getName(), getUsername(), getPassword());
         } else if (currentConnection != null) {
             return new EnterpriseLoginEvent(currentConnection.getName());
         } else {
-            return new DatabaseLoginEvent(getUsername(), getPassword());
+            return fallbackToDatabase ? new DatabaseLoginEvent(getUsername(), getPassword()) : new EnterpriseLoginEvent(null);
         }
     }
 
     @Override
-    protected boolean hasValidData() {
+    public boolean validateForm() {
         boolean valid = true;
         if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate();
+            valid = emailInput.validate(true);
         }
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = valid && usernameInput.validate();
+            valid = usernameInput.validate(true) && valid;
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = valid && passwordInput.validate();
+            valid = passwordInput.validate(true) && valid;
         }
         return valid;
+    }
+
+    /**
+     * Triggers the back action on the form.
+     *
+     * @return true if it was handled, false otherwise
+     */
+    public boolean onBackPressed() {
+        if (!singleConnection && corporateSSO) {
+            resetDomain();
+            lockWidget.showSSOEnabledMessage(true);
+            if (changePasswordEnabled && currentConnection == null) {
+                changePasswordBtn.setVisibility(VISIBLE);
+            }
+            return true;
+        }
+        return false;
     }
 
 }

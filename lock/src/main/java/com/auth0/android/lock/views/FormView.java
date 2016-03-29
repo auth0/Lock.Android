@@ -26,42 +26,28 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.auth0.android.lock.Configuration;
-import com.squareup.otto.Bus;
-
-public abstract class FormView extends RelativeLayout implements View.OnClickListener {
+public abstract class FormView extends RelativeLayout {
     private static final String TAG = FormView.class.getSimpleName();
-    private Bus bus;
 
     public FormView(Context context) {
         super(context);
     }
 
-    public FormView(Context context, Bus lockBus) {
-        super(context);
-        this.bus = lockBus;
-    }
-
     @Nullable
-    protected abstract Object getActionEvent();
+    public abstract Object getActionEvent();
 
-    protected abstract boolean hasValidData();
+    public abstract boolean validateForm();
 
-    @Override
-    public void onClick(View v) {
-        if (!hasValidData()) {
-            return;
-        }
-        Object event = getActionEvent();
-        if (event != null) {
-            bus.post(event);
-        } else {
-            Log.w(TAG, "The Action Event received from the FormView was null.");
-        }
-    }
+
+    /**
+     * ActionButton has been clicked, and validation should be run on the current
+     * visible form. If this validation passes, an action event will be returned.
+     *
+     * @return the action event of the current visible form or null if validation failed
+     */
+    @Nullable
+    public abstract Object submitForm();
 
 }

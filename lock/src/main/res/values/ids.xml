@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_signup_form_view.xml
+  ~ ids.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,26 +22,10 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_username"
-        style="@style/Lock.Theme.Input"
-        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin"
-        app:Auth0.InputDataType="username" />
-
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_email"
-        style="@style/Lock.Theme.Input"
-        app:Auth0.InputDataType="email" />
-
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_password"
-        style="@style/Lock.Theme.Input"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
-        app:Auth0.InputDataType="password" />
-</LinearLayout>
+<resources>
+    <item name="com_auth0_lock_form_selector" type="id" />
+    <item name="com_auth0_lock_action_button" type="id" />
+    <item name="com_auth0_lock_terms_layout" type="id" />
+    <item name="com_auth0_lock_form_layout" type="id" />
+    <item name="com_auth0_lock_sso_layout" type="id" />
+</resources>

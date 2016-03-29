@@ -24,44 +24,46 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin">
 
     <RadioGroup
         android:id="@+id/com_auth0_lock_form_radio_mode_group"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/com_auth0_lock_mode_log_in"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/com_auth0_lock_form_selector_height"
             android:layout_marginLeft="2dp"
             android:layout_weight=".5"
             android:background="@drawable/com_auth0_lock_radio_button_left_background"
             android:button="@android:color/transparent"
             android:checked="true"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:padding="5dp"
             android:text="@string/com_auth0_lock_action_log_in"
             android:textAllCaps="true"
-            android:textColor="@drawable/com_auth0_lock_radio_button_text_color" />
+            android:textColor="@drawable/com_auth0_lock_radio_button_text_color"
+            android:textSize="@dimen/com_auth0_lock_switcher_text" />
 
         <RadioButton
             android:id="@+id/com_auth0_lock_mode_sign_up"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/com_auth0_lock_form_selector_height"
             android:layout_marginRight="2dp"
             android:layout_weight=".5"
             android:background="@drawable/com_auth0_lock_radio_button_right_background"
             android:button="@android:color/transparent"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:padding="5dp"
             android:text="@string/com_auth0_lock_action_sign_up"
             android:textAllCaps="true"
-            android:textColor="@drawable/com_auth0_lock_radio_button_text_color" />
+            android:textColor="@drawable/com_auth0_lock_radio_button_text_color"
+            android:textSize="@dimen/com_auth0_lock_switcher_text" />
 
     </RadioGroup>
 

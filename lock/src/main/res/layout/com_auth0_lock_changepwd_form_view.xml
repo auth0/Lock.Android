@@ -24,24 +24,40 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:orientation="vertical">
 
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username_email"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:Auth0.InputDataType="username_or_email">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_small"
+        android:gravity="center_horizontal"
+        android:text="@string/com_auth0_lock_title_change_password"
+        android:textSize="@dimen/com_auth0_lock_title_text" />
 
-        <requestFocus />
-    </com.auth0.android.lock.views.ValidatedUsernameInputView>
-
-    <Button
-        android:id="@+id/com_auth0_lock_action_btn"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Action" />
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="@string/com_auth0_lock_description_change_password"
+        android:textSize="@dimen/com_auth0_lock_small_text" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <com.auth0.android.lock.views.ValidatedUsernameInputView
+            android:id="@+id/com_auth0_lock_input_username_email"
+            style="@style/Lock.Theme.Input"
+            app:Auth0.InputDataType="username_or_email" />
+
+    </RelativeLayout>
 
 </LinearLayout>

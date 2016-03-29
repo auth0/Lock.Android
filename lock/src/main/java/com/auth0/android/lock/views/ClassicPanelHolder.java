@@ -25,20 +25,37 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.views.interfaces.LockWidget;
+import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicPanelHolder extends LinearLayout implements ModeSelectionView.FormModeChangedListener, FormLayout.ChangePasswordListener {
+public class ClassicPanelHolder extends RelativeLayout implements View.OnClickListener, ModeSelectionView.ModeSelectedListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
 
     private final Bus bus;
-    private final Configuration configuration;
+    private Configuration configuration;
     private FormLayout formLayout;
     private ModeSelectionView modeSelectionView;
-    private SocialView socialLayout;
+    private ChangePasswordFormView changePwdForm;
+    private ActionButton actionButton;
+    private LayoutParams termsParams;
+    private LayoutParams ssoParams;
+    private View ssoLayout;
+    private ProgressBar loadingProgressBar;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -46,62 +63,221 @@ public class ClassicPanelHolder extends LinearLayout implements ModeSelectionVie
         configuration = null;
     }
 
-    public ClassicPanelHolder(Context context, Bus lockBus, Configuration configuration) {
+    public ClassicPanelHolder(Context context, Bus lockBus) {
         super(context);
         this.bus = lockBus;
-        this.configuration = configuration;
-        init();
+        this.configuration = null;
+        showWaitForConfigurationLayout();
     }
 
     private void init() {
-        setOrientation(VERTICAL);
-        boolean showSocial = !configuration.getSocialStrategies().isEmpty();
-        boolean showLoginForm = configuration.getDefaultDatabaseConnection() != null || !configuration.getEnterpriseStrategies().isEmpty();
-
-        if (showSocial && showLoginForm) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            formLayout = new FormLayout(getContext(), bus, configuration, this);
-        } else if (showLoginForm) {
-            formLayout = new FormLayout(getContext(), bus, configuration, this);
-        } else if (showSocial) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-        }
-
-        if (configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled()) {
-            modeSelectionView = new ModeSelectionView(getContext(), this);
-            addView(modeSelectionView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        if (formLayout != null) {
-            addView(formLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (configuration == null) {
+            showConfigurationMissingLayout();
+        } else {
+            showPanelLayout();
         }
     }
 
-    public boolean onBackPressed() {
-        boolean handled = formLayout != null && formLayout.onBackPressed();
-        if (handled) {
-            modeSelectionView.setVisibility(View.VISIBLE);
-            if (socialLayout != null) {
-                socialLayout.setVisibility(View.VISIBLE);
+    private void showWaitForConfigurationLayout() {
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        loadingProgressBar = new ProgressBar(getContext());
+        loadingProgressBar.setIndeterminate(true);
+        addView(loadingProgressBar, params);
+    }
+
+    private void showPanelLayout() {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+
+        ssoParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        ssoParams.addRule(ALIGN_PARENT_TOP, TRUE);
+
+        boolean showModeSelection = configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled();
+        if (showModeSelection) {
+            RelativeLayout.LayoutParams switcherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            switcherParams.addRule(ALIGN_PARENT_TOP, TRUE);
+            switcherParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+            modeSelectionView = new ModeSelectionView(getContext(), this);
+            modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
+            addView(modeSelectionView, switcherParams);
+            ssoParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        }
+
+        ssoLayout = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
+        ssoLayout.setId(R.id.com_auth0_lock_sso_layout);
+        addView(ssoLayout, ssoParams);
+
+        formLayout = new FormLayout(this);
+        formLayout.setId(R.id.com_auth0_lock_form_layout);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.alignWithParent = true;
+        params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+        params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        addView(formLayout, params);
+
+        RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
+        actionButton = new ActionButton(getContext());
+        actionButton.setId(R.id.com_auth0_lock_action_button);
+        actionButton.setOnClickListener(this);
+        addView(actionButton, actionParams);
+
+        termsParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        termsParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+        termsLayout.setId(R.id.com_auth0_lock_terms_layout);
+        addView(termsLayout, termsParams);
+
+        onModeSelected(FormLayout.DatabaseForm.LOG_IN);
+    }
+
+    /**
+     * Setup the panel to show the correct forms by reading the Auth0 Configuration.
+     *
+     * @param configuration the configuration to use on this panel, or null if it is missing.
+     */
+    public void configurePanel(@Nullable Configuration configuration) {
+        removeView(loadingProgressBar);
+        loadingProgressBar = null;
+        this.configuration = configuration;
+        if (configuration != null) {
+            init();
+            return;
+        }
+        showConfigurationMissingLayout();
+    }
+
+    private void showConfigurationMissingLayout() {
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        final LinearLayout errorLayout = new LinearLayout(getContext());
+        errorLayout.setOrientation(LinearLayout.VERTICAL);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+
+        TextView errorText = new TextView(getContext());
+        errorText.setText(R.string.com_auth0_lock_result_message_error_retrieving_configuration);
+        errorText.setGravity(CENTER_IN_PARENT);
+
+        Button retryButton = new Button(getContext());
+        retryButton.setText(R.string.com_auth0_lock_action_retry);
+        retryButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bus.post(new FetchApplicationEvent());
+                removeView(errorLayout);
+                showWaitForConfigurationLayout();
             }
+        });
+        LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        childParams.gravity = Gravity.CENTER;
+        errorLayout.addView(errorText, childParams);
+        errorLayout.addView(retryButton, childParams);
+        addView(errorLayout, params);
+    }
+
+    private void showChangePasswordForm(boolean show) {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        formLayout.setVisibility(show ? GONE : VISIBLE);
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
+        }
+
+        if (show) {
+            changePwdForm = new ChangePasswordFormView(this);
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+            params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+            params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
+            params.addRule(CENTER_IN_PARENT, TRUE);
+            addView(changePwdForm, params);
+        } else if (changePwdForm != null) {
+            removeView(changePwdForm);
+            changePwdForm = null;
+        }
+    }
+
+    /**
+     * Triggers the back action on the form.
+     *
+     * @return true if it was handled, false otherwise
+     */
+    public boolean onBackPressed() {
+        if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
+            showChangePasswordForm(false);
+            return true;
+        }
+        boolean handled = formLayout != null && formLayout.onBackPressed();
+        if (handled && modeSelectionView != null) {
+            modeSelectionView.setVisibility(ssoLayout.getVisibility() == VISIBLE ? GONE : VISIBLE);
         }
         return handled;
     }
 
-    @Override
-    public void onFormModeChanged(FormLayout.FormMode mode) {
-        if (formLayout != null) {
-            formLayout.changeFormMode(mode);
+    /**
+     * Displays a progress bar on top of the action button. This will also
+     * enable or disable the action button.
+     *
+     * @param show whether to show or hide the action bar.
+     */
+    public void showProgress(boolean show) {
+        if (actionButton != null) {
+            actionButton.showProgress(show);
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setEnabled(!show);
         }
     }
 
     @Override
-    public void onShowChangePassword() {
-        modeSelectionView.setVisibility(View.GONE);
-        if (socialLayout != null) {
-            socialLayout.setVisibility(View.GONE);
+    public void onModeSelected(FormLayout.DatabaseForm mode) {
+        formLayout.changeFormMode(mode);
+        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_terms_height);
+        termsParams.height = mode == FormLayout.DatabaseForm.SIGN_UP ? height : 0;
+    }
+
+    @Override
+    public void showSSOEnabledMessage(boolean show) {
+        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
+        ssoParams.height = show ? height : 0;
+        ssoLayout.setLayoutParams(ssoParams);
+        if (formLayout != null) {
+            formLayout.showOnlyEnterprise(show);
         }
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
+        }
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object event;
+        if (changePwdForm != null) {
+            event = changePwdForm.submitForm();
+        } else {
+            event = formLayout.onActionPressed();
+        }
+        if (event != null) {
+            bus.post(event);
+        }
+    }
+
+    @Override
+    public void showChangePasswordForm() {
+        showChangePasswordForm(true);
+    }
+
+    @Override
+    public void onSocialLogin(SocialConnectionEvent event) {
+        bus.post(event);
     }
 }

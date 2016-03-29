@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock.events;
 
+import android.support.annotation.Nullable;
+
 public class EnterpriseLoginEvent {
 
     private final String connectionName;
@@ -31,20 +33,21 @@ public class EnterpriseLoginEvent {
     private final String password;
     private final boolean useRO;
 
-    public EnterpriseLoginEvent(String connectionName, String username, String password) {
+    public EnterpriseLoginEvent(@Nullable String connectionName, String username, String password) {
         this.connectionName = connectionName;
         this.username = username;
         this.password = password;
         this.useRO = true;
     }
 
-    public EnterpriseLoginEvent(String connectionName) {
+    public EnterpriseLoginEvent(@Nullable String connectionName) {
         this.connectionName = connectionName;
         this.username = "";
         this.password = "";
         this.useRO = false;
     }
 
+    @Nullable
     public String getConnectionName() {
         return connectionName;
     }

@@ -62,12 +62,17 @@
         </activity>
         <!--Auth0 PasswordlessLock End-->
 
-
         <!--Auth0 Lock Embedded WebView-->
         <activity
             android:name="com.auth0.android.lock.provider.WebViewActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/MyLock.Theme" />
         <!--Auth0 Lock Embedded WebView End-->
+
+        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
+        <activity
+            android:name="com.auth0.android.lock.CountryCodeActivity"
+            android:theme="@style/Lock.Theme.ActionBar" />
+        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
 
     </application>
 

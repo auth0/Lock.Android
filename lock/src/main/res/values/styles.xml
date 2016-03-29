@@ -24,14 +24,39 @@
 
 <resources>
 
-    <style name="Lock.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Lock.Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
         <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
     </style>
 
-    <!-- TODO: Style the hint -->
-    <style name="Lock.Theme.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/com_auth0_lock_text_hint_color</item>
+    <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+
+    <style name="Lock.Theme.Input">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="Lock.Theme.LoginButton">
+        <item name="android:src">@android:drawable/stat_sys_phone_call_forward</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_login_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:background">@color/com_auth0_lock_login_background</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="com_auth0_lock_forgot_password_text">
+        <item name="android:text">@string/com_auth0_lock_action_forgot_password</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:padding">@dimen/com_auth0_lock_widget_small_margin</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_small_text</item>
     </style>
 </resources>

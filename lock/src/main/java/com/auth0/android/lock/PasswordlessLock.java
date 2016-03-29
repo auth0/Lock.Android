@@ -47,7 +47,7 @@ import java.util.Map;
 
 public class PasswordlessLock {
 
-    private AuthenticationCallback callback;
+    private final AuthenticationCallback callback;
     private final Options options;
 
     public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
@@ -64,7 +64,7 @@ public class PasswordlessLock {
     /**
      * Listens to PasswordlessLockActivity broadcasts and fires the correct action on the AuthenticationCallback.
      */
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent data) {
@@ -139,11 +139,7 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
-        // unregister listener (if something was registered)
-        if (this.receiver != null) {
-            LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
-            this.receiver = null;
-        }
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     }
 
     /**

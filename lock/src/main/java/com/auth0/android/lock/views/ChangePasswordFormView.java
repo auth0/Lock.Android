@@ -25,12 +25,11 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.widget.Button;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
-import com.squareup.otto.Bus;
+import com.auth0.android.lock.views.interfaces.LockWidget;
 
 public class ChangePasswordFormView extends FormView {
 
@@ -41,23 +40,19 @@ public class ChangePasswordFormView extends FormView {
         super(context);
     }
 
-    public ChangePasswordFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus);
-        init(configuration);
+    public ChangePasswordFormView(LockWidget lockWidget) {
+        super(lockWidget.getContext());
+        init(lockWidget.getConfiguration());
     }
 
     private void init(Configuration configuration) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(configuration);
-
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_change_password);
-        actionButton.setOnClickListener(this);
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         return new DatabaseChangePasswordEvent(getUsernameOrEmail());
     }
 
@@ -66,7 +61,15 @@ public class ChangePasswordFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
-        return usernameEmailInput.validate();
+    public boolean validateForm() {
+        return usernameEmailInput.validate(true);
+    }
+
+    @Override
+    public Object submitForm() {
+        if (validateForm()) {
+            return getActionEvent();
+        }
+        return null;
     }
 }

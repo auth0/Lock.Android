@@ -25,56 +25,179 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
+import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.CountryCodeChangeEvent;
+import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
+import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessPanelHolder extends LinearLayout {
+public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
     private final Bus bus;
-    private final Configuration configuration;
-    private PasswordlessFormView passwordlessLayout;
+    private Configuration configuration;
+    private PasswordlessFormLayout formLayout;
+    private ActionButton actionButton;
+    private ProgressBar loadingProgressBar;
 
     public PasswordlessPanelHolder(Context context) {
         super(context);
         bus = null;
-        configuration = null;
     }
 
-    public PasswordlessPanelHolder(Context context, Bus lockBus, Configuration configuration) {
+    public PasswordlessPanelHolder(Context context, Bus lockBus) {
         super(context);
         this.bus = lockBus;
-        this.configuration = configuration;
-        init();
+        showWaitForConfigurationLayout();
     }
 
     private void init() {
-        setOrientation(VERTICAL);
-        boolean showSocial = !configuration.getSocialStrategies().isEmpty();
-        boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
-
-        SocialView socialLayout = null;
-        if (showSocial && showPasswordless) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-            passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
-        } else if (showPasswordless) {
-            passwordlessLayout = new PasswordlessFormView(getContext(), bus, configuration.getPasswordlessMode());
-        } else if (showSocial) {
-            socialLayout = new SocialView(getContext(), bus, configuration, SocialView.Mode.List);
-        }
-
-        if (socialLayout != null) {
-            addView(socialLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        if (passwordlessLayout != null) {
-            addView(passwordlessLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (configuration == null) {
+            showConfigurationMissingLayout();
+        } else {
+            showPanelLayout();
         }
     }
 
+    private void showWaitForConfigurationLayout() {
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        loadingProgressBar = new ProgressBar(getContext());
+        loadingProgressBar.setIndeterminate(true);
+        addView(loadingProgressBar, params);
+    }
+
+    private void showPanelLayout() {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
+        actionButton = new ActionButton(getContext());
+        actionButton.setId(R.id.com_auth0_lock_action_button);
+        actionButton.setOnClickListener(this);
+        addView(actionButton, actionParams);
+
+        formLayout = new PasswordlessFormLayout(this);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+        params.addRule(ALIGN_PARENT_TOP, TRUE);
+        params.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        addView(formLayout, params);
+    }
+
+    public void configurePanel(@Nullable Configuration configuration) {
+        removeView(loadingProgressBar);
+        loadingProgressBar = null;
+        this.configuration = configuration;
+        if (configuration != null) {
+            init();
+            return;
+        }
+        showConfigurationMissingLayout();
+    }
+
+    private void showConfigurationMissingLayout() {
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        final LinearLayout errorLayout = new LinearLayout(getContext());
+        errorLayout.setOrientation(LinearLayout.VERTICAL);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+
+        TextView errorText = new TextView(getContext());
+        errorText.setText(R.string.com_auth0_lock_result_message_error_retrieving_configuration);
+        errorText.setGravity(CENTER_IN_PARENT);
+
+        Button retryButton = new Button(getContext());
+        retryButton.setText(R.string.com_auth0_lock_action_retry);
+        retryButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bus.post(new FetchApplicationEvent());
+                removeView(errorLayout);
+                showWaitForConfigurationLayout();
+            }
+        });
+        LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        childParams.gravity = Gravity.CENTER;
+        errorLayout.addView(errorText, childParams);
+        errorLayout.addView(retryButton, childParams);
+        addView(errorLayout, params);
+    }
+
+    /**
+     * Triggers the back action on the form.
+     *
+     * @return true if it was handled, false otherwise
+     */
     public boolean onBackPressed() {
-        return passwordlessLayout != null && passwordlessLayout.onBackPressed();
+        return formLayout != null && formLayout.onBackPressed();
+    }
+
+    /**
+     * Displays a progress bar on top of the action button. This will also
+     * enable or disable the action button.
+     *
+     * @param show whether to show or hide the action bar.
+     */
+    public void showProgress(boolean show) {
+        if (actionButton != null) {
+            actionButton.showProgress(show);
+        }
+    }
+
+    /**
+     * Notifies the form that the code was correctly sent and it should now wait
+     * for the user to input the valid code.
+     */
+    public void codeSent() {
+        formLayout.codeSent();
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public void onSocialLogin(SocialConnectionEvent event) {
+        bus.post(event);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object event = formLayout.onActionPressed();
+        if (event != null) {
+            bus.post(event);
+            actionButton.showProgress(true);
+        }
+    }
+
+    @Override
+    public void onCountryCodeChangeRequest() {
+        bus.post(new CountryCodeChangeEvent());
+    }
+
+    /**
+     * Notifies the form that a new country code was selected by the user.
+     *
+     * @param country  the selected country iso code (2 chars).
+     * @param dialCode the dial code for this country
+     */
+    public void onCountryCodeSelected(String country, String dialCode) {
+        formLayout.onCountryCodeSelected(country, dialCode);
     }
 }

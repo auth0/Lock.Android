@@ -25,12 +25,12 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.widget.Button;
+import android.support.annotation.Nullable;
+import android.view.View;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
-import com.squareup.otto.Bus;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class LogInFormView extends FormView {
 
@@ -42,25 +42,29 @@ public class LogInFormView extends FormView {
         super(context);
     }
 
-    public LogInFormView(Context context, Bus lockBus, Configuration configuration) {
-        super(context, lockBus);
-        init(configuration);
+    public LogInFormView(LockWidgetForm lockWidget) {
+        super(lockWidget.getContext());
+        init(lockWidget);
     }
 
-    private void init(Configuration configuration) {
+    private void init(final LockWidgetForm lockWidget) {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.chooseDataType(configuration);
+        usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
-
-        Button actionButton = (Button) findViewById(R.id.com_auth0_lock_action_btn);
-        actionButton.setText(R.string.com_auth0_lock_action_log_in);
-        actionButton.setOnClickListener(this);
+        View changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
+        changePasswordBtn.setVisibility(lockWidget.getConfiguration().isChangePasswordEnabled() ? View.VISIBLE : View.GONE);
+        changePasswordBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lockWidget.showChangePasswordForm();
+            }
+        });
     }
 
     @Override
-    protected Object getActionEvent() {
+    public Object getActionEvent() {
         return new DatabaseLoginEvent(getUsernameOrEmail(), getPassword());
     }
 
@@ -73,7 +77,16 @@ public class LogInFormView extends FormView {
     }
 
     @Override
-    protected boolean hasValidData() {
-        return usernameEmailInput.validate() && passwordInput.validate();
+    public boolean validateForm() {
+        boolean valid = usernameEmailInput.validate(true);
+        valid = passwordInput.validate(true) && valid;
+        return valid;
     }
+
+    @Nullable
+    @Override
+    public Object submitForm() {
+        return validateForm() ? getActionEvent() : null;
+    }
+
 }

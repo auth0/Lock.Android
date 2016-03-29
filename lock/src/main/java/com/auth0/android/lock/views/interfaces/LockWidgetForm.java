@@ -1,5 +1,5 @@
 /*
- * StrategyTest.java
+ * LockWidgetDatabase.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,34 +22,9 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.views.interfaces;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+public interface LockWidgetForm extends LockWidgetSocial {
 
-public class StrategyMatcher extends BaseMatcher<Strategy> {
-
-    private final String name;
-
-    public StrategyMatcher(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean matches(Object o) {
-        if (!(o instanceof Strategy)) {
-            return false;
-        }
-        Strategy strategy = (Strategy) o;
-        return name.equals(strategy.getName());
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("a Strategy with name ").appendValue(name);
-    }
-
-    public static StrategyMatcher isStrategy(Strategies strategy) {
-        return new StrategyMatcher(strategy.getName());
-    }
+    void showChangePasswordForm();
 }

@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <com.auth0.android.lock.views.HeaderView
+        android:id="@+id/com_auth0_lock_header"
+        style="@style/Lock.Theme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/com_auth0_lock_result_message"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/com_auth0_lock_result_message_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/com_auth0_lock_result_message_error_background"
+        android:gravity="center"
+        android:paddingBottom="@dimen/com_auth0_lock_widget_small_margin"
+        android:paddingTop="@dimen/com_auth0_lock_widget_small_margin"
+        android:textColor="@color/com_auth0_lock_error_message"
+        android:textSize="17sp"
+        android:visibility="gone"
+        tools:text="There was an error"
+        tools:visibility="visible" />
 
     <RelativeLayout
+        android:id="@+id/com_auth0_lock_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/com_auth0_lock_header" />
 
-        <com.auth0.android.lock.views.HeaderView
-            android:id="@+id/com_auth0_lock_header"
-            style="@style/Lock.Theme"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_alignParentTop="true" />
-
-        <com.auth0.android.lock.views.LockProgress
-            android:id="@+id/com_auth0_lock_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/com_auth0_lock_header"
-            android:layout_centerHorizontal="true" />
-
-        <LinearLayout
-            android:id="@+id/com_auth0_lock_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/com_auth0_lock_progress"
-            android:orientation="vertical"
-            android:paddingTop="10dp" />
-
-    </RelativeLayout>
-
-
-</ScrollView>
+</RelativeLayout>

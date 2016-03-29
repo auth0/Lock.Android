@@ -26,31 +26,32 @@ package com.auth0.android.lock.adapters;
 
 import android.support.annotation.NonNull;
 
-public class Country implements Comparable {
-    private String name;
-    private String code;
+import java.util.Locale;
 
-    public Country(String name, String code) {
-        this.name = name;
-        this.code = code;
+public class Country implements Comparable<Country> {
+    private String isoCode;
+    private String dialCode;
+
+    public Country(String isoCode, String dialCode) {
+        this.isoCode = isoCode;
+        this.dialCode = dialCode;
     }
 
-    public String getName() {
-        return name;
+    public String getDialCode() {
+        return dialCode;
     }
 
-    public String getCode() {
-        return code;
+    public String getIsoCode() {
+        return isoCode;
+    }
+
+    public String getDisplayName() {
+        Locale locale = new Locale("", isoCode);
+        return locale.getDisplayName();
     }
 
     @Override
-    public String toString() {
-        return String.format("%s (%s)", getName(), getCode());
-    }
-
-    @Override
-    public int compareTo(@NonNull Object another) {
-        Country o = (Country) another;
-        return getName().compareToIgnoreCase(o.getName());
+    public int compareTo(@NonNull Country another) {
+        return getDisplayName().compareToIgnoreCase(another.getDisplayName());
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_signup_form_view.xml
+  ~ com_auth0_lock_sso_layout.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -23,25 +23,26 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/com_auth0_lock_sso_message"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="@dimen/com_auth0_lock_sso_height"
+    android:layout_alignParentTop="true"
+    android:background="@color/com_auth0_lock_sso_background"
+    android:gravity="center"
+    android:orientation="horizontal">
 
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_username"
-        style="@style/Lock.Theme.Input"
-        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin"
-        app:Auth0.InputDataType="username" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/com_auth0_lock_ic_input_password_error" />
 
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_email"
-        style="@style/Lock.Theme.Input"
-        app:Auth0.InputDataType="email" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/com_auth0_lock_widget_horizontal_margin_small"
+        android:text="@string/com_auth0_lock_single_sign_on_enabled"
+        android:textAllCaps="true"
+        android:textColor="@color/com_auth0_lock_sso_text"
+        android:textSize="@dimen/com_auth0_lock_sso_text" />
 
-    <com.auth0.android.lock.views.ValidatedInputView
-        android:id="@+id/com_auth0_lock_input_password"
-        style="@style/Lock.Theme.Input"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
-        app:Auth0.InputDataType="password" />
 </LinearLayout>

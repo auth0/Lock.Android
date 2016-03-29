@@ -6,12 +6,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
-import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,10 +17,6 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 
 class SocialButton extends RelativeLayout {
-
-    private static final int BTN_CORNER_RADIUS = 5;
-
-    private enum Corners {ONLY_LEFT, ONLY_RIGHT, ALL}
 
     @ColorInt
     private int backgroundColor = 0;
@@ -34,85 +27,47 @@ class SocialButton extends RelativeLayout {
     @DrawableRes
     private int iconRes;
     private View touchArea;
+    private final boolean smallSize;
     private boolean configured;
 
-    public SocialButton(Context context) {
+    public SocialButton(Context context, boolean smallSize) {
         super(context);
         this.configured = false;
-        init();
-    }
-
-    public SocialButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.configured = false;
-        init();
-    }
-
-    public SocialButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.configured = false;
+        this.smallSize = smallSize;
         init();
     }
 
     private void init() {
-        inflate(getContext(), R.layout.com_auth0_lock_btn_social_large, this);
-        setClickable(false);
-
+        inflate(getContext(), smallSize ? R.layout.com_auth0_lock_btn_social_small : R.layout.com_auth0_lock_btn_social_large, this);
         ImageView icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
-        TextView title = (TextView) findViewById(R.id.com_auth0_lock_text);
-        touchArea = findViewById(R.id.com_auth0_lock_touch_area);
+        touchArea = smallSize ? (View) icon.getParent() : findViewById(R.id.com_auth0_lock_touch_area);
 
         if (isInEditMode() || !configured) {
             return;
         }
+        setClickable(false);
 
-        icon.setImageResource(iconRes);
-        title.setTextColor(textColor);
-        title.setText(titleRes);
+        ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
+        if (!smallSize) {
+            TextView title = (TextView) findViewById(R.id.com_auth0_lock_text);
+            title.setTextColor(textColor);
+            title.setText(titleRes);
 
-        Drawable leftBackground = getRoundedBackground(backgroundColor, Corners.ONLY_LEFT);
-        Drawable rightBackground = getRoundedBackground(backgroundColor, Corners.ONLY_RIGHT);
-        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            icon.setBackground(leftBackground);
-            title.setBackground(rightBackground);
-            touchArea.setBackground(touchBackground);
+            ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
+            rightBackground.getPaint().setAlpha(230);
+            ViewUtils.setBackground(title, rightBackground);
         } else {
-            //noinspection deprecation
-            icon.setBackgroundDrawable(leftBackground);
-            //noinspection deprecation
-            title.setBackgroundDrawable(rightBackground);
-            //noinspection deprecation
-            touchArea.setBackgroundDrawable(touchBackground);
-        }
-    }
-
-    private ShapeDrawable getRoundedBackground(@ColorInt int color, Corners corners) {
-        float r = ViewUtils.dipToPixels(getResources(), BTN_CORNER_RADIUS);
-        float[] outerR = new float[0];
-        switch (corners) {
-            case ONLY_LEFT:
-                outerR = new float[]{r, r, 0, 0, 0, 0, r, r};
-                break;
-            case ONLY_RIGHT:
-                outerR = new float[]{0, 0, r, r, r, r, 0, 0};
-                break;
-            case ALL:
-                outerR = new float[]{r, r, r, r, r, r, r, r};
-                break;
+            leftBackground.getPaint().setAlpha(230);
         }
 
-        RoundRectShape rr = new RoundRectShape(outerR, null, null);
-        ShapeDrawable drawable = new ShapeDrawable(rr);
-        drawable.getPaint().setColor(color);
-        if (corners == Corners.ONLY_RIGHT) {
-            drawable.getPaint().setAlpha(230);
-        }
-        return drawable;
+        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
+        ViewUtils.setBackground(touchArea, touchBackground);
+        ViewUtils.setBackground(icon, leftBackground);
+        icon.setImageResource(iconRes);
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int color) {
-        Drawable background = getRoundedBackground(color, Corners.ALL);
+        Drawable background = ViewUtils.getRoundedBackground(getResources(), color, ViewUtils.Corners.ALL);
 
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed},

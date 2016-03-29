@@ -1,5 +1,5 @@
 /*
- * DbLayout.java
+ * PasswordlessFormLayout.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -33,30 +33,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.views.interfaces.LockWidget;
+import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
+import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
-public class FormLayout extends LinearLayout {
-    private static final int SINGLE_FORM_POSITION = 0;
-    private static final int MULTIPLE_FORMS_POSITION = 2;
-
-    private final LockWidgetEnterprise lockWidget;
-    private boolean showDatabase;
-    private boolean showEnterprise;
-
-    private LogInFormView loginForm;
-    private SignUpFormView signUpForm;
-    private DomainFormView domainForm;
+public class PasswordlessFormLayout extends LinearLayout implements PasswordlessFormView.OnPasswordlessRetryListener {
+    private final LockWidget lockWidget;
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
+    private PasswordlessFormView passwordlessLayout;
 
-    public enum DatabaseForm {LOG_IN, SIGN_UP}
-
-    public FormLayout(Context context) {
+    public PasswordlessFormLayout(Context context) {
         super(context);
         lockWidget = null;
     }
 
-    public FormLayout(LockWidgetEnterprise lockWidget) {
+    public PasswordlessFormLayout(LockWidget lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -66,101 +59,41 @@ public class FormLayout extends LinearLayout {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
-        showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
-        showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
+        boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessStrategy() != null;
+
         if (showSocial) {
-            addSocialLayout(showDatabase || showEnterprise);
+            addSocialLayout(showPasswordless);
         }
-        if (showDatabase || showEnterprise) {
+        if (showPasswordless) {
             if (showSocial) {
                 addSeparator();
             }
-            addFormLayout();
+            addPasswordlessLayout();
         }
     }
 
     private void addSocialLayout(boolean smallButtons) {
-        socialLayout = new SocialView(lockWidget, smallButtons);
+        socialLayout = new SocialView((LockWidgetSocial) lockWidget, smallButtons);
         addView(socialLayout);
     }
 
     private void addSeparator() {
         orSeparatorMessage = new TextView(getContext());
-        orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
+        PasswordlessMode passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
+        int stringRes = R.string.com_auth0_lock_passwordless_email_forms_separator;
+        if (passwordlessMode != null && (passwordlessMode == PasswordlessMode.SMS_LINK || passwordlessMode == PasswordlessMode.SMS_CODE)) {
+            stringRes = R.string.com_auth0_lock_passwordless_sms_forms_separator;
+        }
+        orSeparatorMessage.setText(stringRes);
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_small);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
         addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    /**
-     * Change the current form mode
-     *
-     * @param mode the new DatabaseForm to change to
-     */
-    public void changeFormMode(DatabaseForm mode) {
-        if (!showDatabase && !showEnterprise) {
-            return;
-        }
-        switch (mode) {
-            case LOG_IN:
-                addFormLayout();
-                break;
-            case SIGN_UP:
-                showSignUpForm();
-                break;
-        }
-    }
-
-    public void showOnlyEnterprise(boolean show) {
-        if (socialLayout != null) {
-            socialLayout.setVisibility(show ? GONE : VISIBLE);
-        }
-        if (orSeparatorMessage != null) {
-            orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
-        }
-    }
-
-    private void showSignUpForm() {
-        removePreviousForm();
-
-        if (signUpForm == null) {
-            signUpForm = new SignUpFormView(lockWidget);
-        }
-        addView(signUpForm);
-    }
-
-    private void showDatabaseLoginForm() {
-        removePreviousForm();
-
-        if (loginForm == null) {
-            loginForm = new LogInFormView(lockWidget);
-        }
-        addView(loginForm);
-    }
-
-    private void showEnterpriseForm() {
-        removePreviousForm();
-
-        if (domainForm == null) {
-            domainForm = new DomainFormView(lockWidget);
-        }
-        addView(domainForm);
-    }
-
-    private void removePreviousForm() {
-        View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
-        if (existingForm != null) {
-            removeView(existingForm);
-        }
-    }
-
-    private void addFormLayout() {
-        if (showDatabase && !showEnterprise) {
-            showDatabaseLoginForm();
-        } else {
-            showEnterpriseForm();
-        }
+    private void addPasswordlessLayout() {
+        passwordlessLayout = new PasswordlessFormView((LockWidgetPasswordless) lockWidget, this);
+        addView(passwordlessLayout);
     }
 
     /**
@@ -169,10 +102,32 @@ public class FormLayout extends LinearLayout {
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        if (domainForm != null && domainForm.onBackPressed()) {
+        if (passwordlessLayout != null && passwordlessLayout.onBackPressed()) {
+            if (socialLayout != null) {
+                socialLayout.setVisibility(VISIBLE);
+            }
+            if (orSeparatorMessage != null) {
+                orSeparatorMessage.setVisibility(VISIBLE);
+            }
             return true;
         }
         return false;
+    }
+
+    /**
+     * Notifies the form that the code was correctly sent and it should now wait
+     * for the user to input the valid code.
+     */
+    public void codeSent() {
+        if (passwordlessLayout != null) {
+            if (socialLayout != null) {
+                socialLayout.setVisibility(GONE);
+            }
+            if (orSeparatorMessage != null) {
+                orSeparatorMessage.setVisibility(GONE);
+            }
+            passwordlessLayout.codeSent();
+        }
     }
 
     /**
@@ -183,11 +138,31 @@ public class FormLayout extends LinearLayout {
      */
     @Nullable
     public Object onActionPressed() {
-        View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
+        View existingForm = getChildAt(getChildCount() == 1 ? 0 : 2);
         if (existingForm != null) {
             FormView form = (FormView) existingForm;
             return form.submitForm();
         }
         return null;
+    }
+
+    @Override
+    public void onPasswordlessRetry() {
+        if (socialLayout != null) {
+            socialLayout.setVisibility(VISIBLE);
+        }
+        if (orSeparatorMessage != null) {
+            orSeparatorMessage.setVisibility(VISIBLE);
+        }
+    }
+
+    /**
+     * Notifies the form that a new country code was selected by the user.
+     *
+     * @param country  the selected country iso code (2 chars).
+     * @param dialCode the dial code for this country
+     */
+    public void onCountryCodeSelected(String country, String dialCode) {
+        passwordlessLayout.onCountryCodeSelected(country, dialCode);
     }
 }

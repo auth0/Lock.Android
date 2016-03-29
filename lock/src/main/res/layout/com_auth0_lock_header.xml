@@ -28,26 +28,28 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/com_auth0_lock_header_height"
     android:background="?attr/Auth0.HeaderBackground"
+    android:minHeight="@dimen/com_auth0_lock_header_height"
     tools:background="#40000000"
     tools:context=".LockActivity">
 
     <ImageView
         android:id="@+id/com_auth0_lock_header_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/com_auth0_lock_header_logo_size"
+        android:layout_height="@dimen/com_auth0_lock_header_logo_size"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:scaleType="center"
-        android:src="?attr/Auth0.HeaderLogo" />
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_small"
+        android:scaleType="fitCenter"
+        android:src="?attr/Auth0.HeaderLogo"
+        tools:src="@drawable/com_auth0_lock_header_logo" />
 
     <TextView
         android:id="@+id/com_auth0_lock_header_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/com_auth0_lock_header_logo"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_small_margin"
         android:gravity="center_horizontal"
         android:text="?attr/Auth0.HeaderText"
-        android:textSize="@dimen/com_auth0_lock_header_text_size" />
+        android:textSize="@dimen/com_auth0_lock_header_text"
+        tools:text="Auth0" />
 </RelativeLayout>
