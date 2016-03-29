@@ -31,9 +31,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -42,7 +40,6 @@ import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
-import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class DomainFormView extends FormView implements TextView.OnEditorActionListener {
 

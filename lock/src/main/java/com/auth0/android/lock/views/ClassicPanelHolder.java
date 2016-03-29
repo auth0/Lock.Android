@@ -26,7 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -298,8 +297,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (configuration == null) {
             return;
         }
-        if (modeSelectionView != null) {
+        if (modeSelectionView != null && changePwdForm == null) {
             modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (changePwdForm != null) {
+            changePwdForm.onKeyboardStateChanged(isOpen);
         }
         actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         formLayout.onKeyboardStateChanged(isOpen);

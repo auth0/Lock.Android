@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -38,6 +39,8 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
     private final LockWidget lockWidget;
     private ValidatedUsernameInputView usernameEmailInput;
+    private View title;
+    private View text;
 
     public ChangePasswordFormView(Context context) {
         super(context);
@@ -52,6 +55,8 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
+        title = findViewById(R.id.com_auth0_lock_title);
+        text = findViewById(R.id.com_auth0_lock_text);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
         usernameEmailInput.setOnEditorActionListener(this);
@@ -85,5 +90,10 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
             lockWidget.onFormSubmit();
         }
         return false;
+    }
+
+    public void onKeyboardStateChanged(boolean isOpen) {
+        title.setVisibility(isOpen ? GONE : VISIBLE);
+        text.setVisibility(isOpen ? GONE : VISIBLE);
     }
 }
