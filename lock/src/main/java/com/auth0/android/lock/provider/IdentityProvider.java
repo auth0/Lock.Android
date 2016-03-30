@@ -46,8 +46,8 @@ public abstract class IdentityProvider {
     public static final int GOOGLE_PLUS_REQUEST_CODE = 501;
     public static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
 
-    protected final PermissionHandler handler;
     protected IdentityProviderCallback callback;
+    protected final PermissionHandler handler;
 
     private String lastConnectionName;
 
@@ -56,8 +56,8 @@ public abstract class IdentityProvider {
     }
 
     IdentityProvider(@NonNull IdentityProviderCallback callback, @NonNull PermissionHandler handler) {
-        this.handler = new PermissionHandler();
         this.callback = callback;
+        this.handler = handler;
     }
 
     /**
