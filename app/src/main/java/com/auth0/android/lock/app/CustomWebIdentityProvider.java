@@ -24,12 +24,12 @@
 
 package com.auth0.android.lock.app;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.Auth0;
@@ -40,11 +40,10 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CustomWebIdentityProvider implements IdentityProvider {
+public class CustomWebIdentityProvider extends IdentityProvider {
 
     private static final String TAG = CustomWebIdentityProvider.class.getName();
 
@@ -67,14 +66,13 @@ public class CustomWebIdentityProvider implements IdentityProvider {
     private static final String RESPONSE_TYPE_TOKEN = "token";
     private static final String SCOPE_TYPE_OPENID = "openid";
 
-
-    private IdentityProviderCallback callback;
     private CallbackHelper helper;
     private final Auth0 account;
     private Map<String, Object> parameters;
     private String lastState;
 
-    public CustomWebIdentityProvider() {
+    public CustomWebIdentityProvider(@NonNull IdentityProviderCallback callback) {
+        super(callback);
         this.helper = new CallbackHelper("com.auth0.android.lock.app");
         this.account = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
         this.parameters = new HashMap<>();
@@ -82,19 +80,11 @@ public class CustomWebIdentityProvider implements IdentityProvider {
 
     @Override
     public String[] getRequiredAndroidPermissions() {
-        return new String[]{};
+        return new String[]{Manifest.permission.GET_ACCOUNTS};
     }
 
     @Override
-    public void onAndroidPermissionsRequireExplanation(List<String> permissions) {
-    }
-
-    public void setCallback(@Nullable IdentityProviderCallback callback) {
-        this.callback = callback;
-    }
-
-    @Override
-    public void start(final Activity activity, @NonNull final String connectionName) {
+    protected void processAuthentication(final Activity activity, final String connectionName) {
         new android.support.v7.app.AlertDialog.Builder(activity)
                 .setTitle(R.string.native_idp_title)
                 .setMessage(R.string.native_idp_message_start)
@@ -125,10 +115,6 @@ public class CustomWebIdentityProvider implements IdentityProvider {
         final Intent intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         activity.startActivity(intent);
-    }
-
-    @Override
-    public void stop() {
     }
 
     @Override
@@ -163,6 +149,10 @@ public class CustomWebIdentityProvider implements IdentityProvider {
             callback.onSuccess(new Credentials(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
         }
         return true;
+    }
+
+    @Override
+    public void stop() {
     }
 
     @Override

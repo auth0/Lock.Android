@@ -41,8 +41,7 @@ public class ProviderHandler implements ProviderResolver {
     public IdentityProvider onIdentityProviderRequest(Context context, IdentityProviderCallback callback, String connectionName) {
         IdentityProvider idp = null;
         if (connectionName.equals("google-oauth2")) {
-            idp = new CustomWebIdentityProvider();
-            idp.setCallback(callback);
+            idp = new CustomWebIdentityProvider(callback);
         }
         return idp;
     }

@@ -27,12 +27,10 @@
 
 package com.auth0.android.lock.provider;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.Auth0;
@@ -40,7 +38,6 @@ import com.auth0.android.lock.R;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,7 +46,7 @@ import java.util.UUID;
  * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link WebViewActivity}.
  * This behaviour is changed using {@link #setUseBrowser(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
  */
-public class WebIdentityProvider implements IdentityProvider {
+public class WebIdentityProvider extends IdentityProvider {
 
     private static final String TAG = WebIdentityProvider.class.getName();
 
@@ -70,19 +67,17 @@ public class WebIdentityProvider implements IdentityProvider {
     private static final String RESPONSE_TYPE_TOKEN = "token";
     private static final String SCOPE_TYPE_OPENID = "openid";
 
-
     private boolean useBrowser;
-    private IdentityProviderCallback callback;
     private CallbackHelper helper;
     private final Auth0 account;
     private Map<String, Object> parameters;
     private String clientInfo;
     private String lastState;
 
-    public WebIdentityProvider(CallbackHelper helper, Auth0 account, IdentityProviderCallback idpCallback) {
+    public WebIdentityProvider(CallbackHelper helper, Auth0 account, @NonNull IdentityProviderCallback idpCallback) {
+        super(idpCallback);
         this.helper = helper;
         this.account = account;
-        this.callback = idpCallback;
         this.useBrowser = true;
         this.parameters = new HashMap<>();
     }
@@ -96,10 +91,6 @@ public class WebIdentityProvider implements IdentityProvider {
         this.useBrowser = useBrowser;
     }
 
-    public void setCallback(@Nullable IdentityProviderCallback callback) {
-        this.callback = callback;
-    }
-
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
     }
@@ -110,11 +101,7 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void onAndroidPermissionsRequireExplanation(List<String> permissions) {
-    }
-
-    @Override
-    public void start(Activity activity, @NonNull String connectionName) {
+    protected void processAuthentication(Activity activity, String connectionName) {
         if (account.getAuthorizeUrl() == null) {
             if (callback != null) {
                 callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_authorize_url, null);
@@ -146,10 +133,6 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void stop() {
-    }
-
-    @Override
     public boolean authorize(Activity activity, @NonNull AuthorizeResult data) {
         if (!data.isValid(WEBVIEW_AUTH_REQUEST_CODE)) {
             return false;
@@ -178,8 +161,13 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
+    public void stop() {
+    }
+
+    @Override
     public void clearSession() {
     }
+
 
     public void setClientInfo(String clientInfo) {
         this.clientInfo = clientInfo;
