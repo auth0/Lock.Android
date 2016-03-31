@@ -109,22 +109,14 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         if (waitingForCode) {
             return new PasswordlessLoginEvent(choosenMode, submittedEmailOrNumber, getInputText());
         } else {
-            return new PasswordlessLoginEvent(choosenMode, getInputText());
+            previousInput = getInputText();
+            submittedEmailOrNumber = countryCodeSelector.getSelectedCountry().getDialCode() + previousInput;
+            return new PasswordlessLoginEvent(choosenMode, submittedEmailOrNumber);
         }
     }
 
     private String getInputText() {
-        String withoutBlanks = passwordlessInput.getText().replace(" ", "");
-        switch (choosenMode) {
-            case SMS_CODE:
-            case SMS_LINK:
-                if (countryCodeSelector.getVisibility() == VISIBLE) {
-                    previousInput = withoutBlanks;
-                    submittedEmailOrNumber = countryCodeSelector.getSelectedCountry().getDialCode() + withoutBlanks;
-                    return submittedEmailOrNumber;
-                }
-        }
-        return withoutBlanks;
+        return passwordlessInput.getText().replace(" ", "");
     }
 
     @Override
