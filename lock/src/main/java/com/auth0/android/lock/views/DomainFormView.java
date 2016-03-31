@@ -76,9 +76,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
-        usernameInput.setVisibility(View.GONE);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setVisibility(View.GONE);
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
@@ -103,9 +101,8 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     }
 
     private void setupMultipleConnectionUI() {
-        if (fallbackToDatabase) {
-            passwordInput.setVisibility(VISIBLE);
-        }
+        usernameInput.setVisibility(View.GONE);
+        passwordInput.setVisibility(fallbackToDatabase ? VISIBLE : GONE);
         emailInput.setOnEditorActionListener(this);
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -140,16 +137,14 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     }
 
     private void setupSingleConnectionUI(Connection connection) {
-        currentConnection = connection;
-        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
-        lockWidget.showSSOEnabledMessage(true);
-        topMessage.setText(loginWithCorporate);
-        if (connection.isActiveFlowEnabled()) {
-            passwordInput.setVisibility(View.VISIBLE);
-        }
         usernameInput.setVisibility(VISIBLE);
+        passwordInput.setVisibility(connection.isActiveFlowEnabled() ? View.VISIBLE : GONE);
+        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
+        topMessage.setText(loginWithCorporate);
+        lockWidget.showSSOEnabledMessage(true);
         emailInput.setVisibility(GONE);
         topMessage.setVisibility(View.VISIBLE);
+        currentConnection = connection;
     }
 
     private void resetDomain() {
