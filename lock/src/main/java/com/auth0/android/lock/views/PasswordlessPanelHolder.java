@@ -213,9 +213,6 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        if (configuration == null) {
-            return;
-        }
         actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         formLayout.onKeyboardStateChanged(isOpen);
     }

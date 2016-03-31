@@ -147,7 +147,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     }
 
     private void onKeyboardStateChanged(boolean isOpen) {
-        if (isOpen == keyboardIsShown) {
+        if (isOpen == keyboardIsShown || configuration == null) {
             return;
         }
         keyboardIsShown = isOpen;

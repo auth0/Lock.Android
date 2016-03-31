@@ -303,9 +303,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        if (configuration == null) {
-            return;
-        }
         keyboardIsOpen = isOpen;
         if (modeSelectionView != null && changePwdForm == null && !ssoMessageShown) {
             modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
