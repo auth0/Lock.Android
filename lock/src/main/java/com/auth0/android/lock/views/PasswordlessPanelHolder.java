@@ -160,20 +160,21 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     /**
-     * Notifies the form that the code was correctly sent and it should now wait
-     * for the user to input the valid code.
-     */
-    public void codeSent() {
-        formLayout.codeSent();
-    }
-
-    /**
      * Notifies the form that the authentication has succeed, for it to erase state data.
      */
     public void onAuthenticationSucceed() {
         if (formLayout != null) {
             formLayout.onAuthenticationSucceed();
         }
+    }
+
+    /**
+     * Notifies the form that the code was correctly sent and it should now wait
+     * for the user to input the valid code.
+     */
+    @Override
+    public void onPasswordlessCodeSent() {
+        formLayout.codeSent();
     }
 
     @Override

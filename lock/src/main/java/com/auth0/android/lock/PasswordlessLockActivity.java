@@ -230,6 +230,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         resendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resendButton.setVisibility(View.GONE);
                 rootView.removeView(panelHolder);
                 panelHolder = new PasswordlessPanelHolder(PasswordlessLockActivity.this, lockBus);
                 if (configuration != null) {
@@ -420,7 +421,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     panelHolder.showProgress(false);
-                    panelHolder.codeSent();
+                    panelHolder.onPasswordlessCodeSent();
                     if (!options.useCodePasswordless()) {
                         showLinkSentLayout();
                     }

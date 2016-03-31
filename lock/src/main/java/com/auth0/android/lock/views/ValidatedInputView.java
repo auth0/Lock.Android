@@ -126,7 +126,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
                 break;
             case PHONE_NUMBER:
-                input.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 break;

@@ -185,11 +185,11 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         boolean waitingForCode = passwordlessLayout != null && passwordlessLayout.isWaitingForCode();
-        if (orSeparatorMessage != null && !waitingForCode) {
-            orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
+        if (orSeparatorMessage != null) {
+            orSeparatorMessage.setVisibility(waitingForCode || isOpen ? GONE : VISIBLE);
         }
-        if (socialLayout != null && !waitingForCode) {
-            socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
+        if (socialLayout != null) {
+            socialLayout.setVisibility(waitingForCode || isOpen ? GONE : VISIBLE);
         }
         if (passwordlessLayout != null) {
             passwordlessLayout.onKeyboardStateChanged(isOpen);

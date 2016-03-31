@@ -54,7 +54,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
     private boolean waitingForCode;
-    private boolean resendButtonShown;
+    private boolean resendButtonHasAlreadyBeenShown;
     private final boolean showTitle;
     private TextView topMessage;
     private TextView resendButton;
@@ -64,6 +64,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private String previousInput;
     private TextView gotCodeButton;
     private SharedPreferences sp;
+    private boolean keyboardIsOpen;
 
     public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
         super(lockWidget.getContext());
@@ -102,6 +103,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 break;
             case EMAIL_LINK:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_email;
+                sentMessage = R.string.com_auth0_lock_title_passwordless_link_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodeSelector.setVisibility(GONE);
                 break;
@@ -113,6 +115,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 break;
             case SMS_LINK:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
+                sentMessage = R.string.com_auth0_lock_title_passwordless_link_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodeSelector.setVisibility(VISIBLE);
                 break;
@@ -129,7 +132,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
 
     private boolean shouldShowGotCodeButton() {
         long d = sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) - System.currentTimeMillis() + CODE_TTL;
-        return d > 0;
+        return d > 0 && !waitingForCode;
     }
 
     private void reloadPreviouslyUsedData() {
@@ -220,7 +223,6 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     }
 
     private void codeSent(boolean persistTime) {
-//        submittedEmailOrNumber = getInputText();
         if (persistTime) {
             persistRecentlyUsedEmailOrNumber();
             removeCallbacks(resendTimeoutShower);
@@ -238,8 +240,8 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     final Runnable resendTimeoutShower = new Runnable() {
         @Override
         public void run() {
-            resendButtonShown = true;
-            if (waitingForCode) {
+            resendButtonHasAlreadyBeenShown = true;
+            if (waitingForCode && !keyboardIsOpen) {
                 resendButton.setVisibility(View.VISIBLE);
             }
         }
@@ -260,17 +262,17 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.com_auth0_lock_resend) {
+            waitingForCode = false;
             if (callback != null) {
-                waitingForCode = false;
                 selectPasswordlessMode();
                 passwordlessInput.setText(previousInput);
                 callback.onPasswordlessRetry();
             }
         } else if (id == R.id.com_auth0_lock_got_code) {
-            if (resendButtonShown) {
+            if (resendButtonHasAlreadyBeenShown) {
                 resendButton.setVisibility(View.VISIBLE);
             }
-            codeSent(false);
+            lockWidget.onPasswordlessCodeSent();
         } else if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
         }
@@ -296,10 +298,11 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
+        keyboardIsOpen = isOpen;
         if (!waitingForCode && (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE)) {
             countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
         }
-        if (waitingForCode && resendButtonShown) {
+        if (waitingForCode && resendButtonHasAlreadyBeenShown) {
             resendButton.setVisibility(isOpen ? GONE : VISIBLE);
         } else if (shouldShowGotCodeButton()) {
             gotCodeButton.setVisibility(isOpen ? GONE : VISIBLE);
