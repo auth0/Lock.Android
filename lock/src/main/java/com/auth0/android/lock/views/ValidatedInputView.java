@@ -214,7 +214,6 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     public void setText(String text) {
         input.setText("");
         input.append(text);
-        validate(false);
     }
 
     /**
