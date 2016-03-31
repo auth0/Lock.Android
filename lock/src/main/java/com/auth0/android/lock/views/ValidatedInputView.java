@@ -101,33 +101,33 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         switch (dataType) {
             case EMAIL:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                inputIcon = R.drawable.com_auth0_lock_ic_input_email;
+                inputIcon = R.drawable.com_auth0_lock_ic_email;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_email);
                 break;
             case PASSWORD:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 input.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                inputIcon = R.drawable.com_auth0_lock_ic_input_password;
+                inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_password);
                 break;
             case USERNAME_OR_EMAIL:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                inputIcon = R.drawable.com_auth0_lock_ic_input_username;
+                inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
                 break;
             case USERNAME:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                inputIcon = R.drawable.com_auth0_lock_ic_input_username;
+                inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 break;
             case NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                inputIcon = R.drawable.com_auth0_lock_ic_input_password;
+                inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
                 break;
             case PHONE_NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                inputIcon = R.drawable.com_auth0_lock_ic_input_username;
+                inputIcon = R.drawable.com_auth0_lock_ic_mobile;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 break;
         }

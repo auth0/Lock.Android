@@ -23,6 +23,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,7 +36,7 @@
         android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
         android:background="@color/com_auth0_lock_input_field_border_normal"
         android:scaleType="center"
-        android:src="@drawable/com_auth0_lock_ic_input_email" />
+        app:srcCompat="@drawable/com_auth0_lock_ic_email" />
 
     <EditText
         android:id="@+id/com_auth0_lock_input"
