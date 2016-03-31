@@ -36,6 +36,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
+        android:lineSpacingExtra="@dimen/com_auth0_lock_normal_text_spacing"
         android:textSize="@dimen/com_auth0_lock_normal_text"
         android:visibility="gone" />
 

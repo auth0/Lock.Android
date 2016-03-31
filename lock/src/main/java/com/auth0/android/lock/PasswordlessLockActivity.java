@@ -134,7 +134,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        boolean showingSuccessLayout = passwordlessSuccessCover != null && passwordlessSuccessCover.getVisibility() == View.VISIBLE;
+        boolean showingSuccessLayout = passwordlessSuccessCover.getVisibility() == View.VISIBLE;
         if (!showingSuccessLayout && panelHolder.onBackPressed()) {
             return;
         }
@@ -162,19 +162,6 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             resultMessage.setVisibility(View.GONE);
         }
     };
-
-    private void showLinkSentLayout() {
-        TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
-        successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_email_sent), lastPasswordlessEmailOrNumber));
-        TextView resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
-        resendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                passwordlessSuccessCover.setVisibility(View.GONE);
-            }
-        });
-        passwordlessSuccessCover.setVisibility(View.VISIBLE);
-    }
 
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
@@ -363,6 +350,12 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
     };
 
+    private void showLinkSentLayout() {
+        TextView textView = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
+        textView.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessEmailOrNumber));
+        passwordlessSuccessCover.setVisibility(View.VISIBLE);
+    }
+
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
         public void onSuccess(Authentication authentication) {
@@ -377,6 +370,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
+                    passwordlessSuccessCover.setVisibility(View.GONE);
                 }
             });
         }
