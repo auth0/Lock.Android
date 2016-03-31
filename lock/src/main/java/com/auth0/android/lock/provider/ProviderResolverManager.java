@@ -28,25 +28,39 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+/**
+ * Holds an instance of ProviderResolver that can be used to query for IdentityProviders given
+ * a connection name.
+ * If a new instance is not set before calling get, it provides a default safe implementation of the
+ * ProviderResolver that always returns a null IdentityProvider.
+ */
 public abstract class ProviderResolverManager {
     private static ProviderResolver resolver;
 
+    /**
+     * Gets the ProviderResolver instance to query for IdentityProviders.
+     *
+     * @return the ProviderResolver instance to query for IdentityProviders.
+     */
     @NonNull
     public static ProviderResolver get() {
         if (resolver == null) {
-            return new FallbackProviderResolver();
+            return new NullProviderResolver();
         }
         return resolver;
     }
 
+    /**
+     * Sets the ProviderResolver instance to query for IdentityProviders.
+     */
     public static void set(@NonNull ProviderResolver providerResolver) {
         resolver = providerResolver;
     }
 
-    static class FallbackProviderResolver implements ProviderResolver {
+    private static class NullProviderResolver implements ProviderResolver {
         @Nullable
         @Override
-        public IdentityProvider onIdentityProviderRequest(Context context, IdentityProviderCallback callback, String connectionName) {
+        public IdentityProvider onIdentityProviderRequest(Context context, @NonNull IdentityProviderCallback callback, @NonNull String connectionName) {
             return null;
         }
     }

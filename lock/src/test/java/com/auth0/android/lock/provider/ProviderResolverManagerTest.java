@@ -44,7 +44,6 @@ public class ProviderResolverManagerTest {
         ProviderResolver resolver = ProviderResolverManager.get();
 
         assertThat(resolver, notNullValue());
-        assertThat(resolver, instanceOf(ProviderResolverManager.FallbackProviderResolver.class));
     }
 
     @Test

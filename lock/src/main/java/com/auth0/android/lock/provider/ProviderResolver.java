@@ -25,6 +25,7 @@
 package com.auth0.android.lock.provider;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public interface ProviderResolver {
@@ -35,8 +36,9 @@ public interface ProviderResolver {
      * @param context        a valid context.
      * @param callback       the callback Lock will call with the authentication result.
      * @param connectionName the requested connection name
-     * @return the identity provider to use with this connection, or null to use the default.
+     * @return the identity provider to use with this connection, or null if you there is no
+     * associated provider for the connection name.
      */
     @Nullable
-    IdentityProvider onIdentityProviderRequest(Context context, IdentityProviderCallback callback, String connectionName);
+    IdentityProvider onIdentityProviderRequest(Context context, @NonNull IdentityProviderCallback callback, @NonNull String connectionName);
 }

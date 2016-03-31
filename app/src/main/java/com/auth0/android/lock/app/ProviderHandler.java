@@ -25,20 +25,18 @@
 package com.auth0.android.lock.app;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.IdentityProvider;
 import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.ProviderResolver;
-import com.auth0.android.lock.provider.WebIdentityProvider;
 
 public class ProviderHandler implements ProviderResolver {
 
     @Nullable
     @Override
-    public IdentityProvider onIdentityProviderRequest(Context context, IdentityProviderCallback callback, String connectionName) {
+    public IdentityProvider onIdentityProviderRequest(Context context, @NonNull IdentityProviderCallback callback, @NonNull String connectionName) {
         IdentityProvider idp = null;
         if (connectionName.equals("google-oauth2")) {
             idp = new CustomWebIdentityProvider(callback);
