@@ -75,6 +75,7 @@ public class LockActivity extends AppCompatActivity {
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final long RESULT_MESSAGE_DURATION = 3000;
+    private static final double KEYBOARD_OPENED_DELTA = 0.15;
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -89,6 +90,8 @@ public class LockActivity extends AppCompatActivity {
     private HeaderView headerView;
 
     private boolean keyboardIsShown;
+    private ViewGroup contentView;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,7 +107,7 @@ public class LockActivity extends AppCompatActivity {
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
-        ViewGroup rootContainer = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
+        contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
@@ -112,21 +115,36 @@ public class LockActivity extends AppCompatActivity {
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         lockBus.post(new FetchApplicationEvent());
-        setupKeyboardListener(rootContainer);
+        setupKeyboardListener();
     }
 
-    private void setupKeyboardListener(final ViewGroup container) {
-        container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    private void setupKeyboardListener() {
+        keyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 Rect r = new Rect();
-                container.getWindowVisibleDisplayFrame(r);
-                int screenHeight = container.getRootView().getHeight();
+                contentView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = contentView.getRootView().getHeight();
                 int keypadHeight = screenHeight - r.bottom;
-                onKeyboardStateChanged(keypadHeight > screenHeight * 0.15);
+                onKeyboardStateChanged(keypadHeight > screenHeight * KEYBOARD_OPENED_DELTA);
             }
-        });
+        };
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(keyboardListener);
     }
+
+    private void removeKeyboardListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
+        }
+        keyboardListener = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        removeKeyboardListener();
+        super.onDestroy();
+    }
+
 
     private void onKeyboardStateChanged(boolean isOpen) {
         if (isOpen == keyboardIsShown) {
@@ -269,10 +287,7 @@ public class LockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        //called on social button click
-        if (!options.useBrowser()) {
-            panelHolder.showProgress(true);
-        }
+        panelHolder.showProgress(!options.useBrowser());
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
