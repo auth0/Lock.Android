@@ -29,8 +29,10 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -39,9 +41,8 @@ import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
-import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class DomainFormView extends FormView {
+public class DomainFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = DomainFormView.class.getSimpleName();
     private final LockWidgetEnterprise lockWidget;
@@ -74,10 +75,9 @@ public class DomainFormView extends FormView {
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
-        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setVisibility(View.GONE);
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
-        usernameInput.setVisibility(View.GONE);
+        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
@@ -101,9 +101,9 @@ public class DomainFormView extends FormView {
     }
 
     private void setupMultipleConnectionUI() {
-        if (fallbackToDatabase) {
-            passwordInput.setVisibility(VISIBLE);
-        }
+        usernameInput.setVisibility(View.GONE);
+        passwordInput.setVisibility(fallbackToDatabase ? VISIBLE : GONE);
+        emailInput.setOnEditorActionListener(this);
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -126,13 +126,9 @@ public class DomainFormView extends FormView {
                 if (currentConnection != null) {
                     passwordInput.setVisibility(GONE);
                     lockWidget.showSSOEnabledMessage(true);
-                    changePasswordBtn.setVisibility(GONE);
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
                     lockWidget.showSSOEnabledMessage(false);
-                    if (changePasswordEnabled) {
-                        changePasswordBtn.setVisibility(VISIBLE);
-                    }
                 } else {
                     resetDomain();
                 }
@@ -141,16 +137,14 @@ public class DomainFormView extends FormView {
     }
 
     private void setupSingleConnectionUI(Connection connection) {
-        currentConnection = connection;
-        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
-        lockWidget.showSSOEnabledMessage(true);
-        topMessage.setText(loginWithCorporate);
-        if (connection.isActiveFlowEnabled()) {
-            passwordInput.setVisibility(View.VISIBLE);
-        }
         usernameInput.setVisibility(VISIBLE);
+        passwordInput.setVisibility(connection.isActiveFlowEnabled() ? View.VISIBLE : GONE);
+        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
+        topMessage.setText(loginWithCorporate);
+        lockWidget.showSSOEnabledMessage(true);
         emailInput.setVisibility(GONE);
         topMessage.setVisibility(View.VISIBLE);
+        currentConnection = connection;
     }
 
     private void resetDomain() {
@@ -159,6 +153,7 @@ public class DomainFormView extends FormView {
         passwordInput.clearInput();
         usernameInput.setVisibility(View.GONE);
         usernameInput.clearInput();
+        topMessage.setText(null);
         topMessage.setVisibility(View.GONE);
         lockWidget.showSSOEnabledMessage(false);
         corporateSSO = false;
@@ -195,6 +190,9 @@ public class DomainFormView extends FormView {
             emailInput.setVisibility(GONE);
             changePasswordBtn.setVisibility(GONE);
             corporateSSO = true;
+            usernameInput.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
         }
         return null;
     }
@@ -242,4 +240,31 @@ public class DomainFormView extends FormView {
         return false;
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT && currentConnection != null) {
+            lockWidget.onFormSubmit();
+        }
+        return false;
+    }
+
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
+    public void onKeyboardStateChanged(boolean isOpen) {
+        changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
+        topMessage.setVisibility(isOpen && topMessage.getText().length() > 0 ? GONE : VISIBLE);
+    }
+
+    /**
+     * Getter for the current state of enterprise matched domain.
+     *
+     * @return whether there is currently a domain match or not.
+     */
+    public boolean isEnterpriseDomainMatch() {
+        return currentConnection != null;
+    }
 }

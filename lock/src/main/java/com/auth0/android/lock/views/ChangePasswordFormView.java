@@ -25,30 +25,41 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 
-public class ChangePasswordFormView extends FormView {
+public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
+    private final LockWidget lockWidget;
     private ValidatedUsernameInputView usernameEmailInput;
+    private View title;
+    private View text;
 
     public ChangePasswordFormView(Context context) {
         super(context);
+        lockWidget = null;
     }
 
     public ChangePasswordFormView(LockWidget lockWidget) {
         super(lockWidget.getContext());
-        init(lockWidget.getConfiguration());
+        this.lockWidget = lockWidget;
+        init();
     }
 
-    private void init(Configuration configuration) {
+    private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
+        title = findViewById(R.id.com_auth0_lock_title);
+        text = findViewById(R.id.com_auth0_lock_text);
         usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.chooseDataType(configuration);
+        usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
+        usernameEmailInput.setOnEditorActionListener(this);
     }
 
     @Override
@@ -71,5 +82,24 @@ public class ChangePasswordFormView extends FormView {
             return getActionEvent();
         }
         return null;
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            lockWidget.onFormSubmit();
+        }
+        return false;
+    }
+
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
+    public void onKeyboardStateChanged(boolean isOpen) {
+        title.setVisibility(isOpen ? GONE : VISIBLE);
+        text.setVisibility(isOpen ? GONE : VISIBLE);
     }
 }

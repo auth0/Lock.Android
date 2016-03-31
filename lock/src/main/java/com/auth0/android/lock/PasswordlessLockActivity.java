@@ -28,6 +28,7 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +58,7 @@ import com.auth0.android.lock.provider.IdentityProviderCallback;
 import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
+import com.auth0.android.lock.views.HeaderView;
 import com.auth0.android.lock.views.PasswordlessPanelHolder;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
@@ -70,6 +74,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private static final String TAG = PasswordlessLockActivity.class.getSimpleName();
     private static final int COUNTRY_CODE_REQUEST = 120;
     private static final long RESULT_MESSAGE_DURATION = 3000;
+    private static final double KEYBOARD_OPENED_DELTA = 0.15;
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -83,6 +88,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private String lastPasswordlessEmailOrNumber;
     private WebIdentityProvider lastIdp;
     private ProgressDialog progressDialog;
+    private boolean keyboardIsShown;
+    private HeaderView headerView;
+    private ViewGroup contentView;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,11 +101,14 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return;
         }
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
+        contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
+        headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
@@ -104,6 +116,43 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         lockBus.post(new FetchApplicationEvent());
+        setupKeyboardListener();
+    }
+
+    private void setupKeyboardListener() {
+        keyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                contentView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = contentView.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+                onKeyboardStateChanged(keypadHeight > screenHeight * KEYBOARD_OPENED_DELTA);
+            }
+        };
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(keyboardListener);
+    }
+
+    private void removeKeyboardListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
+        }
+        keyboardListener = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        removeKeyboardListener();
+        super.onDestroy();
+    }
+
+    private void onKeyboardStateChanged(boolean isOpen) {
+        if (isOpen == keyboardIsShown || configuration == null) {
+            return;
+        }
+        keyboardIsShown = isOpen;
+        headerView.onKeyboardStateChanged(isOpen);
+        panelHolder.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {
@@ -284,7 +333,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        panelHolder.showProgress(true);
+        panelHolder.showProgress(!options.useBrowser());
         lastPasswordlessEmailOrNumber = null;
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);

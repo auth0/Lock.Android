@@ -56,6 +56,9 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     private LayoutParams ssoParams;
     private View ssoLayout;
     private ProgressBar loadingProgressBar;
+    private FormLayout.DatabaseForm currentMode;
+    private boolean keyboardIsOpen;
+    private boolean ssoMessageShown;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -127,6 +130,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
         termsParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         termsParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        termsParams.alignWithParent = true;
         View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
         termsLayout.setId(R.id.com_auth0_lock_terms_layout);
         addView(termsLayout, termsParams);
@@ -235,20 +239,26 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onModeSelected(FormLayout.DatabaseForm mode) {
+        currentMode = mode;
         formLayout.changeFormMode(mode);
+        showSignUpTerms(mode == FormLayout.DatabaseForm.SIGN_UP);
+    }
+
+    private void showSignUpTerms(boolean show) {
         int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_terms_height);
-        termsParams.height = mode == FormLayout.DatabaseForm.SIGN_UP ? height : 0;
+        termsParams.height = show ? height : 0;
     }
 
     @Override
     public void showSSOEnabledMessage(boolean show) {
+        ssoMessageShown = show;
         int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
         ssoParams.height = show ? height : 0;
         ssoLayout.setLayoutParams(ssoParams);
-        if (formLayout != null) {
+        if (formLayout != null && !keyboardIsOpen) {
             formLayout.showOnlyEnterprise(show);
         }
-        if (modeSelectionView != null) {
+        if (modeSelectionView != null && !keyboardIsOpen) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
     }
@@ -256,6 +266,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     @Override
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public void onFormSubmit() {
+        actionButton.callOnClick();
     }
 
     @Override
@@ -279,5 +294,25 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     @Override
     public void onSocialLogin(SocialConnectionEvent event) {
         bus.post(event);
+    }
+
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
+    public void onKeyboardStateChanged(boolean isOpen) {
+        keyboardIsOpen = isOpen;
+        if (modeSelectionView != null && changePwdForm == null && !ssoMessageShown) {
+            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (changePwdForm != null) {
+            changePwdForm.onKeyboardStateChanged(isOpen);
+        }
+        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        formLayout.onKeyboardStateChanged(isOpen);
+
+        showSignUpTerms(!isOpen && currentMode == FormLayout.DatabaseForm.SIGN_UP);
     }
 }

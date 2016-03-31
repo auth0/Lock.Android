@@ -168,4 +168,23 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     public void onCountryCodeSelected(String country, String dialCode) {
         passwordlessLayout.onCountryCodeSelected(country, dialCode);
     }
+
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
+    public void onKeyboardStateChanged(boolean isOpen) {
+        boolean waitingForCode = passwordlessLayout != null && passwordlessLayout.isWaitingForCode();
+        if (orSeparatorMessage != null && !waitingForCode) {
+            orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (socialLayout != null && !waitingForCode) {
+            socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
+        }
+        if (passwordlessLayout != null) {
+            passwordlessLayout.onKeyboardStateChanged(isOpen);
+        }
+    }
 }

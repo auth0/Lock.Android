@@ -90,7 +90,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         addView(actionButton, actionParams);
 
         formLayout = new PasswordlessFormLayout(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         params.addRule(ALIGN_PARENT_TOP, TRUE);
         params.addRule(ABOVE, R.id.com_auth0_lock_action_button);
@@ -173,6 +173,11 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     @Override
+    public void onFormSubmit() {
+        actionButton.callOnClick();
+    }
+
+    @Override
     public void onSocialLogin(SocialConnectionEvent event) {
         bus.post(event);
     }
@@ -199,5 +204,16 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      */
     public void onCountryCodeSelected(String country, String dialCode) {
         formLayout.onCountryCodeSelected(country, dialCode);
+    }
+
+    /**
+     * Notifies this forms and its child views that the keyboard state changed, so that
+     * it can change the layout in order to fit all the fields.
+     *
+     * @param isOpen whether the keyboard is open or close.
+     */
+    public void onKeyboardStateChanged(boolean isOpen) {
+        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        formLayout.onKeyboardStateChanged(isOpen);
     }
 }

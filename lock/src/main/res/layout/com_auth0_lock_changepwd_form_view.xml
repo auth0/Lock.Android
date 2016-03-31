@@ -31,6 +31,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/com_auth0_lock_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -40,6 +41,7 @@
         android:textSize="@dimen/com_auth0_lock_title_text" />
 
     <TextView
+        android:id="@+id/com_auth0_lock_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

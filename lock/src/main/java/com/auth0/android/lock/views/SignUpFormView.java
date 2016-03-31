@@ -26,17 +26,21 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.views.interfaces.LockWidget;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class SignUpFormView extends FormView {
+public class SignUpFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = SignUpFormView.class.getSimpleName();
+    private final LockWidgetForm lockWidget;
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
@@ -44,14 +48,17 @@ public class SignUpFormView extends FormView {
 
     public SignUpFormView(Context context) {
         super(context);
+        this.lockWidget = null;
     }
 
-    public SignUpFormView(LockWidget lockWidget) {
+    public SignUpFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
-        init(lockWidget.getConfiguration());
+        this.lockWidget = lockWidget;
+        init();
     }
 
-    private void init(Configuration configuration) {
+    private void init() {
+        Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
         loginAfterSignUp = configuration.loginAfterSignUp();
 
@@ -73,6 +80,7 @@ public class SignUpFormView extends FormView {
 
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordInput.setOnEditorActionListener(this);
     }
 
     @Override
@@ -114,4 +122,11 @@ public class SignUpFormView extends FormView {
         return validateForm() ? getActionEvent() : null;
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            lockWidget.onFormSubmit();
+        }
+        return false;
+    }
 }
