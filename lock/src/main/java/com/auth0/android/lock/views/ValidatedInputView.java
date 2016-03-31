@@ -125,7 +125,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
                 break;
             case PHONE_NUMBER:
-                input.setInputType(InputType.TYPE_CLASS_PHONE);
+                input.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
                 inputIcon = R.drawable.com_auth0_lock_ic_input_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 break;
@@ -187,7 +187,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 isValid = !value.isEmpty();
                 break;
             case PHONE_NUMBER:
-                value = value.replace(" ", "").replace("-", "");
+                value = value.replace(" ", "");
                 isValid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
                 break;
         }

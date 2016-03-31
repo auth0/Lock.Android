@@ -47,7 +47,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     private TextView resendButton;
     private int sentMessage;
     private CountryCodeSelectorView countryCodeSelector;
-    private String submitedEmailOrNumber;
+    private String submittedEmailOrNumber;
     private String previousInput;
 
     public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
@@ -107,7 +107,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     @Override
     public Object getActionEvent() {
         if (waitingForCode) {
-            return new PasswordlessLoginEvent(choosenMode, submitedEmailOrNumber, getInputText());
+            return new PasswordlessLoginEvent(choosenMode, submittedEmailOrNumber, getInputText());
         } else {
             return new PasswordlessLoginEvent(choosenMode, getInputText());
         }
@@ -115,18 +115,16 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
 
     private String getInputText() {
         String withoutBlanks = passwordlessInput.getText().replace(" ", "");
-        if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
-            String withoutDashes = withoutBlanks.replace("-", "");
-            if (countryCodeSelector != null && countryCodeSelector.getVisibility() == VISIBLE) {
-                previousInput = withoutDashes;
-                submitedEmailOrNumber = countryCodeSelector.getSelectedCountry().getDialCode() + withoutDashes;
-                return submitedEmailOrNumber;
-            } else {
-                return withoutDashes;
-            }
-        } else {
-            return withoutBlanks;
+        switch (choosenMode) {
+            case SMS_CODE:
+            case SMS_LINK:
+                if (countryCodeSelector.getVisibility() == VISIBLE) {
+                    previousInput = withoutBlanks;
+                    submittedEmailOrNumber = countryCodeSelector.getSelectedCountry().getDialCode() + withoutBlanks;
+                    return submittedEmailOrNumber;
+                }
         }
+        return withoutBlanks;
     }
 
     @Override
@@ -162,7 +160,7 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         countryCodeSelector.setVisibility(GONE);
         resendButton.setVisibility(VISIBLE);
         if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
-            setTopMessage(String.format(getResources().getString(sentMessage), submitedEmailOrNumber));
+            setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
             passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
             passwordlessInput.clearInput();
         } else {
