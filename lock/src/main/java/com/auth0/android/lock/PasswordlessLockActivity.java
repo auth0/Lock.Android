@@ -27,7 +27,9 @@ package com.auth0.android.lock;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +49,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -76,6 +79,13 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final long RESEND_TIMEOUT = 20 * 1000;
+    private static final long CODE_TTL = 2 * 60 * 1000;
+
+    private static final String LAST_PASSWORDLESS_TIME_KEY = "last_passwordless_time";
+    private static final String LAST_PASSWORDLESS_EMAIL_NUMBER_KEY = "last_passwordless_email_number";
+    private static final String LAST_PASSWORDLESS_COUNTRY_KEY = "last_passwordless_country";
+    private static final String LOCK_PREFERENCES_NAME = "Lock";
+    private static final String COUNTRY_DATA_DIV = "@";
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -87,6 +97,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private TextView resultMessage;
 
     private String lastPasswordlessEmailOrNumber;
+    private Country lastPasswordlessCountry;
     private WebIdentityProvider lastIdp;
     private ProgressDialog progressDialog;
     private boolean keyboardIsShown;
@@ -189,6 +200,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     public void onBackPressed() {
         boolean showingSuccessLayout = passwordlessSuccessCover.getVisibility() == View.VISIBLE;
         if (!showingSuccessLayout && panelHolder.onBackPressed()) {
+            reloadRecentPasswordlessData();
             return;
         }
         if (options.isClosable()) {
@@ -235,6 +247,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 panelHolder = new PasswordlessPanelHolder(PasswordlessLockActivity.this, lockBus);
                 if (configuration != null) {
                     panelHolder.configurePanel(configuration);
+                    reloadRecentPasswordlessData();
                 } else {
                     lockBus.post(new FetchApplicationEvent());
                 }
@@ -255,6 +268,46 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void reloadRecentPasswordlessData() {
+        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        long delta = sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) - System.currentTimeMillis() + CODE_TTL;
+        if (delta < 0) {
+            return;
+        }
+
+        String text = sp.getString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "");
+        lastPasswordlessEmailOrNumber = text;
+        String countryInfo = sp.getString(LAST_PASSWORDLESS_COUNTRY_KEY, null);
+        if (countryInfo != null) {
+            String isoCode = countryInfo.split(COUNTRY_DATA_DIV)[0];
+            String dialCode = countryInfo.split(COUNTRY_DATA_DIV)[1];
+            if (text.startsWith(dialCode)) {
+                text = text.substring(dialCode.length());
+            }
+            lastPasswordlessCountry = new Country(isoCode, dialCode);
+        }
+        panelHolder.loadPasswordlessData(text, lastPasswordlessCountry);
+    }
+
+    private void persistRecentPasswordlessData(@NonNull String emailOrNumber, @Nullable Country country) {
+        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String countryData = country != null ? country.getIsoCode() + COUNTRY_DATA_DIV + country.getDialCode() : null;
+        sp.edit()
+                .putLong(LAST_PASSWORDLESS_TIME_KEY, System.currentTimeMillis())
+                .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, emailOrNumber)
+                .putString(LAST_PASSWORDLESS_COUNTRY_KEY, countryData)
+                .apply();
+    }
+
+    public void clearRecentPasswordlessData() {
+        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        sp.edit()
+                .putLong(LAST_PASSWORDLESS_TIME_KEY, 0)
+                .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "")
+                .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
+                .apply();
+    }
 
     private void deliverResult(Authentication result) {
         Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
@@ -330,7 +383,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 showErrorMessage(R.string.com_auth0_lock_result_message_error_parsing_passwordless_code);
                 return;
             }
-            PasswordlessLoginEvent event = new PasswordlessLoginEvent(configuration.getPasswordlessMode(), lastPasswordlessEmailOrNumber, code);
+            PasswordlessLoginEvent event = PasswordlessLoginEvent.submitCode(configuration.getPasswordlessMode(), code);
             onPasswordlessAuthenticationRequest(event);
         }
     }
@@ -354,7 +407,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        if (configuration.getDefaultPasswordlessStrategy() == null || event.getEmailOrNumber().isEmpty()) {
+        if (configuration.getDefaultPasswordlessStrategy() == null) {
             return;
         }
 
@@ -362,7 +415,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
-            event.getLoginRequest(apiClient)
+            event.getLoginRequest(apiClient, lastPasswordlessEmailOrNumber)
                     .addParameters(options.getAuthenticationParameters())
                     .setConnection(connectionName)
                     .start(authCallback);
@@ -370,6 +423,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         }
 
         lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
+        lastPasswordlessCountry = event.getCountry();
         event.getCodeRequest(apiClient, connectionName)
                 .start(passwordlessCodeCallback);
     }
@@ -379,6 +433,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
         panelHolder.showProgress(!options.useBrowser());
         lastPasswordlessEmailOrNumber = null;
+        lastPasswordlessCountry = null;
         String pkgName = getApplicationContext().getPackageName();
         CallbackHelper helper = new CallbackHelper(pkgName);
         lastIdp = new WebIdentityProvider(helper, options.getAccount(), idpCallback);
@@ -396,6 +451,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     panelHolder.configurePanel(configuration);
+                    reloadRecentPasswordlessData();
                 }
             });
         }
@@ -421,10 +477,11 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     panelHolder.showProgress(false);
-                    panelHolder.onPasswordlessCodeSent();
+                    panelHolder.onPasswordlessCodeSent(lastPasswordlessEmailOrNumber);
                     if (!options.useCodePasswordless()) {
                         showLinkSentLayout();
                     }
+                    persistRecentPasswordlessData(lastPasswordlessEmailOrNumber, lastPasswordlessCountry);
                 }
             });
         }
@@ -446,7 +503,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
         @Override
         public void onSuccess(Authentication authentication) {
             Log.d(TAG, "Login success: " + authentication.getProfile());
-            panelHolder.onAuthenticationSucceed();
+            clearRecentPasswordlessData();
             deliverResult(authentication);
         }
 

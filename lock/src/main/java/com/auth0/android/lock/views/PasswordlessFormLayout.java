@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
@@ -33,16 +34,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
-public class PasswordlessFormLayout extends LinearLayout implements PasswordlessFormView.OnPasswordlessRetryListener {
+public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener, PasswordlessRequestCodeFormView.OnAlreadyGotCodeListener {
+
     private final LockWidget lockWidget;
+    private SharedPreferences sp;
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
-    private PasswordlessFormView passwordlessLayout;
+    private PasswordlessRequestCodeFormView passwordlessRequestCodeLayout;
+    private PasswordlessInputCodeFormView passwordlessInputCodeLayout;
+    private boolean showGotCodeButton;
 
     public PasswordlessFormLayout(Context context) {
         super(context);
@@ -68,7 +74,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             if (showSocial) {
                 addSeparator();
             }
-            addPasswordlessLayout();
+            addPasswordlessRequestCodeLayout();
         }
     }
 
@@ -93,9 +99,16 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         addView(orSeparatorMessage, params);
     }
 
-    private void addPasswordlessLayout() {
-        passwordlessLayout = new PasswordlessFormView((LockWidgetPasswordless) lockWidget, this);
-        addView(passwordlessLayout);
+    private void addPasswordlessRequestCodeLayout() {
+        if (passwordlessRequestCodeLayout == null) {
+            passwordlessRequestCodeLayout = new PasswordlessRequestCodeFormView((LockWidgetPasswordless) lockWidget, this);
+        }
+        addView(passwordlessRequestCodeLayout);
+    }
+
+    private void addPasswordlessInputCodeLayout(String emailOrNumber) {
+        passwordlessInputCodeLayout = new PasswordlessInputCodeFormView((LockWidgetPasswordless) lockWidget, this, emailOrNumber);
+        addView(passwordlessInputCodeLayout);
     }
 
     /**
@@ -104,13 +117,16 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        if (passwordlessLayout != null && passwordlessLayout.onBackPressed()) {
+        if (passwordlessInputCodeLayout != null) {
             if (socialLayout != null) {
                 socialLayout.setVisibility(VISIBLE);
             }
             if (orSeparatorMessage != null) {
                 orSeparatorMessage.setVisibility(VISIBLE);
             }
+            removeView(passwordlessInputCodeLayout);
+            addView(passwordlessRequestCodeLayout);
+            passwordlessInputCodeLayout = null;
             return true;
         }
         return false;
@@ -120,25 +136,17 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      * Notifies the form that the code was correctly sent and it should now wait
      * for the user to input the valid code.
      */
-    public void codeSent() {
-        if (passwordlessLayout != null) {
+    public void codeSent(String emailOrNumber) {
+        if (passwordlessRequestCodeLayout != null) {
+            removeView(passwordlessRequestCodeLayout);
             if (socialLayout != null) {
                 socialLayout.setVisibility(GONE);
             }
             if (orSeparatorMessage != null) {
                 orSeparatorMessage.setVisibility(GONE);
             }
-            passwordlessLayout.codeSent();
         }
-    }
-
-    /**
-     * Notifies the form that the authentication has succeed, for it to erase state data.
-     */
-    public void onAuthenticationSucceed() {
-        if (passwordlessLayout != null) {
-            passwordlessLayout.onAuthenticationSucceed();
-        }
+        addPasswordlessInputCodeLayout(emailOrNumber);
     }
 
     /**
@@ -158,13 +166,30 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     @Override
-    public void onPasswordlessRetry() {
+    public void onCodeNeedToResend() {
         if (socialLayout != null) {
             socialLayout.setVisibility(VISIBLE);
         }
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(VISIBLE);
         }
+        if (passwordlessInputCodeLayout != null) {
+            removeView(passwordlessInputCodeLayout);
+            passwordlessInputCodeLayout = null;
+        }
+        addView(passwordlessRequestCodeLayout);
+        passwordlessRequestCodeLayout.showGotCodeButton();
+        showGotCodeButton = true;
+    }
+
+    @Override
+    public void onAlreadyGotCode(String emailOrCode) {
+        codeSent(emailOrCode);
+    }
+
+    @Override
+    public boolean shouldShowGotCodeButton() {
+        return showGotCodeButton;
     }
 
     /**
@@ -174,7 +199,9 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      * @param dialCode the dial code for this country
      */
     public void onCountryCodeSelected(String country, String dialCode) {
-        passwordlessLayout.onCountryCodeSelected(country, dialCode);
+        if (passwordlessRequestCodeLayout != null) {
+            passwordlessRequestCodeLayout.onCountryCodeSelected(country, dialCode);
+        }
     }
 
     /**
@@ -184,15 +211,31 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        boolean waitingForCode = passwordlessLayout != null && passwordlessLayout.isWaitingForCode();
+        boolean waitingForCode = passwordlessInputCodeLayout != null;
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(waitingForCode || isOpen ? GONE : VISIBLE);
         }
         if (socialLayout != null) {
             socialLayout.setVisibility(waitingForCode || isOpen ? GONE : VISIBLE);
         }
-        if (passwordlessLayout != null) {
-            passwordlessLayout.onKeyboardStateChanged(isOpen);
+        if (passwordlessRequestCodeLayout != null) {
+            passwordlessRequestCodeLayout.onKeyboardStateChanged(isOpen);
+        }
+        if (passwordlessInputCodeLayout != null) {
+            passwordlessInputCodeLayout.onKeyboardStateChanged(isOpen);
+        }
+    }
+
+    public void loadPasswordlessData(String emailOrNumber, @Nullable Country country) {
+        if (passwordlessRequestCodeLayout != null) {
+            showGotCodeButton = true;
+            passwordlessRequestCodeLayout.setInputText(emailOrNumber);
+            if (country != null) {
+                passwordlessRequestCodeLayout.onCountryCodeSelected(country.getIsoCode(), country.getDialCode());
+                emailOrNumber = country.getDialCode()+emailOrNumber;
+            }
+            passwordlessRequestCodeLayout.setLastEmailOrNumber(emailOrNumber);
+            passwordlessRequestCodeLayout.showGotCodeButton();
         }
     }
 }

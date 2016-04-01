@@ -28,5 +28,5 @@ public interface LockWidgetPasswordless extends LockWidget {
 
     void onCountryCodeChangeRequest();
 
-    void onPasswordlessCodeSent();
+    void onPasswordlessCodeSent(String emailOrNumber);
 }
