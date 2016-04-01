@@ -89,7 +89,7 @@ public class SocialConfigTest {
 
     @Test
     public void shouldGetIcon() {
-        assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_social_icon_facebook));
+        assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_ic_social_facebook));
     }
 
     @Test

@@ -36,7 +36,7 @@ import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 
 class SocialConfig {
-    private static final String ICON_RESOURCE_FORMAT = "com_auth0_lock_social_icon_%s";
+    private static final String ICON_RESOURCE_FORMAT = "com_auth0_lock_ic_social_%s";
     private static final String TITLE_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
     private static final String BACKGROUND_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
     private static final String TEXT_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s_text";
@@ -64,7 +64,7 @@ class SocialConfig {
         strategyName = strategyName.replace("-", "_");
 
         icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, strategyName), "drawable", pkgName);
-        icon = icon == 0 ? R.drawable.com_auth0_lock_social_icon_auth0 : icon;
+        icon = icon == 0 ? R.drawable.com_auth0_lock_ic_social_auth0 : icon;
 
         title = resources.getIdentifier(String.format(TITLE_RESOURCE_FORMAT, strategyName), "string", pkgName);
         title = title == 0 ? R.string.com_auth0_lock_social_unknown_placeholder : title;
