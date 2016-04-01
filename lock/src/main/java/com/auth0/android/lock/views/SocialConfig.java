@@ -39,14 +39,11 @@ class SocialConfig {
     private static final String ICON_RESOURCE_FORMAT = "com_auth0_lock_ic_social_%s";
     private static final String TITLE_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
     private static final String BACKGROUND_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
-    private static final String TEXT_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s_text";
 
     @StringRes
     private int title;
     @ColorInt
     private int backgroundColor;
-    @ColorInt
-    private int textColor;
     @DrawableRes
     private int icon;
 
@@ -72,11 +69,7 @@ class SocialConfig {
         int backgroundColorRes = resources.getIdentifier(String.format(BACKGROUND_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName);
         backgroundColorRes = backgroundColorRes == 0 ? R.color.com_auth0_lock_social_unknown : backgroundColorRes;
 
-        int textColorRes = resources.getIdentifier(String.format(TEXT_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName);
-        textColorRes = textColorRes == 0 ? R.color.com_auth0_lock_social_unknown_text : textColorRes;
-
         backgroundColor = ViewUtils.obtainColor(context, backgroundColorRes);
-        textColor = ViewUtils.obtainColor(context, textColorRes);
     }
 
     @StringRes
@@ -87,11 +80,6 @@ class SocialConfig {
     @ColorInt
     public int getBackgroundColor() {
         return backgroundColor;
-    }
-
-    @ColorInt
-    public int getTextColor() {
-        return textColor;
     }
 
     @DrawableRes
