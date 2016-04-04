@@ -29,17 +29,20 @@
 
     <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username_email"
-        style="@style/Lock.Theme.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:Auth0.InputDataType="username_or_email" />
 
     <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_password"
-        style="@style/Lock.Theme.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
         app:Auth0.InputDataType="password" />
 
     <TextView
         android:id="@+id/com_auth0_lock_change_password_btn"
-        style="@style/com_auth0_lock_forgot_password_text" />
+        style="@style/Lock.Theme.Text.Link"
+        android:text="@string/com_auth0_lock_action_forgot_password" />
 
 </LinearLayout>

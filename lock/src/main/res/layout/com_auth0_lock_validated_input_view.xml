@@ -31,25 +31,21 @@
 
     <ImageView
         android:id="@+id/com_auth0_lock_icon"
-        android:layout_width="@dimen/com_auth0_lock_widget_height"
-        android:layout_height="@dimen/com_auth0_lock_widget_height"
+        style="@style/Lock.Theme.Widget.Icon"
         android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
         android:background="@color/com_auth0_lock_input_field_border_normal"
-        android:scaleType="center"
-        app:srcCompat="@drawable/com_auth0_lock_ic_email" />
+        app:srcCompat="@drawable/com_auth0_lock_ic_email"
+        tools:ignore="MissingPrefix" />
 
     <EditText
         android:id="@+id/com_auth0_lock_input"
+        style="@style/Lock.Theme.Widget.Field"
         android:layout_width="0dp"
-        android:layout_height="@dimen/com_auth0_lock_widget_height"
         android:layout_marginLeft="-3dp"
         android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
         android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
         android:layout_weight="1"
         android:background="@null"
-        android:paddingLeft="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
-        android:paddingRight="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
-        android:textSize="@dimen/com_auth0_lock_small_text"
         tools:text="email@domain.com" />
 
 </LinearLayout>

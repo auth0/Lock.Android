@@ -14,18 +14,10 @@
 
     <TextView
         android:id="@+id/com_auth0_lock_result_message"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/com_auth0_lock_result_message_height"
-        android:layout_alignParentTop="true"
-        android:background="@color/com_auth0_lock_result_message_error_background"
-        android:gravity="center"
-        android:paddingBottom="@dimen/com_auth0_lock_widget_small_margin"
-        android:paddingTop="@dimen/com_auth0_lock_widget_small_margin"
-        android:textColor="@color/com_auth0_lock_error_message"
-        android:textSize="17sp"
         android:visibility="gone"
         tools:text="There was an error"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        style="@style/Lock.Theme.Text.ResultMessage" />
 
     <RelativeLayout
         android:id="@+id/com_auth0_lock_content"

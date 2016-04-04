@@ -32,22 +32,15 @@
 
     <TextView
         android:id="@+id/com_auth0_lock_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        style="@style/Lock.Theme.Text.Title.ResetPassword"
         android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_small"
-        android:gravity="center_horizontal"
-        android:text="@string/com_auth0_lock_title_change_password"
-        android:textSize="@dimen/com_auth0_lock_title_text" />
+        android:text="@string/com_auth0_lock_title_change_password" />
 
     <TextView
         android:id="@+id/com_auth0_lock_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
+        style="@style/Lock.Theme.Text.Subtitle.ResetPassword"
         android:text="@string/com_auth0_lock_description_change_password"
-        android:textSize="@dimen/com_auth0_lock_small_text" />
+        android:textSize="@dimen/com_auth0_lock_change_password_text" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,7 +50,8 @@
 
         <com.auth0.android.lock.views.ValidatedUsernameInputView
             android:id="@+id/com_auth0_lock_input_username_email"
-            style="@style/Lock.Theme.Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:Auth0.InputDataType="username_or_email" />
 
     </RelativeLayout>

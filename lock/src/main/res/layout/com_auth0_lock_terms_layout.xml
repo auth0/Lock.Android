@@ -30,14 +30,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/com_auth0_lock_widget_horizontal_margin"
-        android:layout_marginRight="@dimen/com_auth0_lock_widget_horizontal_margin"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="@dimen/com_auth0_lock_normal_text_spacing"
-        android:text="@string/com_auth0_lock_sign_up_terms"
-        android:textColor="@color/com_auth0_lock_terms_text"
-        android:textSize="@dimen/com_auth0_lock_small_text" />
+        style="@style/Lock.Theme.Text.Terms"
+        android:text="@string/com_auth0_lock_sign_up_terms" />
 
 </LinearLayout>
