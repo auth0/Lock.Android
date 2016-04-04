@@ -84,6 +84,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private static final String LAST_PASSWORDLESS_TIME_KEY = "last_passwordless_time";
     private static final String LAST_PASSWORDLESS_EMAIL_NUMBER_KEY = "last_passwordless_email_number";
     private static final String LAST_PASSWORDLESS_COUNTRY_KEY = "last_passwordless_country";
+    private static final String LAST_PASSWORDLESS_MODE_KEY = "last_passwordless_mode";
     private static final String LOCK_PREFERENCES_NAME = "Lock";
     private static final String COUNTRY_DATA_DIV = "@";
 
@@ -272,7 +273,9 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     private void reloadRecentPasswordlessData() {
         SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
         long delta = sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) - System.currentTimeMillis() + CODE_TTL;
-        if (delta < 0) {
+        int modeOrdinal = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, -1);
+        PasswordlessMode choosenMode = configuration.getPasswordlessMode();
+        if (delta < 0 || modeOrdinal < 0 || choosenMode == null || choosenMode.ordinal() != modeOrdinal) {
             return;
         }
 
@@ -297,6 +300,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 .putLong(LAST_PASSWORDLESS_TIME_KEY, System.currentTimeMillis())
                 .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, emailOrNumber)
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, countryData)
+                .putInt(LAST_PASSWORDLESS_MODE_KEY, configuration.getPasswordlessMode() != null ? configuration.getPasswordlessMode().ordinal() : -1)
                 .apply();
     }
 
@@ -306,6 +310,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
                 .putLong(LAST_PASSWORDLESS_TIME_KEY, 0)
                 .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "")
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
+                .putInt(LAST_PASSWORDLESS_MODE_KEY, -1)
                 .apply();
     }
 
