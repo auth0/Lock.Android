@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/auth0/Lock.Android/tree/HEAD)
-
-[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.14.0...HEAD)
+## [1.14.1](https://github.com/auth0/Lock.Android/tree/1.14.1) (2016-04-04)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.14.0...1.14.1)
 
 **Fixed bugs:**
 
