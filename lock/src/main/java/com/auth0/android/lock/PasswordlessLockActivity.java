@@ -380,7 +380,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return;
         }
 
-        boolean useMagicLink = configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK || configuration.getPasswordlessMode() == PasswordlessMode.SMS_LINK;
+        boolean useMagicLink = configuration != null && (configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK || configuration.getPasswordlessMode() == PasswordlessMode.SMS_LINK);
         if (lastPasswordlessEmailOrNumber != null && useMagicLink) {
             String code = intent.getData().getQueryParameter("code");
             if (code == null || code.isEmpty()) {
