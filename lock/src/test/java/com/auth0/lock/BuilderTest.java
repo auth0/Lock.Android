@@ -95,7 +95,6 @@ public class BuilderTest {
         assertThat(lock.isFullScreen(), is(false));
         assertThat(lock.isSignUpEnabled(), is(true));
         assertThat(lock.isChangePasswordEnabled(), is(true));
-        assertThat(lock.useLegacyPasswordReset(), is(false));
     }
 
     @Test
@@ -282,14 +281,6 @@ public class BuilderTest {
                 .disableChangePassword(true)
                 .build();
         assertThat(lock.isChangePasswordEnabled(), is(false));
-    }
-
-    @Test
-    public void shouldRequirePasswordOnPasswordReset() throws Exception {
-        lock = basicBuilder()
-                .useLegacyPasswordReset()
-                .build();
-        assertThat(lock.useLegacyPasswordReset(), is(true));
     }
 
     @Test

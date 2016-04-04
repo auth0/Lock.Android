@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 
 import com.auth0.api.APIClient;
@@ -44,11 +43,9 @@ import com.auth0.identity.WebIdentityProvider;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.Telemetry;
 import com.squareup.otto.Bus;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -110,6 +107,7 @@ public class Lock {
     private Map<String, IdentityProvider> providers;
 
     private final Bus bus;
+    @SuppressWarnings("deprecation")
     private final APIClient apiClient;
     private final AuthenticationAPIClient authenticationAPIClient;
 
@@ -119,9 +117,9 @@ public class Lock {
     private String defaultDatabaseConnection;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
-    private boolean legacyPasswordReset;
     private CredentialStore credentialStore;
 
+    @SuppressWarnings("deprecation")
     Lock(Auth0 auth0) {
         this.useWebView = false;
         this.closable = false;
@@ -136,7 +134,6 @@ public class Lock {
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
-        this.legacyPasswordReset = false;
         this.credentialStore = new NullCredentialStore();
         this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
     }
@@ -148,6 +145,7 @@ public class Lock {
      * @deprecated Use {@link #getAuthenticationAPIClient()}
      */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public APIClient getAPIClient() {
         return apiClient;
     }
@@ -155,7 +153,7 @@ public class Lock {
     /**
      * An API client for Auth0 authentication API
      *
-     * @return
+     * @return a new authentication API client
      */
     public AuthenticationAPIClient getAuthenticationAPIClient() {
         return authenticationAPIClient;
@@ -311,16 +309,6 @@ public class Lock {
     }
 
     /**
-     * If Lock will ask for the new password when resetting the old one (previous behaviour)
-     * By default is false
-     *
-     * @return if the new password is required when resetting the old password.
-     */
-    public boolean useLegacyPasswordReset() {
-        return legacyPasswordReset;
-    }
-
-    /**
      * Lock's credential store for user's credentials e.g. Google's Smart Lock
      * By default no credentials are stored.
      *
@@ -389,10 +377,9 @@ public class Lock {
         private boolean fullscreen;
         private boolean disableSignUp;
         private boolean disableChangePassword;
-        private boolean legacyPasswordReset;
         private CredentialStore store;
         private Map<String, IdentityProvider> providers;
-        private boolean sendSdkInfo;
+        private Telemetry telemetry;
 
 
         public Builder() {
@@ -403,8 +390,7 @@ public class Lock {
             this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
             this.store = new NullCredentialStore();
             this.providers = new HashMap<>();
-            this.sendSdkInfo = true;
-            this.legacyPasswordReset = false;
+            this.telemetry = new Telemetry("Lock.Android", BuildConfig.VERSION_NAME);
         }
 
         /**
@@ -518,6 +504,7 @@ public class Lock {
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder enterpriseConnectionsUsingWebForm(String... connectionNames) {
             this.enterpriseConnectionsUsingWebForm = Arrays.asList(connectionNames);
             return this;
@@ -569,17 +556,6 @@ public class Lock {
         }
 
         /**
-         * If Lock will ask for the password now (old behaviour). By default is  <code>false</code>
-         *
-         * @return the Builder instance being used
-         */
-        @Deprecated
-        public Builder useLegacyPasswordReset() {
-            this.legacyPasswordReset = true;
-            return this;
-        }
-
-        /**
          * If it should ask for email or username. By default is <code>true</code>
          *
          * @param useEmail if Lock ask for email or username.
@@ -618,13 +594,24 @@ public class Lock {
         }
 
         /**
-         * Avoid sending SDK info with API requests
+         * Avoid sending library info in every Auth0 API request
          *
          * @return the Builder instance being used
          */
         @SuppressWarnings("unused")
         public Builder doNotSendSDKInfo() {
-            sendSdkInfo = false;
+            this.telemetry = null;
+            return this;
+        }
+
+        /**
+         * Auth0 telemetry usage to be sent in every Auth0 API request
+         * @param telemetry information to send or null
+         * @return the Builder instance being used
+         */
+        @SuppressWarnings("unused")
+        public Builder telemetry(Telemetry telemetry) {
+            this.telemetry = telemetry;
             return this;
         }
 
@@ -648,14 +635,13 @@ public class Lock {
             lock.fullScreen = fullscreen;
             lock.signUpEnabled = !disableSignUp;
             lock.changePasswordEnabled = !disableChangePassword;
-            lock.legacyPasswordReset = legacyPasswordReset;
             lock.credentialStore = store;
             lock.providers = new HashMap<>(providers);
-            if (sendSdkInfo) {
-                final String clientInfo = buildClientInfo();
-                lock.apiClient.setClientInfo(clientInfo);
-                lock.defaultProvider.setClientInfo(clientInfo);
-                RequestFactory.setClientInfo(clientInfo);
+            if (this.telemetry != null) {
+                final String base64 = telemetry.asBase64();
+                lock.apiClient.setClientInfo(base64);
+                lock.defaultProvider.setClientInfo(base64);
+                RequestFactory.setClientInfo(base64);
             }
             return lock;
         }
@@ -697,20 +683,6 @@ public class Lock {
 
         protected Lock buildLock() {
             return new Lock(buildAuth0());
-        }
-
-        protected String buildClientInfo() {
-            Map<String, String> info = new HashMap<>();
-            info.put("name", "Lock.Android");
-            info.put("version", BuildConfig.VERSION_NAME);
-            String clientInfo = null;
-            try {
-                String json = new ObjectMapper().writeValueAsString(info);
-                clientInfo = Base64.encodeToString(json.getBytes(Charset.defaultCharset()), Base64.URL_SAFE | Base64.NO_WRAP);
-            } catch (JsonProcessingException e) {
-                Log.w(Lock.class.getName(), "Failed to build client info", e);
-            }
-            return clientInfo;
         }
     }
 }
