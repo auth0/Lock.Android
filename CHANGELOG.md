@@ -1,5 +1,19 @@
 # Change Log
 
+## [Unreleased](https://github.com/auth0/Lock.Android/tree/HEAD)
+
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.14.0...HEAD)
+
+**Fixed bugs:**
+
+- Fix UserIdentity properties [\#232](https://github.com/auth0/Lock.Android/issues/232)
+- DB Signup with more than one connection fails [\#217](https://github.com/auth0/Lock.Android/issues/217)
+
+**Merged pull requests:**
+
+- Rework telemetry logic [\#235](https://github.com/auth0/Lock.Android/pull/235) ([hzalaz](https://github.com/hzalaz))
+- Handle required and optional attribute for UserIdentity [\#234](https://github.com/auth0/Lock.Android/pull/234) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.14.0](https://github.com/auth0/Lock.Android/tree/1.14.0) (2016-03-18)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.13.0...1.14.0)
 
