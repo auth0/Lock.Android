@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,6 +59,9 @@ public class ActionButton extends FrameLayout {
         progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(R.attr.Auth0_PrimaryColor, outValue, true);
+        setBackgroundResource(outValue.resourceId);
     }
 
     /**

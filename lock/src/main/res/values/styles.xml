@@ -28,10 +28,10 @@
         <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
         <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
+        <item name="Auth0.PrimaryColor">@color/com_auth0_lock_login_background</item>
     </style>
 
-    <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-    </style>
+    <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
 
     <style name="Lock.Theme.Input">
         <item name="android:layout_width">match_parent</item>
