@@ -23,23 +23,30 @@ public class UserIdentity implements Parcelable {
     private static final String ACCESS_TOKEN_KEY = "access_token";
     private static final String ACCESS_TOKEN_SECRET_KEY = "access_token_secret";
     private static final String PROFILE_DATA_KEY = "profileData";
-    private String id;
-    private String connection;
-    private String provider;
-    private boolean social;
-    private String accessToken;
-    private String accessTokenSecret;
-    private Map<String, Object> profileInfo;
+    private final String id;
+    private final String connection;
+    private final String provider;
+    private final boolean social;
+    private final String accessToken;
+    private final String accessTokenSecret;
+    private final Map<String, Object> profileInfo;
 
     @SuppressWarnings("unchecked")
     public UserIdentity(Map<String, Object> values) {
         final Object idValue = values.get(USER_ID_KEY);
         if (idValue != null) {
             this.id = idValue.toString();
+        } else {
+            this.id = null;
         }
         this.connection = (String) values.get(CONNECTION_KEY);
         this.provider = (String) values.get(PROVIDER_KEY);
-        this.social = (boolean) values.get(IS_SOCIAL_KEY);
+        Object isSocialValue = values.get(IS_SOCIAL_KEY);
+        if (isSocialValue != null && isSocialValue instanceof Boolean) {
+            this.social = (Boolean) isSocialValue;
+        } else {
+            this.social = false;
+        }
         this.accessToken = (String) values.get(ACCESS_TOKEN_KEY);
         this.accessTokenSecret = (String) values.get(ACCESS_TOKEN_SECRET_KEY);
         this.profileInfo = (Map<String, Object>) values.get(PROFILE_DATA_KEY);
@@ -49,10 +56,10 @@ public class UserIdentity implements Parcelable {
     public UserIdentity(@JsonProperty(value = USER_ID_KEY) String id,
                         @JsonProperty(value = CONNECTION_KEY) String connection,
                         @JsonProperty(value = PROVIDER_KEY) String provider,
-                        @JsonProperty(value = IS_SOCIAL_KEY) boolean social,
-                        @JsonProperty(value = ACCESS_TOKEN_KEY) String accessToken,
-                        @JsonProperty(value = ACCESS_TOKEN_SECRET_KEY) String accessTokenSecret,
-                        @JsonProperty(value = PROFILE_DATA_KEY) Map<String, Object> profileInfo) {
+                        @JsonProperty(value = IS_SOCIAL_KEY, required = false) boolean social,
+                        @JsonProperty(value = ACCESS_TOKEN_KEY, required = false) String accessToken,
+                        @JsonProperty(value = ACCESS_TOKEN_SECRET_KEY, required = false) String accessTokenSecret,
+                        @JsonProperty(value = PROFILE_DATA_KEY, required = false) Map<String, Object> profileInfo) {
         this.id = id;
         this.connection = connection;
         this.provider = provider;
@@ -62,34 +69,66 @@ public class UserIdentity implements Parcelable {
         this.profileInfo = profileInfo;
     }
 
+    /**
+     * User identifiuer supplied by the IdP.
+     * @return identity identifier for the user.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Name of the Auth0 connection that where the user was created.
+     * @return connection name.
+     */
     public String getConnection() {
         return connection;
     }
 
+    /**
+     * Name of the IdP used to identify the user.
+     * @return name of the IdP
+     */
     public String getProvider() {
         return provider;
     }
 
+    /**
+     * If the identity is from a social connection.
+     * @return true of the identity connection is social, false otherwise
+     */
     public boolean isSocial() {
         return social;
     }
 
+    /**
+     * IdP access token for the user identity
+     * @return an access token
+     */
     public String getAccessToken() {
         return accessToken;
     }
 
+    /**
+     * IdP access token secret for the user identity (Twitter only)
+     * @return an access token secret
+     */
     public String getAccessTokenSecret() {
         return accessTokenSecret;
     }
 
+    /**
+     * Profile information returned by the IdP
+     * @return a map with the user information
+     */
     public Map<String, Object> getProfileInfo() {
         return profileInfo;
     }
 
+    /**
+     * User identity identifier with the format '{provider}|{user_id}'
+     * @return
+     */
     public String getUserIdentityId() {
         return String.format("%s|%s", this.provider, this.id);
     }
