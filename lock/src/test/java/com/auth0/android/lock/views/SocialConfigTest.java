@@ -89,20 +89,7 @@ public class SocialConfigTest {
 
     @Test
     public void shouldGetIcon() {
-        assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_social_icon_facebook));
-    }
-
-    @Test
-    public void shouldGetTextColor() {
-        android.app.Application context = RuntimeEnvironment.application;
-        int expectedColor;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            expectedColor = context.getResources().getColor(R.color.com_auth0_lock_social_facebook_text, context.getTheme());
-        } else {
-            //noinspection deprecation
-            expectedColor = context.getResources().getColor(R.color.com_auth0_lock_social_facebook_text);
-        }
-        assertThat(socialConfig.getTextColor(), is(equalTo(expectedColor)));
+        assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_ic_social_facebook));
     }
 
     @Test

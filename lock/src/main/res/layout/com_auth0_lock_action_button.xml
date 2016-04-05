@@ -23,6 +23,7 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/com_auth0_lock_login_height"
     android:background="@color/com_auth0_lock_login_background">
@@ -33,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scaleType="center"
-        android:src="@drawable/com_auth0_lock_ic_submit" />
+        app:srcCompat="@drawable/com_auth0_lock_ic_submit" />
 
     <ProgressBar
         android:id="@+id/com_auth0_lock_progress"

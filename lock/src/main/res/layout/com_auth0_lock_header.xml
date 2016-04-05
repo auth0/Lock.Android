@@ -23,6 +23,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
@@ -39,8 +40,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_small"
         android:scaleType="fitCenter"
-        android:src="?attr/Auth0.HeaderLogo"
-        tools:src="@drawable/com_auth0_lock_header_logo" />
+        app:srcCompat="?attr/Auth0.HeaderLogo"
+        tools:srcCompat="@drawable/com_auth0_lock_header_logo" />
 
     <TextView
         android:id="@+id/com_auth0_lock_header_text"

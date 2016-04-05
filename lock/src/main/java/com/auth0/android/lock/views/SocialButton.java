@@ -89,7 +89,7 @@ class SocialButton extends RelativeLayout {
         this.titleRes = config.getTitle();
         this.iconRes = config.getIcon();
         this.backgroundColor = config.getBackgroundColor();
-        this.textColor = config.getTextColor();
+        this.textColor = Color.WHITE;
         init();
     }
 
