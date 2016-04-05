@@ -182,12 +182,12 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
             String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
             topMessage.setText(loginWithCorporate);
             topMessage.setVisibility(View.VISIBLE);
+            emailInput.setVisibility(GONE);
             passwordInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(VISIBLE);
             if (currentUsername != null && !currentUsername.isEmpty()) {
                 usernameInput.setText(currentUsername);
             }
-            emailInput.setVisibility(GONE);
             changePasswordBtn.setVisibility(GONE);
             corporateSSO = true;
             usernameInput.clearFocus();
