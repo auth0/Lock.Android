@@ -271,11 +271,13 @@ public class PasswordlessLockActivity extends AppCompatActivity {
     };
 
     private void reloadRecentPasswordlessData() {
-        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        long delta = sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) - System.currentTimeMillis() + CODE_TTL;
-        int modeOrdinal = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, -1);
         PasswordlessMode choosenMode = configuration.getPasswordlessMode();
-        if (delta < 0 || modeOrdinal < 0 || choosenMode == null || choosenMode.ordinal() != modeOrdinal) {
+        if (choosenMode == null) {
+            return;
+        }
+        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        int modeOrdinal = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, -1);
+        if (sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) + CODE_TTL < System.currentTimeMillis() || !choosenMode.equals(PasswordlessMode.from(modeOrdinal))) {
             return;
         }
 
@@ -371,6 +373,10 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             return;
         }
+        if (configuration == null) {
+            Log.w(TAG, "Intent arrived with missing configuration: " + intent);
+            return;
+        }
 
         if (lastIdp != null) {
             AuthorizeResult result = new AuthorizeResult(intent);
@@ -380,7 +386,7 @@ public class PasswordlessLockActivity extends AppCompatActivity {
             return;
         }
 
-        boolean useMagicLink = configuration != null && (configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK || configuration.getPasswordlessMode() == PasswordlessMode.SMS_LINK);
+        boolean useMagicLink = configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK || configuration.getPasswordlessMode() == PasswordlessMode.SMS_LINK;
         if (lastPasswordlessEmailOrNumber != null && useMagicLink) {
             String code = intent.getData().getQueryParameter("code");
             if (code == null || code.isEmpty()) {

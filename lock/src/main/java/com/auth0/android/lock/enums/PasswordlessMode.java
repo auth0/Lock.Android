@@ -24,6 +24,16 @@
 
 package com.auth0.android.lock.enums;
 
+import android.support.annotation.Nullable;
+
 public enum PasswordlessMode {
-    SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE
+    SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE;
+
+    @Nullable
+    public static PasswordlessMode from(int ordinal) {
+        if (ordinal < 0 || ordinal >= values().length) {
+            return null;
+        }
+        return PasswordlessMode.values()[ordinal];
+    }
 }
