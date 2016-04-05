@@ -58,7 +58,7 @@
     <color name="com_auth0_lock_social_shopify">#96BF48</color>
     <color name="com_auth0_lock_social_dwolla">#F5891F</color>
 
-    <color name="com_auth0_lock_header_background">#EEEEEE</color>
+    <color name="com_auth0_lock_header_background">#E5E5E5</color>
     <color name="com_auth0_lock_terms_background">#EEEEEE</color>
     <color name="com_auth0_lock_terms_text">#666666</color>
     <color name="com_auth0_lock_sso_text">#38000000</color>
@@ -71,6 +71,7 @@
     <color name="com_auth0_lock_input_field_background">#ffffff</color>
     <color name="com_auth0_lock_input_country_code_background">#FAFAFA</color>
     <color name="com_auth0_lock_submit_background">#EC5210</color>
+    <color name="com_auth0_lock_submit_pressed">#e3e5e7</color>
     <color name="com_auth0_lock_result_message_error_background">#FF3E00</color>
     <color name="com_auth0_lock_result_message_success_background">#7ED321</color>
     <color name="com_auth0_lock_result_message">#ffffff</color>
