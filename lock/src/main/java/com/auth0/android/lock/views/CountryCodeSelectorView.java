@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -69,8 +70,6 @@ public class CountryCodeSelectorView extends LinearLayout {
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         chevron = (ImageView) findViewById(R.id.com_auth0_lock_chevron);
         countryTextView = (TextView) findViewById(R.id.com_auth0_lock_text);
-        Country initialCountry = new Country("US", "+1");
-        setSelectedCountry(initialCountry);
         prepareTask();
         setupBackground();
     }
@@ -93,19 +92,19 @@ public class CountryCodeSelectorView extends LinearLayout {
         task = new LoadCountriesTask(getContext()) {
             @Override
             protected void onPostExecute(Map<String, String> result) {
-                String defaultCountry = Locale.getDefault().getCountry();
                 task = null;
+                String defaultCountry = Locale.getDefault().getCountry();
+                Country country = new Country("US", "+1");
                 if (result != null) {
                     final ArrayList<String> names = new ArrayList<>(result.keySet());
                     for (String name : names) {
                         if (name.equalsIgnoreCase(defaultCountry)) {
-                            selectedCountry = new Country(name, result.get(name));
+                            country = new Country(name, result.get(name));
                             break;
                         }
                     }
                 }
-                setSelectedCountry(selectedCountry);
-                countryTextView.setVisibility(VISIBLE);
+                setSelectedCountry(country);
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
@@ -116,8 +115,8 @@ public class CountryCodeSelectorView extends LinearLayout {
      *
      * @param country the country to set.
      */
-    public void setSelectedCountry(Country country) {
-        countryTextView.setText(country.getDisplayName() + " " + country.getDialCode());
+    public void setSelectedCountry(@NonNull Country country) {
+        countryTextView.setText(String.format("% %", country.getDisplayName(), country.getDialCode()));
         selectedCountry = country;
     }
 

@@ -179,7 +179,6 @@ public class FormLayout extends LinearLayout {
                 isOpen = true;
             }
         }
-
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
         }

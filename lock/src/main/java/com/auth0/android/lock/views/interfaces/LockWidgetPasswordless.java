@@ -27,4 +27,6 @@ package com.auth0.android.lock.views.interfaces;
 public interface LockWidgetPasswordless extends LockWidget {
 
     void onCountryCodeChangeRequest();
+
+    void onPasswordlessCodeSent(String emailOrNumber);
 }

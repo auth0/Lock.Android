@@ -24,6 +24,10 @@
 
 package com.auth0.android.lock.events;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.PasswordlessType;
@@ -35,27 +39,44 @@ public class PasswordlessLoginEvent {
     private final PasswordlessMode mode;
     private final String emailOrNumber;
     private final String code;
+    private final Country country;
 
-    public PasswordlessLoginEvent(PasswordlessMode mode, String emailOrNumber) {
-        this.mode = mode;
-        this.emailOrNumber = emailOrNumber;
-        this.code = null;
-    }
 
-    public PasswordlessLoginEvent(PasswordlessMode mode, String emailOrNumber, String code) {
+    private PasswordlessLoginEvent(PasswordlessMode mode, String emailOrNumber, String code, Country country) {
         this.mode = mode;
         this.emailOrNumber = emailOrNumber;
         this.code = code;
+        this.country = country;
+    }
+
+    public static PasswordlessLoginEvent requestCode(PasswordlessMode mode, @NonNull String email) {
+        return new PasswordlessLoginEvent(mode, email, null, null);
+    }
+
+    public static PasswordlessLoginEvent requestCode(PasswordlessMode mode, @NonNull String number, @NonNull Country country) {
+        String fullNumber = country.getDialCode() + number;
+        return new PasswordlessLoginEvent(mode, fullNumber, null, country);
+    }
+
+    public static PasswordlessLoginEvent submitCode(PasswordlessMode mode, @NonNull String code) {
+        return new PasswordlessLoginEvent(mode, null, code, null);
     }
 
     public PasswordlessMode getMode() {
         return mode;
     }
 
+    @Nullable
     public String getEmailOrNumber() {
         return emailOrNumber;
     }
 
+    @Nullable
+    public Country getCountry() {
+        return country;
+    }
+
+    @Nullable
     public String getCode() {
         return code;
     }
@@ -83,14 +104,15 @@ public class PasswordlessLoginEvent {
     /**
      * Creates the AuthenticationRequest that will finish the Passwordless Authentication flow.
      *
-     * @param apiClient the API Client instance
+     * @param apiClient     the API Client instance
+     * @param emailOrNumber the email or phone number used on the code request.
      * @return the Passwordless login request.
      */
-    public ProfileRequest getLoginRequest(AuthenticationAPIClient apiClient) {
+    public ProfileRequest getLoginRequest(AuthenticationAPIClient apiClient, String emailOrNumber) {
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
-            return apiClient.getProfileAfter(apiClient.loginWithEmail(getEmailOrNumber(), getCode()));
+            return apiClient.getProfileAfter(apiClient.loginWithEmail(emailOrNumber, getCode()));
         } else {
-            return apiClient.getProfileAfter(apiClient.loginWithPhoneNumber(getEmailOrNumber(), getCode()));
+            return apiClient.getProfileAfter(apiClient.loginWithPhoneNumber(emailOrNumber, getCode()));
         }
     }
 }

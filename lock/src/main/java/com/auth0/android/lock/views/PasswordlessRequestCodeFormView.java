@@ -1,5 +1,5 @@
 /*
- * PasswordlessFormView.java
+ * PasswordlessSendCodeFormView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,51 +37,46 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
-public class PasswordlessFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
+public class PasswordlessRequestCodeFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
-    private static final String TAG = PasswordlessFormView.class.getSimpleName();
+    private static final String TAG = PasswordlessRequestCodeFormView.class.getSimpleName();
+
     private final LockWidgetPasswordless lockWidget;
-    private final OnPasswordlessRetryListener callback;
+    private final OnAlreadyGotCodeListener listener;
     private ValidatedInputView passwordlessInput;
     private PasswordlessMode choosenMode;
-    private boolean waitingForCode;
-    private final boolean showTitle;
     private TextView topMessage;
-    private TextView resendButton;
-    private int sentMessage;
     private CountryCodeSelectorView countryCodeSelector;
-    private String submittedEmailOrNumber;
-    private String previousInput;
+    private TextView gotCodeButton;
+    private String submittedEmailOrCode;
 
-    public PasswordlessFormView(LockWidgetPasswordless lockWidget, OnPasswordlessRetryListener callback) {
+    public PasswordlessRequestCodeFormView(LockWidgetPasswordless lockWidget, @NonNull OnAlreadyGotCodeListener listener) {
         super(lockWidget.getContext());
-        choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
-        showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         this.lockWidget = lockWidget;
-        this.callback = callback;
-        init();
+        this.listener = listener;
+        choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
+        boolean showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
+        init(showTitle);
     }
 
-    private void init() {
-        inflate(getContext(), R.layout.com_auth0_lock_passwordless_form_view, this);
+    private void init(boolean showTitle) {
+        inflate(getContext(), R.layout.com_auth0_lock_passwordless_request_code_form_view, this);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
-        resendButton = (TextView) findViewById(R.id.com_auth0_lock_resend);
-        resendButton.setOnClickListener(this);
         passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
         passwordlessInput.setOnEditorActionListener(this);
         countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
+        gotCodeButton = (TextView) findViewById(R.id.com_auth0_lock_got_code);
+        gotCodeButton.setOnClickListener(this);
 
-        selectPasswordlessMode();
+        selectPasswordlessMode(showTitle);
     }
 
-
-    private void selectPasswordlessMode() {
+    private void selectPasswordlessMode(boolean showTitle) {
         int titleMessage = 0;
         switch (choosenMode) {
             case EMAIL_CODE:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_email;
-                sentMessage = R.string.com_auth0_lock_title_passwordless_code_email_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
                 countryCodeSelector.setVisibility(GONE);
                 break;
@@ -91,7 +87,6 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
                 break;
             case SMS_CODE:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
-                sentMessage = R.string.com_auth0_lock_title_passwordless_code_sms_sent;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodeSelector.setVisibility(VISIBLE);
                 break;
@@ -103,18 +98,23 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         }
         passwordlessInput.setVisibility(VISIBLE);
         passwordlessInput.clearInput();
-        resendButton.setVisibility(GONE);
-        setTopMessage(showTitle ? getResources().getString(titleMessage) : null);
+        topMessage.setVisibility(showTitle ? VISIBLE : GONE);
+        topMessage.setText(showTitle ? getResources().getString(titleMessage) : null);
+
+        if (listener.shouldShowGotCodeButton()) {
+            gotCodeButton.setVisibility(VISIBLE);
+        }
     }
 
     @Override
     public Object getActionEvent() {
-        if (waitingForCode) {
-            return new PasswordlessLoginEvent(choosenMode, submittedEmailOrNumber, getInputText());
+        String emailOrNumber = getInputText();
+        if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
+            setLastEmailOrNumber(countryCodeSelector.getSelectedCountry().getDialCode() + emailOrNumber);
+            return PasswordlessLoginEvent.requestCode(choosenMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
         } else {
-            previousInput = getInputText();
-            submittedEmailOrNumber = countryCodeSelector.getSelectedCountry().getDialCode() + previousInput;
-            return new PasswordlessLoginEvent(choosenMode, submittedEmailOrNumber);
+            setLastEmailOrNumber(emailOrNumber);
+            return PasswordlessLoginEvent.requestCode(choosenMode, emailOrNumber);
         }
     }
 
@@ -134,66 +134,25 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
     }
 
     /**
-     * Triggers the back action on the form.
-     *
-     * @return true if it was handled, false otherwise
-     */
-    public boolean onBackPressed() {
-        if (waitingForCode) {
-            waitingForCode = false;
-            selectPasswordlessMode();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Notifies the form that the code was correctly sent and it should now wait
-     * for the user to input the valid code.
-     */
-    public void codeSent() {
-        countryCodeSelector.setVisibility(GONE);
-        resendButton.setVisibility(VISIBLE);
-        if (choosenMode == PasswordlessMode.EMAIL_CODE || choosenMode == PasswordlessMode.SMS_CODE) {
-            setTopMessage(String.format(getResources().getString(sentMessage), submittedEmailOrNumber));
-            passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
-            passwordlessInput.clearInput();
-        } else {
-            passwordlessInput.setVisibility(GONE);
-        }
-
-        waitingForCode = true;
-    }
-
-    /**
      * Notifies the form that a new country code was selected by the user.
      *
-     * @param country  the selected country iso code (2 chars).
+     * @param isoCode  the selected country iso code (2 chars).
      * @param dialCode the dial code for this country
      */
-    public void onCountryCodeSelected(String country, String dialCode) {
-        Country selectedCountry = new Country(country, dialCode);
+    @SuppressWarnings("unused")
+    public void onCountryCodeSelected(String isoCode, String dialCode) {
+        Country selectedCountry = new Country(isoCode, dialCode);
         countryCodeSelector.setSelectedCountry(selectedCountry);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.com_auth0_lock_resend) {
-            if (callback != null) {
-                waitingForCode = false;
-                selectPasswordlessMode();
-                passwordlessInput.setText(previousInput);
-                callback.onPasswordlessRetry();
-            }
+        if (id == R.id.com_auth0_lock_got_code) {
+            listener.onAlreadyGotCode(submittedEmailOrCode);
         } else if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
         }
-    }
-
-    private void setTopMessage(String text) {
-        topMessage.setText(text);
-        topMessage.setVisibility(text == null ? GONE : VISIBLE);
     }
 
     @Override
@@ -214,28 +173,29 @@ public class PasswordlessFormView extends FormView implements View.OnClickListen
         if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
             countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
         }
-        if (waitingForCode) {
-            resendButton.setVisibility(isOpen ? GONE : VISIBLE);
+        if (listener.shouldShowGotCodeButton()) {
+            gotCodeButton.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (topMessage.getText().length() > 0) {
             topMessage.setVisibility(isOpen ? GONE : VISIBLE);
         }
     }
 
-    /**
-     * Getter for the "waiting for code" state.
-     *
-     * @return Whether the form is waiting for the user to input a code or not.
-     */
-    public boolean isWaitingForCode() {
-        return waitingForCode;
+    public void setInputText(String text) {
+        passwordlessInput.setText(text);
     }
 
-    public interface OnPasswordlessRetryListener {
-        /**
-         * Called when the form needs to remove the "Waiting for the code" view and show
-         * the email/phone input again.
-         */
-        void onPasswordlessRetry();
+    public void showGotCodeButton() {
+        gotCodeButton.setVisibility(VISIBLE);
+    }
+
+    public void setLastEmailOrNumber(String emailOrNumber) {
+        submittedEmailOrCode = emailOrNumber;
+    }
+
+    public interface OnAlreadyGotCodeListener {
+        void onAlreadyGotCode(String emailOrNumber);
+
+        boolean shouldShowGotCodeButton();
     }
 }

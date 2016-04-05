@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
@@ -163,8 +164,9 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      * Notifies the form that the code was correctly sent and it should now wait
      * for the user to input the valid code.
      */
-    public void codeSent() {
-        formLayout.codeSent();
+    @Override
+    public void onPasswordlessCodeSent(String emailOrNumber) {
+        formLayout.codeSent(emailOrNumber);
     }
 
     @Override
@@ -215,5 +217,9 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     public void onKeyboardStateChanged(boolean isOpen) {
         actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         formLayout.onKeyboardStateChanged(isOpen);
+    }
+
+    public void loadPasswordlessData(String input, @Nullable Country country) {
+        formLayout.loadPasswordlessData(input, country);
     }
 }

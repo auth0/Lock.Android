@@ -249,6 +249,15 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     }
 
     /**
+     * Getter for the current state of enterprise matched domain.
+     *
+     * @return whether there is currently a domain match or not.
+     */
+    public boolean isEnterpriseDomainMatch() {
+        return currentConnection != null;
+    }
+
+    /**
      * Notifies this forms and its child views that the keyboard state changed, so that
      * it can change the layout in order to fit all the fields.
      *
@@ -257,14 +266,5 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     public void onKeyboardStateChanged(boolean isOpen) {
         changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
         topMessage.setVisibility(isOpen && topMessage.getText().length() > 0 ? GONE : VISIBLE);
-    }
-
-    /**
-     * Getter for the current state of enterprise matched domain.
-     *
-     * @return whether there is currently a domain match or not.
-     */
-    public boolean isEnterpriseDomainMatch() {
-        return currentConnection != null;
     }
 }
