@@ -200,6 +200,8 @@
     </style>
 
     <style name="Lock.Theme.Text.LinkSent">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_link_sent_text_spacing</item>
         <item name="android:textColor">@color/com_auth0_lock_passwordless_link_sent_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
@@ -213,7 +215,7 @@
     </style>
 
     <style name="Lock.Theme.Widget.Logo">
-        <item name="app:srcCompat">?attr/Auth0.HeaderLogo</item>
+        <item name="android:src">?attr/Auth0.HeaderLogo</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_header_logo_size</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_header_logo_size</item>
         <item name="android:layout_centerHorizontal">true</item>

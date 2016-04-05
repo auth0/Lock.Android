@@ -125,10 +125,10 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
                 Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
                     passwordInput.setVisibility(GONE);
-                    lockWidget.showSSOEnabledMessage(true);
+                    showSSOMessage(true);
                 } else if (fallbackToDatabase) {
                     passwordInput.setVisibility(VISIBLE);
-                    lockWidget.showSSOEnabledMessage(false);
+                    showSSOMessage(false);
                 } else {
                     resetDomain();
                 }
@@ -141,7 +141,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         passwordInput.setVisibility(connection.isActiveFlowEnabled() ? View.VISIBLE : GONE);
         String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
         topMessage.setText(loginWithCorporate);
-        lockWidget.showSSOEnabledMessage(true);
+        showSSOMessage(true);
         emailInput.setVisibility(GONE);
         topMessage.setVisibility(View.VISIBLE);
         currentConnection = connection;
@@ -155,8 +155,8 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         usernameInput.clearInput();
         topMessage.setText(null);
         topMessage.setVisibility(View.GONE);
-        lockWidget.showSSOEnabledMessage(false);
         corporateSSO = false;
+        showSSOMessage(false);
     }
 
     private String getUsername() {
@@ -231,13 +231,17 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     public boolean onBackPressed() {
         if (!singleConnection && corporateSSO) {
             resetDomain();
-            lockWidget.showSSOEnabledMessage(true);
-            if (changePasswordEnabled && currentConnection == null) {
-                changePasswordBtn.setVisibility(VISIBLE);
-            }
+            showSSOMessage(true);
             return true;
         }
         return false;
+    }
+
+    private void showSSOMessage(boolean show) {
+        lockWidget.showSSOEnabledMessage(show);
+        if (changePasswordEnabled) {
+            changePasswordBtn.setVisibility(show ? GONE : VISIBLE);
+        }
     }
 
     @Override

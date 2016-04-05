@@ -116,7 +116,7 @@ public class CountryCodeSelectorView extends LinearLayout {
      * @param country the country to set.
      */
     public void setSelectedCountry(@NonNull Country country) {
-        countryTextView.setText(String.format("%s %s", country.getDisplayName(), country.getDialCode()));
+        countryTextView.setText(String.format(getResources().getString(R.string.com_auth0_lock_title_passwordless_country_code_item_format), country.getDisplayName(), country.getDialCode()));
         selectedCountry = country;
     }
 
