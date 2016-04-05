@@ -34,7 +34,7 @@
 
         <ImageView
             android:id="@+id/com_auth0_lock_icon"
-            style="@style/Lock.Theme.Widget.Icon"
+            style="@style/Lock.Theme.Widget.Icon.Social"
             tools:background="#FF3333"
             tools:src="@drawable/com_auth0_lock_ic_social_auth0" />
 
@@ -42,7 +42,6 @@
             android:id="@+id/com_auth0_lock_text"
             style="@style/Lock.Theme.Text.SocialButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
             tools:background="#90FF3333"
             tools:text="Login with facebook" />
