@@ -7,8 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -18,52 +16,23 @@ import com.auth0.android.lock.R;
 
 class SocialButton extends RelativeLayout {
 
-    @ColorInt
-    private int backgroundColor = 0;
-    @ColorInt
-    private int textColor = 0;
-    @StringRes
-    private int titleRes;
-    @DrawableRes
-    private int iconRes;
-    private View touchArea;
     private final boolean smallSize;
-    private boolean configured;
+    private ImageView icon;
+    private View touchArea;
+    private TextView title;
 
     public SocialButton(Context context, boolean smallSize) {
         super(context);
-        this.configured = false;
         this.smallSize = smallSize;
         init();
     }
 
     private void init() {
         inflate(getContext(), smallSize ? R.layout.com_auth0_lock_btn_social_small : R.layout.com_auth0_lock_btn_social_large, this);
-        ImageView icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+        icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+        title = smallSize ? null : (TextView) findViewById(R.id.com_auth0_lock_text);
         touchArea = smallSize ? (View) icon.getParent() : findViewById(R.id.com_auth0_lock_touch_area);
-
-        if (isInEditMode() || !configured) {
-            return;
-        }
         setClickable(false);
-
-        ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
-        if (!smallSize) {
-            TextView title = (TextView) findViewById(R.id.com_auth0_lock_text);
-            title.setTextColor(textColor);
-            title.setText(titleRes);
-
-            ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
-            rightBackground.getPaint().setAlpha(230);
-            ViewUtils.setBackground(title, rightBackground);
-        } else {
-            leftBackground.getPaint().setAlpha(230);
-        }
-
-        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
-        ViewUtils.setBackground(touchArea, touchBackground);
-        ViewUtils.setBackground(icon, leftBackground);
-        icon.setImageResource(iconRes);
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int color) {
@@ -85,12 +54,24 @@ class SocialButton extends RelativeLayout {
      * @param config contains the connection information.
      */
     public void setSocialConfig(SocialConfig config) {
-        this.configured = true;
-        this.titleRes = config.getTitle();
-        this.iconRes = config.getIcon();
-        this.backgroundColor = config.getBackgroundColor();
-        this.textColor = Color.WHITE;
-        init();
+        int titleRes = config.getTitle();
+        int iconRes = config.getIcon();
+        int backgroundColor = config.getBackgroundColor();
+
+        ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
+        if (!smallSize) {
+            title.setText(titleRes);
+            ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
+            rightBackground.getPaint().setAlpha(230);
+            ViewUtils.setBackground(title, rightBackground);
+        } else {
+            leftBackground.getPaint().setAlpha(230);
+        }
+
+        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
+        ViewUtils.setBackground(touchArea, touchBackground);
+        ViewUtils.setBackground(icon, leftBackground);
+        icon.setImageResource(iconRes);
     }
 
     @Override
