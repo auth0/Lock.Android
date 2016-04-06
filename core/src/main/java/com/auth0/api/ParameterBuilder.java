@@ -14,9 +14,8 @@ public class ParameterBuilder {
 
     public static final String SCOPE_OPENID = "openid";
     public static final String SCOPE_OFFLINE_ACCESS = "openid offline_access";
-    public static final String ACCESS_TOKEN = "access_token";
-    public static final String CONNECTION = "connection";
 
+    public static final String GRANT_TYPE_AUTHORIZATION_CODE= "authorization_code";
     public static final String GRANT_TYPE_PASSWORD = "password";
     public static final String GRANT_TYPE_JWT = "urn:ietf:params:oauth:grant-type:jwt-bearer";
 
@@ -63,7 +62,7 @@ public class ParameterBuilder {
      * @return itself
      */
     public ParameterBuilder setConnection(String connection) {
-        return set(CONNECTION, connection);
+        return set("connection", connection);
     }
 
     /**
@@ -95,7 +94,34 @@ public class ParameterBuilder {
      * @return itself
      */
     public ParameterBuilder setAccessToken(String accessToken) {
-        return set(ACCESS_TOKEN, accessToken);
+        return set("access_token", accessToken);
+    }
+
+    /**
+     * Sets the 'redirect_uri' parameter
+     * @param uri the redirect URI
+     * @return itself
+     */
+    public ParameterBuilder setRedirectURI(String uri) {
+        return set("redirect_uri", uri);
+    }
+
+    /**
+     * Sets the 'code' parameter
+     * @param code the code
+     * @return itself
+     */
+    public ParameterBuilder setCode(String code) {
+        return set("code", code);
+    }
+
+    /**
+     * Sets the 'code' parameter
+     * @param code the code verifier
+     * @return itself
+     */
+    public ParameterBuilder setCodeVerifier(String code) {
+        return set("code_verifier", code);
     }
 
     /**

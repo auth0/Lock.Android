@@ -29,6 +29,7 @@ import android.app.Dialog;
 import com.auth0.core.Token;
 import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.AuthorizationCodeEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
@@ -50,6 +51,11 @@ public class LockIdentityProviderCallback implements IdentityProviderCallback {
     @Override
     public void onSuccess(Token token) {
         bus.post(new IdentityProviderAuthenticationEvent(token));
+    }
+
+    @Override
+    public void onAuthorizationCode(String authorizationCode, String codeVerifier, String redirectUri, IdentityProviderCallback callback) {
+        bus.post(new AuthorizationCodeEvent(authorizationCode, codeVerifier, redirectUri, callback));
     }
 
     @Override

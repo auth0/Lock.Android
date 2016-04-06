@@ -36,20 +36,23 @@ public interface IdentityProviderCallback {
 
     /**
      * Called when the failure reason is displayed in a {@link android.app.Dialog}.
+     *
      * @param dialog error dialog
      */
     void onFailure(Dialog dialog);
 
     /**
      * Called with a title and message resource that describes the error. If a cause is available it will be sent or it will be {@code null}
-     * @param titleResource title resource
+     *
+     * @param titleResource   title resource
      * @param messageResource message resource
-     * @param cause cause of the error
+     * @param cause           cause of the error
      */
     void onFailure(int titleResource, int messageResource, Throwable cause);
 
     /**
      * Called when a social authentication is successful,
+     *
      * @param serviceName name of the social connection
      * @param accessToken access token of the user
      */
@@ -57,7 +60,10 @@ public interface IdentityProviderCallback {
 
     /**
      * Called when the authentication is successful using web authentication against Auth0
+     *
      * @param token Auth0 token information (id_token, refresh_token, etc).
      */
     void onSuccess(Token token);
+
+    void onAuthorizationCode(String authorizationCode, String codeVerifier, String redirectUri, IdentityProviderCallback callback);
 }

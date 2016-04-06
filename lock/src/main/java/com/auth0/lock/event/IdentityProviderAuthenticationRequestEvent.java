@@ -28,6 +28,7 @@ import android.net.Uri;
 
 import com.auth0.core.Application;
 import com.auth0.identity.IdentityProviderRequest;
+import com.auth0.identity.util.PKCEUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,7 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
     private static final String SCOPE_OPENID = "openid";
     private static final String RESPONSE_TYPE_TOKEN = "token";
     private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
+    private static final String RESPONSE_TYPE_CODE = "code";
 
     private final String serviceName;
     private final String username;
@@ -73,7 +75,6 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
                 }
             }
         }
-        queryParameters.put(RESPONSE_TYPE_KEY, RESPONSE_TYPE_TOKEN);
         queryParameters.put(CONNECTION_KEY, serviceName);
         queryParameters.put(CLIENT_ID_KEY, application.getId());
         queryParameters.put(REDIRECT_URI_KEY, String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), authorizeUri.getHost()));
