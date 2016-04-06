@@ -83,12 +83,16 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     private void showPanelLayout() {
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
-        actionButton = new ActionButton(getContext());
-        actionButton.setId(R.id.com_auth0_lock_action_button);
-        actionButton.setOnClickListener(this);
-        addView(actionButton, actionParams);
+
+        boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
+        if (showPasswordless) {
+            RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
+            actionButton = new ActionButton(getContext());
+            actionButton.setId(R.id.com_auth0_lock_action_button);
+            actionButton.setOnClickListener(this);
+            addView(actionButton, actionParams);
+        }
 
         formLayout = new PasswordlessFormLayout(this);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -215,7 +219,9 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        if (actionButton != null) {
+            actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        }
         formLayout.onKeyboardStateChanged(isOpen);
     }
 
