@@ -54,11 +54,6 @@ public class LockIdentityProviderCallback implements IdentityProviderCallback {
     }
 
     @Override
-    public void onAuthorizationCode(String authorizationCode, String codeVerifier, String redirectUri, IdentityProviderCallback callback) {
-        bus.post(new AuthorizationCodeEvent(authorizationCode, codeVerifier, redirectUri, callback));
-    }
-
-    @Override
     public void onFailure(Dialog dialog) {
         bus.post(new SystemErrorEvent(dialog));
     }

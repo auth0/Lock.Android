@@ -40,7 +40,6 @@ import com.auth0.core.Auth0;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
 import com.auth0.identity.WebIdentityProvider;
-import com.auth0.identity.util.PKCEUtil;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
@@ -249,7 +248,7 @@ public class Lock {
      */
     public IdentityProvider providerForName(String serviceName) {
         IdentityProvider provider = providers.get(serviceName);
-        return provider != null ? provider : defaultProvider;
+        return provider != null ? provider : getDefaultProvider();
     }
 
     /**
@@ -258,6 +257,7 @@ public class Lock {
      * @return a default provider
      */
     public IdentityProvider getDefaultProvider() {
+        defaultProvider.setAPIClient(usePKCE ? authenticationAPIClient : null);
         return defaultProvider;
     }
 
@@ -652,7 +652,7 @@ public class Lock {
             lock.usePKCE = usePKCE;
             lock.useWebView = useWebView;
             if (usePKCE) {
-                lock.defaultProvider = new WebIdentityProvider(new CallbackParser(), clientId, buildAuth0().getAuthorizeUrl(), new PKCEUtil());
+                lock.defaultProvider = new WebIdentityProvider(new CallbackParser(), clientId, buildAuth0().getAuthorizeUrl());
             }
             lock.defaultProvider.setUseWebView(useWebView);
             lock.loginAfterSignUp = loginAfterSignUp;

@@ -23,7 +23,6 @@ import com.auth0.lock.error.ErrorDialogBuilder;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.AuthorizationCodeEvent;
 import com.auth0.lock.event.ChangePasswordEvent;
 import com.auth0.lock.event.EnterpriseAuthenticationRequest;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
@@ -315,26 +314,6 @@ public class LockActivity extends FragmentActivity {
 
                     @Override
                     public void onFailure(Throwable error) {
-                        lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
-                    }
-                });
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onAuthorizationCode(final AuthorizationCodeEvent event) {
-        lock.getAuthenticationAPIClient()
-                .tokenRequest(event.getAuthorizationCode(), event.getCodeVerifier(), event.getRedirectUri())
-                .start(new AuthenticationCallback() {
-                    @Override
-                    public void onSuccess(UserProfile profile, Token token) {
-                        Log.i(TAG, "PKCE ended successfully");
-                        lock.getBus().post(new AuthenticationEvent(profile, token));
-                    }
-
-                    @Override
-                    public void onFailure(Throwable error) {
-                        Log.i(TAG, "PKCE failed");
                         lock.getBus().post(new LoginAuthenticationErrorBuilder().buildFrom(error));
                     }
                 });

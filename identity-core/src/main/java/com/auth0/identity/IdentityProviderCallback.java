@@ -64,6 +64,4 @@ public interface IdentityProviderCallback {
      * @param token Auth0 token information (id_token, refresh_token, etc).
      */
     void onSuccess(Token token);
-
-    void onAuthorizationCode(String authorizationCode, String codeVerifier, String redirectUri, IdentityProviderCallback callback);
 }
