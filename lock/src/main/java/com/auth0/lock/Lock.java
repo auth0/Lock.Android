@@ -126,7 +126,6 @@ public class Lock {
         this.closable = false;
         this.loginAfterSignUp = true;
         this.usePKCE = false;
-
         this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
@@ -185,7 +184,8 @@ public class Lock {
 
     /**
      * Force Lock to use PKCE instead of the implicit token grant when performing calls to
-     * /authenticate. Default is {@code false}
+     * /authenticate.
+     * Default is {@code false}
      *
      * @return if Lock uses PKCE instead of the implicit token grant. Default is false
      */
@@ -475,6 +475,7 @@ public class Lock {
 
         /**
          * Use PKCE instead of the implicit token grant when performing calls to /authenticate.
+         * Default is {@code false}
          *
          * @param usePKCE if Lock will use PKCE instead of the implicit token grant.
          * @return the Builder instance being used

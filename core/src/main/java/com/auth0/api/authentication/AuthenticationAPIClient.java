@@ -40,7 +40,6 @@ import com.auth0.core.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import java.util.Map;
 
@@ -91,15 +90,9 @@ public class AuthenticationAPIClient {
      */
     public AuthenticationAPIClient(Auth0 auth0, Handler handler) {
         this.auth0 = auth0;
-        this.client = getOkHttpClient();
+        this.client = new OkHttpClient();
         this.handler = handler;
         this.mapper = new ObjectMapper();
-    }
-
-    private OkHttpClient getOkHttpClient() {
-        OkHttpClient client = new OkHttpClient();
-        client.interceptors().add(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
-        return client;
     }
 
     /**

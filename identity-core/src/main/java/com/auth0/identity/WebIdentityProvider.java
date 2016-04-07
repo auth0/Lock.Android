@@ -46,8 +46,28 @@ import java.util.Map;
  */
 public class WebIdentityProvider implements IdentityProvider {
 
-    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
     private static final String TAG = WebIdentityProvider.class.getName();
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
+
+    private static final String RESPONSE_TYPE_KEY = "response_type";
+    private static final String CODE_CHALLENGE_KEY = "code_challenge";
+    private static final String CODE_CHALLENGE_METHOD_KEY = "code_challenge_method";
+    private static final String SCOPE_KEY = "scope";
+    private static final String CONNECTION_KEY = "connection";
+    private static final String CLIENT_ID_KEY = "client_id";
+    private static final String REDIRECT_URI_KEY = "redirect_uri";
+    private static final String CODE_KEY = "code";
+    private static final String AUTH0_CLIENT_KEY = "auth0Client";
+    private static final String ERROR_KEY = "error";
+    private static final String ID_TOKEN_KEY = "id_token";
+    private static final String ACCESS_TOKEN_KEY = "access_token";
+    private static final String TOKEN_TYPE_KEY = "token_type";
+    private static final String REFRESH_TOKEN_KEY = "refresh_token";
+
+    private static final String TYPE_CODE = "code";
+    private static final String TYPE_TOKEN = "token";
+    private static final String METHOD_SHA_256 = "S256";
+    private static final String SCOPE_OPENID = "openid";
 
     private boolean useWebView;
     private IdentityProviderCallback callback;
@@ -84,6 +104,16 @@ public class WebIdentityProvider implements IdentityProvider {
         this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
     }
 
+    public void setClientInfo(String clientInfo) {
+        this.clientInfo = clientInfo;
+    }
+
+    /**
+     * Setter for the AuthenticationAPIClient.
+     * If the class is going to authenticate with the PKCE flow, the APIClients needs to be set.
+     *
+     * @param apiClient the AuthenticationAPIClient to use.
+     */
     public void setAPIClient(AuthenticationAPIClient apiClient) {
         this.apiClient = apiClient;
     }
@@ -137,15 +167,15 @@ public class WebIdentityProvider implements IdentityProvider {
         boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK && uri != null;
         if (isValid) {
             final Map<String, String> values = parser.getValuesFromUri(uri);
-            if (values.containsKey("error")) {
-                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+            if (values.containsKey(ERROR_KEY)) {
+                final int message = "access_denied".equalsIgnoreCase(values.get(ERROR_KEY)) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
                 callback.onFailure(R.string.com_auth0_social_error_title, message, null);
             } else if (values.size() > 0) {
                 Log.d(TAG, "Authenticated using web flow");
                 if (shouldUsePKCE()) {
-                    pkce.getToken(values.get("code"), callback);
+                    pkce.getToken(values.get(CODE_KEY), callback);
                 } else {
-                    callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
+                    callback.onSuccess(new Token(values.get(ID_TOKEN_KEY), values.get(ACCESS_TOKEN_KEY), values.get(TOKEN_TYPE_KEY), values.get(REFRESH_TOKEN_KEY)));
                 }
             }
         }
@@ -157,14 +187,10 @@ public class WebIdentityProvider implements IdentityProvider {
         pkce = null;
     }
 
-    public void setClientInfo(String clientInfo) {
-        this.clientInfo = clientInfo;
-    }
-
     private Map<String, Object> buildParameters() {
         Map<String, Object> parameters = new HashMap<>(this.parameters);
         if (clientInfo != null) {
-            parameters.put("auth0Client", clientInfo);
+            parameters.put(AUTH0_CLIENT_KEY, clientInfo);
         }
         if (shouldUsePKCE()) {
             String codeChallenge = null;
@@ -174,11 +200,11 @@ public class WebIdentityProvider implements IdentityProvider {
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
-            parameters.put("response_type", "code");
-            parameters.put("code_challenge", codeChallenge);
-            parameters.put("code_challenge_method", "S256");
+            parameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
+            parameters.put(CODE_CHALLENGE_KEY, codeChallenge);
+            parameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
         } else {
-            parameters.put("response_type", "token");
+            parameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
         }
         return parameters;
     }
@@ -187,7 +213,7 @@ public class WebIdentityProvider implements IdentityProvider {
         final Uri authorizeUri = Uri.parse(url);
         String redirectUri = String.format(REDIRECT_URI_FORMAT, clientId.toLowerCase(), authorizeUri.getHost());
         final Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("scope", "openid");
+        queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
         if (shouldUsePKCE()) {
             String codeChallenge = null;
             try {
@@ -197,11 +223,11 @@ public class WebIdentityProvider implements IdentityProvider {
                 Log.e(TAG, e.getMessage());
             }
             pkce = new PKCEUtil(apiClient, redirectUri);
-            queryParameters.put("response_type", "code");
-            queryParameters.put("code_challenge", codeChallenge);
-            queryParameters.put("code_challenge_method", "S256");
+            queryParameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
+            queryParameters.put(CODE_CHALLENGE_KEY, codeChallenge);
+            queryParameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
         } else {
-            queryParameters.put("response_type", "token");
+            queryParameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
         }
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -211,10 +237,10 @@ public class WebIdentityProvider implements IdentityProvider {
                 }
             }
         }
-        queryParameters.put("connection", serviceName);
-        queryParameters.put("client_id", clientId);
+        queryParameters.put(CONNECTION_KEY, serviceName);
+        queryParameters.put(CLIENT_ID_KEY, clientId);
         Log.d(TAG, "GET RedirectURI: " + redirectUri);
-        queryParameters.put("redirect_uri", redirectUri);
+        queryParameters.put(REDIRECT_URI_KEY, redirectUri);
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());

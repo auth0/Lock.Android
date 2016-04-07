@@ -47,7 +47,7 @@ public class LockApplication extends Application {
                         .fullscreen(false)
                         .useWebView(true)
                         .withIdentityProvider(Strategies.Facebook, new FacebookIdentityProvider(this))
-//                        .withIdentityProvider(Strategies.GooglePlus, new GooglePlusIdentityProvider(this))
+                        .withIdentityProvider(Strategies.GooglePlus, new GooglePlusIdentityProvider(this))
         );
     }
 
