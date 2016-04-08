@@ -23,7 +23,8 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/com_auth0_lock_submit_pressed" android:state_focused="true" />
+    <item android:drawable="@color/com_auth0_lock_submit_disabled" android:state_enabled="false" />
+    <item android:drawable="@color/com_auth0_lock_submit_normal" android:state_pressed="false" />
     <item android:drawable="@color/com_auth0_lock_submit_pressed" android:state_pressed="true" />
-    <item android:drawable="@color/com_auth0_lock_submit_background" />
+    <item android:drawable="@color/com_auth0_lock_submit_normal" android:state_enabled="true" />
 </selector>
