@@ -81,7 +81,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     private void showPanelLayout() {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
         boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;

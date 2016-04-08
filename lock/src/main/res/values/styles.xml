@@ -47,7 +47,7 @@
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_terms_text_spacing</item>
         <item name="android:textColor">@color/com_auth0_lock_terms_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_terms_text</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
     </style>
 
     <style name="Lock.Theme.Text.SSO">
@@ -71,9 +71,9 @@
     <style name="Lock.Theme.Text.Link">
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_link</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:padding">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:padding">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
         <item name="android:textSize">@dimen/com_auth0_lock_small_clickable_text</item>
     </style>
 
@@ -81,7 +81,7 @@
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_title_text_spacing</item>
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
     </style>
@@ -167,7 +167,7 @@
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin</item>
+        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
 
@@ -210,7 +210,7 @@
         <item name="android:layout_width">@dimen/com_auth0_lock_header_logo_size</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_header_logo_size</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_field
         </item>
         <item name="android:scaleType">fitCenter</item>
     </style>

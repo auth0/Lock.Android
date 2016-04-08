@@ -33,7 +33,7 @@
     <TextView
         android:id="@+id/com_auth0_lock_title"
         style="@style/Lock.Theme.Text.Title.ResetPassword"
-        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin"
+        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_field"
         android:text="@string/com_auth0_lock_title_change_password" />
 
     <TextView

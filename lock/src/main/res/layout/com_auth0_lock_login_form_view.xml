@@ -37,7 +37,7 @@
         android:id="@+id/com_auth0_lock_input_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
         app:Auth0.InputDataType="password" />
 
     <TextView

@@ -44,8 +44,9 @@
     <dimen name="com_auth0_lock_sso_height">31dp</dimen>
     <dimen name="com_auth0_lock_terms_height">68dp</dimen>
     <dimen name="com_auth0_lock_widget_small_margin">3dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_large">35dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin">10dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_passwordless_sent">29dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_link">33dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_field">10dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">9dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin">45dp</dimen>
 

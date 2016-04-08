@@ -91,7 +91,7 @@ public class FormLayout extends LinearLayout {
         orSeparatorMessage.setTextColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_normal_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
         orSeparatorMessage.setGravity(Gravity.CENTER);
-        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
         addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
