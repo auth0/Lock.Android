@@ -258,7 +258,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
      * @return whether there is currently a domain match or not.
      */
     public boolean isEnterpriseDomainMatch() {
-        return currentConnection != null;
+        return currentConnection != null && !singleConnection;
     }
 
     /**
@@ -269,6 +269,6 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
-        topMessage.setVisibility(isOpen && topMessage.getText().length() > 0 ? GONE : VISIBLE);
+        topMessage.setVisibility(topMessage.getText().length() > 0 ? isOpen ? GONE : VISIBLE : GONE);
     }
 }
