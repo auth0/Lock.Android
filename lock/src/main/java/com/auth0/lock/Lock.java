@@ -652,9 +652,6 @@ public class Lock {
             Lock lock = buildLock();
             lock.usePKCE = usePKCE;
             lock.useWebView = useWebView;
-            if (usePKCE) {
-                lock.defaultProvider = new WebIdentityProvider(new CallbackParser(), clientId, buildAuth0().getAuthorizeUrl());
-            }
             lock.defaultProvider.setUseWebView(useWebView);
             lock.loginAfterSignUp = loginAfterSignUp;
             lock.closable = closable;
