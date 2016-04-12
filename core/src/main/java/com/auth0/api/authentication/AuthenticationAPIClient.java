@@ -89,10 +89,7 @@ public class AuthenticationAPIClient {
      * @param handler where callback will be called with either the response or error from the server
      */
     public AuthenticationAPIClient(Auth0 auth0, Handler handler) {
-        this.auth0 = auth0;
-        this.client = new OkHttpClient();
-        this.handler = handler;
-        this.mapper = new ObjectMapper();
+        this(auth0, new OkHttpClient(), handler, new ObjectMapper());
     }
 
     /**
