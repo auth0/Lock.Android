@@ -44,6 +44,12 @@ public class PKCEUtilTest {
     }
 
     @Test
+    public void shouldGenerateChallengeFromRandomVerfier() throws Exception {
+        PKCEUtil pkce = new PKCEUtil(apiClient, REDIRECT_URI);
+        assertThat(pkce.generateCodeChallenge(), is(notNullValue()));
+    }
+
+    @Test
     public void shouldGenerateValidRandomCodeChallenge() throws Exception {
         PKCEUtil randomPKCE = new PKCEUtil(apiClient, REDIRECT_URI);
         String challenge = randomPKCE.generateCodeChallenge();

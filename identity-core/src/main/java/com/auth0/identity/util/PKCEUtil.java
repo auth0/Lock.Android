@@ -34,13 +34,13 @@ public class PKCEUtil {
      * @param redirectUri going to be used in the OAuth code request.
      */
     public PKCEUtil(@NonNull AuthenticationAPIClient apiClient, String redirectUri) {
-        this(apiClient, redirectUri, null);
+        this(apiClient, redirectUri, generateCodeVerifier());
     }
 
-    PKCEUtil(@NonNull AuthenticationAPIClient apiClient, String redirectUri, String codeVerifier) {
+    PKCEUtil(@NonNull AuthenticationAPIClient apiClient, @NonNull String redirectUri, @NonNull String codeVerifier) {
         this.apiClient = apiClient;
         this.redirectUri = redirectUri;
-        this.codeVerifier = codeVerifier != null ? codeVerifier : generateCodeVerifier();
+        this.codeVerifier = codeVerifier;
         Log.v(TAG, "The code verifier is: " + codeVerifier);
     }
 
@@ -115,7 +115,7 @@ public class PKCEUtil {
         return true;
     }
 
-    private String generateCodeVerifier() {
+    private static String generateCodeVerifier() {
         SecureRandom sr = new SecureRandom();
         byte[] code = new byte[32];
         sr.nextBytes(code);
