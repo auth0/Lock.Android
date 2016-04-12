@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
@@ -46,6 +47,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 public class WebViewActivity extends ActionBarActivity {
 
     public static final String SERVICE_NAME_EXTRA = "serviceName";
+    private static final String TAG = WebViewActivity.class.getSimpleName();
 
     WebView webView;
     SmoothProgressBar progressBar;
@@ -96,6 +98,7 @@ public class WebViewActivity extends ActionBarActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.i(TAG, "Loading url: " + url);
                 if (url.startsWith(redirectUrl)) {
                     final Intent intent = new Intent();
                     intent.setData(Uri.parse(url));

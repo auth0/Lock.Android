@@ -43,6 +43,7 @@ public class LockApplication extends Application {
                         .loadFromApplication(this)
                         .closable(true)
                         .useEmail(true)
+                        .usePKCE(true)
                         .fullscreen(false)
                         .useWebView(true)
                         .withIdentityProvider(Strategies.Facebook, new FacebookIdentityProvider(this))

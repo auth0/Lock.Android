@@ -33,7 +33,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.auth0.lock.Lock;
 import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.auth0.lock.adapter.SocialListAdapter;
@@ -51,7 +50,8 @@ public class SmallSocialListFragment extends android.support.v4.app.Fragment {
     GridView gridView;
     Bus bus;
 
-    public SmallSocialListFragment() {}
+    public SmallSocialListFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -53,9 +53,12 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.util.AuthenticationAPI.CODE;
+import static com.auth0.util.AuthenticationAPI.CODE_VERIFIER;
 import static com.auth0.util.AuthenticationAPI.GENERIC_TOKEN;
 import static com.auth0.util.AuthenticationAPI.ID_TOKEN;
 import static com.auth0.util.AuthenticationAPI.NEW_ID_TOKEN;
+import static com.auth0.util.AuthenticationAPI.REDIRECT_URI;
 import static com.auth0.util.AuthenticationAPI.REFRESH_TOKEN;
 import static com.auth0.util.AuthenticationCallbackMatcher.hasTokenAndProfile;
 import static com.auth0.util.CallbackMatcher.hasNoError;
@@ -70,7 +73,8 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
@@ -598,6 +602,29 @@ public class AuthenticationAPIClientTest {
         assertThat(body, hasEntry("connection", "sms"));
 
         assertThat(callback, hasNoError());
+    }
+
+    @Test
+    public void shouldGetOAuthToken() throws Exception {
+        mockAPI
+                .willReturnAuthorizationCodeInfo()
+                .willReturnTokenInfo();
+
+        final MockAuthenticationCallback callback = new MockAuthenticationCallback();
+        client.tokenRequest(CODE, CODE_VERIFIER, REDIRECT_URI)
+                .start(callback);
+
+        final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getPath(), equalTo("/oauth/token"));
+
+        Map<String, String> body = bodyFromRequest(request);
+        assertThat(body, hasEntry("redirect_uri", REDIRECT_URI));
+        assertThat(body, hasEntry("grant_type", ParameterBuilder.GRANT_TYPE_AUTHORIZATION_CODE));
+        assertThat(body, hasEntry("client_id", CLIENT_ID));
+        assertThat(body, hasEntry("code_verifier", CODE_VERIFIER));
+        assertThat(body, hasEntry("code", CODE));
+
+        assertThat(callback, hasTokenAndProfile());
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {

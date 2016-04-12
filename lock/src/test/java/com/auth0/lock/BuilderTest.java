@@ -28,6 +28,7 @@ import com.auth0.api.APIClient;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Strategies;
 import com.auth0.identity.IdentityProvider;
+import com.auth0.identity.WebIdentityProvider;
 import com.auth0.lock.credentials.CredentialStore;
 import com.auth0.lock.credentials.NullCredentialStore;
 
@@ -93,6 +94,7 @@ public class BuilderTest {
         assertThat(lock.shouldLoginAfterSignUp(), is(true));
         assertThat(lock.shouldUseEmail(), is(true));
         assertThat(lock.isFullScreen(), is(false));
+        assertThat(lock.shouldUsePKCE(), is(false));
         assertThat(lock.isSignUpEnabled(), is(true));
         assertThat(lock.isChangePasswordEnabled(), is(true));
     }
@@ -136,6 +138,14 @@ public class BuilderTest {
                 .closable(true)
                 .build();
         assertThat(lock.isClosable(), is(true));
+    }
+
+    @Test
+    public void shouldSetUsePKCEFlag() throws Exception {
+        lock = basicBuilder()
+                .usePKCE(true)
+                .build();
+        assertThat(lock.shouldUsePKCE(), is(true));
     }
 
     @Test

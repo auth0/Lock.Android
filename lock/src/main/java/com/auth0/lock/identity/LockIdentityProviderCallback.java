@@ -29,6 +29,7 @@ import android.app.Dialog;
 import com.auth0.core.Token;
 import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.AuthorizationCodeEvent;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;

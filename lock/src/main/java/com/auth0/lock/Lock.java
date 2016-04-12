@@ -96,6 +96,7 @@ public class Lock {
      */
     public static final String AUTHENTICATION_ACTION_TOKEN_PARAMETER = "token";
 
+    private boolean usePKCE;
     private boolean useWebView;
     private boolean loginAfterSignUp;
     private boolean closable;
@@ -124,13 +125,13 @@ public class Lock {
         this.useWebView = false;
         this.closable = false;
         this.loginAfterSignUp = true;
-
+        this.usePKCE = false;
         this.useEmail = true;
         this.providers = new HashMap<>();
         this.bus = new Bus("Lock");
-        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl());
         this.apiClient = auth0.newAPIClient();
         this.authenticationAPIClient = auth0.newAuthenticationAPIClient();
+        this.defaultProvider = new WebIdentityProvider(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl());
         this.fullScreen = false;
         this.signUpEnabled = true;
         this.changePasswordEnabled = true;
@@ -179,6 +180,17 @@ public class Lock {
      */
     public boolean shouldUseWebView() {
         return useWebView;
+    }
+
+    /**
+     * Force Lock to use PKCE instead of the implicit token grant when performing calls to
+     * /authenticate.
+     * Default is {@code false}
+     *
+     * @return if Lock uses PKCE instead of the implicit token grant. Default is false
+     */
+    public boolean shouldUsePKCE() {
+        return usePKCE;
     }
 
     /**
@@ -236,7 +248,7 @@ public class Lock {
      */
     public IdentityProvider providerForName(String serviceName) {
         IdentityProvider provider = providers.get(serviceName);
-        return provider != null ? provider : defaultProvider;
+        return provider != null ? provider : getDefaultProvider();
     }
 
     /**
@@ -245,6 +257,7 @@ public class Lock {
      * @return a default provider
      */
     public IdentityProvider getDefaultProvider() {
+        defaultProvider.setAPIClient(usePKCE ? authenticationAPIClient : null);
         return defaultProvider;
     }
 
@@ -367,6 +380,7 @@ public class Lock {
         private String domain;
         private String configuration;
         private boolean useWebView;
+        private boolean usePKCE;
         private boolean closable;
         private boolean loginAfterSignUp;
         private Map<String, Object> parameters;
@@ -385,6 +399,7 @@ public class Lock {
         public Builder() {
             this.loginAfterSignUp = true;
             this.useEmail = true;
+            this.usePKCE = false;
             this.fullscreen = false;
             this.parameters = ParameterBuilder.newBuilder().asDictionary();
             this.enterpriseConnectionsUsingWebForm = new ArrayList<>();
@@ -455,6 +470,18 @@ public class Lock {
          */
         public Builder useWebView(boolean useWebView) {
             this.useWebView = useWebView;
+            return this;
+        }
+
+        /**
+         * Use PKCE instead of the implicit token grant when performing calls to /authenticate.
+         * Default is {@code false}
+         *
+         * @param usePKCE if Lock will use PKCE instead of the implicit token grant.
+         * @return the Builder instance being used
+         */
+        public Builder usePKCE(boolean usePKCE) {
+            this.usePKCE = usePKCE;
             return this;
         }
 
@@ -606,6 +633,7 @@ public class Lock {
 
         /**
          * Auth0 telemetry usage to be sent in every Auth0 API request
+         *
          * @param telemetry information to send or null
          * @return the Builder instance being used
          */
@@ -622,6 +650,7 @@ public class Lock {
          */
         public Lock build() {
             Lock lock = buildLock();
+            lock.usePKCE = usePKCE;
             lock.useWebView = useWebView;
             lock.defaultProvider.setUseWebView(useWebView);
             lock.loginAfterSignUp = loginAfterSignUp;

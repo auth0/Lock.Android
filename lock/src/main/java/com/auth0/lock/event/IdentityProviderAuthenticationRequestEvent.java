@@ -72,8 +72,9 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
                     queryParameters.put(entry.getKey(), value.toString());
                 }
             }
+        } else {
+            queryParameters.put(RESPONSE_TYPE_KEY, RESPONSE_TYPE_TOKEN);
         }
-        queryParameters.put(RESPONSE_TYPE_KEY, RESPONSE_TYPE_TOKEN);
         queryParameters.put(CONNECTION_KEY, serviceName);
         queryParameters.put(CLIENT_ID_KEY, application.getId());
         queryParameters.put(REDIRECT_URI_KEY, String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), authorizeUri.getHost()));

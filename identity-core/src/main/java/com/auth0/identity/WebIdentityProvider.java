@@ -29,8 +29,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Application;
 import com.auth0.core.Token;
+import com.auth0.identity.util.PKCEUtil;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.identity.web.WebViewActivity;
 
@@ -44,8 +46,28 @@ import java.util.Map;
  */
 public class WebIdentityProvider implements IdentityProvider {
 
-    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
     private static final String TAG = WebIdentityProvider.class.getName();
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
+
+    private static final String RESPONSE_TYPE_KEY = "response_type";
+    private static final String CODE_CHALLENGE_KEY = "code_challenge";
+    private static final String CODE_CHALLENGE_METHOD_KEY = "code_challenge_method";
+    private static final String SCOPE_KEY = "scope";
+    private static final String CONNECTION_KEY = "connection";
+    private static final String CLIENT_ID_KEY = "client_id";
+    private static final String REDIRECT_URI_KEY = "redirect_uri";
+    private static final String CODE_KEY = "code";
+    private static final String AUTH0_CLIENT_KEY = "auth0Client";
+    private static final String ERROR_KEY = "error";
+    private static final String ID_TOKEN_KEY = "id_token";
+    private static final String ACCESS_TOKEN_KEY = "access_token";
+    private static final String TOKEN_TYPE_KEY = "token_type";
+    private static final String REFRESH_TOKEN_KEY = "refresh_token";
+
+    private static final String TYPE_CODE = "code";
+    private static final String TYPE_TOKEN = "token";
+    private static final String METHOD_SHA_256 = "S256";
+    private static final String SCOPE_OPENID = "openid";
 
     private boolean useWebView;
     private IdentityProviderCallback callback;
@@ -54,6 +76,8 @@ public class WebIdentityProvider implements IdentityProvider {
     private final String authorizeUrl;
     private Map<String, Object> parameters;
     private String clientInfo;
+    private AuthenticationAPIClient apiClient;
+    private PKCEUtil pkce;
 
     public WebIdentityProvider(CallbackParser parser, String clientId, String authorizeUrl) {
         this.parser = parser;
@@ -65,6 +89,7 @@ public class WebIdentityProvider implements IdentityProvider {
 
     /**
      * If the class authenticates with an external browser or not.
+     *
      * @param useWebView if the authentication is handled in a WebView.
      */
     public void setUseWebView(boolean useWebView) {
@@ -77,6 +102,20 @@ public class WebIdentityProvider implements IdentityProvider {
 
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<String, Object>();
+    }
+
+    public void setClientInfo(String clientInfo) {
+        this.clientInfo = clientInfo;
+    }
+
+    /**
+     * Setter for the AuthenticationAPIClient.
+     * If the class is going to authenticate with the PKCE flow, the APIClients needs to be set.
+     *
+     * @param apiClient the AuthenticationAPIClient to use.
+     */
+    public void setAPIClient(AuthenticationAPIClient apiClient) {
+        this.apiClient = apiClient;
     }
 
     @Override
@@ -93,6 +132,11 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     public void start(Activity activity, IdentityProviderRequest request, Application application) {
+        if (shouldUsePKCE()) {
+            String redirectUri = String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), Uri.parse(application.getAuthorizeURL()).getHost());
+            Log.d(TAG, "GET RedirectURI: " + redirectUri);
+            pkce = new PKCEUtil(apiClient, redirectUri);
+        }
         final Uri url = request.getAuthenticationUri(application, buildParameters());
         final String serviceName = request.getServiceName();
         startAuthorization(activity, url, serviceName);
@@ -100,6 +144,7 @@ public class WebIdentityProvider implements IdentityProvider {
 
     private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
         final Intent intent;
+        Log.i(TAG, "Start authorization called with uri: " + authorizeUri);
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
@@ -112,7 +157,8 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void stop() {}
+    public void stop() {
+    }
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -121,36 +167,68 @@ public class WebIdentityProvider implements IdentityProvider {
         boolean isValid = requestCode == WEBVIEW_AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK && uri != null;
         if (isValid) {
             final Map<String, String> values = parser.getValuesFromUri(uri);
-            if (values.containsKey("error")) {
-                final int message = "access_denied".equalsIgnoreCase(values.get("error")) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
+            if (values.containsKey(ERROR_KEY)) {
+                final int message = "access_denied".equalsIgnoreCase(values.get(ERROR_KEY)) ? R.string.com_auth0_social_access_denied_message : R.string.com_auth0_social_error_message;
                 callback.onFailure(R.string.com_auth0_social_error_title, message, null);
-            } else if(values.size() > 0) {
+            } else if (values.size() > 0) {
                 Log.d(TAG, "Authenticated using web flow");
-                callback.onSuccess(new Token(values.get("id_token"), values.get("access_token"), values.get("token_type"), values.get("refresh_token")));
+                if (shouldUsePKCE()) {
+                    pkce.getToken(values.get(CODE_KEY), callback);
+                } else {
+                    callback.onSuccess(new Token(values.get(ID_TOKEN_KEY), values.get(ACCESS_TOKEN_KEY), values.get(TOKEN_TYPE_KEY), values.get(REFRESH_TOKEN_KEY)));
+                }
             }
         }
         return isValid;
     }
 
     @Override
-    public void clearSession() {}
-
-    public void setClientInfo(String clientInfo) {
-        this.clientInfo = clientInfo;
+    public void clearSession() {
+        pkce = null;
     }
 
     private Map<String, Object> buildParameters() {
         Map<String, Object> parameters = new HashMap<>(this.parameters);
         if (clientInfo != null) {
-            parameters.put("auth0Client", clientInfo);
+            parameters.put(AUTH0_CLIENT_KEY, clientInfo);
+        }
+        if (shouldUsePKCE()) {
+            String codeChallenge = null;
+            try {
+                codeChallenge = pkce.generateCodeChallenge();
+                Log.d(TAG, "About to use PKCE flow");
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            parameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
+            parameters.put(CODE_CHALLENGE_KEY, codeChallenge);
+            parameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
+        } else {
+            parameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
         }
         return parameters;
     }
 
     private Uri buildAuthorizeUri(String url, String serviceName, Map<String, Object> parameters) {
         final Uri authorizeUri = Uri.parse(url);
+        String redirectUri = String.format(REDIRECT_URI_FORMAT, clientId.toLowerCase(), authorizeUri.getHost());
         final Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("scope", "openid");
+        queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
+        if (shouldUsePKCE()) {
+            String codeChallenge = null;
+            try {
+                codeChallenge = pkce.generateCodeChallenge();
+                Log.d(TAG, "About to use PKCE flow");
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            pkce = new PKCEUtil(apiClient, redirectUri);
+            queryParameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
+            queryParameters.put(CODE_CHALLENGE_KEY, codeChallenge);
+            queryParameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
+        } else {
+            queryParameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
+        }
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 Object value = entry.getValue();
@@ -159,14 +237,18 @@ public class WebIdentityProvider implements IdentityProvider {
                 }
             }
         }
-        queryParameters.put("response_type", "token");
-        queryParameters.put("connection", serviceName);
-        queryParameters.put("client_id", clientId);
-        queryParameters.put("redirect_uri", String.format(REDIRECT_URI_FORMAT, clientId.toLowerCase(), authorizeUri.getHost()));
+        queryParameters.put(CONNECTION_KEY, serviceName);
+        queryParameters.put(CLIENT_ID_KEY, clientId);
+        Log.d(TAG, "GET RedirectURI: " + redirectUri);
+        queryParameters.put(REDIRECT_URI_KEY, redirectUri);
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
         }
         return builder.build();
+    }
+
+    private boolean shouldUsePKCE() {
+        return apiClient != null && PKCEUtil.isAvailable();
     }
 }
