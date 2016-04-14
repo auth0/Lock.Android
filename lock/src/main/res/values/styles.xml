@@ -169,8 +169,8 @@
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
-        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social</item>
+        <item name="android:layout_centerInParent">true</item>
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
@@ -183,7 +183,6 @@
             @dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
         <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_small_margin</item>
-        <item name="android:layout_centerInParent">true</item>
     </style>
 
     <style name="Lock.Theme.Widget.SubmitButton">

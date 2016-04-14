@@ -30,7 +30,6 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.utils.Strategy;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
@@ -50,7 +49,6 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     }
 
     private void init(boolean smallButtons) {
-        int maxWidth = getResources().getDimensionPixelOffset(R.dimen.com_auth0_lock_max_widget_width);
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         RecyclerView recycler = new RecyclerView(getContext());
@@ -65,7 +63,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         recycler.setOverScrollMode(OVER_SCROLL_NEVER);
         LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(recycler, recyclerParams);
-        setLayoutParams(new ViewGroup.LayoutParams(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override

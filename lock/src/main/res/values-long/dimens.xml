@@ -38,7 +38,6 @@
 
     <dimen name="com_auth0_lock_social_button_height">40dp</dimen>
     <dimen name="com_auth0_lock_widget_height">35dp</dimen>
-    <dimen name="com_auth0_lock_max_widget_width">300dp</dimen>
     <dimen name="com_auth0_lock_form_selector_height">26dp</dimen>
     <dimen name="com_auth0_lock_result_message_height">31dp</dimen>
     <dimen name="com_auth0_lock_sso_height">26dp</dimen>
@@ -47,6 +46,7 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless_sent">24dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_link">26dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field">8dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_social">4dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_header_icon">8dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_header_text">9dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_switcher">14dp</dimen>
