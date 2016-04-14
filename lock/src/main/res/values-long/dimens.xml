@@ -50,6 +50,7 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_header_icon">8dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_header_text">9dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_switcher">14dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_passwordless">28dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">7dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin">35dp</dimen>
 
@@ -57,7 +58,7 @@
     <dimen name="com_auth0_lock_webview_button_text">13sp</dimen>
     <dimen name="com_auth0_lock_header_text">18.3sp</dimen>
     <dimen name="com_auth0_lock_title_text">14sp</dimen>
-    <dimen name="com_auth0_lock_change_password_title_text">19sp</dimen>
+    <dimen name="com_auth0_lock_change_password_title_text">23sp</dimen>
     <dimen name="com_auth0_lock_link_sent_text">19sp</dimen>
 
     <dimen name="com_auth0_lock_small_clickable_text">13sp</dimen>

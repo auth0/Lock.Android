@@ -42,18 +42,11 @@
         android:text="@string/com_auth0_lock_description_change_password"
         android:textSize="@dimen/com_auth0_lock_title_text" />
 
-    <RelativeLayout
+    <com.auth0.android.lock.views.ValidatedUsernameInputView
+        android:id="@+id/com_auth0_lock_input_username_email"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
-
-        <com.auth0.android.lock.views.ValidatedUsernameInputView
-            android:id="@+id/com_auth0_lock_input_username_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Auth0.InputDataType="username_or_email" />
-
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
+        app:Auth0.InputDataType="username_or_email" />
 
 </LinearLayout>
