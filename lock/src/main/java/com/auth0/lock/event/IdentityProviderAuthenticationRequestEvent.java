@@ -61,6 +61,11 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
         return serviceName;
     }
 
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
     public Uri getAuthenticationUri(Application application, Map<String, Object> parameters) {
         final Uri authorizeUri = Uri.parse(application.getAuthorizeURL());
         final Map<String, String> queryParameters = new HashMap<>();

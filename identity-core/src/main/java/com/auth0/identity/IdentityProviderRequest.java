@@ -24,24 +24,12 @@
 
 package com.auth0.identity;
 
-import android.net.Uri;
-
-import com.auth0.core.Application;
-
-import java.util.Map;
-
 /**
  * Interface for a authentication request to a Identity Provider, e.g. Facebook, Instagram, etc.
  */
 public interface IdentityProviderRequest {
 
-    /**
-     * Returns the URL used to authenticate the user in the Identity Provider.
-     * @param application Auth0 application information
-     * @param parameters
-     * @return a {@link android.net.Uri}
-     */
-    Uri getAuthenticationUri(Application application, Map<String, Object> parameters);
+    String getUsername();
 
     /**
      * Name of the Identity Provider

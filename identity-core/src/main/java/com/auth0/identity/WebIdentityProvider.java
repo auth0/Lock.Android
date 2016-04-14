@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.auth0.api.ParameterBuilder;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
@@ -65,6 +66,7 @@ public class WebIdentityProvider implements IdentityProvider {
     private static final String ACCESS_TOKEN_KEY = "access_token";
     private static final String TOKEN_TYPE_KEY = "token_type";
     private static final String REFRESH_TOKEN_KEY = "refresh_token";
+    private static final String LOGIN_HINT_KEY = "login_hint";
 
     private static final String TYPE_CODE = "code";
     private static final String TYPE_TOKEN = "token";
@@ -102,6 +104,7 @@ public class WebIdentityProvider implements IdentityProvider {
         this.useWebView = false;
         this.parameters = new HashMap<>();
         this.clientInfo = new Telemetry("Lock.Android", BuildConfig.VERSION_NAME).asBase64();
+//        this.apiClient = client;
     }
 
     /**
@@ -150,13 +153,22 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public void start(Activity activity, IdentityProviderRequest request, Application application) {
-        if (shouldUsePKCE()) {
-            String redirectUri = String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), Uri.parse(application.getAuthorizeURL()).getHost());
-            Log.d(TAG, "GET RedirectURI: " + redirectUri);
-            pkce = new PKCEUtil(apiClient, redirectUri);
+
+        ParameterBuilder builder = ParameterBuilder.newBuilder(buildParameters());
+        String username = request.getUsername();
+        if (username != null) {
+            int arrobaIndex = username.indexOf("@");
+            String loginHint;
+            if (arrobaIndex < 0) {
+                loginHint = username;
+            } else {
+                loginHint = username.substring(0, arrobaIndex);
+            }
+            builder.set(LOGIN_HINT_KEY, loginHint);
         }
-        final Uri url = request.getAuthenticationUri(application, buildParameters());
+
         final String serviceName = request.getServiceName();
+        final Uri url = buildAuthorizeUri(authorizeUrl, serviceName, builder.asDictionary());
         startAuthorization(activity, url, serviceName);
     }
 
@@ -246,13 +258,13 @@ public class WebIdentityProvider implements IdentityProvider {
         queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
         if (shouldUsePKCE()) {
             String codeChallenge = null;
+            pkce = new PKCEUtil(apiClient, redirectUri);
             try {
                 codeChallenge = pkce.generateCodeChallenge();
                 Log.d(TAG, "About to use PKCE flow");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
-            pkce = new PKCEUtil(apiClient, redirectUri);
             queryParameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
             queryParameters.put(CODE_CHALLENGE_KEY, codeChallenge);
             queryParameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);

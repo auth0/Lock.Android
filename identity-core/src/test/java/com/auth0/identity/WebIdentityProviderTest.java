@@ -35,6 +35,8 @@ import com.auth0.core.Token;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.identity.web.WebViewActivity;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +51,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -92,7 +95,6 @@ public class WebIdentityProviderTest {
         MockitoAnnotations.initMocks(this);
         provider = new WebIdentityProvider(parser, CLIENT_ID, AUTHORIZE_URL);
         provider.setCallback(callback);
-        when(request.getAuthenticationUri(eq(application), any(Map.class))).thenReturn(uri);
         when(request.getServiceName()).thenReturn(SERVICE_NAME);
         when(auth0.getClientId()).thenReturn(CLIENT_ID);
         when(auth0.getAuthorizeUrl()).thenReturn(AUTHORIZE_URL);
@@ -108,7 +110,7 @@ public class WebIdentityProviderTest {
         verify(activity).startActivity(captor.capture());
         final Intent intent = captor.getValue();
         assertThat(intent.getAction(), equalTo(Intent.ACTION_VIEW));
-        assertThat(intent.getData(), equalTo(uri));
+        assertThat(intent.getData(), isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
     }
 
     @Test
@@ -120,7 +122,7 @@ public class WebIdentityProviderTest {
         verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
         final Intent intent = captor.getValue();
         assertThat(intent.getComponent().getClassName(), equalTo(WebViewActivity.class.getName()));
-        assertThat(intent.getData(), equalTo(uri));
+        assertThat(intent.getData(), isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
         assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), equalTo(SERVICE_NAME));
     }
 
@@ -148,12 +150,9 @@ public class WebIdentityProviderTest {
         final Intent intent = captor.getValue();
         assertThat(intent.getComponent().getClassName(), equalTo(WebViewActivity.class.getName()));
         final Uri uri = intent.getData();
-        assertThat(uri.getHost(), equalTo("samples.auth0.com"));
-        assertThat(uri.getPath(), equalTo("/authorize"));
-        assertThat(uri.getQueryParameter("response_type"), equalTo("code"));
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "code"));
         assertThat(uri.getQueryParameter("code_challenge"), is(notNullValue()));
-        assertThat(uri.getQueryParameter("redirect_uri"), equalTo("a0client_id://samples.auth0.com/callback"));
-        assertThat(uri.getQueryParameter("client_id"), equalTo(CLIENT_ID));
+        assertThat(uri.getQueryParameter("code_challenge"), is(not(equalTo("null"))));
         assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), is(nullValue()));
     }
 
@@ -253,5 +252,47 @@ public class WebIdentityProviderTest {
         tokenValues.put("token_type", TOKEN_TYPE);
         tokenValues.put("refresh_token", REFRESH_TOKEN);
         return tokenValues;
+    }
+
+    private static class AuthorizeMatcher extends BaseMatcher<Uri> {
+
+        private final String responseType;
+        private final String clientId;
+        private final String domain;
+
+        public AuthorizeMatcher(String domain, String clientId, String responseType) {
+            this.responseType = responseType;
+            this.clientId = clientId;
+            this.domain = domain;
+        }
+
+        @Override
+        public boolean matches(Object item) {
+            if (!(item instanceof Uri)) {
+                return false;
+            }
+            Uri uri = (Uri) item;
+            final String responseType = uri.getQueryParameter("response_type");
+            final String clientId = uri.getQueryParameter("client_id");
+            final String redirectUri = uri.getQueryParameter("redirect_uri");
+            final String expectedRedirectUri = String.format("a0%s://%s/callback", clientId.toLowerCase(), domain);
+            return this.domain.equalsIgnoreCase(uri.getHost())
+                    && "/authorize".equalsIgnoreCase(uri.getPath())
+                    && this.responseType.equalsIgnoreCase(responseType)
+                    && this.clientId.equalsIgnoreCase(clientId)
+                    && expectedRedirectUri.equalsIgnoreCase(redirectUri);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("A valid authorize uri with the following values").appendText("\n")
+            .appendText("domain: ").appendValue(domain).appendText(" ")
+            .appendText("client_id: ").appendValue(clientId).appendText(" ")
+            .appendText("response_type: ").appendValue(responseType);
+        }
+    }
+
+    private static AuthorizeMatcher isAuthorizeUri(String domain, String clientId, String responseType) {
+        return new AuthorizeMatcher(domain, clientId, responseType);
     }
 }
