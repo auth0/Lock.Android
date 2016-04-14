@@ -24,14 +24,14 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
-public class PKCEUtilTest {
+public class PKCETest {
 
     private static final String CODE_VERIFIER = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
     private static final String CODE_CHALLENGE = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";
     private static final String REDIRECT_URI = "redirectUri";
     private static final String AUTHORIZATION_CODE = "authorizationCode";
 
-    private PKCEUtil pkce;
+    private PKCE pkce;
     @Mock
     private AuthenticationAPIClient apiClient;
     @Mock
@@ -40,19 +40,19 @@ public class PKCEUtilTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        pkce = new PKCEUtil(apiClient, REDIRECT_URI, CODE_VERIFIER);
+        pkce = new PKCE(apiClient, REDIRECT_URI, CODE_VERIFIER);
     }
 
     @Test
     public void shouldGenerateChallengeFromRandomVerfier() throws Exception {
-        PKCEUtil pkce = new PKCEUtil(apiClient, REDIRECT_URI);
-        assertThat(pkce.generateCodeChallenge(), is(notNullValue()));
+        PKCE pkce = new PKCE(apiClient, REDIRECT_URI);
+        assertThat(pkce.getCodeChallenge(), is(notNullValue()));
     }
 
     @Test
     public void shouldGenerateValidRandomCodeChallenge() throws Exception {
-        PKCEUtil randomPKCE = new PKCEUtil(apiClient, REDIRECT_URI);
-        String challenge = randomPKCE.generateCodeChallenge();
+        PKCE randomPKCE = new PKCE(apiClient, REDIRECT_URI);
+        String challenge = randomPKCE.getCodeChallenge();
         assertThat(challenge, is(notNullValue()));
         assertThat(challenge, not(Matchers.isEmptyString()));
         assertThat(challenge, not(containsString("=")));
@@ -62,7 +62,7 @@ public class PKCEUtilTest {
 
     @Test
     public void shouldGenerateExpectedCodeChallenge() throws Exception {
-        String challenge = pkce.generateCodeChallenge();
+        String challenge = pkce.getCodeChallenge();
         assertThat(challenge, is(equalTo(CODE_CHALLENGE)));
     }
 

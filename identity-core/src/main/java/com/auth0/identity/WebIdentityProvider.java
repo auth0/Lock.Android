@@ -34,7 +34,7 @@ import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
 import com.auth0.core.Token;
-import com.auth0.identity.util.PKCEUtil;
+import com.auth0.identity.util.PKCE;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.identity.web.WebViewActivity;
 import com.auth0.util.Telemetry;
@@ -81,7 +81,7 @@ public class WebIdentityProvider implements IdentityProvider {
     private Map<String, Object> parameters;
     private String clientInfo;
     private AuthenticationAPIClient apiClient;
-    private PKCEUtil pkce;
+    private PKCE pkce;
 
     public WebIdentityProvider(CallbackParser parser, String clientId, String authorizeUrl) {
         this(parser, clientId, authorizeUrl, null);
@@ -93,7 +93,7 @@ public class WebIdentityProvider implements IdentityProvider {
      * @param pkce flag if PKCE should be used or not.
      */
     public WebIdentityProvider(Auth0 auth0, boolean pkce) {
-        this(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl(), pkce && PKCEUtil.isAvailable() ? auth0.newAuthenticationAPIClient() : null);
+        this(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl(), pkce && PKCE.isAvailable() ? auth0.newAuthenticationAPIClient() : null);
     }
 
     WebIdentityProvider(CallbackParser parser, String clientId, String authorizeUrl, AuthenticationAPIClient client) {
@@ -237,7 +237,7 @@ public class WebIdentityProvider implements IdentityProvider {
         if (shouldUsePKCE()) {
             String codeChallenge = null;
             try {
-                codeChallenge = pkce.generateCodeChallenge();
+                codeChallenge = pkce.getCodeChallenge();
                 Log.d(TAG, "About to use PKCE flow");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -258,9 +258,9 @@ public class WebIdentityProvider implements IdentityProvider {
         queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
         if (shouldUsePKCE()) {
             String codeChallenge = null;
-            pkce = new PKCEUtil(apiClient, redirectUri);
+            pkce = new PKCE(apiClient, redirectUri);
             try {
-                codeChallenge = pkce.generateCodeChallenge();
+                codeChallenge = pkce.getCodeChallenge();
                 Log.d(TAG, "About to use PKCE flow");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -293,6 +293,6 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     private boolean shouldUsePKCE() {
-        return apiClient != null && PKCEUtil.isAvailable();
+        return apiClient != null && PKCE.isAvailable();
     }
 }
