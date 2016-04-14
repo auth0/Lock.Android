@@ -184,7 +184,7 @@
             @dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
         <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_small_margin</item>
-        <item name="android:gravity">center</item>
+        <item name="android:layout_centerInParent">true</item>
     </style>
 
     <style name="Lock.Theme.Widget.SubmitButton">
