@@ -183,9 +183,7 @@ public class WebIdentityProvider implements IdentityProvider {
     }
 
     @Override
-    public void stop() {
-        pkce = null;
-    }
+    public void stop() { }
 
     @Override
     public boolean authorize(Activity activity, int requestCode, int resultCode, Intent data) {
