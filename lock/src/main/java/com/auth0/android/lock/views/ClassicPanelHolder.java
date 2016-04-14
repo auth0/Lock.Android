@@ -121,12 +121,16 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         params.addRule(CENTER_IN_PARENT, TRUE);
         addView(formLayout, params);
 
-        RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
-        actionButton = new ActionButton(getContext());
-        actionButton.setId(R.id.com_auth0_lock_action_button);
-        actionButton.setOnClickListener(this);
-        addView(actionButton, actionParams);
+        boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
+        boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+        if (showDatabase || showEnterprise) {
+            RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
+            actionButton = new ActionButton(getContext());
+            actionButton.setId(R.id.com_auth0_lock_action_button);
+            actionButton.setOnClickListener(this);
+            addView(actionButton, actionParams);
+        }
 
         termsParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         termsParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
@@ -310,7 +314,9 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (changePwdForm != null) {
             changePwdForm.onKeyboardStateChanged(isOpen);
         }
-        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        if (actionButton != null) {
+            actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        }
         formLayout.onKeyboardStateChanged(isOpen);
 
         showSignUpTerms(!isOpen && currentMode == FormLayout.DatabaseForm.SIGN_UP);
