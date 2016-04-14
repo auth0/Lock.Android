@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.auth0.api.ParameterBuilder;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Application;
 import com.auth0.core.Auth0;
@@ -68,6 +69,8 @@ public class WebIdentityProviderTest {
     public static final String REFRESH_TOKEN = "REFRESH TOKEN";
     private static final String CLIENT_ID = "CLIENT_ID";
     private static final String AUTHORIZE_URL = "https://samples.auth0.com/authorize";
+    private static final String CLIENT_INFO = "CLIENTINFO";
+    private static final String FACEBOOK = "facebook";
 
     private WebIdentityProvider provider;
 
@@ -95,6 +98,7 @@ public class WebIdentityProviderTest {
         MockitoAnnotations.initMocks(this);
         provider = new WebIdentityProvider(parser, CLIENT_ID, AUTHORIZE_URL);
         provider.setCallback(callback);
+        provider.setClientInfo(CLIENT_INFO);
         when(request.getServiceName()).thenReturn(SERVICE_NAME);
         when(auth0.getClientId()).thenReturn(CLIENT_ID);
         when(auth0.getAuthorizeUrl()).thenReturn(AUTHORIZE_URL);
@@ -135,7 +139,7 @@ public class WebIdentityProviderTest {
         verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
         final Intent intent = captor.getValue();
         assertThat(intent.getComponent().getClassName(), equalTo(WebViewActivity.class.getName()));
-        assertThat(intent.getData(), equalTo(Uri.parse("https://samples.auth0.com/authorize?response_type=token&scope=openid&redirect_uri=a0client_id%3A%2F%2Fsamples.auth0.com%2Fcallback&client_id=CLIENT_ID")));
+        assertThat(intent.getData(), isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
         assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), is(nullValue()));
     }
 
@@ -154,6 +158,142 @@ public class WebIdentityProviderTest {
         assertThat(uri.getQueryParameter("code_challenge"), is(notNullValue()));
         assertThat(uri.getQueryParameter("code_challenge"), is(not(equalTo("null"))));
         assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), is(nullValue()));
+    }
+
+    @Test
+    public void shouldUseDefaultAuthenticationParametersWithEvent() throws Exception {
+        provider.setParameters(new HashMap<String, Object>());
+        provider.setUseWebView(true);
+        provider.start(activity, new IdentityProviderRequest() {
+            @Override
+            public String getUsername() {
+                return null;
+            }
+
+            @Override
+            public String getServiceName() {
+                return FACEBOOK;
+            }
+        }, application);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        final Uri uri = intent.getData();
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
+        assertThat(uri.getQueryParameter("auth0Client"), equalTo(CLIENT_INFO));
+        assertThat(uri.getQueryParameter("client_id"), equalTo(CLIENT_ID));
+        assertThat(uri.getQueryParameter("scope"), equalTo("openid"));
+        assertThat(uri.getQueryParameter("connection"), equalTo(FACEBOOK));
+        assertThat(uri.getQueryParameter("redirect_uri"), equalTo("a0" + CLIENT_ID.toLowerCase() + "://samples.auth0.com/callback"));
+    }
+
+    @Test
+    public void shouldSendLoginHint() throws Exception {
+        provider.setParameters(new HashMap<String, Object>());
+        provider.setUseWebView(true);
+        provider.start(activity, new IdentityProviderRequest() {
+            @Override
+            public String getUsername() {
+                return "support@auth0.com";
+            }
+
+            @Override
+            public String getServiceName() {
+                return FACEBOOK;
+            }
+        }, application);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        final Uri uri = intent.getData();
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
+        assertThat(uri.getQueryParameter("login_hint"), equalTo("support"));
+    }
+
+    @Test
+    public void shouldSendLoginHintAsUsername() throws Exception {
+        provider.setParameters(new HashMap<String, Object>());
+        provider.setUseWebView(true);
+        provider.start(activity, new IdentityProviderRequest() {
+            @Override
+            public String getUsername() {
+                return "john_doe";
+            }
+
+            @Override
+            public String getServiceName() {
+                return FACEBOOK;
+            }
+        }, application);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        final Uri uri = intent.getData();
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
+        assertThat(uri.getQueryParameter("login_hint"), equalTo("john_doe"));
+    }
+
+    @Test
+    public void shouldUseDefaultAuthenticationParameters() throws Exception {
+        provider.setParameters(new HashMap<String, Object>());
+        provider.setUseWebView(true);
+        provider.start(activity, FACEBOOK);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        final Uri uri = intent.getData();
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
+        assertThat(uri.getQueryParameter("auth0Client"), equalTo(CLIENT_INFO));
+        assertThat(uri.getQueryParameter("client_id"), equalTo(CLIENT_ID));
+        assertThat(uri.getQueryParameter("scope"), equalTo("openid"));
+        assertThat(uri.getQueryParameter("connection"), equalTo(FACEBOOK));
+        assertThat(uri.getQueryParameter("redirect_uri"), equalTo("a0" + CLIENT_ID.toLowerCase() + "://samples.auth0.com/callback"));
+    }
+
+    @Test
+    public void shouldOverrideDefaultParameters() throws Exception {
+        provider.setParameters(new HashMap<String, Object>());
+        provider.setUseWebView(true);
+        provider.setParameters(ParameterBuilder.newBuilder()
+                        .setScope("openid email")
+                        .set("state", "arandomstate")
+                        .asDictionary()
+        );
+        provider.start(activity, FACEBOOK);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        final Uri uri = intent.getData();
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
+        assertThat(uri.getQueryParameter("scope"), equalTo("openid email"));
+        assertThat(uri.getQueryParameter("state"), equalTo("arandomstate"));
+    }
+
+    @Test
+    public void shouldNotOverrideAllParameters() throws Exception {
+        provider.setParameters(new HashMap<String, Object>());
+        provider.setUseWebView(true);
+        provider.setParameters(ParameterBuilder.newBuilder()
+                        .setConnection("twitter")
+                        .setRedirectURI("https://google.com")
+                        .setClientId("INVALID")
+                        .asDictionary()
+        );
+        provider.start(activity, FACEBOOK);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        final Uri uri = intent.getData();
+        assertThat(uri, isAuthorizeUri("samples.auth0.com", CLIENT_ID, "token"));
+        assertThat(uri.getQueryParameter("client_id"), equalTo(CLIENT_ID));
+        assertThat(uri.getQueryParameter("connection"), equalTo(FACEBOOK));
+        assertThat(uri.getQueryParameter("redirect_uri"), equalTo("a0" + CLIENT_ID.toLowerCase() + "://samples.auth0.com/callback"));
     }
 
     @Test

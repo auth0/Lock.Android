@@ -104,7 +104,7 @@ public class WebIdentityProvider implements IdentityProvider {
         this.useWebView = false;
         this.parameters = new HashMap<>();
         this.clientInfo = new Telemetry("Lock.Android", BuildConfig.VERSION_NAME).asBase64();
-//        this.apiClient = client;
+        this.apiClient = client;
     }
 
     /**
@@ -154,7 +154,7 @@ public class WebIdentityProvider implements IdentityProvider {
     @Override
     public void start(Activity activity, IdentityProviderRequest request, Application application) {
 
-        ParameterBuilder builder = ParameterBuilder.newBuilder(buildParameters());
+        ParameterBuilder builder = ParameterBuilder.newBuilder(this.parameters);
         String username = request.getUsername();
         if (username != null) {
             int arrobaIndex = username.indexOf("@");
@@ -180,22 +180,6 @@ public class WebIdentityProvider implements IdentityProvider {
     public void start(Activity activity) {
         final Uri uri = buildAuthorizeUri(authorizeUrl, null, parameters);
         startAuthorization(activity, uri, null);
-    }
-
-    private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
-        final Intent intent;
-        Log.i(TAG, "Start authorization called with uri: " + authorizeUri);
-        if (this.useWebView) {
-            intent = new Intent(activity, WebViewActivity.class);
-            intent.setData(authorizeUri);
-            if (serviceName != null) {
-                intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, serviceName);
-            }
-            activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
-        } else {
-            intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
-            activity.startActivity(intent);
-        }
     }
 
     @Override
@@ -229,48 +213,44 @@ public class WebIdentityProvider implements IdentityProvider {
         pkce = null;
     }
 
-    private Map<String, Object> buildParameters() {
-        Map<String, Object> parameters = new HashMap<>(this.parameters);
-        if (clientInfo != null) {
-            parameters.put(AUTH0_CLIENT_KEY, clientInfo);
-        }
-        if (shouldUsePKCE()) {
-            String codeChallenge = null;
-            try {
-                codeChallenge = pkce.getCodeChallenge();
-                Log.d(TAG, "About to use PKCE flow");
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
+    private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
+        final Intent intent;
+        Log.i(TAG, "Start authorization called with uri: " + authorizeUri);
+        if (this.useWebView) {
+            intent = new Intent(activity, WebViewActivity.class);
+            intent.setData(authorizeUri);
+            if (serviceName != null) {
+                intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, serviceName);
             }
-            parameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
-            parameters.put(CODE_CHALLENGE_KEY, codeChallenge);
-            parameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
+            activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
-            parameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
+            intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
+            activity.startActivity(intent);
         }
-        return parameters;
     }
 
     private Uri buildAuthorizeUri(String url, String serviceName, Map<String, Object> parameters) {
         final Uri authorizeUri = Uri.parse(url);
         String redirectUri = String.format(REDIRECT_URI_FORMAT, clientId.toLowerCase(), authorizeUri.getHost());
         final Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
-        if (shouldUsePKCE()) {
-            String codeChallenge = null;
-            pkce = new PKCE(apiClient, redirectUri);
-            try {
-                codeChallenge = pkce.getCodeChallenge();
-                Log.d(TAG, "About to use PKCE flow");
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            }
-            queryParameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
-            queryParameters.put(CODE_CHALLENGE_KEY, codeChallenge);
-            queryParameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
-        } else {
-            queryParameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
+        if (clientInfo != null) {
+            queryParameters.put(AUTH0_CLIENT_KEY, clientInfo);
         }
+        queryParameters.put(SCOPE_KEY, SCOPE_OPENID);
+        queryParameters.put(RESPONSE_TYPE_KEY, TYPE_TOKEN);
+
+        if (shouldUsePKCE()) {
+            try {
+                pkce = new PKCE(apiClient, redirectUri);
+                String codeChallenge = pkce.getCodeChallenge();
+                queryParameters.put(RESPONSE_TYPE_KEY, TYPE_CODE);
+                queryParameters.put(CODE_CHALLENGE_KEY, codeChallenge);
+                queryParameters.put(CODE_CHALLENGE_METHOD_KEY, METHOD_SHA_256);
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Cannot use PKCE. Defaulting to token response_type", e);
+            }
+        }
+
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 Object value = entry.getValue();
@@ -279,12 +259,14 @@ public class WebIdentityProvider implements IdentityProvider {
                 }
             }
         }
+
         if (serviceName != null) {
             queryParameters.put(CONNECTION_KEY, serviceName);
         }
         queryParameters.put(CLIENT_ID_KEY, clientId);
-        Log.d(TAG, "GET RedirectURI: " + redirectUri);
+        Log.d(TAG, "Redirect Uri: " + redirectUri);
         queryParameters.put(REDIRECT_URI_KEY, redirectUri);
+
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
