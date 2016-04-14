@@ -134,7 +134,7 @@
     <string name="com_auth0_lock_title_passwordless_code_email_sent">An email with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_country_code_item_format" formatted="false">%s %s</string>
-    <string name="com_auth0_lock_title_passwordless_link_sent">We sent you a link to sign in to %s</string>
+    <string name="com_auth0_lock_title_passwordless_link_sent">We sent you a link to sign in to\n %s</string>
     <string name="com_auth0_lock_title_passwordless_link_error">This account was already\n verified</string>
     <string name="com_auth0_lock_title_passwordless_link_error_small">You can only use this link once.</string>
     <string name="com_auth0_lock_title_passwordless_code_retry">Did not get the code?</string>
