@@ -43,7 +43,7 @@ public class IdentityProviderAuthenticationRequestEvent implements IdentityProvi
 
     private static final String SCOPE_OPENID = "openid";
     private static final String RESPONSE_TYPE_TOKEN = "token";
-    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/callback";
 
     private final String serviceName;
     private final String username;

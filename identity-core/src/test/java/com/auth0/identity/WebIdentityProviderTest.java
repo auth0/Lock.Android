@@ -28,7 +28,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Application;
+import com.auth0.core.Auth0;
 import com.auth0.core.Token;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.identity.web.WebViewActivity;
@@ -47,6 +49,8 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -59,6 +63,8 @@ public class WebIdentityProviderTest {
     private static final String ACCESS_TOKEN = "ACCESS TOKEN";
     public static final String TOKEN_TYPE = "TOKEN TYPE";
     public static final String REFRESH_TOKEN = "REFRESH TOKEN";
+    private static final String CLIENT_ID = "CLIENT_ID";
+    private static final String AUTHORIZE_URL = "https://samples.auth0.com/authorize";
 
     private WebIdentityProvider provider;
 
@@ -76,14 +82,21 @@ public class WebIdentityProviderTest {
     private Uri uri;
     @Mock
     private Intent data;
+    @Mock
+    private Auth0 auth0;
+    @Mock
+    private AuthenticationAPIClient client;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        provider = new WebIdentityProvider(parser, "CLIENT_ID", "https://samples.auth0.com/authorize");
+        provider = new WebIdentityProvider(parser, CLIENT_ID, AUTHORIZE_URL);
         provider.setCallback(callback);
         when(request.getAuthenticationUri(eq(application), any(Map.class))).thenReturn(uri);
         when(request.getServiceName()).thenReturn(SERVICE_NAME);
+        when(auth0.getClientId()).thenReturn(CLIENT_ID);
+        when(auth0.getAuthorizeUrl()).thenReturn(AUTHORIZE_URL);
+        when(auth0.newAuthenticationAPIClient()).thenReturn(client);
     }
 
     @Test
@@ -109,6 +122,39 @@ public class WebIdentityProviderTest {
         assertThat(intent.getComponent().getClassName(), equalTo(WebViewActivity.class.getName()));
         assertThat(intent.getData(), equalTo(uri));
         assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), equalTo(SERVICE_NAME));
+    }
+
+    @Test
+    public void shouldStartWebViewActivityWithNoConnection() throws Exception {
+        provider.setUseWebView(true);
+        provider.start(activity);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        assertThat(intent.getComponent().getClassName(), equalTo(WebViewActivity.class.getName()));
+        assertThat(intent.getData(), equalTo(Uri.parse("https://samples.auth0.com/authorize?response_type=token&scope=openid&redirect_uri=a0client_id%3A%2F%2Fsamples.auth0.com%2Fcallback&client_id=CLIENT_ID")));
+        assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), is(nullValue()));
+    }
+
+    @Test
+    public void shouldUsePKCE() throws Exception {
+        provider = new WebIdentityProvider(auth0, true);
+        provider.setUseWebView(true);
+        provider.start(activity);
+
+        final ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(IdentityProvider.WEBVIEW_AUTH_REQUEST_CODE));
+        final Intent intent = captor.getValue();
+        assertThat(intent.getComponent().getClassName(), equalTo(WebViewActivity.class.getName()));
+        final Uri uri = intent.getData();
+        assertThat(uri.getHost(), equalTo("samples.auth0.com"));
+        assertThat(uri.getPath(), equalTo("/authorize"));
+        assertThat(uri.getQueryParameter("response_type"), equalTo("code"));
+        assertThat(uri.getQueryParameter("code_challenge"), is(notNullValue()));
+        assertThat(uri.getQueryParameter("redirect_uri"), equalTo("a0client_id://samples.auth0.com/callback"));
+        assertThat(uri.getQueryParameter("client_id"), equalTo(CLIENT_ID));
+        assertThat(intent.getStringExtra(WebViewActivity.SERVICE_NAME_EXTRA), is(nullValue()));
     }
 
     @Test

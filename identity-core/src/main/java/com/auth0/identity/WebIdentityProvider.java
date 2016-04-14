@@ -31,10 +31,12 @@ import android.util.Log;
 
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.core.Application;
+import com.auth0.core.Auth0;
 import com.auth0.core.Token;
 import com.auth0.identity.util.PKCEUtil;
 import com.auth0.identity.web.CallbackParser;
 import com.auth0.identity.web.WebViewActivity;
+import com.auth0.util.Telemetry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +49,7 @@ import java.util.Map;
 public class WebIdentityProvider implements IdentityProvider {
 
     private static final String TAG = WebIdentityProvider.class.getName();
-    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/authorize";
+    private static final String REDIRECT_URI_FORMAT = "a0%s://%s/callback";
 
     private static final String RESPONSE_TYPE_KEY = "response_type";
     private static final String CODE_CHALLENGE_KEY = "code_challenge";
@@ -80,11 +82,26 @@ public class WebIdentityProvider implements IdentityProvider {
     private PKCEUtil pkce;
 
     public WebIdentityProvider(CallbackParser parser, String clientId, String authorizeUrl) {
+        this(parser, clientId, authorizeUrl, null);
+    }
+
+    /**
+     * Creates a new instance using Auth0 credentials and the possibility to use Proof Key for Code Exchange.
+     * @param auth0 creadentials for your Account
+     * @param pkce flag if PKCE should be used or not.
+     */
+    public WebIdentityProvider(Auth0 auth0, boolean pkce) {
+        this(new CallbackParser(), auth0.getClientId(), auth0.getAuthorizeUrl(), pkce && PKCEUtil.isAvailable() ? auth0.newAuthenticationAPIClient() : null);
+    }
+
+    WebIdentityProvider(CallbackParser parser, String clientId, String authorizeUrl, AuthenticationAPIClient client) {
         this.parser = parser;
         this.clientId = clientId;
         this.authorizeUrl = authorizeUrl;
+        this.apiClient = client;
         this.useWebView = false;
         this.parameters = new HashMap<>();
+        this.clientInfo = new Telemetry("Lock.Android", BuildConfig.VERSION_NAME).asBase64();
     }
 
     /**
@@ -131,6 +148,7 @@ public class WebIdentityProvider implements IdentityProvider {
         startAuthorization(activity, buildAuthorizeUri(authorizeUrl, serviceName, parameters), serviceName);
     }
 
+    @Override
     public void start(Activity activity, IdentityProviderRequest request, Application application) {
         if (shouldUsePKCE()) {
             String redirectUri = String.format(REDIRECT_URI_FORMAT, application.getId().toLowerCase(), Uri.parse(application.getAuthorizeURL()).getHost());
@@ -142,13 +160,25 @@ public class WebIdentityProvider implements IdentityProvider {
         startAuthorization(activity, url, serviceName);
     }
 
+    /**
+     * Starts web-based authentication without any connection name.
+     * This will just show hosted Lock.js from Auth0
+     * @param activity from where to start the authentication and where the results should be sent
+     */
+    public void start(Activity activity) {
+        final Uri uri = buildAuthorizeUri(authorizeUrl, null, parameters);
+        startAuthorization(activity, uri, null);
+    }
+
     private void startAuthorization(Activity activity, Uri authorizeUri, String serviceName) {
         final Intent intent;
         Log.i(TAG, "Start authorization called with uri: " + authorizeUri);
         if (this.useWebView) {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
-            intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, serviceName);
+            if (serviceName != null) {
+                intent.putExtra(WebViewActivity.SERVICE_NAME_EXTRA, serviceName);
+            }
             activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
         } else {
             intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
@@ -237,7 +267,9 @@ public class WebIdentityProvider implements IdentityProvider {
                 }
             }
         }
-        queryParameters.put(CONNECTION_KEY, serviceName);
+        if (serviceName != null) {
+            queryParameters.put(CONNECTION_KEY, serviceName);
+        }
         queryParameters.put(CLIENT_ID_KEY, clientId);
         Log.d(TAG, "GET RedirectURI: " + redirectUri);
         queryParameters.put(REDIRECT_URI_KEY, redirectUri);
