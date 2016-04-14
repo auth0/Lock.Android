@@ -184,6 +184,7 @@ public class WebIdentityProvider implements IdentityProvider {
 
     @Override
     public void stop() {
+        pkce = null;
     }
 
     @Override
