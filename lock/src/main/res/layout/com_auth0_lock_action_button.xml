@@ -24,17 +24,18 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/com_auth0_lock_login_height"
-    android:background="@color/com_auth0_lock_login_background">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Lock.Theme.Widget.SubmitButton">
 
     <ImageView
         android:id="@+id/com_auth0_lock_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@drawable/com_auth0_lock_submit_background"
         android:scaleType="center"
-        app:srcCompat="@drawable/com_auth0_lock_ic_submit" />
+        app:srcCompat="@drawable/com_auth0_lock_ic_submit"
+        tools:ignore="MissingPrefix" />
 
     <ProgressBar
         android:id="@+id/com_auth0_lock_progress"

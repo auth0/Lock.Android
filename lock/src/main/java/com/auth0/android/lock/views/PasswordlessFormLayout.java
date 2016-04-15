@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,9 +92,11 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             stringRes = R.string.com_auth0_lock_passwordless_sms_forms_separator;
         }
         orSeparatorMessage.setText(stringRes);
-        orSeparatorMessage.setLineSpacing(getResources().getDimension(R.dimen.com_auth0_lock_normal_text_spacing), 1);
+        orSeparatorMessage.setLineSpacing(getResources().getDimension(R.dimen.com_auth0_lock_separator_text_spacing), 1);
+        orSeparatorMessage.setTextColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_normal_text));
+        orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
         orSeparatorMessage.setGravity(Gravity.CENTER);
-        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_small);
+        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, verticalPadding, 0, verticalPadding);
         addView(orSeparatorMessage, params);

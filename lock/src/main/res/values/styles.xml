@@ -25,38 +25,201 @@
 <resources>
 
     <style name="Lock.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">?attr/Auth0.HeaderBackground</item>
+        <item name="android:windowBackground">@color/com_auth0_lock_form_background</item>
         <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
         <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
+        <item name="Auth0.PrimaryColor">@color/com_auth0_lock_submit_normal</item>
     </style>
 
-    <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-    </style>
+    <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
 
-    <style name="Lock.Theme.Input">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_horizontal</item>
-    </style>
-
-    <style name="Lock.Theme.LoginButton">
-        <item name="android:src">@android:drawable/stat_sys_phone_call_forward</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_login_height</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
-        <item name="android:background">@color/com_auth0_lock_login_background</item>
-        <item name="android:scaleType">center</item>
-    </style>
-
-    <style name="com_auth0_lock_forgot_password_text">
-        <item name="android:text">@string/com_auth0_lock_action_forgot_password</item>
+    <style name="Lock.Theme.Text">
+        <item name="android:textStyle">normal</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/com_auth0_lock_normal_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Terms">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_terms_text_spacing_negative
+        </item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_terms_text_spacing</item>
+        <item name="android:textColor">@color/com_auth0_lock_terms_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_terms_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.SSO">
+        <item name="android:layout_marginLeft">
+            @dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/com_auth0_lock_sso_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_sso_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.ListItem">
+        <item name="android:layout_marginLeft">
+            @dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_list_item_height</item>
+        <item name="android:textColor">@color/com_auth0_lock_normal_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_list_item_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Link">
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin</item>
-        <item name="android:padding">@dimen/com_auth0_lock_widget_small_margin</item>
-        <item name="android:textSize">@dimen/com_auth0_lock_small_text</item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_link
+        </item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:padding">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_small_clickable_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Title">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginBottom">
+            @dimen/com_auth0_lock_widget_vertical_margin_field
+        </item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_title_text_spacing</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Title.ResetPassword">
+        <item name="android:textSize">@dimen/com_auth0_lock_change_password_title_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
+        <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_title_text_spacing</item>
+    </style>
+
+    <style name="Lock.Theme.Text.ModeSwitcher">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_form_selector_height</item>
+        <item name="android:layout_weight">.5</item>
+        <item name="android:button">@android:color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@drawable/com_auth0_lock_radio_button_text_color</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_switcher_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.SocialButton">
+        <item name="android:gravity">center|left</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingRight">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.ResultMessage">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_result_message_height</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">@dimen/com_auth0_lock_widget_small_margin</item>
+        <item name="android:paddingTop">@dimen/com_auth0_lock_widget_small_margin</item>
+        <item name="android:textColor">@color/com_auth0_lock_result_message</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_result_message_text</item>
+    </style>
+
+    <style name="Lock.Theme.Widget">
+        <item name="android:layout_height">@dimen/com_auth0_lock_widget_height</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.Icon">
+        <item name="android:scaleType">center</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.Icon.Social">
+        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.Field" parent="Lock.Theme.Text">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColorHint">@color/com_auth0_lock_hint_text</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_widget_height</item>
+        <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingRight">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:textSize">@dimen/com_auth0_lock_field_text</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.CountryCodeSelector" parent="Lock.Theme.Widget.Field">
+        <item name="android:background">@color/com_auth0_lock_input_country_code_background</item>
+        <item name="android:textColor">@color/com_auth0_lock_hint_text</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.SocialButton">
+        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
+        <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_small_margin</item>
+        <item name="android:layout_marginLeft">
+            @dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
+        <item name="android:layout_marginRight">
+            @dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_small_margin</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.SubmitButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_login_height</item>
+        <item name="android:background">@color/com_auth0_lock_submit_disabled</item>
+    </style>
+
+    <style name="Lock.Theme.Text.LinkSent">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_link_sent_text_spacing</item>
+        <item name="android:textColor">@color/com_auth0_lock_passwordless_link_sent_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Header">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_header_text</item>
+        <item name="android:text">?attr/Auth0.HeaderText</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.Logo">
+        <item name="android:src">?attr/Auth0.HeaderLogo</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_header_logo_size</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_header_logo_size</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">
+            @dimen/com_auth0_lock_widget_vertical_margin_header_icon
+        </item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.Header">
+        <item name="android:layout_height">@dimen/com_auth0_lock_header_height</item>
+        <item name="android:background">?attr/Auth0.HeaderBackground</item>
+        <item name="android:minHeight">@dimen/com_auth0_lock_header_height</item>
     </style>
 </resources>

@@ -24,6 +24,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_sso_message"
     android:layout_width="match_parent"
     android:layout_height="@dimen/com_auth0_lock_sso_height"
@@ -35,15 +36,11 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/com_auth0_lock_ic_sso" />
+        app:srcCompat="@drawable/com_auth0_lock_ic_sso"
+        tools:ignore="MissingPrefix" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/com_auth0_lock_widget_horizontal_margin_small"
-        android:text="@string/com_auth0_lock_single_sign_on_enabled"
-        android:textAllCaps="true"
-        android:textColor="@color/com_auth0_lock_sso_text"
-        android:textSize="@dimen/com_auth0_lock_sso_text" />
+        style="@style/Lock.Theme.Text.SSO"
+        android:text="@string/com_auth0_lock_single_sign_on_enabled" />
 
 </LinearLayout>

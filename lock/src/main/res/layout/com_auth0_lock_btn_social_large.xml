@@ -24,10 +24,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/com_auth0_lock_widget_height"
-    android:layout_margin="@dimen/com_auth0_lock_widget_small_margin"
-    android:gravity="center_horizontal">
+    style="@style/Lock.Theme.Widget.SocialButton">
 
     <LinearLayout
         android:id="@+id/com_auth0_lock_touch_area"
@@ -37,25 +34,15 @@
 
         <ImageView
             android:id="@+id/com_auth0_lock_icon"
-            android:layout_width="@dimen/com_auth0_lock_widget_height"
-            android:layout_height="match_parent"
-            android:scaleType="center"
+            style="@style/Lock.Theme.Widget.Icon.Social"
             tools:background="#FF3333"
             tools:src="@drawable/com_auth0_lock_ic_social_auth0" />
 
         <TextView
             android:id="@+id/com_auth0_lock_text"
+            style="@style/Lock.Theme.Text.SocialButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:paddingLeft="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
-            android:paddingRight="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
-            android:singleLine="true"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/com_auth0_lock_social_button_text"
             tools:background="#90FF3333"
             tools:text="Login with facebook" />
     </LinearLayout>

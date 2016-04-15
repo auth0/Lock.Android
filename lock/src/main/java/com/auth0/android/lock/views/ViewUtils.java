@@ -35,12 +35,9 @@ import android.support.annotation.ColorRes;
 import android.util.TypedValue;
 import android.view.View;
 
-abstract class ViewUtils {
+import com.auth0.android.lock.R;
 
-    /**
-     * Default corner radius used by the project.
-     */
-    static final int CORNER_RADIUS = 5;
+abstract class ViewUtils {
 
     /**
      * Enum used by the getRoundedBackground method. It defines which corners to set as rounded
@@ -89,7 +86,7 @@ abstract class ViewUtils {
      * @return the rounded drawable.
      */
     static ShapeDrawable getRoundedBackground(Resources resources, @ColorInt int color, Corners corners) {
-        float r = ViewUtils.dipToPixels(resources, CORNER_RADIUS);
+        int r = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
         float[] outerR = new float[0];
         switch (corners) {
             case ONLY_LEFT:

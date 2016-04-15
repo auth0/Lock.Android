@@ -90,7 +90,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     private void showPanelLayout() {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
         ssoParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
@@ -188,7 +188,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     private void showChangePasswordForm(boolean show) {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin);
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout.setVisibility(show ? GONE : VISIBLE);
         if (modeSelectionView != null) {

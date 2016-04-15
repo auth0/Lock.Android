@@ -30,41 +30,39 @@
 
     <TextView
         android:id="@+id/com_auth0_lock_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Lock.Theme.Text.Title"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="@dimen/com_auth0_lock_normal_text_spacing"
-        android:textSize="@dimen/com_auth0_lock_normal_text"
         android:visibility="gone" />
 
     <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username_email"
-        style="@style/Lock.Theme.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/com_auth0_lock_text"
         app:Auth0.InputDataType="username_or_email" />
 
     <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username"
-        style="@style/Lock.Theme.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/com_auth0_lock_input_username_email"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
         android:visibility="gone"
         app:Auth0.InputDataType="username" />
 
     <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_password"
-        style="@style/Lock.Theme.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/com_auth0_lock_input_username"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
         android:visibility="gone"
         app:Auth0.InputDataType="password" />
 
     <TextView
         android:id="@+id/com_auth0_lock_change_password_btn"
-        style="@style/com_auth0_lock_forgot_password_text"
-        android:layout_below="@id/com_auth0_lock_input_password" />
+        style="@style/Lock.Theme.Text.Link"
+        android:layout_below="@id/com_auth0_lock_input_password"
+        android:text="@string/com_auth0_lock_action_forgot_password" />
 
 </RelativeLayout>

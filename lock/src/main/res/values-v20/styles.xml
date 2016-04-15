@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_validated_field.xml
+  ~ styles.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,30 +22,13 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<resources>
 
-    <ImageView
-        android:id="@+id/com_auth0_lock_icon"
-        style="@style/Lock.Theme.Widget.Icon"
-        android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:background="@color/com_auth0_lock_input_field_border_normal"
-        app:srcCompat="@drawable/com_auth0_lock_ic_email"
-        tools:ignore="MissingPrefix" />
+    <style name="Lock.Theme.Text.Terms">
+        <item name="android:gravity">center</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_terms_text_spacing</item>
+        <item name="android:textColor">@color/com_auth0_lock_terms_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_terms_text</item>
+    </style>
 
-    <EditText
-        android:id="@+id/com_auth0_lock_input"
-        style="@style/Lock.Theme.Widget.Field"
-        android:layout_width="0dp"
-        android:layout_marginLeft="-3dp"
-        android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:layout_weight="1"
-        android:background="@null"
-        tools:text="email@domain.com" />
-
-</LinearLayout>
+</resources>

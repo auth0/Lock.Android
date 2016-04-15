@@ -82,7 +82,7 @@ public class CountryCodeSelectorView extends LinearLayout {
         ViewGroup parent = ((ViewGroup) countryTextView.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
-        gd.setCornerRadius(ViewUtils.dipToPixels(getResources(), ViewUtils.CORNER_RADIUS));
+        gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
         gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         gd.setColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
@@ -116,7 +116,7 @@ public class CountryCodeSelectorView extends LinearLayout {
      * @param country the country to set.
      */
     public void setSelectedCountry(@NonNull Country country) {
-        countryTextView.setText(String.format("%s %s", country.getDisplayName(), country.getDialCode()));
+        countryTextView.setText(String.format(getResources().getString(R.string.com_auth0_lock_title_passwordless_country_code_item_format), country.getDisplayName(), country.getDialCode()));
         selectedCountry = country;
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_validated_field.xml
+  ~ styles.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,30 +22,29 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<resources>
 
-    <ImageView
-        android:id="@+id/com_auth0_lock_icon"
-        style="@style/Lock.Theme.Widget.Icon"
-        android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:background="@color/com_auth0_lock_input_field_border_normal"
-        app:srcCompat="@drawable/com_auth0_lock_ic_email"
-        tools:ignore="MissingPrefix" />
+    <style name="Lock.Theme.Text">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/com_auth0_lock_normal_text</item>
+    </style>
 
-    <EditText
-        android:id="@+id/com_auth0_lock_input"
-        style="@style/Lock.Theme.Widget.Field"
-        android:layout_width="0dp"
-        android:layout_marginLeft="-3dp"
-        android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:layout_weight="1"
-        android:background="@null"
-        tools:text="email@domain.com" />
+    <style name="Lock.Theme.Text.SocialButton">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:gravity">center|left</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingRight">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
+    </style>
 
-</LinearLayout>
+</resources>
