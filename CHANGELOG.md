@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.15.0](https://github.com/auth0/Lock.Android/tree/1.15.0) (2016-04-15)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.14.1...1.15.0)
+
+**Merged pull requests:**
+
+- Add OAuth2 callback [\#241](https://github.com/auth0/Lock.Android/pull/241) ([hzalaz](https://github.com/hzalaz))
+- WebIdentityProvider for OAuth2 flow [\#240](https://github.com/auth0/Lock.Android/pull/240) ([hzalaz](https://github.com/hzalaz))
+- Use PKCE on calls to /authorize [\#238](https://github.com/auth0/Lock.Android/pull/238) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [1.14.1](https://github.com/auth0/Lock.Android/tree/1.14.1) (2016-04-04)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.14.0...1.14.1)
 
