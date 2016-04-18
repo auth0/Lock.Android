@@ -50,6 +50,8 @@ public class OAuth2WebAuthProvider extends AuthProvider {
 
     private static final String TAG = OAuth2WebAuthProvider.class.getName();
 
+    private static final int OAUTH2_REQUEST_CODE = 500;
+
     private static final String KEY_ERROR = "error";
     private static final String KEY_ID_TOKEN = "id_token";
     private static final String KEY_ACCESS_TOKEN = "access_token";
@@ -128,13 +130,13 @@ public class OAuth2WebAuthProvider extends AuthProvider {
             intent.setData(authorizeUri);
             intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, connectionName);
             //Improvement: let LockActivity set requestCode
-            activity.startActivityForResult(intent, WEBVIEW_AUTH_REQUEST_CODE);
+            activity.startActivityForResult(intent, OAUTH2_REQUEST_CODE);
         }
     }
 
     @Override
     public boolean authorize(Activity activity, @NonNull AuthorizeResult data) {
-        if (!data.isValid(WEBVIEW_AUTH_REQUEST_CODE)) {
+        if (!data.isValid(OAUTH2_REQUEST_CODE)) {
             return false;
         }
 

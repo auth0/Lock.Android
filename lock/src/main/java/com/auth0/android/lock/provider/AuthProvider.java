@@ -42,8 +42,6 @@ import java.util.List;
 public abstract class AuthProvider {
     public static final String TAG = AuthProvider.class.getSimpleName();
 
-    public static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
-
     protected AuthCallback callback;
     protected final PermissionHandler handler;
 

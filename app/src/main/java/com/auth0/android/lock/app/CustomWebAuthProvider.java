@@ -47,6 +47,8 @@ public class CustomWebAuthProvider extends AuthProvider {
 
     private static final String TAG = CustomWebAuthProvider.class.getName();
 
+    private static final int WEBVIEW_AUTH_REQUEST_CODE = 600;
+
     private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
     private static final String AUTH0_DOMAIN = "lbalmaceda.auth0.com";
 
