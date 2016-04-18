@@ -36,6 +36,8 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.provider.AuthProviderResolver;
+import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -350,6 +352,17 @@ public class Lock {
          */
         public Builder loginAfterSignUp(boolean login) {
             options.setLoginAfterSignUp(login);
+            return this;
+        }
+
+        /**
+         * Uses the given AuthProviderResolver to ask for Native IdentityProviders.
+         *
+         * @param resolver the AuthProviderResolver to use
+         * @return the current builder instance
+         */
+        public Builder withProviderResolver(@NonNull AuthProviderResolver resolver) {
+            ProviderResolverManager.set(resolver);
             return this;
         }
     }
