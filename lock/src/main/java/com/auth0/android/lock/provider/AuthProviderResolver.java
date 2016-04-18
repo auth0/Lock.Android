@@ -28,17 +28,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public interface ProviderResolver {
+public interface AuthProviderResolver {
 
     /**
-     * Requests a custom IdentityProvider to use with the given connection.
+     * Requests a custom AuthProvider to use with the given connection.
      *
      * @param context        a valid context.
-     * @param callback       the callback Lock will call with the authentication result.
+     * @param callback       the callback Lock will call with the authN result.
      * @param connectionName the requested connection name
-     * @return the identity provider to use with this connection, or null if you there is no
+     * @return the auth provider to use with this connection, or null if you there is no
      * associated provider for the connection name.
      */
     @Nullable
-    IdentityProvider onIdentityProviderRequest(Context context, @NonNull IdentityProviderCallback callback, @NonNull String connectionName);
+    AuthProvider onAuthProviderRequest(Context context, @NonNull AuthCallback callback, @NonNull String connectionName);
 }

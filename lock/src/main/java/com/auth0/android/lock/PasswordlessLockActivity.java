@@ -56,12 +56,12 @@ import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.provider.AuthProvider;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.IdentityProvider;
-import com.auth0.android.lock.provider.IdentityProviderCallback;
+import com.auth0.android.lock.provider.AuthCallback;
+import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.provider.WebIdentityProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.views.HeaderView;
@@ -114,7 +114,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private ViewGroup contentView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
 
-    private IdentityProvider lastIdp;
+    private AuthProvider currentProvider;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -384,9 +384,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             return;
         }
 
-        if (lastIdp != null) {
+        if (currentProvider != null) {
             AuthorizeResult result = new AuthorizeResult(intent);
-            if (!lastIdp.authorize(PasswordlessLockActivity.this, result)) {
+            if (!currentProvider.authorize(PasswordlessLockActivity.this, result)) {
                 showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             }
             return;
@@ -408,8 +408,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (lastIdp != null) {
-            lastIdp.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        if (currentProvider != null) {
+            currentProvider.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }
     }
 
@@ -459,15 +459,15 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         panelHolder.showProgress(!options.useBrowser());
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
-        lastIdp = ProviderResolverManager.get().onIdentityProviderRequest(this, idpCallback, event.getConnectionName());
-        if (lastIdp == null) {
+        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, event.getConnectionName());
+        if (currentProvider == null) {
             String pkgName = getApplicationContext().getPackageName();
-            WebIdentityProvider webIdp = new WebIdentityProvider(new CallbackHelper(pkgName), options.getAccount(), idpCallback);
-            webIdp.setUseBrowser(options.useBrowser());
-            webIdp.setParameters(options.getAuthenticationParameters());
-            lastIdp = webIdp;
+            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback);
+            oauth2.setUseBrowser(options.useBrowser());
+            oauth2.setParameters(options.getAuthenticationParameters());
+            currentProvider = oauth2;
         }
-        lastIdp.start(this, event.getConnectionName(), PERMISSION_REQUEST_CODE);
+        currentProvider.start(this, event.getConnectionName(), PERMISSION_REQUEST_CODE);
     }
 
     //Callbacks
@@ -548,7 +548,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
+    private AuthCallback authProviderCallback = new AuthCallback() {
         @Override
         public void onFailure(@NonNull Dialog dialog) {
             Log.w(TAG, "OnFailure called");

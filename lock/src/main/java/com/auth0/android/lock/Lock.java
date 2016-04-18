@@ -26,7 +26,6 @@ package com.auth0.android.lock;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -37,7 +36,7 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.provider.ProviderResolver;
+import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
@@ -357,12 +356,12 @@ public class Lock {
         }
 
         /**
-         * Uses the given ProviderResolver to ask for Native IdentityProviders.
+         * Uses the given AuthProviderResolver to ask for Native IdentityProviders.
          *
-         * @param resolver the ProviderResolver to use
+         * @param resolver the AuthProviderResolver to use
          * @return the current builder instance
          */
-        public Builder withProviderResolver(@NonNull ProviderResolver resolver) {
+        public Builder withProviderResolver(@NonNull AuthProviderResolver resolver) {
             ProviderResolverManager.set(resolver);
             return this;
         }

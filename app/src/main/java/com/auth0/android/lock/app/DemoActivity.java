@@ -165,7 +165,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
                 .loginAfterSignUp(false)
-                .withProviderResolver(new ProviderHandler())
+                .withProviderResolver(new AuthProviderHandler())
                 .build();
         lock.onCreate(this);
 

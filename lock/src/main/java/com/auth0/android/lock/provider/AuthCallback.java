@@ -33,7 +33,7 @@ import com.auth0.authentication.result.Credentials;
  * Callback called on success/failure of an Identity Provider authentication.
  * Only one of the success or failure methods will be called for a single authentication request.
  */
-public interface IdentityProviderCallback {
+public interface AuthCallback {
 
     /**
      * Called when the failure reason is displayed in a {@link android.app.Dialog}.

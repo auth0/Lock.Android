@@ -39,23 +39,21 @@ import java.util.List;
  * Class that can handle authentication flows for different cases, asking for the required
  * permissions before attempting to start the process.
  */
-public abstract class IdentityProvider {
-    public static final String TAG = IdentityProvider.class.getSimpleName();
+public abstract class AuthProvider {
+    public static final String TAG = AuthProvider.class.getSimpleName();
 
     public static final int WEBVIEW_AUTH_REQUEST_CODE = 500;
-    public static final int GOOGLE_PLUS_REQUEST_CODE = 501;
-    public static final int GOOGLE_PLUS_TOKEN_REQUEST_CODE = 502;
 
-    protected IdentityProviderCallback callback;
+    protected AuthCallback callback;
     protected final PermissionHandler handler;
 
     private String lastConnectionName;
 
-    public IdentityProvider(@NonNull IdentityProviderCallback callback) {
+    public AuthProvider(@NonNull AuthCallback callback) {
         this(callback, new PermissionHandler());
     }
 
-    IdentityProvider(@NonNull IdentityProviderCallback callback, @NonNull PermissionHandler handler) {
+    AuthProvider(@NonNull AuthCallback callback, @NonNull PermissionHandler handler) {
         this.callback = callback;
         this.handler = handler;
     }
@@ -73,7 +71,7 @@ public abstract class IdentityProvider {
      */
     public void start(Activity activity, String connectionName, int requestCode) {
         if (checkPermissions(activity)) {
-            processAuthentication(activity, connectionName);
+            requestAuth(activity, connectionName);
         } else {
             lastConnectionName = connectionName;
             requestPermissions(activity, requestCode);
@@ -88,31 +86,22 @@ public abstract class IdentityProvider {
      * @param activity       a valid activity context.
      * @param connectionName the connection name to use.
      */
-    protected abstract void processAuthentication(Activity activity, String connectionName);
-
-    /**
-     * Sets the callback that will report the result of the authentication
-     *
-     * @param callback a callback
-     */
-    public void setCallback(@NonNull IdentityProviderCallback callback) {
-        this.callback = callback;
-    }
+    protected abstract void requestAuth(Activity activity, String connectionName);
 
     /**
      * Stops the authentication process (even if it's in progress).
      */
     @SuppressWarnings("unused")
-    public abstract void stop();
+    public void stop() {}
 
     /**
      * Removes any session information stored in the object.
      */
     @SuppressWarnings("unused")
-    public abstract void clearSession();
+    public void clearSession() {}
 
     /**
-     * Finishes the authentication flow by parsing the AuthorizeResult. The authentication result
+     * Finishes the auth flow by parsing the AuthorizeResult. The authentication result
      * will be notified to the callback.
      *
      * @param activity a valid activity context.
@@ -170,7 +159,7 @@ public abstract class IdentityProvider {
         List<String> declinedPermissions = handler.parseRequestResult(requestCode, permissions, grantResults);
 
         if (declinedPermissions.isEmpty()) {
-            processAuthentication(activity, lastConnectionName);
+            requestAuth(activity, lastConnectionName);
         } else if (callback != null) {
             String message = String.format(activity.getString(R.string.com_auth0_lock_permission_missing_description), declinedPermissions);
             Dialog permissionDialog = new AlertDialog.Builder(activity)

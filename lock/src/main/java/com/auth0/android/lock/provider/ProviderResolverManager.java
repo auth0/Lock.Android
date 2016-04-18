@@ -25,25 +25,28 @@
 package com.auth0.android.lock.provider;
 
 import android.content.Context;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
- * Holds an instance of ProviderResolver that can be used to query for IdentityProviders given
+ * Holds an instance of AuthProviderResolver that can be used to query for IdentityProviders given
  * a connection name.
  * If a new instance is not set before calling get, it provides a default safe implementation of the
- * ProviderResolver that always returns a null IdentityProvider.
+ * AuthProviderResolver that always returns a null AuthProvider.
  */
+@MainThread
 public abstract class ProviderResolverManager {
-    private static ProviderResolver resolver;
+
+    private static AuthProviderResolver resolver;
 
     /**
-     * Gets the ProviderResolver instance to query for IdentityProviders.
+     * Gets the AuthProviderResolver instance to query for IdentityProviders.
      *
-     * @return the ProviderResolver instance to query for IdentityProviders.
+     * @return the AuthProviderResolver instance to query for IdentityProviders.
      */
     @NonNull
-    public static ProviderResolver get() {
+    public static AuthProviderResolver get() {
         if (resolver == null) {
             return new NullProviderResolver();
         }
@@ -51,16 +54,16 @@ public abstract class ProviderResolverManager {
     }
 
     /**
-     * Sets the ProviderResolver instance to query for IdentityProviders.
+     * Sets the AuthProviderResolver instance to query for IdentityProviders.
      */
-    public static void set(@NonNull ProviderResolver providerResolver) {
+    public static void set(@NonNull AuthProviderResolver providerResolver) {
         resolver = providerResolver;
     }
 
-    private static class NullProviderResolver implements ProviderResolver {
+    private static class NullProviderResolver implements AuthProviderResolver {
         @Nullable
         @Override
-        public IdentityProvider onIdentityProviderRequest(Context context, @NonNull IdentityProviderCallback callback, @NonNull String connectionName) {
+        public AuthProvider onAuthProviderRequest(Context context, @NonNull AuthCallback callback, @NonNull String connectionName) {
             return null;
         }
     }

@@ -44,15 +44,15 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
-public class IdentityProviderTest {
+public class AuthProviderTest {
 
     @Mock
-    private IdentityProviderCallback callback;
+    private AuthCallback callback;
     @Mock
     private PermissionHandler handler;
     @Mock
     private Activity activity;
-    private IdentityProvider provider;
+    private AuthProvider provider;
     private boolean processAuthenticationCalled;
 
     private static final int REQUEST_CODE = 10;
@@ -65,9 +65,9 @@ public class IdentityProviderTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         processAuthenticationCalled = false;
-        provider = new IdentityProvider(callback, handler) {
+        provider = new AuthProvider(callback, handler) {
             @Override
-            protected void processAuthentication(Activity activity, String connectionName) {
+            protected void requestAuth(Activity activity, String connectionName) {
                 processAuthenticationCalled = true;
             }
 

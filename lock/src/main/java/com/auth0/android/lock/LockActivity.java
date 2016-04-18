@@ -53,12 +53,12 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.provider.AuthProvider;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.IdentityProvider;
-import com.auth0.android.lock.provider.IdentityProviderCallback;
+import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.provider.WebIdentityProvider;
+import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
@@ -91,7 +91,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private ProgressDialog progressDialog;
     private HeaderView headerView;
-    private IdentityProvider lastIdp;
+    private AuthProvider currentProvider;
 
     private boolean keyboardIsShown;
     private ViewGroup contentView;
@@ -252,33 +252,33 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void fetchProviderAndBeginAuthentication(String connectionName) {
-        lastIdp = ProviderResolverManager.get().onIdentityProviderRequest(this, idpCallback, connectionName);
-        if (lastIdp == null) {
+        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
+        if (currentProvider == null) {
             String pkgName = getApplicationContext().getPackageName();
-            WebIdentityProvider webIdp = new WebIdentityProvider(new CallbackHelper(pkgName), options.getAccount(), idpCallback);
-            webIdp.setUseBrowser(options.useBrowser());
-            webIdp.setParameters(options.getAuthenticationParameters());
-            lastIdp = webIdp;
+            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback);
+            oauth2.setUseBrowser(options.useBrowser());
+            oauth2.setParameters(options.getAuthenticationParameters());
+            currentProvider = oauth2;
         }
-        lastIdp.start(this, connectionName, PERMISSION_REQUEST_CODE);
+        currentProvider.start(this, connectionName, PERMISSION_REQUEST_CODE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (lastIdp != null) {
-            lastIdp.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        if (currentProvider != null) {
+            currentProvider.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnActivityResult called with intent: " + data);
-        if (lastIdp != null) {
+        if (currentProvider != null) {
             //Deliver result to the IDP
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
-            if (!lastIdp.authorize(LockActivity.this, result)) {
+            if (!currentProvider.authorize(LockActivity.this, result)) {
                 showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             }
         }
@@ -288,11 +288,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "OnNewIntent called with intent: " + intent);
-        if (lastIdp != null) {
+        if (currentProvider != null) {
             //Deliver result to the IDP
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
-            if (!lastIdp.authorize(LockActivity.this, result)) {
+            if (!currentProvider.authorize(LockActivity.this, result)) {
                 showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             }
         }
@@ -425,7 +425,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private IdentityProviderCallback idpCallback = new IdentityProviderCallback() {
+    private AuthCallback authProviderCallback = new AuthCallback() {
         @Override
         public void onFailure(@NonNull Dialog dialog) {
             Log.w(TAG, "OnFailure called");

@@ -31,26 +31,25 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
-public class ProviderResolverManagerTest {
+public class AuthProviderResolverManagerTest {
 
     @Test
     public void shouldHaveDefaultProviderResolver() {
-        ProviderResolver resolver = ProviderResolverManager.get();
+        AuthProviderResolver resolver = ProviderResolverManager.get();
 
         assertThat(resolver, notNullValue());
     }
 
     @Test
     public void shouldSetProviderResolver() {
-        ProviderResolver customResolver = Mockito.mock(ProviderResolver.class);
+        AuthProviderResolver customResolver = Mockito.mock(AuthProviderResolver.class);
         ProviderResolverManager.set(customResolver);
-        ProviderResolver resolver = ProviderResolverManager.get();
+        AuthProviderResolver resolver = ProviderResolverManager.get();
 
         assertThat(resolver, notNullValue());
         assertThat(resolver, equalTo(customResolver));

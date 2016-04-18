@@ -1,7 +1,7 @@
 
 /*
  *
- *  * WebIdentityProvider.java
+ *  * OAuth2WebAuthProvider.java
  *  *
  *  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *  *
@@ -42,13 +42,13 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Implementation of {@link IdentityProvider} that handles authentication
+ * Implementation of {@link AuthProvider} that handles auth with OAuth2 web flow
  * using an external browser, sending {@link android.content.Intent#ACTION_VIEW} intent, or with {@link WebViewActivity}.
  * This behaviour is changed using {@link #setUseBrowser(boolean)}, and defaults to send {@link android.content.Intent#ACTION_VIEW} intent.
  */
-public class WebIdentityProvider extends IdentityProvider {
+public class OAuth2WebAuthProvider extends AuthProvider {
 
-    private static final String TAG = WebIdentityProvider.class.getName();
+    private static final String TAG = OAuth2WebAuthProvider.class.getName();
 
     private static final String KEY_ERROR = "error";
     private static final String KEY_ID_TOKEN = "id_token";
@@ -74,8 +74,8 @@ public class WebIdentityProvider extends IdentityProvider {
     private String clientInfo;
     private String lastState;
 
-    public WebIdentityProvider(CallbackHelper helper, Auth0 account, @NonNull IdentityProviderCallback idpCallback) {
-        super(idpCallback);
+    public OAuth2WebAuthProvider(CallbackHelper helper, Auth0 account, @NonNull AuthCallback authCallback) {
+        super(authCallback);
         this.helper = helper;
         this.account = account;
         this.useBrowser = true;
@@ -101,7 +101,7 @@ public class WebIdentityProvider extends IdentityProvider {
     }
 
     @Override
-    protected void processAuthentication(Activity activity, String connectionName) {
+    protected void requestAuth(Activity activity, String connectionName) {
         if (account.getAuthorizeUrl() == null) {
             if (callback != null) {
                 callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_authorize_url, null);
@@ -159,15 +159,6 @@ public class WebIdentityProvider extends IdentityProvider {
         }
         return true;
     }
-
-    @Override
-    public void stop() {
-    }
-
-    @Override
-    public void clearSession() {
-    }
-
 
     public void setClientInfo(String clientInfo) {
         this.clientInfo = clientInfo;

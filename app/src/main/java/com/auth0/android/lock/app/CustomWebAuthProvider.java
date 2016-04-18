@@ -35,17 +35,17 @@ import android.util.Log;
 import com.auth0.Auth0;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.IdentityProvider;
-import com.auth0.android.lock.provider.IdentityProviderCallback;
+import com.auth0.android.lock.provider.AuthProvider;
+import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class CustomWebIdentityProvider extends IdentityProvider {
+public class CustomWebAuthProvider extends AuthProvider {
 
-    private static final String TAG = CustomWebIdentityProvider.class.getName();
+    private static final String TAG = CustomWebAuthProvider.class.getName();
 
     private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
     private static final String AUTH0_DOMAIN = "lbalmaceda.auth0.com";
@@ -71,7 +71,7 @@ public class CustomWebIdentityProvider extends IdentityProvider {
     private Map<String, Object> parameters;
     private String lastState;
 
-    public CustomWebIdentityProvider(@NonNull IdentityProviderCallback callback) {
+    public CustomWebAuthProvider(@NonNull AuthCallback callback) {
         super(callback);
         this.helper = new CallbackHelper("com.auth0.android.lock.app");
         this.account = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
@@ -84,17 +84,17 @@ public class CustomWebIdentityProvider extends IdentityProvider {
     }
 
     @Override
-    protected void processAuthentication(final Activity activity, final String connectionName) {
+    protected void requestAuth(final Activity activity, final String connectionName) {
         new android.support.v7.app.AlertDialog.Builder(activity)
-                .setTitle(R.string.native_idp_title)
-                .setMessage(R.string.native_idp_message_start)
-                .setNegativeButton(R.string.native_idp_action_cancel, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.native_provider_title)
+                .setMessage(R.string.native_provider_message_start)
+                .setNegativeButton(R.string.native_provider_action_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        callback.onFailure(R.string.native_idp_title, R.string.native_idp_message_canceled, null);
+                        callback.onFailure(R.string.native_provider_title, R.string.native_provider_message_canceled, null);
                     }
                 })
-                .setPositiveButton(R.string.native_idp_action_continue, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.native_provider_action_continue, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (account.getAuthorizeUrl() == null) {
@@ -126,24 +126,24 @@ public class CustomWebIdentityProvider extends IdentityProvider {
         final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
         if (values.containsKey(KEY_ERROR)) {
             new android.support.v7.app.AlertDialog.Builder(activity)
-                    .setTitle(R.string.native_idp_title)
-                    .setMessage(R.string.native_idp_message_failed)
+                    .setTitle(R.string.native_provider_title)
+                    .setMessage(R.string.native_provider_message_failed)
                     .show();
             Log.e(TAG, "Error, access denied.");
             final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? com.auth0.android.lock.R.string.com_auth0_lock_social_access_denied_message : com.auth0.android.lock.R.string.com_auth0_lock_social_error_message;
             callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, message, null);
         } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
             new android.support.v7.app.AlertDialog.Builder(activity)
-                    .setTitle(R.string.native_idp_title)
-                    .setMessage(R.string.native_idp_message_failed)
+                    .setTitle(R.string.native_provider_title)
+                    .setMessage(R.string.native_provider_message_failed)
                     .show();
             Log.e(TAG, "Received state doesn't match");
             Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
             callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, com.auth0.android.lock.R.string.com_auth0_lock_social_invalid_state, null);
         } else if (values.size() > 0) {
             new android.support.v7.app.AlertDialog.Builder(activity)
-                    .setTitle(R.string.native_idp_title)
-                    .setMessage(R.string.native_idp_message_succeeded)
+                    .setTitle(R.string.native_provider_title)
+                    .setMessage(R.string.native_provider_message_succeeded)
                     .show();
             Log.d(TAG, "Authenticated using web flow");
             callback.onSuccess(new Credentials(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));

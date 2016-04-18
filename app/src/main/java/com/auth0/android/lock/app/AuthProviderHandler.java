@@ -28,19 +28,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.auth0.android.lock.provider.IdentityProvider;
-import com.auth0.android.lock.provider.IdentityProviderCallback;
-import com.auth0.android.lock.provider.ProviderResolver;
+import com.auth0.android.lock.provider.AuthProvider;
+import com.auth0.android.lock.provider.AuthCallback;
+import com.auth0.android.lock.provider.AuthProviderResolver;
 
-public class ProviderHandler implements ProviderResolver {
+public class AuthProviderHandler implements AuthProviderResolver {
 
     @Nullable
     @Override
-    public IdentityProvider onIdentityProviderRequest(Context context, @NonNull IdentityProviderCallback callback, @NonNull String connectionName) {
-        IdentityProvider idp = null;
+    public AuthProvider onAuthProviderRequest(Context context, @NonNull AuthCallback callback, @NonNull String connectionName) {
+        AuthProvider provider = null;
         if (connectionName.equals("google-oauth2")) {
-            idp = new CustomWebIdentityProvider(callback);
+            provider = new CustomWebAuthProvider(callback);
         }
-        return idp;
+        return provider;
     }
 }
