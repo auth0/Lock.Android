@@ -53,12 +53,12 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.AuthCallback;
-import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
+import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
@@ -278,9 +278,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             //Deliver result to the IDP
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
-            if (!currentProvider.authorize(LockActivity.this, result)) {
-                showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
-            }
+            currentProvider.authorize(LockActivity.this, result);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -292,9 +290,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             //Deliver result to the IDP
             panelHolder.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
-            if (!currentProvider.authorize(LockActivity.this, result)) {
-                showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
-            }
+            currentProvider.authorize(LockActivity.this, result);
         }
         super.onNewIntent(intent);
     }
@@ -419,7 +415,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     panelHolder.configurePanel(null);
-                    showErrorMessage(R.string.com_auth0_lock_result_message_application_fetch_error);
                 }
             });
         }

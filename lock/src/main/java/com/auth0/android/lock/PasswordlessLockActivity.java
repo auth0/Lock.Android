@@ -56,10 +56,10 @@ import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
 import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.Application;
@@ -376,7 +376,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private void processIncomingIntent(Intent intent) {
         panelHolder.showProgress(false);
         if (intent == null) {
-            showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
             return;
         }
         if (configuration == null) {
@@ -386,9 +385,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         if (currentProvider != null) {
             AuthorizeResult result = new AuthorizeResult(intent);
-            if (!currentProvider.authorize(PasswordlessLockActivity.this, result)) {
-                showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
-            }
+            currentProvider.authorize(PasswordlessLockActivity.this, result);
             return;
         }
 
@@ -491,7 +488,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 @Override
                 public void run() {
                     panelHolder.configurePanel(null);
-                    showErrorMessage(R.string.com_auth0_lock_result_message_application_fetch_error);
                 }
             });
         }
