@@ -28,6 +28,7 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -122,11 +123,33 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         panelHolder = new ClassicPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            int paddingTop = getStatusBarHeight();
+            resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
+            headerView.setPaddingTop(paddingTop);
+        }
+
         loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
         signUpErrorBuilder = new SignUpAuthenticationErrorBuilder();
 
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        if (options.isFullscreen()) {
+            return result;
+        }
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     private void setupKeyboardListener() {

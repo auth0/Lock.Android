@@ -94,9 +94,17 @@ public class HeaderView extends RelativeLayout {
     public void onKeyboardStateChanged(boolean isOpen) {
         logo.setVisibility(isOpen ? GONE : VISIBLE);
         text.setVisibility(isOpen ? GONE : VISIBLE);
-        int headerHeightNormal = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height);
         int headerHeightKeyboard = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height_keyboard);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, isOpen ? headerHeightKeyboard : headerHeightNormal);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, isOpen ? headerHeightKeyboard : ViewGroup.LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
+    }
+
+    /**
+     * Just sets the top padding to the given one.
+     *
+     * @param paddingTop to set to this view.
+     */
+    public void setPaddingTop(int paddingTop) {
+        this.header.setPadding(0, paddingTop, 0, 0);
     }
 }
