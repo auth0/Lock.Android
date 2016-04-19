@@ -35,6 +35,7 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.R;
+import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.HashMap;
@@ -67,21 +68,33 @@ public class OAuth2WebAuthProvider extends AuthProvider {
 
     private static final String ERROR_VALUE_ACCESS_DENIED = "access_denied";
     private static final String RESPONSE_TYPE_TOKEN = "token";
+    private static final String RESPONSE_TYPE_CODE = "code";
     private static final String SCOPE_TYPE_OPENID = "openid";
+    private static final String KEY_CODE = "code";
+    private static final String KEY_CODE_CHALLENGE = "code_challenge";
+    private static final String KEY_CODE_CHALLENGE_METHOD = "code_challenge_method";
+    private static final String METHOD_SHA_256 = "S256";
 
     private boolean useBrowser;
     private CallbackHelper helper;
     private final Auth0 account;
+    private final AuthenticationAPIClient client;
     private Map<String, Object> parameters;
     private String clientInfo;
     private String lastState;
+    private PKCE pkce;
 
     public OAuth2WebAuthProvider(CallbackHelper helper, Auth0 account, @NonNull AuthCallback authCallback) {
+        this(helper, account, authCallback, false);
+    }
+
+    public OAuth2WebAuthProvider(CallbackHelper helper, Auth0 account, @NonNull AuthCallback authCallback, boolean pkce) {
         super(authCallback);
         this.helper = helper;
         this.account = account;
         this.useBrowser = true;
         this.parameters = new HashMap<>();
+        this.client = pkce && PKCE.isAvailable() ? account.newAuthenticationAPIClient() : null;
     }
 
     /**
@@ -113,10 +126,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
             return;
         }
 
-        //Generate random state
-        lastState = UUID.randomUUID().toString();
-
-        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), connectionName, lastState, parameters), connectionName);
+        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), connectionName, parameters), connectionName);
     }
 
     private void startAuthorization(Activity activity, Uri authorizeUri, String connectionName) {
@@ -153,13 +163,24 @@ public class OAuth2WebAuthProvider extends AuthProvider {
             if (callback != null) {
                 callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_state, null);
             }
-        } else if (values.size() > 0) {
+        } else if (values.size() > 0 && callback != null) {
             Log.d(TAG, "Authenticated using web flow");
-            if (callback != null) {
+            if (shouldUsePKCE()) {
+                pkce.getToken(values.get(KEY_CODE), callback);
+            } else {
                 callback.onSuccess(new Credentials(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
             }
         }
         return true;
+    }
+
+    private boolean shouldUsePKCE() {
+        return client != null;
+    }
+
+    @Override
+    public void clearSession() {
+        pkce = null;
     }
 
     public void setClientInfo(String clientInfo) {
@@ -174,12 +195,27 @@ public class OAuth2WebAuthProvider extends AuthProvider {
         return parameters;
     }
 
-    private Uri buildAuthorizeUri(String url, String serviceName, String state, Map<String, Object> parameters) {
+    private Uri buildAuthorizeUri(String url, String serviceName, Map<String, Object> parameters) {
         final Uri authorizeUri = Uri.parse(url);
+        String redirectUri = helper.getCallbackURI(account.getDomainUrl());
 
-        //refactor >
         final Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put(KEY_SCOPE, SCOPE_TYPE_OPENID);
+        queryParameters.put(KEY_RESPONSE_TYPE, RESPONSE_TYPE_TOKEN);
+
+        if (shouldUsePKCE()) {
+            try {
+                pkce = new PKCE(client, redirectUri);
+                String codeChallenge = pkce.getCodeChallenge();
+                queryParameters.put(KEY_RESPONSE_TYPE, RESPONSE_TYPE_CODE);
+                queryParameters.put(KEY_CODE_CHALLENGE, codeChallenge);
+                queryParameters.put(KEY_CODE_CHALLENGE_METHOD, METHOD_SHA_256);
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Cannot use PKCE. Defaulting to token response_type", e);
+            }
+        }
+
+        //refactor >
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 Object value = entry.getValue();
@@ -189,11 +225,14 @@ public class OAuth2WebAuthProvider extends AuthProvider {
             }
         }
 
-        queryParameters.put(KEY_RESPONSE_TYPE, RESPONSE_TYPE_TOKEN);
-        queryParameters.put(KEY_STATE, state);
+        lastState = UUID.randomUUID().toString();
+        queryParameters.put(KEY_STATE, lastState);
         queryParameters.put(KEY_CONNECTION, serviceName);
         queryParameters.put(KEY_CLIENT_ID, account.getClientId());
-        queryParameters.put(KEY_REDIRECT_URI, helper.getCallbackURI(account.getDomainUrl()));
+
+        Log.d(TAG, "Redirect Uri: " + redirectUri);
+        queryParameters.put(KEY_REDIRECT_URI, redirectUri);
+
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());

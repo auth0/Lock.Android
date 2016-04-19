@@ -48,6 +48,7 @@ class Options implements Parcelable {
 
     private Auth0 account;
     private boolean useBrowser;
+    private boolean usePKCE;
     private boolean closable;
     private boolean fullscreen;
     private boolean sendSDKInfo;
@@ -74,6 +75,7 @@ class Options implements Parcelable {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         account = auth0Parcelable.getAuth0();
         useBrowser = in.readByte() != WITHOUT_DATA;
+        usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
         sendSDKInfo = in.readByte() != WITHOUT_DATA;
@@ -117,6 +119,7 @@ class Options implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(new Auth0Parcelable(account));
         dest.writeByte((byte) (useBrowser ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (sendSDKInfo ? HAS_DATA : WITHOUT_DATA));
@@ -181,6 +184,14 @@ class Options implements Parcelable {
 
     public void setUseBrowser(boolean useBrowser) {
         this.useBrowser = useBrowser;
+    }
+
+    public boolean usePKCE() {
+        return usePKCE;
+    }
+
+    public void setUsePKCE(boolean usePKCE) {
+        this.usePKCE = usePKCE;
     }
 
     public boolean isClosable() {
