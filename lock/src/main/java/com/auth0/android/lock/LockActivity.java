@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +46,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.errors.AuthenticationError;
+import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
+import com.auth0.android.lock.errors.SignUpAuthenticationErrorBuilder;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -96,6 +98,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private boolean keyboardIsShown;
     private ViewGroup contentView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
+    private LoginAuthenticationErrorBuilder loginErrorBuilder;
+    private SignUpAuthenticationErrorBuilder signUpErrorBuilder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +121,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         panelHolder = new ClassicPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
+        signUpErrorBuilder = new SignUpAuthenticationErrorBuilder();
 
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
@@ -209,21 +216,19 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         finish();
     }
 
-    private void showSuccessMessage(@StringRes int stringId) {
-        String text = getResources().getString(stringId);
+    private void showSuccessMessage(String message) {
         resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_success_background));
         resultMessage.setVisibility(View.VISIBLE);
-        resultMessage.setText(text);
+        resultMessage.setText(message);
         panelHolder.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
 
-    private void showErrorMessage(@StringRes int stringId) {
-        String text = getResources().getString(stringId);
+    private void showErrorMessage(String message) {
         resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
-        resultMessage.setText(text);
+        resultMessage.setText(message);
         panelHolder.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
@@ -370,7 +375,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_no_matched_connection);
+                    showErrorMessage(getString(R.string.com_auth0_lock_result_message_no_matched_connection));
                 }
             });
             return;
@@ -422,24 +427,25 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private AuthCallback authProviderCallback = new AuthCallback() {
         @Override
-        public void onFailure(@NonNull Dialog dialog) {
+        public void onFailure(@NonNull final Dialog dialog) {
             Log.w(TAG, "OnFailure called");
             dialog.show();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
+                    dialog.show();
                 }
             });
         }
 
         @Override
-        public void onFailure(int titleResource, int messageResource, Throwable cause) {
+        public void onFailure(int titleResource, final int messageResource, final Throwable cause) {
             Log.w(TAG, "OnFailure called");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
+                    String message = new AuthenticationError(messageResource, cause).getMessage(LockActivity.this);
+                    showErrorMessage(message);
                 }
             });
         }
@@ -465,7 +471,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
+                                    String message = loginErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
+                                    showErrorMessage(message);
                                 }
                             });
                         }
@@ -486,7 +493,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
+                    String message = loginErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
+                    showErrorMessage(message);
                 }
             });
         }
@@ -499,7 +507,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showSuccessMessage(R.string.com_auth0_lock_result_message_sign_up_success);
+                    showSuccessMessage(getString(R.string.com_auth0_lock_result_message_sign_up_success));
                 }
             });
         }
@@ -510,7 +518,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_sign_up_error);
+                    String message = signUpErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
+                    showErrorMessage(message);
                 }
             });
         }
@@ -523,7 +532,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showSuccessMessage(R.string.com_auth0_lock_result_message_change_password_success);
+                    showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
                 }
             });
 
@@ -535,7 +544,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_change_password_error);
+                    String message = new AuthenticationError(R.string.com_auth0_lock_result_message_change_password_error, error).getMessage(LockActivity.this);
+                    showErrorMessage(message);
                 }
             });
         }

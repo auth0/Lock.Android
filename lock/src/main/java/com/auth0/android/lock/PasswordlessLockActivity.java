@@ -36,7 +36,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -52,6 +51,8 @@ import android.widget.TextView;
 import com.auth0.Auth0Exception;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.errors.AuthenticationError;
+import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
@@ -116,6 +117,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private AuthProvider currentProvider;
 
+    private LoginAuthenticationErrorBuilder loginErrorBuilder;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +141,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         panelHolder = new PasswordlessPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+
+        if (options.useCodePasswordless()) {
+            loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
+        } else {
+            loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
+        }
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
     }
@@ -218,11 +227,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         super.onBackPressed();
     }
 
-    private void showErrorMessage(@StringRes int stringId) {
-        String text = getResources().getString(stringId);
+    private void showErrorMessage(String message) {
         resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
-        resultMessage.setText(text);
+        resultMessage.setText(message);
         panelHolder.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
@@ -394,7 +402,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             String code = intent.getData().getQueryParameter("code");
             if (code == null || code.isEmpty()) {
                 Log.w(TAG, "Passwordless Code is missing or could not be parsed");
-                showErrorMessage(R.string.com_auth0_lock_result_message_error_parsing_passwordless_code);
+                showErrorMessage(getString(R.string.com_auth0_lock_db_login_error_message));
                 return;
             }
             PasswordlessLoginEvent event = PasswordlessLoginEvent.submitCode(configuration.getPasswordlessMode(), code);
@@ -496,7 +504,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private BaseCallback<Void> passwordlessCodeCallback = new BaseCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
-            Log.d(TAG, "Passwordless authentication succeeded");
+            Log.d(TAG, "Passwordless code request succeeded");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -512,12 +520,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.d(TAG, "Passwordless authentication failed");
+            Log.d(TAG, "Passwordless code request failed");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_passwordless_request_code_error);
-                    panelHolder.showProgress(false);
+                    String message = loginErrorBuilder.buildFrom(error).getMessage(PasswordlessLockActivity.this);
+                    showErrorMessage(message);
                 }
             });
         }
@@ -526,19 +534,18 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
         public void onSuccess(Authentication authentication) {
-            Log.d(TAG, "Login success: " + authentication.getProfile());
+            Log.d(TAG, "Passwordless login success: " + authentication.getProfile());
             clearRecentPasswordlessData();
             deliverResult(authentication);
         }
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.e(TAG, "Login failed");
+            Log.e(TAG, "Passwordless login failed");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
-                    passwordlessSuccessCover.setVisibility(View.GONE);
+                    showErrorMessage(loginErrorBuilder.buildFrom(error).getMessage(PasswordlessLockActivity.this));
                 }
             });
         }
@@ -546,23 +553,24 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private AuthCallback authProviderCallback = new AuthCallback() {
         @Override
-        public void onFailure(@NonNull Dialog dialog) {
+        public void onFailure(@NonNull final Dialog dialog) {
             Log.w(TAG, "OnFailure called");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
+                    dialog.show();
                 }
             });
         }
 
         @Override
-        public void onFailure(int titleResource, int messageResource, Throwable cause) {
+        public void onFailure(int titleResource, final int messageResource, final Throwable cause) {
             Log.w(TAG, "OnFailure called");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(R.string.com_auth0_lock_result_message_social_authentication_error);
+                    String message = new AuthenticationError(messageResource, cause).getMessage(PasswordlessLockActivity.this);
+                    showErrorMessage(message);
                 }
             });
         }
@@ -588,7 +596,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showErrorMessage(R.string.com_auth0_lock_result_message_login_error);
+                                    String message = loginErrorBuilder.buildFrom(error).getMessage(PasswordlessLockActivity.this);
+                                    showErrorMessage(message);
                                 }
                             });
                         }
