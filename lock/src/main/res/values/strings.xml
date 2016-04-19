@@ -145,30 +145,22 @@
     <string name="com_auth0_lock_sign_up_terms">By signing up, you agree to our terms of\n service and privacy policy</string>
     <string name="com_auth0_lock_title_passwordless_email">Enter your email address to sign in\n or create an account</string>
     <string name="com_auth0_lock_title_passwordless_sms">Enter your phone to sign in\n or create an account</string>
-    <string name="com_auth0_lock_result_message_invalid_username_or_password">Invalid username or password</string>
-    <string name="com_auth0_lock_result_message_sign_up_success">Please check your email, and then login</string>
-    <string name="com_auth0_lock_result_message_social_authentication_error">There was an error during social authentication</string>
-    <string name="com_auth0_lock_result_message_unexpected_passwordless_intent">Unexpected Passwordless Intent received. You can close this window.</string>
-    <string name="com_auth0_lock_result_message_error_parsing_passwordless_code">Error parsing the Passwordless Code</string>
-    <string name="com_auth0_lock_result_message_error_retrieving_configuration">Error retrieving the Dashboard configuration</string>
-    <string name="com_auth0_lock_result_message_change_password_error">Couldn\'t change the password.</string>
-    <string name="com_auth0_lock_result_message_sign_up_error">Couldn\'t sign up</string>
-    <string name="com_auth0_lock_result_message_login_error">Couldn\'t login</string>
-    <string name="com_auth0_lock_result_message_application_fetch_error">Couldn\'t fetch the application\'s configuration</string>
-    <string name="com_auth0_lock_result_message_passwordless_request_code_error">Couldn\'t request the code/link</string>
+
+    <!-- Custom Error Messages -->
+    <string name="com_auth0_lock_configuration_retrieving_error">Error retrieving the Dashboard configuration</string>
+    <string name="com_auth0_lock_enterprise_no_connection_message">There was no connection configured for the domain</string>
+    <string name="com_auth0_lock_db_login_error_message">There was an error processing the sign in</string>
+    <string name="com_auth0_lock_db_login_error_invalid_credentials_message">Wrong email or password</string>
+    <string name="com_auth0_lock_db_login_error_unauthorized_message">User is blocked</string>
+    <string name="com_auth0_lock_db_sign_up_error_message">There was an error processing the sign up</string>
+    <string name="com_auth0_lock_db_sign_up_success_message">Please check your email, and then login</string>
+    <string name="com_auth0_lock_db_change_password_message_success">We\'ve just sent you an email to reset your password</string>
+    <string name="com_auth0_lock_db_message_change_password_error">Couldn\'t reset your password.</string>
+    <string name="com_auth0_lock_db_signup_user_already_exists_error_message">The user already exists</string>
+    <string name="com_auth0_lock_passwordless_code_request_error_message">There was an error sending the code</string>
+    <string name="com_auth0_lock_passwordless_link_request_error_message">There was an error sending the link</string>
+    <string name="com_auth0_lock_passwordless_login_error_invalid_credentials_message">Wrong identity or passcode</string>
     <string name="com_auth0_lock_permission_missing_title">Missing permissions</string>
     <string name="com_auth0_lock_permission_missing_description">Some permissions required by this provider were not granted. You can try to authenticate again or go to the application\'s permission screen in the phone settings and grant them. The missing permissions are:\n%s</string>
 
-
-    <!-- Custom Error Messages -->
-    <string name="com_auth0_lock_db_login_error_message">There was an error processing the sign in.</string>
-    <string name="com_auth0_lock_db_login_error_invalid_credentials_message">Wrong email or password.</string>
-    <string name="com_auth0_lock_db_login_error_unauthorized_message">User is blocked.</string>
-    <string name="com_auth0_lock_db_signup_error_message">There was an error processing the sign up.</string>
-    <string name="com_auth0_lock_db_change_password_message_success">We\'ve just sent you an email to reset your password.</string>
-    <string name="com_auth0_lock_db_signup_user_already_exists_error_message">The user already exists.</string>
-    <string name="com_auth0_lock_result_message_no_matched_connection">A connection for that email wasn\'t configured.</string>
-    <string name="com_auth0_lock_passwordless_code_request_error_message">There was an error sending the code</string>
-    <string name="com_auth0_lock_passwordless_link_request_error_message">There was an error sending the link</string>
-    <string name="com_auth0_lock_passwordless_login_error_invalid_credentials_message">Wrong identity or passcode.</string>
 </resources>

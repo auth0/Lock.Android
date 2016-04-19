@@ -375,7 +375,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(getString(R.string.com_auth0_lock_result_message_no_matched_connection));
+                    showErrorMessage(getString(R.string.com_auth0_lock_enterprise_no_connection_message));
                 }
             });
             return;
@@ -507,7 +507,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showSuccessMessage(getString(R.string.com_auth0_lock_result_message_sign_up_success));
+                    showSuccessMessage(getString(R.string.com_auth0_lock_db_sign_up_success_message));
                 }
             });
         }
@@ -544,7 +544,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    String message = new AuthenticationError(R.string.com_auth0_lock_result_message_change_password_error, error).getMessage(LockActivity.this);
+                    String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error, error).getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
             });

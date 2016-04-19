@@ -47,7 +47,7 @@ public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuil
     }
 
     public SignUpAuthenticationErrorBuilder() {
-        this(R.string.com_auth0_lock_db_signup_error_message);
+        this(R.string.com_auth0_lock_db_sign_up_error_message);
     }
 
     @Override
