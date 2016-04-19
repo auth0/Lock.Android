@@ -126,8 +126,14 @@
 
     <style name="Lock.Theme.Text.ResultMessage">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_result_message_height</item>
+        <item name="android:minHeight">@dimen/com_auth0_lock_result_message_height</item>
         <item name="android:layout_alignParentTop">true</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_result_message_text_spacing
+        </item>
+        <item name="android:textStyle">bold</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingBottom">@dimen/com_auth0_lock_widget_small_margin</item>
         <item name="android:paddingTop">@dimen/com_auth0_lock_widget_small_margin</item>
@@ -169,7 +175,8 @@
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social</item>
+        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social
+        </item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 

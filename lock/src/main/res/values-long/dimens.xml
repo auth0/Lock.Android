@@ -68,13 +68,14 @@
     <dimen name="com_auth0_lock_switcher_text">12sp</dimen>
     <dimen name="com_auth0_lock_field_text">13dp</dimen>
     <dimen name="com_auth0_lock_list_item_text">16sp</dimen>
-    <dimen name="com_auth0_lock_result_message_text">16sp</dimen>
+    <dimen name="com_auth0_lock_result_message_text">12sp</dimen>
 
     <dimen name="com_auth0_lock_title_text_spacing">10dp</dimen>
     <dimen name="com_auth0_lock_terms_text_spacing">8dp</dimen>
     <dimen name="com_auth0_lock_terms_text_spacing_negative">-4dp</dimen>
     <dimen name="com_auth0_lock_separator_text_spacing">7dp</dimen>
     <dimen name="com_auth0_lock_link_sent_text_spacing">14dp</dimen>
+    <dimen name="com_auth0_lock_result_message_text_spacing">3dp</dimen>
     <dimen name="com_auth0_lock_widget_corner_radius">3dp</dimen>
 
 </resources>
