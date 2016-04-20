@@ -114,11 +114,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     @Override
     protected void requestAuth(Activity activity, String connectionName) {
         if (account.getAuthorizeUrl() == null) {
-            if (callback != null) {
-                callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_authorize_url, null);
-            } else {
-                Log.w(TAG, "No callback set for web IdP authenticator");
-            }
+            callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_authorize_url, null);
             return;
         }
 
@@ -143,23 +139,25 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     @Override
     public boolean authorize(Activity activity, @NonNull AuthorizeResult data) {
         if (!data.isValid(OAUTH2_REQUEST_CODE)) {
+            Log.w(TAG, "Invalid request.");
             return false;
         }
 
         final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
+        if (values.isEmpty()) {
+            Log.w(TAG, "Missing values from the response.");
+            return false;
+        }
+
         if (values.containsKey(KEY_ERROR)) {
             Log.e(TAG, "Error, access denied.");
-            if (callback != null) {
-                final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_lock_social_access_denied_message : R.string.com_auth0_lock_social_error_message;
-                callback.onFailure(R.string.com_auth0_lock_social_error_title, message, null);
-            }
+            final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? R.string.com_auth0_lock_social_access_denied_message : R.string.com_auth0_lock_social_error_message;
+            callback.onFailure(R.string.com_auth0_lock_social_error_title, message, null);
         } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
             Log.e(TAG, "Received state doesn't match");
             Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
-            if (callback != null) {
-                callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_state, null);
-            }
-        } else if (values.size() > 0 && callback != null) {
+            callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_invalid_state, null);
+        } else {
             Log.d(TAG, "Authenticated using web flow");
             if (shouldUsePKCE()) {
                 pkce.getToken(values.get(KEY_CODE), callback);

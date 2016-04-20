@@ -42,7 +42,9 @@ import java.util.List;
 public abstract class AuthProvider {
     public static final String TAG = AuthProvider.class.getSimpleName();
 
+    @NonNull
     protected AuthCallback callback;
+    @NonNull
     protected final PermissionHandler handler;
 
     private String lastConnectionName;
@@ -90,13 +92,15 @@ public abstract class AuthProvider {
      * Stops the authentication process (even if it's in progress).
      */
     @SuppressWarnings("unused")
-    public void stop() {}
+    public void stop() {
+    }
 
     /**
      * Removes any session information stored in the object.
      */
     @SuppressWarnings("unused")
-    public void clearSession() {}
+    public void clearSession() {
+    }
 
     /**
      * Finishes the auth flow by parsing the AuthorizeResult. The authentication result
@@ -158,7 +162,7 @@ public abstract class AuthProvider {
 
         if (declinedPermissions.isEmpty()) {
             requestAuth(activity, lastConnectionName);
-        } else if (callback != null) {
+        } else {
             String message = String.format(activity.getString(R.string.com_auth0_lock_permission_missing_description), declinedPermissions);
             Dialog permissionDialog = new AlertDialog.Builder(activity)
                     .setTitle(R.string.com_auth0_lock_permission_missing_title)
