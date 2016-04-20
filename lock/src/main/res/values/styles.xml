@@ -147,8 +147,10 @@
     </style>
 
     <style name="Lock.Theme.Widget.Icon">
-        <item name="android:scaleType">center</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_field_icon_height</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_field_icon_height</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">

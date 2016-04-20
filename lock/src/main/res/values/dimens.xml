@@ -37,6 +37,7 @@
 
     <dimen name="com_auth0_lock_social_button_height">44dp</dimen>
     <dimen name="com_auth0_lock_widget_height">40dp</dimen>
+    <dimen name="com_auth0_lock_field_icon_height">16dp</dimen>
     <dimen name="com_auth0_lock_form_selector_height">37dp</dimen>
     <dimen name="com_auth0_lock_result_message_height">31dp</dimen>
     <dimen name="com_auth0_lock_sso_height">31dp</dimen>
