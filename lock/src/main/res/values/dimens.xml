@@ -70,6 +70,7 @@
     <dimen name="com_auth0_lock_result_message_text">13sp</dimen>
 
     <dimen name="com_auth0_lock_title_text_spacing">12dp</dimen>
+    <dimen name="com_auth0_lock_subtitle_text_spacing">9dp</dimen>
     <dimen name="com_auth0_lock_terms_text_spacing">10dp</dimen>
     <dimen name="com_auth0_lock_terms_text_spacing_negative">-5dp</dimen>
     <dimen name="com_auth0_lock_separator_text_spacing">8dp</dimen>
