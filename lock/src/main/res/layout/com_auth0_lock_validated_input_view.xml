@@ -41,7 +41,6 @@
         android:id="@+id/com_auth0_lock_input"
         style="@style/Lock.Theme.Widget.Field"
         android:layout_width="0dp"
-        android:layout_marginLeft="-3dp"
         android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
         android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
         android:layout_weight="1"
