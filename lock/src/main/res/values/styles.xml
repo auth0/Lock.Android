@@ -160,6 +160,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColorHint">@color/com_auth0_lock_hint_text</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_widget_height</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
         <item name="android:paddingRight">
@@ -181,6 +182,8 @@
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_small_margin</item>
         <item name="android:layout_marginLeft">
