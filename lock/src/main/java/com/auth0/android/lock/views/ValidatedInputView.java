@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.InputType;
@@ -107,6 +108,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
             case PASSWORD:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                input.setTypeface(Typeface.DEFAULT);
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_password);
                 break;
