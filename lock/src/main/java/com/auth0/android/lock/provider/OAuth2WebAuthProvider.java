@@ -84,10 +84,6 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     private String lastState;
     private PKCE pkce;
 
-    public OAuth2WebAuthProvider(CallbackHelper helper, Auth0 account, @NonNull AuthCallback authCallback) {
-        this(helper, account, authCallback, false);
-    }
-
     public OAuth2WebAuthProvider(CallbackHelper helper, Auth0 account, @NonNull AuthCallback authCallback, boolean pkce) {
         super(authCallback);
         this.helper = helper;
