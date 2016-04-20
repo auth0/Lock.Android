@@ -235,7 +235,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             passwordlessRequestCodeLayout.setInputText(emailOrNumber);
             if (country != null) {
                 passwordlessRequestCodeLayout.onCountryCodeSelected(country.getIsoCode(), country.getDialCode());
-                emailOrNumber = country.getDialCode()+emailOrNumber;
+                emailOrNumber = country.getDialCode() + emailOrNumber;
             }
             passwordlessRequestCodeLayout.setLastEmailOrNumber(emailOrNumber);
             passwordlessRequestCodeLayout.showGotCodeButton();
