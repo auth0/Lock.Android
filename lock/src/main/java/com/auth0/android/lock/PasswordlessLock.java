@@ -324,17 +324,6 @@ public class PasswordlessLock {
         }
 
         /**
-         * SDK information sent to the Auth0 API with each request can be disabled here. By default,
-         * sending the SDK information is enabled.
-         *
-         * @return the current builder instance
-         */
-        public Builder doNotSendSDKInfo() {
-            options.setSendSDKInfo(false);
-            return this;
-        }
-
-        /**
          * Uses the given AuthProviderResolver to ask for Native IdentityProviders.
          *
          * @param resolver the AuthProviderResolver to use

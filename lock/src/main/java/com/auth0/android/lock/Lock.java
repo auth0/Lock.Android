@@ -306,17 +306,6 @@ public class Lock {
         }
 
         /**
-         * SDK information sent to the Auth0 API with each request can be disabled here. By default,
-         * sending the SDK information is enabled.
-         *
-         * @return the current builder instance
-         */
-        public Builder doNotSendSDKInfo() {
-            options.setSendSDKInfo(false);
-            return this;
-        }
-
-        /**
          * Username style to use in the Login and Sign Up text fields. Defaults to the Dashboard
          * configuration of "requires_username".
          *

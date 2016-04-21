@@ -51,7 +51,6 @@ class Options implements Parcelable {
     private boolean usePKCE;
     private boolean closable;
     private boolean fullscreen;
-    private boolean sendSDKInfo;
     private UsernameStyle usernameStyle;
     private boolean useCodePasswordless;
     private boolean signUpEnabled;
@@ -63,7 +62,6 @@ class Options implements Parcelable {
     private HashMap<String, Object> authenticationParameters;
 
     public Options() {
-        sendSDKInfo = true;
         usernameStyle = UsernameStyle.DEFAULT;
         signUpEnabled = true;
         changePasswordEnabled = true;
@@ -78,7 +76,6 @@ class Options implements Parcelable {
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
-        sendSDKInfo = in.readByte() != WITHOUT_DATA;
         signUpEnabled = in.readByte() != WITHOUT_DATA;
         changePasswordEnabled = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
@@ -122,7 +119,6 @@ class Options implements Parcelable {
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (sendSDKInfo ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
@@ -208,14 +204,6 @@ class Options implements Parcelable {
 
     public void setFullscreen(boolean fullscreen) {
         this.fullscreen = fullscreen;
-    }
-
-    public boolean sendSDKInfo() {
-        return sendSDKInfo;
-    }
-
-    public void setSendSDKInfo(boolean sendSDKInfo) {
-        this.sendSDKInfo = sendSDKInfo;
     }
 
     public UsernameStyle usernameStyle() {
