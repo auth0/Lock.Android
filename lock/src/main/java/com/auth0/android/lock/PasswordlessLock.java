@@ -42,6 +42,7 @@ import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
+import com.auth0.util.Telemetry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,9 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
+        if (account.getTelemetry() != null) {
+            account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
+        }
         return new PasswordlessLock.Builder(account, callback);
     }
 
