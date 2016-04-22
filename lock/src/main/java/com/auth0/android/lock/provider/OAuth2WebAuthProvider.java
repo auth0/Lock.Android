@@ -125,10 +125,12 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     private void startAuthorization(Activity activity, Uri authorizeUri, String connectionName) {
         final Intent intent;
         if (this.useBrowser) {
+            Log.d(TAG, "About to start the authorization using the Browser");
             intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             activity.startActivity(intent);
         } else {
+            Log.d(TAG, "About to start the authorization using the WebView");
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
             intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, connectionName);
@@ -212,6 +214,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
 
         //refactor >
         if (parameters != null) {
+            Log.v(TAG, String.format("Adding %d parameters to the Authorize Uri", parameters.size()));
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 Object value = entry.getValue();
                 if (value != null) {
@@ -236,6 +239,8 @@ public class OAuth2WebAuthProvider extends AuthProvider {
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
         }
-        return builder.build();
+        Uri uri = builder.build();
+        Log.d(TAG, "Resulting Authorize Uri is " + uri.toString());
+        return uri;
     }
 }

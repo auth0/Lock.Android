@@ -38,7 +38,6 @@ import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
 
-    private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;

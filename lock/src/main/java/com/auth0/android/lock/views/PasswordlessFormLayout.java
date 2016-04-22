@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -43,8 +44,8 @@ import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener, PasswordlessRequestCodeFormView.OnAlreadyGotCodeListener {
 
+    private static final String TAG = PasswordlessFormLayout.class.getSimpleName();
     private final LockWidget lockWidget;
-    private SharedPreferences sp;
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
     private PasswordlessRequestCodeFormView passwordlessRequestCodeLayout;
@@ -69,12 +70,14 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessStrategy() != null;
 
         if (showSocial) {
+            Log.v(TAG, "Adding social widget");
             addSocialLayout(showPasswordless);
         }
         if (showPasswordless) {
             if (showSocial) {
                 addSeparator();
             }
+            Log.v(TAG, "Adding passwordless widget");
             addPasswordlessRequestCodeLayout();
         }
     }
@@ -121,6 +124,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      */
     public boolean onBackPressed() {
         if (passwordlessInputCodeLayout != null) {
+            Log.d(TAG, "Removing the code input layout, going back to the Social/Passwordless widget.");
             if (socialLayout != null) {
                 socialLayout.setVisibility(VISIBLE);
             }
@@ -140,6 +144,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      * for the user to input the valid code.
      */
     public void codeSent(String emailOrNumber) {
+        Log.d(TAG, "Showing the code input layout");
         if (passwordlessRequestCodeLayout != null) {
             removeView(passwordlessRequestCodeLayout);
             if (socialLayout != null) {
@@ -170,6 +175,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     @Override
     public void onCodeNeedToResend() {
+        Log.d(TAG, "Enabling the resend code button.");
         if (socialLayout != null) {
             socialLayout.setVisibility(VISIBLE);
         }
@@ -231,6 +237,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     public void loadPasswordlessData(String emailOrNumber, @Nullable Country country) {
         if (passwordlessRequestCodeLayout != null) {
+            Log.d(TAG, "Loading recent passwordless data into the form");
             showGotCodeButton = true;
             passwordlessRequestCodeLayout.setInputText(emailOrNumber);
             if (country != null) {

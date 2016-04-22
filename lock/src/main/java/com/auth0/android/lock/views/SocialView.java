@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -40,11 +41,13 @@ import static android.support.v7.widget.RecyclerView.LayoutManager;
 
 public class SocialView extends LinearLayout implements SocialViewAdapter.ConnectionAuthenticationListener {
 
+    private static final String TAG = SocialView.class.getSimpleName();
     private LockWidgetSocial lockWidget;
 
     public SocialView(LockWidgetSocial lockWidget, boolean smallButtons) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
+        Log.v(TAG, "New instance created. Using small buttons: " + smallButtons);
         init(smallButtons);
     }
 
@@ -68,6 +71,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
 
     @Override
     public void onConnectionClicked(String connectionName) {
+        Log.v(TAG, "Social button clicked for connection " + connectionName);
         lockWidget.onSocialLogin(new SocialConnectionEvent(connectionName));
     }
 }

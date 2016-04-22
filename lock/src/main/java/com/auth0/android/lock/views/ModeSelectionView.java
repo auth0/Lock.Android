@@ -33,7 +33,6 @@ import com.auth0.android.lock.R;
 
 public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
 
-    private static final String TAG = ModeSelectionView.class.getSimpleName();
     private final ModeSelectedListener callback;
 
     public ModeSelectionView(Context context, @NonNull ModeSelectedListener listener) {

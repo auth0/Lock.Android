@@ -51,6 +51,7 @@ import java.util.Map;
 
 public class Lock {
 
+    private static final String TAG = Lock.class.getSimpleName();
     private final AuthenticationCallback callback;
     private final Options options;
 
@@ -75,8 +76,10 @@ public class Lock {
             // Get extra data included in the Intent
             String action = data.getAction();
             if (action.equals(Lock.AUTHENTICATION_ACTION)) {
+                Log.d(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
                 processEvent(data);
             } else if (action.equals(Lock.CANCELED_ACTION)) {
+                Log.d(TAG, "CANCELED action received in our BroadcastReceiver");
                 callback.onCanceled();
             }
         }
@@ -146,7 +149,6 @@ public class Lock {
      */
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
-        // unregister listener (if something was registered)
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     }
 
@@ -175,6 +177,7 @@ public class Lock {
      * @param eventData the intent received at the end of the login process.
      */
     private void processEvent(Intent eventData) {
+        Log.v(TAG, "Trying to parse authentication data from " + eventData.toString());
         String idToken = eventData.getStringExtra(Lock.ID_TOKEN_EXTRA);
         String accessToken = eventData.getStringExtra(Lock.ACCESS_TOKEN_EXTRA);
         String tokenType = eventData.getStringExtra(Lock.TOKEN_TYPE_EXTRA);
@@ -230,6 +233,7 @@ public class Lock {
                 Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing AuthenticationCallback.");
             }
+            Log.v(TAG, "Lock instance created");
             return new Lock(options, callback);
         }
 

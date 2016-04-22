@@ -30,12 +30,14 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.Log;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.Strategy;
 
 class SocialConfig {
+    private static final String TAG = SocialConfig.class.getSimpleName();
     private static final String ICON_RESOURCE_FORMAT = "com_auth0_lock_ic_social_%s";
     private static final String TITLE_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
     private static final String BACKGROUND_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
@@ -49,6 +51,7 @@ class SocialConfig {
 
     public SocialConfig(Context context, @NonNull Strategy strategy) {
         if (strategy.getType() != Strategies.Type.SOCIAL) {
+            Log.e(TAG, "Invalid Strategy: Only SOCIAL Strategies can have a SocialConfig");
             throw new IllegalArgumentException("Only SOCIAL Strategies can have a SocialConfig");
         }
 

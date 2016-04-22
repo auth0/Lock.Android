@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ import com.squareup.otto.Bus;
 
 public class ClassicPanelHolder extends RelativeLayout implements View.OnClickListener, ModeSelectionView.ModeSelectedListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
 
+    private static final String TAG = ClassicPanelHolder.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
     private FormLayout formLayout;
@@ -75,8 +77,10 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     private void init() {
         if (configuration == null) {
+            Log.w(TAG, "Configuration is missing, the panel won't init.");
             showConfigurationMissingLayout();
         } else {
+            Log.v(TAG, "Loading panel widgets");
             showPanelLayout();
         }
     }
@@ -98,6 +102,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
         boolean showModeSelection = configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled();
         if (showModeSelection) {
+            Log.v(TAG, "Adding the Login/SignUp Mode Switcher");
             RelativeLayout.LayoutParams switcherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             switcherParams.addRule(ALIGN_PARENT_TOP, TRUE);
             switcherParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
@@ -216,6 +221,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
      */
     public boolean onBackPressed() {
         if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
+            Log.v(TAG, "Removing change password form");
             showChangePasswordForm(false);
             return true;
         }
@@ -243,6 +249,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onModeSelected(FormLayout.DatabaseForm mode) {
+        Log.d(TAG, "Mode changed to " + mode.toString());
         currentMode = mode;
         formLayout.changeFormMode(mode);
         showSignUpTerms(mode == FormLayout.DatabaseForm.SIGN_UP);
@@ -292,11 +299,13 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showChangePasswordForm() {
+        Log.d(TAG, "Showing the change password form");
         showChangePasswordForm(true);
     }
 
     @Override
     public void onSocialLogin(SocialConnectionEvent event) {
+        Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
         bus.post(event);
     }
 

@@ -2,12 +2,14 @@ package com.auth0.android.lock.provider;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CallbackHelper {
 
+    private static final String TAG = CallbackHelper.class.getSimpleName();
     private static final String REDIRECT_URI_FORMAT = "%s/android/%s/callback";
     private final String packageName;
 
@@ -21,7 +23,9 @@ public class CallbackHelper {
      * @return the callback URI.
      */
     public String getCallbackURI(@NonNull String domain) {
-        return String.format(REDIRECT_URI_FORMAT, domain, packageName);
+        String uri = String.format(REDIRECT_URI_FORMAT, domain, packageName);
+        Log.v(TAG, "CallbackURI is: " + uri);
+        return uri;
     }
 
     public Map<String, String> getValuesFromUri(@NonNull Uri uri) {

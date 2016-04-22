@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -56,6 +57,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         this.listener = listener;
         choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
         boolean showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
+        Log.v(TAG, "New instance with mode " + choosenMode);
         init(showTitle);
     }
 
@@ -102,6 +104,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         topMessage.setText(showTitle ? getResources().getString(titleMessage) : null);
 
         if (listener.shouldShowGotCodeButton()) {
+            Log.v(TAG, "Showing the Got Code button");
             gotCodeButton.setVisibility(VISIBLE);
         }
     }
@@ -111,9 +114,11 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         String emailOrNumber = getInputText();
         if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
             setLastEmailOrNumber(countryCodeSelector.getSelectedCountry().getDialCode() + emailOrNumber);
+            Log.d(TAG, "Starting a SMS Passwordless flow");
             return PasswordlessLoginEvent.requestCode(choosenMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
         } else {
             setLastEmailOrNumber(emailOrNumber);
+            Log.d(TAG, "Starting an Email Passwordless flow");
             return PasswordlessLoginEvent.requestCode(choosenMode, emailOrNumber);
         }
     }

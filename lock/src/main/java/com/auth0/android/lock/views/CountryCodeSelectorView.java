@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class CountryCodeSelectorView extends LinearLayout {
+    private static final String TAG = CountryCodeSelectorView.class.getSimpleName();
     private LoadCountriesTask task;
     private Country selectedCountry;
 
@@ -89,6 +91,7 @@ public class CountryCodeSelectorView extends LinearLayout {
     }
 
     private void prepareTask() {
+        Log.v(TAG, "Preparing to load the countries list");
         task = new LoadCountriesTask(getContext()) {
             @Override
             protected void onPostExecute(Map<String, String> result) {
@@ -116,6 +119,7 @@ public class CountryCodeSelectorView extends LinearLayout {
      * @param country the country to set.
      */
     public void setSelectedCountry(@NonNull Country country) {
+        Log.d(TAG, "Selected country changed to " + country.getDisplayName());
         countryTextView.setText(String.format(getResources().getString(R.string.com_auth0_lock_title_passwordless_country_code_item_format), country.getDisplayName(), country.getDialCode()));
         selectedCountry = country;
     }

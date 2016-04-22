@@ -61,6 +61,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "Creating a WebViewActivity for navigating to " + getIntent().getData().toString());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.com_auth0_lock_activity_web_view);
         final ActionBar bar = getSupportActionBar();
@@ -86,6 +87,7 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 errorView.setVisibility(View.GONE);
+                Log.v(TAG, "Retrying to load failed URL");
                 startUrlLoading();
             }
         });
@@ -116,6 +118,7 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith(redirectUrl)) {
+                    Log.v(TAG, "Redirect URL was called");
                     final Intent intent = new Intent();
                     intent.setData(Uri.parse(url));
                     setResult(RESULT_OK, intent);
@@ -145,6 +148,7 @@ public class WebViewActivity extends AppCompatActivity {
             @SuppressWarnings("deprecation")
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Log.w(TAG, String.format("Load error (%d) %s", errorCode, description));
                 renderLoadError(description);
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
@@ -152,6 +156,7 @@ public class WebViewActivity extends AppCompatActivity {
             @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                Log.w(TAG, String.format("Load error (%d) %s", error.getErrorCode(), error.getDescription()));
                 renderLoadError(error.getDescription().toString());
                 super.onReceivedError(view, request, error);
             }
@@ -178,6 +183,7 @@ public class WebViewActivity extends AppCompatActivity {
         } catch (SecurityException e) {
             Log.w(TAG, "Could not check for Network status. Please, be sure to include the android.permission.ACCESS_NETWORK_STATE permission in the manifest");
         }
+        Log.v(TAG, "Is network available? " + available);
         return available;
     }
 }

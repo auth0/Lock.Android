@@ -50,6 +50,7 @@ import java.util.Map;
 
 public class PasswordlessLock {
 
+    private static final String TAG = PasswordlessLock.class.getSimpleName();
     private final AuthenticationCallback callback;
     private final Options options;
 
@@ -74,8 +75,10 @@ public class PasswordlessLock {
             // Get extra data included in the Intent
             String action = data.getAction();
             if (action.equals(PasswordlessLock.AUTHENTICATION_ACTION)) {
+                Log.d(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
                 processEvent(data);
             } else if (action.equals(PasswordlessLock.CANCELED_ACTION)) {
+                Log.d(TAG, "CANCELED action received in our BroadcastReceiver");
                 callback.onCanceled();
             }
         }
@@ -118,6 +121,7 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public Intent newIntent(Activity activity) {
+        Log.v(TAG, "Building a new intent to start the PasswordlessLockActivity");
         Intent lockIntent = new Intent(activity, PasswordlessLockActivity.class);
         lockIntent.putExtra(OPTIONS_EXTRA, options);
         return lockIntent;
@@ -131,6 +135,7 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public void onCreate(Activity activity) {
+        Log.v(TAG, "OnCreate called");
         IntentFilter filter = new IntentFilter();
         filter.addAction(PasswordlessLock.AUTHENTICATION_ACTION);
         filter.addAction(PasswordlessLock.CANCELED_ACTION);
@@ -145,6 +150,7 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
+        Log.v(TAG, "OnDestroy called");
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     }
 
@@ -158,6 +164,7 @@ public class PasswordlessLock {
      */
     @SuppressWarnings("unused")
     public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
+        Log.v(TAG, "OnActivityResult called");
         if (resultCode == Activity.RESULT_OK) {
             processEvent(data);
             return;
@@ -173,6 +180,7 @@ public class PasswordlessLock {
      * @param eventData the intent received at the end of the login process.
      */
     private void processEvent(Intent eventData) {
+        Log.v(TAG, "Trying to parse authentication data from " + eventData.toString());
         String idToken = eventData.getStringExtra(PasswordlessLock.ID_TOKEN_EXTRA);
         String accessToken = eventData.getStringExtra(PasswordlessLock.ACCESS_TOKEN_EXTRA);
         String tokenType = eventData.getStringExtra(PasswordlessLock.TOKEN_TYPE_EXTRA);
@@ -228,6 +236,7 @@ public class PasswordlessLock {
                 Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing AuthenticationCallback.");
             }
+            Log.v(TAG, "PasswordlessLock instance created");
             return new PasswordlessLock(options, callback);
         }
 

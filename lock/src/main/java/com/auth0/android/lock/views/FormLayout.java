@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 public class FormLayout extends LinearLayout {
     private static final int SINGLE_FORM_POSITION = 0;
     private static final int MULTIPLE_FORMS_POSITION = 2;
+    private static final String TAG = FormLayout.class.getSimpleName();
 
     private final LockWidgetEnterprise lockWidget;
     private boolean showDatabase;
@@ -70,12 +72,14 @@ public class FormLayout extends LinearLayout {
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
         if (showSocial) {
+            Log.v(TAG, "Adding social widget");
             addSocialLayout(showDatabase || showEnterprise);
         }
         if (showDatabase || showEnterprise) {
             if (showSocial) {
                 addSeparator();
             }
+            Log.v(TAG, "Adding User/Password widget");
             addFormLayout();
         }
     }
@@ -102,6 +106,7 @@ public class FormLayout extends LinearLayout {
      * @param mode the new DatabaseForm to change to
      */
     public void changeFormMode(DatabaseForm mode) {
+        Log.d(TAG, "Mode changed to " + mode.toString());
         if (!showDatabase && !showEnterprise) {
             return;
         }
@@ -197,6 +202,7 @@ public class FormLayout extends LinearLayout {
      */
     public boolean onBackPressed() {
         if (domainForm != null && domainForm.onBackPressed()) {
+            Log.d(TAG, "Removing the SSO layout, going back to the Username/Password widget.");
             return true;
         }
         return false;
@@ -210,6 +216,7 @@ public class FormLayout extends LinearLayout {
      */
     @Nullable
     public Object onActionPressed() {
+        Log.d(TAG, "Removing the SSO layout, going back to the Username/Password widget.");
         View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
         if (existingForm != null) {
             FormView form = (FormView) existingForm;

@@ -37,7 +37,7 @@ import java.util.Map;
 
 public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
 
-    public static final String TAG = LoadCountriesTask.class.getName();
+    private static final String TAG = LoadCountriesTask.class.getName();
     public static final String COUNTRIES_JSON_FILE = "com_auth0_lock_passwordless_countries.json";
 
     private final Context context;
@@ -48,16 +48,15 @@ public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<Stri
 
     @Override
     protected Map<String, String> doInBackground(String... params) {
-
         Map<String, String> codes;
         try {
             TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
             };
             codes = new ObjectMapper().readValue(context.getAssets().open(params[0]), typeRef);
-            Log.d(TAG, "Loaded " + codes.size() + " countries");
+            Log.d(TAG, String.format("Loaded %d countries", codes.size()));
         } catch (IOException e) {
             codes = new HashMap<>();
-            Log.e(TAG, "Failed to load countries JSON file", e);
+            Log.e(TAG, "Failed to load the countries list from the JSON file", e);
         }
         return codes;
     }

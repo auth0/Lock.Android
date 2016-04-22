@@ -102,7 +102,7 @@ public class CountryCodeActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    Log.v(TAG, "Filtering with string (" + s + ")");
+                    Log.v(TAG, String.format("Filtering with string (%s)", s));
                     CountryAdapter adapter = (CountryAdapter) listView.getAdapter();
                     adapter.getFilter().filter(s);
                 }
@@ -116,6 +116,7 @@ public class CountryCodeActivity extends AppCompatActivity {
         task = new LoadCountriesTask(this) {
             @Override
             protected void onPostExecute(Map<String, String> result) {
+                Log.v(TAG, "Task finished fine");
                 task = null;
                 if (result == null) {
                     return;
@@ -149,6 +150,7 @@ public class CountryCodeActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         if (task != null) {
+            Log.v(TAG, "Task cancelled");
             task.cancel(true);
         }
     }
