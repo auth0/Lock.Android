@@ -28,9 +28,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class AuthorizeResult {
 
+    private static final String TAG = AuthorizeResult.class.getSimpleName();
     private static final int MISSING_REQUEST_CODE = -100;
     private final int requestCode;
     private final int resultCode;
@@ -69,6 +71,7 @@ public class AuthorizeResult {
     public boolean isValid(int expectedRequestCode) {
         Uri uri = intent != null ? intent.getData() : null;
         if (uri == null) {
+            Log.d(TAG, "Received Intent's Uri is null, the result is invalid.");
             return false;
         }
 
@@ -77,6 +80,9 @@ public class AuthorizeResult {
         }
 
         boolean fromRequest = getRequestCode() == expectedRequestCode;
+        if (!fromRequest) {
+            Log.d(TAG, "Received Request Code doesn't match the expected one, the result is invalid.");
+        }
         return fromRequest && resultCode == Activity.RESULT_OK;
     }
 

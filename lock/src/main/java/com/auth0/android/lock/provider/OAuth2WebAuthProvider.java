@@ -139,13 +139,13 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     @Override
     public boolean authorize(Activity activity, @NonNull AuthorizeResult data) {
         if (!data.isValid(OAUTH2_REQUEST_CODE)) {
-            Log.w(TAG, "Invalid request.");
+            Log.w(TAG, "The Authorize result is invalid.");
             return false;
         }
 
         final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
         if (values.isEmpty()) {
-            Log.w(TAG, "Missing values from the response.");
+            Log.w(TAG, "The response didn't contain any of these values: code, state, id_token, access_token, token_type, refresh_token");
             return false;
         }
 
