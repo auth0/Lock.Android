@@ -96,7 +96,7 @@
 
     <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
-        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_title_text_spacing</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
     </style>
 
     <style name="Lock.Theme.Text.ModeSwitcher">
@@ -147,8 +147,10 @@
     </style>
 
     <style name="Lock.Theme.Widget.Icon">
-        <item name="android:scaleType">center</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_field_icon_height</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_field_icon_height</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">
@@ -160,6 +162,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColorHint">@color/com_auth0_lock_hint_text</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_widget_height</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
         <item name="android:paddingRight">
@@ -181,6 +184,8 @@
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_small_margin</item>
         <item name="android:layout_marginLeft">

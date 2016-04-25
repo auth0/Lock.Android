@@ -29,19 +29,23 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/com_auth0_lock_icon"
-        style="@style/Lock.Theme.Widget.Icon"
+    <FrameLayout
+        android:layout_width="@dimen/com_auth0_lock_widget_height"
+        android:layout_height="@dimen/com_auth0_lock_widget_height"
         android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:background="@color/com_auth0_lock_input_field_border_normal"
-        app:srcCompat="@drawable/com_auth0_lock_ic_email"
-        tools:ignore="MissingPrefix" />
+        android:background="@color/com_auth0_lock_input_field_border_normal">
+
+        <ImageView
+            android:id="@+id/com_auth0_lock_icon"
+            style="@style/Lock.Theme.Widget.Icon"
+            app:srcCompat="@drawable/com_auth0_lock_ic_email"
+            tools:ignore="MissingPrefix" />
+    </FrameLayout>
 
     <EditText
         android:id="@+id/com_auth0_lock_input"
         style="@style/Lock.Theme.Widget.Field"
         android:layout_width="0dp"
-        android:layout_marginLeft="-3dp"
         android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
         android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
         android:layout_weight="1"
