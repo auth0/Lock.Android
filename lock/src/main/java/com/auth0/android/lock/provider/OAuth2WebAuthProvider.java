@@ -65,6 +65,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     private static final String KEY_CLIENT_ID = "client_id";
     private static final String KEY_REDIRECT_URI = "redirect_uri";
     private static final String KEY_SCOPE = "scope";
+    private static final String KEY_TELEMETRY = "auth0Client";
 
     private static final String ERROR_VALUE_ACCESS_DENIED = "access_denied";
     private static final String RESPONSE_TYPE_TOKEN = "token";
@@ -217,6 +218,10 @@ public class OAuth2WebAuthProvider extends AuthProvider {
                     queryParameters.put(entry.getKey(), value.toString());
                 }
             }
+        }
+
+        if (account.getTelemetry() != null) {
+            queryParameters.put(KEY_TELEMETRY, account.getTelemetry().getValue());
         }
 
         lastState = UUID.randomUUID().toString();
