@@ -35,12 +35,14 @@ import android.widget.Button;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
+import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements AuthenticationCallback, View.OnClickListener {
@@ -164,16 +166,24 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .setDevice(Build.MODEL)
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
+
+        CustomField field = new CustomField(CustomField.TYPE_NAME, "Name");
+
+        Map<String, CustomField> customFields = new HashMap<>();
+        customFields.put("name", field);
+
         // create/configure lock
         lock = Lock.newBuilder(auth0, this)
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
                 .withProviderResolver(new AuthProviderHandler())
+                .withSignUpFields(customFields)
                 .loginAfterSignUp(false)
                 .usePKCE(true)
                 .closable(false)
                 .fullscreen(true)
                 .build();
+
         lock.onCreate(this);
 
         // launch, the results will be received in the callback

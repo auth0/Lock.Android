@@ -287,6 +287,36 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetCustomFields() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setCustomFields(createCustomFields());
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getCustomFields(), is(equalTo(parceledOptions.getCustomFields())));
+    }
+
+    @Test
+    public void shouldGetEmptyCustomFieldsIfNotSet() {
+        Options options = new Options();
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getCustomFields(), is(notNullValue()));
+        assertThat(options.getCustomFields().size(), is(0));
+        assertThat(parceledOptions.getCustomFields(), is(notNullValue()));
+        assertThat(parceledOptions.getCustomFields().size(), is(0));
+    }
+
+    @Test
     public void shouldSetDeviceParameterIfUsingOfflineAccessScope() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -415,6 +445,16 @@ public class OptionsTest {
         otherParameters.put("key_other_param_int", innerIntParam);
         authenticationParameters.put("key_param_map", otherParameters);
         return authenticationParameters;
+    }
+
+    private HashMap<String, CustomField> createCustomFields() {
+        CustomField fieldNumber = new CustomField(CustomField.TYPE_NUMBER, "Number");
+        CustomField fieldSurname = new CustomField(CustomField.TYPE_NAME, "Surname");
+
+        HashMap<String, CustomField> customFields = new HashMap<>();
+        customFields.put("number", fieldNumber);
+        customFields.put("surname", fieldSurname);
+        return customFields;
     }
 
     private List<String> createConnections(String... connections) {

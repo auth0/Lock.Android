@@ -32,11 +32,13 @@ import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.utils.ParcelableUtils;
 import com.auth0.authentication.AuthenticationAPIClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
@@ -60,6 +62,7 @@ class Options implements Parcelable {
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
     private HashMap<String, Object> authenticationParameters;
+    private Map<String, CustomField> customFields;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -67,6 +70,8 @@ class Options implements Parcelable {
         changePasswordEnabled = true;
         loginAfterSignUp = true;
         useCodePasswordless = true;
+        authenticationParameters = new HashMap<>();
+        customFields = new HashMap<>();
     }
 
     protected Options(Parcel in) {
@@ -81,6 +86,7 @@ class Options implements Parcelable {
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
+        usernameStyle = in.readInt();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -100,7 +106,11 @@ class Options implements Parcelable {
         } else {
             authenticationParameters = null;
         }
-        usernameStyle = in.readInt();
+        if (in.readByte() == HAS_DATA) {
+            customFields = ParcelableUtils.readStringParcelableMap(in, String.class, CustomField.class);
+        } else {
+            customFields = null;
+        }
     }
 
     @Override
@@ -120,6 +130,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
+        dest.writeInt(usernameStyle);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -141,7 +152,12 @@ class Options implements Parcelable {
             mapBundle.putSerializable(KEY_AUTHENTICATION_PARAMETERS, authenticationParameters);
             dest.writeBundle(mapBundle);
         }
-        dest.writeInt(usernameStyle);
+        if (customFields == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            ParcelableUtils.writeStringParcelableMap(dest, flags, customFields);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -279,5 +295,14 @@ class Options implements Parcelable {
 
     public boolean useCodePasswordless() {
         return this.useCodePasswordless;
+    }
+
+    public void setCustomFields(@NonNull Map<String, CustomField> customFields) {
+        this.customFields = customFields;
+    }
+
+    @NonNull
+    public HashMap<String, CustomField> getCustomFields() {
+        return new HashMap<>(customFields);
     }
 }

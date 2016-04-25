@@ -68,7 +68,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD})
     @Retention(RetentionPolicy.SOURCE)
-    @interface DataType {
+    public @interface DataType {
         int USERNAME = 0;
         int EMAIL = 1;
         int USERNAME_OR_EMAIL = 2;
@@ -241,6 +241,15 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     public void setText(String text) {
         input.setText("");
         input.append(text);
+    }
+
+    /**
+     * Updates the input field hint.
+     *
+     * @param hint the new hint to set.
+     */
+    public void setHint(String hint) {
+        input.setHint(hint);
     }
 
     /**

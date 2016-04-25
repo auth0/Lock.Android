@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompatBase;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -369,6 +370,17 @@ public class Lock {
          */
         public Builder withProviderResolver(@NonNull AuthProviderResolver resolver) {
             ProviderResolverManager.set(resolver);
+            return this;
+        }
+
+        /**
+         * Displays a second screen with the specified custom fields during sign up.
+         *
+         * @param customFields the custom fields to display in the sign up flow.
+         * @return the current builder instance
+         */
+        public Builder withSignUpFields(Map<String, CustomField> customFields) {
+            options.setCustomFields(customFields);
             return this;
         }
     }
