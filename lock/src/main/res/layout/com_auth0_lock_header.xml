@@ -33,6 +33,7 @@
     <ImageView
         android:id="@+id/com_auth0_lock_header_logo"
         style="@style/Lock.Theme.Widget.Logo"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_header_icon"
         app:srcCompat="?attr/Auth0.HeaderLogo"
         tools:ignore="MissingPrefix"
         tools:srcCompat="@drawable/com_auth0_lock_header_logo" />
@@ -41,6 +42,7 @@
         android:id="@+id/com_auth0_lock_header_text"
         style="@style/Lock.Theme.Text.Header"
         android:layout_below="@id/com_auth0_lock_header_logo"
+        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_header_icon"
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_header_text"
         tools:text="Auth0" />
 </RelativeLayout>

@@ -123,7 +123,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         params.addRule(CENTER_IN_PARENT, TRUE);
 
         TextView errorText = new TextView(getContext());
-        errorText.setText(R.string.com_auth0_lock_result_message_error_retrieving_configuration);
+        errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);
         errorText.setGravity(CENTER_IN_PARENT);
 
         Button retryButton = new Button(getContext());

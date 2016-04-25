@@ -126,8 +126,14 @@
 
     <style name="Lock.Theme.Text.ResultMessage">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_result_message_height</item>
+        <item name="android:minHeight">@dimen/com_auth0_lock_result_message_height</item>
         <item name="android:layout_alignParentTop">true</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_result_message_text_spacing
+        </item>
+        <item name="android:textStyle">bold</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingBottom">@dimen/com_auth0_lock_widget_small_margin</item>
         <item name="android:paddingTop">@dimen/com_auth0_lock_widget_small_margin</item>
@@ -169,7 +175,8 @@
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social</item>
+        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social
+        </item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 
@@ -204,22 +211,21 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">@dimen/com_auth0_lock_header_text</item>
         <item name="android:text">?attr/Auth0.HeaderText</item>
+        <item name="android:lines">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="Lock.Theme.Widget.Logo">
         <item name="android:src">?attr/Auth0.HeaderLogo</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_header_logo_size</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_header_logo_size</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">
-            @dimen/com_auth0_lock_widget_vertical_margin_header_icon
-        </item>
-        <item name="android:scaleType">fitCenter</item>
+        <item name="android:scaleType">centerInside</item>
     </style>
 
     <style name="Lock.Theme.Widget.Header">
-        <item name="android:layout_height">@dimen/com_auth0_lock_header_height</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?attr/Auth0.HeaderBackground</item>
-        <item name="android:minHeight">@dimen/com_auth0_lock_header_height</item>
     </style>
 </resources>
