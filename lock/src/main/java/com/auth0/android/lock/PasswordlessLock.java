@@ -310,12 +310,7 @@ public class PasswordlessLock {
          * @return the current builder instance
          */
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
-            if (authenticationParameters instanceof HashMap) {
-                options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
-            } else {
-                options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
-            }
-
+            options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             return this;
         }
 
