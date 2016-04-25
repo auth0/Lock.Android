@@ -63,6 +63,7 @@ import android.widget.ListView;
 
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.adapters.CountryAdapter;
+import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.LoadCountriesTask;
 
 import java.util.ArrayList;
@@ -72,8 +73,9 @@ import java.util.Map;
 
 public class CountryCodeActivity extends AppCompatActivity {
 
-    public static final String COUNTRY_CODE = "COUNTRY_CODE";
-    public static final String COUNTRY_DIAL_CODE = "COUNTRY_DIAL_CODE";
+    public static final String COUNTRY_CODE_EXTRA = "COUNTRY_CODE";
+    public static final String COUNTRY_DIAL_CODE_EXTRA = "COUNTRY_DIAL_CODE";
+    public static final String FULLSCREEN_EXTRA = "fullscreen";
 
     private static final String TAG = CountryCodeActivity.class.getName();
 
@@ -84,6 +86,10 @@ public class CountryCodeActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
+            ActivityUIHelper.setFullscreenMode(this);
+        }
+
         setContentView(R.layout.com_auth0_lock_passwordless_activity_country_code);
 
         final ActionBar bar = getSupportActionBar();
@@ -137,8 +143,8 @@ public class CountryCodeActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Country country = (Country) parent.getItemAtPosition(position);
                 Intent data = new Intent();
-                data.putExtra(COUNTRY_CODE, country.getIsoCode());
-                data.putExtra(COUNTRY_DIAL_CODE, country.getDialCode());
+                data.putExtra(COUNTRY_CODE_EXTRA, country.getIsoCode());
+                data.putExtra(COUNTRY_DIAL_CODE_EXTRA, country.getDialCode());
                 setResult(RESULT_OK, data);
                 finish();
             }
@@ -151,6 +157,14 @@ public class CountryCodeActivity extends AppCompatActivity {
         if (task != null) {
             Log.v(TAG, "Task was cancelled");
             task.cancel(true);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
+            ActivityUIHelper.setFullscreenMode(this);
         }
     }
 }
