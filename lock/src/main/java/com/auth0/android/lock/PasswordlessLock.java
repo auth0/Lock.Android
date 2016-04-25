@@ -259,6 +259,18 @@ public class PasswordlessLock {
         }
 
         /**
+         * Whether to use PKCE or the implicit token grant when performing calls to /authenticate.
+         * Default is {@code false}
+         *
+         * @param usePKCE if Lock will use PKCE instead of the implicit token grant.
+         * @return the current Builder instance
+         */
+        public Builder usePKCE(boolean usePKCE) {
+            options.setUsePKCE(usePKCE);
+            return this;
+        }
+
+        /**
          * Whether the PasswordlessLockActivity can be closed when pressing the Back key or not.
          *
          * @param closable or not. By default, the LockActivity is not closable.

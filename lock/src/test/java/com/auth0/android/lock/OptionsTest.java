@@ -74,6 +74,21 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
     }
 
+
+    @Test
+    public void shouldUsePKCE() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setUsePKCE(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
+    }
+
     @Test
     public void shouldBeClosable() {
         Options options = new Options();
@@ -337,6 +352,7 @@ public class OptionsTest {
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
         assertThat(options.sendSDKInfo(), is(true));
         assertThat(options.useBrowser(), is(false));
+        assertThat(options.usePKCE(), is(false));
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
@@ -354,6 +370,7 @@ public class OptionsTest {
         options.setFullscreen(true);
         options.setSendSDKInfo(true);
         options.setUseBrowser(true);
+        options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
         options.setSignUpEnabled(true);
         options.setLoginAfterSignUp(true);
@@ -369,6 +386,7 @@ public class OptionsTest {
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
+        assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
@@ -384,6 +402,7 @@ public class OptionsTest {
         options.setFullscreen(false);
         options.setSendSDKInfo(false);
         options.setUseBrowser(false);
+        options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setSignUpEnabled(false);
         options.setLoginAfterSignUp(false);
@@ -399,6 +418,7 @@ public class OptionsTest {
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.sendSDKInfo(), is(equalTo(parceledOptions.sendSDKInfo())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
+        assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));

@@ -283,7 +283,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
         if (currentProvider == null) {
             String pkgName = getApplicationContext().getPackageName();
-            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback);
+            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
             oauth2.setUseBrowser(options.useBrowser());
             oauth2.setParameters(options.getAuthenticationParameters());
             currentProvider = oauth2;
