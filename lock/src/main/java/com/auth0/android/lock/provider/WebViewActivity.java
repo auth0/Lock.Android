@@ -66,9 +66,7 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating a WebViewActivity for navigating to " + getIntent().getData().toString());
         super.onCreate(savedInstanceState);
-        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
+        ActivityUIHelper.useStatusBarSpace(this, getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false));
 
         setContentView(R.layout.com_auth0_lock_activity_web_view);
         final ActionBar bar = getSupportActionBar();
@@ -105,9 +103,7 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
+        ActivityUIHelper.useStatusBarSpace(this, getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false));
     }
 
     private void startUrlLoading() {

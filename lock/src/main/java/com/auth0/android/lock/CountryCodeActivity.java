@@ -86,9 +86,7 @@ public class CountryCodeActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
+        ActivityUIHelper.useStatusBarSpace(this, getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false));
 
         setContentView(R.layout.com_auth0_lock_passwordless_activity_country_code);
 
@@ -163,8 +161,6 @@ public class CountryCodeActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
+        ActivityUIHelper.useStatusBarSpace(this, getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false));
     }
 }

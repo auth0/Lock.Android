@@ -154,9 +154,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
             headerView.setPaddingTop(paddingTop);
         }
-        if (options.isFullscreen()) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
+        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
             loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
@@ -203,9 +201,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (options.isFullscreen()) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
+        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
     }
 
     @Override
