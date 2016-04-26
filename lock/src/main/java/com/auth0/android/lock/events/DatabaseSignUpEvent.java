@@ -27,6 +27,9 @@ package com.auth0.android.lock.events;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.JsonWriter;
+
+import java.util.Map;
 
 public class DatabaseSignUpEvent {
 
@@ -37,6 +40,7 @@ public class DatabaseSignUpEvent {
     @NonNull
     private String password;
     private boolean loginAfterSignUp;
+    private Map<String, String> extraFields;
 
     public DatabaseSignUpEvent(@NonNull String email, @Nullable String username, @NonNull String password, boolean loginAfterSignUp) {
         this.email = email;
@@ -62,5 +66,14 @@ public class DatabaseSignUpEvent {
 
     public boolean loginAfterSignUp() {
         return loginAfterSignUp;
+    }
+
+    @Nullable
+    public Map<String, String> extraFields() {
+        return extraFields;
+    }
+
+    public void setExtraFields(@NonNull Map<String, String> customFields) {
+        this.extraFields = customFields;
     }
 }

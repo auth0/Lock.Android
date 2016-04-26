@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompatBase;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -379,8 +378,9 @@ public class Lock {
          * @param customFields the custom fields to display in the sign up flow.
          * @return the current builder instance
          */
-        public Builder withSignUpFields(Map<String, CustomField> customFields) {
+        public Builder withSignUpFields(List<CustomField> customFields) {
             options.setCustomFields(customFields);
+            //TODO: Verify key duplicity.
             return this;
         }
     }

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -447,13 +448,13 @@ public class OptionsTest {
         return authenticationParameters;
     }
 
-    private HashMap<String, CustomField> createCustomFields() {
-        CustomField fieldNumber = new CustomField(CustomField.TYPE_NUMBER, "Number");
-        CustomField fieldSurname = new CustomField(CustomField.TYPE_NAME, "Surname");
+    private List<CustomField> createCustomFields() {
+        CustomField fieldNumber = new CustomField(CustomField.TYPE_NUMBER, "number", "Number");
+        CustomField fieldSurname = new CustomField(CustomField.TYPE_NAME, "surname", "Surname");
 
-        HashMap<String, CustomField> customFields = new HashMap<>();
-        customFields.put("number", fieldNumber);
-        customFields.put("surname", fieldSurname);
+        List<CustomField> customFields = new ArrayList<>();
+        customFields.add(fieldNumber);
+        customFields.add(fieldSurname);
         return customFields;
     }
 

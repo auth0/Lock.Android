@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -34,8 +35,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+
+import java.util.HashMap;
 
 public class FormLayout extends LinearLayout {
     private static final int SINGLE_FORM_POSITION = 0;
@@ -50,6 +55,7 @@ public class FormLayout extends LinearLayout {
     private SignUpFormView signUpForm;
     private DomainFormView domainForm;
     private SocialView socialLayout;
+    private CustomFieldsFormView customFieldsForm;
     private TextView orSeparatorMessage;
 
     public FormLayout(Context context) {
@@ -152,6 +158,16 @@ public class FormLayout extends LinearLayout {
         addView(domainForm);
     }
 
+    private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
+        //TODO: Check back navigation and other forms visibility
+        removePreviousForm();
+
+        if (customFieldsForm == null) {
+            customFieldsForm = new CustomFieldsFormView(getContext(), event, lockWidget.getConfiguration().getExtraSignUpFields());
+        }
+        addView(customFieldsForm);
+    }
+
     private void removePreviousForm() {
         View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
         if (existingForm != null) {
@@ -214,7 +230,16 @@ public class FormLayout extends LinearLayout {
         View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
         if (existingForm != null) {
             FormView form = (FormView) existingForm;
-            return form.submitForm();
+            Object ev = form.submitForm();
+            if (lockWidget.getConfiguration().getExtraSignUpFields().isEmpty()) {
+                return ev;
+            }
+
+            if (ev != null && existingForm == signUpForm) {
+                //User has configured some extra SignUp custom fields.
+                DatabaseSignUpEvent event = (DatabaseSignUpEvent) ev;
+                showCustomFieldsForm(event);
+            }
         }
         return null;
     }

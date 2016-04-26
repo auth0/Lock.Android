@@ -42,7 +42,8 @@ import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements AuthenticationCallback, View.OnClickListener {
@@ -167,10 +168,16 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
 
-        CustomField field = new CustomField(CustomField.TYPE_NAME, "Name");
+        CustomField field = new CustomField(CustomField.TYPE_NAME, "firstName", "First Name");
+        CustomField field2 = new CustomField(CustomField.TYPE_NAME, "surname", "Last Name");
+        CustomField field3 = new CustomField(CustomField.TYPE_PASSWORD, "password", "Password goes here");
+        CustomField field4 = new CustomField(CustomField.TYPE_PHONE_NUMBER, "aPhoneNumber", "Your phone NUMBER");
 
-        Map<String, CustomField> customFields = new HashMap<>();
-        customFields.put("name", field);
+        List<CustomField> customFields = new ArrayList<>();
+        customFields.add(field);
+        customFields.add(field2);
+        customFields.add(field3);
+        customFields.add(field4);
 
         // create/configure lock
         lock = Lock.newBuilder(auth0, this)

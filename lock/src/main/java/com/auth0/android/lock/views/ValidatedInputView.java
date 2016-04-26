@@ -156,6 +156,10 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 inputIcon = R.drawable.com_auth0_lock_ic_mobile;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 break;
+            default:
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                inputIcon = R.drawable.com_auth0_lock_ic_work;
+                break;
         }
         input.setHint(hint);
         icon.setImageResource(inputIcon);
@@ -216,6 +220,10 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
             case PHONE_NUMBER:
                 value = value.replace(" ", "");
                 isValid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
+                break;
+            default:
+                //Non-Empty Text validation. Should be removed un production?
+                isValid = !value.isEmpty();
                 break;
         }
 

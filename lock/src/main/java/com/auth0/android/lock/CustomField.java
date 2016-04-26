@@ -28,6 +28,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.auth0.android.lock.views.ValidatedInputView;
 import com.auth0.android.lock.views.ValidatedInputView.DataType;
@@ -49,13 +52,18 @@ public class CustomField implements Parcelable {
     public @interface FieldType {
     }
 
+    private final String key;
     private final String hint;
     private final int type;
 
-    public CustomField(@FieldType int type, @NonNull String hint) {
+    public CustomField(@FieldType int type, @NonNull String key, @NonNull String hint) {
         if (hint.isEmpty()) {
             throw new IllegalArgumentException("The hint cannot be empty!");
         }
+        if (key.isEmpty()) {
+            throw new IllegalArgumentException("The key cannot be empty!");
+        }
+        this.key = key;
         this.hint = hint;
         this.type = type;
 
@@ -83,9 +91,25 @@ public class CustomField implements Parcelable {
                 break;
         }
         field.setHint(hint);
+        field.setTag(key);
+    }
+
+    @Nullable
+    public String findValue(@NonNull ViewGroup container) {
+        String value = null;
+        View view = container.findViewWithTag(key);
+        if (view != null) {
+            value = ((ValidatedInputView) view).getText();
+        }
+        return value;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     protected CustomField(Parcel in) {
+        key = in.readString();
         hint = in.readString();
         type = in.readInt();
     }
@@ -98,6 +122,7 @@ public class CustomField implements Parcelable {
         CustomField that = (CustomField) o;
 
         if (type != that.type) return false;
+        if (!key.equals(that.key)) return false;
         return hint.equals(that.hint);
     }
 
@@ -108,6 +133,7 @@ public class CustomField implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
         dest.writeString(hint);
         dest.writeInt(type);
     }
