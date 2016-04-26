@@ -28,12 +28,15 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,19 +46,21 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private static final String TAG = CustomFieldsFormView.class.getSimpleName();
 
-    private TextView title;
-    private LinearLayout fieldContainer;
+    private LockWidgetForm lockWidget;
     private List<CustomField> fieldsData;
     private DatabaseSignUpEvent userData;
+    private TextView title;
+    private LinearLayout fieldContainer;
 
     public CustomFieldsFormView(Context context) {
         super(context);
     }
 
-    public CustomFieldsFormView(Context context, DatabaseSignUpEvent userData, List<CustomField> customFields) {
-        super(context);
+    public CustomFieldsFormView(LockWidgetForm lockWidget, DatabaseSignUpEvent userData) {
+        super(lockWidget.getContext());
+        this.lockWidget = lockWidget;
         this.userData = userData;
-        this.fieldsData = customFields;
+        this.fieldsData = lockWidget.getConfiguration().getExtraSignUpFields();
         init();
     }
 
@@ -69,9 +74,14 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private void addCustomFields() {
         Log.d(TAG, String.format("Adding %d custom fields.", fieldsData.size()));
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, verticalMargin, 0, 0);
+
         for (CustomField data : fieldsData) {
             ValidatedInputView field = new ValidatedInputView(getContext());
             data.configureField(field);
+            field.setLayoutParams(params);
             fieldContainer.addView(field);
         }
     }
@@ -111,7 +121,9 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        //TODO: Disabled for now
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            lockWidget.onFormSubmit();
+        }
         return false;
     }
 

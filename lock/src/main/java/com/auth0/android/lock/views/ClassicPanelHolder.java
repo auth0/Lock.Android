@@ -225,7 +225,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         }
 
         if (show) {
-            customFieldsForm = new CustomFieldsFormView(getContext(), event, configuration.getExtraSignUpFields());
+            customFieldsForm = new CustomFieldsFormView(this, event);
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
             params.addRule(BELOW, R.id.com_auth0_lock_form_selector);

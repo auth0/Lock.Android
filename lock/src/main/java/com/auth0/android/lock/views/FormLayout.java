@@ -163,7 +163,7 @@ public class FormLayout extends LinearLayout {
         removePreviousForm();
 
         if (customFieldsForm == null) {
-            customFieldsForm = new CustomFieldsFormView(getContext(), event, lockWidget.getConfiguration().getExtraSignUpFields());
+            customFieldsForm = new CustomFieldsFormView(lockWidget, event);
         }
         addView(customFieldsForm);
     }
