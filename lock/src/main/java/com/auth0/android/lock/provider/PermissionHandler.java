@@ -82,14 +82,16 @@ public class PermissionHandler {
      * now require an usage explanation
      */
     public List<String> requestPermissions(@NonNull Activity activity, @NonNull String[] permissions, int requestCode) {
-        Log.v(TAG, String.format("Requesting %d permissions", permissions.length));
+        Log.v(TAG, String.format("Requesting user approval for %d permissions", permissions.length));
         List<String> permissionsToExplain = new ArrayList<>();
         for (String p : permissions) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, p)) {
                 permissionsToExplain.add(p);
             }
         }
-        Log.d(TAG, String.format("%d permissions need an explanation or were explicitly declined.", permissionsToExplain.size()));
+        if (!permissionsToExplain.isEmpty()) {
+            Log.d(TAG, String.format("%d permissions need an explanation or were explicitly declined by the user.", permissionsToExplain.size()));
+        }
         this.lastRequestCode = requestCode;
         ActivityCompat.requestPermissions(activity,
                 permissions, requestCode);
@@ -107,10 +109,10 @@ public class PermissionHandler {
      */
     public List<String> parseRequestResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != this.lastRequestCode) {
-            Log.d(TAG, "The received request code is not the expected one.");
+            Log.d(TAG, String.format("The received Request Code doesn't match the expected one. Was %d but expected %d", requestCode, this.lastRequestCode));
             return Arrays.asList(permissions);
         } else if (permissions.length == 0 && grantResults.length == 0) {
-            Log.w(TAG, "All the permissions were declined by the user.");
+            Log.w(TAG, "All the required permissions were declined by the user.");
             return Arrays.asList(permissions);
         }
 
@@ -120,7 +122,9 @@ public class PermissionHandler {
                 declinedPermissions.add(permissions[i]);
             }
         }
-        Log.w(TAG, String.format("After parsing the results, there were %d declined permissions", declinedPermissions.size()));
+        if (!declinedPermissions.isEmpty()) {
+            Log.w(TAG, String.format("%d permissions were explicitly declined by the user.", declinedPermissions.size()));
+        }
         return declinedPermissions;
     }
 }

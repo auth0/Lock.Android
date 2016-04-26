@@ -116,7 +116,6 @@ public class CountryCodeActivity extends AppCompatActivity {
         task = new LoadCountriesTask(this) {
             @Override
             protected void onPostExecute(Map<String, String> result) {
-                Log.v(TAG, "Task finished fine");
                 task = null;
                 if (result == null) {
                     return;
@@ -150,7 +149,7 @@ public class CountryCodeActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         if (task != null) {
-            Log.v(TAG, "Task cancelled");
+            Log.v(TAG, "Task was cancelled");
             task.cancel(true);
         }
     }

@@ -80,7 +80,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
             Log.w(TAG, "Configuration is missing, the panel won't init.");
             showConfigurationMissingLayout();
         } else {
-            Log.v(TAG, "Loading panel widgets");
             showPanelLayout();
         }
     }
@@ -102,7 +101,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
         boolean showModeSelection = configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled();
         if (showModeSelection) {
-            Log.v(TAG, "Adding the Login/SignUp Mode Switcher");
+            Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
             RelativeLayout.LayoutParams switcherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             switcherParams.addRule(ALIGN_PARENT_TOP, TRUE);
             switcherParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
@@ -221,7 +220,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
      */
     public boolean onBackPressed() {
         if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
-            Log.v(TAG, "Removing change password form");
             showChangePasswordForm(false);
             return true;
         }
@@ -299,7 +297,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showChangePasswordForm() {
-        Log.d(TAG, "Showing the change password form");
         showChangePasswordForm(true);
     }
 

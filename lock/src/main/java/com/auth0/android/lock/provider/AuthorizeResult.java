@@ -71,7 +71,7 @@ public class AuthorizeResult {
     public boolean isValid(int expectedRequestCode) {
         Uri uri = intent != null ? intent.getData() : null;
         if (uri == null) {
-            Log.d(TAG, "Received Intent's Uri is null, the result is invalid.");
+            Log.d(TAG, "Result is invalid: Received Intent's Uri is null.");
             return false;
         }
 
@@ -81,7 +81,7 @@ public class AuthorizeResult {
 
         boolean fromRequest = getRequestCode() == expectedRequestCode;
         if (!fromRequest) {
-            Log.d(TAG, "Received Request Code doesn't match the expected one, the result is invalid.");
+            Log.d(TAG, String.format("Result is invalid: Received Request Code doesn't match the expected one. Was %d but expected %d", getRequestCode(), expectedRequestCode));
         }
         return fromRequest && resultCode == Activity.RESULT_OK;
     }

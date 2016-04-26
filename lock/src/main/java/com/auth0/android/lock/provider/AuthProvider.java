@@ -160,13 +160,13 @@ public abstract class AuthProvider {
      */
     @SuppressWarnings("unused")
     public void onRequestPermissionsResult(Activity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.v(TAG, "Results arrived for request code " + requestCode);
         List<String> declinedPermissions = handler.parseRequestResult(requestCode, permissions, grantResults);
 
         if (declinedPermissions.isEmpty()) {
             Log.v(TAG, "All permissions were granted!");
             requestAuth(activity, lastConnectionName);
         } else {
+            Log.e(TAG, "Permission Request failed. Some permissions were not granted!");
             String message = String.format(activity.getString(R.string.com_auth0_lock_permission_missing_description), declinedPermissions);
             Dialog permissionDialog = new AlertDialog.Builder(activity)
                     .setTitle(R.string.com_auth0_lock_permission_missing_title)
@@ -175,7 +175,6 @@ public abstract class AuthProvider {
                     .create();
             callback.onFailure(permissionDialog);
         }
-        Log.e(TAG, "PermissionRequest failed. Some permissions were not granted!");
     }
 
 }

@@ -106,7 +106,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!isLaunchConfigValid()) {
-            Log.d(TAG, "Activity is finishing");
+            Log.d(TAG, "Configuration is not valid and the Activity will finish.");
             finish();
             return;
         }
@@ -154,7 +154,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void setupKeyboardListener() {
-        Log.v(TAG, "Adding the keyboard state listener");
         keyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -169,7 +168,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void removeKeyboardListener() {
-        Log.v(TAG, "Removing the keyboard state listener");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
         }
@@ -187,7 +185,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (isOpen == keyboardIsShown || configuration == null) {
             return;
         }
-        Log.d(TAG, "Keyboard state changed, is open? " + isOpen);
+        Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
         headerView.onKeyboardStateChanged(isOpen);
         panelHolder.onKeyboardStateChanged(isOpen);
@@ -203,7 +201,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         boolean launchedForResult = getCallingActivity() != null;
         if (options.useBrowser() && launchedForResult) {
-            Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
+            Log.e(TAG, "You're not allowed to useBrowser and startActivityForResult at the same time.");
             return false;
         }
         boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
@@ -214,22 +212,18 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 return false;
             }
         }
-        Log.v(TAG, "Valid Options found.");
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (panelHolder.onBackPressed()) {
+        if (panelHolder.onBackPressed() || !options.isClosable()) {
             return;
         }
 
-        if (options.isClosable()) {
-            Log.v(TAG, "User has just closed the activity.");
-            Intent intent = new Intent(Lock.CANCELED_ACTION);
-            LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
-            return;
-        }
+        Log.v(TAG, "User had just closed the activity.");
+        Intent intent = new Intent(Lock.CANCELED_ACTION);
+        LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
         super.onBackPressed();
     }
 
@@ -267,7 +261,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private Runnable resultMessageHider = new Runnable() {
         @Override
         public void run() {
-            Log.v(TAG, "Timeout reached! Hiding the message");
             resultMessage.setVisibility(View.GONE);
         }
     };
@@ -302,7 +295,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.v(TAG, "Incoming Request Permissions Result");
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (currentProvider != null) {
             currentProvider.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
@@ -311,7 +303,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "OnActivityResult called with intent: " + data);
         if (currentProvider != null) {
             //Deliver result to the IDP
             panelHolder.showProgress(false);
@@ -323,7 +314,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d(TAG, "OnNewIntent called with intent: " + intent);
         if (currentProvider != null) {
             //Deliver result to the IDP
             panelHolder.showProgress(false);
@@ -336,7 +326,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
-        Log.v(TAG, "Incoming Fetch Application Request");
         if (configuration == null && applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
@@ -346,16 +335,14 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        Log.v(TAG, "Incoming Social Authentication Request");
         fetchProviderAndBeginAuthentication(event.getConnectionName());
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseLoginEvent event) {
-        Log.v(TAG, "Incoming Database Login Authentication Request");
         if (configuration.getDefaultDatabaseConnection() == null) {
-            Log.w(TAG, "There is no default Database connection");
+            Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
         }
 
@@ -370,9 +357,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseSignUpEvent event) {
-        Log.v(TAG, "Incoming Database Sign Up Authentication Request");
         if (configuration.getDefaultDatabaseConnection() == null) {
-            Log.w(TAG, "There is no default Database connection");
+            Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
         }
 
@@ -394,9 +380,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
-        Log.v(TAG, "Incoming Database Change Password Authentication Request");
         if (configuration.getDefaultDatabaseConnection() == null) {
-            Log.w(TAG, "There is no default Database connection");
+            Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
         }
 
@@ -411,9 +396,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
-        Log.v(TAG, "Incoming Enterprise Login Authentication Request");
         if (event.getConnectionName() == null) {
-            Log.w(TAG, "There is no matched enterprise connection");
+            Log.w(TAG, "There is no matching enterprise connection to authenticate with");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -425,14 +409,14 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             boolean missingADConfiguration = event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null;
             boolean missingEnterpriseConfiguration = configuration.getEnterpriseStrategies().isEmpty();
             if (missingADConfiguration || missingEnterpriseConfiguration) {
-                Log.w(TAG, "There is no matched enterprise connection");
+                Log.w(TAG, "There is no matching enterprise connection to authenticate with");
                 return;
             }
         }
 
         panelHolder.showProgress(true);
         if (event.useRO()) {
-            Log.v(TAG, "Using the /RO endpoint for this Enterprise Login Request");
+            Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
             apiClient.getProfileAfter(apiClient.login(event.getUsername(), event.getPassword()))
                     .setConnection(event.getConnectionName())
@@ -441,7 +425,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        Log.v(TAG, "Using the /authorize endpoint for this Enterprise Login Request");
+        Log.d(TAG, "Using the /authorize endpoint for this Enterprise Login Request");
         fetchProviderAndBeginAuthentication(event.getConnectionName());
     }
 
@@ -460,6 +444,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(final Auth0Exception error) {
+            Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
                 @Override
@@ -473,6 +458,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private AuthCallback authProviderCallback = new AuthCallback() {
         @Override
         public void onFailure(@NonNull final Dialog dialog) {
+            Log.e(TAG, "Failed to authenticate the user. A dialog is going to be shown with more information.");
             dialog.show();
             handler.post(new Runnable() {
                 @Override
@@ -484,10 +470,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(int titleResource, final int messageResource, final Throwable cause) {
+            final String message = new AuthenticationError(messageResource, cause).getMessage(LockActivity.this);
+            Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    String message = new AuthenticationError(messageResource, cause).getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
             });
@@ -495,13 +482,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onSuccess(@NonNull final Credentials credentials) {
-            Log.v(TAG, "Fetching user profile");
             showProgressDialog(true);
             options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
                     .start(new BaseCallback<UserProfile>() {
                         @Override
                         public void onSuccess(UserProfile profile) {
-                            Log.v(TAG, "OnSuccess called for user " + profile.getName());
                             showProgressDialog(false);
                             Authentication authentication = new Authentication(profile, credentials);
                             deliverResult(authentication);
@@ -509,7 +494,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
                         @Override
                         public void onFailure(final Auth0Exception error) {
-                            Log.e(TAG, "OnFailure called");
+                            Log.e(TAG, "Failed to fetch the user profile: " + error.getMessage(), error);
                             showProgressDialog(false);
                             handler.post(new Runnable() {
                                 @Override
@@ -526,13 +511,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
         public void onSuccess(Authentication authentication) {
-            Log.v(TAG, "Login success: " + authentication.getProfile());
             deliverResult(authentication);
         }
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.e(TAG, "Login failed");
+            Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -546,7 +530,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private BaseCallback<DatabaseUser> createCallback = new BaseCallback<DatabaseUser>() {
         @Override
         public void onSuccess(DatabaseUser payload) {
-            Log.v(TAG, "User created, now login");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -557,7 +540,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.e(TAG, "User creation failed");
+            Log.e(TAG, "Failed to create the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -571,7 +554,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private BaseCallback<Void> changePwdCallback = new BaseCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
-            Log.v(TAG, "Change password accepted");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -583,7 +565,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.e(TAG, "Change password failed");
+            Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {

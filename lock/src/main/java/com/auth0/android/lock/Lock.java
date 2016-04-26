@@ -76,10 +76,10 @@ public class Lock {
             // Get extra data included in the Intent
             String action = data.getAction();
             if (action.equals(Lock.AUTHENTICATION_ACTION)) {
-                Log.d(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
+                Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
                 processEvent(data);
             } else if (action.equals(Lock.CANCELED_ACTION)) {
-                Log.d(TAG, "CANCELED action received in our BroadcastReceiver");
+                Log.v(TAG, "CANCELED action received in our BroadcastReceiver");
                 callback.onCanceled();
             }
         }
@@ -109,6 +109,7 @@ public class Lock {
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
         if (account.getTelemetry() != null) {
+            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
             account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
         }
         return new Lock.Builder(account, callback);
@@ -177,7 +178,6 @@ public class Lock {
      * @param eventData the intent received at the end of the login process.
      */
     private void processEvent(Intent eventData) {
-        Log.v(TAG, "Trying to parse authentication data from " + eventData.toString());
         String idToken = eventData.getStringExtra(Lock.ID_TOKEN_EXTRA);
         String accessToken = eventData.getStringExtra(Lock.ACCESS_TOKEN_EXTRA);
         String tokenType = eventData.getStringExtra(Lock.TOKEN_TYPE_EXTRA);
@@ -188,8 +188,10 @@ public class Lock {
         Authentication authentication = new Authentication(profile, credentials);
 
         if (idToken != null && accessToken != null) {
+            Log.d(TAG, "User authenticated!");
             callback.onAuthentication(authentication);
         } else {
+            Log.e(TAG, "Error parsing authentication data: id_token or access_token are missing.");
             LockException up = new LockException(R.string.com_auth0_lock_social_error_authentication);
             callback.onError(up);
             //throw up. haha

@@ -70,14 +70,12 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessStrategy() != null;
 
         if (showSocial) {
-            Log.v(TAG, "Adding social widget");
             addSocialLayout(showPasswordless);
         }
         if (showPasswordless) {
             if (showSocial) {
                 addSeparator();
             }
-            Log.v(TAG, "Adding passwordless widget");
             addPasswordlessRequestCodeLayout();
         }
     }
@@ -124,7 +122,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      */
     public boolean onBackPressed() {
         if (passwordlessInputCodeLayout != null) {
-            Log.d(TAG, "Removing the code input layout, going back to the Social/Passwordless widget.");
+            Log.d(TAG, "Removing the Code Input Form, going back to the Social/Passwordless Form.");
             if (socialLayout != null) {
                 socialLayout.setVisibility(VISIBLE);
             }
@@ -144,7 +142,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
      * for the user to input the valid code.
      */
     public void codeSent(String emailOrNumber) {
-        Log.d(TAG, "Showing the code input layout");
+        Log.d(TAG, "Now showing the Code Input Form");
         if (passwordlessRequestCodeLayout != null) {
             removeView(passwordlessRequestCodeLayout);
             if (socialLayout != null) {
@@ -175,7 +173,6 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     @Override
     public void onCodeNeedToResend() {
-        Log.d(TAG, "Enabling the resend code button.");
         if (socialLayout != null) {
             socialLayout.setVisibility(VISIBLE);
         }
@@ -237,7 +234,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     public void loadPasswordlessData(String emailOrNumber, @Nullable Country country) {
         if (passwordlessRequestCodeLayout != null) {
-            Log.d(TAG, "Loading recent passwordless data into the form");
+            Log.d(TAG, String.format("Loading recent passwordless data into the form. Identity %s with Country %s", emailOrNumber, country));
             showGotCodeButton = true;
             passwordlessRequestCodeLayout.setInputText(emailOrNumber);
             if (country != null) {

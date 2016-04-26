@@ -157,7 +157,6 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      * @param type a valid DataType
      */
     public void setDataType(DataType type) {
-        Log.v(TAG, "Validation data type updated to " + type);
         dataType = type;
         setupInputValidation();
     }

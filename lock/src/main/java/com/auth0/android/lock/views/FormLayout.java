@@ -72,14 +72,12 @@ public class FormLayout extends LinearLayout {
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
         if (showSocial) {
-            Log.v(TAG, "Adding social widget");
             addSocialLayout(showDatabase || showEnterprise);
         }
         if (showDatabase || showEnterprise) {
             if (showSocial) {
                 addSeparator();
             }
-            Log.v(TAG, "Adding User/Password widget");
             addFormLayout();
         }
     }
@@ -202,7 +200,6 @@ public class FormLayout extends LinearLayout {
      */
     public boolean onBackPressed() {
         if (domainForm != null && domainForm.onBackPressed()) {
-            Log.d(TAG, "Removing the SSO layout, going back to the Username/Password widget.");
             return true;
         }
         return false;
@@ -216,7 +213,6 @@ public class FormLayout extends LinearLayout {
      */
     @Nullable
     public Object onActionPressed() {
-        Log.d(TAG, "Removing the SSO layout, going back to the Username/Password widget.");
         View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
         if (existingForm != null) {
             FormView form = (FormView) existingForm;

@@ -80,7 +80,7 @@ public class PKCE {
         byte[] input = asASCIIBytes(codeVerifier);
         byte[] signature = SHA256(input);
         String challenge = Base64.encodeToString(signature, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-        Log.d(TAG, "Generated code challenge: " + challenge);
+        Log.d(TAG, "Generated code challenge is " + challenge);
         return challenge;
     }
 
@@ -95,13 +95,12 @@ public class PKCE {
         apiClient.token(authorizationCode, codeVerifier, redirectUri).start(new BaseCallback<Credentials>() {
             @Override
             public void onSuccess(Credentials payload) {
-                Log.i(TAG, "OnSuccess called after PKCE");
                 callback.onSuccess(payload);
             }
 
             @Override
             public void onFailure(Auth0Exception error) {
-                Log.e(TAG, "OnFailure called with error " + error.getMessage());
+                Log.e(TAG, "OnFailure called when trying to get the OAuth Token: " + error.getMessage(), error);
                 callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_access_denied_message, error);
             }
         });
@@ -151,6 +150,8 @@ public class PKCE {
         SecureRandom sr = new SecureRandom();
         byte[] code = new byte[32];
         sr.nextBytes(code);
-        return Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+        String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+        Log.d(TAG, "Generated code verifier is " + verifier);
+        return verifier;
     }
 }

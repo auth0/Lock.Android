@@ -24,7 +24,7 @@ public class CallbackHelper {
      */
     public String getCallbackURI(@NonNull String domain) {
         String uri = String.format(REDIRECT_URI_FORMAT, domain, packageName);
-        Log.v(TAG, "CallbackURI is: " + uri);
+        Log.v(TAG, "The Callback URI is: " + uri);
         return uri;
     }
 

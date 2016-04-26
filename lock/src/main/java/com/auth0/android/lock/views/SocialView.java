@@ -71,7 +71,6 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
 
     @Override
     public void onConnectionClicked(String connectionName) {
-        Log.v(TAG, "Social button clicked for connection " + connectionName);
         lockWidget.onSocialLogin(new SocialConnectionEvent(connectionName));
     }
 }

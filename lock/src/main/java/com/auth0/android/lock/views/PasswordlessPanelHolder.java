@@ -71,7 +71,6 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
             Log.w(TAG, "Configuration is missing, the panel won't init.");
             showConfigurationMissingLayout();
         } else {
-            Log.v(TAG, "Loading panel widgets");
             showPanelLayout();
         }
     }
@@ -174,7 +173,6 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      */
     @Override
     public void onPasswordlessCodeSent(String emailOrNumber) {
-        Log.v(TAG, "Showing the code sent form");
         formLayout.codeSent(emailOrNumber);
     }
 
@@ -215,7 +213,6 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
      * @param dialCode the dial code for this country
      */
     public void onCountryCodeSelected(String country, String dialCode) {
-        Log.d(TAG, "Country code changed to " + country);
         formLayout.onCountryCodeSelected(country, dialCode);
     }
 
@@ -233,7 +230,6 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
     }
 
     public void loadPasswordlessData(String input, @Nullable Country country) {
-        Log.d(TAG, "Loading recent passwordless data into the form");
         formLayout.loadPasswordlessData(input, country);
     }
 }

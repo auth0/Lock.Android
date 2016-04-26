@@ -91,7 +91,6 @@ public class CountryCodeSelectorView extends LinearLayout {
     }
 
     private void prepareTask() {
-        Log.v(TAG, "Preparing to load the countries list");
         task = new LoadCountriesTask(getContext()) {
             @Override
             protected void onPostExecute(Map<String, String> result) {

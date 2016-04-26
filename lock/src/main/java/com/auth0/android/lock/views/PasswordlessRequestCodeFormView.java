@@ -104,7 +104,6 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         topMessage.setText(showTitle ? getResources().getString(titleMessage) : null);
 
         if (listener.shouldShowGotCodeButton()) {
-            Log.v(TAG, "Showing the Got Code button");
             gotCodeButton.setVisibility(VISIBLE);
         }
     }

@@ -67,7 +67,6 @@ public class ApplicationFetcher {
      * @param callback to notify on success/error
      */
     public void fetch(@NonNull BaseCallback<Application> callback) {
-        Log.v(TAG, "Fetching the Application configuration from the Auth0 CDN for");
         makeApplicationRequest(callback);
     }
 
@@ -82,7 +81,7 @@ public class ApplicationFetcher {
         client.newCall(req).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, final IOException e) {
-                Log.e(TAG, "Failed to fetch the Application: " + e.getMessage());
+                Log.e(TAG, "Failed to fetch the Application: " + e.getMessage(), e);
                 Auth0Exception exception = new Auth0Exception("Failed to fetch the Application: " + e.getMessage());
                 callback.onFailure(exception);
             }

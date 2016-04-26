@@ -26,6 +26,7 @@ package com.auth0.android.lock.events;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
@@ -35,6 +36,7 @@ import com.auth0.authentication.ProfileRequest;
 import com.auth0.request.ParameterizableRequest;
 
 public class PasswordlessLoginEvent {
+    private static final String TAG = PasswordlessLoginEvent.class.getSimpleName();
     private static final String KEY_CONNECTION = "connection";
     private final PasswordlessMode mode;
     private final String emailOrNumber;
@@ -88,6 +90,7 @@ public class PasswordlessLoginEvent {
      * @return the Passwordless code request request.
      */
     public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
+        Log.d(TAG, String.format("Generating Passwordless Code/Link request for connection %s", connectionName));
         ParameterizableRequest<Void> request;
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
             request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
@@ -109,6 +112,7 @@ public class PasswordlessLoginEvent {
      * @return the Passwordless login request.
      */
     public ProfileRequest getLoginRequest(AuthenticationAPIClient apiClient, String emailOrNumber) {
+        Log.d(TAG, String.format("Generating Passwordless Login request for identity %s", emailOrNumber));
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.getProfileAfter(apiClient.loginWithEmail(emailOrNumber, getCode()));
         } else {

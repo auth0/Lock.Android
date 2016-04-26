@@ -180,10 +180,10 @@ public class WebViewActivity extends AppCompatActivity {
         try {
             NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
             available = activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+            Log.v(TAG, "Is network available? " + available);
         } catch (SecurityException e) {
             Log.w(TAG, "Could not check for Network status. Please, be sure to include the android.permission.ACCESS_NETWORK_STATE permission in the manifest");
         }
-        Log.v(TAG, "Is network available? " + available);
         return available;
     }
 }

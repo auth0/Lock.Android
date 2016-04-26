@@ -50,7 +50,7 @@ public abstract class ProviderResolverManager {
     @NonNull
     public static AuthProviderResolver get() {
         if (resolver == null) {
-            Log.w(TAG, "No AuthProviderResolver was specified. All requests to onAuthProviderRequest will return a null AuthProvider.");
+            Log.w(TAG, "No custom AuthProviderResolver was specified. All requests to onAuthProviderRequest will return a null AuthProvider.");
             return new NullProviderResolver();
         }
         return resolver;
