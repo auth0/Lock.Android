@@ -183,6 +183,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      */
     public void setDataType(@DataType int type) {
         dataType = type;
+        updateBorder(false);
         setupInputValidation();
     }
 
