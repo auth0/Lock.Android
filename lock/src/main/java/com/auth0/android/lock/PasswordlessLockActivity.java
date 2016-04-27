@@ -311,13 +311,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     };
 
     private void reloadRecentPasswordlessData() {
-        PasswordlessMode choosenMode = configuration.getPasswordlessMode();
-        if (choosenMode == null) {
+        int choosenMode = configuration.getPasswordlessMode();
+        if (choosenMode == PasswordlessMode.DISABLED) {
             return;
         }
         SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        int modeOrdinal = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, -1);
-        if (sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) + CODE_TTL < System.currentTimeMillis() || !choosenMode.equals(PasswordlessMode.from(modeOrdinal))) {
+        int savedMode = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED);
+        if (sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) + CODE_TTL < System.currentTimeMillis() || choosenMode != savedMode) {
             Log.d(TAG, "Previous Passwordless data is too old to reload.");
             return;
         }
@@ -344,7 +344,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 .putLong(LAST_PASSWORDLESS_TIME_KEY, System.currentTimeMillis())
                 .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, emailOrNumber)
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, countryData)
-                .putInt(LAST_PASSWORDLESS_MODE_KEY, configuration.getPasswordlessMode() != null ? configuration.getPasswordlessMode().ordinal() : -1)
+                .putInt(LAST_PASSWORDLESS_MODE_KEY, configuration.getPasswordlessMode())
                 .apply();
     }
 
@@ -355,7 +355,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 .putLong(LAST_PASSWORDLESS_TIME_KEY, 0)
                 .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "")
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
-                .putInt(LAST_PASSWORDLESS_MODE_KEY, -1)
+                .putInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED)
                 .apply();
     }
 

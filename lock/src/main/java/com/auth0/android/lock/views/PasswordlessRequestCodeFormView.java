@@ -38,6 +38,12 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
+import static com.auth0.android.lock.enums.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.enums.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.enums.PasswordlessMode.SMS_LINK;
+
 public class PasswordlessRequestCodeFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessRequestCodeFormView.class.getSimpleName();
@@ -45,7 +51,8 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
     private final LockWidgetPasswordless lockWidget;
     private final OnAlreadyGotCodeListener listener;
     private ValidatedInputView passwordlessInput;
-    private PasswordlessMode choosenMode;
+    @PasswordlessMode
+    private int passwordlessMode;
     private TextView topMessage;
     private CountryCodeSelectorView countryCodeSelector;
     private TextView gotCodeButton;
@@ -55,9 +62,9 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         this.listener = listener;
-        choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
+        passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
         boolean showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
-        Log.v(TAG, "New instance with mode " + choosenMode);
+        Log.v(TAG, "New instance with mode " + passwordlessMode);
         init(showTitle);
     }
 
@@ -76,7 +83,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
 
     private void selectPasswordlessMode(boolean showTitle) {
         int titleMessage = 0;
-        switch (choosenMode) {
+        switch (passwordlessMode) {
             case EMAIL_CODE:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_email;
                 passwordlessInput.setDataType(ValidatedInputView.DataType.EMAIL);
@@ -97,6 +104,8 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
                 passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
                 countryCodeSelector.setVisibility(VISIBLE);
                 break;
+            case DISABLED:
+                break;
         }
         passwordlessInput.setVisibility(VISIBLE);
         passwordlessInput.clearInput();
@@ -111,14 +120,14 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
     @Override
     public Object getActionEvent() {
         String emailOrNumber = getInputText();
-        if (choosenMode == PasswordlessMode.SMS_CODE || choosenMode == PasswordlessMode.SMS_LINK) {
+        if (passwordlessMode == SMS_CODE || passwordlessMode == SMS_LINK) {
             setLastEmailOrNumber(countryCodeSelector.getSelectedCountry().getDialCode() + emailOrNumber);
             Log.d(TAG, "Starting a SMS Passwordless flow");
-            return PasswordlessLoginEvent.requestCode(choosenMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
+            return PasswordlessLoginEvent.requestCode(passwordlessMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
         } else {
             setLastEmailOrNumber(emailOrNumber);
             Log.d(TAG, "Starting an Email Passwordless flow");
-            return PasswordlessLoginEvent.requestCode(choosenMode, emailOrNumber);
+            return PasswordlessLoginEvent.requestCode(passwordlessMode, emailOrNumber);
         }
     }
 
@@ -174,7 +183,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        if (choosenMode == PasswordlessMode.SMS_LINK || choosenMode == PasswordlessMode.SMS_CODE) {
+        if (passwordlessMode == SMS_LINK || passwordlessMode == SMS_CODE) {
             countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (listener.shouldShowGotCodeButton()) {

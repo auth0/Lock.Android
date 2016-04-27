@@ -24,16 +24,23 @@
 
 package com.auth0.android.lock.enums;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.IntDef;
 
-public enum PasswordlessMode {
-    SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    @Nullable
-    public static PasswordlessMode from(int ordinal) {
-        if (ordinal < 0 || ordinal >= values().length) {
-            return null;
-        }
-        return PasswordlessMode.values()[ordinal];
-    }
+import static com.auth0.android.lock.enums.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.enums.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.enums.PasswordlessMode.SMS_LINK;
+
+@IntDef({DISABLED, SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface PasswordlessMode {
+    int DISABLED = 0;
+    int SMS_LINK = 1;
+    int SMS_CODE = 2;
+    int EMAIL_LINK = 3;
+    int EMAIL_CODE = 4;
 }

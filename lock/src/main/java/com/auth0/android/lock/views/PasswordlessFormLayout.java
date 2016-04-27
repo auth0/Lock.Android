@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -87,9 +86,9 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     private void addSeparator() {
         orSeparatorMessage = new TextView(getContext());
-        PasswordlessMode passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
+        int passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
         int stringRes = R.string.com_auth0_lock_passwordless_email_forms_separator;
-        if (passwordlessMode != null && (passwordlessMode == PasswordlessMode.SMS_LINK || passwordlessMode == PasswordlessMode.SMS_CODE)) {
+        if (passwordlessMode == PasswordlessMode.SMS_LINK || passwordlessMode == PasswordlessMode.SMS_CODE) {
             stringRes = R.string.com_auth0_lock_passwordless_sms_forms_separator;
         }
         orSeparatorMessage.setText(stringRes);

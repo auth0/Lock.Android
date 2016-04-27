@@ -37,6 +37,12 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
+import static com.auth0.android.lock.enums.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.enums.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.enums.PasswordlessMode.SMS_LINK;
+
 public class PasswordlessInputCodeFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessInputCodeFormView.class.getSimpleName();
@@ -45,7 +51,8 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     private final LockWidgetPasswordless lockWidget;
     private final OnCodeResendListener listener;
     private ValidatedInputView passwordlessInput;
-    private PasswordlessMode choosenMode;
+    @PasswordlessMode
+    private int passwordlessMode;
     private boolean resendShown;
     private boolean keyboardIsOpen;
     private TextView topMessage;
@@ -58,10 +65,10 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
      */
     public PasswordlessInputCodeFormView(LockWidgetPasswordless lockWidget, @NonNull OnCodeResendListener listener, String identity) {
         super(lockWidget.getContext());
-        choosenMode = lockWidget.getConfiguration().getPasswordlessMode();
+        passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
         this.lockWidget = lockWidget;
         this.listener = listener;
-        Log.v(TAG, String.format("New instance with mode %s for Identity %s", choosenMode, identity));
+        Log.v(TAG, String.format("New instance with mode %s for Identity %s", passwordlessMode, identity));
         init(identity);
     }
 
@@ -81,7 +88,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
 
     private void selectPasswordlessMode(String identity) {
         int sentMessage = 0;
-        switch (choosenMode) {
+        switch (passwordlessMode) {
             case EMAIL_CODE:
                 sentMessage = R.string.com_auth0_lock_title_passwordless_code_email_sent;
                 break;
@@ -94,6 +101,8 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
             case SMS_LINK:
                 sentMessage = R.string.com_auth0_lock_title_passwordless_link_sent;
                 break;
+            case DISABLED:
+                break;
         }
         topMessage.setText(String.format(getContext().getString(sentMessage), identity));
         passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
@@ -105,7 +114,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
 
     @Override
     public Object getActionEvent() {
-        return PasswordlessLoginEvent.submitCode(choosenMode, getInputText());
+        return PasswordlessLoginEvent.submitCode(passwordlessMode, getInputText());
     }
 
     private String getInputText() {

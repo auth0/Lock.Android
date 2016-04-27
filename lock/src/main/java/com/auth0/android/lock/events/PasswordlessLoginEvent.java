@@ -38,33 +38,35 @@ import com.auth0.request.ParameterizableRequest;
 public class PasswordlessLoginEvent {
     private static final String TAG = PasswordlessLoginEvent.class.getSimpleName();
     private static final String KEY_CONNECTION = "connection";
-    private final PasswordlessMode mode;
+    @PasswordlessMode
+    private final int mode;
     private final String emailOrNumber;
     private final String code;
     private final Country country;
 
 
-    private PasswordlessLoginEvent(PasswordlessMode mode, String emailOrNumber, String code, Country country) {
+    private PasswordlessLoginEvent(@PasswordlessMode int mode, String emailOrNumber, String code, Country country) {
         this.mode = mode;
         this.emailOrNumber = emailOrNumber;
         this.code = code;
         this.country = country;
     }
 
-    public static PasswordlessLoginEvent requestCode(PasswordlessMode mode, @NonNull String email) {
+    public static PasswordlessLoginEvent requestCode(@PasswordlessMode int mode, @NonNull String email) {
         return new PasswordlessLoginEvent(mode, email, null, null);
     }
 
-    public static PasswordlessLoginEvent requestCode(PasswordlessMode mode, @NonNull String number, @NonNull Country country) {
+    public static PasswordlessLoginEvent requestCode(@PasswordlessMode int mode, @NonNull String number, @NonNull Country country) {
         String fullNumber = country.getDialCode() + number;
         return new PasswordlessLoginEvent(mode, fullNumber, null, country);
     }
 
-    public static PasswordlessLoginEvent submitCode(PasswordlessMode mode, @NonNull String code) {
+    public static PasswordlessLoginEvent submitCode(@PasswordlessMode int mode, @NonNull String code) {
         return new PasswordlessLoginEvent(mode, null, code, null);
     }
 
-    public PasswordlessMode getMode() {
+    @PasswordlessMode
+    public int getMode() {
         return mode;
     }
 
