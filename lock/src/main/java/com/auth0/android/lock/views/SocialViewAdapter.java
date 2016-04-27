@@ -99,7 +99,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
                 Strategy strategy = strategyList.get(getAdapterPosition());
                 callback.onConnectionClicked(strategy.getName());       //returns the name of the first connection element
             } else {
-                Log.w(TAG, ConnectionAuthenticationListener.class.getSimpleName() + " not configured");
+                Log.w(TAG, "No callback was configured");
             }
         }
 

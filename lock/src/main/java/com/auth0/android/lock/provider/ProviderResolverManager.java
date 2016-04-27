@@ -28,6 +28,7 @@ import android.content.Context;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Holds an instance of AuthProviderResolver that can be used to query for IdentityProviders given
@@ -38,6 +39,7 @@ import android.support.annotation.Nullable;
 @MainThread
 public abstract class ProviderResolverManager {
 
+    private static final String TAG = ProviderResolverManager.class.getSimpleName();
     private static AuthProviderResolver resolver;
 
     /**
@@ -48,6 +50,7 @@ public abstract class ProviderResolverManager {
     @NonNull
     public static AuthProviderResolver get() {
         if (resolver == null) {
+            Log.w(TAG, "No custom AuthProviderResolver was specified. All requests to onAuthProviderRequest will return a null AuthProvider.");
             return new NullProviderResolver();
         }
         return resolver;

@@ -71,8 +71,10 @@ public abstract class AuthProvider {
      */
     public void start(Activity activity, String connectionName, int requestCode) {
         if (checkPermissions(activity)) {
+            Log.v(TAG, "All permissions were already granted, the authentication flow is starting.");
             requestAuth(activity, connectionName);
         } else {
+            Log.d(TAG, "Some permissions were not previously granted, requesting them now.");
             lastConnectionName = connectionName;
             requestPermissions(activity, requestCode);
         }
@@ -161,8 +163,10 @@ public abstract class AuthProvider {
         List<String> declinedPermissions = handler.parseRequestResult(requestCode, permissions, grantResults);
 
         if (declinedPermissions.isEmpty()) {
+            Log.v(TAG, "All permissions were granted!");
             requestAuth(activity, lastConnectionName);
         } else {
+            Log.e(TAG, "Permission Request failed. Some permissions were not granted!");
             String message = String.format(activity.getString(R.string.com_auth0_lock_permission_missing_description), declinedPermissions);
             Dialog permissionDialog = new AlertDialog.Builder(activity)
                     .setTitle(R.string.com_auth0_lock_permission_missing_title)
@@ -171,7 +175,6 @@ public abstract class AuthProvider {
                     .create();
             callback.onFailure(permissionDialog);
         }
-        Log.e(TAG, "PermissionRequest failed. Some permissions were not granted!");
     }
 
 }

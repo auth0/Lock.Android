@@ -169,6 +169,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .withProviderResolver(new AuthProviderHandler())
                 .loginAfterSignUp(false)
                 .usePKCE(true)
+                .closable(false)
                 .build();
         lock.onCreate(this);
 

@@ -29,7 +29,6 @@ import android.support.annotation.Nullable;
 import android.widget.RelativeLayout;
 
 public abstract class FormView extends RelativeLayout {
-    private static final String TAG = FormView.class.getSimpleName();
 
     public FormView(Context context) {
         super(context);

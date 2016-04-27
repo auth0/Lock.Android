@@ -124,6 +124,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!isLaunchConfigValid()) {
+            Log.d(TAG, "Configuration is not valid and the Activity will finish.");
             finish();
             return;
         }
@@ -204,6 +205,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         if (isOpen == keyboardIsShown || configuration == null) {
             return;
         }
+        Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
         headerView.onKeyboardStateChanged(isOpen);
         panelHolder.onKeyboardStateChanged(isOpen);
@@ -219,7 +221,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         boolean launchedForResult = getCallingActivity() != null;
         if (options.useBrowser() && launchedForResult) {
-            Log.e(TAG, "You're not able to useBrowser and startActivityForResult at the same time.");
+            Log.e(TAG, "You're not allowed to useBrowser and startActivityForResult at the same time.");
             return false;
         }
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
@@ -241,11 +243,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             reloadRecentPasswordlessData();
             return;
         }
-        if (options.isClosable()) {
-            Intent intent = new Intent(Lock.CANCELED_ACTION);
-            LocalBroadcastManager.getInstance(PasswordlessLockActivity.this).sendBroadcast(intent);
+        if (!options.isClosable()) {
             return;
         }
+
+        Log.v(TAG, "User has just closed the activity.");
+        Intent intent = new Intent(Lock.CANCELED_ACTION);
+        LocalBroadcastManager.getInstance(PasswordlessLockActivity.this).sendBroadcast(intent);
         super.onBackPressed();
     }
 
@@ -314,6 +318,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
         int modeOrdinal = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, -1);
         if (sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) + CODE_TTL < System.currentTimeMillis() || !choosenMode.equals(PasswordlessMode.from(modeOrdinal))) {
+            Log.d(TAG, "Previous Passwordless data is too old to reload.");
             return;
         }
 
@@ -332,6 +337,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     private void persistRecentPasswordlessData(@NonNull String emailOrNumber, @Nullable Country country) {
+        Log.v(TAG, "Saving recently used Passwordless data for the next time.");
         SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
         String countryData = country != null ? country.getIsoCode() + COUNTRY_DATA_DIV + country.getDialCode() : null;
         sp.edit()
@@ -343,6 +349,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     public void clearRecentPasswordlessData() {
+        Log.v(TAG, "Deleting recent Passwordless data.");
         SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
         sp.edit()
                 .putLong(LAST_PASSWORDLESS_TIME_KEY, 0)
@@ -380,12 +387,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "OnActivityResult called with intent: " + data);
         if (requestCode == COUNTRY_CODE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE);
                 String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE);
-                Log.d(TAG, "Picked country " + country);
                 panelHolder.onCountryCodeSelected(country, dialCode);
             }
             return;
@@ -397,7 +402,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d(TAG, "OnNewIntent called with intent: " + intent);
         processIncomingIntent(intent);
 
         super.onNewIntent(intent);
@@ -409,7 +413,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             return;
         }
         if (configuration == null) {
-            Log.w(TAG, "Intent arrived with missing configuration: " + intent);
+            Log.w(TAG, String.format("Intent arrived with data %s but is going to be discarded as the Activity lacks of Configuration", intent.getData()));
             return;
         }
 
@@ -429,7 +433,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             }
             PasswordlessLoginEvent event = PasswordlessLoginEvent.submitCode(configuration.getPasswordlessMode(), code);
             onPasswordlessAuthenticationRequest(event);
+        } else {
+            Log.w(TAG, "Invalid Activity state");
         }
+
     }
 
     @Override
@@ -460,6 +467,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
         if (configuration.getDefaultPasswordlessStrategy() == null) {
+            Log.w(TAG, "There is no default Passwordless strategy to authenticate with");
             return;
         }
 
@@ -486,8 +494,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         panelHolder.showProgress(!options.useBrowser());
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
+        Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
         currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, event.getConnectionName());
         if (currentProvider == null) {
+            Log.d(TAG, "Couldn't find an specific provider, using the default: " + OAuth2WebAuthProvider.class.getSimpleName());
             String pkgName = getApplicationContext().getPackageName();
             OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
             oauth2.setUseBrowser(options.useBrowser());
@@ -513,6 +523,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onFailure(final Auth0Exception error) {
+            Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
                 @Override
@@ -526,7 +537,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private BaseCallback<Void> passwordlessCodeCallback = new BaseCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
-            Log.d(TAG, "Passwordless code request succeeded");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -542,7 +552,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.d(TAG, "Passwordless code request failed");
+            Log.e(TAG, "Failed to request a passwordless Code/Link: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -556,14 +566,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
         public void onSuccess(Authentication authentication) {
-            Log.d(TAG, "Passwordless login success: " + authentication.getProfile());
             clearRecentPasswordlessData();
             deliverResult(authentication);
         }
 
         @Override
         public void onFailure(final Auth0Exception error) {
-            Log.e(TAG, "Passwordless login failed");
+            Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -576,7 +585,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private AuthCallback authProviderCallback = new AuthCallback() {
         @Override
         public void onFailure(@NonNull final Dialog dialog) {
-            Log.w(TAG, "OnFailure called");
+            Log.e(TAG, "Failed to authenticate the user. A dialog is going to be shown with more information.");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -587,11 +596,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onFailure(int titleResource, final int messageResource, final Throwable cause) {
-            Log.w(TAG, "OnFailure called");
+            final String message = new AuthenticationError(messageResource, cause).getMessage(PasswordlessLockActivity.this);
+            Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    String message = new AuthenticationError(messageResource, cause).getMessage(PasswordlessLockActivity.this);
                     showErrorMessage(message);
                 }
             });
@@ -599,13 +608,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onSuccess(@NonNull final Credentials credentials) {
-            Log.d(TAG, "Fetching user profile..");
             showProgressDialog(true);
             options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
                     .start(new BaseCallback<UserProfile>() {
                         @Override
                         public void onSuccess(UserProfile profile) {
-                            Log.d(TAG, "OnSuccess called for user " + profile.getName());
                             showProgressDialog(false);
                             Authentication authentication = new Authentication(profile, credentials);
                             deliverResult(authentication);
@@ -613,7 +620,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
                         @Override
                         public void onFailure(final Auth0Exception error) {
-                            Log.w(TAG, "OnFailure called");
+                            Log.e(TAG, "Failed to fetch the user profile: " + error.getMessage(), error);
                             showProgressDialog(false);
                             handler.post(new Runnable() {
                                 @Override

@@ -94,8 +94,10 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         });
         if (!fallbackToDatabase && lockWidget.getConfiguration().getEnterpriseStrategies().size() == 1 && lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().size() == 1) {
             singleConnection = true;
+            Log.v(TAG, "Only one enterprise connection was found.");
             setupSingleConnectionUI(lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().get(0));
         } else {
+            Log.v(TAG, "Multiple enterprise/database connections found.");
             setupMultipleConnectionUI();
         }
     }
@@ -122,8 +124,8 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
 
                 currentConnection = domainParser.parse(text);
                 currentUsername = domainParser.extractUsername(text);
-                Log.d(TAG, "Username/Connection found: " + currentUsername + "/" + currentConnection);
                 if (currentConnection != null) {
+                    Log.v(TAG, String.format("Matched results are connection %s with username %s", currentConnection, currentUsername));
                     passwordInput.setVisibility(GONE);
                     showSSOMessage(true);
                 } else if (fallbackToDatabase) {
@@ -171,14 +173,18 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     @Override
     public Object submitForm() {
         if (!validateForm()) {
+            Log.w(TAG, "Form has some validation issues and won't be submitted.");
             return null;
         }
 
         if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
+            Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using active flow", currentConnection));
             return getActionEvent();
         } else if (currentConnection == null) {
+            Log.d(TAG, "Form submitted. Logging in with database connection using active flow");
             return getActionEvent();
         } else {
+            Log.d(TAG, "Now showing SSO Login Form for connection " + currentConnection);
             String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
             topMessage.setText(loginWithCorporate);
             topMessage.setVisibility(View.VISIBLE);
@@ -230,6 +236,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
      */
     public boolean onBackPressed() {
         if (!singleConnection && corporateSSO) {
+            Log.d(TAG, "Removing the SSO Login Form, going back to the Username/Password Form.");
             resetDomain();
             showSSOMessage(true);
             return true;

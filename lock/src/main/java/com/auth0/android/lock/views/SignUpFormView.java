@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -85,6 +86,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
 
     @Override
     public Object getActionEvent() {
+        Log.d(TAG, String.format("Triggered sign up with email %s and username %s", getEmail(), getUsername()));
         return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
     }
 

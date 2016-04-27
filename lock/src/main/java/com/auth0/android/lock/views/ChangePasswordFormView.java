@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -79,8 +80,10 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     @Override
     public Object submitForm() {
         if (validateForm()) {
+            Log.d(TAG, "Form submitted");
             return getActionEvent();
         }
+        Log.w(TAG, "Form has some validation issues and won't be submitted.");
         return null;
     }
 

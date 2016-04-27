@@ -50,6 +50,7 @@ import java.util.Map;
 
 public class PasswordlessLock {
 
+    private static final String TAG = PasswordlessLock.class.getSimpleName();
     private final AuthenticationCallback callback;
     private final Options options;
 
@@ -74,8 +75,10 @@ public class PasswordlessLock {
             // Get extra data included in the Intent
             String action = data.getAction();
             if (action.equals(PasswordlessLock.AUTHENTICATION_ACTION)) {
+                Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
                 processEvent(data);
             } else if (action.equals(PasswordlessLock.CANCELED_ACTION)) {
+                Log.v(TAG, "CANCELED action received in our BroadcastReceiver");
                 callback.onCanceled();
             }
         }
@@ -105,6 +108,7 @@ public class PasswordlessLock {
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
         if (account.getTelemetry() != null) {
+            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
             account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
         }
         return new PasswordlessLock.Builder(account, callback);
@@ -183,8 +187,10 @@ public class PasswordlessLock {
         Authentication authentication = new Authentication(profile, credentials);
 
         if (idToken != null && accessToken != null) {
+            Log.d(TAG, "User authenticated!");
             callback.onAuthentication(authentication);
         } else {
+            Log.e(TAG, "Error parsing authentication data: id_token or access_token are missing.");
             LockException up = new LockException(R.string.com_auth0_lock_social_error_authentication);
             callback.onError(up);
             //throw up. haha
@@ -228,6 +234,7 @@ public class PasswordlessLock {
                 Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing AuthenticationCallback.");
             }
+            Log.v(TAG, "PasswordlessLock instance created");
             return new PasswordlessLock(options, callback);
         }
 

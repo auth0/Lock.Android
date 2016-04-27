@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ import com.squareup.otto.Bus;
 
 public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
+    private static final String TAG = PasswordlessPanelHolder.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
     private PasswordlessFormLayout formLayout;
@@ -66,6 +68,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
 
     private void init() {
         if (configuration == null) {
+            Log.w(TAG, "Configuration is missing, the panel won't init.");
             showConfigurationMissingLayout();
         } else {
             showPanelLayout();
@@ -185,6 +188,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
 
     @Override
     public void onSocialLogin(SocialConnectionEvent event) {
+        Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
         bus.post(event);
     }
 

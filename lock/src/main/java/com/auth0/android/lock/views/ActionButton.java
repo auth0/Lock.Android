@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,6 +37,7 @@ import com.auth0.android.lock.R;
 
 public class ActionButton extends FrameLayout {
 
+    private static final String TAG = ActionButton.class.getSimpleName();
     private ProgressBar progress;
     private ImageView icon;
 
@@ -67,6 +69,11 @@ public class ActionButton extends FrameLayout {
      * @param show whether to show the progress bar or not.
      */
     public void showProgress(boolean show) {
+        if (show) {
+            Log.v(TAG, "Disabling the button while showing progress");
+        } else {
+            Log.v(TAG, "Enabling the button and hiding progress");
+        }
         setEnabled(!show);
         progress.setVisibility(show ? VISIBLE : GONE);
         icon.setVisibility(show ? GONE : VISIBLE);

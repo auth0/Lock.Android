@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import java.util.List;
 
 public class PermissionHandler {
 
+    private static final String TAG = PermissionHandler.class.getSimpleName();
     private int lastRequestCode = -100;
 
     public PermissionHandler() {
@@ -49,6 +51,7 @@ public class PermissionHandler {
      * @return true if the Android Manifest Permission is currently granted, false otherwise.
      */
     public boolean isPermissionGranted(@NonNull Activity activity, @NonNull String permission) {
+        Log.v(TAG, String.format("Checking if %s permission is granted.", permission));
         int result = ContextCompat.checkSelfPermission(activity, permission);
         return result == PermissionChecker.PERMISSION_GRANTED;
     }
@@ -79,11 +82,15 @@ public class PermissionHandler {
      * now require an usage explanation
      */
     public List<String> requestPermissions(@NonNull Activity activity, @NonNull String[] permissions, int requestCode) {
+        Log.v(TAG, String.format("Requesting user approval for %d permissions", permissions.length));
         List<String> permissionsToExplain = new ArrayList<>();
         for (String p : permissions) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, p)) {
                 permissionsToExplain.add(p);
             }
+        }
+        if (!permissionsToExplain.isEmpty()) {
+            Log.d(TAG, String.format("%d permissions need an explanation or were explicitly declined by the user.", permissionsToExplain.size()));
         }
         this.lastRequestCode = requestCode;
         ActivityCompat.requestPermissions(activity,
@@ -102,8 +109,10 @@ public class PermissionHandler {
      */
     public List<String> parseRequestResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != this.lastRequestCode) {
+            Log.d(TAG, String.format("The received Request Code doesn't match the expected one. Was %d but expected %d", requestCode, this.lastRequestCode));
             return Arrays.asList(permissions);
         } else if (permissions.length == 0 && grantResults.length == 0) {
+            Log.w(TAG, "All the required permissions were declined by the user.");
             return Arrays.asList(permissions);
         }
 
@@ -112,6 +121,9 @@ public class PermissionHandler {
             if (grantResults[i] != PermissionChecker.PERMISSION_GRANTED) {
                 declinedPermissions.add(permissions[i]);
             }
+        }
+        if (!declinedPermissions.isEmpty()) {
+            Log.w(TAG, String.format("%d permissions were explicitly declined by the user.", declinedPermissions.size()));
         }
         return declinedPermissions;
     }

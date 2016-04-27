@@ -81,8 +81,8 @@ public class ApplicationFetcher {
         client.newCall(req).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, final IOException e) {
-                Log.e(TAG, "Failed to fetchApplication: " + e.getMessage());
-                Auth0Exception exception = new Auth0Exception("Failed to fetchApplication: " + e.getMessage());
+                Log.e(TAG, "Failed to fetch the Application: " + e.getMessage(), e);
+                Auth0Exception exception = new Auth0Exception("Failed to fetch the Application: " + e.getMessage());
                 callback.onFailure(exception);
             }
 
@@ -97,7 +97,7 @@ public class ApplicationFetcher {
                     return;
                 }
 
-                Log.i(TAG, "Application received!: " + application.getId());
+                Log.i(TAG, "Application received!");
                 callback.onSuccess(application);
             }
         });
