@@ -29,6 +29,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.IntDef;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -44,6 +45,16 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.NUMBER;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.PASSWORD;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.PHONE_NUMBER;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_OR_EMAIL;
+
 public class ValidatedInputView extends LinearLayout implements View.OnFocusChangeListener {
 
     private static final String TAG = ValidatedInputView.class.getSimpleName();
@@ -55,10 +66,19 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     private ImageView icon;
     private int inputIcon;
 
-    enum DataType {USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD}
+    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface DataType {
+        int USERNAME = 0;
+        int EMAIL = 1;
+        int USERNAME_OR_EMAIL = 2;
+        int NUMBER = 3;
+        int PHONE_NUMBER = 4;
+        int PASSWORD = 5;
+    }
 
-    private DataType dataType;
-
+    @DataType
+    private int dataType;
 
     public ValidatedInputView(Context context) {
         super(context);
@@ -91,7 +111,8 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
 
         input.setOnFocusChangeListener(this);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_ValidatedInput);
-        dataType = DataType.values()[a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0)];
+        //noinspection WrongConstant
+        dataType = a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0);
         a.recycle();
 
         setupInputValidation();
@@ -156,7 +177,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      *
      * @param type a valid DataType
      */
-    public void setDataType(DataType type) {
+    public void setDataType(@DataType int type) {
         dataType = type;
         setupInputValidation();
     }
