@@ -29,6 +29,10 @@ import android.util.AttributeSet;
 
 import com.auth0.android.lock.Configuration;
 
+import static com.auth0.android.lock.enums.UsernameStyle.DEFAULT;
+import static com.auth0.android.lock.enums.UsernameStyle.EMAIL;
+import static com.auth0.android.lock.enums.UsernameStyle.USERNAME;
+
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
     public ValidatedUsernameInputView(Context context) {

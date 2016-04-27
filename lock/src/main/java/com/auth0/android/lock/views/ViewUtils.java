@@ -48,7 +48,7 @@ import static com.auth0.android.lock.views.ViewUtils.Corners.ONLY_RIGHT;
 abstract class ViewUtils {
 
     /**
-     * Enum used by the getRoundedBackground method. It defines which corners to set as rounded
+     * Used by the getRoundedBackground method. It defines which corners to set as rounded
      * in the drawable.
      */
     @IntDef({ALL, ONLY_LEFT, ONLY_RIGHT})

@@ -318,7 +318,7 @@ public class Lock {
          * @param style a valid UsernameStyle.
          * @return the current builder instance
          */
-        public Builder withUsernameStyle(UsernameStyle style) {
+        public Builder withUsernameStyle(@UsernameStyle int style) {
             options.setUsernameStyle(style);
             return this;
         }

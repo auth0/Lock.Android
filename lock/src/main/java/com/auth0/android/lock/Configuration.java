@@ -65,7 +65,8 @@ public class Configuration {
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean usernameRequired;
-    private UsernameStyle usernameStyle;
+    @UsernameStyle
+    private int usernameStyle;
     private boolean loginAfterSignUp;
     private PasswordlessMode passwordlessMode;
 
@@ -260,7 +261,8 @@ public class Configuration {
         return usernameRequired;
     }
 
-    public UsernameStyle getUsernameStyle() {
+    @UsernameStyle
+    public int getUsernameStyle() {
         return usernameStyle;
     }
 
