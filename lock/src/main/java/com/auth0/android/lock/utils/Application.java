@@ -31,6 +31,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.auth0.android.lock.utils.Strategies.Type.DATABASE;
+import static com.auth0.android.lock.utils.Strategies.Type.ENTERPRISE;
+import static com.auth0.android.lock.utils.Strategies.Type.PASSWORDLESS;
+import static com.auth0.android.lock.utils.Strategies.Type.SOCIAL;
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
@@ -111,6 +115,8 @@ public class Application {
                         break;
                     case PASSWORDLESS:
                         this.passwordlessStrategies.add(strategy);
+                    case DATABASE:
+                        break;
                 }
             }
         }

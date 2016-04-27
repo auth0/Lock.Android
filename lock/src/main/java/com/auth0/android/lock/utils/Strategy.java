@@ -60,7 +60,8 @@ public class Strategy {
         return connections;
     }
 
-    public Strategies.Type getType() {
+    @Strategies.Type
+    public int getType() {
         return this.strategyMetadata.getType();
     }
 
