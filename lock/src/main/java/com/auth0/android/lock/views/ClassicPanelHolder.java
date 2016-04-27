@@ -58,7 +58,8 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     private LayoutParams ssoParams;
     private View ssoLayout;
     private ProgressBar loadingProgressBar;
-    private FormLayout.DatabaseForm currentMode;
+    @ModeSelectionView.Mode
+    private int currentDatabaseMode;
     private boolean keyboardIsOpen;
     private boolean ssoMessageShown;
 
@@ -143,7 +144,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         termsLayout.setId(R.id.com_auth0_lock_terms_layout);
         addView(termsLayout, termsParams);
 
-        onModeSelected(FormLayout.DatabaseForm.LOG_IN);
+        onModeSelected(ModeSelectionView.Mode.LOG_IN);
     }
 
     /**
@@ -246,11 +247,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     @Override
-    public void onModeSelected(FormLayout.DatabaseForm mode) {
-        Log.d(TAG, "Mode changed to " + mode.toString());
-        currentMode = mode;
+    public void onModeSelected(@ModeSelectionView.Mode int mode) {
+        Log.d(TAG, "Mode changed to " + mode);
+        currentDatabaseMode = mode;
         formLayout.changeFormMode(mode);
-        showSignUpTerms(mode == FormLayout.DatabaseForm.SIGN_UP);
+        showSignUpTerms(mode == ModeSelectionView.Mode.SIGN_UP);
     }
 
     private void showSignUpTerms(boolean show) {
@@ -325,6 +326,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         }
         formLayout.onKeyboardStateChanged(isOpen);
 
-        showSignUpTerms(!isOpen && currentMode == FormLayout.DatabaseForm.SIGN_UP);
+        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
     }
 }
