@@ -32,10 +32,18 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.IntDef;
 import android.util.TypedValue;
 import android.view.View;
 
 import com.auth0.android.lock.R;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.views.ViewUtils.Corners.ALL;
+import static com.auth0.android.lock.views.ViewUtils.Corners.ONLY_LEFT;
+import static com.auth0.android.lock.views.ViewUtils.Corners.ONLY_RIGHT;
 
 abstract class ViewUtils {
 
@@ -43,8 +51,12 @@ abstract class ViewUtils {
      * Enum used by the getRoundedBackground method. It defines which corners to set as rounded
      * in the drawable.
      */
-    enum Corners {
-        ONLY_LEFT, ONLY_RIGHT, ALL
+    @IntDef({ALL, ONLY_LEFT, ONLY_RIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Corners {
+        int ALL = 0;
+        int ONLY_LEFT = 1;
+        int ONLY_RIGHT = 2;
     }
 
     /**
@@ -85,7 +97,7 @@ abstract class ViewUtils {
      * @param corners   the rounded corners this drawable will have. Can be one of ONLY_LEFT, ONLY_RIGHT, ALL
      * @return the rounded drawable.
      */
-    static ShapeDrawable getRoundedBackground(Resources resources, @ColorInt int color, Corners corners) {
+    static ShapeDrawable getRoundedBackground(Resources resources, @ColorInt int color, @Corners int corners) {
         int r = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
         float[] outerR = new float[0];
         switch (corners) {
