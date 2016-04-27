@@ -32,7 +32,7 @@
     <TextView
         android:id="@+id/com_auth0_lock_title"
         style="@style/Lock.Theme.Text.Title.SignUpCustomFields"
-        android:text="Complete the sign up process" />
+        android:text="@string/com_auth0_lock_title_sign_up_custom_fields" />
 
     <ScrollView
         android:layout_width="match_parent"
