@@ -449,8 +449,8 @@ public class OptionsTest {
     }
 
     private List<CustomField> createCustomFields() {
-        CustomField fieldNumber = new CustomField(CustomField.TYPE_NUMBER, "number", "Number");
-        CustomField fieldSurname = new CustomField(CustomField.TYPE_NAME, "surname", "Surname");
+        CustomField fieldNumber = new CustomField(CustomField.TYPE_PHONE_NUMBER, "number", "Number");
+        CustomField fieldSurname = new CustomField(CustomField.TYPE_PERSON_NAME, "surname", "Surname");
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldNumber);

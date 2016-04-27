@@ -31,13 +31,16 @@
 
     <TextView
         android:id="@+id/com_auth0_lock_title"
-        style="@style/Lock.Theme.Text.Title"
-        android:text="Complete your Sign Up data" />
+        style="@style/Lock.Theme.Text.Title.ResetPassword"
+        android:textSize="24sp"
+        android:text="Complete the sign up process" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_passwordless">
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:scrollbarStyle="outsideInset">
 
         <LinearLayout
             android:id="@+id/com_auth0_lock_container"

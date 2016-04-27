@@ -40,14 +40,12 @@ import java.lang.annotation.RetentionPolicy;
 
 public class CustomField implements Parcelable {
 
-    public static final int TYPE_NAME = 0;
-    public static final int TYPE_DATE = 1;
-    public static final int TYPE_EMAIL = 2;
-    public static final int TYPE_PASSWORD = 3;
-    public static final int TYPE_NUMBER = 4;
+    public static final int TYPE_PERSON_NAME = 0;
+    public static final int TYPE_NUMBER = 2;
     public static final int TYPE_PHONE_NUMBER = 5;
+    public static final int TYPE_EMAIL = 6;
 
-    @IntDef({TYPE_NAME, TYPE_DATE, TYPE_EMAIL, TYPE_PASSWORD, TYPE_NUMBER, TYPE_PHONE_NUMBER})
+    @IntDef({TYPE_PERSON_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_EMAIL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FieldType {
     }
@@ -71,17 +69,10 @@ public class CustomField implements Parcelable {
 
     public void configureField(@NonNull ValidatedInputView field) {
         switch (type) {
-            case TYPE_PASSWORD:
-                field.setDataType(DataType.PASSWORD);
-                break;
-            case TYPE_NAME:
-                field.setDataType(DataType.USERNAME);
-                break;
             case TYPE_EMAIL:
                 field.setDataType(DataType.EMAIL);
-                break;
-            case TYPE_DATE:
-//                field.setDataType(ValidatedInputView.DataType.DATE);
+            case TYPE_PERSON_NAME:
+                field.setDataType(DataType.USERNAME);
                 break;
             case TYPE_NUMBER:
                 field.setDataType(DataType.NUMBER);

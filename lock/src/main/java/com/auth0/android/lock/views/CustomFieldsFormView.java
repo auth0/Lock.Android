@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -76,7 +77,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         Log.d(TAG, String.format("Adding %d custom fields.", fieldsData.size()));
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, verticalMargin, 0, 0);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.setMargins(0, verticalMargin / 2, 0, verticalMargin / 2);
 
         for (CustomField data : fieldsData) {
             ValidatedInputView field = new ValidatedInputView(getContext());
@@ -107,7 +109,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         boolean valid = true;
         for (int i = 0; i < fieldContainer.getChildCount(); i++) {
             ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
-            valid = valid && input.validate(true);
+            valid = input.validate(true) && valid;
         }
         Log.d(TAG, "Is form data valid? " + valid);
         return valid;

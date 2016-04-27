@@ -49,6 +49,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.NUMBER;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.PASSWORD;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.PHONE_NUMBER;
@@ -66,7 +67,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     private ImageView icon;
     private int inputIcon;
 
-    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD})
+    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DataType {
         int USERNAME = 0;
@@ -75,6 +76,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         int NUMBER = 3;
         int PHONE_NUMBER = 4;
         int PASSWORD = 5;
+        int MOBILE_PHONE = 6;
     }
 
     @DataType
@@ -151,14 +153,15 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
                 break;
-            case PHONE_NUMBER:
+            case MOBILE_PHONE:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_mobile;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 break;
-            default:
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                inputIcon = R.drawable.com_auth0_lock_ic_work;
+            case PHONE_NUMBER:
+                input.setInputType(InputType.TYPE_CLASS_PHONE);
+                inputIcon = R.drawable.com_auth0_lock_ic_phone;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 break;
         }
         input.setHint(hint);
@@ -215,15 +218,12 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
             case USERNAME_OR_EMAIL:
                 isValid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
                 break;
-            case NUMBER:
-                isValid = !value.isEmpty();
-                break;
+            case MOBILE_PHONE:
             case PHONE_NUMBER:
                 value = value.replace(" ", "");
                 isValid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
                 break;
-            default:
-                //Non-Empty Text validation. Should be removed un production?
+            case NUMBER:
                 isValid = !value.isEmpty();
                 break;
         }

@@ -168,16 +168,14 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
 
-        CustomField field = new CustomField(CustomField.TYPE_NAME, "firstName", "First Name");
-        CustomField field2 = new CustomField(CustomField.TYPE_NAME, "surname", "Last Name");
-        CustomField field3 = new CustomField(CustomField.TYPE_PASSWORD, "password", "Password goes here");
-        CustomField field4 = new CustomField(CustomField.TYPE_PHONE_NUMBER, "aPhoneNumber", "Your phone NUMBER");
+        CustomField fieldName = new CustomField(CustomField.TYPE_PERSON_NAME, "firstName", "First Name");
+        CustomField fieldSurname = new CustomField(CustomField.TYPE_PERSON_NAME, "surname", "Last Name");
+        CustomField fieldPhone = new CustomField(CustomField.TYPE_PHONE_NUMBER, "phoneNumber", "Your phone");
 
         List<CustomField> customFields = new ArrayList<>();
-        customFields.add(field);
-        customFields.add(field2);
-        customFields.add(field3);
-        customFields.add(field4);
+        customFields.add(fieldName);
+        customFields.add(fieldSurname);
+        customFields.add(fieldPhone);
 
         // create/configure lock
         lock = Lock.newBuilder(auth0, this)
