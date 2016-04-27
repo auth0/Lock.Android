@@ -46,6 +46,7 @@ import com.auth0.authentication.result.UserProfile;
 import com.auth0.util.Telemetry;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -374,14 +375,28 @@ public class Lock {
 
         /**
          * Displays a second screen with the specified custom fields during sign up.
+         * Each field must have a unique key.
          *
          * @param customFields the custom fields to display in the sign up flow.
          * @return the current builder instance
          */
         public Builder withSignUpFields(List<CustomField> customFields) {
+            removeDuplicatedKeys(customFields);
             options.setCustomFields(customFields);
-            //TODO: Verify key duplicity.
             return this;
+        }
+
+        private void removeDuplicatedKeys(List<CustomField> customFields) {
+            //Remove duplicated keys
+            Map<String, CustomField> map = new LinkedHashMap<>();
+            for (CustomField field : customFields) {
+                map.put(field.getKey(), field);
+            }
+            if (map.size() != customFields.size()) {
+                Log.w(TAG, "Some of the Custom Fields had a duplicate key and have been removed.");
+            }
+            customFields.clear();
+            customFields.addAll(map.values());
         }
     }
 }
