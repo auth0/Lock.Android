@@ -31,8 +31,7 @@
 
     <TextView
         android:id="@+id/com_auth0_lock_title"
-        style="@style/Lock.Theme.Text.Title.ResetPassword"
-        android:textSize="24sp"
+        style="@style/Lock.Theme.Text.Title.SignUpCustomFields"
         android:text="Complete the sign up process" />
 
     <ScrollView

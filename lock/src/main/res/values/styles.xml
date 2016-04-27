@@ -94,6 +94,10 @@
         <item name="android:textSize">@dimen/com_auth0_lock_change_password_title_text</item>
     </style>
 
+    <style name="Lock.Theme.Text.Title.SignUpCustomFields">
+        <item name="android:textSize">@dimen/com_auth0_lock_sign_up_custom_fields_title_text</item>
+    </style>
+
     <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
