@@ -32,13 +32,25 @@ import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
 
-//TODO: javadoc, tests
+
+/**
+ * Simple implementation of the Callback used by Lock to notify the user of execution results.
+ * It can handle and notify of Authentication and Canceled events.
+ */
 public abstract class AuthenticationCallback implements LockCallback {
 
     private static final String TAG = AuthenticationCallback.class.getSimpleName();
 
+    /**
+     * Called when the authentication flow finished successfully.
+     *
+     * @param authentication with the tokens.
+     */
     public abstract void onAuthentication(Authentication authentication);
 
+    /**
+     * Called when the user goes back and closes the activity, without using an Authentication flow.
+     */
     public abstract void onCanceled();
 
     @Override

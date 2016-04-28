@@ -37,18 +37,35 @@ import static com.auth0.android.lock.LockCallback.LockEvent.CANCELED;
 import static com.auth0.android.lock.LockCallback.LockEvent.RESET_PASSWORD;
 import static com.auth0.android.lock.LockCallback.LockEvent.SIGN_UP;
 
-//TODO: Java doc
+/**
+ * Callback used by Lock to notify the user of execution results.
+ */
 public interface LockCallback {
+    /**
+     * Type of Events that Lock can notified of.
+     */
+    @SuppressWarnings("UnnecessaryInterfaceModifier")
     @IntDef({CANCELED, AUTHENTICATION, SIGN_UP, RESET_PASSWORD})
     @Retention(RetentionPolicy.SOURCE)
-    @interface LockEvent {
+    public @interface LockEvent {
         int CANCELED = 0;
         int AUTHENTICATION = 1;
         int SIGN_UP = 2;
         int RESET_PASSWORD = 3;
     }
 
+    /**
+     * Called when a known event is fired by Lock.
+     *
+     * @param event to notify of
+     * @param data  related to the event.
+     */
     void onEvent(@LockEvent int event, Intent data);
 
+    /**
+     * Called when an error is raised by Lock.
+     *
+     * @param error describing what happened.
+     */
     void onError(LockException error);
 }
