@@ -204,7 +204,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private boolean isLaunchConfigValid() {
-        options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
+        options = getIntent().getParcelableExtra(Constants.OPTIONS_EXTRA);
         if (options == null) {
             Log.e(TAG, "Lock Options are missing in the received Intent and LockActivity will not launch. " +
                     "Use the PasswordlessLock.Builder to generate a valid Intent.");
@@ -234,18 +234,27 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.v(TAG, "User had just closed the activity.");
-        Intent intent = new Intent(Lock.CANCELED_ACTION);
+        Intent intent = new Intent(Constants.CANCELED_ACTION);
         LocalBroadcastManager.getInstance(LockActivity.this).sendBroadcast(intent);
         super.onBackPressed();
     }
 
-    private void deliverResult(Authentication result) {
-        Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
-        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
-        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
-        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
-        intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
+    private void deliverAuthenticationResult(Authentication result) {
+        Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
+        intent.putExtra(Constants.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
+        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
+        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
+        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
+        intent.putExtra(Constants.PROFILE_EXTRA, result.getProfile());
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        finish();
+    }
+
+    private void deliverSignUpResult(DatabaseUser result) {
+        Intent intent = new Intent(Constants.SIGN_UP_ACTION);
+        intent.putExtra(Constants.EMAIL_EXTRA, result.getEmail());
+        intent.putExtra(Constants.USERNAME_EXTRA, result.getEmail());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
@@ -511,7 +520,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                         public void onSuccess(UserProfile profile) {
                             showProgressDialog(false);
                             Authentication authentication = new Authentication(profile, credentials);
-                            deliverResult(authentication);
+                            deliverAuthenticationResult(authentication);
                         }
 
                         @Override
@@ -533,7 +542,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
         @Override
         public void onSuccess(Authentication authentication) {
-            deliverResult(authentication);
+            deliverAuthenticationResult(authentication);
         }
 
         @Override
@@ -551,12 +560,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private BaseCallback<DatabaseUser> createCallback = new BaseCallback<DatabaseUser>() {
         @Override
-        public void onSuccess(DatabaseUser payload) {
+        public void onSuccess(final DatabaseUser user) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_sign_up_success_message));
-                    //TODO: Exit lock.
+                    deliverSignUpResult(user);
                 }
             });
         }

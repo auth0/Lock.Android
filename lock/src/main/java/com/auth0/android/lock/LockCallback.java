@@ -1,5 +1,5 @@
 /*
- * Constants.java
+ * AuthenticationCallback.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,20 +24,31 @@
 
 package com.auth0.android.lock;
 
-abstract class Constants {
-    static final String LIBRARY_NAME = "Lock.Android";
+import android.content.Intent;
+import android.support.annotation.IntDef;
 
-    static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
+import com.auth0.android.lock.utils.LockException;
 
-    static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
-    static final String SIGN_UP_ACTION = "com.auth0.android.lock.action.SignUp";
-    static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    static final String ID_TOKEN_EXTRA = "com.auth0.android.lock.extra.IdToken";
-    static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
-    static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
-    static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
-    static final String PROFILE_EXTRA = "com.auth0.android.lock.extra.Profile";
-    static final String EMAIL_EXTRA = "com.auth0.android.lock.extra.Email";
-    static final String USERNAME_EXTRA = "com.auth0.android.lock.extra.Username";
+import static com.auth0.android.lock.LockCallback.LockEvent.AUTHENTICATION;
+import static com.auth0.android.lock.LockCallback.LockEvent.CANCELED;
+import static com.auth0.android.lock.LockCallback.LockEvent.RESET_PASSWORD;
+import static com.auth0.android.lock.LockCallback.LockEvent.SIGN_UP;
+
+//TODO: Java doc
+public interface LockCallback {
+    @IntDef({CANCELED, AUTHENTICATION, SIGN_UP, RESET_PASSWORD})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface LockEvent {
+        int CANCELED = 0;
+        int AUTHENTICATION = 1;
+        int SIGN_UP = 2;
+        int RESET_PASSWORD = 3;
+    }
+
+    void onEvent(@LockEvent int event, Intent data);
+
+    void onError(LockException error);
 }
