@@ -89,7 +89,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockWidget.showChangePasswordForm();
+                lockWidget.showChangePasswordForm(true);
             }
         });
         if (!fallbackToDatabase && lockWidget.getConfiguration().getEnterpriseStrategies().size() == 1 && lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().size() == 1) {

@@ -556,6 +556,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_sign_up_success_message));
+                    //TODO: Exit lock.
                 }
             });
         }
@@ -580,6 +581,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
+                    panelHolder.showChangePasswordForm(false);
                 }
             });
 
