@@ -38,16 +38,26 @@ import com.auth0.android.lock.views.ValidatedInputView.DataType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_COUNTRY;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_DATE;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_EMAIL;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_NUMBER;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_PERSON_NAME;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_PHONE_NUMBER;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_WORK_NAME;
+
 public class CustomField implements Parcelable {
 
-    public static final int TYPE_PERSON_NAME = 0;
-    public static final int TYPE_NUMBER = 2;
-    public static final int TYPE_PHONE_NUMBER = 5;
-    public static final int TYPE_EMAIL = 6;
-
-    @IntDef({TYPE_PERSON_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_EMAIL})
+    @IntDef({TYPE_PERSON_NAME, TYPE_DATE, TYPE_WORK_NAME, TYPE_COUNTRY, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_EMAIL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FieldType {
+        int TYPE_PERSON_NAME = 0;
+        int TYPE_DATE = 1;
+        int TYPE_WORK_NAME = 2;
+        int TYPE_COUNTRY = 3;
+        int TYPE_NUMBER = 4;
+        int TYPE_PHONE_NUMBER = 5;
+        int TYPE_EMAIL = 6;
     }
 
     private final String key;

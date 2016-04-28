@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -449,8 +450,8 @@ public class OptionsTest {
     }
 
     private List<CustomField> createCustomFields() {
-        CustomField fieldNumber = new CustomField(CustomField.TYPE_PHONE_NUMBER, "number", "Number");
-        CustomField fieldSurname = new CustomField(CustomField.TYPE_PERSON_NAME, "surname", "Surname");
+        CustomField fieldNumber = new CustomField(FieldType.TYPE_PHONE_NUMBER, "number", "Number");
+        CustomField fieldSurname = new CustomField(FieldType.TYPE_PERSON_NAME, "surname", "Surname");
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldNumber);

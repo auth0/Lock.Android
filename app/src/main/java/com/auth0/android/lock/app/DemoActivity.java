@@ -36,6 +36,7 @@ import android.widget.Button;
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.CustomField;
+import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.utils.LockException;
@@ -168,9 +169,9 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
 
-        CustomField fieldName = new CustomField(CustomField.TYPE_PERSON_NAME, "firstName", "First Name");
-        CustomField fieldSurname = new CustomField(CustomField.TYPE_PERSON_NAME, "surname", "Last Name");
-        CustomField fieldPhone = new CustomField(CustomField.TYPE_PHONE_NUMBER, "phoneNumber", "Your phone");
+        CustomField fieldName = new CustomField(FieldType.TYPE_PERSON_NAME, "firstName", "First Name");
+        CustomField fieldSurname = new CustomField(FieldType.TYPE_PERSON_NAME, "surname", "Last Name");
+        CustomField fieldPhone = new CustomField(FieldType.TYPE_PERSON_NAME, "phoneNumber", "Your phone");
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldName);
