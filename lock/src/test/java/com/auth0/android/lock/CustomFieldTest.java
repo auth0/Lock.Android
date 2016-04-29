@@ -45,14 +45,15 @@ import static org.junit.Assert.assertThat;
 @Config(constants = android.support.v7.appcompat.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class CustomFieldTest {
 
-    private static final String HINT = "hint";
-    private static final String KEY = "key";
+    private static final int ICON = R.drawable.com_auth0_lock_ic_email;
     private static final int TYPE = FieldType.TYPE_EMAIL;
+    private static final String KEY = "key";
+    private static final String HINT = "hint";
     private static final String CUSTOM_FIELD_KEY = "custom_field";
 
     @Test
     public void testParcelable() throws Exception {
-        CustomField field = new CustomField(TYPE, KEY, HINT);
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CUSTOM_FIELD_KEY, field);
 
@@ -64,10 +65,10 @@ public class CustomFieldTest {
     }
 
     @Test
-    public void shouldConfigureTheField(){
+    public void shouldConfigureTheField() {
         ValidatedInputView input = Mockito.mock(ValidatedInputView.class);
 
-        CustomField field = new CustomField(TYPE, KEY, HINT);
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
         field.configureField(input);
 
         Mockito.verify(input).setDataType(DataType.EMAIL);

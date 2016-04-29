@@ -155,14 +155,20 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
 
-        CustomField fieldName = new CustomField(FieldType.TYPE_PERSON_NAME, "firstName", "First Name");
-        CustomField fieldSurname = new CustomField(FieldType.TYPE_PERSON_NAME, "surname", "Last Name");
-        CustomField fieldPhone = new CustomField(FieldType.TYPE_PERSON_NAME, "phoneNumber", "Your phone");
+        CustomField fieldName = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "firstName", "First Name");
+        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "surname", "Last Name");
+        CustomField fieldWork = new CustomField(R.drawable.com_auth0_lock_ic_work, FieldType.TYPE_TEXT_NAME, "organization", "Work place");
+        CustomField fieldCountry = new CustomField(R.drawable.com_auth0_lock_ic_world, FieldType.TYPE_TEXT_NAME, "country", "Country name");
+        CustomField fieldPhone = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "phoneNumber", "Your phone");
+        CustomField fieldDate = new CustomField(R.drawable.com_auth0_lock_ic_clock, FieldType.TYPE_DATE, "date", "Your birthday");
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldName);
         customFields.add(fieldSurname);
+        customFields.add(fieldWork);
+        customFields.add(fieldCountry);
         customFields.add(fieldPhone);
+        customFields.add(fieldDate);
 
         // create/configure lock
         lock = Lock.newBuilder(auth0, callback)
