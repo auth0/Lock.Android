@@ -564,7 +564,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showSuccessMessage(getString(R.string.com_auth0_lock_db_sign_up_success_message));
                     deliverSignUpResult(user);
                 }
             });
