@@ -114,9 +114,10 @@ public class HeaderView extends RelativeLayout {
     private void updateHeaderHeight() {
         text.setVisibility(currentSize == NORMAL ? VISIBLE : GONE);
         int headerHeightSmall = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height_small);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, currentSize == SMALL ? headerHeightSmall : ViewGroup.LayoutParams.WRAP_CONTENT);
+        int headerHeightNormal = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height_normal);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, currentSize == SMALL ? headerHeightSmall : headerHeightNormal);
         setLayoutParams(params);
-        header.setVisibility(keyboardIsOpen ? GONE : VISIBLE);
+        setVisibility(keyboardIsOpen ? GONE : VISIBLE);
     }
 
     /**

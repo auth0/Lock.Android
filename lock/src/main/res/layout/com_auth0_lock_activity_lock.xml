@@ -7,9 +7,7 @@
 
     <com.auth0.android.lock.views.HeaderView
         android:id="@+id/com_auth0_lock_header"
-        style="@style/Lock.Theme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Lock.Theme.Widget.Header"
         android:layout_alignParentTop="true"
         android:fitsSystemWindows="false" />
 
