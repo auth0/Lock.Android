@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,10 +38,27 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.views.HeaderView.HeaderSize.NORMAL;
+import static com.auth0.android.lock.views.HeaderView.HeaderSize.SMALL;
+
 public class HeaderView extends RelativeLayout {
     private View header;
     private ImageView logo;
     private TextView text;
+
+    @HeaderSize
+    private int currentSize = NORMAL;
+    private boolean keyboardIsOpen;
+
+    @IntDef({NORMAL, SMALL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface HeaderSize {
+        int NORMAL = 0;
+        int SMALL = 1;
+    }
 
     public HeaderView(Context context) {
         super(context);
@@ -83,6 +101,25 @@ public class HeaderView extends RelativeLayout {
     }
 
     /**
+     * Changes the header height. If the keyboard is currently open,
+     * the change wont be visible until its closed.
+     *
+     * @param size the new size.
+     */
+    public void changeHeaderSize(@HeaderSize int size) {
+        this.currentSize = size;
+        updateHeaderHeight();
+    }
+
+    private void updateHeaderHeight() {
+        text.setVisibility(currentSize == NORMAL ? VISIBLE : GONE);
+        int headerHeightSmall = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height_small);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, currentSize == SMALL ? headerHeightSmall : ViewGroup.LayoutParams.WRAP_CONTENT);
+        setLayoutParams(params);
+        header.setVisibility(keyboardIsOpen ? GONE : VISIBLE);
+    }
+
+    /**
      * Setter for the Header's logo.
      *
      * @param logo the logo to use
@@ -92,11 +129,8 @@ public class HeaderView extends RelativeLayout {
     }
 
     public void onKeyboardStateChanged(boolean isOpen) {
-        logo.setVisibility(isOpen ? GONE : VISIBLE);
-        text.setVisibility(isOpen ? GONE : VISIBLE);
-        int headerHeightKeyboard = (int) getResources().getDimension(R.dimen.com_auth0_lock_header_height_keyboard);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, isOpen ? headerHeightKeyboard : ViewGroup.LayoutParams.WRAP_CONTENT);
-        setLayoutParams(params);
+        keyboardIsOpen = isOpen;
+        updateHeaderHeight();
     }
 
     /**

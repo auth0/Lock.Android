@@ -28,7 +28,6 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,7 +41,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,6 +54,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
@@ -69,6 +68,7 @@ import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicPanelHolder;
 import com.auth0.android.lock.views.HeaderView;
+import com.auth0.android.lock.views.HeaderView.HeaderSize;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
@@ -356,6 +356,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
+    public void onSignUpCustomFieldsShown(SignUpCustomFieldsEvent event) {
+        headerView.changeHeaderSize(event.isShown() ? HeaderSize.SMALL : HeaderSize.NORMAL);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
         fetchProviderAndBeginAuthentication(event.getConnectionName());
     }
@@ -395,7 +401,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
             apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
-                    .addParameters(authParameters)
+                    .addParameters(options.getAuthenticationParameters())
                     .start(authCallback);
         } else {
             Map<String, Object> parameters = new HashMap<>();
