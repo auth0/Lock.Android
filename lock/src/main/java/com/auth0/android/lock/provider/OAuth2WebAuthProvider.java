@@ -75,6 +75,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
     private static final String KEY_CODE_CHALLENGE_METHOD = "code_challenge_method";
     private static final String METHOD_SHA_256 = "S256";
 
+    private boolean isFullscreen;
     private boolean useBrowser;
     private CallbackHelper helper;
     private final Auth0 account;
@@ -88,6 +89,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
         this.helper = helper;
         this.account = account;
         this.useBrowser = true;
+        this.isFullscreen = false;
         this.parameters = new HashMap<>();
         this.client = pkce && PKCE.isAvailable() ? account.newAuthenticationAPIClient() : null;
     }
@@ -99,6 +101,16 @@ public class OAuth2WebAuthProvider extends AuthProvider {
      */
     public void setUseBrowser(boolean useBrowser) {
         this.useBrowser = useBrowser;
+    }
+
+    /**
+     * If the activity should be fullscreen or not. Applies only to the WebView activity, not to the
+     * Browser authentication.
+     *
+     * @param isFullscreen if the activity should be fullscreen or not.
+     */
+    public void setIsFullscreen(boolean isFullscreen) {
+        this.isFullscreen = isFullscreen;
     }
 
     public void setParameters(Map<String, Object> parameters) {
@@ -132,6 +144,7 @@ public class OAuth2WebAuthProvider extends AuthProvider {
             intent = new Intent(activity, WebViewActivity.class);
             intent.setData(authorizeUri);
             intent.putExtra(WebViewActivity.CONNECTION_NAME_EXTRA, connectionName);
+            intent.putExtra(WebViewActivity.FULLSCREEN_EXTRA, isFullscreen);
             //Improvement: let LockActivity set requestCode
             activity.startActivityForResult(intent, OAUTH2_REQUEST_CODE);
         }

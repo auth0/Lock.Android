@@ -136,11 +136,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
             passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
                     .useCode()
                     .usePKCE(true)
+                    .fullscreen(true)
                     .build();
         } else {
             passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
                     .useLink()
                     .usePKCE(true)
+                    .fullscreen(true)
                     .build();
         }
 
@@ -170,6 +172,7 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
                 .loginAfterSignUp(false)
                 .usePKCE(true)
                 .closable(false)
+                .fullscreen(true)
                 .build();
         lock.onCreate(this);
 

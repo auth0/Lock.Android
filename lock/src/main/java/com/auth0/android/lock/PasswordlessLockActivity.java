@@ -64,6 +64,8 @@ import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.provider.WebViewActivity;
+import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.views.HeaderView;
@@ -152,6 +154,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
             headerView.setPaddingTop(paddingTop);
         }
+        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
             loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
@@ -193,6 +196,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
         }
         keyboardListener = null;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
     }
 
     @Override
@@ -389,8 +398,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == COUNTRY_CODE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE);
-                String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE);
+                String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE_EXTRA);
+                String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE_EXTRA);
                 panelHolder.onCountryCodeSelected(country, dialCode);
             }
             return;
@@ -460,6 +469,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Subscribe
     public void onCountryCodeChangeRequest(CountryCodeChangeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
+        intent.putExtra(WebViewActivity.FULLSCREEN_EXTRA, options.isFullscreen());
         startActivityForResult(intent, COUNTRY_CODE_REQUEST);
     }
 
@@ -501,6 +511,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             String pkgName = getApplicationContext().getPackageName();
             OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
             oauth2.setUseBrowser(options.useBrowser());
+            oauth2.setIsFullscreen(options.isFullscreen());
             oauth2.setParameters(options.getAuthenticationParameters());
             currentProvider = oauth2;
         }

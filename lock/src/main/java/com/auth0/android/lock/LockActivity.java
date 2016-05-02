@@ -42,6 +42,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
@@ -124,15 +126,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         panelHolder = new ClassicPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            //Add padding to the status bar (as its now an extended layout)
             int paddingTop = getStatusBarHeight();
             resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
             headerView.setPaddingTop(paddingTop);
         }
+
+        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
         signUpErrorBuilder = new SignUpAuthenticationErrorBuilder();
@@ -172,6 +174,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
         }
         keyboardListener = null;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
     }
 
     @Override
@@ -287,6 +295,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             String pkgName = getApplicationContext().getPackageName();
             OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
             oauth2.setUseBrowser(options.useBrowser());
+            oauth2.setIsFullscreen(options.isFullscreen());
             oauth2.setParameters(options.getAuthenticationParameters());
             currentProvider = oauth2;
         }
