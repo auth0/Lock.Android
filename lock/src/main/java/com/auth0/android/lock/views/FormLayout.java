@@ -231,7 +231,7 @@ public class FormLayout extends LinearLayout {
         if (existingForm != null) {
             FormView form = (FormView) existingForm;
             Object ev = form.submitForm();
-            if (lockWidget.getConfiguration().getExtraSignUpFields().isEmpty()) {
+            if (!lockWidget.getConfiguration().hasExtraFields()) {
                 return ev;
             }
 

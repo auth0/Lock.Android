@@ -57,6 +57,7 @@ import static com.auth0.android.lock.utils.Strategies.Yahoo;
 import static com.auth0.android.lock.utils.Strategies.Yammer;
 import static com.auth0.android.lock.utils.Strategies.Yandex;
 import static com.auth0.android.lock.utils.StrategyMatcher.isStrategy;
+import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -67,6 +68,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,6 +105,7 @@ public class ConfigurationTest {
         assertThat(configuration.isChangePasswordEnabled(), is(true));
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
+        assertThat(configuration.hasExtraFields(), is(false));
     }
 
     @Test
@@ -118,6 +121,7 @@ public class ConfigurationTest {
         assertThat(configuration.isChangePasswordEnabled(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
+        assertThat(configuration.hasExtraFields(), is(false));
     }
 
     @Test
@@ -129,6 +133,16 @@ public class ConfigurationTest {
         assertThat(configuration.isSignUpEnabled(), is(false));
         assertThat(configuration.isChangePasswordEnabled(), is(false));
     }
+
+    @Test
+    public void shouldSetExtraSignUpFields() throws Exception {
+        options.setCustomFields(createCustomFields());
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.hasExtraFields(), is(true));
+        assertThat(configuration.getExtraSignUpFields(), contains(options.getCustomFields().toArray()));
+    }
+
 
     @Test
     public void shouldPreferPasswordlessEmailOverSMSWhenBothAvailable() throws Exception {
@@ -377,5 +391,15 @@ public class ConfigurationTest {
             }
         }
         return null;
+    }
+
+    private List<CustomField> createCustomFields() {
+        CustomField fieldNumber = new CustomField(CustomField.FieldType.TYPE_PHONE_NUMBER, "number", "Number");
+        CustomField fieldSurname = new CustomField(CustomField.FieldType.TYPE_PERSON_NAME, "surname", "Surname");
+
+        List<CustomField> customFields = new ArrayList<>();
+        customFields.add(fieldNumber);
+        customFields.add(fieldSurname);
+        return customFields;
     }
 }

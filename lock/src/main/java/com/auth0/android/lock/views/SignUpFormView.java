@@ -123,7 +123,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public Object submitForm() {
         if (validateForm()) {
             DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
-            if (lockWidget.getConfiguration().getExtraSignUpFields().isEmpty()) {
+            if (!lockWidget.getConfiguration().hasExtraFields()) {
                 return event;
             }
             lockWidget.showCustomFieldsForm(event);

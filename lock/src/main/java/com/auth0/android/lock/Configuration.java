@@ -283,4 +283,8 @@ public class Configuration {
     public boolean loginAfterSignUp() {
         return loginAfterSignUp;
     }
+
+    public boolean hasExtraFields() {
+        return !extraSignUpFields.isEmpty();
+    }
 }
