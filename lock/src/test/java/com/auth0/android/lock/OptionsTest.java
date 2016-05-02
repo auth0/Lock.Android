@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -299,7 +300,12 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getCustomFields(), is(equalTo(parceledOptions.getCustomFields())));
+        assertThat(parceledOptions.getCustomFields(), hasSize(options.getCustomFields().size()));
+        for (int i = 0; i < options.getCustomFields().size(); i++) {
+            CustomField fieldA = options.getCustomFields().get(i);
+            CustomField fieldB = parceledOptions.getCustomFields().get(i);
+            assertThat(fieldA.getKey(), is(equalTo(fieldB.getKey())));
+        }
     }
 
     @Test

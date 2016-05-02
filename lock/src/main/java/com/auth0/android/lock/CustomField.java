@@ -109,22 +109,19 @@ public class CustomField implements Parcelable {
         return key;
     }
 
+    String getHint() {
+        return hint;
+    }
+
+    @FieldType
+    int getType() {
+        return type;
+    }
+
     protected CustomField(Parcel in) {
         key = in.readString();
         hint = in.readString();
         type = in.readInt();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CustomField that = (CustomField) o;
-
-        if (type != that.type) return false;
-        if (!key.equals(that.key)) return false;
-        return hint.equals(that.hint);
     }
 
     @Override
