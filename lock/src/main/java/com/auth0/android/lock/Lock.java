@@ -45,10 +45,12 @@ import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
 import com.auth0.util.Telemetry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Lock {
 
@@ -381,22 +383,27 @@ public class Lock {
          * @return the current builder instance
          */
         public Builder withSignUpFields(List<CustomField> customFields) {
-            removeDuplicatedKeys(customFields);
-            options.setCustomFields(customFields);
+            final List<CustomField> withoutDuplicates = removeDuplicatedKeys(customFields);
+            options.setCustomFields(withoutDuplicates);
             return this;
         }
 
-        private void removeDuplicatedKeys(List<CustomField> customFields) {
-            //Remove duplicated keys
-            Map<String, CustomField> map = new LinkedHashMap<>();
+        private List<CustomField> removeDuplicatedKeys(List<CustomField> customFields) {
+            int originalSize = customFields.size();
+            final List<CustomField> withoutDuplicates = new ArrayList<>();
+
+            Set<String> keySet = new HashSet<>();
             for (CustomField field : customFields) {
-                map.put(field.getKey(), field);
+                if (!keySet.contains(field.getKey())) {
+                    withoutDuplicates.add(field);
+                }
+                keySet.add(field.getKey());
             }
-            if (map.size() != customFields.size()) {
+
+            if (originalSize != withoutDuplicates.size()) {
                 Log.w(TAG, "Some of the Custom Fields had a duplicate key and have been removed.");
             }
-            customFields.clear();
-            customFields.addAll(map.values());
+            return withoutDuplicates;
         }
     }
 }
