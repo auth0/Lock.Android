@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -13,11 +14,13 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -287,6 +290,41 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetCustomFields() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setCustomFields(createCustomFields());
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(parceledOptions.getCustomFields(), hasSize(options.getCustomFields().size()));
+        for (int i = 0; i < options.getCustomFields().size(); i++) {
+            CustomField fieldA = options.getCustomFields().get(i);
+            CustomField fieldB = parceledOptions.getCustomFields().get(i);
+            assertThat(fieldA.getKey(), is(equalTo(fieldB.getKey())));
+        }
+    }
+
+    @Test
+    public void shouldGetEmptyCustomFieldsIfNotSet() {
+        Options options = new Options();
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getCustomFields(), is(notNullValue()));
+        assertThat(options.getCustomFields().size(), is(0));
+        assertThat(parceledOptions.getCustomFields(), is(notNullValue()));
+        assertThat(parceledOptions.getCustomFields().size(), is(0));
+    }
+
+    @Test
     public void shouldSetDeviceParameterIfUsingOfflineAccessScope() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -415,6 +453,16 @@ public class OptionsTest {
         otherParameters.put("key_other_param_int", innerIntParam);
         authenticationParameters.put("key_param_map", otherParameters);
         return authenticationParameters;
+    }
+
+    private List<CustomField> createCustomFields() {
+        CustomField fieldNumber = new CustomField(FieldType.TYPE_PHONE_NUMBER, "number", "Number");
+        CustomField fieldSurname = new CustomField(FieldType.TYPE_PERSON_NAME, "surname", "Surname");
+
+        List<CustomField> customFields = new ArrayList<>();
+        customFields.add(fieldNumber);
+        customFields.add(fieldSurname);
+        return customFields;
     }
 
     private List<String> createConnections(String... connections) {

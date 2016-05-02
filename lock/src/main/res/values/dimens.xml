@@ -59,6 +59,7 @@
     <dimen name="com_auth0_lock_header_text">21.3sp</dimen>
     <dimen name="com_auth0_lock_title_text">16sp</dimen>
     <dimen name="com_auth0_lock_change_password_title_text">26sp</dimen>
+    <dimen name="com_auth0_lock_sign_up_custom_fields_title_text">24sp</dimen>
     <dimen name="com_auth0_lock_link_sent_text">22sp</dimen>
 
     <dimen name="com_auth0_lock_small_clickable_text">14sp</dimen>

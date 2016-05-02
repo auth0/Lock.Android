@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_header.xml
+  ~ com_auth0_lock_custom_fields_form_view.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,27 +22,30 @@
   ~ THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/com_auth0_lock_header_background"
-    style="@style/Lock.Theme.Widget.Header"
-    tools:background="#40000000"
-    tools:context=".LockActivity">
-
-    <ImageView
-        android:id="@+id/com_auth0_lock_header_logo"
-        style="@style/Lock.Theme.Widget.Logo"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_header_icon"
-        app:srcCompat="?attr/Auth0.HeaderLogo"
-        tools:ignore="MissingPrefix"
-        tools:srcCompat="@drawable/com_auth0_lock_header_logo" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/com_auth0_lock_header_text"
-        style="@style/Lock.Theme.Text.Header"
-        android:layout_below="@id/com_auth0_lock_header_logo"
-        android:paddingBottom="@dimen/com_auth0_lock_widget_vertical_margin_header_icon"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_header_text"
-        tools:text="Auth0" />
-</RelativeLayout>
+        android:id="@+id/com_auth0_lock_title"
+        style="@style/Lock.Theme.Text.Title.SignUpCustomFields"
+        android:text="@string/com_auth0_lock_title_sign_up_custom_fields" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:scrollbarStyle="outsideInset">
+
+        <LinearLayout
+            android:id="@+id/com_auth0_lock_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+</LinearLayout>

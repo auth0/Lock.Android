@@ -79,9 +79,13 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = LockActivity.class.getSimpleName();
+    private static final String KEY_USER_METADATA = "user_metadata";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final int PERMISSION_REQUEST_CODE = 201;
@@ -375,13 +379,22 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
 
         panelHolder.showProgress(true);
+
         if (event.loginAfterSignUp()) {
+            Map<String, Object> authParameters = options.getAuthenticationParameters();
+            if (event.extraFields() != null) {
+                authParameters.put(KEY_USER_METADATA, event.extraFields());
+            }
             apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
-                    .addParameters(options.getAuthenticationParameters())
+                    .addParameters(authParameters)
                     .start(authCallback);
         } else {
+            Map<String, Object> parameters = new HashMap<>();
+            if (event.extraFields() != null) {
+                parameters.put(KEY_USER_METADATA, event.extraFields());
+            }
             apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername())
-                    .addParameters(options.getAuthenticationParameters())
+                    .addParameters(parameters)
                     .start(createCallback);
         }
     }

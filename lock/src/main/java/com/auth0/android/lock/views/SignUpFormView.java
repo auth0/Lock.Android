@@ -121,7 +121,14 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     @Nullable
     @Override
     public Object submitForm() {
-        return validateForm() ? getActionEvent() : null;
+        if (validateForm()) {
+            DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
+            if (!lockWidget.getConfiguration().hasExtraFields()) {
+                return event;
+            }
+            lockWidget.showCustomFieldsForm(event);
+        }
+        return null;
     }
 
     @Override

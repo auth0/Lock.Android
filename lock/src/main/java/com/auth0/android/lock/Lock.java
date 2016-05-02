@@ -45,9 +45,12 @@ import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.UserProfile;
 import com.auth0.util.Telemetry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Lock {
 
@@ -291,12 +294,7 @@ public class Lock {
          * @return the current builder instance
          */
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
-            if (authenticationParameters instanceof HashMap) {
-                options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
-            } else {
-                options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
-            }
-
+            options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             return this;
         }
 
@@ -375,6 +373,37 @@ public class Lock {
         public Builder withProviderResolver(@NonNull AuthProviderResolver resolver) {
             ProviderResolverManager.set(resolver);
             return this;
+        }
+
+        /**
+         * Displays a second screen with the specified custom fields during sign up.
+         * Each field must have a unique key.
+         *
+         * @param customFields the custom fields to display in the sign up flow.
+         * @return the current builder instance
+         */
+        public Builder withSignUpFields(List<CustomField> customFields) {
+            final List<CustomField> withoutDuplicates = removeDuplicatedKeys(customFields);
+            options.setCustomFields(withoutDuplicates);
+            return this;
+        }
+
+        private List<CustomField> removeDuplicatedKeys(List<CustomField> customFields) {
+            int originalSize = customFields.size();
+            final List<CustomField> withoutDuplicates = new ArrayList<>();
+
+            Set<String> keySet = new HashSet<>();
+            for (CustomField field : customFields) {
+                if (!keySet.contains(field.getKey())) {
+                    withoutDuplicates.add(field);
+                }
+                keySet.add(field.getKey());
+            }
+
+            if (originalSize != withoutDuplicates.size()) {
+                Log.w(TAG, "Some of the Custom Fields had a duplicate key and have been removed.");
+            }
+            return withoutDuplicates;
         }
     }
 }

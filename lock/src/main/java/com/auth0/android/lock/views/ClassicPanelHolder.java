@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
@@ -53,6 +54,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     private FormLayout formLayout;
     private ModeSelectionView modeSelectionView;
     private ChangePasswordFormView changePwdForm;
+    private CustomFieldsFormView customFieldsForm;
     private ActionButton actionButton;
     private LayoutParams termsParams;
     private LayoutParams ssoParams;
@@ -214,6 +216,28 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         }
     }
 
+    private void showCustomFieldsForm(boolean show, @Nullable DatabaseSignUpEvent event) {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        formLayout.setVisibility(show ? GONE : VISIBLE);
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
+        }
+
+        if (show) {
+            customFieldsForm = new CustomFieldsFormView(this, event);
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+            params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+            params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
+            params.addRule(CENTER_IN_PARENT, TRUE);
+            addView(customFieldsForm, params);
+        } else if (customFieldsForm != null) {
+            removeView(customFieldsForm);
+            customFieldsForm = null;
+        }
+    }
+
     /**
      * Triggers the back action on the form.
      *
@@ -222,6 +246,11 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     public boolean onBackPressed() {
         if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
             showChangePasswordForm(false);
+            return true;
+        }
+        if (customFieldsForm != null && customFieldsForm.getVisibility() == VISIBLE) {
+            showCustomFieldsForm(false, null);
+            showSignUpTerms(!keyboardIsOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
             return true;
         }
         boolean handled = formLayout != null && formLayout.onBackPressed();
@@ -288,6 +317,8 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         Object event;
         if (changePwdForm != null) {
             event = changePwdForm.submitForm();
+        } else if (customFieldsForm != null) {
+            event = customFieldsForm.submitForm();
         } else {
             event = formLayout.onActionPressed();
         }
@@ -299,6 +330,12 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     @Override
     public void showChangePasswordForm() {
         showChangePasswordForm(true);
+    }
+
+    @Override
+    public void showCustomFieldsForm(DatabaseSignUpEvent event) {
+        showCustomFieldsForm(true, event);
+        showSignUpTerms(false);
     }
 
     @Override
@@ -315,17 +352,20 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         keyboardIsOpen = isOpen;
-        if (modeSelectionView != null && changePwdForm == null && !ssoMessageShown) {
+        if (modeSelectionView != null && changePwdForm == null && customFieldsForm == null && !ssoMessageShown) {
             modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (changePwdForm != null) {
             changePwdForm.onKeyboardStateChanged(isOpen);
+        }
+        if (customFieldsForm != null) {
+            customFieldsForm.onKeyboardStateChanged(isOpen);
         }
         if (actionButton != null) {
             actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         }
         formLayout.onKeyboardStateChanged(isOpen);
 
-        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
+        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP && customFieldsForm == null);
     }
 }

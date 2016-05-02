@@ -60,6 +60,7 @@ class Options implements Parcelable {
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
     private HashMap<String, Object> authenticationParameters;
+    private List<CustomField> customFields;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -67,6 +68,8 @@ class Options implements Parcelable {
         changePasswordEnabled = true;
         loginAfterSignUp = true;
         useCodePasswordless = true;
+        authenticationParameters = new HashMap<>();
+        customFields = new ArrayList<>();
     }
 
     protected Options(Parcel in) {
@@ -81,6 +84,7 @@ class Options implements Parcelable {
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
+        usernameStyle = in.readInt();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -100,7 +104,12 @@ class Options implements Parcelable {
         } else {
             authenticationParameters = null;
         }
-        usernameStyle = in.readInt();
+        if (in.readByte() == HAS_DATA) {
+            customFields = new ArrayList<>();
+            in.readList(customFields, CustomField.class.getClassLoader());
+        } else {
+            customFields = null;
+        }
     }
 
     @Override
@@ -120,6 +129,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
+        dest.writeInt(usernameStyle);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -141,7 +151,12 @@ class Options implements Parcelable {
             mapBundle.putSerializable(KEY_AUTHENTICATION_PARAMETERS, authenticationParameters);
             dest.writeBundle(mapBundle);
         }
-        dest.writeInt(usernameStyle);
+        if (customFields == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            dest.writeList(customFields);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -279,5 +294,14 @@ class Options implements Parcelable {
 
     public boolean useCodePasswordless() {
         return this.useCodePasswordless;
+    }
+
+    public void setCustomFields(@NonNull List<CustomField> customFields) {
+        this.customFields = customFields;
+    }
+
+    @NonNull
+    public List<CustomField> getCustomFields() {
+        return customFields;
     }
 }

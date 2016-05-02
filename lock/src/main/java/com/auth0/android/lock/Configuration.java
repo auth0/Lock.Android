@@ -47,6 +47,7 @@ public class Configuration {
     private static final String SHOW_SIGNUP_KEY = "showSignup";
     private static final String SHOW_FORGOT_KEY = "showForgot";
     private static final String REQUIRES_USERNAME_KEY = "requires_username";
+    private final List<CustomField> extraSignUpFields;
 
     private Connection defaultDatabaseConnection;
 
@@ -75,6 +76,7 @@ public class Configuration {
         List<String> connections = options.getConnections();
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
+        this.extraSignUpFields = options.getCustomFields();
         this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
         this.enterpriseStrategies = filterStrategiesByConnections(application.getEnterpriseStrategies(), connectionSet);
         this.passwordlessStrategies = filterStrategiesByConnections(application.getPasswordlessStrategies(), connectionSet);
@@ -83,6 +85,10 @@ public class Configuration {
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
         this.application = application;
         parseLocalOptions(options);
+    }
+
+    public List<CustomField> getExtraSignUpFields() {
+        return extraSignUpFields;
     }
 
     public Connection getDefaultDatabaseConnection() {
@@ -276,5 +282,9 @@ public class Configuration {
 
     public boolean loginAfterSignUp() {
         return loginAfterSignUp;
+    }
+
+    public boolean hasExtraFields() {
+        return !extraSignUpFields.isEmpty();
     }
 }

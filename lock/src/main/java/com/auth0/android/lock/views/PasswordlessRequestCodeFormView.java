@@ -96,12 +96,12 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
                 break;
             case SMS_CODE:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
-                passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
+                passwordlessInput.setDataType(ValidatedInputView.DataType.MOBILE_PHONE);
                 countryCodeSelector.setVisibility(VISIBLE);
                 break;
             case SMS_LINK:
                 titleMessage = R.string.com_auth0_lock_title_passwordless_sms;
-                passwordlessInput.setDataType(ValidatedInputView.DataType.PHONE_NUMBER);
+                passwordlessInput.setDataType(ValidatedInputView.DataType.MOBILE_PHONE);
                 countryCodeSelector.setVisibility(VISIBLE);
                 break;
             case DISABLED:
