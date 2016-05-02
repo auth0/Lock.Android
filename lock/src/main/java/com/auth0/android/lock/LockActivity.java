@@ -80,6 +80,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -379,18 +380,21 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         panelHolder.showProgress(true);
 
-
-        HashMap<String, Object> authParameters = options.getAuthenticationParameters();
-        if (event.extraFields() != null) {
-            authParameters.put(KEY_USER_METADATA, event.extraFields());
-        }
         if (event.loginAfterSignUp()) {
+            Map<String, Object> authParameters = options.getAuthenticationParameters();
+            if (event.extraFields() != null) {
+                authParameters.put(KEY_USER_METADATA, event.extraFields());
+            }
             apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
                     .addParameters(authParameters)
                     .start(authCallback);
         } else {
+            Map<String, Object> parameters = new HashMap<>();
+            if (event.extraFields() != null) {
+                parameters.put(KEY_USER_METADATA, event.extraFields());
+            }
             apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername())
-                    .addParameters(authParameters)
+                    .addParameters(parameters)
                     .start(createCallback);
         }
     }
