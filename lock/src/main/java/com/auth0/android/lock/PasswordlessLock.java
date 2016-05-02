@@ -197,8 +197,8 @@ public class PasswordlessLock {
                 throw new IllegalStateException("Missing Auth0 account information.");
             }
             if (callback == null) {
-                Log.e(TAG, "You need to specify the LockCallback object to receive the Authentication result.");
-                throw new IllegalStateException("Missing LockCallback.");
+                Log.e(TAG, "You need to specify the callback object to receive the Authentication result.");
+                throw new IllegalStateException("Missing callback.");
             }
             Log.v(TAG, "PasswordlessLock instance created");
             return new PasswordlessLock(options, callback);

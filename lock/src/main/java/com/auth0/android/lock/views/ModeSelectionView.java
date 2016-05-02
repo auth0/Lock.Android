@@ -62,22 +62,6 @@ public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCh
         modeGroup.setOnCheckedChangeListener(this);
     }
 
-    /**
-     * Manually change the selected mode.
-     *
-     * @param mode the new DatabaseForm mode
-     */
-    public void changeMode(FormLayout.DatabaseForm mode) {
-        switch (mode) {
-            case LOG_IN:
-                modeGroup.check(R.id.com_auth0_lock_mode_log_in);
-                break;
-            case SIGN_UP:
-                modeGroup.check(R.id.com_auth0_lock_mode_sign_up);
-                break;
-        }
-    }
-
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if (checkedId == R.id.com_auth0_lock_mode_log_in) {
