@@ -51,7 +51,7 @@ class Options implements Parcelable {
     private boolean usePKCE;
     private boolean closable;
     private boolean fullscreen;
-    private UsernameStyle usernameStyle;
+    private int usernameStyle;
     private boolean useCodePasswordless;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
@@ -100,11 +100,7 @@ class Options implements Parcelable {
         } else {
             authenticationParameters = null;
         }
-        if (in.readByte() == HAS_DATA) {
-            usernameStyle = (UsernameStyle) in.readSerializable();
-        } else {
-            usernameStyle = null;
-        }
+        usernameStyle = in.readInt();
     }
 
     @Override
@@ -145,12 +141,7 @@ class Options implements Parcelable {
             mapBundle.putSerializable(KEY_AUTHENTICATION_PARAMETERS, authenticationParameters);
             dest.writeBundle(mapBundle);
         }
-        if (usernameStyle == null) {
-            dest.writeByte((byte) (WITHOUT_DATA));
-        } else {
-            dest.writeByte((byte) (HAS_DATA));
-            dest.writeSerializable(usernameStyle);
-        }
+        dest.writeInt(usernameStyle);
     }
 
     @SuppressWarnings("unused")
@@ -206,11 +197,12 @@ class Options implements Parcelable {
         this.fullscreen = fullscreen;
     }
 
-    public UsernameStyle usernameStyle() {
+    @UsernameStyle
+    public int usernameStyle() {
         return usernameStyle;
     }
 
-    public void setUsernameStyle(UsernameStyle usernameStyle) {
+    public void setUsernameStyle(@UsernameStyle int usernameStyle) {
         this.usernameStyle = usernameStyle;
     }
 

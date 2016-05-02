@@ -52,8 +52,6 @@ public class FormLayout extends LinearLayout {
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
 
-    public enum DatabaseForm {LOG_IN, SIGN_UP}
-
     public FormLayout(Context context) {
         super(context);
         lockWidget = null;
@@ -101,18 +99,18 @@ public class FormLayout extends LinearLayout {
     /**
      * Change the current form mode
      *
-     * @param mode the new DatabaseForm to change to
+     * @param mode the new DatabaseMode to change to
      */
-    public void changeFormMode(DatabaseForm mode) {
-        Log.d(TAG, "Mode changed to " + mode.toString());
+    public void changeFormMode(@ModeSelectionView.Mode int mode) {
+        Log.d(TAG, "Mode changed to " + mode);
         if (!showDatabase && !showEnterprise) {
             return;
         }
         switch (mode) {
-            case LOG_IN:
+            case ModeSelectionView.Mode.LOG_IN:
                 addFormLayout();
                 break;
-            case SIGN_UP:
+            case ModeSelectionView.Mode.SIGN_UP:
                 showSignUpForm();
                 break;
         }

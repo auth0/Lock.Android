@@ -24,8 +24,19 @@
 
 package com.auth0.android.lock.enums;
 
-public enum UsernameStyle {
-    EMAIL,
-    USERNAME,
-    DEFAULT
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.enums.UsernameStyle.DEFAULT;
+import static com.auth0.android.lock.enums.UsernameStyle.EMAIL;
+import static com.auth0.android.lock.enums.UsernameStyle.USERNAME;
+
+@IntDef({DEFAULT, USERNAME, EMAIL})
+@Retention(RetentionPolicy.SOURCE)
+public @interface UsernameStyle {
+    int DEFAULT = 0;
+    int USERNAME = 1;
+    int EMAIL = 2;
 }

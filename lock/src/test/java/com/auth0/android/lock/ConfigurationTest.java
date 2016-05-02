@@ -182,7 +182,7 @@ public class ConfigurationTest {
         options.setConnections(Collections.singletonList(Facebook.getName()));
         configuration = new Configuration(application, options);
 
-        assertThat(configuration.getPasswordlessMode(), is(nullValue()));
+        assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.DISABLED));
     }
 
     @Test

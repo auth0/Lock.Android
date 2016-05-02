@@ -29,6 +29,10 @@ import android.util.AttributeSet;
 
 import com.auth0.android.lock.Configuration;
 
+import static com.auth0.android.lock.enums.UsernameStyle.DEFAULT;
+import static com.auth0.android.lock.enums.UsernameStyle.EMAIL;
+import static com.auth0.android.lock.enums.UsernameStyle.USERNAME;
+
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
     public ValidatedUsernameInputView(Context context) {
@@ -49,19 +53,20 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
      * @param configuration of the instance
      */
     public void chooseDataType(Configuration configuration) {
-        ValidatedInputView.DataType type = null;
+        @ValidatedInputView.DataType
+        int type = 0;
         switch (configuration.getUsernameStyle()) {
             case EMAIL:
-                type = ValidatedInputView.DataType.EMAIL;
+                type = DataType.EMAIL;
                 break;
             case USERNAME:
-                type = ValidatedInputView.DataType.USERNAME;
+                type = DataType.USERNAME;
                 break;
             case DEFAULT:
                 if (configuration.isUsernameRequired()) {
-                    type = ValidatedInputView.DataType.USERNAME_OR_EMAIL;
+                    type = DataType.USERNAME_OR_EMAIL;
                 } else {
-                    type = ValidatedInputView.DataType.EMAIL;
+                    type = DataType.EMAIL;
                 }
                 break;
         }

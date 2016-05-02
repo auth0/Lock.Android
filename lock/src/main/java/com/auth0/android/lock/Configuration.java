@@ -65,9 +65,11 @@ public class Configuration {
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean usernameRequired;
-    private UsernameStyle usernameStyle;
+    @UsernameStyle
+    private int usernameStyle;
     private boolean loginAfterSignUp;
-    private PasswordlessMode passwordlessMode;
+    @PasswordlessMode
+    private int passwordlessMode;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
@@ -233,6 +235,8 @@ public class Configuration {
             } else if (passwordlessStrategy.getName().equals(Strategies.SMS.getName())) {
                 passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
             }
+        } else {
+            passwordlessMode = PasswordlessMode.DISABLED;
         }
     }
 
@@ -260,12 +264,13 @@ public class Configuration {
         return usernameRequired;
     }
 
-    public UsernameStyle getUsernameStyle() {
+    @UsernameStyle
+    public int getUsernameStyle() {
         return usernameStyle;
     }
 
-    @Nullable
-    public PasswordlessMode getPasswordlessMode() {
+    @PasswordlessMode
+    public int getPasswordlessMode() {
         return passwordlessMode;
     }
 

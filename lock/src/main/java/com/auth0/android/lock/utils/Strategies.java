@@ -24,70 +24,81 @@
 
 package com.auth0.android.lock.utils;
 
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.utils.Strategies.Type.DATABASE;
+import static com.auth0.android.lock.utils.Strategies.Type.ENTERPRISE;
+import static com.auth0.android.lock.utils.Strategies.Type.PASSWORDLESS;
+import static com.auth0.android.lock.utils.Strategies.Type.SOCIAL;
+
 /**
  * An enum with all strategies available in Auth0
  */
 public enum Strategies {
-    Auth0("auth0", Type.DATABASE),
+    Auth0("auth0", DATABASE),
 
-    Email("email", Type.PASSWORDLESS),
-    SMS("sms", Type.PASSWORDLESS),
+    Email("email", PASSWORDLESS),
+    SMS("sms", PASSWORDLESS),
 
-    Amazon("amazon", Type.SOCIAL),
-    AOL("aol", Type.SOCIAL),
-    Baidu("baidu", Type.SOCIAL),
-    Box("box", Type.SOCIAL),
-    Dwolla("dwolla", Type.SOCIAL),
-    EBay("ebay", Type.SOCIAL),
-    Evernote("evernote", Type.SOCIAL),
-    EvernoteSandbox("evernote-sandbox", Type.SOCIAL),
-    Exact("exact", Type.SOCIAL),
-    Facebook("facebook", Type.SOCIAL),
-    Fitbit("fitbit", Type.SOCIAL),
-    Github("github", Type.SOCIAL),
-    GooglePlus("google-oauth2", Type.SOCIAL),
-    Instagram("instagram", Type.SOCIAL),
-    Linkedin("linkedin", Type.SOCIAL),
-    Miicard("miicard", Type.SOCIAL),
-    Paypal("paypal", Type.SOCIAL),
-    PlanningCenter("planningcenter", Type.SOCIAL),
-    RenRen("renren", Type.SOCIAL),
-    Salesforce("salesforce", Type.SOCIAL),
-    SalesforceSandbox("salesforce-sandbox", Type.SOCIAL),
-    Shopify("shopify", Type.SOCIAL),
-    Soundcloud("soundcloud", Type.SOCIAL),
-    TheCity("thecity", Type.SOCIAL),
-    TheCitySandbox("thecity-sandbox", Type.SOCIAL),
-    ThirtySevenSignals("thirtysevensignals", Type.SOCIAL),
-    Twitter("twitter", Type.SOCIAL),
-    VK("vkontakte", Type.SOCIAL),
-    Weibo("weibo", Type.SOCIAL),
-    WindowsLive("windowslive", Type.SOCIAL),
-    Wordpress("wordpress", Type.SOCIAL),
-    Yahoo("yahoo", Type.SOCIAL),
-    Yammer("yammer", Type.SOCIAL),
-    Yandex("yandex", Type.SOCIAL),
+    Amazon("amazon", SOCIAL),
+    AOL("aol", SOCIAL),
+    Baidu("baidu", SOCIAL),
+    Box("box", SOCIAL),
+    Dwolla("dwolla", SOCIAL),
+    EBay("ebay", SOCIAL),
+    Evernote("evernote", SOCIAL),
+    EvernoteSandbox("evernote-sandbox", SOCIAL),
+    Exact("exact", SOCIAL),
+    Facebook("facebook", SOCIAL),
+    Fitbit("fitbit", SOCIAL),
+    Github("github", SOCIAL),
+    GooglePlus("google-oauth2", SOCIAL),
+    Instagram("instagram", SOCIAL),
+    Linkedin("linkedin", SOCIAL),
+    Miicard("miicard", SOCIAL),
+    Paypal("paypal", SOCIAL),
+    PlanningCenter("planningcenter", SOCIAL),
+    RenRen("renren", SOCIAL),
+    Salesforce("salesforce", SOCIAL),
+    SalesforceSandbox("salesforce-sandbox", SOCIAL),
+    Shopify("shopify", SOCIAL),
+    Soundcloud("soundcloud", SOCIAL),
+    TheCity("thecity", SOCIAL),
+    TheCitySandbox("thecity-sandbox", SOCIAL),
+    ThirtySevenSignals("thirtysevensignals", SOCIAL),
+    Twitter("twitter", SOCIAL),
+    VK("vkontakte", SOCIAL),
+    Weibo("weibo", SOCIAL),
+    WindowsLive("windowslive", SOCIAL),
+    Wordpress("wordpress", SOCIAL),
+    Yahoo("yahoo", SOCIAL),
+    Yammer("yammer", SOCIAL),
+    Yandex("yandex", SOCIAL),
 
-    ActiveDirectory("ad", Type.ENTERPRISE),
-    ADFS("adfs", Type.ENTERPRISE),
-    Auth0LDAP("auth0-adldap", Type.ENTERPRISE),
-    Custom("custom", Type.ENTERPRISE),
-    GoogleApps("google-apps", Type.ENTERPRISE),
-    GoogleOpenId("google-openid", Type.ENTERPRISE),
-    IP("ip", Type.ENTERPRISE),
-    MSCRM("mscrm", Type.ENTERPRISE),
-    Office365("office365", Type.ENTERPRISE),
-    PingFederate("pingfederate", Type.ENTERPRISE),
-    SAMLP("samlp", Type.ENTERPRISE),
-    Sharepoint("sharepoint", Type.ENTERPRISE),
-    Waad("waad", Type.ENTERPRISE),
+    ActiveDirectory("ad", ENTERPRISE),
+    ADFS("adfs", ENTERPRISE),
+    Auth0LDAP("auth0-adldap", ENTERPRISE),
+    Custom("custom", ENTERPRISE),
+    GoogleApps("google-apps", ENTERPRISE),
+    GoogleOpenId("google-openid", ENTERPRISE),
+    IP("ip", ENTERPRISE),
+    MSCRM("mscrm", ENTERPRISE),
+    Office365("office365", ENTERPRISE),
+    PingFederate("pingfederate", ENTERPRISE),
+    SAMLP("samlp", ENTERPRISE),
+    Sharepoint("sharepoint", ENTERPRISE),
+    Waad("waad", ENTERPRISE),
 
-    UnknownSocial("unknown-social", Type.SOCIAL);
+    UnknownSocial("unknown-social", SOCIAL);
 
     private String name;
-    private Type type;
+    @Type
+    private int type;
 
-    Strategies(String name, Type type) {
+    Strategies(String name, @Type int type) {
         this.name = name;
         this.type = type;
     }
@@ -96,7 +107,8 @@ public enum Strategies {
         return name;
     }
 
-    public Type getType() {
+    @Type
+    public int getType() {
         return type;
     }
 
@@ -116,10 +128,12 @@ public enum Strategies {
         return strategy;
     }
 
-    public enum Type {
-        DATABASE,
-        SOCIAL,
-        ENTERPRISE,
-        PASSWORDLESS
+    @IntDef({DATABASE, SOCIAL, ENTERPRISE, PASSWORDLESS})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
+        int DATABASE = 0;
+        int SOCIAL = 1;
+        int ENTERPRISE = 2;
+        int PASSWORDLESS = 3;
     }
 }

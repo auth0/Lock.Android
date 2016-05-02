@@ -25,15 +25,29 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.auth0.android.lock.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.views.ModeSelectionView.Mode.LOG_IN;
+import static com.auth0.android.lock.views.ModeSelectionView.Mode.SIGN_UP;
+
 public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
 
     private final ModeSelectedListener callback;
+
+    @IntDef({LOG_IN, SIGN_UP})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Mode {
+        int LOG_IN = 0;
+        int SIGN_UP = 1;
+    }
 
     public ModeSelectionView(Context context, @NonNull ModeSelectedListener listener) {
         super(context);
@@ -50,13 +64,13 @@ public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCh
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if (checkedId == R.id.com_auth0_lock_mode_log_in) {
-            callback.onModeSelected(FormLayout.DatabaseForm.LOG_IN);
+            callback.onModeSelected(LOG_IN);
         } else if (checkedId == R.id.com_auth0_lock_mode_sign_up) {
-            callback.onModeSelected(FormLayout.DatabaseForm.SIGN_UP);
+            callback.onModeSelected(SIGN_UP);
         }
     }
 
     public interface ModeSelectedListener {
-        void onModeSelected(FormLayout.DatabaseForm mode);
+        void onModeSelected(@Mode int mode);
     }
 }
