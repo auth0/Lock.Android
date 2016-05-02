@@ -25,29 +25,54 @@
 package com.auth0.android.lock.errors;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.INVALID_CREDENTIALS;
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.UNAUTHORIZED;
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.UNKNOWN;
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.USER_EXISTS;
+
 public class AuthenticationError {
 
-    private Throwable throwable;
+    @IntDef({UNKNOWN, UNAUTHORIZED, USER_EXISTS, INVALID_CREDENTIALS})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ErrorType {
+        int UNKNOWN = 0;
+        int UNAUTHORIZED = 1;
+        int USER_EXISTS = 2;
+        int INVALID_CREDENTIALS = 3;
+    }
 
+    @ErrorType
+    private int errorType;
     @StringRes
     private int message;
-
     private String customMessage;
+    private Throwable throwable;
 
-    public AuthenticationError(@StringRes int message) {
-        this(message, null);
-    }
 
     public AuthenticationError(@StringRes int message, Throwable throwable) {
-        this.message = message;
-        this.throwable = throwable;
+        this(message, null, UNKNOWN, throwable);
     }
 
-    public AuthenticationError(String message, Throwable throwable) {
-        this.customMessage = message;
+    public AuthenticationError(@StringRes int message, @ErrorType int type, Throwable throwable) {
+        this(message, null, type, throwable);
+    }
+
+    public AuthenticationError(@NonNull String message, @ErrorType int type, Throwable throwable) {
+        this(0, message, type, throwable);
+    }
+
+    AuthenticationError(@StringRes int message, @Nullable String description, @ErrorType int type, Throwable throwable) {
+        this.message = message;
+        this.customMessage = description;
+        this.errorType = type;
         this.throwable = throwable;
     }
 
@@ -67,5 +92,10 @@ public class AuthenticationError {
             return customMessage;
         }
         return context.getResources().getString(message);
+    }
+
+    @ErrorType
+    public int getErrorType() {
+        return errorType;
     }
 }

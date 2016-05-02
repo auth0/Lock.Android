@@ -37,6 +37,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -606,7 +607,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(int titleResource, final int messageResource, final Throwable cause) {
+        public void onFailure(@StringRes int titleResource, @StringRes final int messageResource, final Throwable cause) {
             final String message = new AuthenticationError(messageResource, cause).getMessage(PasswordlessLockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
