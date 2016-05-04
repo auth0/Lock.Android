@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -52,6 +53,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     private DatabaseSignUpEvent userData;
     private TextView title;
     private LinearLayout fieldContainer;
+    private ValidatedInputView usernameField;
+    private ValidatedInputView passwordField;
 
     public CustomFieldsFormView(Context context) {
         super(context);
@@ -70,7 +73,54 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         title = (TextView) findViewById(R.id.com_auth0_lock_title);
         fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
 
+        if (lockWidget.getConfiguration().getExtraSignUpFields().size() == 1) {
+            addDisabledFields();
+        }
         addCustomFields();
+    }
+
+    private void addDisabledFields() {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.setMargins(0, verticalMargin / 2, 0, verticalMargin / 2);
+
+        boolean showEmail = false;
+        boolean showUsername = false;
+        if (lockWidget.getConfiguration().isUsernameRequired()) {
+            showEmail = true;
+            showUsername = true;
+        } else if (lockWidget.getConfiguration().getUsernameStyle() == UsernameStyle.USERNAME) {
+            showUsername = true;
+        } else if (lockWidget.getConfiguration().getUsernameStyle() == UsernameStyle.EMAIL || lockWidget.getConfiguration().getUsernameStyle() == UsernameStyle.DEFAULT) {
+            showEmail = true;
+        }
+
+        if (showEmail && showUsername) {
+            ValidatedInputView emailField = new ValidatedInputView(getContext());
+            emailField.setDataType(ValidatedInputView.DataType.EMAIL);
+            emailField.setLayoutParams(params);
+            emailField.setText(userData.getEmail());
+            emailField.setEnabled(false);
+            fieldContainer.addView(emailField);
+
+            usernameField = new ValidatedInputView(getContext());
+            usernameField.setDataType(ValidatedInputView.DataType.USERNAME);
+            usernameField.setLayoutParams(params);
+            fieldContainer.addView(usernameField);
+        } else {
+            ValidatedInputView emailOrUsernameField = new ValidatedInputView(getContext());
+            emailOrUsernameField.setDataType(ValidatedInputView.DataType.USERNAME_OR_EMAIL);
+            emailOrUsernameField.setLayoutParams(params);
+            emailOrUsernameField.setText(userData.getUsername() == null ? userData.getEmail() : userData.getUsername());
+            emailOrUsernameField.setEnabled(false);
+            fieldContainer.addView(emailOrUsernameField);
+        }
+
+        passwordField = new ValidatedInputView(getContext());
+        passwordField.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordField.setLayoutParams(params);
+        fieldContainer.addView(passwordField);
     }
 
     private void addCustomFields() {
@@ -100,6 +150,10 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     @Override
     public Object getActionEvent() {
+        if (lockWidget.getConfiguration().getExtraSignUpFields().size() == 1) {
+            userData.setUsername(usernameField != null ? usernameField.getText() : null);
+            userData.setPassword(passwordField.getText());
+        }
         userData.setExtraFields(getCustomFieldValues());
         return userData;
     }
@@ -109,7 +163,9 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         boolean valid = true;
         for (int i = 0; i < fieldContainer.getChildCount(); i++) {
             ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
-            valid = input.validate(true) && valid;
+            if (input.isEnabled()) {
+                valid = input.validate(true) && valid;
+            }
         }
         Log.d(TAG, "Is form data valid? " + valid);
         return valid;

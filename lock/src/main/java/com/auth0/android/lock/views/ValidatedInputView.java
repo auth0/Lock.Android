@@ -252,6 +252,16 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         input.append(text);
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        input.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return input.isEnabled();
+    }
+
     /**
      * Updates the input field hint.
      *
