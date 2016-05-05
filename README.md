@@ -135,6 +135,8 @@ And you'll see our native login screen
 
 `LockPasswordlessActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
+Also, if you would like to use passwordless with *magic links*, please read and follow all the steps mentioned in the [magic link docs](https://auth0.com/docs/libraries/lock-android/passwordless-magic-link).
+
 `LockPasswordlessActivity` is part of the library `lock-passwordless` and you can add it with this line in your `build.gradle`:
 ```gradle
 compile 'com.auth0.android:lock-passwordless:1.15.+'
