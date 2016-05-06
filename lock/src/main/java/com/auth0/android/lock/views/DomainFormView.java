@@ -58,6 +58,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     private boolean fallbackToDatabase;
     private boolean corporateSSO;
     private boolean changePasswordEnabled;
+    private boolean keyboardIsOpen;
 
     public DomainFormView(Context context) {
         super(context);
@@ -246,7 +247,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
 
     private void showSSOMessage(boolean show) {
         lockWidget.showSSOEnabledMessage(show);
-        if (changePasswordEnabled) {
+        if (changePasswordEnabled && !keyboardIsOpen) {
             changePasswordBtn.setVisibility(show ? GONE : VISIBLE);
         }
     }
@@ -275,6 +276,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
+        keyboardIsOpen = isOpen;
         changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
         topMessage.setVisibility(topMessage.getText().length() > 0 ? isOpen ? GONE : VISIBLE : GONE);
     }

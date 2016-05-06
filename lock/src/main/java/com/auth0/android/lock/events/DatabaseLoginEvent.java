@@ -25,10 +25,13 @@
 package com.auth0.android.lock.events;
 
 
+import android.support.annotation.Nullable;
+
 public class DatabaseLoginEvent {
 
     private String usernameOrEmail;
     private String password;
+    private String MFACode;
 
     public DatabaseLoginEvent(String usernameOrEmail, String password) {
         this.usernameOrEmail = usernameOrEmail;
@@ -41,5 +44,14 @@ public class DatabaseLoginEvent {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setMFACode(String code) {
+        this.MFACode = code;
+    }
+
+    @Nullable
+    public String getMFACode() {
+        return MFACode;
     }
 }

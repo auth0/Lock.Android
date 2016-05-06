@@ -40,6 +40,7 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
     private static final String MFA_REQUIRED_ERROR = "a0.mfa_required";
     private static final String MFA_INVALID_CODE_ERROR = "a0.mfa_invalid_code";
+    private static final String MFA_NOT_ENROLLED_ERROR = "a0.mfa_registration_required";
 
     private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
 
@@ -77,6 +78,8 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
                 return new AuthenticationError(invalidMFACodeResource, ErrorType.MFA_INVALID, throwable);
             } else if (MFA_REQUIRED_ERROR.equalsIgnoreCase(errorCode)) {
                 return new AuthenticationError(defaultMessage, ErrorType.MFA_REQUIRED, throwable);
+            } else if (MFA_NOT_ENROLLED_ERROR.equalsIgnoreCase(errorCode)) {
+                return new AuthenticationError(defaultMessage, ErrorType.MFA_NOT_ENROLLED, throwable);
             } else if (errorDescription != null) {
                 return new AuthenticationError(errorDescription, ErrorType.UNKNOWN, throwable);
             }
