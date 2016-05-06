@@ -39,7 +39,7 @@
         <item name="android:textStyle">normal</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/com_auth0_lock_normal_text</item>
+        <item name="android:textColor">@color/com_auth0_lock_text</item>
     </style>
 
     <style name="Lock.Theme.Text.Terms">
@@ -167,6 +167,7 @@
         <item name="android:textColorHint">@color/com_auth0_lock_hint_text</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_widget_height</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/com_auth0_lock_text</item>
         <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
         <item name="android:paddingRight">

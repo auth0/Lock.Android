@@ -70,6 +70,7 @@
     <color name="com_auth0_lock_input_field_border_normal">#f1f1f1</color>
     <color name="com_auth0_lock_input_field_border_error">#ff0000</color>
     <color name="com_auth0_lock_input_field_background">#ffffff</color>
+    <color name="com_auth0_lock_input_field_background_disabled">#f9f9f9</color>
     <color name="com_auth0_lock_input_country_code_background">#FAFAFA</color>
     <color name="com_auth0_lock_submit_normal">#EC5210</color>
     <color name="com_auth0_lock_submit_pressed">#8C3215</color>
@@ -78,6 +79,7 @@
     <color name="com_auth0_lock_result_message_success_background">#7ED321</color>
     <color name="com_auth0_lock_result_message">#ffffff</color>
     <color name="com_auth0_lock_normal_text">#a6000000</color>
+    <color name="com_auth0_lock_disabled_text">#4d000000</color>
     <color name="com_auth0_lock_passwordless_link_sent_text">#c8000000</color>
     <color name="com_auth0_lock_hint_text">#999999</color>
 </resources>

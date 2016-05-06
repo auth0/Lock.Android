@@ -93,7 +93,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
         orSeparatorMessage.setText(stringRes);
         orSeparatorMessage.setLineSpacing(getResources().getDimension(R.dimen.com_auth0_lock_separator_text_spacing), 1);
-        orSeparatorMessage.setTextColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_normal_text));
+        orSeparatorMessage.setTextColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
