@@ -38,6 +38,8 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
     private static final String USERNAME_EXISTS_ERROR = "username_exists";
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
+    private static final String MFA_REQUIRED_ERROR = "a0.mfa_required";
+    private static final String MFA_INVALID_CODE_ERROR = "a0.mfa_invalid_code";
 
     private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
 
@@ -46,6 +48,7 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
 
     private static final int userExistsResource = R.string.com_auth0_lock_db_signup_user_already_exists_error_message;
     private static final int unauthorizedResource = R.string.com_auth0_lock_db_login_error_unauthorized_message;
+    private static final int invalidMFACodeResource = R.string.com_auth0_lock_db_login_error_invalid_mfa_code_message;
     private int invalidCredentialsResource = R.string.com_auth0_lock_db_login_error_invalid_credentials_message;
 
     public LoginAuthenticationErrorBuilder(@StringRes int defaultMessage, @StringRes int invalidCredentialsMessage) {
@@ -70,6 +73,10 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
                 return new AuthenticationError(unauthorizedResource, ErrorType.UNAUTHORIZED, throwable);
             } else if (USER_EXISTS_ERROR.equalsIgnoreCase(errorCode) || USERNAME_EXISTS_ERROR.equalsIgnoreCase(errorCode)) {
                 return new AuthenticationError(userExistsResource, ErrorType.USER_EXISTS, throwable);
+            } else if (MFA_INVALID_CODE_ERROR.equalsIgnoreCase(errorCode)) {
+                return new AuthenticationError(invalidMFACodeResource, ErrorType.MFA_INVALID, throwable);
+            } else if (MFA_REQUIRED_ERROR.equalsIgnoreCase(errorCode)) {
+                return new AuthenticationError(defaultMessage, ErrorType.MFA_REQUIRED, throwable);
             } else if (errorDescription != null) {
                 return new AuthenticationError(errorDescription, ErrorType.UNKNOWN, throwable);
             }

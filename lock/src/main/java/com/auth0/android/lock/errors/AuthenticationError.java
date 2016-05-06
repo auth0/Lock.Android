@@ -34,19 +34,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.INVALID_CREDENTIALS;
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.MFA_INVALID;
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.MFA_REQUIRED;
 import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.UNAUTHORIZED;
 import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.UNKNOWN;
 import static com.auth0.android.lock.errors.AuthenticationError.ErrorType.USER_EXISTS;
 
 public class AuthenticationError {
 
-    @IntDef({UNKNOWN, UNAUTHORIZED, USER_EXISTS, INVALID_CREDENTIALS})
+    @IntDef({UNKNOWN, UNAUTHORIZED, USER_EXISTS, INVALID_CREDENTIALS, MFA_INVALID, MFA_REQUIRED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ErrorType {
         int UNKNOWN = 0;
         int UNAUTHORIZED = 1;
         int USER_EXISTS = 2;
         int INVALID_CREDENTIALS = 3;
+        int MFA_INVALID = 4;
+        int MFA_REQUIRED = 5;
     }
 
     @ErrorType
