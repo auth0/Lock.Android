@@ -35,6 +35,9 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
 
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
+    private static final String MFA_REQUIRED_ERROR = "a0.mfa_required";
+    private static final String MFA_INVALID_CODE_ERROR = "a0.mfa_invalid_code";
+    private static final String MFA_NOT_ENROLLED_ERROR = "a0.mfa_registration_required";
 
     private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
 
@@ -42,6 +45,7 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
     private final int defaultMessageResource;
     private final int invalidCredentialsResource;
     private final int unauthorizedResource;
+    private final int invalidMFACodeResource = R.string.com_auth0_db_login_invalid_mfa_code_message;
 
     public LoginAuthenticationErrorBuilder() {
         this(R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_error_message,
@@ -71,6 +75,12 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
                 return new AuthenticationError(titleResource, invalidCredentialsResource, ErrorType.INVALID_CREDENTIALS, throwable);
             } else if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && USER_IS_BLOCKED_DESCRIPTION.equalsIgnoreCase(errorDescription)) {
                 return new AuthenticationError(titleResource, unauthorizedResource, ErrorType.UNAUTHORIZED, throwable);
+            } else if (MFA_INVALID_CODE_ERROR.equalsIgnoreCase(errorCode)) {
+                return new AuthenticationError(titleResource, invalidMFACodeResource, ErrorType.MFA_INVALID, throwable);
+            } else if (MFA_REQUIRED_ERROR.equalsIgnoreCase(errorCode)) {
+                return new AuthenticationError(titleResource, messageResource, ErrorType.MFA_REQUIRED, throwable);
+            } else if (MFA_NOT_ENROLLED_ERROR.equalsIgnoreCase(errorCode)) {
+                return new AuthenticationError(titleResource, messageResource, ErrorType.MFA_NOT_ENROLLED, throwable);
             } else if (errorDescription != null) {
                 return new AuthenticationError(titleResource, errorDescription, ErrorType.UNKNOWN, throwable);
             }

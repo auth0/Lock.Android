@@ -26,6 +26,7 @@
     <string name="com_auth0_db_cancel_button_text">CANCEL</string>
     <string name="com_auth0_db_single_sign_on_button">LOGIN WITH %s</string>
     <string name="com_auth0_enterprise_no_connection_message">There was no connection configured for the domain</string>
+    <string name="com_auth0_mfa_code_message">Use your Multi-Factor Authentication application to generate a code</string>
 
     <string name="com_auth0_application_load_failed_title">Failed to load application information</string>
     <string name="com_auth0_application_load_failed_message">Couldn\'t obtain application configuration. Please check your Auth0 configuration and try again.</string>
@@ -39,8 +40,9 @@
     <string name="com_auth0_invalid_email_message">The email you entered is invalid. Please try again.</string>
     <string name="com_auth0_invalid_username_message">The username you entered is invalid. Please try again.</string>
     <string name="com_auth0_invalid_password_message">The password you entered is invalid. Please try again.</string>
+    <string name="com_auth0_invalid_code_message">You must enter a valid code.</string>
     <string name="com_auth0_db_reset_password_invalid_repeat_password_message">The passwords you entered must match. Please try again.</string>
-    <string name="com_auth0_db_login_invalid_mfa_code_message">You must enter a valid code.</string>
+    <string name="com_auth0_db_login_invalid_mfa_code_message">The MFA code you entered is invalid or has expired.</string>
 
     <!-- Sign Up -->
     <string name="com_auth0_database_signup_title">Sign Up</string>

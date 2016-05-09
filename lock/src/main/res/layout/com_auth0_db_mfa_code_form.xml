@@ -36,12 +36,12 @@
     <include layout="@layout/com_auth0_title_lock" />
 
     <TextView
-        android:id="@+id/com_auth0_db_mfa_code_enter_code_message"
         style="?attr/Auth0.Message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/com_auth0_db_mfa_code_login_credentials"
         android:layout_centerHorizontal="true"
+        android:text="@string/com_auth0_mfa_code_message"
         android:gravity="center" />
 
     <LinearLayout

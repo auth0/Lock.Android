@@ -26,13 +26,11 @@ package com.auth0.lock.fragment;
 
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Token;
@@ -51,11 +49,10 @@ import java.util.Map;
 
 public class MFACodeLoginFragment extends BaseTitledFragment {
 
-    private static final String MESSAGE_FORMAT_ARGUMENT = "MESSAGE_FORMAT_ARGUMENT";
+    private static final String KEY_MFA_CODE = "mfa_code";
     private static final String USERNAME_ARGUMENT = "USERNAME_ARGUMENT";
     private static final String PASSWORD_ARGUMENT = "PASSWORD_ARGUMENT";
 
-    private int messageFormatResId;
     private String username;
     private String password;
     private Validator validator;
@@ -65,10 +62,9 @@ public class MFACodeLoginFragment extends BaseTitledFragment {
     ProgressBar progressBar;
     CredentialField mfaCodeField;
 
-    public static MFACodeLoginFragment newInstance(int messageFormatResId, String username, String password) {
+    public static MFACodeLoginFragment newInstance(String username, String password) {
         MFACodeLoginFragment fragment = new MFACodeLoginFragment();
         Bundle args = new Bundle();
-        args.putInt(MESSAGE_FORMAT_ARGUMENT, messageFormatResId);
         args.putString(USERNAME_ARGUMENT, username);
         args.putString(PASSWORD_ARGUMENT, password);
         fragment.setArguments(args);
@@ -80,12 +76,11 @@ public class MFACodeLoginFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         if (arguments != null) {
-            messageFormatResId = getArguments().getInt(MESSAGE_FORMAT_ARGUMENT);
             username = arguments.getString(USERNAME_ARGUMENT);
             password = arguments.getString(PASSWORD_ARGUMENT);
         }
         errorBuilder = new LoginAuthenticationErrorBuilder();
-        validator = new PasscodeValidator(R.id.com_auth0_passwordless_passcode_login_code_field, R.string.com_auth0_db_login_error_title, R.string.com_auth0_db_login_invalid_mfa_code_message);
+        validator = new PasscodeValidator(R.id.com_auth0_passwordless_passcode_login_code_field, R.string.com_auth0_db_login_error_title, R.string.com_auth0_invalid_code_message);
 
         bus.register(this);
     }
@@ -106,9 +101,6 @@ public class MFACodeLoginFragment extends BaseTitledFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_db_mfa_code_enter_code_message);
-        String messageFormat = getString(messageFormatResId);
-        messageTextView.setText(Html.fromHtml(String.format(messageFormat, username)));
         mfaCodeField = (CredentialField) view.findViewById(R.id.com_auth0_passwordless_passcode_login_code_field);
         accessButton = (Button) view.findViewById(R.id.com_auth0_passwordless_passcode_access_button);
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_passwordless_passcode_login_progress_indicator);
@@ -136,7 +128,7 @@ public class MFACodeLoginFragment extends BaseTitledFragment {
         progressBar.setVisibility(View.VISIBLE);
         String mfaCode = mfaCodeField.getText().toString().trim();
         Map<String, Object> mfaParameters = new HashMap<>();
-        mfaParameters.put("mfa_code", mfaCode);
+        mfaParameters.put(KEY_MFA_CODE, mfaCode);
         client.login(username, password)
                 .addParameters(authenticationParameters)
                 .addParameters(mfaParameters)
