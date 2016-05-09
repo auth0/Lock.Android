@@ -161,8 +161,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldName);
-//        customFields.add(fieldSurname);
-//        customFields.add(fieldPhone);
+        customFields.add(fieldSurname);
+        customFields.add(fieldPhone);
 
         // create/configure lock
         lock = Lock.newBuilder(auth0, callback)

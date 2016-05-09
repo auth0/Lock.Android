@@ -55,6 +55,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     private LinearLayout fieldContainer;
     private ValidatedInputView usernameField;
     private ValidatedInputView passwordField;
+    private boolean mustUseFieldsFromFirstStep;
 
     public CustomFieldsFormView(Context context) {
         super(context);
@@ -73,13 +74,14 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         title = (TextView) findViewById(R.id.com_auth0_lock_title);
         fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
 
-        if (lockWidget.getConfiguration().getExtraSignUpFields().size() == 1) {
-            addDisabledFields();
+        mustUseFieldsFromFirstStep = lockWidget.getConfiguration().getExtraSignUpFields().size() == 1;
+        if (mustUseFieldsFromFirstStep) {
+            addFirstStepFields();
         }
         addCustomFields();
     }
 
-    private void addDisabledFields() {
+    private void addFirstStepFields() {
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
@@ -110,7 +112,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
             fieldContainer.addView(usernameField);
         } else {
             ValidatedInputView emailOrUsernameField = new ValidatedInputView(getContext());
-            emailOrUsernameField.setDataType(ValidatedInputView.DataType.USERNAME_OR_EMAIL);
+            emailOrUsernameField.setDataType(showUsername ? ValidatedInputView.DataType.USERNAME : ValidatedInputView.DataType.EMAIL);
             emailOrUsernameField.setLayoutParams(params);
             emailOrUsernameField.setText(userData.getUsername() == null ? userData.getEmail() : userData.getUsername());
             emailOrUsernameField.setEnabled(false);
@@ -150,7 +152,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     @Override
     public Object getActionEvent() {
-        if (lockWidget.getConfiguration().getExtraSignUpFields().size() == 1) {
+        if (mustUseFieldsFromFirstStep) {
             userData.setUsername(usernameField != null ? usernameField.getText() : null);
             userData.setPassword(passwordField.getText());
         }
