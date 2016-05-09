@@ -41,7 +41,6 @@ import static com.auth0.android.lock.views.ModeSelectionView.Mode.SIGN_UP;
 public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
 
     private final ModeSelectedListener callback;
-    private RadioGroup modeGroup;
 
     @IntDef({LOG_IN, SIGN_UP})
     @Retention(RetentionPolicy.SOURCE)
@@ -58,7 +57,7 @@ public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCh
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_mode_selection_layout, this);
-        modeGroup = (RadioGroup) findViewById(R.id.com_auth0_lock_form_radio_mode_group);
+        RadioGroup modeGroup = (RadioGroup) findViewById(R.id.com_auth0_lock_form_radio_mode_group);
         modeGroup.setOnCheckedChangeListener(this);
     }
 
