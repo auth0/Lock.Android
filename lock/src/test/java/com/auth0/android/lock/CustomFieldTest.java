@@ -59,6 +59,7 @@ public class CustomFieldTest {
 
         CustomField parcelableCustomField = bundle.getParcelable(CUSTOM_FIELD_KEY);
         assertThat(parcelableCustomField, is(notNullValue()));
+        assertThat(parcelableCustomField.getIcon(), is(equalTo(ICON)));
         assertThat(parcelableCustomField.getType(), is(equalTo(TYPE)));
         assertThat(parcelableCustomField.getKey(), is(equalTo(KEY)));
         assertThat(parcelableCustomField.getHint(), is(equalTo(HINT)));
@@ -71,6 +72,7 @@ public class CustomFieldTest {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
         field.configureField(input);
 
+        Mockito.verify(input).setIcon(ICON);
         Mockito.verify(input).setDataType(DataType.EMAIL);
         Mockito.verify(input).setHint(HINT);
         Mockito.verify(input).setTag(KEY);

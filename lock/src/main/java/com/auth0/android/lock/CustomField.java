@@ -118,6 +118,11 @@ public class CustomField implements Parcelable {
         return hint;
     }
 
+    @DrawableRes
+    int getIcon() {
+        return icon;
+    }
+
     @FieldType
     int getType() {
         return type;
