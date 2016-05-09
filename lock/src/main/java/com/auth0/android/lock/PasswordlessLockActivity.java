@@ -221,7 +221,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     private boolean isLaunchConfigValid() {
-        options = getIntent().getParcelableExtra(Lock.OPTIONS_EXTRA);
+        options = getIntent().getParcelableExtra(Constants.OPTIONS_EXTRA);
         if (options == null) {
             Log.e(TAG, "Lock Options are missing in the received Intent and PasswordlessLockActivity will not launch. " +
                     "Use the PasswordlessLock.Builder to generate a valid Intent.");
@@ -257,9 +257,21 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         Log.v(TAG, "User has just closed the activity.");
-        Intent intent = new Intent(Lock.CANCELED_ACTION);
+        Intent intent = new Intent(Constants.CANCELED_ACTION);
         LocalBroadcastManager.getInstance(PasswordlessLockActivity.this).sendBroadcast(intent);
         super.onBackPressed();
+    }
+
+    private void deliverAuthenticationResult(Authentication result) {
+        Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
+        intent.putExtra(Constants.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
+        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
+        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
+        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
+        intent.putExtra(Constants.PROFILE_EXTRA, result.getProfile());
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        finish();
     }
 
     private void showErrorMessage(String message) {
@@ -366,18 +378,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
                 .putInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED)
                 .apply();
-    }
-
-    private void deliverResult(Authentication result) {
-        Intent intent = new Intent(Lock.AUTHENTICATION_ACTION);
-        intent.putExtra(Lock.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
-        intent.putExtra(Lock.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
-        intent.putExtra(Lock.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
-        intent.putExtra(Lock.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
-        intent.putExtra(Lock.PROFILE_EXTRA, result.getProfile());
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        finish();
     }
 
     private void showProgressDialog(final boolean show) {
@@ -578,7 +578,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onSuccess(Authentication authentication) {
             clearRecentPasswordlessData();
-            deliverResult(authentication);
+            deliverAuthenticationResult(authentication);
         }
 
         @Override
@@ -626,7 +626,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                         public void onSuccess(UserProfile profile) {
                             showProgressDialog(false);
                             Authentication authentication = new Authentication(profile, credentials);
-                            deliverResult(authentication);
+                            deliverAuthenticationResult(authentication);
                         }
 
                         @Override

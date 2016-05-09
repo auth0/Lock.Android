@@ -35,13 +35,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
-import com.auth0.authentication.result.Authentication;
-import com.auth0.authentication.result.Credentials;
-import com.auth0.authentication.result.UserProfile;
 import com.auth0.util.Telemetry;
 
 import java.util.HashMap;
@@ -51,40 +48,21 @@ import java.util.Map;
 public class PasswordlessLock {
 
     private static final String TAG = PasswordlessLock.class.getSimpleName();
-    private final AuthenticationCallback callback;
+    private final LockCallback callback;
     private final Options options;
 
-    public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
-
-    static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
-    static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
-
-    static final String ID_TOKEN_EXTRA = "com.auth0.android.lock.extra.IdToken";
-    static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
-    static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
-    static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
-    static final String PROFILE_EXTRA = "com.auth0.android.lock.extra.Profile";
-
     /**
-     * Listens to PasswordlessLockActivity broadcasts and fires the correct action on the AuthenticationCallback.
+     * Listens to PasswordlessLockActivity broadcasts and fires the correct action on the LockCallback.
      */
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent data) {
-            // Get extra data included in the Intent
-            String action = data.getAction();
-            if (action.equals(PasswordlessLock.AUTHENTICATION_ACTION)) {
-                Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                processEvent(data);
-            } else if (action.equals(PasswordlessLock.CANCELED_ACTION)) {
-                Log.v(TAG, "CANCELED action received in our BroadcastReceiver");
-                callback.onCanceled();
-            }
+            processEvent(data);
         }
     };
 
-    private PasswordlessLock(Options options, AuthenticationCallback callback) {
+    private PasswordlessLock(Options options, LockCallback callback) {
         this.options = options;
         this.callback = callback;
     }
@@ -106,7 +84,7 @@ public class PasswordlessLock {
      * @return a new Lock.Builder instance.
      */
     @SuppressWarnings("unused")
-    public static Builder newBuilder(@NonNull Auth0 account, @NonNull AuthenticationCallback callback) {
+    public static Builder newBuilder(@NonNull Auth0 account, @NonNull LockCallback callback) {
         if (account.getTelemetry() != null) {
             Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
             account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
@@ -123,7 +101,7 @@ public class PasswordlessLock {
     @SuppressWarnings("unused")
     public Intent newIntent(Activity activity) {
         Intent lockIntent = new Intent(activity, PasswordlessLockActivity.class);
-        lockIntent.putExtra(OPTIONS_EXTRA, options);
+        lockIntent.putExtra(Constants.OPTIONS_EXTRA, options);
         return lockIntent;
     }
 
@@ -136,8 +114,8 @@ public class PasswordlessLock {
     @SuppressWarnings("unused")
     public void onCreate(Activity activity) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(PasswordlessLock.AUTHENTICATION_ACTION);
-        filter.addAction(PasswordlessLock.CANCELED_ACTION);
+        filter.addAction(Constants.AUTHENTICATION_ACTION);
+        filter.addAction(Constants.CANCELED_ACTION);
         LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
@@ -168,32 +146,20 @@ public class PasswordlessLock {
         }
 
         //user pressed back.
-        callback.onCanceled();
+        callback.onEvent(LockEvent.CANCELED, new Intent());
     }
 
-    /**
-     * Extracts the Authentication data from the intent data.
-     *
-     * @param eventData the intent received at the end of the login process.
-     */
-    private void processEvent(Intent eventData) {
-        String idToken = eventData.getStringExtra(PasswordlessLock.ID_TOKEN_EXTRA);
-        String accessToken = eventData.getStringExtra(PasswordlessLock.ACCESS_TOKEN_EXTRA);
-        String tokenType = eventData.getStringExtra(PasswordlessLock.TOKEN_TYPE_EXTRA);
-        String refreshToken = eventData.getStringExtra(PasswordlessLock.REFRESH_TOKEN_EXTRA);
-        Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken);
-        UserProfile profile = (UserProfile) eventData.getSerializableExtra(PasswordlessLock.PROFILE_EXTRA);
-
-        Authentication authentication = new Authentication(profile, credentials);
-
-        if (idToken != null && accessToken != null) {
-            Log.d(TAG, "User authenticated!");
-            callback.onAuthentication(authentication);
-        } else {
-            Log.e(TAG, "Error parsing authentication data: id_token or access_token are missing.");
-            LockException up = new LockException(R.string.com_auth0_lock_social_error_authentication);
-            callback.onError(up);
-            //throw up. haha
+    private void processEvent(Intent data) {
+        String action = data.getAction();
+        switch (action) {
+            case Constants.AUTHENTICATION_ACTION:
+                Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
+                callback.onEvent(LockEvent.AUTHENTICATION, data);
+                break;
+            case Constants.CANCELED_ACTION:
+                Log.v(TAG, "CANCELED action received in our BroadcastReceiver");
+                callback.onEvent(LockEvent.CANCELED, new Intent());
+                break;
         }
     }
 
@@ -203,7 +169,7 @@ public class PasswordlessLock {
     public static class Builder {
         private static final String TAG = Builder.class.getSimpleName();
         private Options options;
-        private AuthenticationCallback callback;
+        private LockCallback callback;
 
         /**
          * Creates a new Lock.Builder instance with the given account and callback.
@@ -211,7 +177,7 @@ public class PasswordlessLock {
          * @param account  details to use against the Auth0 Authentication API.
          * @param callback that will receive the authentication results.
          */
-        public Builder(Auth0 account, AuthenticationCallback callback) {
+        public Builder(Auth0 account, LockCallback callback) {
             HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
             options = new Options();
@@ -231,8 +197,8 @@ public class PasswordlessLock {
                 throw new IllegalStateException("Missing Auth0 account information.");
             }
             if (callback == null) {
-                Log.e(TAG, "You need to specify the AuthenticationCallback object to receive the Authentication result.");
-                throw new IllegalStateException("Missing AuthenticationCallback.");
+                Log.e(TAG, "You need to specify the callback object to receive the Authentication result.");
+                throw new IllegalStateException("Missing callback.");
             }
             Log.v(TAG, "PasswordlessLock instance created");
             return new PasswordlessLock(options, callback);

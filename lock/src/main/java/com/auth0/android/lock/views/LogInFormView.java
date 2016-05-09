@@ -69,7 +69,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockWidget.showChangePasswordForm();
+                lockWidget.showChangePasswordForm(true);
             }
         });
     }

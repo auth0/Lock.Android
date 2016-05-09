@@ -38,6 +38,7 @@ import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.Lock;
+import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
@@ -47,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DemoActivity extends AppCompatActivity implements AuthenticationCallback, View.OnClickListener {
+public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
     private static final String AUTH0_DOMAIN = "lbalmaceda.auth0.com";
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
@@ -96,21 +97,6 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     }
 
     @Override
-    public void onAuthentication(Authentication authentication) {
-        showResult("OK > " + authentication.getProfile().getName() + " > " + authentication.getCredentials().getIdToken());
-    }
-
-    @Override
-    public void onCanceled() {
-        showResult("User pressed back.");
-    }
-
-    @Override
-    public void onError(LockException error) {
-        showResult(error.getMessage());
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_normal_webview:
@@ -137,13 +123,13 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
 
         if (useCode) {
-            passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
+            passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
                     .useCode()
                     .usePKCE(true)
                     .fullscreen(true)
                     .build();
         } else {
-            passwordlessLock = PasswordlessLock.newBuilder(auth0, this)
+            passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
                     .useLink()
                     .usePKCE(true)
                     .fullscreen(true)
@@ -179,14 +165,14 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
         customFields.add(fieldPhone);
 
         // create/configure lock
-        lock = Lock.newBuilder(auth0, this)
+        lock = Lock.newBuilder(auth0, callback)
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
                 .withProviderResolver(new AuthProviderHandler())
                 .withSignUpFields(customFields)
                 .loginAfterSignUp(false)
                 .usePKCE(true)
-                .closable(false)
+                .closable(true)
                 .fullscreen(true)
                 .build();
 
@@ -208,4 +194,21 @@ public class DemoActivity extends AppCompatActivity implements AuthenticationCal
     private void showResult(String message) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
     }
+
+    private LockCallback callback = new AuthenticationCallback() {
+        @Override
+        public void onAuthentication(Authentication authentication) {
+            showResult("OK > " + authentication.getProfile().getName() + " > " + authentication.getCredentials().getIdToken());
+        }
+
+        @Override
+        public void onCanceled() {
+            showResult("User pressed back.");
+        }
+
+        @Override
+        public void onError(LockException error) {
+            showResult(error.getMessage());
+        }
+    };
 }
