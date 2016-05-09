@@ -41,7 +41,6 @@ import android.widget.TextView;
 import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Connection;
-import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Configuration;
@@ -144,7 +143,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_login_username_field);
         if (requiresUsername) {
             usernameField.setHint(R.string.com_auth0_username_email_placeholder);
-        } if (!useEmail) {
+        }
+        if (!useEmail) {
             usernameField.setHint(R.string.com_auth0_username_placeholder);
             usernameField.setIconResource(R.drawable.com_auth0_ic_person);
             usernameField.setErrorIconResource(R.drawable.com_auth0_ic_person_error);

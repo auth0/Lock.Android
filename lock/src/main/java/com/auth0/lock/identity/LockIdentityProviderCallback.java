@@ -29,7 +29,7 @@ import android.app.Dialog;
 import com.auth0.core.Token;
 import com.auth0.identity.IdentityProviderCallback;
 import com.auth0.lock.event.AuthenticationError;
-import com.auth0.lock.event.AuthorizationCodeEvent;
+import com.auth0.lock.event.AuthenticationError.ErrorType;
 import com.auth0.lock.event.IdentityProviderAuthenticationEvent;
 import com.auth0.lock.event.SocialCredentialEvent;
 import com.auth0.lock.event.SystemErrorEvent;
@@ -60,6 +60,6 @@ public class LockIdentityProviderCallback implements IdentityProviderCallback {
 
     @Override
     public void onFailure(int titleResource, int messageResource, Throwable cause) {
-        bus.post(new AuthenticationError(titleResource, messageResource, cause));
+        bus.post(new AuthenticationError(titleResource, messageResource, ErrorType.UNKNOWN, cause));
     }
 }

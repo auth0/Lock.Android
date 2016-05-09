@@ -27,10 +27,11 @@ package com.auth0.lock.error;
 import com.auth0.api.APIClientException;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.AuthenticationError.ErrorType;
 
 import java.util.Map;
 
-public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuilder{
+public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuilder {
 
     private static final String USERNAME_EXISTS_ERROR = "username_exists";
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
@@ -58,13 +59,13 @@ public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuil
             final String errorCode = (String) errorResponse.get(ERROR_KEY);
             final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
             if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && errorDescription != null) {
-                return new AuthenticationError(titleResource, errorDescription, throwable);
+                return new AuthenticationError(titleResource, errorDescription, ErrorType.UNAUTHORIZED, throwable);
             }
             if (USERNAME_EXISTS_ERROR.equalsIgnoreCase((String) errorResponse.get("code"))) {
-                messageResource = userExistsResource;
+                return new AuthenticationError(titleResource, userExistsResource, ErrorType.USER_EXISTS, throwable);
             }
         }
-        return new AuthenticationError(titleResource, messageResource, throwable);
+        return new AuthenticationError(titleResource, messageResource, ErrorType.UNKNOWN, throwable);
     }
 
 }

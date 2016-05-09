@@ -25,25 +25,54 @@
 package com.auth0.lock.event;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.auth0.lock.event.AuthenticationError.ErrorType.INVALID_CREDENTIALS;
+import static com.auth0.lock.event.AuthenticationError.ErrorType.MFA_INVALID;
+import static com.auth0.lock.event.AuthenticationError.ErrorType.MFA_NOT_ENROLLED;
+import static com.auth0.lock.event.AuthenticationError.ErrorType.MFA_REQUIRED;
+import static com.auth0.lock.event.AuthenticationError.ErrorType.UNAUTHORIZED;
+import static com.auth0.lock.event.AuthenticationError.ErrorType.UNKNOWN;
+import static com.auth0.lock.event.AuthenticationError.ErrorType.USER_EXISTS;
 
 public class AuthenticationError extends AlertDialogEvent {
+
+    @IntDef({UNKNOWN, UNAUTHORIZED, USER_EXISTS, INVALID_CREDENTIALS, MFA_INVALID, MFA_REQUIRED, MFA_NOT_ENROLLED})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ErrorType {
+        int UNKNOWN = 0;
+        int UNAUTHORIZED = 1;
+        int USER_EXISTS = 2;
+        int INVALID_CREDENTIALS = 3;
+        int MFA_INVALID = 4;
+        int MFA_REQUIRED = 5;
+        int MFA_NOT_ENROLLED = 6;
+    }
+
+    @ErrorType
+    private int errorType;
 
     private Throwable throwable;
 
     private String customMesssage;
 
     public AuthenticationError(int title, int message) {
-        this(title, message, null);
+        this(title, message, UNKNOWN, null);
     }
 
-    public AuthenticationError(int title, int message, Throwable throwable) {
+    public AuthenticationError(int title, int message, @ErrorType int type, Throwable throwable) {
         super(title, message);
+        this.errorType = type;
         this.throwable = throwable;
     }
 
-    public AuthenticationError(int title, String message, Throwable throwable) {
+    public AuthenticationError(int title, String message, @ErrorType int type, Throwable throwable) {
         super(title, -1);
         this.customMesssage = message;
+        this.errorType = type;
         this.throwable = throwable;
     }
 
@@ -51,11 +80,17 @@ public class AuthenticationError extends AlertDialogEvent {
         return throwable;
     }
 
+
     @Override
     public String getMessage(Context context) {
         if (customMesssage != null) {
             return customMesssage;
         }
         return super.getMessage(context);
+    }
+
+    @ErrorType
+    public int getErrorType() {
+        return errorType;
     }
 }

@@ -27,10 +27,11 @@ package com.auth0.lock.error;
 import com.auth0.api.APIClientException;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.AuthenticationError.ErrorType;
 
 import java.util.Map;
 
-public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuilder {
+public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuilder {
 
     private static final String INVALID_USER_PASSWORD_ERROR = "invalid_user_password";
     private static final String UNAUTHORIZED_ERROR = "unauthorized";
@@ -67,13 +68,13 @@ public class LoginAuthenticationErrorBuilder implements  AuthenticationErrorBuil
             final String errorCode = (String) errorResponse.get(ERROR_KEY);
             final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
             if (INVALID_USER_PASSWORD_ERROR.equalsIgnoreCase(errorCode)) {
-                messageResource = invalidCredentialsResource;
+                return new AuthenticationError(titleResource, invalidCredentialsResource, ErrorType.INVALID_CREDENTIALS, throwable);
             } else if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && USER_IS_BLOCKED_DESCRIPTION.equalsIgnoreCase(errorDescription)) {
-                messageResource = unauthorizedResource;
+                return new AuthenticationError(titleResource, unauthorizedResource, ErrorType.UNAUTHORIZED, throwable);
             } else if (errorDescription != null) {
-                return new AuthenticationError(titleResource, errorDescription, throwable);
+                return new AuthenticationError(titleResource, errorDescription, ErrorType.UNKNOWN, throwable);
             }
         }
-        return new AuthenticationError(titleResource, messageResource, throwable);
+        return new AuthenticationError(titleResource, messageResource, ErrorType.UNKNOWN, throwable);
     }
 }
