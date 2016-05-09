@@ -401,7 +401,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
             apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
-                    .addParameters(options.getAuthenticationParameters())
+                    .addParameters(authParameters)
                     .start(authCallback);
         } else {
             Map<String, Object> parameters = new HashMap<>();
