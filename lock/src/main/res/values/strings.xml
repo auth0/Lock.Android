@@ -4,6 +4,8 @@
     <string name="com_auth0_auth0_lock">Lock</string>
     <string name="com_auth0_loading_title" />
     <string name="com_auth0_email_placeholder">Email</string>
+    <string name="com_auth0_mfa_code_title_enter_code">Enter code</string>
+    <string name="com_auth0_mfa_code_placeholder">Code</string>
     <string name="com_auth0_username_placeholder">Username</string>
     <string name="com_auth0_password_placeholder">Password</string>
     <string name="com_auth0_new_password_placeholder">New Password</string>
@@ -38,6 +40,7 @@
     <string name="com_auth0_invalid_username_message">The username you entered is invalid. Please try again.</string>
     <string name="com_auth0_invalid_password_message">The password you entered is invalid. Please try again.</string>
     <string name="com_auth0_db_reset_password_invalid_repeat_password_message">The passwords you entered must match. Please try again.</string>
+    <string name="com_auth0_db_login_invalid_mfa_code_message">You must enter a valid code.</string>
 
     <!-- Sign Up -->
     <string name="com_auth0_database_signup_title">Sign Up</string>

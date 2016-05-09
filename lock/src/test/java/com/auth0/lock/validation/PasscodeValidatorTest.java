@@ -22,9 +22,10 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.passwordless.validation;
+package com.auth0.lock.validation;
 
 import com.auth0.android.BuildConfig;
+import com.auth0.lock.validation.PasscodeValidator;
 
 import org.junit.Before;
 import org.junit.Test;

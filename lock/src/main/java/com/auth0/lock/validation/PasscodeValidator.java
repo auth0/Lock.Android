@@ -22,9 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.passwordless.validation;
-
-import com.auth0.lock.validation.BaseFragmentValidator;
+package com.auth0.lock.validation;
 
 public class PasscodeValidator extends BaseFragmentValidator {
 
