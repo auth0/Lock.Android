@@ -228,19 +228,20 @@ public class FormLayout extends LinearLayout {
     @Nullable
     public Object onActionPressed() {
         View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
-        if (existingForm != null) {
-            FormView form = (FormView) existingForm;
-            Object ev = form.submitForm();
-            if (!lockWidget.getConfiguration().hasExtraFields()) {
-                return ev;
-            }
-
-            if (ev != null && existingForm == signUpForm) {
-                //User has configured some extra SignUp custom fields.
-                DatabaseSignUpEvent event = (DatabaseSignUpEvent) ev;
-                showCustomFieldsForm(event);
-            }
+        if (existingForm == null) {
+            return null;
         }
-        return null;
+
+        FormView form = (FormView) existingForm;
+        Object ev = form.submitForm();
+        if (ev == null || !lockWidget.getConfiguration().hasExtraFields()) {
+            return ev;
+        } else if (existingForm == signUpForm) {
+            //User has configured some extra SignUp custom fields.
+            DatabaseSignUpEvent event = (DatabaseSignUpEvent) ev;
+            showCustomFieldsForm(event);
+            return null;
+        }
+        return ev;
     }
 }
