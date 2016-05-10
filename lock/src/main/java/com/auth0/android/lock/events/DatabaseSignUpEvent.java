@@ -38,14 +38,12 @@ public class DatabaseSignUpEvent {
     private String username;
     @Nullable
     private String password;
-    private boolean loginAfterSignUp;
     private Map<String, String> extraFields;
 
-    public DatabaseSignUpEvent(@NonNull String email, @Nullable String username, @Nullable String password, boolean loginAfterSignUp) {
+    public DatabaseSignUpEvent(@NonNull String email, @Nullable String username, @Nullable String password) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.loginAfterSignUp = loginAfterSignUp;
     }
 
     @NonNull
@@ -61,10 +59,6 @@ public class DatabaseSignUpEvent {
     @Nullable
     public String getPassword() {
         return password;
-    }
-
-    public boolean loginAfterSignUp() {
-        return loginAfterSignUp;
     }
 
     @Nullable

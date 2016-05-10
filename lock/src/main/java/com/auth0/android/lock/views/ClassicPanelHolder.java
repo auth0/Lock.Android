@@ -225,8 +225,8 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
 
-        if (show) {
-            customFieldsForm = new CustomFieldsFormView(this, event);
+        if (show && event != null) {
+            customFieldsForm = new CustomFieldsFormView(this, event.getEmail(), event.getUsername(), event.getPassword());
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
             params.addRule(BELOW, R.id.com_auth0_lock_form_selector);

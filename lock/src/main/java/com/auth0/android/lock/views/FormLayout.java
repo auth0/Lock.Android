@@ -156,11 +156,10 @@ public class FormLayout extends LinearLayout {
     }
 
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
-        //TODO: Check back navigation and other forms visibility
         removePreviousForm();
 
         if (customFieldsForm == null) {
-            customFieldsForm = new CustomFieldsFormView(lockWidget, event);
+            customFieldsForm = new CustomFieldsFormView(lockWidget, event.getEmail(), event.getUsername(), event.getPassword());
         }
         addView(customFieldsForm);
     }

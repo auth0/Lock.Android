@@ -28,7 +28,6 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,7 +41,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -389,7 +387,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         panelHolder.showProgress(true);
 
-        if (event.loginAfterSignUp()) {
+        if (configuration.loginAfterSignUp()) {
             Map<String, Object> authParameters = options.getAuthenticationParameters();
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());

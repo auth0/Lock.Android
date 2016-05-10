@@ -48,9 +48,11 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private static final String TAG = CustomFieldsFormView.class.getSimpleName();
 
+    private String email;
+    private String username;
+    private String password;
     private LockWidgetForm lockWidget;
     private List<CustomField> fieldsData;
-    private DatabaseSignUpEvent userData;
     private TextView title;
     private LinearLayout fieldContainer;
     private ValidatedInputView usernameField;
@@ -61,10 +63,12 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         super(context);
     }
 
-    public CustomFieldsFormView(LockWidgetForm lockWidget, DatabaseSignUpEvent userData) {
+    public CustomFieldsFormView(LockWidgetForm lockWidget, String email, String username, String password) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        this.userData = userData;
+        this.email = email;
+        this.username = username;
+        this.password = password;
         this.fieldsData = lockWidget.getConfiguration().getExtraSignUpFields();
         init();
     }
@@ -102,7 +106,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
             ValidatedInputView emailField = new ValidatedInputView(getContext());
             emailField.setDataType(ValidatedInputView.DataType.EMAIL);
             emailField.setLayoutParams(params);
-            emailField.setText(userData.getEmail());
+            emailField.setText(email);
             emailField.setEnabled(false);
             fieldContainer.addView(emailField);
 
@@ -114,7 +118,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
             ValidatedInputView emailOrUsernameField = new ValidatedInputView(getContext());
             emailOrUsernameField.setDataType(showUsername ? ValidatedInputView.DataType.USERNAME : ValidatedInputView.DataType.EMAIL);
             emailOrUsernameField.setLayoutParams(params);
-            emailOrUsernameField.setText(userData.getUsername() == null ? userData.getEmail() : userData.getUsername());
+            emailOrUsernameField.setText(username == null ? email : username);
             emailOrUsernameField.setEnabled(false);
             fieldContainer.addView(emailOrUsernameField);
         }
@@ -152,12 +156,13 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     @Override
     public Object getActionEvent() {
+        DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, username, password);
         if (mustUseFieldsFromFirstStep) {
-            userData.setUsername(usernameField != null ? usernameField.getText() : null);
-            userData.setPassword(passwordField.getText());
+            event.setUsername(usernameField != null ? usernameField.getText() : null);
+            event.setPassword(passwordField.getText());
         }
-        userData.setExtraFields(getCustomFieldValues());
-        return userData;
+        event.setExtraFields(getCustomFieldValues());
+        return event;
     }
 
     @Override

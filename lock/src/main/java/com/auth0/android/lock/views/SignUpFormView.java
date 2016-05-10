@@ -45,7 +45,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
-    private boolean loginAfterSignUp;
 
     public SignUpFormView(Context context) {
         super(context);
@@ -61,7 +60,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private void init() {
         Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
-        loginAfterSignUp = configuration.loginAfterSignUp();
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
@@ -102,7 +100,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     @Override
     public Object getActionEvent() {
         Log.d(TAG, String.format("Triggered sign up with email %s and username %s", getEmail(), getUsername()));
-        return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
+        return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword());
     }
 
     private String getUsername() {
