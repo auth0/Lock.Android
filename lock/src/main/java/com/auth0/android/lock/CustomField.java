@@ -30,6 +30,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,12 +63,10 @@ public class CustomField implements Parcelable {
     @FieldType
     private final int type;
     private final String key;
-    private final String hint;
+    @StringRes
+    private final int hint;
 
-    public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @NonNull String hint) {
-        if (hint.isEmpty()) {
-            throw new IllegalArgumentException("The hint cannot be empty!");
-        }
+    public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint) {
         if (key.isEmpty()) {
             throw new IllegalArgumentException("The key cannot be empty!");
         }
@@ -114,7 +113,8 @@ public class CustomField implements Parcelable {
         return key;
     }
 
-    String getHint() {
+    @StringRes
+    int getHint() {
         return hint;
     }
 
@@ -133,7 +133,7 @@ public class CustomField implements Parcelable {
         //noinspection WrongConstant
         type = in.readInt();
         key = in.readString();
-        hint = in.readString();
+        hint = in.readInt();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class CustomField implements Parcelable {
         dest.writeInt(icon);
         dest.writeInt(type);
         dest.writeString(key);
-        dest.writeString(hint);
+        dest.writeInt(hint);
     }
 
     @SuppressWarnings("unused")

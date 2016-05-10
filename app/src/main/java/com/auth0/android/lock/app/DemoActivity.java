@@ -155,12 +155,12 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
 
-        CustomField fieldName = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "firstName", "First Name");
-        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "surname", "Last Name");
-        CustomField fieldWork = new CustomField(R.drawable.com_auth0_lock_ic_work, FieldType.TYPE_TEXT_NAME, "organization", "Work place");
-        CustomField fieldCountry = new CustomField(R.drawable.com_auth0_lock_ic_world, FieldType.TYPE_TEXT_NAME, "country", "Country name");
-        CustomField fieldPhone = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "phoneNumber", "Your phone");
-        CustomField fieldDate = new CustomField(R.drawable.com_auth0_lock_ic_clock, FieldType.TYPE_DATE, "date", "Your birthday");
+        CustomField fieldName = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "firstName", R.string.hint_name);
+        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "surname", R.string.hint_surname);
+        CustomField fieldWork = new CustomField(R.drawable.com_auth0_lock_ic_work, FieldType.TYPE_TEXT_NAME, "organization", R.string.hint_work);
+        CustomField fieldCountry = new CustomField(R.drawable.com_auth0_lock_ic_world, FieldType.TYPE_TEXT_NAME, "country", R.string.hint_country);
+        CustomField fieldPhone = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "phoneNumber", R.string.hint_phone);
+        CustomField fieldDate = new CustomField(R.drawable.com_auth0_lock_ic_clock, FieldType.TYPE_DATE, "date", R.string.hint_date);
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldName);

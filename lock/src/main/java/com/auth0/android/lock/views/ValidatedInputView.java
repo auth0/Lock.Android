@@ -31,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.annotation.StringRes;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -264,7 +265,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      *
      * @param hint the new hint to set.
      */
-    public void setHint(String hint) {
+    public void setHint(@StringRes int hint) {
         input.setHint(hint);
     }
 

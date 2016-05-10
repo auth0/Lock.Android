@@ -48,7 +48,7 @@ public class CustomFieldTest {
     private static final int ICON = R.drawable.com_auth0_lock_ic_email;
     private static final int TYPE = FieldType.TYPE_EMAIL;
     private static final String KEY = "key";
-    private static final String HINT = "hint";
+    private static final int HINT = R.string.com_auth0_lock_hint_email;
     private static final String CUSTOM_FIELD_KEY = "custom_field";
 
     @Test
