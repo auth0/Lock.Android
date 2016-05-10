@@ -29,7 +29,9 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.annotation.StringRes;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -48,6 +50,7 @@ import com.auth0.android.lock.R;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.DATE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.NUMBER;
@@ -67,7 +70,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     private ImageView icon;
     private int inputIcon;
 
-    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE})
+    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DataType {
         int USERNAME = 0;
@@ -77,6 +80,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         int PHONE_NUMBER = 4;
         int PASSWORD = 5;
         int MOBILE_PHONE = 6;
+        int DATE = 7;
     }
 
     @DataType
@@ -162,6 +166,10 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
                 inputIcon = R.drawable.com_auth0_lock_ic_phone;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
+                break;
+            case DATE:
+                input.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
+                inputIcon = R.drawable.com_auth0_lock_ic_clock;
                 break;
         }
         input.setHint(hint);
@@ -257,8 +265,18 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      *
      * @param hint the new hint to set.
      */
-    public void setHint(String hint) {
+    public void setHint(@StringRes int hint) {
         input.setHint(hint);
+    }
+
+
+    /**
+     * Updates the input Icon.
+     *
+     * @param icon the new icon to set.
+     */
+    public void setIcon(@DrawableRes int icon) {
+        this.icon.setImageResource(icon);
     }
 
     /**

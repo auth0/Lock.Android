@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock;
 
+import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
@@ -57,7 +58,6 @@ import static com.auth0.android.lock.utils.Strategies.Yahoo;
 import static com.auth0.android.lock.utils.Strategies.Yammer;
 import static com.auth0.android.lock.utils.Strategies.Yandex;
 import static com.auth0.android.lock.utils.StrategyMatcher.isStrategy;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -68,7 +68,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -394,8 +393,8 @@ public class ConfigurationTest {
     }
 
     private List<CustomField> createCustomFields() {
-        CustomField fieldNumber = new CustomField(CustomField.FieldType.TYPE_PHONE_NUMBER, "number", "Number");
-        CustomField fieldSurname = new CustomField(CustomField.FieldType.TYPE_PERSON_NAME, "surname", "Surname");
+        CustomField fieldNumber = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "number", R.string.com_auth0_lock_hint_phone_number);
+        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "surname", R.string.com_auth0_lock_hint_username);
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldNumber);
