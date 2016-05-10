@@ -34,6 +34,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.UsernameStyle;
@@ -91,16 +92,9 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.setMargins(0, verticalMargin / 2, 0, verticalMargin / 2);
 
-        boolean showEmail = false;
-        boolean showUsername = false;
-        if (lockWidget.getConfiguration().isUsernameRequired()) {
-            showEmail = true;
-            showUsername = true;
-        } else if (lockWidget.getConfiguration().getUsernameStyle() == UsernameStyle.USERNAME) {
-            showUsername = true;
-        } else if (lockWidget.getConfiguration().getUsernameStyle() == UsernameStyle.EMAIL || lockWidget.getConfiguration().getUsernameStyle() == UsernameStyle.DEFAULT) {
-            showEmail = true;
-        }
+        Configuration configuration = lockWidget.getConfiguration();
+        boolean showEmail = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT;
+        boolean showUsername = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.USERNAME;
 
         if (showEmail && showUsername) {
             ValidatedInputView emailField = new ValidatedInputView(getContext());
