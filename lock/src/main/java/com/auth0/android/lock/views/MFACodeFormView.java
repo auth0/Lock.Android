@@ -41,6 +41,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
 
     private LockWidget lockWidget;
     private TextView title;
+    private TextView description;
     private ValidatedInputView codeInput;
 
 
@@ -54,8 +55,10 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_mfa_input_code_form_view, this);
-        title = (TextView) findViewById(R.id.com_auth0_lock_text);
+        title = (TextView) findViewById(R.id.com_auth0_lock_title);
+        description = (TextView) findViewById(R.id.com_auth0_lock_text);
         codeInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_code);
+        codeInput.setHint(getResources().getString(R.string.com_auth0_lock_hint_mfa_code));
         codeInput.setOnEditorActionListener(this);
     }
 
@@ -98,6 +101,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         title.setVisibility(isOpen ? GONE : VISIBLE);
+        description.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
 }
