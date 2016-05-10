@@ -83,6 +83,8 @@ import com.squareup.otto.Subscribe;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType;
+
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = LockActivity.class.getSimpleName();
@@ -566,15 +568,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    panelHolder.showProgress(false);
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
-                    if (authError.getErrorType() == AuthenticationError.ErrorType.MFA_REQUIRED) {
-                        panelHolder.showProgress(false);
+                    if (authError.getErrorType() == ErrorType.MFA_REQUIRED || authError.getErrorType() == ErrorType.MFA_NOT_ENROLLED) {
                         panelHolder.showMFACodeForm(lastDatabaseLogin);
                         return;
-                    } else if (authError.getErrorType() == AuthenticationError.ErrorType.MFA_NOT_ENROLLED) {
-                        panelHolder.showProgress(false);
-                        panelHolder.onBackPressed();
-                        lastDatabaseLogin = null;
                     }
                     String message = authError.getMessage(LockActivity.this);
                     showErrorMessage(message);

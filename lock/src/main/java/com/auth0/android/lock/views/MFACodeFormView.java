@@ -36,19 +36,19 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 public class MFACodeFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = MFACodeFormView.class.getSimpleName();
+    private final String usernameOrEmail;
+    private final String password;
 
-    private final DatabaseLoginEvent lastEvent;
     private LockWidget lockWidget;
     private TextView title;
     private ValidatedInputView codeInput;
 
-    /**
-     * @param lockWidget
-     */
-    public MFACodeFormView(LockWidget lockWidget, DatabaseLoginEvent event) {
+
+    public MFACodeFormView(LockWidget lockWidget, String usernameOrEmail, String password) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        this.lastEvent = event;
+        this.usernameOrEmail = usernameOrEmail;
+        this.password = password;
         init();
     }
 
@@ -62,8 +62,9 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
 
     @Override
     public Object getActionEvent() {
-        lastEvent.setMFACode(getInputText());
-        return lastEvent;
+        DatabaseLoginEvent event = new DatabaseLoginEvent(usernameOrEmail, password);
+        event.setMFACode(getInputText());
+        return event;
     }
 
     private String getInputText() {

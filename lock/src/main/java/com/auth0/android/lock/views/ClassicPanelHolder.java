@@ -199,14 +199,14 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showChangePasswordForm(boolean show) {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout.setVisibility(show ? GONE : VISIBLE);
         if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
 
         if (show) {
+            int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+            int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
             changePwdForm = new ChangePasswordFormView(this);
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
@@ -220,23 +220,23 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         }
     }
 
-    private void showMFACodeForm(boolean show, @Nullable DatabaseLoginEvent event) {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+    private void showMFACodeForm(boolean show, DatabaseLoginEvent event) {
         formLayout.setVisibility(show ? GONE : VISIBLE);
         if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
 
         if (show && mfaCodeFormView == null) {
-            mfaCodeFormView = new MFACodeFormView(this, event);
+            int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+            int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+            mfaCodeFormView = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword());
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
             params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
             params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
             params.addRule(CENTER_IN_PARENT, TRUE);
             addView(mfaCodeFormView, params);
-        } else if (mfaCodeFormView != null) {
+        } else if (!show && mfaCodeFormView != null) {
             removeView(mfaCodeFormView);
             mfaCodeFormView = null;
         }
