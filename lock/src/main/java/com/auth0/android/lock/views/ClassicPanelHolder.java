@@ -40,6 +40,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
@@ -252,6 +253,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (customFieldsForm != null && customFieldsForm.getVisibility() == VISIBLE) {
             showCustomFieldsForm(false, null);
             showSignUpTerms(!keyboardIsOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
+            bus.post(new SignUpCustomFieldsEvent(false));
             return true;
         }
         boolean handled = formLayout != null && formLayout.onBackPressed();
@@ -332,6 +334,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
         showCustomFieldsForm(true, event);
         showSignUpTerms(false);
+        bus.post(new SignUpCustomFieldsEvent(true));
     }
 
     @Override

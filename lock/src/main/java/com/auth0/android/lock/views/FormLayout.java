@@ -35,12 +35,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
-
-import java.util.HashMap;
 
 public class FormLayout extends LinearLayout {
     private static final int SINGLE_FORM_POSITION = 0;
