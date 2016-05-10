@@ -219,8 +219,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     private void showCustomFieldsForm(boolean show, @Nullable DatabaseSignUpEvent event) {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout.setVisibility(show ? GONE : VISIBLE);
         if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
@@ -229,7 +227,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (show) {
             customFieldsForm = new CustomFieldsFormView(this, event);
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
             params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
             params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
             params.addRule(CENTER_IN_PARENT, TRUE);
