@@ -31,7 +31,7 @@ public class DatabaseLoginEvent {
 
     private String usernameOrEmail;
     private String password;
-    private String MFACode;
+    private String verificationCode;
 
     public DatabaseLoginEvent(String usernameOrEmail, String password) {
         this.usernameOrEmail = usernameOrEmail;
@@ -46,12 +46,12 @@ public class DatabaseLoginEvent {
         return password;
     }
 
-    public void setMFACode(String code) {
-        this.MFACode = code;
+    public void setVerificationCode(String code) {
+        this.verificationCode = code;
     }
 
     @Nullable
-    public String getMFACode() {
-        return MFACode;
+    public String getVerificationCode() {
+        return verificationCode;
     }
 }

@@ -89,7 +89,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String KEY_USER_METADATA = "user_metadata";
-    private static final String KEY_MFA_CODE = "mfa_code";
+    private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final int PERMISSION_REQUEST_CODE = 201;
@@ -383,8 +383,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
-        if (event.getMFACode() != null) {
-            parameters.put(KEY_MFA_CODE, event.getMFACode());
+        if (event.getVerificationCode() != null) {
+            parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
         }
         apiClient.getProfileAfter(apiClient.login(event.getUsernameOrEmail(), event.getPassword()))
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())

@@ -66,7 +66,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
     @Override
     public Object getActionEvent() {
         DatabaseLoginEvent event = new DatabaseLoginEvent(usernameOrEmail, password);
-        event.setMFACode(getInputText());
+        event.setVerificationCode(getInputText());
         return event;
     }
 
