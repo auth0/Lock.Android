@@ -4,8 +4,8 @@
     <string name="com_auth0_auth0_lock">Lock</string>
     <string name="com_auth0_loading_title" />
     <string name="com_auth0_email_placeholder">Email</string>
-    <string name="com_auth0_mfa_code_title_enter_code">Enter code</string>
-    <string name="com_auth0_mfa_code_placeholder">Code</string>
+    <string name="com_auth0_mfa_code_title_enter_code">Two Step Verification</string>
+    <string name="com_auth0_mfa_code_placeholder">Verification Code</string>
     <string name="com_auth0_username_placeholder">Username</string>
     <string name="com_auth0_password_placeholder">Password</string>
     <string name="com_auth0_new_password_placeholder">New Password</string>
@@ -26,7 +26,7 @@
     <string name="com_auth0_db_cancel_button_text">CANCEL</string>
     <string name="com_auth0_db_single_sign_on_button">LOGIN WITH %s</string>
     <string name="com_auth0_enterprise_no_connection_message">There was no connection configured for the domain</string>
-    <string name="com_auth0_mfa_code_message">Use your Multi-Factor Authentication application to generate a code</string>
+    <string name="com_auth0_mfa_code_message">Please enter a verification code from\n your code generator application.</string>
 
     <string name="com_auth0_application_load_failed_title">Failed to load application information</string>
     <string name="com_auth0_application_load_failed_message">Couldn\'t obtain application configuration. Please check your Auth0 configuration and try again.</string>
