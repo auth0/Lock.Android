@@ -22,47 +22,51 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.lock.passwordless.fragment;
+package com.auth0.lock.fragment;
 
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import com.auth0.api.callback.AuthenticationCallback;
+import com.auth0.core.Token;
+import com.auth0.core.UserProfile;
+import com.auth0.lock.R;
+import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
-import com.auth0.lock.event.NavigationEvent;
-import com.auth0.lock.fragment.BaseTitledFragment;
-import com.auth0.lock.passwordless.R;
-import com.auth0.lock.passwordless.event.LoginRequestEvent;
 import com.auth0.lock.validation.PasscodeValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
 import com.squareup.otto.Subscribe;
 
-public class PasscodeLoginFragment extends BaseTitledFragment {
+import java.util.HashMap;
+import java.util.Map;
 
-    private static final String MESSAGE_FORMAT_ARGUMENT = "MESSAGE_FORMAT_ARGUMENT";
+public class MFACodeLoginFragment extends BaseTitledFragment {
+
+    private static final String KEY_MFA_CODE = "mfa_code";
     private static final String USERNAME_ARGUMENT = "USERNAME_ARGUMENT";
+    private static final String PASSWORD_ARGUMENT = "PASSWORD_ARGUMENT";
 
-    private int messageFormatResId;
     private String username;
+    private String password;
     private Validator validator;
 
+    LoginAuthenticationErrorBuilder errorBuilder;
     Button accessButton;
     ProgressBar progressBar;
-    CredentialField passcodeField;
+    CredentialField mfaCodeField;
 
-    public static PasscodeLoginFragment newInstance(int messageFormatResId, String username) {
-        PasscodeLoginFragment fragment = new PasscodeLoginFragment();
+    public static MFACodeLoginFragment newInstance(String username, String password) {
+        MFACodeLoginFragment fragment = new MFACodeLoginFragment();
         Bundle args = new Bundle();
-        args.putInt(MESSAGE_FORMAT_ARGUMENT, messageFormatResId);
         args.putString(USERNAME_ARGUMENT, username);
+        args.putString(PASSWORD_ARGUMENT, password);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,10 +76,11 @@ public class PasscodeLoginFragment extends BaseTitledFragment {
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         if (arguments != null) {
-            messageFormatResId = getArguments().getInt(MESSAGE_FORMAT_ARGUMENT);
             username = arguments.getString(USERNAME_ARGUMENT);
+            password = arguments.getString(PASSWORD_ARGUMENT);
         }
-        validator = new PasscodeValidator(R.id.com_auth0_passwordless_passcode_login_code_field, R.string.com_auth0_passwordless_login_error_title, R.string.com_auth0_passwordless_login_invalid_passcode_message);
+        errorBuilder = new LoginAuthenticationErrorBuilder();
+        validator = new PasscodeValidator(R.id.com_auth0_passwordless_passcode_login_code_field, R.string.com_auth0_db_login_error_title, R.string.com_auth0_invalid_code_message);
 
         bus.register(this);
     }
@@ -90,23 +95,13 @@ public class PasscodeLoginFragment extends BaseTitledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.com_auth0_passwordless_fragment_passcode_login, container, false);
+        return inflater.inflate(R.layout.com_auth0_db_mfa_code_form, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button noCodeButton = (Button) view.findViewById(R.id.com_auth0_passwordless_passcode_no_code_button);
-        noCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bus.post(NavigationEvent.BACK);
-            }
-        });
-        TextView messageTextView = (TextView) view.findViewById(R.id.com_auth0_passwordless_passcode_enter_code_message);
-        String messageFormat = getString(messageFormatResId);
-        messageTextView.setText(Html.fromHtml(String.format(messageFormat, username)));
-        passcodeField = (CredentialField) view.findViewById(R.id.com_auth0_passwordless_passcode_login_code_field);
+        mfaCodeField = (CredentialField) view.findViewById(R.id.com_auth0_passwordless_passcode_login_code_field);
         accessButton = (Button) view.findViewById(R.id.com_auth0_passwordless_passcode_access_button);
         progressBar = (ProgressBar) view.findViewById(R.id.com_auth0_passwordless_passcode_login_progress_indicator);
         accessButton.setOnClickListener(new View.OnClickListener() {
@@ -131,28 +126,49 @@ public class PasscodeLoginFragment extends BaseTitledFragment {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
+        String mfaCode = mfaCodeField.getText().toString().trim();
+        Map<String, Object> mfaParameters = new HashMap<>();
+        mfaParameters.put(KEY_MFA_CODE, mfaCode);
+        client.login(username, password)
+                .addParameters(authenticationParameters)
+                .addParameters(mfaParameters)
+                .start(new AuthenticationCallback() {
+                    @Override
+                    public void onSuccess(UserProfile userProfile, Token token) {
+                        bus.post(new AuthenticationEvent(userProfile, token));
+                        accessButton.setEnabled(true);
+                        accessButton.setText(R.string.com_auth0_db_login_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-        String passcode = passcodeField.getText().toString();
-        bus.post(new LoginRequestEvent(username, passcode));
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        bus.post(errorBuilder.buildFrom(throwable));
+                        accessButton.setEnabled(true);
+                        accessButton.setText(R.string.com_auth0_db_login_btn_text);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onAuthenticationError(AuthenticationError error) {
         accessButton.setEnabled(true);
-        accessButton.setText(R.string.com_auth0_passwordless_login_access_btn_text);
+        accessButton.setText(R.string.com_auth0_db_login_btn_text);
         progressBar.setVisibility(View.GONE);
     }
 
     @SuppressWarnings("unused")
-    @Subscribe public void onAuthentication(AuthenticationEvent event) {
+    @Subscribe
+    public void onAuthentication(AuthenticationEvent event) {
         accessButton.setEnabled(true);
-        accessButton.setText(R.string.com_auth0_passwordless_login_access_btn_text);
+        accessButton.setText(R.string.com_auth0_db_login_btn_text);
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     protected int getTitleResource() {
-        return R.string.com_auth0_passwordless_title_enter_passcode;
+        return R.string.com_auth0_mfa_code_title_enter_code;
     }
 }

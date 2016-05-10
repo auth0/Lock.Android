@@ -427,7 +427,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
 
             @Override
             public void onFailure(Throwable error) {
-                bus.post(new AuthenticationError(title, message, error));
+                bus.post(new AuthenticationError(title, message, AuthenticationError.ErrorType.UNKNOWN, error));
             }
         };
 

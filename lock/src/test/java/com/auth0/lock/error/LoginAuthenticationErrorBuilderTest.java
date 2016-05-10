@@ -83,6 +83,7 @@ public class LoginAuthenticationErrorBuilderTest {
         AuthenticationError error = builder.buildFrom(exception);
         assertThat(error, hasMessage(R.string.com_auth0_db_login_invalid_credentials_error_message));
         assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.INVALID_CREDENTIALS));
     }
 
     @Test
@@ -94,6 +95,40 @@ public class LoginAuthenticationErrorBuilderTest {
         AuthenticationError error = builder.buildFrom(exception);
         assertThat(error, hasMessage(R.string.com_auth0_db_login_unauthorized_error_message));
         assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.UNAUTHORIZED));
+    }
+
+    @Test
+    public void shouldReturnMFACodeMissingMessage() throws Exception {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "a0.mfa_required");
+        Throwable exception = new APIClientException("error", 401, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error, hasMessage(R.string.com_auth0_db_login_error_message));
+        assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.MFA_REQUIRED));
+    }
+
+    @Test
+    public void shouldReturnMFANotEnrolledMessage() throws Exception {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "a0.mfa_registration_required");
+        Throwable exception = new APIClientException("error", 401, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error, hasMessage(R.string.com_auth0_db_login_error_message));
+        assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.MFA_NOT_ENROLLED));
+    }
+
+    @Test
+    public void shouldReturnMFACodeInvalidMessage() throws Exception {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put(AuthenticationErrorBuilder.ERROR_KEY, "a0.mfa_invalid_code");
+        Throwable exception = new APIClientException("error", 401, errors);
+        AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error, hasMessage(R.string.com_auth0_db_login_invalid_mfa_code_message));
+        assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.MFA_INVALID));
     }
 
     @Test
@@ -105,6 +140,7 @@ public class LoginAuthenticationErrorBuilderTest {
         AuthenticationError error = builder.buildFrom(exception);
         assertThat(error.getMessage(RuntimeEnvironment.application), equalTo("custom error"));
         assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.UNKNOWN));
     }
 
     @Test
@@ -116,6 +152,7 @@ public class LoginAuthenticationErrorBuilderTest {
         AuthenticationError error = builder.buildFrom(exception);
         assertThat(error.getMessage(RuntimeEnvironment.application), equalTo("custom error"));
         assertThat(error.getThrowable(), equalTo(exception));
+        assertThat(error.getErrorType(), equalTo(AuthenticationError.ErrorType.UNKNOWN));
     }
 
 }

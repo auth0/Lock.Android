@@ -141,7 +141,7 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
 
                     @Override
                     public void onFailure(Throwable error) {
-                        bus.post(new AuthenticationError(R.string.com_auth0_db_change_password_error_title, R.string.com_auth0_db_change_password_error_message, error));
+                        bus.post(new AuthenticationError(R.string.com_auth0_db_change_password_error_title, R.string.com_auth0_db_change_password_error_message, AuthenticationError.ErrorType.UNKNOWN, error));
                         sendButton.setEnabled(true);
                         sendButton.setText(R.string.com_auth0_db_change_password_btn_text);
                         progressBar.setVisibility(View.GONE);

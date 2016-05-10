@@ -25,6 +25,7 @@
 package com.auth0.lock.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,7 +42,6 @@ import android.widget.TextView;
 import com.auth0.api.ParameterBuilder;
 import com.auth0.api.callback.AuthenticationCallback;
 import com.auth0.core.Connection;
-import com.auth0.core.Strategy;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
 import com.auth0.lock.Configuration;
@@ -50,6 +50,7 @@ import com.auth0.lock.LockContext;
 import com.auth0.lock.R;
 import com.auth0.lock.error.LoginAuthenticationErrorBuilder;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.event.AuthenticationError.ErrorType;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.EnterpriseAuthenticationRequest;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
@@ -58,6 +59,7 @@ import com.auth0.lock.util.DomainMatcher;
 import com.auth0.lock.validation.LoginValidator;
 import com.auth0.lock.widget.CredentialField;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class DatabaseLoginFragment extends BaseTitledFragment {
@@ -144,7 +146,8 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         usernameField = (CredentialField) view.findViewById(R.id.com_auth0_db_login_username_field);
         if (requiresUsername) {
             usernameField.setHint(R.string.com_auth0_username_email_placeholder);
-        } if (!useEmail) {
+        }
+        if (!useEmail) {
             usernameField.setHint(R.string.com_auth0_username_placeholder);
             usernameField.setIconResource(R.drawable.com_auth0_ic_person);
             usernameField.setErrorIconResource(R.drawable.com_auth0_ic_person_error);
@@ -276,12 +279,32 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         }
     }
 
+    @NonNull
+    private String getPassword() {
+        return passwordField.getText().toString();
+    }
+
+    @NonNull
+    private String getUsername() {
+        return usernameField.getText().toString().trim();
+    }
+
+    private void showMFAFragment(String username, String password) {
+        final MFACodeLoginFragment fragment = MFACodeLoginFragment.newInstance(username, password);
+        fragment.getArguments()
+                .putSerializable(BaseTitledFragment.AUTHENTICATION_PARAMETER_ARGUMENT, new HashMap<>(authenticationParameters));
+        getFragmentManager().beginTransaction()
+                .replace(R.id.com_auth0_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void performLogin() {
         accessButton.setEnabled(false);
         accessButton.setText("");
         progressBar.setVisibility(View.VISIBLE);
-        String username = usernameField.getText().toString().trim();
-        String password = passwordField.getText().toString();
+        final String username = getUsername();
+        final String password = getPassword();
         client.login(username, password)
                 .addParameters(authenticationParameters)
                 .start(new AuthenticationCallback() {
@@ -295,10 +318,15 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        bus.post(errorBuilder.buildFrom(throwable));
+                        final AuthenticationError authError = errorBuilder.buildFrom(throwable);
                         accessButton.setEnabled(true);
                         accessButton.setText(R.string.com_auth0_db_login_btn_text);
                         progressBar.setVisibility(View.GONE);
+                        if (authError.getErrorType() == ErrorType.MFA_REQUIRED) {
+                            showMFAFragment(username, password);
+                            return;
+                        }
+                        bus.post(authError);
                     }
                 });
     }
