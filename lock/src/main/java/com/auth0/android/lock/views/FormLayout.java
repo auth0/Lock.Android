@@ -91,7 +91,7 @@ public class FormLayout extends LinearLayout {
     private void addSeparator() {
         orSeparatorMessage = new TextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
-        orSeparatorMessage.setTextColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_normal_text));
+        orSeparatorMessage.setTextColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
@@ -156,11 +156,10 @@ public class FormLayout extends LinearLayout {
     }
 
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
-        //TODO: Check back navigation and other forms visibility
         removePreviousForm();
 
         if (customFieldsForm == null) {
-            customFieldsForm = new CustomFieldsFormView(lockWidget, event);
+            customFieldsForm = new CustomFieldsFormView(lockWidget, event.getEmail(), event.getUsername(), event.getPassword());
         }
         addView(customFieldsForm);
     }

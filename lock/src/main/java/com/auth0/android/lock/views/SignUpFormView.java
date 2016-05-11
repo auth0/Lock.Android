@@ -45,7 +45,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
-    private boolean loginAfterSignUp;
 
     public SignUpFormView(Context context) {
         super(context);
@@ -61,12 +60,30 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private void init() {
         Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
-        loginAfterSignUp = configuration.loginAfterSignUp();
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordInput.setOnEditorActionListener(this);
+
+        if (configuration.getExtraSignUpFields().size() == 1) {
+            Log.d(TAG, "There is just 1 extra field. Showing special SignUp layout.");
+            boolean askEmail = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT;
+            if (askEmail) {
+                usernameInput.setVisibility(View.GONE);
+                emailInput.setVisibility(View.VISIBLE);
+                emailInput.setOnEditorActionListener(this);
+            } else {
+                emailInput.setVisibility(View.GONE);
+                usernameInput.setVisibility(View.VISIBLE);
+                usernameInput.setOnEditorActionListener(this);
+            }
+            passwordInput.setVisibility(View.GONE);
+            return;
+        }
 
         if (configuration.isUsernameRequired()) {
             emailInput.setVisibility(View.VISIBLE);
@@ -78,16 +95,12 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
             emailInput.setVisibility(View.VISIBLE);
             usernameInput.setVisibility(View.GONE);
         }
-
-        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
-        passwordInput.setOnEditorActionListener(this);
     }
 
     @Override
     public Object getActionEvent() {
         Log.d(TAG, String.format("Triggered sign up with email %s and username %s", getEmail(), getUsername()));
-        return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword(), loginAfterSignUp);
+        return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword());
     }
 
     private String getUsername() {
@@ -108,12 +121,15 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
 
     @Override
     public boolean validateForm() {
-        boolean valid = passwordInput.validate(true);
+        boolean valid = true;
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = usernameInput.validate(true) && valid;
+            valid = usernameInput.validate(true);
         }
         if (emailInput.getVisibility() == VISIBLE) {
             valid = emailInput.validate(true) && valid;
+        }
+        if (passwordInput.getVisibility() == VISIBLE) {
+            valid = passwordInput.validate(true) && valid;
         }
         return valid;
     }

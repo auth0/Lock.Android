@@ -87,6 +87,7 @@ public class Configuration {
         parseLocalOptions(options);
     }
 
+    @NonNull
     public List<CustomField> getExtraSignUpFields() {
         return extraSignUpFields;
     }

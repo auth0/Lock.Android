@@ -395,7 +395,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         panelHolder.showProgress(true);
 
-        if (event.loginAfterSignUp()) {
+        if (configuration.loginAfterSignUp()) {
             Map<String, Object> authParameters = options.getAuthenticationParameters();
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());

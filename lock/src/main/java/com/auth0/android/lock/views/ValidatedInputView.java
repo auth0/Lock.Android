@@ -106,11 +106,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
 
-        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
-        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_background), ViewUtils.Corners.ONLY_RIGHT);
-        ViewUtils.setBackground(icon, leftBackground);
-        ViewUtils.setBackground(input, rightBackground);
-
+        createBackground();
         if (attrs == null || isInEditMode()) {
             return;
         }
@@ -187,6 +183,13 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         ViewUtils.setBackground(parent, gd);
     }
 
+    private void createBackground() {
+        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled), ViewUtils.Corners.ONLY_RIGHT);
+        ViewUtils.setBackground(icon, leftBackground);
+        ViewUtils.setBackground(input, rightBackground);
+    }
+
     /**
      * Changes the type of input this view will validate.
      *
@@ -258,6 +261,18 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     public void setText(String text) {
         input.setText("");
         input.append(text);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        input.setEnabled(enabled);
+        createBackground();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return input.isEnabled();
     }
 
     /**
