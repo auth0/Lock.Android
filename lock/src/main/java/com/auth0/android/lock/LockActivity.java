@@ -55,7 +55,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
+import com.auth0.android.lock.events.HeaderSizeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
@@ -361,8 +361,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onSignUpCustomFieldsShown(SignUpCustomFieldsEvent event) {
-        headerView.changeHeaderSize(event.isShown() ? HeaderSize.SMALL : HeaderSize.NORMAL);
+    public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
+        headerView.changeHeaderSize(event.useSmallHeader() ? HeaderSize.SMALL : HeaderSize.NORMAL);
     }
 
     @SuppressWarnings("unused")

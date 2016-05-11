@@ -24,14 +24,14 @@
 
 package com.auth0.android.lock.events;
 
-public class SignUpCustomFieldsEvent {
-    private final boolean isShown;
+public class HeaderSizeChangeEvent {
+    private final boolean smallHeader;
 
-    public SignUpCustomFieldsEvent(boolean isShown) {
-        this.isShown = isShown;
+    public HeaderSizeChangeEvent(boolean useSmallHeader) {
+        this.smallHeader = useSmallHeader;
     }
 
-    public boolean isShown() {
-        return isShown;
+    public boolean useSmallHeader() {
+        return smallHeader;
     }
 }

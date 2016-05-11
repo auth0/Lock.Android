@@ -58,7 +58,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
         title = (TextView) findViewById(R.id.com_auth0_lock_title);
         description = (TextView) findViewById(R.id.com_auth0_lock_text);
         codeInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_code);
-        codeInput.setHint(getResources().getString(R.string.com_auth0_lock_hint_mfa_code));
+        codeInput.setHint(R.string.com_auth0_lock_hint_mfa_code);
         codeInput.setOnEditorActionListener(this);
     }
 

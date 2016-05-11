@@ -49,4 +49,11 @@ public abstract class FormView extends RelativeLayout {
     @Nullable
     public abstract Object submitForm();
 
+    /**
+     * Called when the keyboard is opened or closed.
+     *
+     * @param isOpen if the keyboard is currently opened.
+     */
+    public abstract void onKeyboardStateChanged(boolean isOpen);
+
 }
