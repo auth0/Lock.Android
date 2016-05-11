@@ -136,14 +136,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         panelHolder = new ClassicPanelHolder(this, lockBus);
         rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //Add padding to the status bar (as its now an extended layout)
-            int paddingTop = getStatusBarHeight();
-            resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
-            headerView.setPaddingTop(paddingTop);
-        }
-
+        int paddingTop = getStatusBarHeight();
+        resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
+        headerView.setPaddingTop(paddingTop);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
