@@ -88,7 +88,7 @@ public class HeaderView extends RelativeLayout {
      * @param color the color to use
      */
     public void setColor(@ColorRes int color) {
-        this.header.setBackgroundColor(getResources().getColor(color));
+        this.header.setBackgroundColor(ViewUtils.obtainColor(getContext(), color));
     }
 
     /**

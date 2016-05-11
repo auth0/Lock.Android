@@ -96,7 +96,7 @@ public class CountryCodeSelectorView extends LinearLayout {
             protected void onPostExecute(Map<String, String> result) {
                 task = null;
                 String defaultCountry = Locale.getDefault().getCountry();
-                Country country = new Country("US", "+1");
+                Country country = new Country(getContext().getString(R.string.com_auth0_lock_default_country_name_fallback), getContext().getString(R.string.com_auth0_lock_default_country_code_fallback));
                 if (result != null) {
                     final ArrayList<String> names = new ArrayList<>(result.keySet());
                     for (String name : names) {

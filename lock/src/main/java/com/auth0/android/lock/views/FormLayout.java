@@ -209,10 +209,7 @@ public class FormLayout extends LinearLayout {
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        if (domainForm != null && domainForm.onBackPressed()) {
-            return true;
-        }
-        return false;
+        return domainForm != null && domainForm.onBackPressed();
     }
 
     /**

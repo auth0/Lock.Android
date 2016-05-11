@@ -101,6 +101,9 @@
     <string name="com_auth0_lock_social_icon_dwolla">D</string>
 
     <!-- Lock General -->
+    <string name="com_auth0_lock_webview_loading_retry">Retry</string>
+    <string name="com_auth0_lock_default_country_name_fallback">US</string>
+    <string name="com_auth0_lock_default_country_code_fallback">+1</string>
     <string name="com_auth0_lock_header_title">Auth0</string>
     <string name="com_auth0_lock_network_error">Network error</string>
     <string name="com_auth0_lock_hint_email">Email</string>
@@ -110,23 +113,12 @@
     <string name="com_auth0_lock_hint_code">Code</string>
     <string name="com_auth0_lock_hint_mfa_code">Verification Code</string>
     <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
-    <string name="com_auth0_lock_input_error_email">Email not valid</string>
-    <string name="com_auth0_lock_input_error_password">Must have at least 6 chars</string>
-    <string name="com_auth0_lock_input_error_username">Must have at least 6 chars and no spaces</string>
-    <string name="com_auth0_lock_input_error_username_email">Must be a valid email or have at least 6 chars and no spaces</string>
     <string name="com_auth0_lock_action_sign_up">Sign Up</string>
-    <string name="com_auth0_lock_action_change_password">Change password</string>
     <string name="com_auth0_lock_action_log_in">Log In</string>
     <string name="com_auth0_lock_action_forgot_password">Don\'t remember your password?</string>
-    <string name="com_auth0_lock_action_go_back">Go Back</string>
     <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
-    <string name="com_auth0_lock_action_send_code">Send Code</string>
     <string name="com_auth0_lock_action_retry">Retry</string>
-    <string name="com_auth0_lock_input_error_code">Code must not be empty</string>
-    <string name="com_auth0_lock_action_send_link">Send Link</string>
-    <string name="com_auth0_lock_action_click_link">Open the Link to Login</string>
     <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
-    <string name="com_auth0_lock_input_error_phone_number">The phone number cannot be empty</string>
     <string name="com_auth0_lock_forms_separator">OR</string>
     <string name="com_auth0_lock_passwordless_sms_forms_separator">Otherwise, enter your phone to sign in or create an account</string>
     <string name="com_auth0_lock_passwordless_email_forms_separator">Otherwise, enter your email to sign in or create an account</string>
@@ -137,10 +129,7 @@
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_country_code_item_format" formatted="false">%s %s</string>
     <string name="com_auth0_lock_title_passwordless_link_sent">We sent you a link to sign in to\n %s</string>
-    <string name="com_auth0_lock_title_passwordless_link_error">This account was already\n verified</string>
-    <string name="com_auth0_lock_title_passwordless_link_error_small">You can only use this link once.</string>
     <string name="com_auth0_lock_title_passwordless_code_retry">Did not get the code?</string>
-    <string name="com_auth0_lock_title_passwordless_link_retry">Resend</string>
     <string name="com_auth0_lock_title_passwordless_got_code">I have a code</string>
     <string name="com_auth0_lock_title_social_progress_dialog">Logging in</string>
     <string name="com_auth0_lock_message_social_progress_dialog">Logging in to Auth0</string>
@@ -155,7 +144,6 @@
     <string name="com_auth0_lock_db_login_error_invalid_credentials_message">Wrong email or password</string>
     <string name="com_auth0_lock_db_login_error_unauthorized_message">User is blocked</string>
     <string name="com_auth0_lock_db_sign_up_error_message">There was an error processing the sign up</string>
-    <string name="com_auth0_lock_db_sign_up_success_message">Please check your email, and then login</string>
     <string name="com_auth0_lock_db_change_password_message_success">We\'ve just sent you an email to reset your password</string>
     <string name="com_auth0_lock_db_message_change_password_error">Couldn\'t reset your password.</string>
     <string name="com_auth0_lock_db_signup_user_already_exists_error_message">The user already exists</string>

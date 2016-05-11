@@ -215,6 +215,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
             return true;
         }
 
+
         switch (dataType) {
             case EMAIL:
                 isValid = !value.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(value).matches();
@@ -234,6 +235,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 value = value.replace(" ", "");
                 isValid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
                 break;
+            case DATE:
             case NUMBER:
                 isValid = !value.isEmpty();
                 break;
