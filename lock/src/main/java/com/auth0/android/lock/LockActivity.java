@@ -54,6 +54,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
@@ -67,6 +68,7 @@ import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicPanelHolder;
 import com.auth0.android.lock.views.HeaderView;
+import com.auth0.android.lock.views.HeaderView.HeaderSize;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
@@ -350,6 +352,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onSignUpCustomFieldsShown(SignUpCustomFieldsEvent event) {
+        headerView.changeHeaderSize(event.isShown() ? HeaderSize.SMALL : HeaderSize.NORMAL);
     }
 
     @SuppressWarnings("unused")

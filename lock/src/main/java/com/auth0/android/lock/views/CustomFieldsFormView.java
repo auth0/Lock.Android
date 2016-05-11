@@ -125,10 +125,11 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private void addCustomFields() {
         Log.d(TAG, String.format("Adding %d custom fields.", fieldsData.size()));
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.setMargins(0, verticalMargin / 2, 0, verticalMargin / 2);
+        params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);
 
         for (CustomField data : fieldsData) {
             ValidatedInputView field = new ValidatedInputView(getContext());

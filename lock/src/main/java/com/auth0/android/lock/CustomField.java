@@ -26,9 +26,11 @@ package com.auth0.android.lock;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -41,43 +43,42 @@ import java.lang.annotation.RetentionPolicy;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_DATE;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_EMAIL;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_NUMBER;
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_PERSON_NAME;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_PHONE_NUMBER;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_TEXT_NAME;
 
 public class CustomField implements Parcelable {
 
-    @IntDef({TYPE_PERSON_NAME, TYPE_DATE, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_EMAIL})
+    @IntDef({TYPE_TEXT_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_DATE, TYPE_EMAIL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FieldType {
-        int TYPE_PERSON_NAME = 0;
-        int TYPE_DATE = 1;
-        int TYPE_NUMBER = 4;
-        int TYPE_PHONE_NUMBER = 5;
-        int TYPE_EMAIL = 6;
+        int TYPE_TEXT_NAME = 0;
+        int TYPE_NUMBER = 1;
+        int TYPE_PHONE_NUMBER = 2;
+        int TYPE_DATE = 3;
+        int TYPE_EMAIL = 4;
     }
 
-    private final String key;
-    private final String hint;
+    @DrawableRes
+    private int icon;
+    @FieldType
     private final int type;
+    private final String key;
+    @StringRes
+    private final int hint;
 
-    public CustomField(@FieldType int type, @NonNull String key, @NonNull String hint) {
-        if (hint.isEmpty()) {
-            throw new IllegalArgumentException("The hint cannot be empty!");
-        }
+    public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint) {
         if (key.isEmpty()) {
             throw new IllegalArgumentException("The key cannot be empty!");
         }
+        this.icon = icon;
+        this.type = type;
         this.key = key;
         this.hint = hint;
-        this.type = type;
-
     }
 
     public void configureField(@NonNull ValidatedInputView field) {
         switch (type) {
-            case TYPE_EMAIL:
-                field.setDataType(DataType.EMAIL);
-            case TYPE_PERSON_NAME:
+            case TYPE_TEXT_NAME:
                 field.setDataType(DataType.USERNAME);
                 break;
             case TYPE_NUMBER:
@@ -86,8 +87,15 @@ public class CustomField implements Parcelable {
             case TYPE_PHONE_NUMBER:
                 field.setDataType(DataType.PHONE_NUMBER);
                 break;
+            case TYPE_DATE:
+                field.setDataType(DataType.DATE);
+                break;
+            case TYPE_EMAIL:
+                field.setDataType(DataType.EMAIL);
+                break;
         }
         field.setHint(hint);
+        field.setIcon(icon);
         field.setTag(key);
     }
 
@@ -105,8 +113,14 @@ public class CustomField implements Parcelable {
         return key;
     }
 
-    String getHint() {
+    @StringRes
+    int getHint() {
         return hint;
+    }
+
+    @DrawableRes
+    int getIcon() {
+        return icon;
     }
 
     @FieldType
@@ -115,9 +129,11 @@ public class CustomField implements Parcelable {
     }
 
     protected CustomField(Parcel in) {
-        key = in.readString();
-        hint = in.readString();
+        icon = in.readInt();
+        //noinspection WrongConstant
         type = in.readInt();
+        key = in.readString();
+        hint = in.readInt();
     }
 
     @Override
@@ -127,9 +143,10 @@ public class CustomField implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(key);
-        dest.writeString(hint);
+        dest.writeInt(icon);
         dest.writeInt(type);
+        dest.writeString(key);
+        dest.writeInt(hint);
     }
 
     @SuppressWarnings("unused")

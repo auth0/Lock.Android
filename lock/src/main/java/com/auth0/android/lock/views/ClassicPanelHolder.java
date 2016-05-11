@@ -40,6 +40,7 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
@@ -218,8 +219,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     private void showCustomFieldsForm(boolean show, @Nullable DatabaseSignUpEvent event) {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout.setVisibility(show ? GONE : VISIBLE);
         if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
@@ -228,7 +227,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (show && event != null) {
             customFieldsForm = new CustomFieldsFormView(this, event.getEmail(), event.getUsername(), event.getPassword());
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
             params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
             params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
             params.addRule(CENTER_IN_PARENT, TRUE);
@@ -252,6 +250,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (customFieldsForm != null && customFieldsForm.getVisibility() == VISIBLE) {
             showCustomFieldsForm(false, null);
             showSignUpTerms(!keyboardIsOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
+            bus.post(new SignUpCustomFieldsEvent(false));
             return true;
         }
         boolean handled = formLayout != null && formLayout.onBackPressed();
@@ -332,6 +331,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
         showCustomFieldsForm(true, event);
         showSignUpTerms(false);
+        bus.post(new SignUpCustomFieldsEvent(true));
     }
 
     @Override
