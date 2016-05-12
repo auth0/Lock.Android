@@ -26,7 +26,7 @@
     <dimen name="com_auth0_lock_webview_button_text_padding_left">10dp</dimen>
     <dimen name="com_auth0_lock_webview_button_icon_label_size">50dp</dimen>
 
-    <dimen name="com_auth0_lock_header_height_small">42dp</dimen>
+    <dimen name="com_auth0_lock_header_height_small">72dp</dimen>
     <dimen name="com_auth0_lock_header_height_normal">105dp</dimen>
 
     <dimen name="com_auth0_lock_list_item_height">48dp</dimen>
