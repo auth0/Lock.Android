@@ -464,7 +464,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Subscribe
     public void onCountryCodeChangeRequest(CountryCodeChangeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
-        intent.putExtra(WebViewActivity.FULLSCREEN_EXTRA, options.isFullscreen());
+        intent.putExtra(CountryCodeActivity.FULLSCREEN_EXTRA, options.isFullscreen());
         startActivityForResult(intent, COUNTRY_CODE_REQUEST);
     }
 
