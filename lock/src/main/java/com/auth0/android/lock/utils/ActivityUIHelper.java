@@ -37,7 +37,7 @@ public abstract class ActivityUIHelper {
 
     private static final String TAG = ActivityUIHelper.class.getName();
 
-    private static void setFullscreenMode(Activity activity) {
+    public static void setFullscreenMode(Activity activity) {
         Log.d(TAG, "Activity in fullscreen mode");
         final Window window = activity.getWindow();
         if (Build.VERSION.SDK_INT >= 16) {

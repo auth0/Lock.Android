@@ -25,6 +25,7 @@
 <resources>
 
     <style name="Lock.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">?attr/Auth0.PrimaryColor</item>
         <item name="colorPrimaryDark">?attr/Auth0.HeaderBackground</item>
         <item name="android:windowBackground">@color/com_auth0_lock_form_background</item>
         <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
@@ -174,6 +175,14 @@
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_text</item>
+    </style>
+
+    <style name="Lock.Theme.Widget.Field.Search">
+        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:hint">@string/com_auth0_lock_hint_search_country</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
+        <item name="android:theme">@style/Lock.Theme</item>
     </style>
 
     <style name="Lock.Theme.Widget.CountryCodeSelector" parent="Lock.Theme.Widget.Field">
