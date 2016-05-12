@@ -28,6 +28,7 @@ import android.support.annotation.StringRes;
 
 import com.auth0.APIException;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.errors.AuthenticationError.ErrorType;
 
 import java.util.Map;
 
@@ -52,21 +53,19 @@ public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuil
 
     @Override
     public AuthenticationError buildFrom(Throwable throwable) {
-        int messageResource = defaultMessage;
-
         if (throwable instanceof APIException) {
             APIException exception = (APIException) throwable;
             Map errorResponse = exception.getResponseError();
             final String errorCode = errorResponse.containsKey(ERROR_KEY) ? (String) errorResponse.get(ERROR_KEY) : (String) errorResponse.get(CODE_KEY);
             final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
             if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && errorDescription != null) {
-                return new AuthenticationError(errorDescription, throwable);
+                return new AuthenticationError(errorDescription, ErrorType.UNAUTHORIZED, throwable);
             } else if (USER_EXISTS_ERROR.equalsIgnoreCase(errorCode) || USERNAME_EXISTS_ERROR.equalsIgnoreCase(errorCode)) {
-                messageResource = userExistsResource;
+                return new AuthenticationError(userExistsResource, ErrorType.INVALID_CREDENTIALS, throwable);
             } else if (errorDescription != null) {
-                return new AuthenticationError(errorDescription, throwable);
+                return new AuthenticationError(errorDescription, ErrorType.UNKNOWN, throwable);
             }
         }
-        return new AuthenticationError(messageResource, throwable);
+        return new AuthenticationError(defaultMessage, throwable);
     }
 }

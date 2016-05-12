@@ -148,6 +148,11 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     }
 
     @Override
+    public void onKeyboardStateChanged(boolean isOpen) {
+        //Do nothing
+    }
+
+    @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();

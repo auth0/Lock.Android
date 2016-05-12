@@ -164,11 +164,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldName);
-        customFields.add(fieldSurname);
-        customFields.add(fieldWork);
-        customFields.add(fieldCountry);
-        customFields.add(fieldPhone);
-        customFields.add(fieldDate);
+//        customFields.add(fieldSurname);
+//        customFields.add(fieldWork);
+//        customFields.add(fieldCountry);
+//        customFields.add(fieldPhone);
+//        customFields.add(fieldDate);
 
         // create/configure lock
         lock = Lock.newBuilder(auth0, callback)
@@ -177,6 +177,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .withProviderResolver(new AuthProviderHandler())
                 .withSignUpFields(customFields)
                 .loginAfterSignUp(false)
+                .setDefaultDatabaseConnection("mfa-connection")
                 .usePKCE(true)
                 .closable(true)
                 .fullscreen(true)

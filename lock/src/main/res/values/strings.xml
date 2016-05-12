@@ -107,6 +107,9 @@
     <string name="com_auth0_lock_hint_password">Password</string>
     <string name="com_auth0_lock_hint_username">Username</string>
     <string name="com_auth0_lock_hint_username_or_email">Username/Email</string>
+    <string name="com_auth0_lock_hint_code">Code</string>
+    <string name="com_auth0_lock_hint_mfa_code">Verification Code</string>
+    <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
     <string name="com_auth0_lock_input_error_email">Email not valid</string>
     <string name="com_auth0_lock_input_error_password">Must have at least 6 chars</string>
     <string name="com_auth0_lock_input_error_username">Must have at least 6 chars and no spaces</string>
@@ -120,11 +123,9 @@
     <string name="com_auth0_lock_action_send_code">Send Code</string>
     <string name="com_auth0_lock_action_retry">Retry</string>
     <string name="com_auth0_lock_input_error_code">Code must not be empty</string>
-    <string name="com_auth0_lock_hint_code">Code</string>
     <string name="com_auth0_lock_action_send_link">Send Link</string>
     <string name="com_auth0_lock_action_click_link">Open the Link to Login</string>
     <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
-    <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
     <string name="com_auth0_lock_input_error_phone_number">The phone number cannot be empty</string>
     <string name="com_auth0_lock_forms_separator">OR</string>
     <string name="com_auth0_lock_passwordless_sms_forms_separator">Otherwise, enter your phone to sign in or create an account</string>
@@ -163,5 +164,8 @@
     <string name="com_auth0_lock_passwordless_login_error_invalid_credentials_message">Wrong identity or passcode</string>
     <string name="com_auth0_lock_permission_missing_title">Missing permissions</string>
     <string name="com_auth0_lock_permission_missing_description">Some permissions required by this provider were not granted. You can try to authenticate again or go to the application\'s permission screen in the phone settings and grant them. The missing permissions are:\n%s</string>
+    <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">The code is invalid or has expired</string>
+    <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
+    <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
 
 </resources>

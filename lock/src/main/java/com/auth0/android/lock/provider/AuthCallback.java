@@ -26,6 +26,7 @@ package com.auth0.android.lock.provider;
 
 import android.app.Dialog;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.auth0.authentication.result.Credentials;
 
@@ -49,7 +50,7 @@ public interface AuthCallback {
      * @param messageResource message resource
      * @param cause           cause of the error
      */
-    void onFailure(int titleResource, int messageResource, Throwable cause);
+    void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause);
 
     /**
      * Called when the authentication is successful using web authentication against Auth0

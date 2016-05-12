@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,9 +39,10 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
+import com.auth0.android.lock.events.HeaderSizeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
@@ -54,8 +56,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     private Configuration configuration;
     private FormLayout formLayout;
     private ModeSelectionView modeSelectionView;
-    private ChangePasswordFormView changePwdForm;
-    private CustomFieldsFormView customFieldsForm;
+    private FormView subForm;
     private ActionButton actionButton;
     private LayoutParams termsParams;
     private LayoutParams ssoParams;
@@ -197,43 +198,38 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showChangePasswordForm(boolean show) {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        formLayout.setVisibility(show ? GONE : VISIBLE);
-        if (modeSelectionView != null) {
-            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
-        }
-
         if (show) {
-            changePwdForm = new ChangePasswordFormView(this);
-            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-            params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
-            params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
-            params.addRule(CENTER_IN_PARENT, TRUE);
-            addView(changePwdForm, params);
-        } else if (changePwdForm != null) {
-            removeView(changePwdForm);
-            changePwdForm = null;
+            addSubForm(new ChangePasswordFormView(this));
+        } else {
+            removeSubForm();
         }
     }
 
-    private void showCustomFieldsForm(boolean show, @Nullable DatabaseSignUpEvent event) {
-        formLayout.setVisibility(show ? GONE : VISIBLE);
+    private void addSubForm(@NonNull FormView form) {
+        formLayout.setVisibility(GONE);
         if (modeSelectionView != null) {
-            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
+            modeSelectionView.setVisibility(GONE);
+        }
+        showSignUpTerms(false);
+
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        addView(form, params);
+        this.subForm = form;
+    }
+
+    private void removeSubForm() {
+        formLayout.setVisibility(VISIBLE);
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(VISIBLE);
         }
 
-        if (show && event != null) {
-            customFieldsForm = new CustomFieldsFormView(this, event.getEmail(), event.getUsername(), event.getPassword());
-            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
-            params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
-            params.addRule(CENTER_IN_PARENT, TRUE);
-            addView(customFieldsForm, params);
-        } else if (customFieldsForm != null) {
-            removeView(customFieldsForm);
-            customFieldsForm = null;
+        showSignUpTerms(!keyboardIsOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
+        if (this.subForm != null) {
+            removeView(this.subForm);
+            this.subForm = null;
         }
     }
 
@@ -243,16 +239,12 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        if (changePwdForm != null && changePwdForm.getVisibility() == VISIBLE) {
-            showChangePasswordForm(false);
+        if (subForm != null) {
+            removeSubForm();
+            bus.post(new HeaderSizeChangeEvent(false));
             return true;
         }
-        if (customFieldsForm != null && customFieldsForm.getVisibility() == VISIBLE) {
-            showCustomFieldsForm(false, null);
-            showSignUpTerms(!keyboardIsOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
-            bus.post(new SignUpCustomFieldsEvent(false));
-            return true;
-        }
+
         boolean handled = formLayout != null && formLayout.onBackPressed();
         if (handled && modeSelectionView != null) {
             modeSelectionView.setVisibility(ssoLayout.getVisibility() == VISIBLE ? GONE : VISIBLE);
@@ -314,14 +306,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        Object event;
-        if (changePwdForm != null) {
-            event = changePwdForm.submitForm();
-        } else if (customFieldsForm != null) {
-            event = customFieldsForm.submitForm();
-        } else {
-            event = formLayout.onActionPressed();
-        }
+        Object event = subForm != null ? subForm.submitForm() : formLayout.onActionPressed();
         if (event != null) {
             bus.post(event);
         }
@@ -329,9 +314,12 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
-        showCustomFieldsForm(true, event);
-        showSignUpTerms(false);
-        bus.post(new SignUpCustomFieldsEvent(true));
+        addSubForm(new CustomFieldsFormView(this, event.getEmail(), event.getUsername(), event.getPassword()));
+        bus.post(new HeaderSizeChangeEvent(true));
+    }
+
+    public void showMFACodeForm(DatabaseLoginEvent event) {
+        addSubForm(new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword()));
     }
 
     @Override
@@ -348,20 +336,17 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         keyboardIsOpen = isOpen;
-        if (modeSelectionView != null && changePwdForm == null && customFieldsForm == null && !ssoMessageShown) {
+
+        if (subForm != null) {
+            subForm.onKeyboardStateChanged(isOpen);
+        } else if (modeSelectionView != null && !ssoMessageShown) {
             modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-        if (changePwdForm != null) {
-            changePwdForm.onKeyboardStateChanged(isOpen);
-        }
-        if (customFieldsForm != null) {
-            customFieldsForm.onKeyboardStateChanged(isOpen);
         }
         if (actionButton != null) {
             actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         }
         formLayout.onKeyboardStateChanged(isOpen);
 
-        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP && customFieldsForm == null);
+        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP && subForm == null);
     }
 }

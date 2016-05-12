@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_lock_changepwd_form_view.xml
+  ~ com_auth0_lock_mfa_input_code_form_view.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -38,19 +38,19 @@
         android:id="@+id/com_auth0_lock_title"
         style="@style/Lock.Theme.Text.Title.ResetPassword"
         android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_field"
-        android:text="@string/com_auth0_lock_title_change_password" />
+        android:text="@string/com_auth0_lock_title_mfa_input_code" />
 
     <TextView
         android:id="@+id/com_auth0_lock_text"
         style="@style/Lock.Theme.Text.Subtitle.ResetPassword"
-        android:text="@string/com_auth0_lock_description_change_password"
+        android:text="@string/com_auth0_lock_description_mfa_input_code"
         android:textSize="@dimen/com_auth0_lock_title_text" />
 
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username_email"
+    <com.auth0.android.lock.views.ValidatedInputView
+        android:id="@+id/com_auth0_lock_input_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
-        app:Auth0.InputDataType="username_or_email" />
+        app:Auth0.InputDataType="number" />
 
 </LinearLayout>

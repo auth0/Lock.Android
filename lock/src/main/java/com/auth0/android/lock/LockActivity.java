@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -54,7 +55,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.SignUpCustomFieldsEvent;
+import com.auth0.android.lock.events.HeaderSizeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
@@ -82,10 +83,13 @@ import com.squareup.otto.Subscribe;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.android.lock.errors.AuthenticationError.ErrorType;
+
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String KEY_USER_METADATA = "user_metadata";
+    private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final int PERMISSION_REQUEST_CODE = 201;
@@ -107,6 +111,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
     private LoginAuthenticationErrorBuilder loginErrorBuilder;
     private SignUpAuthenticationErrorBuilder signUpErrorBuilder;
+    private DatabaseLoginEvent lastDatabaseLogin;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -356,8 +361,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onSignUpCustomFieldsShown(SignUpCustomFieldsEvent event) {
-        headerView.changeHeaderSize(event.isShown() ? HeaderSize.SMALL : HeaderSize.NORMAL);
+    public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
+        headerView.changeHeaderSize(event.useSmallHeader() ? HeaderSize.SMALL : HeaderSize.NORMAL);
     }
 
     @SuppressWarnings("unused")
@@ -375,10 +380,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         panelHolder.showProgress(true);
+        lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
+        final HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
+        if (event.getVerificationCode() != null) {
+            parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
+        }
         apiClient.getProfileAfter(apiClient.login(event.getUsernameOrEmail(), event.getPassword()))
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
-                .addParameters(options.getAuthenticationParameters())
+                .addParameters(parameters)
                 .start(authCallback);
     }
 
@@ -396,7 +406,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         panelHolder.showProgress(true);
 
         if (configuration.loginAfterSignUp()) {
-            Map<String, Object> authParameters = options.getAuthenticationParameters();
+            Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
@@ -506,7 +516,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(int titleResource, final int messageResource, final Throwable cause) {
+        public void onFailure(@StringRes int titleResource, @StringRes final int messageResource, final Throwable cause) {
             final String message = new AuthenticationError(messageResource, cause).getMessage(LockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
@@ -549,6 +559,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onSuccess(Authentication authentication) {
             deliverAuthenticationResult(authentication);
+            lastDatabaseLogin = null;
         }
 
         @Override
@@ -557,7 +568,13 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    String message = loginErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
+                    panelHolder.showProgress(false);
+                    final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
+                    if (authError.getErrorType() == ErrorType.MFA_REQUIRED || authError.getErrorType() == ErrorType.MFA_NOT_ENROLLED) {
+                        panelHolder.showMFACodeForm(lastDatabaseLogin);
+                        return;
+                    }
+                    String message = authError.getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
             });

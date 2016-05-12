@@ -45,6 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.auth0.android.lock.views.ValidatedInputView.DataType;
+
 public class CustomFieldsFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = CustomFieldsFormView.class.getSimpleName();
@@ -59,6 +61,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     private ValidatedInputView usernameField;
     private ValidatedInputView passwordField;
     private boolean mustUseFieldsFromFirstStep;
+    private LinearLayout.LayoutParams fieldParams;
 
     public CustomFieldsFormView(Context context) {
         super(context);
@@ -79,6 +82,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         title = (TextView) findViewById(R.id.com_auth0_lock_title);
         fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
 
+        fieldParams = defineFieldParams();
         mustUseFieldsFromFirstStep = lockWidget.getConfiguration().getExtraSignUpFields().size() == 1;
         if (mustUseFieldsFromFirstStep) {
             addFirstStepFields();
@@ -86,55 +90,55 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         addCustomFields();
     }
 
-    private void addFirstStepFields() {
+    private LinearLayout.LayoutParams defineFieldParams() {
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.setMargins(0, verticalMargin / 2, 0, verticalMargin / 2);
+        params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);
+        return params;
+    }
 
+    private void addFirstStepFields() {
         Configuration configuration = lockWidget.getConfiguration();
         boolean showEmail = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT;
         boolean showUsername = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.USERNAME;
 
         if (showEmail && showUsername) {
             ValidatedInputView emailField = new ValidatedInputView(getContext());
-            emailField.setDataType(ValidatedInputView.DataType.EMAIL);
-            emailField.setLayoutParams(params);
+            emailField.setDataType(DataType.EMAIL);
+            emailField.setLayoutParams(fieldParams);
             emailField.setText(email);
             emailField.setEnabled(false);
             fieldContainer.addView(emailField);
 
             usernameField = new ValidatedInputView(getContext());
-            usernameField.setDataType(ValidatedInputView.DataType.USERNAME);
-            usernameField.setLayoutParams(params);
+            usernameField.setDataType(DataType.USERNAME);
+            usernameField.setLayoutParams(fieldParams);
             fieldContainer.addView(usernameField);
         } else {
             ValidatedInputView emailOrUsernameField = new ValidatedInputView(getContext());
-            emailOrUsernameField.setDataType(showUsername ? ValidatedInputView.DataType.USERNAME : ValidatedInputView.DataType.EMAIL);
-            emailOrUsernameField.setLayoutParams(params);
+            emailOrUsernameField.setDataType(showUsername ? DataType.USERNAME : DataType.EMAIL);
+            emailOrUsernameField.setLayoutParams(fieldParams);
             emailOrUsernameField.setText(username == null ? email : username);
             emailOrUsernameField.setEnabled(false);
             fieldContainer.addView(emailOrUsernameField);
         }
 
         passwordField = new ValidatedInputView(getContext());
-        passwordField.setDataType(ValidatedInputView.DataType.PASSWORD);
-        passwordField.setLayoutParams(params);
+        passwordField.setDataType(DataType.PASSWORD);
+        passwordField.setLayoutParams(fieldParams);
         fieldContainer.addView(passwordField);
     }
 
     private void addCustomFields() {
         Log.d(TAG, String.format("Adding %d custom fields.", fieldsData.size()));
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);
 
         for (CustomField data : fieldsData) {
             ValidatedInputView field = new ValidatedInputView(getContext());
             data.configureField(field);
-            field.setLayoutParams(params);
+            field.setLayoutParams(fieldParams);
+            field.setOnEditorActionListener(this);
             fieldContainer.addView(field);
         }
     }
