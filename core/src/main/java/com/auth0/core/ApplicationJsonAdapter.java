@@ -13,6 +13,6 @@ public class ApplicationJsonAdapter {
     }
     @ToJson
     ApplicationJson toJson(Application a) {
-        return (ApplicationJson)a;
+        return a;
     }
 }

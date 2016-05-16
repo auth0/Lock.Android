@@ -12,6 +12,6 @@ public class DatabaseUserJsonAdapter {
         return new DatabaseUser(duj.email,duj.username,duj.emailVerified);
     }
     @ToJson DatabaseUserJson toJson(DatabaseUser du) {
-        return (DatabaseUserJson) du;
+        return  du;
     }
 }

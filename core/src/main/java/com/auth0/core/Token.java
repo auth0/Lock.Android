@@ -13,7 +13,7 @@ import static com.auth0.util.CheckHelper.checkArgument;
 public class Token extends TokenJson implements Parcelable {
 
     @SuppressWarnings("unused") // Moshi uses this!
-    private Token() {
+    public Token() {
 
     }
     public Token( String idToken,

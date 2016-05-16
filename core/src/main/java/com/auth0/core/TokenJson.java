@@ -24,4 +24,8 @@ public class TokenJson {
     protected TokenJson() {
 
     }
+
+    public boolean isEmpty() {
+        return idToken==null&&accessToken==null&&type==null&&refreshToken==null;
+    }
 }

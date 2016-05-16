@@ -12,6 +12,6 @@ public class StrategyJsonAdapter {
         return new Strategy(s.name,s.connections);
     }
     @ToJson StrategyJson toJson(Strategy s) {
-        return (StrategyJson) s;
+        return  s;
     }
 }
