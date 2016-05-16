@@ -28,8 +28,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.auth0.android.BuildConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.moshi.MoshiObjectMapper;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -66,10 +65,10 @@ public class Telemetry {
         }
         String clientInfo = null;
         try {
-            String json = new ObjectMapper().writeValueAsString(info);
+            String json = new MoshiObjectMapper().writeValueAsString(info);
             Log.v(TAG, "Telemetry JSON is " + json);
             clientInfo = Base64.encodeToString(json.getBytes(Charset.defaultCharset()), Base64.URL_SAFE | Base64.NO_WRAP);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             Log.w(TAG, "Failed to build client info", e);
         }
         return clientInfo;

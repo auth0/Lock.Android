@@ -27,7 +27,7 @@ package com.auth0.lock;
 import com.auth0.core.Application;
 import com.auth0.core.Connection;
 import com.auth0.core.Strategy;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.moshi.MoshiObjectMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class ConfigurationTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ObjectMapper mapper = new ObjectMapper();
+        MoshiObjectMapper mapper = new MoshiObjectMapper();
         application = mapper.readValue(new File("src/test/resources/appinfo.json"), Application.class);
     }
 

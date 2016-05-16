@@ -30,7 +30,7 @@ import android.util.Log;
 
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.internal.RequestFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.moshi.MoshiObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -109,7 +109,7 @@ public class AuthenticatedAPIClient extends BaseAPIClient {
 
         Log.v(TAG, "Requesting SMS code for phone " + phoneNumber);
 
-        RequestFactory.POST(url, newClient, new Handler(Looper.getMainLooper()), new ObjectMapper(), jwt)
+        RequestFactory.POST(url, newClient, new Handler(Looper.getMainLooper()), new MoshiObjectMapper(), jwt)
                 .addParameters(params)
                 .start(callback);
     }

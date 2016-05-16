@@ -28,11 +28,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MapOfStrings;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
@@ -49,16 +49,15 @@ public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<Stri
     @Override
     protected Map<String, String> doInBackground(String... params) {
 
-        Map<String, String> codes;
+        MapOfStrings codes;
         try {
-            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-            codes = new ObjectMapper().readValue(context.getAssets().open(params[0]), typeRef);
-            Log.d(TAG, "Loaded " + codes.size() + " countries");
+            codes = new MoshiObjectMapper().readValue(context.getAssets().open(params[0]), MapOfStrings.class);
+            Log.d(TAG, "Loaded " + codes.map.size() + " countries");
         } catch (IOException e) {
-            codes = new HashMap<>();
+            codes = new MapOfStrings();
             Log.e(TAG, "Failed to load countries JSON file", e);
         }
-        return codes;
+        return codes.map;
     }
 
     public Context getContext() {

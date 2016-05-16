@@ -27,6 +27,7 @@ package com.auth0.api.authentication;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.api.callback.RefreshIdTokenCallback;
+import com.auth0.util.moshi.MapOfObjects;
 
 import java.util.Map;
 
@@ -39,9 +40,9 @@ public class DelegationRequest {
     private static final String EXPIRES_IN_KEY = "expires_in";
     private static final String ID_TOKEN_KEY = "id_token";
 
-    private final ParameterizableRequest<Map<String, Object>> request;
+    private final ParameterizableRequest<MapOfObjects> request;
 
-    DelegationRequest(ParameterizableRequest<Map<String, Object>> request) {
+    DelegationRequest(ParameterizableRequest<MapOfObjects> request) {
         this.request = request;
     }
 
@@ -60,12 +61,12 @@ public class DelegationRequest {
      * @param callback called either on success or failure
      */
     public void start(final RefreshIdTokenCallback callback) {
-        request.start(new BaseCallback<Map<String, Object>>() {
+        request.start(new BaseCallback<MapOfObjects>() {
             @Override
-            public void onSuccess(final Map<String, Object> payload) {
-                final String id_token = (String) payload.get(ID_TOKEN_KEY);
-                final String token_type = (String) payload.get(TOKEN_TYPE_KEY);
-                final Integer expires_in = (Integer) payload.get(EXPIRES_IN_KEY);
+            public void onSuccess(final MapOfObjects payload) {
+                final String id_token = payload.getAsString(ID_TOKEN_KEY);
+                final String token_type =  payload.getAsString(TOKEN_TYPE_KEY);
+                final Integer expires_in = payload.getAsInteger(EXPIRES_IN_KEY);
                 callback.onSuccess(id_token, token_type, expires_in);
             }
 

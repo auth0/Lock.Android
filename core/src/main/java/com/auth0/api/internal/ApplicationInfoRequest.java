@@ -31,8 +31,8 @@ import com.auth0.api.APIClientException;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MoshiObjectReader;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -50,8 +50,8 @@ class ApplicationInfoRequest extends BaseRequest<Application> implements Callbac
 
     private static final String TAG = ApplicationInfoRequest.class.getName();
 
-    public ApplicationInfoRequest(Handler handler, OkHttpClient client, HttpUrl url, ObjectMapper mapper) {
-        super(handler, url, client, mapper.reader(Application.class), null);
+    public ApplicationInfoRequest(Handler handler, OkHttpClient client, HttpUrl url, MoshiObjectMapper mapper) {
+        super(handler, url, client, new MoshiObjectReader(mapper,Application.class), null);
     }
 
     @Override

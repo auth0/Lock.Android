@@ -1,5 +1,5 @@
 /*
- * JsonRequestBodyBuilder.java
+ * DatabaseUser.java
  *
  * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
@@ -22,27 +22,28 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.api.internal;
+package com.auth0.core;
 
-import com.auth0.api.RequestBodyBuildException;
-import com.auth0.util.moshi.MoshiObjectWriter;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
+import com.squareup.moshi.Json;
 
-import java.lang.reflect.Type;
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
- * Converts a POJO to JSON stored in a {@link com.squareup.okhttp.RequestBody}
+ * Value holder for Database Sign Up operation
  */
-abstract class JsonRequestBodyBuilder {
+public class DatabaseUserJson {
 
-    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    @Json(name="email")
+    protected  String email;
+    @Json(name="username")
+    protected  String username;
+    @Json(name="email_verified")
+    protected  boolean emailVerified;
 
-    public static <T> RequestBody createBody(T pojo, Type typeOfT, MoshiObjectWriter writer) throws RequestBodyBuildException {
-        try {
-            return RequestBody.create(JSON, writer.writeValueAsBytes(pojo,typeOfT));
-        } catch (Exception e) {
-            throw new RequestBodyBuildException("Failed to convert " + pojo.getClass().getName() + " to JSON", e);
-        }
+    @SuppressWarnings("unused") // Moshi uses this!
+    DatabaseUserJson() {
+        email=null;
+        username=null;
+        emailVerified=false;
     }
 }

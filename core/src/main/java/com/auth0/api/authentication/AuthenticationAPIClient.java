@@ -37,7 +37,8 @@ import com.auth0.core.Auth0;
 import com.auth0.core.DatabaseUser;
 import com.auth0.core.Token;
 import com.auth0.core.UserProfile;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MapOfObjects;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -69,7 +70,7 @@ public class AuthenticationAPIClient {
     private final Auth0 auth0;
     private final OkHttpClient client;
     private final Handler handler;
-    private final ObjectMapper mapper;
+    private final MoshiObjectMapper mapper;
 
     private String defaultDbConnection = DEFAULT_DB_CONNECTION;
 
@@ -89,7 +90,7 @@ public class AuthenticationAPIClient {
      * @param handler where callback will be called with either the response or error from the server
      */
     public AuthenticationAPIClient(Auth0 auth0, Handler handler) {
-        this(auth0, new OkHttpClient(), handler, new ObjectMapper());
+        this(auth0, new OkHttpClient(), handler, new MoshiObjectMapper());
     }
 
     /**
@@ -104,7 +105,7 @@ public class AuthenticationAPIClient {
         this(new Auth0(clientID, baseURL, configurationURL));
     }
 
-    AuthenticationAPIClient(Auth0 auth0, OkHttpClient client, Handler handler, ObjectMapper mapper) {
+    AuthenticationAPIClient(Auth0 auth0, OkHttpClient client, Handler handler, MoshiObjectMapper mapper) {
         this.auth0 = auth0;
         this.client = client;
         this.handler = handler;
@@ -362,7 +363,7 @@ public class AuthenticationAPIClient {
      *
      * @return a request to configure and start
      */
-    public ParameterizableRequest<Map<String, Object>> delegation() {
+    public ParameterizableRequest<MapOfObjects> delegation() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment("delegation")
                 .build();
@@ -387,7 +388,7 @@ public class AuthenticationAPIClient {
                 .set(ID_TOKEN_KEY, idToken)
                 .set(API_TYPE_KEY, DEFAULT_API_TYPE)
                 .asDictionary();
-        ParameterizableRequest<Map<String, Object>> request = delegation()
+        ParameterizableRequest<MapOfObjects> request = delegation()
                 .addParameters(parameters);
         return new DelegationRequest(request);
     }
@@ -405,7 +406,7 @@ public class AuthenticationAPIClient {
                 .set(REFRESH_TOKEN_KEY, refreshToken)
                 .set(API_TYPE_KEY, DEFAULT_API_TYPE)
                 .asDictionary();
-        ParameterizableRequest<Map<String, Object>> request = delegation()
+        ParameterizableRequest<MapOfObjects> request = delegation()
                 .addParameters(parameters);
         return new DelegationRequest(request);
     }

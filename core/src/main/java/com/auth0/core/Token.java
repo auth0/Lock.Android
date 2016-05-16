@@ -3,29 +3,35 @@ package com.auth0.core;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
+
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Class that holds a user's token information.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Token implements Parcelable {
+public class Token extends TokenJson implements Parcelable {
 
-    private String idToken;
-    private String accessToken;
-    private String type;
-    private String refreshToken;
+    @SuppressWarnings("unused") // Moshi uses this!
+    private Token() {
 
-    public Token(@JsonProperty(value = "id_token", required = true) String idToken,
-                 @JsonProperty(value = "access_token") String accessToken,
-                 @JsonProperty(value = "token_type") String type,
-                 @JsonProperty(value = "refresh_token") String refreshToken) {
+    }
+    public Token( String idToken,
+                 String accessToken,
+                 String type,
+                 String refreshToken) {
         this.idToken = idToken;
         this.accessToken = accessToken;
         this.type = type;
         this.refreshToken = refreshToken;
+		init();
     }
+
+    private void init()
+    {
+        checkArgument(idToken != null, "idToken must be non-null");
+    }
+
 
     public String getIdToken() {
         return idToken;

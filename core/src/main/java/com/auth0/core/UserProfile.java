@@ -3,8 +3,6 @@ package com.auth0.core;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,8 +19,15 @@ import static com.auth0.util.CheckHelper.checkArgument;
 /**
  * Class that holds the information of a user's profile
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserProfile implements Parcelable {
+    private static final String USER_ID_KEY = "user_id";
+    private static final String NAME_KEY = "name";
+    private static final String NICKNAME_KEY = "nickname";
+    private static final String EMAIL_KEY = "email";
+    private static final String PICTURE_URL_KEY = "picture";
+    private static final String CREATED_AT_KEY = "created_at";
+    private static final String IDENTITIES_KEY = "identities";
 
     private String id;
     private String name;
@@ -33,28 +38,35 @@ public class UserProfile implements Parcelable {
     private Map<String, Object> extraInfo;
     private List<UserIdentity> identities;
 
-    @JsonCreator
+    @SuppressWarnings("unused") // Moshi uses this!
+    public UserProfile() {
+
+    }
     @SuppressWarnings("unchecked")
     public UserProfile(Map<String, Object> values) {
         checkArgument(values != null, "must supply non-null values");
         HashMap<String, Object> info = new HashMap<String, Object>(values);
-        String id = (String) info.remove("user_id");
+        String id = (String) info.remove(USER_ID_KEY);
         checkArgument(id != null, "profile must have a user id");
         this.id = id;
-        this.name = (String) info.remove("name");
-        this.nickname = (String) info.remove("nickname");
-        this.email = (String) info.remove("email");
-        this.pictureURL = (String) info.remove("picture");
+        this.name = (String) info.remove(NAME_KEY);
+        this.nickname = (String) info.remove(NICKNAME_KEY);
+        this.email = (String) info.remove(EMAIL_KEY);
+        this.pictureURL = (String) info.remove(PICTURE_URL_KEY);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
-            String created_at = (String) info.remove("created_at");
+            String created_at = (String) info.remove(CREATED_AT_KEY);
             this.createdAt = created_at != null ? sdf.parse(created_at) : null;
         } catch (ParseException e) {
             throw new IllegalArgumentException("Invalid created_at value", e);
         }
-        this.identities = buildIdentities((List<Map<String, Object>>) info.remove("identities"));
+        this.identities = buildIdentities((List<Map<String, Object>>) info.remove(IDENTITIES_KEY));
         this.extraInfo = info;
+    }
+    public Map<String,Object> toMap() {
+//        throw new Exception("Not Implemented");
+        return null;
     }
 
     public String getId() {
@@ -169,4 +181,5 @@ public class UserProfile implements Parcelable {
             return new UserProfile[size];
         }
     };
+
 }

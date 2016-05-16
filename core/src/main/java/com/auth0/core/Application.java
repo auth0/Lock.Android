@@ -1,31 +1,27 @@
 package com.auth0.core;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Class with your Auth0's application information and the list of enabled connections (DB, Social, Enterprise, Passwordless).
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Application {
+public class Application extends ApplicationJson {
+    private transient List<Strategy> socialStrategies;
+    private transient List<Strategy> enterpriseStrategies;
+    private transient Strategy databaseStrategy;
 
-    private String id;
-    private String tenant;
-    private String authorizeURL;
-    private String callbackURL;
-    private String subscription;
-    private boolean hasAllowedOrigins;
-    private List<Strategy> strategies;
-    private List<Strategy> socialStrategies;
-    private List<Strategy> enterpriseStrategies;
-    private Strategy databaseStrategy;
-
+    @SuppressWarnings("unused") // Moshi uses this!
+    private Application() {
+        socialStrategies=null;
+        enterpriseStrategies=null;
+        databaseStrategy=null;
+    }
     /**
      * Creates a new application instance
      * @param id app id.
@@ -36,18 +32,14 @@ public class Application {
      * @param hasAllowedOrigins if the app allows other origins
      * @param strategies list of the strategies enabled for the app (Social, DB, etc).
      */
-    @JsonCreator
-    public Application(@JsonProperty(value = "id") String id,
-                       @JsonProperty(value = "tenant") String tenant,
-                       @JsonProperty(value = "authorize") String authorizeURL,
-                       @JsonProperty(value = "callback") String callbackURL,
-                       @JsonProperty(value = "subscription") String subscription,
-                       @JsonProperty(value = "hasAllowedOrigins") boolean hasAllowedOrigins,
-                       @JsonProperty(value = "strategies") List<Strategy> strategies) {
-        checkArgument(id != null, "id must be non-null");
-        checkArgument(tenant != null, "tenant must be non-null");
-        checkArgument(authorizeURL != null, "authorize must be non-null");
-        checkArgument(strategies != null && strategies.size() > 0, "Must have at least 1 strategy");
+    public Application(
+            String id,
+            String tenant,
+            String authorizeURL,
+            String callbackURL,
+            String subscription,
+            boolean hasAllowedOrigins,
+            List<Strategy> strategies) {
         this.id = id;
         this.tenant = tenant;
         this.authorizeURL = authorizeURL;
@@ -55,6 +47,19 @@ public class Application {
         this.subscription = subscription;
         this.hasAllowedOrigins = hasAllowedOrigins;
         this.strategies = strategies;
+        init();
+    }
+
+    private void checkValid( String id, String tenant,  String authorizeURL, List<Strategy> strategies) {
+        checkArgument(id != null, "id must be non-null");
+        checkArgument(tenant != null, "tenant must be non-null");
+        checkArgument(authorizeURL != null, "authorize must be non-null");
+        checkArgument(strategies != null && strategies.size() > 0, "Must have at least 1 strategy");
+    }
+
+    private void init()
+    {
+        checkValid(id, tenant, authorizeURL, strategies);
         this.socialStrategies = new ArrayList<>();
         this.enterpriseStrategies = new ArrayList<>();
         for(Strategy strategy: strategies) {
@@ -72,7 +77,6 @@ public class Application {
             }
         }
     }
-
     /**
      * Returns the id of the application.
      * @return an ID
