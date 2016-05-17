@@ -56,7 +56,6 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.HeaderSizeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
@@ -69,8 +68,6 @@ import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicPanelHolder;
-import com.auth0.android.lock.views.HeaderView;
-import com.auth0.android.lock.views.HeaderView.HeaderSize;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
@@ -104,7 +101,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private TextView resultMessage;
 
     private ProgressDialog progressDialog;
-    private HeaderView headerView;
     private AuthProvider currentProvider;
 
     private boolean keyboardIsShown;
@@ -130,7 +126,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
-        headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         panelHolder = new ClassicPanelHolder(this, lockBus);
@@ -138,7 +133,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         int paddingTop = getStatusBarHeight();
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
-        headerView.setPaddingTop(paddingTop);
+        panelHolder.setPadding(0, paddingTop, 0, 0);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
@@ -200,7 +195,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
         Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
-        headerView.onKeyboardStateChanged(isOpen);
         panelHolder.onKeyboardStateChanged(isOpen);
     }
 
@@ -353,12 +347,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
-        headerView.changeHeaderSize(event.useSmallHeader() ? HeaderSize.SMALL : HeaderSize.NORMAL);
     }
 
     @SuppressWarnings("unused")

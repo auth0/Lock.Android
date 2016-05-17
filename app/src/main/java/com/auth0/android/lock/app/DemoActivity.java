@@ -163,7 +163,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         CustomField fieldDate = new CustomField(R.drawable.com_auth0_lock_ic_clock, FieldType.TYPE_DATE, "date", R.string.hint_date);
 
         List<CustomField> customFields = new ArrayList<>();
-        customFields.add(fieldName);
+//        customFields.add(fieldName);
 //        customFields.add(fieldSurname);
 //        customFields.add(fieldWork);
 //        customFields.add(fieldCountry);
@@ -177,10 +177,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .withProviderResolver(new AuthProviderHandler())
                 .withSignUpFields(customFields)
                 .loginAfterSignUp(false)
-                .setDefaultDatabaseConnection("mfa-connection")
+//                .setDefaultDatabaseConnection("mfa-connection")
                 .usePKCE(true)
                 .closable(true)
-                .fullscreen(true)
+                .fullscreen(false)
                 .build();
 
         lock.onCreate(this);

@@ -246,7 +246,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     }
 
     private void showSSOMessage(boolean show) {
-        lockWidget.showSSOEnabledMessage(show);
+        lockWidget.showTopBanner(show);
         if (changePasswordEnabled && !keyboardIsOpen) {
             changePasswordBtn.setVisibility(show ? GONE : VISIBLE);
         }

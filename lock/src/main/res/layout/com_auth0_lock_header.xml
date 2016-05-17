@@ -28,6 +28,7 @@
     android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/Auth0.HeaderBackground"
     tools:background="#40000000"
     tools:context=".LockActivity">
 

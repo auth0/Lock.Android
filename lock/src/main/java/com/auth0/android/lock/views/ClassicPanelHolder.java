@@ -27,14 +27,15 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
@@ -48,24 +49,21 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-public class ClassicPanelHolder extends RelativeLayout implements View.OnClickListener, ModeSelectionView.ModeSelectedListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
+public class ClassicPanelHolder extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
 
     private static final String TAG = ClassicPanelHolder.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
     private FormLayout formLayout;
-    private ModeSelectionView modeSelectionView;
     private FormView subForm;
     private ActionButton actionButton;
-    private LayoutParams termsParams;
-    private LayoutParams ssoParams;
-    private View ssoLayout;
     private ProgressBar loadingProgressBar;
-    @ModeSelectionView.Mode
-    private int currentDatabaseMode;
     private boolean keyboardIsOpen;
-    private boolean ssoMessageShown;
+
+    private View topBanner;
+    private View bottomBanner;
 
     public ClassicPanelHolder(Context context) {
         super(context);
@@ -98,57 +96,69 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
     }
 
     private void showPanelLayout() {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        //TODO: Move to %
+//        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+//        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
-        ssoParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        ssoParams.addRule(ALIGN_PARENT_TOP, TRUE);
+        TypedValue typedValue = new TypedValue();
+        getResources().getValue(R.dimen.com_auth0_lock_header_view_height, typedValue, true);
+        float height = typedValue.getFloat();
 
-        boolean showModeSelection = configuration.getDefaultDatabaseConnection() != null && configuration.isSignUpEnabled();
-        if (showModeSelection) {
-            Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
-            RelativeLayout.LayoutParams switcherParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            switcherParams.addRule(ALIGN_PARENT_TOP, TRUE);
-            switcherParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
-            modeSelectionView = new ModeSelectionView(getContext(), this);
-            modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
-            addView(modeSelectionView, switcherParams);
-            ssoParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
-        }
+        LayoutParams headerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        headerViewParams.addRule(ALIGN_PARENT_TOP);
+        headerViewParams.getPercentLayoutInfo().heightPercent = height;
 
-        ssoLayout = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
-        ssoLayout.setId(R.id.com_auth0_lock_sso_layout);
-        addView(ssoLayout, ssoParams);
+        getResources().getValue(R.dimen.com_auth0_lock_top_banner_height, typedValue, true);
+        height = typedValue.getFloat();
+        LayoutParams topBannerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        topBannerParams.addRule(BELOW, R.id.com_auth0_lock_header);
+        topBannerParams.getPercentLayoutInfo().heightPercent = height;
+
+        getResources().getValue(R.dimen.com_auth0_lock_bottom_banner_height, typedValue, true);
+        height = typedValue.getFloat();
+        LayoutParams bottomBannerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bottomBannerParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        bottomBannerParams.alignWithParent = true;
+        bottomBannerParams.getPercentLayoutInfo().heightPercent = height;
+
+        getResources().getValue(R.dimen.com_auth0_lock_action_button_height, typedValue, true);
+        height = typedValue.getFloat();
+        LayoutParams actionButtonParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        actionButtonParams.addRule(ALIGN_PARENT_BOTTOM);
+        actionButtonParams.getPercentLayoutInfo().heightPercent = height;
+
+        LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        formLayoutParams.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
+        formLayoutParams.addRule(BELOW, R.id.com_auth0_lock_banner_top);
+
+        View headerView = inflate(getContext(), R.layout.com_auth0_lock_header, null);
+        headerView.setId(R.id.com_auth0_lock_header);
+        addView(headerView, headerViewParams);
+
+        topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
+        topBanner.setId(R.id.com_auth0_lock_banner_top);
+        addView(topBanner, topBannerParams);
+
+        actionButton = new ActionButton(getContext());
+        actionButton.setId(R.id.com_auth0_lock_action_button);
+        actionButton.setOnClickListener(this);
+        addView(actionButton, actionButtonParams);
+
+        bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+        bottomBanner.setId(R.id.com_auth0_lock_banner_bottom);
+        bottomBanner.setVisibility(GONE);
+        addView(bottomBanner, bottomBannerParams);
 
         formLayout = new FormLayout(this);
         formLayout.setId(R.id.com_auth0_lock_form_layout);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.alignWithParent = true;
-        params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-        params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
-        params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
-        params.addRule(CENTER_IN_PARENT, TRUE);
-        addView(formLayout, params);
+        addView(formLayout, formLayoutParams);
+
 
         boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
         boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
-        if (showDatabase || showEnterprise) {
-            RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
-            actionButton = new ActionButton(getContext());
-            actionButton.setId(R.id.com_auth0_lock_action_button);
-            actionButton.setOnClickListener(this);
-            addView(actionButton, actionParams);
+        if (!showDatabase && !showEnterprise) {
+            actionButton.setVisibility(GONE);
         }
-
-        termsParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        termsParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
-        termsParams.alignWithParent = true;
-        View termsLayout = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
-        termsLayout.setId(R.id.com_auth0_lock_terms_layout);
-        addView(termsLayout, termsParams);
-
-        onModeSelected(ModeSelectionView.Mode.LOG_IN);
     }
 
     /**
@@ -207,9 +217,6 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     private void addSubForm(@NonNull FormView form) {
         formLayout.setVisibility(GONE);
-        if (modeSelectionView != null) {
-            modeSelectionView.setVisibility(GONE);
-        }
         showSignUpTerms(false);
 
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -222,11 +229,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
     private void removeSubForm() {
         formLayout.setVisibility(VISIBLE);
-        if (modeSelectionView != null) {
-            modeSelectionView.setVisibility(VISIBLE);
-        }
-
-        showSignUpTerms(!keyboardIsOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP);
+        showSignUpTerms(!keyboardIsOpen);
         if (this.subForm != null) {
             removeView(this.subForm);
             this.subForm = null;
@@ -245,11 +248,7 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
             return true;
         }
 
-        boolean handled = formLayout != null && formLayout.onBackPressed();
-        if (handled && modeSelectionView != null) {
-            modeSelectionView.setVisibility(ssoLayout.getVisibility() == VISIBLE ? GONE : VISIBLE);
-        }
-        return handled;
+        return formLayout != null && formLayout.onBackPressed();
     }
 
     /**
@@ -262,36 +261,17 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
         if (actionButton != null) {
             actionButton.showProgress(show);
         }
-        if (modeSelectionView != null) {
-            modeSelectionView.setEnabled(!show);
-        }
+        formLayout.setEnabled(!show);
     }
 
-    @Override
-    public void onModeSelected(@ModeSelectionView.Mode int mode) {
-        Log.d(TAG, "Mode changed to " + mode);
-        currentDatabaseMode = mode;
-        formLayout.changeFormMode(mode);
-        showSignUpTerms(mode == ModeSelectionView.Mode.SIGN_UP);
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
+//        headerView.changeHeaderSize(event.useSmallHeader() ? HeaderView.HeaderSize.SMALL : HeaderView.HeaderSize.NORMAL);
     }
 
     private void showSignUpTerms(boolean show) {
-        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_terms_height);
-        termsParams.height = show ? height : 0;
-    }
-
-    @Override
-    public void showSSOEnabledMessage(boolean show) {
-        ssoMessageShown = show;
-        int height = (int) getResources().getDimension(R.dimen.com_auth0_lock_sso_height);
-        ssoParams.height = show ? height : 0;
-        ssoLayout.setLayoutParams(ssoParams);
-        if (formLayout != null && !keyboardIsOpen) {
-            formLayout.showOnlyEnterprise(show);
-        }
-        if (modeSelectionView != null && !keyboardIsOpen) {
-            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
-        }
+        bottomBanner.setVisibility(show ? VISIBLE : GONE);
     }
 
     @Override
@@ -339,14 +319,23 @@ public class ClassicPanelHolder extends RelativeLayout implements View.OnClickLi
 
         if (subForm != null) {
             subForm.onKeyboardStateChanged(isOpen);
-        } else if (modeSelectionView != null && !ssoMessageShown) {
-            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
         }
-        if (actionButton != null) {
-            actionButton.setVisibility(isOpen ? GONE : VISIBLE);
-        }
+        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         formLayout.onKeyboardStateChanged(isOpen);
 
-        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP && subForm == null);
+//        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP && subForm == null);
+    }
+
+    @Override
+    public void showTopBanner(boolean show) {
+        topBanner.setVisibility(show ? VISIBLE : GONE);
+        if (formLayout != null) {
+            formLayout.showOnlyEnterprise(show);
+        }
+    }
+
+    @Override
+    public void showBottomBanner(boolean show) {
+        bottomBanner.setVisibility(show ? VISIBLE : GONE);
     }
 }

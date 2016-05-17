@@ -5,12 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.auth0.android.lock.views.HeaderView
-        android:id="@+id/com_auth0_lock_header"
-        style="@style/Lock.Theme.Widget.Header"
-        android:layout_alignParentTop="true"
-        android:fitsSystemWindows="false" />
-
     <TextView
         android:id="@+id/com_auth0_lock_result_message"
         style="@style/Lock.Theme.Text.ResultMessage"

@@ -80,4 +80,10 @@
     <dimen name="com_auth0_lock_link_sent_text_spacing">16dp</dimen>
     <dimen name="com_auth0_lock_result_message_text_spacing">5dp</dimen>
     <dimen name="com_auth0_lock_widget_corner_radius">3dp</dimen>
+
+
+    <item name="com_auth0_lock_top_banner_height" format="float" type="dimen">0.075</item>
+    <item name="com_auth0_lock_bottom_banner_height" format="float" type="dimen">0.129</item>
+    <item name="com_auth0_lock_action_button_height" format="float" type="dimen">0.141</item>
+    <item name="com_auth0_lock_header_view_height" format="float" type="dimen">0.184</item>
 </resources>

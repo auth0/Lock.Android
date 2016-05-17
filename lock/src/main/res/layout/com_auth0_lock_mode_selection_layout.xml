@@ -24,8 +24,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_switcher">
+    android:layout_height="wrap_content">
 
     <RadioGroup
         android:id="@+id/com_auth0_lock_form_radio_mode_group"
