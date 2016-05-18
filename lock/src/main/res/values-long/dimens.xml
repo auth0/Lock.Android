@@ -47,7 +47,7 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_social">4dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_header_icon">6dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_header">3dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_switcher">14dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_switcher">16dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless">28dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">7dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin">35dp</dimen>

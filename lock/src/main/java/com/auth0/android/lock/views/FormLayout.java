@@ -77,12 +77,16 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
         boolean showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
 
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+
         if (showModeSelection) {
             Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
             modeSelectionView = new ModeSelectionView(getContext(), this);
             modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
             LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             modeSelectionParams.addRule(ALIGN_PARENT_TOP);
+            modeSelectionParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
@@ -91,6 +95,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
+        holderParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
         addView(formsHolder, holderParams);
         if (showSocial) {
             addSocialLayout(showDatabase || showEnterprise);
