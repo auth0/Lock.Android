@@ -27,8 +27,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="?attr/Auth0.HeaderBackground"
+    android:gravity="center"
+    android:paddingBottom="@dimen/com_auth0_lock_widget_vertical_margin_header"
+    android:paddingTop="@dimen/com_auth0_lock_widget_vertical_margin_header"
     tools:background="#40000000"
     tools:context=".LockActivity">
 

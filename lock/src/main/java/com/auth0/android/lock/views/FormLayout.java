@@ -179,6 +179,40 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.addView(domainForm);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        int modeSelectionHeight = 0;
+        if (modeSelectionView != null && modeSelectionView.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams modeSelectionParams = (MarginLayoutParams) modeSelectionView.getLayoutParams();
+            modeSelectionHeight = modeSelectionView.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin;
+        }
+
+        int separatorHeight = 0;
+        if (orSeparatorMessage != null && orSeparatorMessage.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams separatorParams = (MarginLayoutParams) orSeparatorMessage.getLayoutParams();
+            separatorHeight = orSeparatorMessage.getMeasuredHeight() + separatorParams.topMargin + separatorParams.bottomMargin;
+        }
+        int socialHeight = 0;
+        if (socialLayout != null && socialLayout.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams socialParams = (MarginLayoutParams) socialLayout.getLayoutParams();
+            socialHeight = socialLayout.getMeasuredHeight() + socialParams.topMargin + socialParams.bottomMargin;
+        }
+        int fieldsHeight = 0;
+        View existingForm = getExistingForm();
+        if (existingForm != null && existingForm.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams formParams = (MarginLayoutParams) existingForm.getLayoutParams();
+            fieldsHeight = existingForm.getMeasuredHeight() + formParams.topMargin + formParams.bottomMargin;
+        }
+
+        int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
+        Log.e(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+    }
+
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
         removePreviousForm();
 
@@ -189,10 +223,15 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void removePreviousForm() {
-        View existingForm = formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
+        View existingForm = getExistingForm();
         if (existingForm != null) {
             formsHolder.removeView(existingForm);
         }
+    }
+
+    @Nullable
+    private View getExistingForm() {
+        return formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
     }
 
     private void addFormLayout() {
@@ -244,7 +283,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      */
     @Nullable
     public Object onActionPressed() {
-        View existingForm = formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
+        View existingForm = getExistingForm();
         if (existingForm == null) {
             return null;
         }

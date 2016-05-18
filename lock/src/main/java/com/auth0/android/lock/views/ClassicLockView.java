@@ -56,14 +56,16 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     private static final String TAG = ClassicLockView.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
-    private FormLayout formLayout;
-    private FormView subForm;
-    private ActionButton actionButton;
-    private ProgressBar loadingProgressBar;
     private boolean keyboardIsOpen;
 
+    private FormLayout formLayout;
+    private FormView subForm;
+
+    private HeaderView headerView;
     private View topBanner;
     private View bottomBanner;
+    private ActionButton actionButton;
+    private ProgressBar loadingProgressBar;
 
     public ClassicLockView(Context context) {
         super(context);
@@ -101,9 +103,9 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 //        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
         TypedValue typedValue = new TypedValue();
+
         getResources().getValue(R.dimen.com_auth0_lock_header_view_height, typedValue, true);
         float height = typedValue.getFloat();
-
         LayoutParams headerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerViewParams.addRule(ALIGN_PARENT_TOP);
         headerViewParams.getPercentLayoutInfo().heightPercent = height;
@@ -131,7 +133,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         formLayoutParams.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
         formLayoutParams.addRule(BELOW, R.id.com_auth0_lock_banner_top);
 
-        View headerView = inflate(getContext(), R.layout.com_auth0_lock_header, null);
+        headerView = new HeaderView(getContext());
         headerView.setId(R.id.com_auth0_lock_header);
         addView(headerView, headerViewParams);
 
@@ -220,8 +222,8 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         showSignUpTerms(false);
 
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.addRule(BELOW, R.id.com_auth0_lock_form_selector);
-        params.addRule(ABOVE, R.id.com_auth0_lock_terms_layout);
+        params.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
+        params.addRule(BELOW, R.id.com_auth0_lock_banner_top);
         params.addRule(CENTER_IN_PARENT, TRUE);
         addView(form, params);
         this.subForm = form;
@@ -234,6 +236,35 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
             removeView(this.subForm);
             this.subForm = null;
         }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        if (configuration != null) {
+            int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+            int topBannerHeight = topBanner.getVisibility() == VISIBLE ? topBanner.getMeasuredHeight() : 0;
+            int bottomBannerHeight = bottomBanner.getVisibility() == VISIBLE ? bottomBanner.getMeasuredHeight() : 0;
+            int actionButtonHeight = actionButton.getVisibility() == VISIBLE ? actionButton.getMeasuredHeight() : 0;
+            int headerViewHeight = headerView.getMeasuredHeight();
+            int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
+            int formHeight = formLayout.getMeasuredHeight();
+
+            Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (%d + %d + %d + %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
+            changeHeaderSize(freeFormSpace < formHeight);
+        }
+    }
+
+    private void changeHeaderSize(boolean collapse) {
+        TypedValue typedValue = new TypedValue();
+        getResources().getValue(collapse ? R.dimen.com_auth0_lock_small_header_view_height : R.dimen.com_auth0_lock_header_view_height, typedValue, true);
+        float height = typedValue.getFloat();
+
+        PercentRelativeLayout.LayoutParams headerViewParams = (PercentRelativeLayout.LayoutParams) headerView.getLayoutParams();
+        headerViewParams.getPercentLayoutInfo().heightPercent = height;
+        headerView.showTitle(!collapse);
     }
 
     /**
@@ -267,7 +298,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     @SuppressWarnings("unused")
     @Subscribe
     public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
-//        headerView.changeHeaderSize(event.useSmallHeader() ? HeaderView.HeaderSize.SMALL : HeaderView.HeaderSize.NORMAL);
+//        headerView.showTitle(event.useSmallHeader() ? HeaderView.HeaderSize.SMALL : HeaderView.HeaderSize.NORMAL);
     }
 
     private void showSignUpTerms(boolean show) {
@@ -322,8 +353,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         }
         actionButton.setVisibility(isOpen ? GONE : VISIBLE);
         formLayout.onKeyboardStateChanged(isOpen);
-
-//        showSignUpTerms(!isOpen && currentDatabaseMode == ModeSelectionView.Mode.SIGN_UP && subForm == null);
     }
 
     @Override

@@ -31,6 +31,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -258,6 +259,45 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
             lockWidget.onFormSubmit();
         }
         return false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        int topMessageHeight = 0;
+        if (topMessage.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams topMessageParams = (MarginLayoutParams) topMessage.getLayoutParams();
+            topMessageHeight = topMessage.getMeasuredHeight() + topMessageParams.topMargin + topMessageParams.bottomMargin;
+        }
+
+        int changePasswordHeight = 0;
+        if (changePasswordBtn.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams changePasswordParams = (MarginLayoutParams) changePasswordBtn.getLayoutParams();
+            changePasswordHeight = changePasswordBtn.getMeasuredHeight() + changePasswordParams.topMargin + changePasswordParams.bottomMargin;
+        }
+
+        int usernameHeight = 0;
+        if (usernameInput.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams usernameParams = (MarginLayoutParams) usernameInput.getLayoutParams();
+            usernameHeight = usernameInput.getMeasuredHeight() + usernameParams.topMargin + usernameParams.bottomMargin;
+        }
+        int emailHeight = 0;
+        if (emailInput.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams emailParams = (MarginLayoutParams) emailInput.getLayoutParams();
+            emailHeight = passwordInput.getMeasuredHeight() + emailParams.topMargin + emailParams.bottomMargin;
+        }
+        int passwordHeight = 0;
+        if (passwordInput.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams passwordParams = (MarginLayoutParams) passwordInput.getLayoutParams();
+            passwordHeight = passwordInput.getMeasuredHeight() + passwordParams.topMargin + passwordParams.bottomMargin;
+        }
+
+        int sumHeight = topMessageHeight + changePasswordHeight + usernameHeight + emailHeight + passwordHeight;
+        Log.e(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 
     /**
