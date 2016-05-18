@@ -67,7 +67,7 @@ import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
-import com.auth0.android.lock.views.ClassicPanelHolder;
+import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
@@ -97,7 +97,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private Options options;
     private Handler handler;
 
-    private ClassicPanelHolder panelHolder;
+    private ClassicLockView lockView;
     private TextView resultMessage;
 
     private ProgressDialog progressDialog;
@@ -128,12 +128,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
-        panelHolder = new ClassicPanelHolder(this, lockBus);
-        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView = new ClassicLockView(this, lockBus);
+        rootView.addView(lockView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         int paddingTop = getStatusBarHeight();
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
-        panelHolder.setPadding(0, paddingTop, 0, 0);
+        lockView.setPadding(0, paddingTop, 0, 0);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
@@ -195,7 +195,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
         Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
-        panelHolder.onKeyboardStateChanged(isOpen);
+        lockView.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {
@@ -224,7 +224,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     public void onBackPressed() {
-        if (panelHolder.onBackPressed() || !options.isClosable()) {
+        if (lockView.onBackPressed() || !options.isClosable()) {
             return;
         }
 
@@ -259,7 +259,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_success_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
-        panelHolder.showProgress(false);
+        lockView.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -268,7 +268,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
-        panelHolder.showProgress(false);
+        lockView.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -322,7 +322,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (currentProvider != null) {
             //Deliver result to the IDP
-            panelHolder.showProgress(false);
+            lockView.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
             currentProvider.authorize(LockActivity.this, result);
         }
@@ -333,7 +333,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onNewIntent(Intent intent) {
         if (currentProvider != null) {
             //Deliver result to the IDP
-            panelHolder.showProgress(false);
+            lockView.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
             currentProvider.authorize(LockActivity.this, result);
         }
@@ -363,7 +363,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
@@ -387,7 +387,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
 
         if (configuration.loginAfterSignUp()) {
             Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
@@ -416,7 +416,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
         apiClient.requestChangePassword(event.getUsernameOrEmail())
@@ -445,7 +445,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             }
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         if (event.useRO()) {
             Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
@@ -468,7 +468,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.configurePanel(configuration);
+                    lockView.configure(configuration);
                 }
             });
         }
@@ -480,7 +480,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.configurePanel(null);
+                    lockView.configure(null);
                 }
             });
         }
@@ -552,10 +552,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.showProgress(false);
+                    lockView.showProgress(false);
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
                     if (authError.getErrorType() == ErrorType.MFA_REQUIRED || authError.getErrorType() == ErrorType.MFA_NOT_ENROLLED) {
-                        panelHolder.showMFACodeForm(lastDatabaseLogin);
+                        lockView.showMFACodeForm(lastDatabaseLogin);
                         return;
                     }
                     String message = authError.getMessage(LockActivity.this);
@@ -596,7 +596,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
-                    panelHolder.showChangePasswordForm(false);
+                    lockView.showChangePasswordForm(false);
                 }
             });
 

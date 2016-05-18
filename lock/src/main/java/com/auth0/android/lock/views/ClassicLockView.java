@@ -1,5 +1,5 @@
 /*
- * PanelHolder.java
+ * ClassicLockView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -51,9 +51,9 @@ import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class ClassicPanelHolder extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
+public class ClassicLockView extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
 
-    private static final String TAG = ClassicPanelHolder.class.getSimpleName();
+    private static final String TAG = ClassicLockView.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
     private FormLayout formLayout;
@@ -65,13 +65,13 @@ public class ClassicPanelHolder extends PercentRelativeLayout implements View.On
     private View topBanner;
     private View bottomBanner;
 
-    public ClassicPanelHolder(Context context) {
+    public ClassicLockView(Context context) {
         super(context);
         bus = null;
         configuration = null;
     }
 
-    public ClassicPanelHolder(Context context, Bus lockBus) {
+    public ClassicLockView(Context context, Bus lockBus) {
         super(context);
         this.bus = lockBus;
         this.configuration = null;
@@ -80,10 +80,10 @@ public class ClassicPanelHolder extends PercentRelativeLayout implements View.On
 
     private void init() {
         if (configuration == null) {
-            Log.w(TAG, "Configuration is missing, the panel won't init.");
+            Log.w(TAG, "Configuration is missing, the view won't init.");
             showConfigurationMissingLayout();
         } else {
-            showPanelLayout();
+            showContentLayout();
         }
     }
 
@@ -95,7 +95,7 @@ public class ClassicPanelHolder extends PercentRelativeLayout implements View.On
         addView(loadingProgressBar, params);
     }
 
-    private void showPanelLayout() {
+    private void showContentLayout() {
         //TODO: Move to %
 //        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
 //        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -164,9 +164,9 @@ public class ClassicPanelHolder extends PercentRelativeLayout implements View.On
     /**
      * Setup the panel to show the correct forms by reading the Auth0 Configuration.
      *
-     * @param configuration the configuration to use on this panel, or null if it is missing.
+     * @param configuration the configuration to use on this view, or null if it is missing.
      */
-    public void configurePanel(@Nullable Configuration configuration) {
+    public void configure(@Nullable Configuration configuration) {
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
