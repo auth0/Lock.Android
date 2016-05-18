@@ -25,8 +25,7 @@
 package com.auth0.core;
 
 import com.auth0.android.BuildConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.auth0.util.moshi.MoshiObjectMapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +57,7 @@ public class UserIdentityTest {
                 "\", \"provider\": \"" +
                 AUTH0 +
                 "\"}";
-        final UserIdentity identity = new ObjectMapper().readValue(json, UserIdentity.class);
+        final UserIdentity identity = new MoshiObjectMapper().readValue(json, UserIdentity.class);
         assertThat(identity, is(notNullValue()));
         assertThat(identity.getId(), equalTo(USER_ID));
         assertThat(identity.getProvider(), equalTo(AUTH0));
@@ -74,7 +73,7 @@ public class UserIdentityTest {
                 "\", \"provider\": \"" +
                 AUTH0 +
                 "\", \"isSocial\": \"null\" }";
-        final UserIdentity identity = new ObjectMapper().readValue(json, UserIdentity.class);
+        final UserIdentity identity = new MoshiObjectMapper().readValue(json, UserIdentity.class);
         assertThat(identity, is(notNullValue()));
         assertThat(identity.getId(), equalTo(USER_ID));
         assertThat(identity.getProvider(), equalTo(AUTH0));

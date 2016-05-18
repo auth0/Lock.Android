@@ -37,8 +37,9 @@ import com.auth0.util.AuthenticationAPI;
 import com.auth0.util.MockAuthenticationCallback;
 import com.auth0.util.MockBaseCallback;
 import com.auth0.util.MockRefreshIdTokenCallback;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MapOfObjects;
+import com.auth0.util.moshi.MapOfStrings;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
 import org.junit.After;
@@ -422,7 +423,7 @@ public class AuthenticationAPIClientTest {
     public void shouldCallDelegation() throws Exception {
         mockAPI.willReturnGenericDelegationToken();
 
-        final MockBaseCallback<Map<String, Object>> callback = new MockBaseCallback<>();
+        final MockBaseCallback<MapOfObjects> callback = new MockBaseCallback<>();
         client.delegation()
                 .start(callback);
 
@@ -435,7 +436,7 @@ public class AuthenticationAPIClientTest {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("token", GENERIC_TOKEN);
-        assertThat(callback, hasPayload(payload));
+        assertThat(callback, hasPayload(new MapOfObjects(payload)));
     }
 
     @Test
@@ -628,7 +629,7 @@ public class AuthenticationAPIClientTest {
     }
 
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
-        return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {
-        });
+        MapOfStrings res=  new MoshiObjectMapper().readValue(request.getBody().inputStream(), MapOfStrings.class);
+        return res.map;
     }
 }

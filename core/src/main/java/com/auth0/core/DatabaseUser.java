@@ -24,27 +24,26 @@
 
 package com.auth0.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
+
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Value holder for Database Sign Up operation
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DatabaseUser {
+public class DatabaseUser extends DatabaseUserJson{
 
-    private final String email;
-    private final String username;
-    private final boolean emailVerified;
-
-    public DatabaseUser(@JsonProperty(value = "email", required = true) String email,
-                        @JsonProperty("username") String username,
-                        @JsonProperty("email_verified") boolean emailVerified) {
+    public DatabaseUser(String email,
+                        String username,
+                        boolean emailVerified) {
         this.email = email;
         this.username = username;
         this.emailVerified = emailVerified;
+        init();
     }
-
+    private void init() {
+        checkArgument(email != null, "email must be non-null");
+    }
     public String getEmail() {
         return email;
     }
@@ -56,4 +55,6 @@ public class DatabaseUser {
     public boolean isEmailVerified() {
         return emailVerified;
     }
+
+
 }

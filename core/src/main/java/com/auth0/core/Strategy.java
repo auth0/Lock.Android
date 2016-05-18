@@ -1,26 +1,32 @@
 package com.auth0.core;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 
 import java.util.List;
+
+
+import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Class with Auth0 authentication strategy info
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Strategy {
+public class Strategy extends StrategyJson {
+    private transient Strategies strategyMetadata;
 
-    private String name;
-    private List<Connection> connections;
-    private Strategies strategyMetadata;
-
-    @JsonCreator
-    public Strategy(@JsonProperty(value = "name", required = true) String name,
-                    @JsonProperty(value = "connections", required = true) List<Connection> connections) {
+    @SuppressWarnings("unused") // Moshi uses this!
+    private Strategy() {
+        strategyMetadata=null;
+    }
+    public Strategy(String name,
+                    List<Connection> connections) {
         this.name = name;
         this.connections = connections;
+        init();
+    }
+
+    private void init() {
+        checkArgument(name != null, "name must be non-null");
+        checkArgument(connections != null, "connections must be non-null");
         this.strategyMetadata = Strategies.fromName(name);
     }
 

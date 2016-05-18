@@ -3,8 +3,8 @@ package com.auth0.core;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import com.auth0.util.moshi.MapOfObjects;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,29 +12,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Class with a Auth0 connection info
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Connection implements Parcelable {
 
-    private String name;
+    private transient String name;
 
     private Map<String, Object> values;
 
+    @SuppressWarnings("unused") // Moshi uses this!
+    private  Connection() {
+        name=null;
+    }
     /**
      * Creates a new connection instance
      * @param values Connection values
      */
-    @JsonCreator
     public Connection(Map<String, Object> values) {
+        this.values = values;
+        init();
+    }
+
+    private void init() {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
         final String name = (String) values.remove("name");
         checkArgument(name != null, "Must have a non-null name");
         this.name = name;
-        this.values = values;
     }
 
     /**
@@ -130,4 +137,9 @@ public class Connection implements Parcelable {
             return new Connection[size];
         }
     };
+
+    public MapOfObjects toMap() {
+        //NOT IMPLEMENTED
+        return null;
+    }
 }

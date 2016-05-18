@@ -28,9 +28,10 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.auth0.api.APIClientException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MoshiObjectReader;
+import com.auth0.util.moshi.MoshiObjectWriter;
+import com.auth0.util.moshi.MapOfObjects;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -39,20 +40,18 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 class VoidRequest extends BaseRequest<Void> implements Callback {
 
     private static final String TAG = VoidRequest.class.getName();
 
-    private final ObjectReader errorReader;
+    private final MoshiObjectReader<MapOfObjects> errorReader;
     private final String httpMethod;
 
-    public VoidRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod) {
-        super(handler, url, client, null, mapper.writer());
+    public VoidRequest(Handler handler, HttpUrl url, OkHttpClient client, MoshiObjectMapper mapper, String httpMethod) {
+        super(handler, url, client, null,new MoshiObjectWriter(mapper));
         this.httpMethod = httpMethod;
-        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {
-        });
+        this.errorReader = new MoshiObjectReader(mapper, MapOfObjects.class);
     }
 
     @Override
@@ -62,9 +61,9 @@ class VoidRequest extends BaseRequest<Void> implements Callback {
         if (!response.isSuccessful()) {
             Throwable throwable;
             try {
-                Map<String, Object> payload = errorReader.readValue(byteStream);
-                throwable = new APIClientException("Request failed with response " + payload, response.code(), payload);
-            } catch (IOException e) {
+                MapOfObjects payload = errorReader.readValue(byteStream);
+                throwable = new APIClientException("Request failed with response " + payload, response.code(), payload.map);
+            } catch (Exception e) {
                 throwable = new APIClientException("Request failed", response.code(), null);
             }
             postOnFailure(throwable);

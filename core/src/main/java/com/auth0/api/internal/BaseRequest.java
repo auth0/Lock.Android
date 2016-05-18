@@ -33,8 +33,9 @@ import com.auth0.api.AuthorizableRequest;
 import com.auth0.api.RequestBodyBuildException;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.auth0.util.moshi.MoshiObjectReader;
+import com.auth0.util.moshi.MoshiObjectWriter;
+import com.auth0.util.moshi.MapOfObjects;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -54,16 +55,15 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     private final Map<String, Object> parameters;
     private final HttpUrl url;
     private final OkHttpClient client;
-    private final ObjectReader reader;
-    private final ObjectWriter writer;
-
+    private final MoshiObjectReader<T> reader;
+    private final MoshiObjectWriter writer;
     private BaseCallback<T> callback;
 
-    protected BaseRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectReader reader, ObjectWriter writer) {
+    protected BaseRequest(Handler handler, HttpUrl url, OkHttpClient client, MoshiObjectReader reader, MoshiObjectWriter writer) {
         this(handler, url, client, reader, writer, null);
     }
 
-    public BaseRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectReader reader, ObjectWriter writer, BaseCallback<T> callback) {
+    public BaseRequest(Handler handler, HttpUrl url, OkHttpClient client, MoshiObjectReader reader, MoshiObjectWriter writer, BaseCallback<T> callback) {
         this.handler = handler;
         this.url = url;
         this.client = client;
@@ -111,12 +111,12 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
         return parameters;
     }
 
-    protected ObjectReader getReader() {
+    protected MoshiObjectReader<T> getReader() {
         return reader;
     }
 
     protected RequestBody buildBody() throws RequestBodyBuildException {
-        return JsonRequestBodyBuilder.createBody(parameters, writer);
+        return JsonRequestBodyBuilder.createBody(new MapOfObjects(parameters),MapOfObjects.class, writer);
     }
 
     private static abstract class CallbackTask<T> implements Runnable {

@@ -3,17 +3,15 @@ package com.auth0.core;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Class that holds the information from a Identity Provider like Facebook or Twitter.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserIdentity implements Parcelable {
 
     private static final String USER_ID_KEY = "user_id";
@@ -23,13 +21,32 @@ public class UserIdentity implements Parcelable {
     private static final String ACCESS_TOKEN_KEY = "access_token";
     private static final String ACCESS_TOKEN_SECRET_KEY = "access_token_secret";
     private static final String PROFILE_DATA_KEY = "profileData";
+
+    @Json(name=USER_ID_KEY)
     private final String id;
+    @Json(name=CONNECTION_KEY)
     private final String connection;
+    @Json(name=PROVIDER_KEY)
     private final String provider;
+    @Json(name=IS_SOCIAL_KEY)
     private final boolean social;
+    @Json(name=ACCESS_TOKEN_KEY)
     private final String accessToken;
+    @Json(name=ACCESS_TOKEN_SECRET_KEY)
     private final String accessTokenSecret;
+    @Json(name=PROFILE_DATA_KEY)
     private final Map<String, Object> profileInfo;
+
+    @SuppressWarnings("unused") // Moshi uses this!
+    private UserIdentity() {
+        id=null;
+        connection=null;
+        provider=null;
+        social=false;
+        accessToken=null;
+        accessTokenSecret=null;
+        profileInfo=null;
+    }
 
     @SuppressWarnings("unchecked")
     public UserIdentity(Map<String, Object> values) {
@@ -50,16 +67,26 @@ public class UserIdentity implements Parcelable {
         this.accessToken = (String) values.get(ACCESS_TOKEN_KEY);
         this.accessTokenSecret = (String) values.get(ACCESS_TOKEN_SECRET_KEY);
         this.profileInfo = (Map<String, Object>) values.get(PROFILE_DATA_KEY);
+        init();
     }
-
-    @JsonCreator
-    public UserIdentity(@JsonProperty(value = USER_ID_KEY) String id,
-                        @JsonProperty(value = CONNECTION_KEY) String connection,
-                        @JsonProperty(value = PROVIDER_KEY) String provider,
-                        @JsonProperty(value = IS_SOCIAL_KEY, required = false) boolean social,
-                        @JsonProperty(value = ACCESS_TOKEN_KEY, required = false) String accessToken,
-                        @JsonProperty(value = ACCESS_TOKEN_SECRET_KEY, required = false) String accessTokenSecret,
-                        @JsonProperty(value = PROFILE_DATA_KEY, required = false) Map<String, Object> profileInfo) {
+    Map<String,Object> toMap() {
+        HashMap<String, Object> res=new HashMap<String,Object>();
+        res.put(USER_ID_KEY,id);
+        res.put(CONNECTION_KEY,connection);
+        res.put(PROVIDER_KEY,provider);
+        res.put(IS_SOCIAL_KEY,social);
+        res.put(ACCESS_TOKEN_KEY,accessToken);
+        res.put(ACCESS_TOKEN_SECRET_KEY,accessTokenSecret);
+        res.put(PROFILE_DATA_KEY,profileInfo);
+        return res;
+    }
+    public UserIdentity( String id,
+                        String connection,
+                        String provider,
+                        boolean social,
+                        String accessToken,
+                        String accessTokenSecret,
+                        Map<String, Object> profileInfo) {
         this.id = id;
         this.connection = connection;
         this.provider = provider;
@@ -67,6 +94,12 @@ public class UserIdentity implements Parcelable {
         this.accessToken = accessToken;
         this.accessTokenSecret = accessTokenSecret;
         this.profileInfo = profileInfo;
+        init();
+    }
+    private void init() {
+//        checkArgument(id != null, "id must be non-null");
+//        checkArgument(connection != null, "connection must be non-null");
+//        checkArgument(provider != null, "provider must be non-null");
     }
 
     /**

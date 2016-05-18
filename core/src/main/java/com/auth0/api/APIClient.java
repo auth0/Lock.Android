@@ -10,6 +10,7 @@ import com.auth0.core.Connection;
 import com.auth0.core.DatabaseUser;
 import com.auth0.core.Strategy;
 import com.auth0.core.UserProfile;
+import com.auth0.util.moshi.MapOfObjects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -310,7 +311,7 @@ public class APIClient extends BaseAPIClient {
      * @param parameters delegation api parameters
      * @param callback called with delegation api response in success or with the failure reason on error.
      */
-    public void fetchDelegationToken(Map<String, Object> parameters, final BaseCallback<Map<String, Object>> callback) {
+    public void fetchDelegationToken(Map<String, Object> parameters, final BaseCallback<MapOfObjects> callback) {
         newClient.delegation()
                 .addParameters(parameters)
                 .start(callback);

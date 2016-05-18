@@ -30,11 +30,10 @@ import com.auth0.api.AuthorizableRequest;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.Request;
 import com.auth0.core.Application;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MapOfObjects;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
-
-import java.util.Map;
 
 public class RequestFactory {
 
@@ -46,43 +45,43 @@ public class RequestFactory {
         CLIENT_INFO = clientInfo;
     }
 
-    public static <T> ParameterizableRequest<T> GET(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
+    public static <T> ParameterizableRequest<T> GET(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper, Class<T> clazz) {
         return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "GET", clazz));
     }
 
-    public static <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
+    public static <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper, Class<T> clazz) {
         return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "POST", clazz));
     }
 
-    public static ParameterizableRequest<Map<String, Object>> rawPOST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
-        final SimpleRequest<Map<String, Object>> request = new SimpleRequest<>(handler, url, client, mapper, "POST");
+    public static ParameterizableRequest<MapOfObjects> rawPOST(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper) {
+        final SimpleRequest<MapOfObjects> request = new SimpleRequest<>(handler, url, client, mapper, "POST");
         addMetricHeader(request);
         return request;
     }
 
-    public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
+    public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper) {
         return addMetricHeader(new VoidRequest(handler, url, client, mapper, "POST"));
     }
 
-    public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, String jwt) {
+    public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper, String jwt) {
         final AuthorizableRequest<Void> request = new VoidRequest(handler, url, client, mapper, "POST")
                 .setBearer(jwt);
         return addMetricHeader(request);
     }
 
-    public static <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
+    public static <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper, Class<T> clazz) {
         return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "PUT", clazz));
     }
 
-    public static <T> ParameterizableRequest<T> PATCH(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
+    public static <T> ParameterizableRequest<T> PATCH(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper, Class<T> clazz) {
         return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "GET", clazz));
     }
 
-    public static <T> ParameterizableRequest<T> DELETE(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
+    public static <T> ParameterizableRequest<T> DELETE(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper, Class<T> clazz) {
         return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "DELETE", clazz));
     }
 
-    public static Request<Application> newApplicationInfoRequest(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
+    public static Request<Application> newApplicationInfoRequest(HttpUrl url, OkHttpClient client, Handler handler, MoshiObjectMapper mapper) {
         return addMetricHeader(new ApplicationInfoRequest(handler, client, url, mapper));
     }
 

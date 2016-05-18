@@ -27,9 +27,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.1'
+    compile 'com.squareup.moshi:moshi:1.1.0'
 
     testCompile libraries.testing
     testCompile 'com.squareup.okhttp:mockwebserver:2.5.0'

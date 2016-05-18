@@ -29,8 +29,8 @@ import android.os.Handler;
 import com.auth0.android.BuildConfig;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.callback.BaseCallback;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.auth0.util.moshi.MoshiObjectReader;
+import com.auth0.util.moshi.MoshiObjectWriter;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -68,9 +68,9 @@ public class BaseRequestTest {
     @Mock
     private OkHttpClient client;
     @Mock
-    private ObjectReader reader;
+    private MoshiObjectReader reader;
     @Mock
-    private ObjectWriter writer;
+    private MoshiObjectWriter writer;
     @Captor
     private ArgumentCaptor<Runnable> captor;
 

@@ -31,9 +31,10 @@ import com.auth0.api.APIClientException;
 import com.auth0.api.RequestBodyBuildException;
 import com.auth0.api.ParameterizableRequest;
 import com.auth0.api.Request;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.auth0.util.moshi.MoshiObjectMapper;
+import com.auth0.util.moshi.MoshiObjectReader;
+import com.auth0.util.moshi.MoshiObjectWriter;
+import com.auth0.util.moshi.MapOfObjects;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -42,25 +43,23 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 class SimpleRequest<T> extends BaseRequest<T> implements Request<T>, ParameterizableRequest<T>, Callback {
 
     private static final String TAG = SimpleRequest.class.getName();
 
-    private final ObjectReader errorReader;
+    private final MoshiObjectReader<MapOfObjects> errorReader;
     private final String method;
 
-    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod, Class<T> clazz) {
-        super(handler, url, client, mapper.reader(clazz), mapper.writer());
-        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {});
+    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, MoshiObjectMapper mapper, String httpMethod, Class<T> clazz) {
+        super(handler, url, client, new MoshiObjectReader(mapper,clazz), new MoshiObjectWriter(mapper));
+        this.errorReader = new MoshiObjectReader(mapper, MapOfObjects.class);
         this.method = httpMethod;
     }
 
-    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectMapper mapper, String httpMethod) {
-        super(handler, url, client, mapper.reader(new TypeReference<Map<String, Object>>() {}), mapper.writer());
-        this.errorReader = mapper.reader(new TypeReference<Map<String, Object>>() {
-        });
+    public SimpleRequest(Handler handler, HttpUrl url, OkHttpClient client, MoshiObjectMapper mapper, String httpMethod) {
+        super(handler, url, client, new MoshiObjectReader(mapper,MapOfObjects.class),new MoshiObjectWriter(mapper));
+        this.errorReader = new MoshiObjectReader(mapper,MapOfObjects.class);
         this.method = httpMethod;
     }
 
@@ -71,9 +70,9 @@ class SimpleRequest<T> extends BaseRequest<T> implements Request<T>, Parameteriz
         if (!response.isSuccessful()) {
             Throwable throwable;
             try {
-                Map<String, Object> payload = errorReader.readValue(byteStream);
-                throwable = new APIClientException("Request failed with response " + payload, response.code(), payload);
-            } catch (IOException e) {
+                MapOfObjects payload = errorReader.readValue(byteStream);
+                throwable = new APIClientException("Request failed with response " + payload, response.code(), payload.map);
+            } catch (Exception e) {
                 throwable = new APIClientException("Request failed", response.code(), null);
             }
             postOnFailure(throwable);
@@ -84,7 +83,7 @@ class SimpleRequest<T> extends BaseRequest<T> implements Request<T>, Parameteriz
             Log.d(TAG, "Received successful response from " + response.request().urlString());
             T payload = getReader().readValue(byteStream);
             postOnSuccess(payload);
-        } catch (IOException e) {
+        } catch (Exception e) {
             postOnFailure(new APIClientException("Request failed", response.code(), null));
         }
     }
