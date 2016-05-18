@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.16.1](https://github.com/auth0/Lock.Android/tree/1.16.1) (2016-05-18)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.16.0...1.16.1)
+
+## [1.16.0](https://github.com/auth0/Lock.Android/tree/1.16.0) (2016-05-18)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.15.0...1.16.0)
+
+**Merged pull requests:**
+
+- Add mention and link to magic-link docs [\#259](https://github.com/auth0/Lock.Android/pull/259) ([nikolaseu](https://github.com/nikolaseu))
+- Active MFA support [\#261](https://github.com/auth0/Lock.Android/pull/261) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [1.15.0](https://github.com/auth0/Lock.Android/tree/1.15.0) (2016-04-15)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.14.1...1.15.0)
 
