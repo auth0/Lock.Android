@@ -24,14 +24,12 @@
 
 package com.auth0.android.lock.views;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.IntDef;
 import android.util.TypedValue;
 import android.view.View;
@@ -68,25 +66,6 @@ abstract class ViewUtils {
      */
     static float dipToPixels(Resources resources, int dip) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics());
-    }
-
-    /**
-     * Gets a color from the given context, safely using the latest available sdk method.
-     *
-     * @param context  a valid context
-     * @param colorRes the color resource to get
-     * @return the color int value
-     */
-    @ColorInt
-    static int obtainColor(Context context, @ColorRes int colorRes) {
-        int color;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            color = context.getResources().getColor(colorRes, context.getTheme());
-        } else {
-            //noinspection deprecation
-            color = context.getResources().getColor(colorRes);
-        }
-        return color;
     }
 
     /**

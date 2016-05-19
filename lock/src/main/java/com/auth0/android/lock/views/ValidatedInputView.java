@@ -32,6 +32,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -178,14 +179,14 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
         gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
         int strokeColor = showError ? R.color.com_auth0_lock_input_field_border_error : R.color.com_auth0_lock_input_field_border_normal;
-        gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ViewUtils.obtainColor(getContext(), strokeColor));
-        gd.setColor(ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
+        gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), strokeColor));
+        gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
     }
 
     private void createBackground() {
-        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
-        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ViewUtils.obtainColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled), ViewUtils.Corners.ONLY_RIGHT);
+        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(input, rightBackground);
     }
@@ -215,6 +216,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
             return true;
         }
 
+
         switch (dataType) {
             case EMAIL:
                 isValid = !value.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(value).matches();
@@ -234,6 +236,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 value = value.replace(" ", "");
                 isValid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
                 break;
+            case DATE:
             case NUMBER:
                 isValid = !value.isEmpty();
                 break;

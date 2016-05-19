@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.auth0.android.lock.LockActivity;
 
 public abstract class ActivityUIHelper {
 

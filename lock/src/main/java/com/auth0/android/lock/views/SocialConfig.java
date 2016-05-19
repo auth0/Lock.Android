@@ -30,6 +30,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.auth0.android.lock.R;
@@ -72,7 +73,7 @@ class SocialConfig {
         int backgroundColorRes = resources.getIdentifier(String.format(BACKGROUND_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName);
         backgroundColorRes = backgroundColorRes == 0 ? R.color.com_auth0_lock_social_unknown : backgroundColorRes;
 
-        backgroundColor = ViewUtils.obtainColor(context, backgroundColorRes);
+        backgroundColor = ContextCompat.getColor(context, backgroundColorRes);
     }
 
     @StringRes

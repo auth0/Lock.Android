@@ -29,6 +29,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +89,7 @@ public class HeaderView extends RelativeLayout {
      * @param color the color to use
      */
     public void setColor(@ColorRes int color) {
-        this.header.setBackgroundColor(getResources().getColor(color));
+        this.header.setBackgroundColor(ContextCompat.getColor(getContext(), color));
     }
 
     /**

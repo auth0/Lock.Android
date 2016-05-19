@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -266,7 +267,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void showSuccessMessage(String message) {
-        resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_success_background));
+        resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_success_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
         panelHolder.showProgress(false);
@@ -275,7 +276,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void showErrorMessage(String message) {
-        resultMessage.setBackgroundColor(getResources().getColor(R.color.com_auth0_lock_result_message_error_background));
+        resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
         panelHolder.showProgress(false);
