@@ -43,7 +43,6 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.HeaderSizeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
@@ -130,6 +129,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         actionButtonParams.getPercentLayoutInfo().heightPercent = height;
 
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        formLayoutParams.alignWithParent = true;
         formLayoutParams.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
         formLayoutParams.addRule(BELOW, R.id.com_auth0_lock_banner_top);
 
@@ -219,7 +219,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
     private void addSubForm(@NonNull FormView form) {
         formLayout.setVisibility(GONE);
-//        showSignUpTerms(false);
 
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
@@ -350,8 +349,9 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
         if (subForm != null) {
             subForm.onKeyboardStateChanged(isOpen);
+            bottomBanner.setVisibility(!isOpen && subForm instanceof SignUpFormView ? VISIBLE : GONE);
         }
-        actionButton.setVisibility(isOpen ? GONE : VISIBLE);
+        headerView.setVisibility(isOpen ? GONE : VISIBLE);
         formLayout.onKeyboardStateChanged(isOpen);
     }
 

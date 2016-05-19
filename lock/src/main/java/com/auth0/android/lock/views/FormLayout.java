@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
@@ -49,6 +50,8 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private final LockWidgetEnterprise lockWidget;
     private boolean showDatabase;
     private boolean showEnterprise;
+
+    private boolean keyboardIsOpen;
 
     private LogInFormView loginForm;
     private SignUpFormView signUpForm;
@@ -90,6 +93,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
+        formsHolder.setGravity(CENTER_IN_PARENT);
         formsHolder.setOrientation(LinearLayout.VERTICAL);
         formsHolder.setGravity(Gravity.CENTER);
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -97,6 +101,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         holderParams.addRule(CENTER_VERTICAL);
         holderParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
         addView(formsHolder, holderParams);
+
         if (showSocial) {
             addSocialLayout(showDatabase || showEnterprise);
             if (showDatabase || showEnterprise) {
@@ -152,7 +157,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
         }
-        if (modeSelectionView != null) {
+        if (modeSelectionView != null && !keyboardIsOpen) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
     }
@@ -254,6 +259,10 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
+        keyboardIsOpen = isOpen;
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
+        }
         if (loginForm != null) {
             loginForm.onKeyboardStateChanged(isOpen);
         }

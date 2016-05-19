@@ -119,7 +119,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
@@ -129,7 +129,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         lockView = new ClassicLockView(this, lockBus);
-        rootView.addView(lockView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView.setLayoutParams(lockViewParams);
+        rootView.addView(lockView);
 
         int paddingTop = getStatusBarHeight();
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());

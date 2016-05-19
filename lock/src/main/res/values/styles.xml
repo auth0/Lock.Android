@@ -213,7 +213,7 @@
 
     <style name="Lock.Theme.Widget.SubmitButton">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_login_height</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/com_auth0_lock_submit_disabled</item>
     </style>
 

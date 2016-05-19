@@ -146,6 +146,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : GONE);
+        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : INVISIBLE);
     }
 }

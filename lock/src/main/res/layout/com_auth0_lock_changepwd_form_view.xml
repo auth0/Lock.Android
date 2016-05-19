@@ -43,6 +43,7 @@
     <TextView
         android:id="@+id/com_auth0_lock_text"
         style="@style/Lock.Theme.Text.Subtitle.ResetPassword"
+        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
         android:text="@string/com_auth0_lock_description_change_password"
         android:textSize="@dimen/com_auth0_lock_title_text" />
 
@@ -50,7 +51,6 @@
         android:id="@+id/com_auth0_lock_input_username_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
         app:Auth0.InputDataType="username_or_email" />
 
 </LinearLayout>

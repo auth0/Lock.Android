@@ -163,10 +163,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         CustomField fieldDate = new CustomField(R.drawable.com_auth0_lock_ic_clock, FieldType.TYPE_DATE, "date", R.string.hint_date);
 
         List<CustomField> customFields = new ArrayList<>();
-//        customFields.add(fieldName);
-//        customFields.add(fieldSurname);
-//        customFields.add(fieldWork);
-//        customFields.add(fieldCountry);
+        customFields.add(fieldName);
+        customFields.add(fieldSurname);
+        customFields.add(fieldWork);
+        customFields.add(fieldCountry);
 //        customFields.add(fieldPhone);
 //        customFields.add(fieldDate);
 
