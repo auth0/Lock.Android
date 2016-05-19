@@ -113,6 +113,7 @@
     <string name="com_auth0_lock_hint_code">Code</string>
     <string name="com_auth0_lock_hint_mfa_code">Verification Code</string>
     <string name="com_auth0_lock_hint_phone_number">Phone Number</string>
+    <string name="com_auth0_lock_hint_search_country">Search your country</string>
     <string name="com_auth0_lock_action_sign_up">Sign Up</string>
     <string name="com_auth0_lock_action_log_in">Log In</string>
     <string name="com_auth0_lock_action_forgot_password">Don\'t remember your password?</string>

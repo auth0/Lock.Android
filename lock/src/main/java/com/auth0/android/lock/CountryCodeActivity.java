@@ -86,35 +86,33 @@ public class CountryCodeActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityUIHelper.useStatusBarSpace(this, getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false));
+        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
+            ActivityUIHelper.setFullscreenMode(this);
+        }
 
         setContentView(R.layout.com_auth0_lock_passwordless_activity_country_code);
+        final EditText searchText = (EditText) findViewById(R.id.com_auth0_lock_passwordless_sms_search_country);
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.v(TAG, String.format("Filtering with string (%s)", s));
+                CountryAdapter adapter = (CountryAdapter) listView.getAdapter();
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         final ActionBar bar = getSupportActionBar();
         if (bar != null) {
-            bar.setIcon(android.R.color.transparent);
-            bar.setDisplayShowTitleEnabled(false);
-            bar.setDisplayUseLogoEnabled(false);
-            bar.setDisplayHomeAsUpEnabled(false);
-            bar.setDisplayShowCustomEnabled(true);
-            bar.setCustomView(R.layout.com_auth0_lock_passwordless_bar_country_search);
-            final EditText searchText = (EditText) bar.getCustomView().findViewById(R.id.com_auth0_lock_passwordless_sms_search_country);
-            searchText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    Log.v(TAG, String.format("Filtering with string (%s)", s));
-                    CountryAdapter adapter = (CountryAdapter) listView.getAdapter();
-                    adapter.getFilter().filter(s);
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
+            //If actionBar is present, remove it as the custom search view is already in the layout
+            bar.hide();
         }
 
         task = new LoadCountriesTask(this) {
@@ -161,6 +159,8 @@ public class CountryCodeActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        ActivityUIHelper.useStatusBarSpace(this, getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false));
+        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
+            ActivityUIHelper.setFullscreenMode(this);
+        }
     }
 }
