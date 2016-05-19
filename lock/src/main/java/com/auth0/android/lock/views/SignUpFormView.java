@@ -112,7 +112,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         int emailHeight = 0;
         if (emailInput.getVisibility() == View.VISIBLE) {
             ViewGroup.MarginLayoutParams emailParams = (MarginLayoutParams) emailInput.getLayoutParams();
-            emailHeight = passwordInput.getMeasuredHeight() + emailParams.topMargin + emailParams.bottomMargin;
+            emailHeight = emailInput.getMeasuredHeight() + emailParams.topMargin + emailParams.bottomMargin;
         }
         int passwordHeight = 0;
         if (passwordInput.getVisibility() == View.VISIBLE) {

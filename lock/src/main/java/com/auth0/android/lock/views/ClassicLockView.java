@@ -219,7 +219,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
     private void addSubForm(@NonNull FormView form) {
         formLayout.setVisibility(GONE);
-        showSignUpTerms(false);
+//        showSignUpTerms(false);
 
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
@@ -231,7 +231,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
     private void removeSubForm() {
         formLayout.setVisibility(VISIBLE);
-        showSignUpTerms(!keyboardIsOpen);
         if (this.subForm != null) {
             removeView(this.subForm);
             this.subForm = null;
@@ -274,8 +273,8 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
      */
     public boolean onBackPressed() {
         if (subForm != null) {
+            showSignUpTerms(subForm instanceof CustomFieldsFormView);
             removeSubForm();
-            bus.post(new HeaderSizeChangeEvent(false));
             return true;
         }
 
@@ -295,13 +294,14 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         formLayout.setEnabled(!show);
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
-    public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
-//        headerView.showTitle(event.useSmallHeader() ? HeaderView.HeaderSize.SMALL : HeaderView.HeaderSize.NORMAL);
+    public void onSignUpCustomFieldsShown() {
+        //TODO: Remove this method?
+        headerView.showTitle(false);
     }
 
     private void showSignUpTerms(boolean show) {
+        //TODO: Remove this method?
         bottomBanner.setVisibility(show ? VISIBLE : GONE);
     }
 
@@ -326,7 +326,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     @Override
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
         addSubForm(new CustomFieldsFormView(this, event.getEmail(), event.getUsername(), event.getPassword()));
-        bus.post(new HeaderSizeChangeEvent(true));
+        showSignUpTerms(false);
     }
 
     public void showMFACodeForm(DatabaseLoginEvent event) {
