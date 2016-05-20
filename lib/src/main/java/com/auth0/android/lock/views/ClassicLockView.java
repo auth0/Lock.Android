@@ -133,6 +133,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
         topBanner.setId(R.id.com_auth0_lock_banner_top);
+        topBanner.setVisibility(GONE);
         addView(topBanner, topBannerParams);
 
         actionButton = new ActionButton(getContext());
