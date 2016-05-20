@@ -150,10 +150,10 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     public void showOnlyEnterprise(boolean show) {
-        if (socialLayout != null) {
+        if (socialLayout != null && !keyboardIsOpen) {
             socialLayout.setVisibility(show ? GONE : VISIBLE);
         }
-        if (orSeparatorMessage != null) {
+        if (orSeparatorMessage != null && !keyboardIsOpen) {
             orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
         }
         if (modeSelectionView != null && !keyboardIsOpen) {
@@ -259,9 +259,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         keyboardIsOpen = isOpen;
-        if (modeSelectionView != null) {
-            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
-        }
         if (loginForm != null) {
             loginForm.onKeyboardStateChanged(isOpen);
         }
@@ -270,6 +267,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             if (domainForm.isEnterpriseDomainMatch()) {
                 isOpen = true;
             }
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
