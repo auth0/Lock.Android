@@ -241,16 +241,17 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (configuration != null) {
-            int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+            int parentHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
 
             int topBannerHeight = topBanner.getVisibility() == VISIBLE ? topBanner.getMeasuredHeight() : 0;
             int bottomBannerHeight = bottomBanner.getVisibility() == VISIBLE ? bottomBanner.getMeasuredHeight() : 0;
             int actionButtonHeight = actionButton.getVisibility() == VISIBLE ? actionButton.getMeasuredHeight() : 0;
-            int headerViewHeight = headerView.getMeasuredHeight();
+            int headerViewHeight = actionButton.getVisibility() == VISIBLE ? headerView.getMeasuredHeight() : 0;
             int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
             int formHeight = formLayout.getMeasuredHeight();
 
-            Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (%d + %d + %d + %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
+
+            Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
             changeHeaderSize(freeFormSpace < formHeight);
         }
     }
@@ -263,6 +264,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         PercentRelativeLayout.LayoutParams headerViewParams = (PercentRelativeLayout.LayoutParams) headerView.getLayoutParams();
         headerViewParams.getPercentLayoutInfo().heightPercent = height;
         headerView.showTitle(!collapse);
+        Log.e(TAG, "Changing HeaderView size. Collapse? " + collapse);
     }
 
     /**
