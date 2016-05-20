@@ -1,5 +1,5 @@
 /*
- * PasswordlessPanelHolder.java
+ * PasswordlessLockView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -46,21 +46,21 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessPanelHolder extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
+public class PasswordlessLockView extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
-    private static final String TAG = PasswordlessPanelHolder.class.getSimpleName();
+    private static final String TAG = PasswordlessLockView.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
 
-    public PasswordlessPanelHolder(Context context) {
+    public PasswordlessLockView(Context context) {
         super(context);
         bus = null;
     }
 
-    public PasswordlessPanelHolder(Context context, Bus lockBus) {
+    public PasswordlessLockView(Context context, Bus lockBus) {
         super(context);
         this.bus = lockBus;
         showWaitForConfigurationLayout();
@@ -68,10 +68,10 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
 
     private void init() {
         if (configuration == null) {
-            Log.w(TAG, "Configuration is missing, the panel won't init.");
+            Log.w(TAG, "Configuration is missing, the view won't init.");
             showConfigurationMissingLayout();
         } else {
-            showPanelLayout();
+            showContentLayout();
         }
     }
 
@@ -83,7 +83,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         addView(loadingProgressBar, params);
     }
 
-    private void showPanelLayout() {
+    private void showContentLayout() {
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
@@ -106,7 +106,7 @@ public class PasswordlessPanelHolder extends RelativeLayout implements LockWidge
         addView(formLayout, params);
     }
 
-    public void configurePanel(@Nullable Configuration configuration) {
+    public void configure(@Nullable Configuration configuration) {
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
