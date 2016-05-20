@@ -107,7 +107,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
         int sumHeight = usernameHeight + emailHeight + passwordHeight;
 
-        Log.e(TAG, String.format("Parent height %d, Children height %d (%d + %d + %d)", parentHeight, sumHeight, usernameHeight, emailHeight, passwordHeight));
+        Log.v(TAG, String.format("Parent height %d, Children height %d (%d + %d + %d)", parentHeight, sumHeight, usernameHeight, emailHeight, passwordHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 

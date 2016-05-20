@@ -272,7 +272,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
         int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
         int sumHeight = topMessageHeight + changePasswordHeight + usernameHeight + emailHeight + passwordHeight;
 
-        Log.e(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
+        Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 

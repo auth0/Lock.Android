@@ -202,7 +202,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         int fieldsHeight = ViewUtils.measureViewHeight(getExistingForm());
         int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
 
-        Log.e(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
+        Log.v(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 

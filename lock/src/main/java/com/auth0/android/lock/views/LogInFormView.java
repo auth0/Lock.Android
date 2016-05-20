@@ -120,7 +120,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
         int sumHeight = changePasswordHeight + usernameHeight + passwordHeight;
 
-        Log.e(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d)", parentHeight, sumHeight, changePasswordHeight, usernameHeight, passwordHeight));
+        Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d)", parentHeight, sumHeight, changePasswordHeight, usernameHeight, passwordHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 

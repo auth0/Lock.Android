@@ -248,7 +248,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         int actionButtonHeight = ViewUtils.measureViewHeight(actionButton);
         int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
 
-        Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
+        Log.v(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
         changeHeaderSize(freeFormSpace < formHeight || subForm instanceof CustomFieldsFormView);
     }
 
@@ -260,7 +260,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         PercentRelativeLayout.LayoutParams headerViewParams = (PercentRelativeLayout.LayoutParams) headerView.getLayoutParams();
         headerViewParams.getPercentLayoutInfo().heightPercent = height;
         headerView.showTitle(!collapse);
-        Log.e(TAG, "Changing HeaderView size. Collapse? " + collapse);
     }
 
     /**
@@ -291,14 +290,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         formLayout.setEnabled(!show);
     }
 
-    @Subscribe
-    public void onSignUpCustomFieldsShown() {
-        //TODO: Remove this method?
-        headerView.showTitle(false);
-    }
-
     private void showSignUpTerms(boolean show) {
-        //TODO: Remove this method?
         bottomBanner.setVisibility(show ? VISIBLE : GONE);
     }
 
