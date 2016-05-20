@@ -184,7 +184,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
         TextView errorText = new TextView(getContext());
         errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);
-        errorText.setGravity(CENTER_IN_PARENT);
+        errorText.setGravity(Gravity.CENTER);
 
         Button retryButton = new Button(getContext());
         retryButton.setText(R.string.com_auth0_lock_action_retry);
