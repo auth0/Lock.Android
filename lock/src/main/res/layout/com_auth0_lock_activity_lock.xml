@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/com_auth0_lock_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
         android:id="@+id/com_auth0_lock_result_message"
         style="@style/Lock.Theme.Text.ResultMessage"
         android:visibility="gone"
         tools:text="There was an error"
         tools:visibility="visible" />
-
-    <RelativeLayout
-        android:id="@+id/com_auth0_lock_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </RelativeLayout>
