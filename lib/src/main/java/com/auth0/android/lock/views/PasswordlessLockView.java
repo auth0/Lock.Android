@@ -26,14 +26,15 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
@@ -46,7 +47,7 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessLockView extends RelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
+public class PasswordlessLockView extends PercentRelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
     private static final String TAG = PasswordlessLockView.class.getSimpleName();
     private final Bus bus;
@@ -54,6 +55,8 @@ public class PasswordlessLockView extends RelativeLayout implements LockWidgetSo
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
+    private HeaderView headerView;
+
 
     public PasswordlessLockView(Context context) {
         super(context);
@@ -84,26 +87,42 @@ public class PasswordlessLockView extends RelativeLayout implements LockWidgetSo
     }
 
     private void showContentLayout() {
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        TypedValue typedValue = new TypedValue();
+        getResources().getValue(R.dimen.com_auth0_lock_header_view_height, typedValue, true);
+        float height = typedValue.getFloat();
+
+        LayoutParams headerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        headerViewParams.addRule(ALIGN_PARENT_TOP);
+        headerViewParams.getPercentLayoutInfo().heightPercent = height;
+
+        getResources().getValue(R.dimen.com_auth0_lock_action_button_height, typedValue, true);
+        height = typedValue.getFloat();
+        LayoutParams actionButtonParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        actionButtonParams.addRule(ALIGN_PARENT_BOTTOM);
+        actionButtonParams.getPercentLayoutInfo().heightPercent = height;
+
+        LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        formLayoutParams.alignWithParent = true;
+        formLayoutParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
+        formLayoutParams.addRule(CENTER_IN_PARENT);
+        formLayoutParams.addRule(BELOW, R.id.com_auth0_lock_header);
+
+        headerView = new HeaderView(getContext());
+        headerView.setId(R.id.com_auth0_lock_header);
+        addView(headerView, headerViewParams);
 
         boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
         if (showPasswordless) {
-            RelativeLayout.LayoutParams actionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            actionParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
             actionButton = new ActionButton(getContext());
             actionButton.setId(R.id.com_auth0_lock_action_button);
             actionButton.setOnClickListener(this);
-            addView(actionButton, actionParams);
+            addView(actionButton, actionButtonParams);
         }
 
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout = new PasswordlessFormLayout(this);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-        params.addRule(ALIGN_PARENT_TOP, TRUE);
-        params.addRule(ABOVE, R.id.com_auth0_lock_action_button);
-        params.addRule(CENTER_IN_PARENT, TRUE);
-        addView(formLayout, params);
+        formLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        addView(formLayout, formLayoutParams);
     }
 
     public void configure(@Nullable Configuration configuration) {
@@ -152,7 +171,7 @@ public class PasswordlessLockView extends RelativeLayout implements LockWidgetSo
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        return formLayout != null && formLayout.onBackPressed();
+        return formLayout.onBackPressed();
     }
 
     /**
@@ -223,10 +242,8 @@ public class PasswordlessLockView extends RelativeLayout implements LockWidgetSo
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        if (actionButton != null) {
-            actionButton.setVisibility(isOpen ? GONE : VISIBLE);
-        }
         formLayout.onKeyboardStateChanged(isOpen);
+        headerView.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
     public void loadPasswordlessData(String input, @Nullable Country country) {

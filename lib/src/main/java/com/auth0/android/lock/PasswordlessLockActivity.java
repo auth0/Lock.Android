@@ -68,7 +68,6 @@ import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
-import com.auth0.android.lock.views.HeaderView;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
@@ -112,7 +111,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private TextView resendButton;
 
     private ProgressDialog progressDialog;
-    private HeaderView headerView;
 
     private boolean keyboardIsShown;
     private ViewGroup contentView;
@@ -137,17 +135,18 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
+        int paddingTop = getStatusBarHeight();
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
-        headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         lockView = new PasswordlessLockView(this, lockBus);
-        rootView.addView(lockView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView.setLayoutParams(lockViewParams);
+        lockView.setPadding(0, paddingTop, 0, 0);
+        rootView.addView(lockView);
 
-        int paddingTop = getStatusBarHeight();
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
-        headerView.setPaddingTop(paddingTop);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
@@ -210,7 +209,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
         Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
-        headerView.onKeyboardStateChanged(isOpen);
         lockView.onKeyboardStateChanged(isOpen);
     }
 
