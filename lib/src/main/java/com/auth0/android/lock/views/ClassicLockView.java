@@ -48,14 +48,12 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 public class ClassicLockView extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
 
     private static final String TAG = ClassicLockView.class.getSimpleName();
     private final Bus bus;
     private Configuration configuration;
-    private boolean keyboardIsOpen;
 
     private FormLayout formLayout;
     private FormView subForm;
@@ -135,6 +133,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
         topBanner.setId(R.id.com_auth0_lock_banner_top);
+        topBanner.setVisibility(GONE);
         addView(topBanner, topBannerParams);
 
         actionButton = new ActionButton(getContext());
@@ -185,7 +184,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
         TextView errorText = new TextView(getContext());
         errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);
-        errorText.setGravity(CENTER_IN_PARENT);
+        errorText.setGravity(Gravity.CENTER);
 
         Button retryButton = new Button(getContext());
         retryButton.setText(R.string.com_auth0_lock_action_retry);
@@ -335,8 +334,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        keyboardIsOpen = isOpen;
-
         if (subForm != null) {
             subForm.onKeyboardStateChanged(isOpen);
             bottomBanner.setVisibility(!isOpen && subForm instanceof SignUpFormView ? VISIBLE : GONE);

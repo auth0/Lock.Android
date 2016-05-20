@@ -65,12 +65,10 @@ import com.auth0.android.lock.provider.AuthorizeResult;
 import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.provider.WebViewActivity;
 import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
-import com.auth0.android.lock.views.HeaderView;
-import com.auth0.android.lock.views.PasswordlessPanelHolder;
+import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
@@ -102,7 +100,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private Options options;
     private Handler handler;
 
-    private PasswordlessPanelHolder panelHolder;
+    private PasswordlessLockView lockView;
     private LinearLayout passwordlessSuccessCover;
     private TextView resultMessage;
 
@@ -113,7 +111,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private TextView resendButton;
 
     private ProgressDialog progressDialog;
-    private HeaderView headerView;
 
     private boolean keyboardIsShown;
     private ViewGroup contentView;
@@ -138,17 +135,18 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
+        int paddingTop = getStatusBarHeight();
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
-        headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
-        panelHolder = new PasswordlessPanelHolder(this, lockBus);
-        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView = new PasswordlessLockView(this, lockBus);
+        RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView.setLayoutParams(lockViewParams);
+        lockView.setPadding(0, paddingTop, 0, 0);
+        rootView.addView(lockView);
 
-        int paddingTop = getStatusBarHeight();
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
-        headerView.setPaddingTop(paddingTop);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
@@ -211,8 +209,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
         Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
-        headerView.onKeyboardStateChanged(isOpen);
-        panelHolder.onKeyboardStateChanged(isOpen);
+        lockView.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {
@@ -243,7 +240,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Override
     public void onBackPressed() {
         boolean showingSuccessLayout = passwordlessSuccessCover.getVisibility() == View.VISIBLE;
-        if (!showingSuccessLayout && panelHolder.onBackPressed()) {
+        if (!showingSuccessLayout && lockView.onBackPressed()) {
             reloadRecentPasswordlessData();
             return;
         }
@@ -273,7 +270,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
-        panelHolder.showProgress(false);
+        lockView.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -300,15 +297,15 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             @Override
             public void onClick(View v) {
                 resendButton.setVisibility(View.GONE);
-                rootView.removeView(panelHolder);
-                panelHolder = new PasswordlessPanelHolder(PasswordlessLockActivity.this, lockBus);
+                rootView.removeView(lockView);
+                lockView = new PasswordlessLockView(PasswordlessLockActivity.this, lockBus);
                 if (configuration != null) {
-                    panelHolder.configurePanel(configuration);
+                    lockView.configure(configuration);
                     reloadRecentPasswordlessData();
                 } else {
                     lockBus.post(new FetchApplicationEvent());
                 }
-                rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                rootView.addView(lockView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
@@ -349,7 +346,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             }
             lastPasswordlessCountry = new Country(isoCode, dialCode);
         }
-        panelHolder.loadPasswordlessData(text, lastPasswordlessCountry);
+        lockView.loadPasswordlessData(text, lastPasswordlessCountry);
     }
 
     private void persistRecentPasswordlessData(@NonNull String emailOrNumber, @Nullable Country country) {
@@ -395,7 +392,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             if (resultCode == RESULT_OK) {
                 String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE_EXTRA);
                 String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE_EXTRA);
-                panelHolder.onCountryCodeSelected(country, dialCode);
+                lockView.onCountryCodeSelected(country, dialCode);
             }
             return;
         }
@@ -412,7 +409,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     private void processIncomingIntent(Intent intent) {
-        panelHolder.showProgress(false);
+        lockView.showProgress(false);
         if (intent == null) {
             return;
         }
@@ -476,7 +473,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             return;
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
@@ -496,7 +493,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        panelHolder.showProgress(!options.useBrowser());
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
@@ -521,7 +517,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.configurePanel(configuration);
+                    lockView.configure(configuration);
                     reloadRecentPasswordlessData();
                 }
             });
@@ -534,7 +530,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.configurePanel(null);
+                    lockView.configure(null);
                 }
             });
         }
@@ -546,8 +542,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.showProgress(false);
-                    panelHolder.onPasswordlessCodeSent(lastPasswordlessEmailOrNumber);
+                    lockView.showProgress(false);
+                    lockView.onPasswordlessCodeSent(lastPasswordlessEmailOrNumber);
                     if (!options.useCodePasswordless()) {
                         showLinkSentLayout();
                     }
