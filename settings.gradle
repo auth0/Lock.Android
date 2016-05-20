@@ -1,3 +1,4 @@
-include ':app', ':lock'
-include ':auth0'
-project(':auth0').projectDir = new File(rootProject.projectDir, 'auth0/lib')
+include ':app'
+
+include ':lock'
+project(':lock').projectDir = new File(rootProject.projectDir, '/lib')
