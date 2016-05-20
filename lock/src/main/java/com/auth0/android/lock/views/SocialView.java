@@ -79,8 +79,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        ViewGroup.MarginLayoutParams recyclerParams = (MarginLayoutParams) recycler.getLayoutParams();
-        int recyclerHeight = recycler.getMeasuredHeight() + recyclerParams.topMargin + recyclerParams.bottomMargin;
+        int recyclerHeight = ViewUtils.measureViewHeight(recycler);
         setMeasuredDimension(getMeasuredWidth(), recyclerHeight);
     }
 }

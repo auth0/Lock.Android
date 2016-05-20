@@ -31,8 +31,10 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.auth0.android.lock.R;
 
@@ -110,5 +112,19 @@ abstract class ViewUtils {
             //noinspection deprecation
             view.setBackgroundDrawable(background);
         }
+    }
+
+    /**
+     * Measures the height of a view considering the margins and its visibility.
+     *
+     * @param view to measure the height.
+     */
+    static int measureViewHeight(@Nullable View view) {
+        int height = 0;
+        if (view != null && view.getVisibility() == View.VISIBLE) {
+            ViewGroup.MarginLayoutParams modeSelectionParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            height = view.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin;
+        }
+        return height;
     }
 }

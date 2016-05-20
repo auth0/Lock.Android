@@ -29,7 +29,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -116,25 +115,11 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-
-        int changePasswordHeight = 0;
-        if (changePasswordBtn.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams changePasswordParams = (MarginLayoutParams) changePasswordBtn.getLayoutParams();
-            changePasswordHeight = changePasswordBtn.getMeasuredHeight() + changePasswordParams.topMargin + changePasswordParams.bottomMargin;
-        }
-
-        int usernameHeight = 0;
-        if (usernameEmailInput.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams usernameParams = (MarginLayoutParams) usernameEmailInput.getLayoutParams();
-            usernameHeight = usernameEmailInput.getMeasuredHeight() + usernameParams.topMargin + usernameParams.bottomMargin;
-        }
-        int passwordHeight = 0;
-        if (passwordInput.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams passwordParams = (MarginLayoutParams) passwordInput.getLayoutParams();
-            passwordHeight = passwordInput.getMeasuredHeight() + passwordParams.topMargin + passwordParams.bottomMargin;
-        }
-
+        int changePasswordHeight = ViewUtils.measureViewHeight(changePasswordBtn);
+        int usernameHeight = ViewUtils.measureViewHeight(usernameEmailInput);
+        int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
         int sumHeight = changePasswordHeight + usernameHeight + passwordHeight;
+
         Log.e(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d)", parentHeight, sumHeight, changePasswordHeight, usernameHeight, passwordHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }

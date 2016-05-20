@@ -97,10 +97,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     }
 
     private void showContentLayout() {
-        //TODO: Move to %
-//        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-//        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-
         TypedValue typedValue = new TypedValue();
 
         getResources().getValue(R.dimen.com_auth0_lock_header_view_height, typedValue, true);
@@ -240,20 +236,20 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (configuration != null) {
-            int parentHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
-
-            int topBannerHeight = topBanner.getVisibility() == VISIBLE ? topBanner.getMeasuredHeight() : 0;
-            int bottomBannerHeight = bottomBanner.getVisibility() == VISIBLE ? bottomBanner.getMeasuredHeight() : 0;
-            int actionButtonHeight = actionButton.getVisibility() == VISIBLE ? actionButton.getMeasuredHeight() : 0;
-            int headerViewHeight = actionButton.getVisibility() == VISIBLE ? headerView.getMeasuredHeight() : 0;
-            int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
-            int formHeight = formLayout.getMeasuredHeight();
-
-
-            Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
-            changeHeaderSize(freeFormSpace < formHeight || subForm instanceof CustomFieldsFormView);
+        if (configuration == null) {
+            return;
         }
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
+        int headerViewHeight = ViewUtils.measureViewHeight(headerView);
+        int topBannerHeight = ViewUtils.measureViewHeight(topBanner);
+        int formHeight = ViewUtils.measureViewHeight(formLayout);
+        int bottomBannerHeight = ViewUtils.measureViewHeight(bottomBanner);
+        int actionButtonHeight = ViewUtils.measureViewHeight(actionButton);
+        int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
+
+        Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
+        changeHeaderSize(freeFormSpace < formHeight || subForm instanceof CustomFieldsFormView);
     }
 
     private void changeHeaderSize(boolean collapse) {

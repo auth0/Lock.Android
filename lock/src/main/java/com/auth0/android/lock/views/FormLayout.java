@@ -150,13 +150,16 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     public void showOnlyEnterprise(boolean show) {
-        if (socialLayout != null && !keyboardIsOpen) {
+        if (keyboardIsOpen) {
+            return;
+        }
+        if (socialLayout != null) {
             socialLayout.setVisibility(show ? GONE : VISIBLE);
         }
-        if (orSeparatorMessage != null && !keyboardIsOpen) {
+        if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
         }
-        if (modeSelectionView != null && !keyboardIsOpen) {
+        if (modeSelectionView != null) {
             modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
     }
@@ -193,31 +196,12 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-
-        int modeSelectionHeight = 0;
-        if (modeSelectionView != null && modeSelectionView.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams modeSelectionParams = (MarginLayoutParams) modeSelectionView.getLayoutParams();
-            modeSelectionHeight = modeSelectionView.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin;
-        }
-
-        int separatorHeight = 0;
-        if (orSeparatorMessage != null && orSeparatorMessage.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams separatorParams = (MarginLayoutParams) orSeparatorMessage.getLayoutParams();
-            separatorHeight = orSeparatorMessage.getMeasuredHeight() + separatorParams.topMargin + separatorParams.bottomMargin;
-        }
-        int socialHeight = 0;
-        if (socialLayout != null && socialLayout.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams socialParams = (MarginLayoutParams) socialLayout.getLayoutParams();
-            socialHeight = socialLayout.getMeasuredHeight() + socialParams.topMargin + socialParams.bottomMargin;
-        }
-        int fieldsHeight = 0;
-        View existingForm = getExistingForm();
-        if (existingForm != null && existingForm.getVisibility() == View.VISIBLE) {
-            ViewGroup.MarginLayoutParams formParams = (MarginLayoutParams) existingForm.getLayoutParams();
-            fieldsHeight = existingForm.getMeasuredHeight() + formParams.topMargin + formParams.bottomMargin;
-        }
-
+        int modeSelectionHeight = ViewUtils.measureViewHeight(modeSelectionView);
+        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
+        int socialHeight = ViewUtils.measureViewHeight(socialLayout);
+        int fieldsHeight = ViewUtils.measureViewHeight(getExistingForm());
         int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
+
         Log.e(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }

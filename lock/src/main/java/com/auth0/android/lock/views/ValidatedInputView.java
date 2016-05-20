@@ -194,13 +194,10 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        ViewGroup.MarginLayoutParams inputParams = (MarginLayoutParams) input.getLayoutParams();
-        int inputHeight = input.getMeasuredHeight() + inputParams.topMargin + inputParams.bottomMargin;
 
+        int inputHeight = ViewUtils.measureViewHeight(input);
         ViewGroup iconHolder = (ViewGroup) icon.getParent();
-        ViewGroup.MarginLayoutParams iconHolderParams = (MarginLayoutParams) iconHolder.getLayoutParams();
-        int iconHeight = iconHolder.getMeasuredHeight() + iconHolderParams.topMargin + iconHolderParams.bottomMargin;
-
+        int iconHeight = ViewUtils.measureViewHeight(iconHolder);
         setMeasuredDimension(getMeasuredWidth(), Math.max(inputHeight, iconHeight));
     }
 
