@@ -252,7 +252,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
 
             Log.e(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
-            changeHeaderSize(freeFormSpace < formHeight);
+            changeHeaderSize(freeFormSpace < formHeight || subForm instanceof CustomFieldsFormView);
         }
     }
 
