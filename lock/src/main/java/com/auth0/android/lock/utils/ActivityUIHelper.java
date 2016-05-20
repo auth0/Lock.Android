@@ -25,7 +25,6 @@
 package com.auth0.android.lock.utils;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -57,9 +56,6 @@ public abstract class ActivityUIHelper {
             int uiFullscreenOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             int uiNormalOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(fullscreen ? uiFullscreenOptions : uiNormalOptions);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                window.setStatusBarColor(Color.TRANSPARENT);
-            }
         } else if (fullscreen) {
             window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
