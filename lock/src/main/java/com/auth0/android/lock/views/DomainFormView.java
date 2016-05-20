@@ -246,7 +246,7 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     }
 
     private void showSSOMessage(boolean show) {
-        lockWidget.showSSOEnabledMessage(show);
+        lockWidget.showTopBanner(show);
         if (changePasswordEnabled && !keyboardIsOpen) {
             changePasswordBtn.setVisibility(show ? GONE : VISIBLE);
         }
@@ -258,6 +258,22 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
             lockWidget.onFormSubmit();
         }
         return false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int topMessageHeight = ViewUtils.measureViewHeight(topMessage);
+        int changePasswordHeight = ViewUtils.measureViewHeight(changePasswordBtn);
+        int usernameHeight = ViewUtils.measureViewHeight(usernameInput);
+        int emailHeight = ViewUtils.measureViewHeight(emailInput);
+        int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
+        int sumHeight = topMessageHeight + changePasswordHeight + usernameHeight + emailHeight + passwordHeight;
+
+        Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 
     /**

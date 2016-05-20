@@ -34,20 +34,23 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 
-public class FormLayout extends LinearLayout {
+public class FormLayout extends RelativeLayout implements ModeSelectionView.ModeSelectedListener {
+    private static final String TAG = FormLayout.class.getSimpleName();
     private static final int SINGLE_FORM_POSITION = 0;
     private static final int MULTIPLE_FORMS_POSITION = 2;
-    private static final String TAG = FormLayout.class.getSimpleName();
 
     private final LockWidgetEnterprise lockWidget;
     private boolean showDatabase;
     private boolean showEnterprise;
+
+    private boolean keyboardIsOpen;
 
     private LogInFormView loginForm;
     private SignUpFormView signUpForm;
@@ -55,6 +58,9 @@ public class FormLayout extends LinearLayout {
     private SocialView socialLayout;
     private CustomFieldsFormView customFieldsForm;
     private TextView orSeparatorMessage;
+
+    private LinearLayout formsHolder;
+    private ModeSelectionView modeSelectionView;
 
     public FormLayout(Context context) {
         super(context);
@@ -68,25 +74,45 @@ public class FormLayout extends LinearLayout {
     }
 
     private void init() {
-        setOrientation(VERTICAL);
-        setGravity(Gravity.CENTER);
         boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
+        boolean showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
+
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+
+        if (showModeSelection) {
+            Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
+            modeSelectionView = new ModeSelectionView(getContext(), this);
+            modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
+            LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            modeSelectionParams.addRule(ALIGN_PARENT_TOP);
+            modeSelectionParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+            addView(modeSelectionView, modeSelectionParams);
+        }
+        formsHolder = new LinearLayout(getContext());
+        formsHolder.setGravity(CENTER_IN_PARENT);
+        formsHolder.setOrientation(LinearLayout.VERTICAL);
+        formsHolder.setGravity(Gravity.CENTER);
+        LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
+        holderParams.addRule(CENTER_VERTICAL);
+        holderParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        addView(formsHolder, holderParams);
+
         if (showSocial) {
             addSocialLayout(showDatabase || showEnterprise);
-        }
-        if (showDatabase || showEnterprise) {
-            if (showSocial) {
+            if (showDatabase || showEnterprise) {
                 addSeparator();
             }
-            addFormLayout();
         }
+        changeFormMode(ModeSelectionView.Mode.LOG_IN);
     }
 
     private void addSocialLayout(boolean smallButtons) {
         socialLayout = new SocialView(lockWidget, smallButtons);
-        addView(socialLayout);
+        formsHolder.addView(socialLayout);
     }
 
     private void addSeparator() {
@@ -97,7 +123,7 @@ public class FormLayout extends LinearLayout {
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-        addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        formsHolder.addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     /**
@@ -105,27 +131,36 @@ public class FormLayout extends LinearLayout {
      *
      * @param mode the new DatabaseMode to change to
      */
-    public void changeFormMode(@ModeSelectionView.Mode int mode) {
+    private void changeFormMode(@ModeSelectionView.Mode int mode) {
         Log.d(TAG, "Mode changed to " + mode);
         if (!showDatabase && !showEnterprise) {
             return;
         }
+        lockWidget.showTopBanner(false);
         switch (mode) {
             case ModeSelectionView.Mode.LOG_IN:
                 addFormLayout();
+                lockWidget.showBottomBanner(false);
                 break;
             case ModeSelectionView.Mode.SIGN_UP:
                 showSignUpForm();
+                lockWidget.showBottomBanner(true);
                 break;
         }
     }
 
     public void showOnlyEnterprise(boolean show) {
+        if (keyboardIsOpen) {
+            return;
+        }
         if (socialLayout != null) {
             socialLayout.setVisibility(show ? GONE : VISIBLE);
         }
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(show ? GONE : VISIBLE);
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(show ? GONE : VISIBLE);
         }
     }
 
@@ -135,7 +170,7 @@ public class FormLayout extends LinearLayout {
         if (signUpForm == null) {
             signUpForm = new SignUpFormView(lockWidget);
         }
-        addView(signUpForm);
+        formsHolder.addView(signUpForm);
     }
 
     private void showDatabaseLoginForm() {
@@ -144,7 +179,7 @@ public class FormLayout extends LinearLayout {
         if (loginForm == null) {
             loginForm = new LogInFormView(lockWidget);
         }
-        addView(loginForm);
+        formsHolder.addView(loginForm);
     }
 
     private void showEnterpriseForm() {
@@ -153,7 +188,22 @@ public class FormLayout extends LinearLayout {
         if (domainForm == null) {
             domainForm = new DomainFormView(lockWidget);
         }
-        addView(domainForm);
+        formsHolder.addView(domainForm);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int modeSelectionHeight = ViewUtils.measureViewHeight(modeSelectionView);
+        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
+        int socialHeight = ViewUtils.measureViewHeight(socialLayout);
+        int fieldsHeight = ViewUtils.measureViewHeight(getExistingForm());
+        int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
+
+        Log.v(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
@@ -162,14 +212,19 @@ public class FormLayout extends LinearLayout {
         if (customFieldsForm == null) {
             customFieldsForm = new CustomFieldsFormView(lockWidget, event.getEmail(), event.getUsername(), event.getPassword());
         }
-        addView(customFieldsForm);
+        formsHolder.addView(customFieldsForm);
     }
 
     private void removePreviousForm() {
-        View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
+        View existingForm = getExistingForm();
         if (existingForm != null) {
-            removeView(existingForm);
+            formsHolder.removeView(existingForm);
         }
+    }
+
+    @Nullable
+    private View getExistingForm() {
+        return formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
     }
 
     private void addFormLayout() {
@@ -187,6 +242,7 @@ public class FormLayout extends LinearLayout {
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
+        keyboardIsOpen = isOpen;
         if (loginForm != null) {
             loginForm.onKeyboardStateChanged(isOpen);
         }
@@ -195,6 +251,9 @@ public class FormLayout extends LinearLayout {
             if (domainForm.isEnterpriseDomainMatch()) {
                 isOpen = true;
             }
+        }
+        if (modeSelectionView != null) {
+            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
         }
         if (orSeparatorMessage != null) {
             orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
@@ -221,7 +280,7 @@ public class FormLayout extends LinearLayout {
      */
     @Nullable
     public Object onActionPressed() {
-        View existingForm = getChildAt(getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
+        View existingForm = getExistingForm();
         if (existingForm == null) {
             return null;
         }
@@ -237,5 +296,11 @@ public class FormLayout extends LinearLayout {
             return null;
         }
         return ev;
+    }
+
+    @Override
+    public void onModeSelected(@ModeSelectionView.Mode int mode) {
+        Log.d(TAG, "Mode changed to " + mode);
+        changeFormMode(mode);
     }
 }

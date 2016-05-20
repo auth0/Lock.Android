@@ -23,6 +23,10 @@
   -->
 
 <resources>
+    <item name="com_auth0_lock_header" type="id" />
+    <item name="com_auth0_lock_banner_bottom" type="id" />
+    <item name="com_auth0_lock_banner_top" type="id" />
+
     <item name="com_auth0_lock_form_selector" type="id" />
     <item name="com_auth0_lock_action_button" type="id" />
     <item name="com_auth0_lock_terms_layout" type="id" />

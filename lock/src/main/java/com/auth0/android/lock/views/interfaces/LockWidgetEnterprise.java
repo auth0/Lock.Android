@@ -26,5 +26,5 @@ package com.auth0.android.lock.views.interfaces;
 
 public interface LockWidgetEnterprise extends LockWidgetForm {
 
-    void showSSOEnabledMessage(boolean show);
+    void showTopBanner(boolean show);
 }

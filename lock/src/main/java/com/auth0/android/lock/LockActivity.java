@@ -56,7 +56,6 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.HeaderSizeChangeEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.android.lock.provider.AuthProvider;
@@ -68,9 +67,7 @@ import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.ApplicationFetcher;
 import com.auth0.android.lock.utils.Strategies;
-import com.auth0.android.lock.views.ClassicPanelHolder;
-import com.auth0.android.lock.views.HeaderView;
-import com.auth0.android.lock.views.HeaderView.HeaderSize;
+import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
@@ -100,11 +97,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private Options options;
     private Handler handler;
 
-    private ClassicPanelHolder panelHolder;
+    private ClassicLockView lockView;
     private TextView resultMessage;
 
     private ProgressDialog progressDialog;
-    private HeaderView headerView;
     private AuthProvider currentProvider;
 
     private boolean keyboardIsShown;
@@ -129,16 +125,17 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
+        int paddingTop = getStatusBarHeight();
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
-        headerView = (HeaderView) findViewById(R.id.com_auth0_lock_header);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
-        panelHolder = new ClassicPanelHolder(this, lockBus);
-        rootView.addView(panelHolder, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView = new ClassicLockView(this, lockBus);
+        RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lockView.setLayoutParams(lockViewParams);
+        lockView.setPadding(0, paddingTop, 0, 0);
+        rootView.addView(lockView);
 
-        int paddingTop = getStatusBarHeight();
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
-        headerView.setPaddingTop(paddingTop);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
@@ -200,8 +197,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
         Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
         keyboardIsShown = isOpen;
-        headerView.onKeyboardStateChanged(isOpen);
-        panelHolder.onKeyboardStateChanged(isOpen);
+        lockView.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {
@@ -230,7 +226,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     public void onBackPressed() {
-        if (panelHolder.onBackPressed() || !options.isClosable()) {
+        if (lockView.onBackPressed() || !options.isClosable()) {
             return;
         }
 
@@ -265,7 +261,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_success_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
-        panelHolder.showProgress(false);
+        lockView.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -274,7 +270,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
         resultMessage.setText(message);
-        panelHolder.showProgress(false);
+        lockView.showProgress(false);
         handler.removeCallbacks(resultMessageHider);
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
@@ -328,7 +324,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (currentProvider != null) {
             //Deliver result to the IDP
-            panelHolder.showProgress(false);
+            lockView.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
             currentProvider.authorize(LockActivity.this, result);
         }
@@ -339,7 +335,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onNewIntent(Intent intent) {
         if (currentProvider != null) {
             //Deliver result to the IDP
-            panelHolder.showProgress(false);
+            lockView.showProgress(false);
             AuthorizeResult result = new AuthorizeResult(intent);
             currentProvider.authorize(LockActivity.this, result);
         }
@@ -357,12 +353,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onSignUpCustomFieldsShown(HeaderSizeChangeEvent event) {
-        headerView.changeHeaderSize(event.useSmallHeader() ? HeaderSize.SMALL : HeaderSize.NORMAL);
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
         fetchProviderAndBeginAuthentication(event.getConnectionName());
     }
@@ -375,7 +365,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
@@ -399,7 +389,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
 
         if (configuration.loginAfterSignUp()) {
             Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
@@ -428,7 +418,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
         apiClient.requestChangePassword(event.getUsernameOrEmail())
@@ -457,7 +447,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             }
         }
 
-        panelHolder.showProgress(true);
+        lockView.showProgress(true);
         if (event.useRO()) {
             Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
@@ -480,7 +470,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.configurePanel(configuration);
+                    lockView.configure(configuration);
                 }
             });
         }
@@ -492,7 +482,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.configurePanel(null);
+                    lockView.configure(null);
                 }
             });
         }
@@ -564,10 +554,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    panelHolder.showProgress(false);
+                    lockView.showProgress(false);
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
                     if (authError.getErrorType() == ErrorType.MFA_REQUIRED || authError.getErrorType() == ErrorType.MFA_NOT_ENROLLED) {
-                        panelHolder.showMFACodeForm(lastDatabaseLogin);
+                        lockView.showMFACodeForm(lastDatabaseLogin);
                         return;
                     }
                     String message = authError.getMessage(LockActivity.this);
@@ -608,7 +598,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
-                    panelHolder.showChangePasswordForm(false);
+                    lockView.showChangePasswordForm(false);
                 }
             });
 

@@ -43,6 +43,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
 
     private static final String TAG = SocialView.class.getSimpleName();
     private LockWidgetSocial lockWidget;
+    private RecyclerView recycler;
 
     public SocialView(LockWidgetSocial lockWidget, boolean smallButtons) {
         super(lockWidget.getContext());
@@ -54,7 +55,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     private void init(boolean smallButtons) {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
-        RecyclerView recycler = new RecyclerView(getContext());
+        recycler = new RecyclerView(getContext());
         List<Strategy> socialStrategies = lockWidget.getConfiguration().getSocialStrategies();
         SocialViewAdapter adapter = new SocialViewAdapter(getContext(), socialStrategies);
         adapter.setButtonSize(smallButtons);
@@ -72,5 +73,13 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     @Override
     public void onConnectionClicked(String connectionName) {
         lockWidget.onSocialLogin(new SocialConnectionEvent(connectionName));
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int recyclerHeight = ViewUtils.measureViewHeight(recycler);
+        setMeasuredDimension(getMeasuredWidth(), recyclerHeight);
     }
 }

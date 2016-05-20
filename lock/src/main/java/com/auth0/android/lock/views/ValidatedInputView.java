@@ -191,6 +191,16 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         ViewUtils.setBackground(input, rightBackground);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int inputHeight = ViewUtils.measureViewHeight(input);
+        ViewGroup iconHolder = (ViewGroup) icon.getParent();
+        int iconHeight = ViewUtils.measureViewHeight(iconHolder);
+        setMeasuredDimension(getMeasuredWidth(), Math.max(inputHeight, iconHeight));
+    }
+
     /**
      * Changes the type of input this view will validate.
      *

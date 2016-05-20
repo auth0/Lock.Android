@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -38,6 +39,7 @@ import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
 
+    private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView usernameEmailInput;
     private ValidatedInputView passwordInput;
@@ -108,6 +110,20 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         return false;
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int changePasswordHeight = ViewUtils.measureViewHeight(changePasswordBtn);
+        int usernameHeight = ViewUtils.measureViewHeight(usernameEmailInput);
+        int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
+        int sumHeight = changePasswordHeight + usernameHeight + passwordHeight;
+
+        Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d)", parentHeight, sumHeight, changePasswordHeight, usernameHeight, passwordHeight));
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+    }
+
     /**
      * Notifies this forms and its child views that the keyboard state changed, so that
      * it can change the layout in order to fit all the fields.
@@ -115,6 +131,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : GONE);
+        changePasswordBtn.setVisibility(!isOpen && changePasswordEnabled ? VISIBLE : INVISIBLE);
     }
 }

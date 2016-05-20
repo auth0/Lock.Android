@@ -26,9 +26,6 @@
     <dimen name="com_auth0_lock_webview_button_text_padding_left">10dp</dimen>
     <dimen name="com_auth0_lock_webview_button_icon_label_size">50dp</dimen>
 
-    <dimen name="com_auth0_lock_header_height_small">72dp</dimen>
-    <dimen name="com_auth0_lock_header_height_normal">105dp</dimen>
-
     <dimen name="com_auth0_lock_list_item_height">48dp</dimen>
     <dimen name="com_auth0_lock_header_logo_size">58dp</dimen>
 
@@ -49,8 +46,8 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_field">8dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_social">4dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_header_icon">6dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_header_text">8dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_switcher">14dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_header">3dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_switcher">16dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless">28dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">7dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin">35dp</dimen>

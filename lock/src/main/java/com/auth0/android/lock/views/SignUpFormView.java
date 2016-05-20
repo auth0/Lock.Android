@@ -98,6 +98,20 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int usernameHeight = ViewUtils.measureViewHeight(usernameInput);
+        int emailHeight = ViewUtils.measureViewHeight(emailInput);
+        int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
+        int sumHeight = usernameHeight + emailHeight + passwordHeight;
+
+        Log.v(TAG, String.format("Parent height %d, Children height %d (%d + %d + %d)", parentHeight, sumHeight, usernameHeight, emailHeight, passwordHeight));
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+    }
+
+    @Override
     public Object getActionEvent() {
         Log.d(TAG, String.format("Triggered sign up with email %s and username %s", getEmail(), getUsername()));
         return new DatabaseSignUpEvent(getEmail(), getUsername(), getPassword());

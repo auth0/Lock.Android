@@ -164,9 +164,9 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldName);
-//        customFields.add(fieldSurname);
-//        customFields.add(fieldWork);
-//        customFields.add(fieldCountry);
+        customFields.add(fieldSurname);
+        customFields.add(fieldWork);
+        customFields.add(fieldCountry);
 //        customFields.add(fieldPhone);
 //        customFields.add(fieldDate);
 
@@ -177,10 +177,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .withProviderResolver(new AuthProviderHandler())
                 .withSignUpFields(customFields)
                 .loginAfterSignUp(false)
-                .setDefaultDatabaseConnection("mfa-connection")
+//                .setDefaultDatabaseConnection("mfa-connection")
                 .usePKCE(true)
                 .closable(true)
-                .fullscreen(true)
+                .fullscreen(false)
                 .build();
 
         lock.onCreate(this);

@@ -31,4 +31,6 @@ public interface LockWidgetForm extends LockWidgetSocial {
     void showChangePasswordForm(boolean show);
 
     void showCustomFieldsForm(DatabaseSignUpEvent event);
+
+    void showBottomBanner(boolean show);
 }
