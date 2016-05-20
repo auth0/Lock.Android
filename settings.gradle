@@ -1,1 +1,4 @@
-include ':app', ':lock'
+include ':app'
+
+include ':lock'
+project(':lock').projectDir = new File(rootProject.projectDir, '/lib')
