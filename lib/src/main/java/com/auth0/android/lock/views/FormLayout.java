@@ -52,7 +52,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     private boolean keyboardIsOpen;
 
-    private LogInFormView loginForm;
     private SignUpFormView signUpForm;
     private DomainFormView domainForm;
     private SocialView socialLayout;
@@ -139,7 +138,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         lockWidget.showTopBanner(false);
         switch (mode) {
             case ModeSelectionView.Mode.LOG_IN:
-                addFormLayout();
+                showLogInForm();
                 lockWidget.showBottomBanner(false);
                 break;
             case ModeSelectionView.Mode.SIGN_UP:
@@ -173,16 +172,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.addView(signUpForm);
     }
 
-    private void showDatabaseLoginForm() {
-        removePreviousForm();
-
-        if (loginForm == null) {
-            loginForm = new LogInFormView(lockWidget);
-        }
-        formsHolder.addView(loginForm);
-    }
-
-    private void showEnterpriseForm() {
+    private void showLogInForm() {
         removePreviousForm();
 
         if (domainForm == null) {
@@ -227,14 +217,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         return formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
     }
 
-    private void addFormLayout() {
-        if (showDatabase && !showEnterprise) {
-            showDatabaseLoginForm();
-        } else {
-            showEnterpriseForm();
-        }
-    }
-
     /**
      * Notifies this forms and its child views that the keyboard state changed, so that
      * it can change the layout in order to fit all the fields.
@@ -243,9 +225,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         keyboardIsOpen = isOpen;
-        if (loginForm != null) {
-            loginForm.onKeyboardStateChanged(isOpen);
-        }
         if (domainForm != null) {
             domainForm.onKeyboardStateChanged(isOpen);
             if (domainForm.isEnterpriseDomainMatch()) {
