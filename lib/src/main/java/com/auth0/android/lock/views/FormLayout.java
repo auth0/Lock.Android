@@ -53,7 +53,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private boolean keyboardIsOpen;
 
     private SignUpFormView signUpForm;
-    private DomainFormView domainForm;
+    private LogInFormView logInForm;
     private SocialView socialLayout;
     private CustomFieldsFormView customFieldsForm;
     private TextView orSeparatorMessage;
@@ -175,10 +175,10 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private void showLogInForm() {
         removePreviousForm();
 
-        if (domainForm == null) {
-            domainForm = new DomainFormView(lockWidget);
+        if (logInForm == null) {
+            logInForm = new LogInFormView(lockWidget);
         }
-        formsHolder.addView(domainForm);
+        formsHolder.addView(logInForm);
     }
 
     @Override
@@ -225,9 +225,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         keyboardIsOpen = isOpen;
-        if (domainForm != null) {
-            domainForm.onKeyboardStateChanged(isOpen);
-            if (domainForm.isEnterpriseDomainMatch()) {
+        if (logInForm != null) {
+            logInForm.onKeyboardStateChanged(isOpen);
+            if (logInForm.isEnterpriseDomainMatch()) {
                 isOpen = true;
             }
         }
@@ -248,7 +248,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        return domainForm != null && domainForm.onBackPressed();
+        return logInForm != null && logInForm.onBackPressed();
     }
 
     /**

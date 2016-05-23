@@ -1,5 +1,5 @@
 /*
- * DomainFormView.java
+ * LogInFormView.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -42,9 +42,9 @@ import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 
-public class DomainFormView extends FormView implements TextView.OnEditorActionListener {
+public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
 
-    private static final String TAG = DomainFormView.class.getSimpleName();
+    private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetEnterprise lockWidget;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
@@ -60,19 +60,19 @@ public class DomainFormView extends FormView implements TextView.OnEditorActionL
     private boolean changePasswordEnabled;
     private boolean keyboardIsOpen;
 
-    public DomainFormView(Context context) {
+    public LogInFormView(Context context) {
         super(context);
         lockWidget = null;
     }
 
-    public DomainFormView(LockWidgetEnterprise lockWidget) {
+    public LogInFormView(LockWidgetEnterprise lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
     }
 
     private void init() {
-        inflate(getContext(), R.layout.com_auth0_lock_domain_form_view, this);
+        inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
