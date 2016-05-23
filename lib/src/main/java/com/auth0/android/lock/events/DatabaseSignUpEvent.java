@@ -28,6 +28,11 @@ package com.auth0.android.lock.events;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.authentication.DatabaseConnectionRequest;
+import com.auth0.authentication.SignUpRequest;
+import com.auth0.authentication.result.DatabaseUser;
+
 import java.util.Map;
 
 public class DatabaseSignUpEvent {
@@ -36,11 +41,11 @@ public class DatabaseSignUpEvent {
     private String email;
     @Nullable
     private String username;
-    @Nullable
+    @NonNull
     private String password;
     private Map<String, String> extraFields;
 
-    public DatabaseSignUpEvent(@NonNull String email, @Nullable String username, @Nullable String password) {
+    public DatabaseSignUpEvent(@NonNull String email, @NonNull String password, @Nullable String username) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -56,7 +61,7 @@ public class DatabaseSignUpEvent {
         return username;
     }
 
-    @Nullable
+    @NonNull
     public String getPassword() {
         return password;
     }
@@ -76,5 +81,25 @@ public class DatabaseSignUpEvent {
 
     public void setUsername(@Nullable String username) {
         this.username = username;
+    }
+
+    public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient) {
+        SignUpRequest request;
+        if (getUsername() != null) {
+            request = apiClient.signUp(getEmail(), getPassword(), getUsername());
+        } else {
+            request = apiClient.signUp(getEmail(), getPassword());
+        }
+        return request;
+    }
+
+    public DatabaseConnectionRequest<DatabaseUser> getCreateUserRequest(AuthenticationAPIClient apiClient) {
+        DatabaseConnectionRequest<DatabaseUser> request;
+        if (getUsername() != null) {
+            request = apiClient.createUser(getEmail(), getPassword(), getUsername());
+        } else {
+            request = apiClient.createUser(getEmail(), getPassword());
+        }
+        return request;
     }
 }
