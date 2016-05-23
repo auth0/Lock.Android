@@ -49,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String AUTH0_CLIENT_ID = "Owu62gnGsRYhk1v9SfB3c6IUbIJcRIze";
-    private static final String AUTH0_DOMAIN = "lbalmaceda.auth0.com";
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
     private static final int AUTH_REQUEST = 333;
 
@@ -120,7 +118,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
      * @param useCode on Passwordless Authentication.
      */
     private void passwordlessLogin(boolean useCode) {
-        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
 
         if (useCode) {
             passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
@@ -150,7 +148,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void normalLogin(boolean useBrowser) {
         // create account
-        Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
 
         Map<String, Object> params = ParameterBuilder.newAuthenticationBuilder()
                 .setDevice(Build.MODEL)
