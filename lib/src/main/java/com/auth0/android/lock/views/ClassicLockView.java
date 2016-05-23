@@ -45,11 +45,10 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidget;
-import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicLockView extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm, LockWidgetEnterprise {
+public class ClassicLockView extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm {
 
     private static final String TAG = ClassicLockView.class.getSimpleName();
     private final Bus bus;

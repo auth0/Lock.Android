@@ -39,14 +39,14 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class FormLayout extends RelativeLayout implements ModeSelectionView.ModeSelectedListener {
     private static final String TAG = FormLayout.class.getSimpleName();
     private static final int SINGLE_FORM_POSITION = 0;
     private static final int MULTIPLE_FORMS_POSITION = 2;
 
-    private final LockWidgetEnterprise lockWidget;
+    private final LockWidgetForm lockWidget;
     private boolean showDatabase;
     private boolean showEnterprise;
 
@@ -66,7 +66,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         lockWidget = null;
     }
 
-    public FormLayout(LockWidgetEnterprise lockWidget) {
+    public FormLayout(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();

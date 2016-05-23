@@ -40,12 +40,12 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
-    private final LockWidgetEnterprise lockWidget;
+    private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
@@ -65,7 +65,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         lockWidget = null;
     }
 
-    public LogInFormView(LockWidgetEnterprise lockWidget) {
+    public LogInFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
