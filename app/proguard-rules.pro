@@ -16,21 +16,15 @@
 #   public *;
 #}
 
--dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
--dontskipnonpubliclibraryclassmembers
--dontpreverify
-
-#DEBUG
+# Debugging
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile, LineNumberTable
--printmapping proguard-mapping.txt
 -verbose
 
 
 # For auth0-java
 ## Jackson 2.x
--keepattributes *Annotation*,EnclosingMethod
+-keepattributes *Annotation*, EnclosingMethod
 -keep class com.fasterxml.jackson.databind.ObjectMapper {
     public <methods>;
     protected <methods>;
@@ -41,11 +35,22 @@
 -dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry
 
 ## OkHttp 2.x
--keepattributes Signature
--keepattributes *Annotation*
+-keepattributes *Annotation*, Signature
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
 -dontwarn com.squareup.okhttp.**
+
+### Enums
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+### Parcelables
+-keepnames class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
 
 ## Okio
 -keep class sun.misc.Unsafe { *; }
@@ -53,29 +58,17 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
 
+
 # For Lock.Android
-## Support AppCompat v7
--keep public class android.support.v7.widget.** { *; }
--keep public class android.support.v7.internal.widget.** { *; }
--keep public class android.support.v7.internal.view.menu.** { *; }
-
--keep public class * extends android.support.v4.view.ActionProvider {
-    public <init>(android.content.Context);
+## Otto
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @com.squareup.otto.Subscribe public *;
+    @com.squareup.otto.Produce public *;
 }
 
-## Support Design
--dontwarn android.support.design.**
--keep class android.support.design.** { *; }
--keep interface android.support.design.** { *; }
--keep public class android.support.design.R$* { *; }
-
-## Models
--keep class com.auth0.android.lock.** { *; }
--keep class com.auth0.android.lock.utils.Application.** { *; }
--keep class com.auth0.android.lock.utils.Strategy.** { *; }
--keep class com.auth0.android.lock.utils.Connection.** { *; }
-
-## Parcelables
--keepnames class * implements android.os.Parcelable {
-    public static final ** CREATOR;
-}
+## Data Models / POJOs
+-keep class com.auth0.android.lock.utils.Strategies { *; }
+-keep class com.auth0.android.lock.utils.Strategy { *; }
+-keep class com.auth0.android.lock.utils.Connection { *; }
+-keep class com.auth0.android.lock.utils.Application { *; }
