@@ -127,6 +127,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
+        <item name="android:textColor">@color/com_auth0_lock_social_text</item>
     </style>
 
     <style name="Lock.Theme.Text.ResultMessage">
