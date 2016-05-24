@@ -12,9 +12,8 @@
 
     <!-- Change to this Theme if you want to customize attrs -->
     <style name="MyLock.Theme.Customized">
-        <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
+        <item name="Auth0.HeaderBackground">@android:color/holo_red_light</item>
         <item name="Auth0.HeaderLogo">@android:drawable/ic_popup_reminder</item>
-        <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
         <item name="Auth0.DarkPrimaryColor">@android:color/holo_blue_dark</item>
         <item name="Auth0.PrimaryColor">@android:color/holo_blue_light</item>
     </style>
