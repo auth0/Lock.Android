@@ -28,6 +28,7 @@
         <attr name="Auth0.HeaderLogo" format="reference" />
         <attr name="Auth0.HeaderText" format="string|reference" />
         <attr name="Auth0.PrimaryColor" format="color|reference" />
+        <attr name="Auth0.DarkPrimaryColor" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="Lock.ValidatedInput">

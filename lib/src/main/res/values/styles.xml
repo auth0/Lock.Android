@@ -32,6 +32,7 @@
         <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
         <item name="Auth0.HeaderText">@string/com_auth0_lock_header_title</item>
         <item name="Auth0.PrimaryColor">@color/com_auth0_lock_submit_normal</item>
+        <item name="Auth0.DarkPrimaryColor">@color/com_auth0_lock_submit_pressed</item>
     </style>
 
     <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
