@@ -396,7 +396,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            apiClient.getProfileAfter(apiClient.signUp(event.getEmail(), event.getPassword(), event.getUsername()))
+            apiClient.getProfileAfter(event.getSignUpRequest(apiClient))
                     .addParameters(authParameters)
                     .start(authCallback);
         } else {
@@ -404,7 +404,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 parameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            apiClient.createUser(event.getEmail(), event.getPassword(), event.getUsername())
+            event.getCreateUserRequest(apiClient)
                     .addParameters(parameters)
                     .start(createCallback);
         }

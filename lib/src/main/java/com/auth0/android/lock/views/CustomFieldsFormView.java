@@ -155,7 +155,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     @Override
     public Object getActionEvent() {
-        DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, username, password);
+        DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, password, username);
         if (mustUseFieldsFromFirstStep) {
             event.setUsername(usernameField != null ? usernameField.getText() : null);
             event.setPassword(passwordField.getText());
