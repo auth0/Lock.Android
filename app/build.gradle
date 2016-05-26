@@ -11,10 +11,29 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
+
+    signingConfigs {
         release {
+            storeFile file("release-test.jks")
+            storePassword "android"
+            keyAlias "android"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        debug {
             minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFile '../proguard/proguard-jackson-2.pro'
+            proguardFile '../proguard/proguard-lock-2.pro'
+            proguardFile '../proguard/proguard-okhttp-2.pro'
+            proguardFile '../proguard/proguard-okio.pro'
+            proguardFile '../proguard/proguard-otto.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
