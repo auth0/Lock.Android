@@ -23,11 +23,15 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFile '../proguard/proguard-jackson-2.pro'
+            proguardFile '../proguard/proguard-lock-2.pro'
+            proguardFile '../proguard/proguard-okhttp-2.pro'
+            proguardFile '../proguard/proguard-okio.pro'
+            proguardFile '../proguard/proguard-otto.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
