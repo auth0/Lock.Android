@@ -30,6 +30,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.auth0.oauth2.AuthCallback;
+import com.auth0.oauth2.AuthProvider;
+
 /**
  * Holds an instance of AuthProviderResolver that can be used to query for IdentityProviders given
  * a connection name.

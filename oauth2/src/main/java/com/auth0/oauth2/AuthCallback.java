@@ -1,7 +1,7 @@
 /*
- * IdentityProviderCallback.java
+ * AuthCallback.java
  *
- * Copyright (c) 2015 Auth0 (http://auth0.com)
+ * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
 import android.app.Dialog;
 import android.support.annotation.NonNull;

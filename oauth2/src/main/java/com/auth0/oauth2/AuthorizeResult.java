@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
-import com.auth0.android.lock.BuildConfig;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.TokenRequest;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class PKCETest {
 
     private static final String CODE_VERIFIER = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
@@ -77,7 +77,7 @@ public class PKCETest {
         PKCE randomPKCE = new PKCE(apiClient, REDIRECT_URI);
         String challenge = randomPKCE.getCodeChallenge();
         assertThat(challenge, is(notNullValue()));
-        assertThat(challenge, not(Matchers.isEmptyString()));
+        assertThat(challenge, CoreMatchers.not(Matchers.isEmptyString()));
         assertThat(challenge, not(containsString("=")));
         assertThat(challenge, not(containsString("+")));
         assertThat(challenge, not(containsString("/")));

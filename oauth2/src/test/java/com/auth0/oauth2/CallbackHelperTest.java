@@ -22,19 +22,19 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class CallbackHelperTest {
 
     private static final String PACKAGE_NAME = "com.auth0.lock.android.app";
@@ -51,6 +51,6 @@ public class CallbackHelperTest {
     public void shouldGetCallbackURI() throws Exception {
         String expected = DOMAIN + "/android/" + PACKAGE_NAME + "/callback";
         String uri = helper.getCallbackURI(DOMAIN);
-        assertThat(uri, equalTo(expected));
+        assertThat(uri, Matchers.equalTo(expected));
     }
 }

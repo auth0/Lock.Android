@@ -22,14 +22,14 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.auth0.android.lock.BuildConfig;
-
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +37,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class AuthorizeResultTest {
 
     private static final int REQUEST_CODE = 11;
@@ -65,7 +63,7 @@ public class AuthorizeResultTest {
 
         boolean isValid = authorizeResult.isValid(REQUEST_CODE);
 
-        assertThat(isValid, is(false));
+        MatcherAssert.assertThat(isValid, Matchers.is(false));
     }
 
     @Test
@@ -75,7 +73,7 @@ public class AuthorizeResultTest {
 
         boolean isValid = authorizeResult.isValid(OTHER_REQUEST_CODE);
 
-        assertThat(isValid, is(false));
+        MatcherAssert.assertThat(isValid, Matchers.is(false));
     }
 
     @Test
@@ -85,7 +83,7 @@ public class AuthorizeResultTest {
 
         boolean isValid = authorizeResult.isValid(REQUEST_CODE);
 
-        assertThat(isValid, is(false));
+        MatcherAssert.assertThat(isValid, Matchers.is(false));
     }
 
     @Test
@@ -95,7 +93,7 @@ public class AuthorizeResultTest {
 
         boolean isValid = authorizeResult.isValid(REQUEST_CODE);
 
-        assertThat(isValid, is(true));
+        MatcherAssert.assertThat(isValid, Matchers.is(true));
     }
 
     @Test
@@ -105,7 +103,7 @@ public class AuthorizeResultTest {
 
         boolean isValid = authorizeResult.isValid(0);
 
-        assertThat(isValid, is(true));
+        MatcherAssert.assertThat(isValid, Matchers.is(true));
     }
 
     @Test
@@ -113,8 +111,8 @@ public class AuthorizeResultTest {
         intent.setData(validUri);
         AuthorizeResult authorizeResult = new AuthorizeResult(intent);
 
-        assertThat(authorizeResult.getRequestCode(), is(equalTo(-100)));
-        assertThat(authorizeResult.getResultCode(), is(equalTo(Activity.RESULT_OK)));
-        assertThat(authorizeResult.getIntent(), is(equalTo(intent)));
+        assertThat(authorizeResult.getRequestCode(), Matchers.is(Matchers.equalTo(-100)));
+        assertThat(authorizeResult.getResultCode(), Matchers.is(Matchers.equalTo(Activity.RESULT_OK)));
+        assertThat(authorizeResult.getIntent(), Matchers.is(Matchers.equalTo(intent)));
     }
 }

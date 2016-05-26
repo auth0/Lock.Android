@@ -1,5 +1,5 @@
 /*
- * IdentityProviderDelegatorTest.java
+ * AuthProviderTest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,11 +22,16 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v4.content.PermissionChecker;
+
+import com.auth0.oauth2.AuthCallback;
+import com.auth0.oauth2.AuthProvider;
+import com.auth0.oauth2.AuthorizeResult;
+import com.auth0.oauth2.PermissionHandler;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +48,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class AuthProviderTest {
 
     @Mock

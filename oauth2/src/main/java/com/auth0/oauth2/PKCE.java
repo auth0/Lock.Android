@@ -22,14 +22,13 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
 import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.R;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Credentials;
 import com.auth0.callback.BaseCallback;

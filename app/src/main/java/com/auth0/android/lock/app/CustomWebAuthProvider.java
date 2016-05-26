@@ -33,11 +33,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.auth0.Auth0;
-import com.auth0.android.lock.provider.AuthorizeResult;
-import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.AuthProvider;
-import com.auth0.android.lock.provider.AuthCallback;
 import com.auth0.authentication.result.Credentials;
+import com.auth0.oauth2.AuthCallback;
+import com.auth0.oauth2.AuthProvider;
+import com.auth0.oauth2.AuthorizeResult;
+import com.auth0.oauth2.CallbackHelper;
 
 import java.util.HashMap;
 import java.util.Map;

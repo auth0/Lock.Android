@@ -1,7 +1,7 @@
 /*
  * WebViewActivity.java
  *
- * Copyright(c) 2016 Auth0 (http://auth0.com)
+ * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.provider;
+package com.auth0.oauth2;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -37,6 +37,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -45,9 +47,6 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.auth0.android.lock.R;
-import com.auth0.android.lock.utils.ActivityUIHelper;
 
 public class WebViewActivity extends AppCompatActivity {
 
@@ -66,8 +65,8 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating a WebViewActivity for navigating to " + getIntent().getData().toString());
         super.onCreate(savedInstanceState);
-        if(getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)){
-            ActivityUIHelper.setFullscreenMode(this);
+        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
+            setFullscreenMode();
         }
 
         setContentView(R.layout.com_auth0_lock_activity_web_view);
@@ -105,8 +104,8 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)){
-            ActivityUIHelper.setFullscreenMode(this);
+        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
+            setFullscreenMode();
         }
     }
 
@@ -200,5 +199,17 @@ public class WebViewActivity extends AppCompatActivity {
             Log.w(TAG, "Could not check for Network status. Please, be sure to include the android.permission.ACCESS_NETWORK_STATE permission in the manifest");
         }
         return available;
+    }
+
+    private void setFullscreenMode() {
+        Log.d(TAG, "Activity in fullscreen mode");
+        final Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= 16) {
+            View decorView = window.getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        } else {
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
     }
 }
