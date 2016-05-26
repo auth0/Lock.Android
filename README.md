@@ -88,49 +88,96 @@ Also note that you can't use Browser and launch the `LockActivity` calling `star
 
 ### Lock instance
 
-In the previous version of **Lock**, you needed to initiate a static `Lock.Context`. Now you just need to create a new `Lock` instance using the `Lock.Builder`.
+In the previous version of **Lock**, you were asked to create a custom `Application` class and initialize the `Lock.Context` there. Now this is no longer needed. To create a new `Lock` instance and configure it, use the `Lock.Builder` class.
 
 #### Auth0
-Create an `Auth0` instance that will hold your account details, which are the `AUTH0_CLIENT_ID` and the `AUTH0_DOMAIN`.
-
-#### Authentication Callback
-You'll also need a `LockCallback` implementation. We suggest you to extend the `AuthenticationCallback` class and override the `onAuthentication`, `onError` and `onCanceled` methods. Keep in mind that this implementation only notifies you about _Authentication_ events, not _User Sign Ups_ (without login) nor _Password Resets_. If you feel adventurous, you can implement the `LockCallback` interface an override the `onError` and `onEvent` methods. Take a look at the source code to see which kind of events you'll receive and how to get information of them.
-
-#### Lock.Builder
-Call the static method `Lock.newBuilder()` passing the account details and the callback implementation, and start configuring the [Options](#options). After you're done, build the `Lock` instance and use it to start the `LockActivity`.
+Create an `Auth0` instance to hold your account details, which are the `AUTH0_CLIENT_ID` and the `AUTH0_DOMAIN`.
 
 ```java
-@Override
-protected void onCreate(@Nullable Bundle savedInstanceState) {
-  Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
-  lock = Lock.newBuilder(auth0, this)
-    // ... Options
-    .build();
-  lock.onCreate(this);
-}
+Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+```
 
-@Override
-public void onDestroy() {
-  lock.onDestroy(this);
-  super.onDestroy();
-}
+#### Authentication Callback
+You'll also need a `LockCallback` implementation. We suggest you to extend the `AuthenticationCallback` class and override the `onAuthentication`, `onError` and `onCanceled` methods. Keep in mind that this implementation only notifies you about _Authentication_ events (logins), not _User Sign Ups_ (without login) nor _Password Resets_. If you feel adventurous, you can implement the `LockCallback` interface yourself an override the `onError` and `onEvent` methods. Take a look at the source code to see which kind of events you'll receive and how to get information from them.
 
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-  if (requestCode == AUTH_REQUEST) {
-    lock.onActivityResult(this, resultCode, data);
-    return;
+```java
+private LockCallback callback = new AuthenticationCallback() {
+     @Override
+     public void onAuthentication(Authentication authentication) {
+        //Authenticated
+     }
+
+     @Override
+     public void onCanceled() {
+        //User pressed back
+     }
+
+     @Override
+     public void onError(LockException error)
+        //Exception occurred
+     }
+ };
+```
+
+#### Lock.Builder
+Call the static method `Lock.newBuilder(Auth0, AuthenticationCallback)` passing the account details and the callback implementation, and start configuring the [Options](#options). After you're done, build the `Lock` instance and use it to start the `LockActivity`.
+
+This is how your activity should look like.
+
+```java
+public class MainActivity extends Activity {
+  public static final int AUTH_REQUEST = 333;
+  private Lock lock;
+
+  @Override
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
+    Auth0 auth0 = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+    lock = Lock.newBuilder(auth0, callback)
+      // ... Options
+      .build();
+    lock.onCreate(this);
   }
 
-  super.onActivityResult(requestCode, resultCode, data);
-}
-
-private void performLogin(boolean useBrowser) {
-  if (useBrowser) {
-    startActivity(lock.newIntent(this));
-  } else {
-    startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
+  @Override
+  public void onDestroy() {
+    lock.onDestroy(this);
+    super.onDestroy();
   }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == AUTH_REQUEST) {
+      lock.onActivityResult(this, resultCode, data);
+      return;
+    }
+
+    super.onActivityResult(requestCode, resultCode, data);
+  }
+
+  private void performLogin(boolean useBrowser) {
+    if (useBrowser) {
+      startActivity(lock.newIntent(this));
+    } else {
+      startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
+    }
+  }
+
+  private LockCallback callback = new AuthenticationCallback() {
+       @Override
+       public void onAuthentication(Authentication authentication) {
+          //Authenticated
+       }
+
+       @Override
+       public void onCanceled() {
+          //User pressed back
+       }
+
+       @Override
+       public void onError(LockException error) {
+          //Exception occurred
+       }
+   };
 }
 ```
 
@@ -143,7 +190,7 @@ That's it! **Lock** will handle the rest for you.
 
 As in the previous version, `Lock` can be configured with extra options. Check below if the behavior changed or if they only got renamed.
 
-1. `shouldUseWebView` has been refactored. Now it's called `useBrowser` as **Lock** will use the WebView by default instead of the Android Browser, to request calls to the `/authorize` endpoint. Using the Browser has some [restrictions](#some_restrictions).
+1. `shouldUseWebView` has been refactored. Now it's called `useBrowser` as **Lock** will use the WebView by default instead of the Android Browser, to request calls to the `/authorize` endpoint. Using the Browser has some [restrictions](#some-restrictions).
 1. `shouldUseEmail` has been refactored. Now it's called `withUsernameStyle` and defines if it should ask for email only, username only, or both of them. By default, it'll respect the Dashboard configuration of the parameter `requires_username`.
 1. `isClosable` has been renamed to `closable` By default, it's not closable.
 1. `setFullscreen` has been renamed to `fullscreen`. By default, it's not fullscreen.
