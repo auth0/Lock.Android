@@ -26,6 +26,9 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -67,6 +70,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     private static final int MIN_USERNAME_LENGTH = 6;
     private static final int MIN_PHONE_NUMBER_LENGTH = 10;
 
+    private TextView errorDescription;
     private EditText input;
     private ImageView icon;
     private int inputIcon;
@@ -104,6 +108,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
 
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
+        errorDescription = (TextView) findViewById(R.id.errorDescription);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
 
@@ -182,6 +187,17 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), strokeColor));
         gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
+
+        if (showError){
+            PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_error),
+                    PorterDuff.Mode.SRC_ATOP);
+            icon.setColorFilter(colorFilter);
+        } else {
+            icon.clearColorFilter();
+        }
+
+        errorDescription.setVisibility(showError ? VISIBLE : INVISIBLE);
+        requestLayout();
     }
 
     private void createBackground() {
@@ -195,10 +211,11 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
+        int errorDescriptionHeight = ViewUtils.measureViewHeight(errorDescription);
         int inputHeight = ViewUtils.measureViewHeight(input);
         ViewGroup iconHolder = (ViewGroup) icon.getParent();
         int iconHeight = ViewUtils.measureViewHeight(iconHolder);
-        setMeasuredDimension(getMeasuredWidth(), Math.max(inputHeight, iconHeight));
+        setMeasuredDimension(getMeasuredWidth(), Math.max(inputHeight, iconHeight) + errorDescriptionHeight);
     }
 
     /**

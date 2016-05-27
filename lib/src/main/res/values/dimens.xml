@@ -78,10 +78,12 @@
     <dimen name="com_auth0_lock_result_message_text_spacing">5dp</dimen>
     <dimen name="com_auth0_lock_widget_corner_radius">3dp</dimen>
 
+    <dimen name="com_auth0_lock_field_error_text">13sp</dimen>
 
     <item name="com_auth0_lock_top_banner_height" format="float" type="dimen">0.075</item>
     <item name="com_auth0_lock_bottom_banner_height" format="float" type="dimen">0.129</item>
     <item name="com_auth0_lock_action_button_height" format="float" type="dimen">0.141</item>
     <item name="com_auth0_lock_header_view_height" format="float" type="dimen">0.208</item>
     <item name="com_auth0_lock_small_header_view_height" format="float" type="dimen">0.066</item>
+
 </resources>
