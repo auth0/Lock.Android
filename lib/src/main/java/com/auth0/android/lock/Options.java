@@ -52,6 +52,7 @@ class Options implements Parcelable {
     private boolean closable;
     private boolean fullscreen;
     private int usernameStyle;
+    private boolean useSocialBigButtons;
     private boolean useCodePasswordless;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
@@ -64,6 +65,7 @@ class Options implements Parcelable {
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
+        useSocialBigButtons = true;
         signUpEnabled = true;
         changePasswordEnabled = true;
         loginAfterSignUp = true;
@@ -79,6 +81,7 @@ class Options implements Parcelable {
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
+        useSocialBigButtons = in.readByte() != WITHOUT_DATA;
         signUpEnabled = in.readByte() != WITHOUT_DATA;
         changePasswordEnabled = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
@@ -124,6 +127,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (useSocialBigButtons ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
@@ -274,6 +278,14 @@ class Options implements Parcelable {
             authenticationParameters.put(DEVICE_KEY, Build.MODEL);
         }
         this.authenticationParameters = authenticationParameters;
+    }
+
+    public boolean useSocialBigButtons() {
+        return useSocialBigButtons;
+    }
+
+    public void setUseSocialBigButtons(boolean useSocialBigButtons) {
+        this.useSocialBigButtons = useSocialBigButtons;
     }
 
     public boolean loginAfterSignUp() {

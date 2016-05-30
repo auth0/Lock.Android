@@ -35,4 +35,6 @@ public interface LockWidgetForm extends LockWidgetSocial {
     void showBottomBanner(boolean show);
 
     void showTopBanner(boolean show);
+
+    void showActionButton(boolean show);
 }

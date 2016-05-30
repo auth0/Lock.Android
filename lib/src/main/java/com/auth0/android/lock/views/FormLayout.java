@@ -47,16 +47,21 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private static final int MULTIPLE_FORMS_POSITION = 2;
 
     private final LockWidgetForm lockWidget;
+    private boolean showSocial;
     private boolean showDatabase;
     private boolean showEnterprise;
+    private boolean showModeSelection;
+    private boolean useSocialBigButtons;
 
     private boolean keyboardIsOpen;
+    private boolean showingOtherProviderForm;
 
     private SignUpFormView signUpForm;
     private LogInFormView logInForm;
     private SocialView socialLayout;
     private CustomFieldsFormView customFieldsForm;
     private TextView orSeparatorMessage;
+    private TextView continueWithOtherProvider;
 
     private LinearLayout formsHolder;
     private ModeSelectionView modeSelectionView;
@@ -73,27 +78,17 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void init() {
-        boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
+        showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
-        boolean showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
+        showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
+        useSocialBigButtons = lockWidget.getConfiguration().useSocialBigButtons();
 
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-
-        if (showModeSelection) {
-            Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
-            modeSelectionView = new ModeSelectionView(getContext(), this);
-            modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
-            LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            modeSelectionParams.addRule(ALIGN_PARENT_TOP);
-            modeSelectionParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-            addView(modeSelectionView, modeSelectionParams);
-        }
         formsHolder = new LinearLayout(getContext());
-        formsHolder.setGravity(CENTER_IN_PARENT);
         formsHolder.setOrientation(LinearLayout.VERTICAL);
         formsHolder.setGravity(Gravity.CENTER);
+
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
@@ -101,20 +96,52 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         addView(formsHolder, holderParams);
 
         if (showSocial) {
-            addSocialLayout(showDatabase || showEnterprise);
-            if (showDatabase || showEnterprise) {
+            addSocialLayout();
+            if (useSocialBigButtons) {
+                addContinueWithOtherProviderLink();
+                lockWidget.showActionButton(false);
+            } else {
                 addSeparator();
+                addModeSelector();
+                changeFormMode(ModeSelectionView.Mode.LOG_IN);
             }
+        } else {
+            addModeSelector();
+            changeFormMode(ModeSelectionView.Mode.LOG_IN);
         }
-        changeFormMode(ModeSelectionView.Mode.LOG_IN);
     }
 
-    private void addSocialLayout(boolean smallButtons) {
+
+    private void addModeSelector() {
+        if (showModeSelection) {
+            int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+            int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+            Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
+
+            modeSelectionView = new ModeSelectionView(getContext(), this);
+            modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
+            LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            modeSelectionParams.addRule(ALIGN_PARENT_TOP);
+            modeSelectionParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+            addView(modeSelectionView, modeSelectionParams);
+        }
+    }
+
+    private void removeModeSelector() {
+        removeView(modeSelectionView);
+        modeSelectionView = null;
+    }
+
+    private void addSocialLayout() {
+        boolean smallButtons = !useSocialBigButtons && (showDatabase || showEnterprise);
         socialLayout = new SocialView(lockWidget, smallButtons);
         formsHolder.addView(socialLayout);
     }
 
     private void addSeparator() {
+        if (!showDatabase && !showEnterprise) {
+            return;
+        }
         orSeparatorMessage = new TextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
         orSeparatorMessage.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
@@ -123,6 +150,40 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
         formsHolder.addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    private void addContinueWithOtherProviderLink() {
+        if (!showDatabase && !showEnterprise) {
+            return;
+        }
+        continueWithOtherProvider = new TextView(getContext());
+        continueWithOtherProvider.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showingOtherProviderForm = true;
+                lockWidget.showActionButton(true);
+                formsHolder.removeView(socialLayout);
+                removeView(continueWithOtherProvider);
+                socialLayout = null;
+                addModeSelector();
+                changeFormMode(ModeSelectionView.Mode.LOG_IN);
+            }
+        });
+        int textRes;
+        if (lockWidget.getConfiguration().isSignUpEnabled()) {
+            textRes = R.string.com_auth0_lock_action_continue_signin_signup_with_email;
+        } else {
+            textRes = R.string.com_auth0_lock_action_continue_signin_with_email;
+        }
+        continueWithOtherProvider.setText(textRes);
+        continueWithOtherProvider.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
+        continueWithOtherProvider.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
+        continueWithOtherProvider.setGravity(Gravity.CENTER_HORIZONTAL);
+        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        LayoutParams linkParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linkParams.addRule(ALIGN_PARENT_BOTTOM);
+        linkParams.setMargins(0, verticalPadding, 0, verticalPadding);
+        addView(continueWithOtherProvider, linkParams);
     }
 
     /**
@@ -188,9 +249,10 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
         int modeSelectionHeight = ViewUtils.measureViewHeight(modeSelectionView);
         int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
+        int continueWithOtherProviderHeight = ViewUtils.measureViewHeight(continueWithOtherProvider);
         int socialHeight = ViewUtils.measureViewHeight(socialLayout);
         int fieldsHeight = ViewUtils.measureViewHeight(getExistingForm());
-        int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
+        int sumHeight = modeSelectionHeight + separatorHeight + continueWithOtherProviderHeight + socialHeight + fieldsHeight;
 
         Log.v(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
         setMeasuredDimension(getMeasuredWidth(), sumHeight);
@@ -248,7 +310,20 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        return logInForm != null && logInForm.onBackPressed();
+        if (logInForm != null && logInForm.onBackPressed()) {
+            return true;
+        } else if (showSocial && showingOtherProviderForm) {
+            showingOtherProviderForm = false;
+            lockWidget.showTopBanner(false);
+            lockWidget.showBottomBanner(false);
+            lockWidget.showActionButton(false);
+            removePreviousForm();
+            removeModeSelector();
+            addSocialLayout();
+            addContinueWithOtherProviderLink();
+            return true;
+        }
+        return false;
     }
 
     /**

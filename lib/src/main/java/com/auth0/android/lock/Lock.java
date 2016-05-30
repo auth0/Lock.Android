@@ -336,6 +336,20 @@ public class Lock {
         }
 
         /**
+         * Whether to use the new Big Social Buttons flow or not. The Big Social Buttons flow is
+         * where if social and db/enterprise connections are found, only Social is displayed in the
+         * main screen. To access the other connection types, the user needs to click a link.
+         * Defaults to true.
+         *
+         * @param socialBigButtons flow or classic
+         * @return the current builder instance
+         */
+        public Builder useSocialBigButtons(boolean socialBigButtons) {
+            options.setUseSocialBigButtons(socialBigButtons);
+            return this;
+        }
+
+        /**
          * Uses the given AuthProviderResolver to ask for Native IdentityProviders.
          *
          * @param resolver the AuthProviderResolver to use
