@@ -102,9 +102,11 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
                 lockWidget.showActionButton(false);
             } else {
                 addSeparator();
+                addModeSelector();
                 changeFormMode(ModeSelectionView.Mode.LOG_IN);
             }
         } else {
+            addModeSelector();
             changeFormMode(ModeSelectionView.Mode.LOG_IN);
         }
     }
