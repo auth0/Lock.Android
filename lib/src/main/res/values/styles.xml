@@ -127,6 +127,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
+        <item name="android:textColor">@color/com_auth0_lock_social_text</item>
     </style>
 
     <style name="Lock.Theme.Text.ResultMessage">
@@ -153,12 +154,13 @@
 
     <style name="Lock.Theme.Widget.Icon">
         <item name="android:layout_gravity">center</item>
-        <item name="android:scaleType">center</item>
+        <item name="android:scaleType">fitCenter</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_field_icon_height</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_field_icon_height</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">
+        <item name="android:scaleType">center</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
     </style>

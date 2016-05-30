@@ -39,22 +39,21 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.views.interfaces.LockWidgetEnterprise;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 public class FormLayout extends RelativeLayout implements ModeSelectionView.ModeSelectedListener {
     private static final String TAG = FormLayout.class.getSimpleName();
     private static final int SINGLE_FORM_POSITION = 0;
     private static final int MULTIPLE_FORMS_POSITION = 2;
 
-    private final LockWidgetEnterprise lockWidget;
+    private final LockWidgetForm lockWidget;
     private boolean showDatabase;
     private boolean showEnterprise;
 
     private boolean keyboardIsOpen;
 
-    private LogInFormView loginForm;
     private SignUpFormView signUpForm;
-    private DomainFormView domainForm;
+    private LogInFormView logInForm;
     private SocialView socialLayout;
     private CustomFieldsFormView customFieldsForm;
     private TextView orSeparatorMessage;
@@ -67,7 +66,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         lockWidget = null;
     }
 
-    public FormLayout(LockWidgetEnterprise lockWidget) {
+    public FormLayout(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -139,7 +138,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         lockWidget.showTopBanner(false);
         switch (mode) {
             case ModeSelectionView.Mode.LOG_IN:
-                addFormLayout();
+                showLogInForm();
                 lockWidget.showBottomBanner(false);
                 break;
             case ModeSelectionView.Mode.SIGN_UP:
@@ -173,22 +172,13 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.addView(signUpForm);
     }
 
-    private void showDatabaseLoginForm() {
+    private void showLogInForm() {
         removePreviousForm();
 
-        if (loginForm == null) {
-            loginForm = new LogInFormView(lockWidget);
+        if (logInForm == null) {
+            logInForm = new LogInFormView(lockWidget);
         }
-        formsHolder.addView(loginForm);
-    }
-
-    private void showEnterpriseForm() {
-        removePreviousForm();
-
-        if (domainForm == null) {
-            domainForm = new DomainFormView(lockWidget);
-        }
-        formsHolder.addView(domainForm);
+        formsHolder.addView(logInForm);
     }
 
     @Override
@@ -227,14 +217,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         return formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
     }
 
-    private void addFormLayout() {
-        if (showDatabase && !showEnterprise) {
-            showDatabaseLoginForm();
-        } else {
-            showEnterpriseForm();
-        }
-    }
-
     /**
      * Notifies this forms and its child views that the keyboard state changed, so that
      * it can change the layout in order to fit all the fields.
@@ -243,12 +225,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      */
     public void onKeyboardStateChanged(boolean isOpen) {
         keyboardIsOpen = isOpen;
-        if (loginForm != null) {
-            loginForm.onKeyboardStateChanged(isOpen);
-        }
-        if (domainForm != null) {
-            domainForm.onKeyboardStateChanged(isOpen);
-            if (domainForm.isEnterpriseDomainMatch()) {
+        if (logInForm != null) {
+            logInForm.onKeyboardStateChanged(isOpen);
+            if (logInForm.isEnterpriseDomainMatch()) {
                 isOpen = true;
             }
         }
@@ -269,7 +248,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        return domainForm != null && domainForm.onBackPressed();
+        return logInForm != null && logInForm.onBackPressed();
     }
 
     /**
