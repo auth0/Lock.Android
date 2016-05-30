@@ -51,7 +51,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private boolean showDatabase;
     private boolean showEnterprise;
     private boolean showModeSelection;
-    private boolean showSocialBigButtons;
+    private boolean useSocialBigButtons;
 
     private boolean keyboardIsOpen;
     private boolean showingOtherProviderForm;
@@ -82,7 +82,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
         showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
-        showSocialBigButtons = true; //TODO: Make it configurable from the Builder
+        useSocialBigButtons = lockWidget.getConfiguration().useSocialBigButtons();
 
         formsHolder = new LinearLayout(getContext());
         formsHolder.setOrientation(LinearLayout.VERTICAL);
@@ -97,7 +97,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
         if (showSocial) {
             addSocialLayout();
-            if (showSocialBigButtons) {
+            if (useSocialBigButtons) {
                 addContinueWithOtherProviderLink();
                 lockWidget.showActionButton(false);
             } else {
@@ -131,7 +131,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void addSocialLayout() {
-        boolean smallButtons = !showSocialBigButtons && (showDatabase || showEnterprise);
+        boolean smallButtons = !useSocialBigButtons && (showDatabase || showEnterprise);
         socialLayout = new SocialView(lockWidget, smallButtons);
         formsHolder.addView(socialLayout);
     }

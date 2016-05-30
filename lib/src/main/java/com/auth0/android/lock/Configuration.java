@@ -63,6 +63,7 @@ public class Configuration {
 
     private Application application;
 
+    private boolean useSocialBigButtons;
     private boolean signUpEnabled;
     private boolean changePasswordEnabled;
     private boolean usernameRequired;
@@ -219,6 +220,7 @@ public class Configuration {
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();
         loginAfterSignUp = options.loginAfterSignUp();
+        useSocialBigButtons = options.useSocialBigButtons();
 
         if (getDefaultDatabaseConnection() != null) {
             //let user disable signUp only if connection have enabled it.
@@ -257,6 +259,10 @@ public class Configuration {
         }
         final List<Connection> connections = activeDirectoryStrategy.getConnections();
         return !connections.isEmpty() ? connections.get(0) : null;
+    }
+
+    public boolean useSocialBigButtons() {
+        return useSocialBigButtons;
     }
 
     public boolean isSignUpEnabled() {

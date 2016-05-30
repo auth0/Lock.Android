@@ -191,6 +191,20 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldUseSocialBigButtons() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setUseSocialBigButtons(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.useSocialBigButtons(), is(equalTo(parceledOptions.useSocialBigButtons())));
+    }
+
+    @Test
     public void shouldBeChangePasswordEnabled() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -376,6 +390,7 @@ public class OptionsTest {
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
         assertThat(options.useBrowser(), is(false));
         assertThat(options.usePKCE(), is(false));
+        assertThat(options.useSocialBigButtons(), is(true));
         assertThat(options.isSignUpEnabled(), is(true));
         assertThat(options.isChangePasswordEnabled(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
@@ -393,6 +408,7 @@ public class OptionsTest {
         options.setFullscreen(true);
         options.setUseBrowser(true);
         options.setUsePKCE(true);
+        options.setUseSocialBigButtons(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
         options.setSignUpEnabled(true);
         options.setLoginAfterSignUp(true);
@@ -408,6 +424,7 @@ public class OptionsTest {
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
+        assertThat(options.useSocialBigButtons(), is(equalTo(parceledOptions.useSocialBigButtons())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
@@ -423,6 +440,7 @@ public class OptionsTest {
         options.setFullscreen(false);
         options.setUseBrowser(false);
         options.setUsePKCE(false);
+        options.setUseSocialBigButtons(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setSignUpEnabled(false);
         options.setLoginAfterSignUp(false);
@@ -438,6 +456,7 @@ public class OptionsTest {
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
+        assertThat(options.useSocialBigButtons(), is(equalTo(parceledOptions.useSocialBigButtons())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
