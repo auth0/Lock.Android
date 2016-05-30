@@ -326,6 +326,11 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         bus.post(event);
     }
 
+    @Override
+    public void showActionButton(boolean show) {
+        actionButton.setVisibility(show ? VISIBLE : GONE);
+    }
+
     /**
      * Notifies this forms and its child views that the keyboard state changed, so that
      * it can change the layout in order to fit all the fields.
