@@ -167,7 +167,13 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
                 changeFormMode(ModeSelectionView.Mode.LOG_IN);
             }
         });
-        continueWithOtherProvider.setText("Sign in or Sign up with email");
+        int textRes;
+        if (lockWidget.getConfiguration().isSignUpEnabled()) {
+            textRes = R.string.com_auth0_lock_action_continue_signin_signup_with_email;
+        } else {
+            textRes = R.string.com_auth0_lock_action_continue_signin_with_email;
+        }
+        continueWithOtherProvider.setText(textRes);
         continueWithOtherProvider.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
         continueWithOtherProvider.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
         continueWithOtherProvider.setGravity(Gravity.CENTER_HORIZONTAL);
