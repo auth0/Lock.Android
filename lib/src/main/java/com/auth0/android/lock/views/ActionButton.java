@@ -25,8 +25,16 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -60,6 +68,28 @@ public class ActionButton extends FrameLayout {
         progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+
+        ViewUtils.setBackground(icon, generateStateBackground());
+    }
+
+    private Drawable generateStateBackground() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.Auth0_PrimaryColor, typedValue, true);
+        int normalColor = typedValue.data;
+        theme.resolveAttribute(R.attr.Auth0_DarkPrimaryColor, typedValue, true);
+        int pressedColor = typedValue.data;
+        int disabledColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_submit_disabled);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            return new RippleDrawable(ColorStateList.valueOf(pressedColor), new ColorDrawable(normalColor), null);
+        } else {
+            StateListDrawable states = new StateListDrawable();
+            states.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, new ColorDrawable(pressedColor));
+            states.addState(new int[]{android.R.attr.state_enabled}, new ColorDrawable(normalColor));
+            states.addState(new int[]{}, new ColorDrawable(disabledColor));
+            return states;
+        }
     }
 
     /**
