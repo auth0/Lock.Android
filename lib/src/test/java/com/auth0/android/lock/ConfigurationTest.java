@@ -100,7 +100,7 @@ public class ConfigurationTest {
     public void shouldKeepApplicationDefaultsIfOptionsAreNotModified() throws Exception {
         configuration = new Configuration(application, options);
         assertThat(configuration.isUsernameRequired(), is(false));
-        assertThat(configuration.allowSignIn(), is(true));
+        assertThat(configuration.allowLogIn(), is(true));
         assertThat(configuration.allowSignUp(), is(true));
         assertThat(configuration.allowForgotPassword(), is(true));
         assertThat(configuration.loginAfterSignUp(), is(true));
@@ -111,14 +111,14 @@ public class ConfigurationTest {
     @Test
     public void shouldMergeApplicationWithOptionsIfDefaultDatabaseExists() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
-        options.setAllowSignIn(false);
+        options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         configuration = new Configuration(application, options);
         assertThat(configuration.isUsernameRequired(), is(false));
-        assertThat(configuration.allowSignIn(), is(false));
+        assertThat(configuration.allowLogIn(), is(false));
         assertThat(configuration.allowSignUp(), is(false));
         assertThat(configuration.allowForgotPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));

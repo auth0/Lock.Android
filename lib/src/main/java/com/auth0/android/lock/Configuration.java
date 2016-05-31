@@ -63,7 +63,7 @@ public class Configuration {
 
     private Application application;
 
-    private boolean allowSignIn;
+    private boolean allowLogIn;
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean usernameRequired;
@@ -223,7 +223,7 @@ public class Configuration {
 
         if (getDefaultDatabaseConnection() != null) {
             //let user disable signIn only if connection have enabled it.
-            allowSignIn = options.allowSignIn();
+            allowLogIn = options.allowLogIn();
 
             //let user disable signUp only if connection have enabled it.
             allowSignUp = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
@@ -263,8 +263,8 @@ public class Configuration {
         return !connections.isEmpty() ? connections.get(0) : null;
     }
 
-    public boolean allowSignIn() {
-        return allowSignIn;
+    public boolean allowLogIn() {
+        return allowLogIn;
     }
 
     public boolean allowSignUp() {

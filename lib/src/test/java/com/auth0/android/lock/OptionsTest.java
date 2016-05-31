@@ -177,17 +177,17 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldAllowSignIn() {
+    public void shouldAllowLogIn() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setAllowSignIn(true);
+        options.setAllowLogIn(true);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.allowSignIn(), is(equalTo(parceledOptions.allowSignIn())));
+        assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
     }
 
     @Test
@@ -390,7 +390,7 @@ public class OptionsTest {
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
         assertThat(options.useBrowser(), is(false));
         assertThat(options.usePKCE(), is(false));
-        assertThat(options.allowSignIn(), is(true));
+        assertThat(options.allowLogIn(), is(true));
         assertThat(options.allowSignUp(), is(true));
         assertThat(options.allowForgotPassword(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
@@ -407,7 +407,7 @@ public class OptionsTest {
         options.setUseBrowser(true);
         options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
-        options.setAllowSignIn(true);
+        options.setAllowLogIn(true);
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
         options.setClosable(true);
@@ -424,7 +424,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
-        assertThat(options.allowSignIn(), is(equalTo(parceledOptions.allowSignIn())));
+        assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
@@ -440,7 +440,7 @@ public class OptionsTest {
         options.setUseBrowser(false);
         options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
-        options.setAllowSignIn(false);
+        options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
@@ -456,7 +456,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
-        assertThat(options.allowSignIn(), is(equalTo(parceledOptions.allowSignIn())));
+        assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));

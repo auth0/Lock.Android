@@ -53,7 +53,7 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private int usernameStyle;
     private boolean useCodePasswordless;
-    private boolean allowSignIn;
+    private boolean allowLogIn;
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean loginAfterSignUp;
@@ -65,7 +65,7 @@ class Options implements Parcelable {
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
-        allowSignIn = true;
+        allowLogIn = true;
         allowSignUp = true;
         allowForgotPassword = true;
         loginAfterSignUp = true;
@@ -81,7 +81,7 @@ class Options implements Parcelable {
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
-        allowSignIn = in.readByte() != WITHOUT_DATA;
+        allowLogIn = in.readByte() != WITHOUT_DATA;
         allowSignUp = in.readByte() != WITHOUT_DATA;
         allowForgotPassword = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
@@ -127,7 +127,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (allowSignIn ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowLogIn ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowForgotPassword ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
@@ -225,12 +225,12 @@ class Options implements Parcelable {
         this.usernameStyle = usernameStyle;
     }
 
-    public void setAllowSignIn(boolean allowSignIn) {
-        this.allowSignIn = allowSignIn;
+    public void setAllowLogIn(boolean allowLogIn) {
+        this.allowLogIn = allowLogIn;
     }
 
-    public boolean allowSignIn() {
-        return allowSignIn;
+    public boolean allowLogIn() {
+        return allowLogIn;
     }
 
     public boolean allowSignUp() {

@@ -298,7 +298,7 @@ public class Lock {
          * @return the current builder instance
          */
         public Builder allowSignIn(boolean allow) {
-            options.setAllowSignIn(allow);
+            options.setAllowLogIn(allow);
             return this;
         }
 
