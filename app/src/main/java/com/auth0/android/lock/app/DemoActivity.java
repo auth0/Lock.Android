@@ -180,6 +180,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .loginAfterSignUp(false)
                 .initialScreen(InitialScreen.FORGOT_PASSWORD)
                 .allowForgotPassword(true)
+                .allowSignIn(false)
+                .allowSignUp(false)
 //                .setDefaultDatabaseConnection("mfa-connection")
                 .usePKCE(true)
                 .closable(true)

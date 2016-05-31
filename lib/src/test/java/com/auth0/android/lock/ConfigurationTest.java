@@ -147,6 +147,62 @@ public class ConfigurationTest {
         assertThat(configuration.getExtraSignUpFields(), contains(options.getCustomFields().toArray()));
     }
 
+    @Test
+    public void shouldSetCorrectInitialScreenIfLogInIsDisabled() throws Exception {
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(true);
+        options.setAllowForgotPassword(true);
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getInitialScreen(), is(InitialScreen.SIGN_UP));
+
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(true);
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getInitialScreen(), is(InitialScreen.FORGOT_PASSWORD));
+    }
+
+    @Test
+    public void shouldSetCorrectInitialScreenIfSignUpIsDisabled() throws Exception {
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowLogIn(true);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(true);
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getInitialScreen(), is(InitialScreen.LOG_IN));
+
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(true);
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getInitialScreen(), is(InitialScreen.FORGOT_PASSWORD));
+    }
+
+    @Test
+    public void shouldSetCorrectInitialScreenIfForgotPasswordIsDisabled() throws Exception {
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowLogIn(true);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(false);
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getInitialScreen(), is(InitialScreen.LOG_IN));
+
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(true);
+        options.setAllowForgotPassword(false);
+        configuration = new Configuration(application, options);
+
+        assertThat(configuration.getInitialScreen(), is(InitialScreen.SIGN_UP));
+    }
 
     @Test
     public void shouldPreferPasswordlessEmailOverSMSWhenBothAvailable() throws Exception {

@@ -224,10 +224,13 @@ public class Configuration {
         usernameStyle = options.usernameStyle();
         loginAfterSignUp = options.loginAfterSignUp();
 
-        if (getDefaultDatabaseConnection() != null) {
+        final boolean dbAvailable = getDefaultDatabaseConnection() != null;
+        final boolean enterpriseAvailable = !getEnterpriseStrategies().isEmpty();
+        if (dbAvailable || enterpriseAvailable) {
             //let user disable logIn only if connection have enabled it.
             allowLogIn = options.allowLogIn();
-
+        }
+        if (dbAvailable) {
             //let user disable signUp only if connection have enabled it.
             allowSignUp = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
             if (allowSignUp && !options.allowSignUp()) {

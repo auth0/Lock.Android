@@ -157,7 +157,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
             actionButton.setVisibility(GONE);
         }
 
-        if (getConfiguration().allowForgotPassword() && getConfiguration().getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
+        if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
             showChangePasswordForm(true);
         }
     }
@@ -272,9 +272,12 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
      */
     public boolean onBackPressed() {
         if (subForm != null) {
-            showSignUpTerms(subForm instanceof CustomFieldsFormView);
-            removeSubForm();
-            return true;
+            final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
+            if (shouldDisplayPreviousForm) {
+                showSignUpTerms(subForm instanceof CustomFieldsFormView);
+                removeSubForm();
+                return true;
+            }
         }
 
         return formLayout != null && formLayout.onBackPressed();
