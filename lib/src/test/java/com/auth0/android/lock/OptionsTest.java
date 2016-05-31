@@ -177,31 +177,45 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldBeSignUpEnabled() {
+    public void shouldAllowSignIn() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setSignUpEnabled(true);
+        options.setAllowSignIn(true);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+        assertThat(options.allowSignIn(), is(equalTo(parceledOptions.allowSignIn())));
     }
 
     @Test
-    public void shouldBeChangePasswordEnabled() {
+    public void shouldAllowSignUp() {
         Options options = new Options();
         options.setAccount(auth0);
-        options.setChangePasswordEnabled(true);
+        options.setAllowSignUp(true);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
+        assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
+    }
+
+    @Test
+    public void shouldAllowForgotPassword() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setAllowForgotPassword(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
     }
 
     @Test
@@ -376,8 +390,9 @@ public class OptionsTest {
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
         assertThat(options.useBrowser(), is(false));
         assertThat(options.usePKCE(), is(false));
-        assertThat(options.isSignUpEnabled(), is(true));
-        assertThat(options.isChangePasswordEnabled(), is(true));
+        assertThat(options.allowSignIn(), is(true));
+        assertThat(options.allowSignUp(), is(true));
+        assertThat(options.allowForgotPassword(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
     }
@@ -388,13 +403,14 @@ public class OptionsTest {
         Options options = new Options();
         options.setAccount(auth0);
 
-        options.setChangePasswordEnabled(true);
-        options.setClosable(true);
         options.setFullscreen(true);
         options.setUseBrowser(true);
         options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
-        options.setSignUpEnabled(true);
+        options.setAllowSignIn(true);
+        options.setAllowSignUp(true);
+        options.setAllowForgotPassword(true);
+        options.setClosable(true);
         options.setLoginAfterSignUp(true);
 
 
@@ -403,13 +419,14 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
-        assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+        assertThat(options.allowSignIn(), is(equalTo(parceledOptions.allowSignIn())));
+        assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
+        assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
@@ -418,13 +435,14 @@ public class OptionsTest {
         Options options = new Options();
         options.setAccount(auth0);
 
-        options.setChangePasswordEnabled(false);
         options.setClosable(false);
         options.setFullscreen(false);
         options.setUseBrowser(false);
         options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
-        options.setSignUpEnabled(false);
+        options.setAllowSignIn(false);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
 
 
@@ -433,13 +451,14 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.isChangePasswordEnabled(), is(equalTo(parceledOptions.isChangePasswordEnabled())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
-        assertThat(options.isSignUpEnabled(), is(equalTo(parceledOptions.isSignUpEnabled())));
+        assertThat(options.allowSignIn(), is(equalTo(parceledOptions.allowSignIn())));
+        assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
+        assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 

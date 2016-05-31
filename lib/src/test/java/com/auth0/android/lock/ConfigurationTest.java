@@ -110,8 +110,8 @@ public class ConfigurationTest {
     @Test
     public void shouldMergeApplicationWithOptionsIfDefaultDatabaseExists() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
-        options.setSignUpEnabled(false);
-        options.setChangePasswordEnabled(false);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         configuration = new Configuration(application, options);
@@ -126,8 +126,8 @@ public class ConfigurationTest {
     @Test
     public void shouldNotMergeApplicationWithOptionsIfApplicationIsRestrictive() throws Exception {
         options.setConnections(Collections.singletonList(RESTRICTIVE_DATABASE));
-        options.setSignUpEnabled(true);
-        options.setChangePasswordEnabled(true);
+        options.setAllowSignUp(true);
+        options.setAllowForgotPassword(true);
         configuration = new Configuration(application, options);
         assertThat(configuration.isSignUpEnabled(), is(false));
         assertThat(configuration.isChangePasswordEnabled(), is(false));

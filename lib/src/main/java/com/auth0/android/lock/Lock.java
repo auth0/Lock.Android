@@ -293,22 +293,32 @@ public class Lock {
         }
 
         /**
-         * Sign Up can be disabled locally, regardless the Dashboard configuration.
+         * Sign In can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
-        public Builder disableSignUp() {
-            options.setSignUpEnabled(false);
+        public Builder allowSignIn(boolean allow) {
+            options.setAllowSignIn(allow);
             return this;
         }
 
         /**
-         * Password change can be disabled locally, regardless the Dashboard configuration.
+         * Sign Up can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
-        public Builder disableChangePassword() {
-            options.setChangePasswordEnabled(false);
+        public Builder allowSignUp(boolean allow) {
+            options.setAllowSignUp(allow);
+            return this;
+        }
+
+        /**
+         * Password reset can be enabled/disabled locally, regardless the Dashboard configuration.
+         *
+         * @return the current builder instance
+         */
+        public Builder allowForgotPassword(boolean allow) {
+            options.setAllowForgotPassword(allow);
             return this;
         }
 

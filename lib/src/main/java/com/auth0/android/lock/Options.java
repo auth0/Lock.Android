@@ -53,8 +53,9 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private int usernameStyle;
     private boolean useCodePasswordless;
-    private boolean signUpEnabled;
-    private boolean changePasswordEnabled;
+    private boolean allowSignIn;
+    private boolean allowSignUp;
+    private boolean allowForgotPassword;
     private boolean loginAfterSignUp;
     private String defaultDatabaseConnection;
     private List<String> connections;
@@ -64,8 +65,9 @@ class Options implements Parcelable {
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
-        signUpEnabled = true;
-        changePasswordEnabled = true;
+        allowSignIn = true;
+        allowSignUp = true;
+        allowForgotPassword = true;
         loginAfterSignUp = true;
         useCodePasswordless = true;
         authenticationParameters = new HashMap<>();
@@ -79,8 +81,9 @@ class Options implements Parcelable {
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
-        signUpEnabled = in.readByte() != WITHOUT_DATA;
-        changePasswordEnabled = in.readByte() != WITHOUT_DATA;
+        allowSignIn = in.readByte() != WITHOUT_DATA;
+        allowSignUp = in.readByte() != WITHOUT_DATA;
+        allowForgotPassword = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
@@ -124,8 +127,9 @@ class Options implements Parcelable {
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowSignIn ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowForgotPassword ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
@@ -221,20 +225,28 @@ class Options implements Parcelable {
         this.usernameStyle = usernameStyle;
     }
 
-    public boolean isSignUpEnabled() {
-        return signUpEnabled;
+    public void setAllowSignIn(boolean allowSignIn) {
+        this.allowSignIn = allowSignIn;
     }
 
-    public void setSignUpEnabled(boolean signUpEnabled) {
-        this.signUpEnabled = signUpEnabled;
+    public boolean allowSignIn() {
+        return allowSignIn;
     }
 
-    public boolean isChangePasswordEnabled() {
-        return changePasswordEnabled;
+    public boolean allowSignUp() {
+        return allowSignUp;
     }
 
-    public void setChangePasswordEnabled(boolean changePasswordEnabled) {
-        this.changePasswordEnabled = changePasswordEnabled;
+    public void setAllowSignUp(boolean allowSignUp) {
+        this.allowSignUp = allowSignUp;
+    }
+
+    public void setAllowForgotPassword(boolean allowForgotPassword) {
+        this.allowForgotPassword = allowForgotPassword;
+    }
+
+    public boolean allowForgotPassword() {
+        return allowForgotPassword;
     }
 
     public String getDefaultDatabaseConnection() {

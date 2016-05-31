@@ -223,13 +223,13 @@ public class Configuration {
         if (getDefaultDatabaseConnection() != null) {
             //let user disable signUp only if connection have enabled it.
             signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
-            if (signUpEnabled && !options.isSignUpEnabled()) {
+            if (signUpEnabled && !options.allowSignUp()) {
                 signUpEnabled = false;
             }
 
             //let user disable signUp only if connection have enabled it.
             changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
-            if (changePasswordEnabled && !options.isChangePasswordEnabled()) {
+            if (changePasswordEnabled && !options.allowForgotPassword()) {
                 changePasswordEnabled = false;
             }
 
