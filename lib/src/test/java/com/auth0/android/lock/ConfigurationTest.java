@@ -150,44 +150,31 @@ public class ConfigurationTest {
     @Test
     public void shouldSetCorrectInitialScreenIfLogInIsDisabled() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setInitialScreen(InitialScreen.LOG_IN);
         options.setAllowLogIn(false);
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getInitialScreen(), is(InitialScreen.SIGN_UP));
-
-        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
-        options.setAllowLogIn(false);
-        options.setAllowSignUp(false);
-        options.setAllowForgotPassword(true);
-        configuration = new Configuration(application, options);
-
-        assertThat(configuration.getInitialScreen(), is(InitialScreen.FORGOT_PASSWORD));
     }
 
     @Test
     public void shouldSetCorrectInitialScreenIfSignUpIsDisabled() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setInitialScreen(InitialScreen.SIGN_UP);
         options.setAllowLogIn(true);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(true);
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getInitialScreen(), is(InitialScreen.LOG_IN));
-
-        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
-        options.setAllowLogIn(false);
-        options.setAllowSignUp(false);
-        options.setAllowForgotPassword(true);
-        configuration = new Configuration(application, options);
-
-        assertThat(configuration.getInitialScreen(), is(InitialScreen.FORGOT_PASSWORD));
     }
 
     @Test
     public void shouldSetCorrectInitialScreenIfForgotPasswordIsDisabled() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setInitialScreen(InitialScreen.FORGOT_PASSWORD);
         options.setAllowLogIn(true);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
@@ -196,6 +183,7 @@ public class ConfigurationTest {
         assertThat(configuration.getInitialScreen(), is(InitialScreen.LOG_IN));
 
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setInitialScreen(InitialScreen.FORGOT_PASSWORD);
         options.setAllowLogIn(false);
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(false);
