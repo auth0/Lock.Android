@@ -36,6 +36,7 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.LockCallback.LockEvent;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
@@ -289,6 +290,17 @@ public class Lock {
          */
         public Builder withUsernameStyle(@UsernameStyle int style) {
             options.setUsernameStyle(style);
+            return this;
+        }
+
+        /**
+         * Decide which screen is going to show first when launching the Lock Activity.
+         *
+         * @param screen a valid InitialScreen.
+         * @return the current builder instance
+         */
+        public Builder initialScreen(@InitialScreen int screen) {
+            options.setInitialScreen(screen);
             return this;
         }
 

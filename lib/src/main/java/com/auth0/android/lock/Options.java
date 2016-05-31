@@ -31,6 +31,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -62,9 +63,11 @@ class Options implements Parcelable {
     private List<String> enterpriseConnectionsUsingWebForm;
     private HashMap<String, Object> authenticationParameters;
     private List<CustomField> customFields;
+    private int initialScreen;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
+        initialScreen = InitialScreen.LOG_IN;
         allowLogIn = true;
         allowSignUp = true;
         allowForgotPassword = true;
@@ -88,6 +91,7 @@ class Options implements Parcelable {
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
+        initialScreen = in.readInt();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -134,6 +138,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
+        dest.writeInt(initialScreen);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -315,5 +320,14 @@ class Options implements Parcelable {
     @NonNull
     public List<CustomField> getCustomFields() {
         return customFields;
+    }
+
+    public void setInitialScreen(@InitialScreen int screen) {
+        this.initialScreen = screen;
+    }
+
+    @InitialScreen
+    public int initialScreen() {
+        return initialScreen;
     }
 }

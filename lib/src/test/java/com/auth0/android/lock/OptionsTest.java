@@ -6,6 +6,7 @@ import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.CustomField.FieldType;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -121,20 +122,6 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseEmailUsernameStyle() {
-        Options options = new Options();
-        options.setAccount(auth0);
-        options.setUsernameStyle(UsernameStyle.EMAIL);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
-    }
-
-    @Test
     public void shouldNotLoginAfterSignUp() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -146,6 +133,62 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
+    }
+
+    @Test
+    public void shouldChangeInitialScreenToLogIn() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setInitialScreen(InitialScreen.LOG_IN);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+    }
+
+    @Test
+    public void shouldChangeInitialScreenToSignUp() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setInitialScreen(InitialScreen.SIGN_UP);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+    }
+
+    @Test
+    public void shouldChangeInitialScreenToForgotPassword() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setInitialScreen(InitialScreen.FORGOT_PASSWORD);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+    }
+
+    @Test
+    public void shouldUseEmailUsernameStyle() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setUsernameStyle(UsernameStyle.EMAIL);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
     }
 
     @Test
@@ -407,6 +450,7 @@ public class OptionsTest {
         options.setUseBrowser(true);
         options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
+        options.setInitialScreen(InitialScreen.LOG_IN);
         options.setAllowLogIn(true);
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
@@ -424,6 +468,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
@@ -440,6 +485,7 @@ public class OptionsTest {
         options.setUseBrowser(false);
         options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
+        options.setInitialScreen(InitialScreen.SIGN_UP);
         options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
@@ -456,6 +502,7 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
