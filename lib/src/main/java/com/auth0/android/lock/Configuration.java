@@ -63,8 +63,9 @@ public class Configuration {
 
     private Application application;
 
-    private boolean signUpEnabled;
-    private boolean changePasswordEnabled;
+    private boolean allowSignIn;
+    private boolean allowSignUp;
+    private boolean allowForgotPassword;
     private boolean usernameRequired;
     @UsernameStyle
     private int usernameStyle;
@@ -221,16 +222,19 @@ public class Configuration {
         loginAfterSignUp = options.loginAfterSignUp();
 
         if (getDefaultDatabaseConnection() != null) {
-            //let user disable signUp only if connection have enabled it.
-            signUpEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
-            if (signUpEnabled && !options.allowSignUp()) {
-                signUpEnabled = false;
-            }
+            //let user disable signIn only if connection have enabled it.
+            allowSignIn = options.allowSignIn();
 
             //let user disable signUp only if connection have enabled it.
-            changePasswordEnabled = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
-            if (changePasswordEnabled && !options.allowForgotPassword()) {
-                changePasswordEnabled = false;
+            allowSignUp = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
+            if (allowSignUp && !options.allowSignUp()) {
+                allowSignUp = false;
+            }
+
+            //let user disable password reset only if connection have enabled it.
+            allowForgotPassword = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
+            if (allowForgotPassword && !options.allowForgotPassword()) {
+                allowForgotPassword = false;
             }
 
             usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
@@ -259,12 +263,16 @@ public class Configuration {
         return !connections.isEmpty() ? connections.get(0) : null;
     }
 
-    public boolean isSignUpEnabled() {
-        return signUpEnabled;
+    public boolean allowSignIn() {
+        return allowSignIn;
     }
 
-    public boolean isChangePasswordEnabled() {
-        return changePasswordEnabled;
+    public boolean allowSignUp() {
+        return allowSignUp;
+    }
+
+    public boolean allowForgotPassword() {
+        return allowForgotPassword;
     }
 
     public boolean isUsernameRequired() {

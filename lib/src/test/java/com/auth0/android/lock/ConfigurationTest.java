@@ -100,8 +100,9 @@ public class ConfigurationTest {
     public void shouldKeepApplicationDefaultsIfOptionsAreNotModified() throws Exception {
         configuration = new Configuration(application, options);
         assertThat(configuration.isUsernameRequired(), is(false));
-        assertThat(configuration.isSignUpEnabled(), is(true));
-        assertThat(configuration.isChangePasswordEnabled(), is(true));
+        assertThat(configuration.allowSignIn(), is(true));
+        assertThat(configuration.allowSignUp(), is(true));
+        assertThat(configuration.allowForgotPassword(), is(true));
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.hasExtraFields(), is(false));
@@ -110,14 +111,16 @@ public class ConfigurationTest {
     @Test
     public void shouldMergeApplicationWithOptionsIfDefaultDatabaseExists() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+        options.setAllowSignIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         configuration = new Configuration(application, options);
         assertThat(configuration.isUsernameRequired(), is(false));
-        assertThat(configuration.isSignUpEnabled(), is(false));
-        assertThat(configuration.isChangePasswordEnabled(), is(false));
+        assertThat(configuration.allowSignIn(), is(false));
+        assertThat(configuration.allowSignUp(), is(false));
+        assertThat(configuration.allowForgotPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
         assertThat(configuration.hasExtraFields(), is(false));
@@ -129,8 +132,8 @@ public class ConfigurationTest {
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
         configuration = new Configuration(application, options);
-        assertThat(configuration.isSignUpEnabled(), is(false));
-        assertThat(configuration.isChangePasswordEnabled(), is(false));
+        assertThat(configuration.allowSignUp(), is(false));
+        assertThat(configuration.allowForgotPassword(), is(false));
     }
 
     @Test

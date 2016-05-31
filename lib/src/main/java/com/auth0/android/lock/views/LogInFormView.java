@@ -85,7 +85,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
-        changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().isChangePasswordEnabled();
+        changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
         changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
