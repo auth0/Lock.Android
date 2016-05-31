@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -70,6 +71,8 @@ public class Configuration {
     private boolean usernameRequired;
     @UsernameStyle
     private int usernameStyle;
+    @SocialButtonStyle
+    private int socialButtonStyle;
     private boolean loginAfterSignUp;
     @PasswordlessMode
     private int passwordlessMode;
@@ -222,6 +225,7 @@ public class Configuration {
 
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();
+        socialButtonStyle = options.socialButtonStyle();
         loginAfterSignUp = options.loginAfterSignUp();
 
         final boolean dbAvailable = getDefaultDatabaseConnection() != null;
@@ -318,6 +322,11 @@ public class Configuration {
     @InitialScreen
     public int getInitialScreen() {
         return initialScreen;
+    }
+
+    @SocialButtonStyle
+    public int getSocialButtonStyle() {
+        return socialButtonStyle;
     }
 
     @UsernameStyle

@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -102,7 +103,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         addView(formsHolder, holderParams);
 
         if (showSocial) {
-            addSocialLayout(showDatabase || showEnterprise);
+            addSocialLayout();
             if (showDatabase || showEnterprise) {
                 addSeparator();
             }
@@ -125,8 +126,17 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         }
     }
 
-    private void addSocialLayout(boolean smallButtons) {
-        socialLayout = new SocialView(lockWidget, smallButtons);
+    private void addSocialLayout() {
+        int style = lockWidget.getConfiguration().getSocialButtonStyle();
+        boolean formContainsFields = showDatabase || showEnterprise;
+        boolean singleConnection = lockWidget.getConfiguration().getSocialStrategies().size() == 1;
+
+        if (style == SocialButtonStyle.UNSPECIFIED) {
+            socialLayout = new SocialView(lockWidget, formContainsFields && !singleConnection);
+        } else {
+            socialLayout = new SocialView(lockWidget, style == SocialButtonStyle.SMALL);
+        }
+
         formsHolder.addView(socialLayout);
     }
 

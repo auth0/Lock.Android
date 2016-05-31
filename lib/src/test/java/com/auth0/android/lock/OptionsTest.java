@@ -7,6 +7,7 @@ import android.support.v7.appcompat.BuildConfig;
 import com.auth0.Auth0;
 import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
@@ -78,6 +79,33 @@ public class OptionsTest {
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
     }
 
+    @Test
+    public void shouldUseBigSocialButtonStyle() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setSocialButtonStyle(SocialButtonStyle.BIG);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
+    }
+
+    @Test
+    public void shouldUseSmallSocialButtonStyle() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setSocialButtonStyle(SocialButtonStyle.SMALL);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
+    }
 
     @Test
     public void shouldUsePKCE() {
@@ -438,6 +466,8 @@ public class OptionsTest {
         assertThat(options.allowForgotPassword(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
+        assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
+        assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
     }
 
 
@@ -455,6 +485,7 @@ public class OptionsTest {
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
         options.setClosable(true);
+        options.setSocialButtonStyle(SocialButtonStyle.BIG);
         options.setLoginAfterSignUp(true);
 
 
@@ -472,6 +503,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
+        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
@@ -489,6 +521,7 @@ public class OptionsTest {
         options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
+        options.setSocialButtonStyle(SocialButtonStyle.SMALL);
         options.setLoginAfterSignUp(false);
 
 
@@ -506,6 +539,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
+        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
