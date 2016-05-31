@@ -40,6 +40,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -154,6 +155,10 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
         if (!showDatabase && !showEnterprise) {
             actionButton.setVisibility(GONE);
+        }
+
+        if (getConfiguration().allowForgotPassword() && getConfiguration().getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
+            showChangePasswordForm(true);
         }
     }
 

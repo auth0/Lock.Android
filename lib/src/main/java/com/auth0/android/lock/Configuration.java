@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
@@ -72,6 +73,8 @@ public class Configuration {
     private boolean loginAfterSignUp;
     @PasswordlessMode
     private int passwordlessMode;
+    @InitialScreen
+    private int initialScreen;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
@@ -222,7 +225,7 @@ public class Configuration {
         loginAfterSignUp = options.loginAfterSignUp();
 
         if (getDefaultDatabaseConnection() != null) {
-            //let user disable signIn only if connection have enabled it.
+            //let user disable logIn only if connection have enabled it.
             allowLogIn = options.allowLogIn();
 
             //let user disable signUp only if connection have enabled it.
@@ -239,6 +242,36 @@ public class Configuration {
 
             usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
         }
+
+        initialScreen = options.initialScreen();
+        switch (initialScreen) {
+            case InitialScreen.FORGOT_PASSWORD:
+                if (!allowForgotPassword) {
+                    //Continue to the LOG_IN case to try to default to another option.
+                    Log.w(TAG, "Configuration conflict: Check you options of allowForgotPassword and initialScreen on the Lock.Builder instance.");
+                } else {
+                    break;
+                }
+            case InitialScreen.LOG_IN:
+                if (allowLogIn) {
+                    initialScreen = InitialScreen.LOG_IN;
+                } else if (allowSignUp) {
+                    initialScreen = InitialScreen.SIGN_UP;
+                } else {
+                    Log.w(TAG, "Configuration conflict: Check you options of allowLogIn, allowSignUp and initialScreen on the Lock.Builder instance.");
+                }
+                break;
+            case InitialScreen.SIGN_UP:
+                if (allowSignUp) {
+                    initialScreen = InitialScreen.SIGN_UP;
+                } else if (allowLogIn) {
+                    initialScreen = InitialScreen.LOG_IN;
+                } else {
+                    Log.w(TAG, "Configuration conflict: Check you options of allowLogIn, allowSignUp and initialScreen on the Lock.Builder instance.");
+                }
+                break;
+        }
+
         Strategy passwordlessStrategy = getDefaultPasswordlessStrategy();
         if (passwordlessStrategy != null) {
             if (passwordlessStrategy.getName().equals(Strategies.Email.getName())) {
@@ -277,6 +310,11 @@ public class Configuration {
 
     public boolean isUsernameRequired() {
         return usernameRequired;
+    }
+
+    @InitialScreen
+    public int getInitialScreen() {
+        return initialScreen;
     }
 
     @UsernameStyle

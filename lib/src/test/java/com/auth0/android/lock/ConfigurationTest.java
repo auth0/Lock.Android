@@ -25,6 +25,7 @@
 package com.auth0.android.lock;
 
 import com.auth0.android.lock.CustomField.FieldType;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
@@ -105,6 +106,7 @@ public class ConfigurationTest {
         assertThat(configuration.allowForgotPassword(), is(true));
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
+        assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
         assertThat(configuration.hasExtraFields(), is(false));
     }
 

@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -106,10 +107,21 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
                 addSeparator();
             }
         }
-        if (lockWidget.getConfiguration().allowLogIn()) {
-            changeFormMode(ModeSelectionView.Mode.LOG_IN);
-        } else if (lockWidget.getConfiguration().allowSignUp()) {
-            changeFormMode(ModeSelectionView.Mode.SIGN_UP);
+        displayInitialScreen();
+    }
+
+    private void displayInitialScreen() {
+        if (!showDatabase && !showEnterprise) {
+            return;
+        }
+        int initialScreen = lockWidget.getConfiguration().getInitialScreen();
+        switch (initialScreen) {
+            case InitialScreen.FORGOT_PASSWORD:
+            case InitialScreen.LOG_IN:
+                changeFormMode(ModeSelectionView.Mode.LOG_IN);
+            case InitialScreen.SIGN_UP:
+                changeFormMode(ModeSelectionView.Mode.SIGN_UP);
+                break;
         }
     }
 
