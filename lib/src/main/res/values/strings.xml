@@ -106,7 +106,7 @@
     <string name="com_auth0_lock_default_country_code_fallback">+1</string>
     <string name="com_auth0_lock_header_title">Auth0</string>
     <string name="com_auth0_lock_network_error">Network error</string>
-    <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
+    <string name="com_auth0_lock_input_error_email">Invalid Email Address Invalid Email Address Invalid Email Address Invalid Email Address Invalid Email Address Invalid Email Address</string>
     <string name="com_auth0_lock_input_error_password">Invalid Password</string>
     <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
     <string name="com_auth0_lock_input_error_username">Invalid Username</string>

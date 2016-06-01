@@ -46,6 +46,7 @@
     <style name="Lock.Theme.Text.ValidationError">
         <item name="android:textColor">@color/com_auth0_lock_validation_error_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="Lock.Theme.Text.Terms">

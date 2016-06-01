@@ -73,6 +73,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     private EditText input;
     private ImageView icon;
     private int inputIcon;
+    private boolean isShowingError = true;
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE})
     @Retention(RetentionPolicy.SOURCE)
@@ -188,6 +189,10 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     }
 
     private void updateBorder(boolean showError) {
+        if (isShowingError == showError) {
+            return;
+        }
+
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
@@ -206,6 +211,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         }
 
         errorDescription.setVisibility(showError ? VISIBLE : INVISIBLE);
+        isShowingError = showError;
         requestLayout();
     }
 
@@ -224,7 +230,8 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         int inputHeight = ViewUtils.measureViewHeight(input);
         ViewGroup iconHolder = (ViewGroup) icon.getParent();
         int iconHeight = ViewUtils.measureViewHeight(iconHolder);
-        setMeasuredDimension(getMeasuredWidth(), Math.max(inputHeight, iconHeight) + errorDescriptionHeight);
+        int sumHeight = Math.max(inputHeight, iconHeight) + errorDescriptionHeight;
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 
     /**
