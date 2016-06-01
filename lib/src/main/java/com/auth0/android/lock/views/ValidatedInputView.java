@@ -26,7 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
@@ -129,6 +128,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
 
     private void setupInputValidation() {
         String hint = "";
+        String error = "";
         input.setTransformationMethod(null);
         Log.v(TAG, "Setting up validation for field of type " + dataType);
         switch (dataType) {
@@ -136,6 +136,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_email;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_email);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_email);
                 break;
             case PASSWORD:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -143,38 +144,46 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 input.setTypeface(Typeface.DEFAULT);
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_password);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_password);
                 break;
             case USERNAME_OR_EMAIL:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_username_email);
                 break;
             case USERNAME:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_username);
                 break;
             case NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_code);
                 break;
             case MOBILE_PHONE:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_mobile;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
             case PHONE_NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
                 inputIcon = R.drawable.com_auth0_lock_ic_phone;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
             case DATE:
                 input.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
                 inputIcon = R.drawable.com_auth0_lock_ic_clock;
+                error = getResources().getString(R.string.com_auth0_lock_input_error_date);
                 break;
         }
         input.setHint(hint);
+        errorDescription.setText(error);
         icon.setImageResource(inputIcon);
     }
 
@@ -188,7 +197,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
         gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
 
-        if (showError){
+        if (showError) {
             PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_error),
                     PorterDuff.Mode.SRC_ATOP);
             icon.setColorFilter(colorFilter);

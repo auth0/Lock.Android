@@ -106,6 +106,13 @@
     <string name="com_auth0_lock_default_country_code_fallback">+1</string>
     <string name="com_auth0_lock_header_title">Auth0</string>
     <string name="com_auth0_lock_network_error">Network error</string>
+    <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
+    <string name="com_auth0_lock_input_error_password">Invalid Password</string>
+    <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
+    <string name="com_auth0_lock_input_error_username">Invalid Username</string>
+    <string name="com_auth0_lock_input_error_code">Invalid Code</string>
+    <string name="com_auth0_lock_input_error_phone_number">Invalid Phone Number</string>
+    <string name="com_auth0_lock_input_error_date">Invalid Date</string>
     <string name="com_auth0_lock_hint_email">Email</string>
     <string name="com_auth0_lock_hint_password">Password</string>
     <string name="com_auth0_lock_hint_username">Username</string>
@@ -156,5 +163,6 @@
     <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">The code is invalid or has expired</string>
     <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
+
 
 </resources>
