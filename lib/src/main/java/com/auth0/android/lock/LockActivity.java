@@ -45,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
@@ -128,7 +129,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         int paddingTop = getStatusBarHeight();
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
-        RelativeLayout rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        ScrollView rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         lockView = new ClassicLockView(this, lockBus);
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);

@@ -273,7 +273,18 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         int sumHeight = topMessageHeight + changePasswordHeight + usernameHeight + emailHeight + passwordHeight;
 
         Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
-        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        switch (heightMode){
+            case MeasureSpec.UNSPECIFIED:
+                setMeasuredDimension(getMeasuredWidth(), sumHeight);
+                break;
+            case MeasureSpec.AT_MOST:
+                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
+                break;
+            case MeasureSpec.EXACTLY:
+                setMeasuredDimension(getMeasuredWidth(), parentHeight);
+                break;
+        }
     }
 
     /**
