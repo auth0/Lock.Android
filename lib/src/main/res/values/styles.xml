@@ -221,7 +221,7 @@
 
     <style name="Lock.Theme.Widget.SubmitButton">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/com_auth0_lock_submit_disabled</item>
     </style>
 
@@ -241,9 +241,7 @@
         <item name="android:lines">1</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
-        <item name="android:layout_marginTop">
-            @dimen/com_auth0_lock_widget_vertical_margin_header_icon
-        </item>
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_header_logo_vertical_margin</item>
     </style>
 
     <style name="Lock.Theme.Widget.Logo">

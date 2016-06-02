@@ -39,7 +39,8 @@
             android:id="@+id/com_auth0_lock_title"
             style="@style/Lock.Theme.Text.Title.SignUpCustomFields"
             android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
-            android:text="@string/com_auth0_lock_title_sign_up_custom_fields" />
+            android:text="@string/com_auth0_lock_title_sign_up_custom_fields"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/com_auth0_lock_container"

@@ -125,7 +125,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
                     .useCode()
                     .usePKCE(true)
-                    .fullscreen(true)
+                    .fullscreen(false)
                     .closable(true)
                     .build();
         } else {

@@ -81,7 +81,6 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
 
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
         int recyclerHeight = ViewUtils.measureViewHeight(recycler);
-        setMeasuredDimension(getMeasuredWidth(), recyclerHeight);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         switch (heightMode){
             case MeasureSpec.UNSPECIFIED:

@@ -105,7 +105,7 @@ public class ActionButton extends FrameLayout {
         }
         setEnabled(!show);
         progress.setVisibility(show ? VISIBLE : GONE);
-        icon.setVisibility(show ? GONE : VISIBLE);
+        icon.setVisibility(show ? INVISIBLE : VISIBLE);
     }
 
 }

@@ -30,8 +30,8 @@
     android:layout_height="wrap_content"
     android:background="?attr/Auth0.HeaderBackground"
     android:gravity="center"
-    android:paddingBottom="@dimen/com_auth0_lock_widget_vertical_margin_header"
-    android:paddingTop="@dimen/com_auth0_lock_widget_vertical_margin_header"
+    android:paddingBottom="@dimen/com_auth0_lock_header_vertical_margin"
+    android:paddingTop="@dimen/com_auth0_lock_header_vertical_margin"
     tools:background="#40000000"
     tools:context=".LockActivity">
 
