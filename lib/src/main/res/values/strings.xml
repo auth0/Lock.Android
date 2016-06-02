@@ -22,7 +22,7 @@
   ~ THE SOFTWARE.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Social Authentication -->
     <string name="com_auth0_lock_social_error_authentication">Error parsing Authentication data</string>
     <string name="com_auth0_lock_social_error_title">There was an error during authentication</string>
@@ -33,72 +33,40 @@
 
     <!-- Social Buttons -->
     <string name="com_auth0_lock_social_unknown_placeholder">LOGIN WITH %s</string>
-    <string name="com_auth0_lock_social_yahoo">LOGIN WITH YAHOO!</string>
-    <string name="com_auth0_lock_social_linkedin">LOGIN WITH LINKEDIN</string>
-    <string name="com_auth0_lock_social_google_oauth2">LOGIN WITH GOOGLE</string>
-    <string name="com_auth0_lock_social_twitter">LOGIN WITH TWITTER</string>
-    <string name="com_auth0_lock_social_facebook">LOGIN WITH FACEBOOK</string>
-    <string name="com_auth0_lock_social_amazon">LOGIN WITH AMAZON</string>
-    <string name="com_auth0_lock_social_aol">LOGIN WITH AOL</string>
-    <string name="com_auth0_lock_social_box">LOGIN WITH BOX</string>
-    <string name="com_auth0_lock_social_evernote">LOGIN WITH EVERNOTE</string>
-    <string name="com_auth0_lock_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANDBOX)</string>
-    <string name="com_auth0_lock_social_exact">LOGIN WITH EXACT</string>
-    <string name="com_auth0_lock_social_github">LOGIN WITH GITHUB</string>
-    <string name="com_auth0_lock_social_instagram">LOGIN WITH INSTAGRAM</string>
-    <string name="com_auth0_lock_social_miicard">LOGIN WITH MIICARD</string>
-    <string name="com_auth0_lock_social_paypal">LOGIN WITH PAYPAL</string>
-    <string name="com_auth0_lock_social_salesforce">LOGIN WITH SALESFORCE</string>
-    <string name="com_auth0_lock_social_salesforce_community">LOGIN WITH SALESFORCE (COMMUNITY)</string>
-    <string name="com_auth0_lock_social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
-    <string name="com_auth0_lock_social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
-    <string name="com_auth0_lock_social_windowslive">LOGIN WITH MICROSOFT</string>
-    <string name="com_auth0_lock_social_yammer">LOGIN WITH YAMMER</string>
-    <string name="com_auth0_lock_social_baidu">LOGIN WITH 百度</string>
-    <string name="com_auth0_lock_social_fitbit">LOGIN WITH FITBIT</string>
-    <string name="com_auth0_lock_social_planningcenter">LOGIN WITH PLANNING CENTER</string>
-    <string name="com_auth0_lock_social_renren">LOGIN WITH 人人</string>
-    <string name="com_auth0_lock_social_thecity">LOGIN WITH THE CITY</string>
-    <string name="com_auth0_lock_social_thecity_sandbox">LOGIN WITH THE CITY (SANDBOX)</string>
-    <string name="com_auth0_lock_social_thirtysevensignals">LOGIN WITH 37 SIGNALS</string>
-    <string name="com_auth0_lock_social_vkontakte">LOGIN WITH VKONTAKTE</string>
-    <string name="com_auth0_lock_social_weibo">LOGIN WITH 新浪微博</string>
-    <string name="com_auth0_lock_social_wordpress">LOGIN WITH WORDPRESS</string>
-    <string name="com_auth0_lock_social_yandex">LOGIN WITH YANDEX</string>
-    <string name="com_auth0_lock_social_shopify">LOGIN WITH SHOPIFY</string>
-    <string name="com_auth0_lock_social_dwolla">LOGIN WITH DWOLLA</string>
-    <string name="com_auth0_lock_social_icon_yahoo">Y</string>
-    <string name="com_auth0_lock_social_icon_linkedin">L</string>
-    <string name="com_auth0_lock_social_icon_google_oauth2">+</string>
-    <string name="com_auth0_lock_social_icon_twitter">T</string>
-    <string name="com_auth0_lock_social_icon_facebook">f</string>
-    <string name="com_auth0_lock_social_icon_amazon">a</string>
-    <string name="com_auth0_lock_social_icon_aol">l</string>
-    <string name="com_auth0_lock_social_icon_box">x</string>
-    <string name="com_auth0_lock_social_icon_evernote">n</string>
-    <string name="com_auth0_lock_social_icon_evernote_sandbox">n</string>
-    <string name="com_auth0_lock_social_icon_github">è</string>
-    <string name="com_auth0_lock_social_icon_instagram">i</string>
-    <string name="com_auth0_lock_social_icon_miicard">m</string>
-    <string name="com_auth0_lock_social_icon_paypal">$</string>
-    <string name="com_auth0_lock_social_icon_salesforce">*</string>
-    <string name="com_auth0_lock_social_icon_salesforce_sandbox">*</string>
-    <string name="com_auth0_lock_social_icon_soundcloud">t</string>
-    <string name="com_auth0_lock_social_icon_windowslive">W</string>
-    <string name="com_auth0_lock_social_icon_yammer">!</string>
-    <string name="com_auth0_lock_social_icon_baidu">u</string>
-    <string name="com_auth0_lock_social_icon_fitbit">#</string>
-    <string name="com_auth0_lock_social_icon_planningcenter">y</string>
-    <string name="com_auth0_lock_social_icon_renren">r</string>
-    <string name="com_auth0_lock_social_icon_thecity">c</string>
-    <string name="com_auth0_lock_social_icon_thecity_sandbox">c</string>
-    <string name="com_auth0_lock_social_icon_thirtysevensignals">b</string>
-    <string name="com_auth0_lock_social_icon_vkontakte">N</string>
-    <string name="com_auth0_lock_social_icon_weibo">S</string>
-    <string name="com_auth0_lock_social_icon_wordpress">w</string>
-    <string name="com_auth0_lock_social_icon_yandex">&amp;</string>
-    <string name="com_auth0_lock_social_icon_shopify">s</string>
-    <string name="com_auth0_lock_social_icon_dwolla">D</string>
+    <string name="com_auth0_lock_social_yahoo" tools:keep="@string/com_auth0_lock_social_yahoo">LOGIN WITH YAHOO!</string>
+    <string name="com_auth0_lock_social_linkedin" tools:keep="@string/com_auth0_lock_social_linkedin">LOGIN WITH LINKEDIN</string>
+    <string name="com_auth0_lock_social_google_oauth2" tools:keep="@string/com_auth0_lock_social_google_oauth2">LOGIN WITH GOOGLE</string>
+    <string name="com_auth0_lock_social_twitter" tools:keep="@string/com_auth0_lock_social_twitter">LOGIN WITH TWITTER</string>
+    <string name="com_auth0_lock_social_facebook" tools:keep="@string/com_auth0_lock_social_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="com_auth0_lock_social_amazon" tools:keep="@string/com_auth0_lock_social_amazon">LOGIN WITH AMAZON</string>
+    <string name="com_auth0_lock_social_aol" tools:keep="@string/com_auth0_lock_social_aol">LOGIN WITH AOL</string>
+    <string name="com_auth0_lock_social_box" tools:keep="@string/com_auth0_lock_social_box">LOGIN WITH BOX</string>
+    <string name="com_auth0_lock_social_evernote" tools:keep="@string/com_auth0_lock_social_evernote">LOGIN WITH EVERNOTE</string>
+    <string name="com_auth0_lock_social_evernote_sandbox" tools:keep="@string/com_auth0_lock_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANDBOX)</string>
+    <string name="com_auth0_lock_social_exact" tools:keep="@string/com_auth0_lock_social_exact">LOGIN WITH EXACT</string>
+    <string name="com_auth0_lock_social_github" tools:keep="@string/com_auth0_lock_social_github">LOGIN WITH GITHUB</string>
+    <string name="com_auth0_lock_social_instagram" tools:keep="@string/com_auth0_lock_social_instagram">LOGIN WITH INSTAGRAM</string>
+    <string name="com_auth0_lock_social_miicard" tools:keep="@string/com_auth0_lock_social_miicard">LOGIN WITH MIICARD</string>
+    <string name="com_auth0_lock_social_paypal" tools:keep="@string/com_auth0_lock_social_paypal">LOGIN WITH PAYPAL</string>
+    <string name="com_auth0_lock_social_salesforce" tools:keep="@string/com_auth0_lock_social_salesforce">LOGIN WITH SALESFORCE</string>
+    <string name="com_auth0_lock_social_salesforce_community" tools:keep="@string/com_auth0_lock_social_salesforce_community">LOGIN WITH SALESFORCE (COMMUNITY)</string>
+    <string name="com_auth0_lock_social_salesforce_sandbox" tools:keep="@string/com_auth0_lock_social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
+    <string name="com_auth0_lock_social_soundcloud" tools:keep="@string/com_auth0_lock_social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
+    <string name="com_auth0_lock_social_windowslive" tools:keep="@string/com_auth0_lock_social_windowslive">LOGIN WITH MICROSOFT</string>
+    <string name="com_auth0_lock_social_yammer" tools:keep="@string/com_auth0_lock_social_yammer">LOGIN WITH YAMMER</string>
+    <string name="com_auth0_lock_social_baidu" tools:keep="@string/com_auth0_lock_social_baidu">LOGIN WITH 百度</string>
+    <string name="com_auth0_lock_social_fitbit" tools:keep="@string/com_auth0_lock_social_fitbit">LOGIN WITH FITBIT</string>
+    <string name="com_auth0_lock_social_planningcenter" tools:keep="@string/com_auth0_lock_social_planningcenter">LOGIN WITH PLANNING CENTER</string>
+    <string name="com_auth0_lock_social_renren" tools:keep="@string/com_auth0_lock_social_renren">LOGIN WITH 人人</string>
+    <string name="com_auth0_lock_social_thecity" tools:keep="@string/com_auth0_lock_social_thecity">LOGIN WITH THE CITY</string>
+    <string name="com_auth0_lock_social_thecity_sandbox" tools:keep="@string/com_auth0_lock_social_thecity_sandbox">LOGIN WITH THE CITY (SANDBOX)</string>
+    <string name="com_auth0_lock_social_thirtysevensignals" tools:keep="@string/com_auth0_lock_social_thirtysevensignals">LOGIN WITH 37 SIGNALS</string>
+    <string name="com_auth0_lock_social_vkontakte" tools:keep="@string/com_auth0_lock_social_vkontakte">LOGIN WITH VKONTAKTE</string>
+    <string name="com_auth0_lock_social_weibo" tools:keep="@string/com_auth0_lock_social_weibo">LOGIN WITH 新浪微博</string>
+    <string name="com_auth0_lock_social_wordpress" tools:keep="@string/com_auth0_lock_social_wordpress">LOGIN WITH WORDPRESS</string>
+    <string name="com_auth0_lock_social_yandex" tools:keep="@string/com_auth0_lock_social_yandex">LOGIN WITH YANDEX</string>
+    <string name="com_auth0_lock_social_shopify" tools:keep="@string/com_auth0_lock_social_shopify">LOGIN WITH SHOPIFY</string>
+    <string name="com_auth0_lock_social_dwolla" tools:keep="@string/com_auth0_lock_social_dwolla">LOGIN WITH DWOLLA</string>
 
     <!-- Lock General -->
     <string name="com_auth0_lock_webview_loading_retry">Retry</string>

@@ -89,7 +89,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         headerView = new HeaderView(getContext());
-        headerView.setId(R.id.com_auth0_lock_header);
         addView(headerView, wrapHeightParams);
 
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -101,7 +100,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
         if (showPasswordless) {
             actionButton = new ActionButton(getContext());
-            actionButton.setId(R.id.com_auth0_lock_action_button);
             actionButton.setOnClickListener(this);
             addView(actionButton, wrapHeightParams);
         }

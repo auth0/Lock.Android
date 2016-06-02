@@ -215,6 +215,9 @@
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">none</item>
+        <item name="android:paddingLeft">
+            @dimen/com_auth0_lock_widget_small_margin
+        </item>
         <item name="android:paddingRight">
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
