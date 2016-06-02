@@ -21,108 +21,42 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   ~ THE SOFTWARE.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@color/com_auth0_lock_social_*">
     <color name="com_auth0_lock_social_unknown">#E33B1B</color>
-    <color name="com_auth0_lock_social_yahoo" tools:keep="@color/com_auth0_lock_social_yahoo">
-        #410093
-    </color>
-    <color name="com_auth0_lock_social_linkedin" tools:keep="@color/com_auth0_lock_social_linkedin">
-        #0077B5
-    </color>
-    <color name="com_auth0_lock_social_google_oauth2" tools:keep="@color/com_auth0_lock_social_google_oauth2">
-        #4285F4
-    </color>
-    <color name="com_auth0_lock_social_twitter" tools:keep="@color/com_auth0_lock_social_twitter">
-        #55ACEE
-    </color>
-    <color name="com_auth0_lock_social_facebook" tools:keep="@color/com_auth0_lock_social_facebook">
-        #3B5998
-    </color>
-    <color name="com_auth0_lock_social_amazon" tools:keep="@color/com_auth0_lock_social_amazon">
-        #FF9900
-    </color>
-    <color name="com_auth0_lock_social_aol" tools:keep="@color/com_auth0_lock_social_aol">#E60E04
-    </color>
-    <color name="com_auth0_lock_social_box" tools:keep="@color/com_auth0_lock_social_box">#267BB6
-    </color>
-    <color name="com_auth0_lock_social_evernote" tools:keep="@color/com_auth0_lock_social_evernote">
-        #82B137
-    </color>
-    <color name="com_auth0_lock_social_evernote_sandbox" tools:keep="@color/com_auth0_lock_social_evernote_sandbox">
-        #82B137
-    </color>
-    <color name="com_auth0_lock_social_exact" tools:keep="@color/com_auth0_lock_social_exact">
-        #ED1C24
-    </color>
-    <color name="com_auth0_lock_social_github" tools:keep="@color/com_auth0_lock_social_github">
-        #333333
-    </color>
-    <color name="com_auth0_lock_social_instagram" tools:keep="@color/com_auth0_lock_social_instagram">
-        #3F729B
-    </color>
-    <color name="com_auth0_lock_social_miicard" tools:keep="@color/com_auth0_lock_social_miicard">
-        #3FB7FF
-    </color>
-    <color name="com_auth0_lock_social_paypal" tools:keep="@color/com_auth0_lock_social_paypal">
-        #009CDE
-    </color>
-    <color name="com_auth0_lock_social_salesforce" tools:keep="@color/com_auth0_lock_social_salesforce">
-        #1798C1
-    </color>
-    <color name="com_auth0_lock_social_salesforce_community" tools:keep="@color/com_auth0_lock_social_salesforce_community">
-        #1798C1
-    </color>
-    <color name="com_auth0_lock_social_salesforce_sandbox" tools:keep="@color/com_auth0_lock_social_salesforce_sandbox">
-        #1798C1
-    </color>
-    <color name="com_auth0_lock_social_soundcloud" tools:keep="@color/com_auth0_lock_social_soundcloud">
-        #FF8800
-    </color>
-    <color name="com_auth0_lock_social_windowslive" tools:keep="@color/com_auth0_lock_social_windowslive">
-        #00A1F1
-    </color>
-    <color name="com_auth0_lock_social_yammer" tools:keep="@color/com_auth0_lock_social_yammer">
-        #0072C6
-    </color>
-    <color name="com_auth0_lock_social_baidu" tools:keep="@color/com_auth0_lock_social_baidu">
-        #2529D8
-    </color>
-    <color name="com_auth0_lock_social_fitbit" tools:keep="@color/com_auth0_lock_social_fitbit">
-        #4CC2C4
-    </color>
-    <color name="com_auth0_lock_social_planningcenter" tools:keep="@color/com_auth0_lock_social_planningcenter">
-        #4E4E4E
-    </color>
-    <color name="com_auth0_lock_social_renren" tools:keep="@color/com_auth0_lock_social_renren">
-        #0056B5
-    </color>
-    <color name="com_auth0_lock_social_thecity" tools:keep="@color/com_auth0_lock_social_thecity">
-        #767571
-    </color>
-    <color name="com_auth0_lock_social_thecity_sandbox" tools:keep="@color/com_auth0_lock_social_thecity_sandbox">
-        #767571
-    </color>
-    <color name="com_auth0_lock_social_thirtysevensignals" tools:keep="@color/com_auth0_lock_social_thirtysevensignals">
-        #6AC071
-    </color>
-    <color name="com_auth0_lock_social_vkontakte" tools:keep="@color/com_auth0_lock_social_vkontakte">
-        #45668E
-    </color>
-    <color name="com_auth0_lock_social_weibo" tools:keep="@color/com_auth0_lock_social_weibo">
-        #DA4A38
-    </color>
-    <color name="com_auth0_lock_social_wordpress" tools:keep="@color/com_auth0_lock_social_wordpress">
-        #21759B
-    </color>
-    <color name="com_auth0_lock_social_yandex" tools:keep="@color/com_auth0_lock_social_yandex">
-        #FFCC00
-    </color>
-    <color name="com_auth0_lock_social_shopify" tools:keep="@color/com_auth0_lock_social_shopify">
-        #96BF48
-    </color>
-    <color name="com_auth0_lock_social_dwolla" tools:keep="@color/com_auth0_lock_social_dwolla">
-        #F5891F
-    </color>
+    <color name="com_auth0_lock_social_yahoo">#410093</color>
+    <color name="com_auth0_lock_social_linkedin">#0077B5</color>
+    <color name="com_auth0_lock_social_google_oauth2">#4285F4</color>
+    <color name="com_auth0_lock_social_twitter">#55ACEE</color>
+    <color name="com_auth0_lock_social_facebook">#3B5998</color>
+    <color name="com_auth0_lock_social_amazon">#FF9900</color>
+    <color name="com_auth0_lock_social_aol">#E60E04</color>
+    <color name="com_auth0_lock_social_box">#267BB6</color>
+    <color name="com_auth0_lock_social_evernote">#82B137</color>
+    <color name="com_auth0_lock_social_evernote_sandbox">#82B137</color>
+    <color name="com_auth0_lock_social_exact">#ED1C24</color>
+    <color name="com_auth0_lock_social_github">#333333</color>
+    <color name="com_auth0_lock_social_instagram">#3F729B</color>
+    <color name="com_auth0_lock_social_miicard">#3FB7FF</color>
+    <color name="com_auth0_lock_social_paypal">#009CDE</color>
+    <color name="com_auth0_lock_social_salesforce">#1798C1</color>
+    <color name="com_auth0_lock_social_salesforce_community">#1798C1</color>
+    <color name="com_auth0_lock_social_salesforce_sandbox">#1798C1</color>
+    <color name="com_auth0_lock_social_soundcloud">#FF8800</color>
+    <color name="com_auth0_lock_social_windowslive">#00A1F1</color>
+    <color name="com_auth0_lock_social_yammer">#0072C6</color>
+    <color name="com_auth0_lock_social_baidu">#2529D8</color>
+    <color name="com_auth0_lock_social_fitbit">#4CC2C4</color>
+    <color name="com_auth0_lock_social_planningcenter">#4E4E4E</color>
+    <color name="com_auth0_lock_social_renren">#0056B5</color>
+    <color name="com_auth0_lock_social_thecity">#767571</color>
+    <color name="com_auth0_lock_social_thecity_sandbox">#767571</color>
+    <color name="com_auth0_lock_social_thirtysevensignals">#6AC071</color>
+    <color name="com_auth0_lock_social_vkontakte">#45668E</color>
+    <color name="com_auth0_lock_social_weibo">#DA4A38</color>
+    <color name="com_auth0_lock_social_wordpress">#21759B</color>
+    <color name="com_auth0_lock_social_yandex">#FFCC00</color>
+    <color name="com_auth0_lock_social_shopify">#96BF48</color>
+    <color name="com_auth0_lock_social_dwolla">#F5891F</color>
     <color name="com_auth0_lock_social_text">#FFFFFF</color>
 
     <color name="com_auth0_lock_validation_error_text">#ff0000</color>
