@@ -98,7 +98,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
-        holderParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        holderParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formsHolder, holderParams);
 
         if (showSocial) {
@@ -212,14 +212,18 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
         int modeSelectionHeight = ViewUtils.measureViewHeight(modeSelectionView);
-        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
         int socialHeight = ViewUtils.measureViewHeight(socialLayout);
-        int fieldsHeight = ViewUtils.measureViewHeight(getExistingForm());
-        int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
+        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
+        int logInHeight = ViewUtils.measureViewHeight(logInForm);
+        int signUpHeight = ViewUtils.measureViewHeight(signUpForm);
+        int formHeight = modeSelectionHeight + socialHeight + separatorHeight + logInHeight + signUpHeight;
+        int customFieldsHeight = ViewUtils.measureViewHeight(customFieldsForm);
+        MarginLayoutParams holderParams = (MarginLayoutParams) formsHolder.getLayoutParams();
+        int sumHeight = formHeight + customFieldsHeight + holderParams.topMargin + holderParams.bottomMargin;
 
         Log.v(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode){
+        switch (heightMode) {
             case MeasureSpec.UNSPECIFIED:
                 setMeasuredDimension(getMeasuredWidth(), sumHeight);
                 break;

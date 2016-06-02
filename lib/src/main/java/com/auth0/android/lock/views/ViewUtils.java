@@ -121,7 +121,7 @@ abstract class ViewUtils {
      */
     static int measureViewHeight(@Nullable View view) {
         int height = 0;
-        if (view != null && view.getVisibility() == View.VISIBLE) {
+        if (view != null && view.isShown()) {
             ViewGroup.MarginLayoutParams modeSelectionParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
             height = view.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin + view.getPaddingTop() + view.getPaddingBottom();
         }
