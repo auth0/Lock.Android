@@ -50,7 +50,8 @@ public class CountryCodeSelectorView extends LinearLayout {
     private Country selectedCountry;
 
     private ImageView icon;
-    private TextView countryTextView;
+    private TextView countryNameTextView;
+    private TextView countryCodeTextView;
     private ImageView chevron;
 
     public CountryCodeSelectorView(Context context) {
@@ -72,7 +73,8 @@ public class CountryCodeSelectorView extends LinearLayout {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_country_code_selector, this);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         chevron = (ImageView) findViewById(R.id.com_auth0_lock_chevron);
-        countryTextView = (TextView) findViewById(R.id.com_auth0_lock_text);
+        countryNameTextView = (TextView) findViewById(R.id.com_auth0_lock_country_name);
+        countryCodeTextView = (TextView) findViewById(R.id.com_auth0_lock_country_code);
         prepareTask();
         setupBackground();
     }
@@ -82,7 +84,7 @@ public class CountryCodeSelectorView extends LinearLayout {
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(chevron, rightBackground);
-        ViewGroup parent = ((ViewGroup) countryTextView.getParent());
+        ViewGroup parent = ((ViewGroup) countryNameTextView.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
         gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
@@ -122,7 +124,8 @@ public class CountryCodeSelectorView extends LinearLayout {
      */
     public void setSelectedCountry(@NonNull Country country) {
         Log.d(TAG, "Selected country changed to " + country.getDisplayName());
-        countryTextView.setText(String.format(getResources().getString(R.string.com_auth0_lock_title_passwordless_country_code_item_format), country.getDisplayName(), country.getDialCode()));
+        countryNameTextView.setText(country.getDisplayName());
+        countryCodeTextView.setText(country.getDialCode());
         selectedCountry = country;
     }
 
