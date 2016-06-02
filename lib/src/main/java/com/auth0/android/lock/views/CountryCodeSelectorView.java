@@ -107,7 +107,9 @@ public class CountryCodeSelectorView extends LinearLayout {
                         }
                     }
                 }
-                setSelectedCountry(country);
+                if (selectedCountry == null) {
+                    setSelectedCountry(country);
+                }
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
