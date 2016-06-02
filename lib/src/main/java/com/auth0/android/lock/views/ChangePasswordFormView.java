@@ -74,7 +74,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     @Override
     public boolean validateForm() {
-        return usernameEmailInput.validate(true);
+        return usernameEmailInput.validate();
     }
 
     @Override

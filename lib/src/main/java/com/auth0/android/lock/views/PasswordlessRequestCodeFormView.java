@@ -137,7 +137,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
 
     @Override
     public boolean validateForm() {
-        return passwordlessInput.validate(true);
+        return passwordlessInput.validate();
     }
 
     @Nullable

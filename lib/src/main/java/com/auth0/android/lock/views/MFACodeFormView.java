@@ -76,7 +76,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
 
     @Override
     public boolean validateForm() {
-        return codeInput.validate(true);
+        return codeInput.validate();
     }
 
     @Nullable

@@ -219,13 +219,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     public boolean validateForm() {
         boolean valid = true;
         if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate(true);
+            valid = emailInput.validate();
         }
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = usernameInput.validate(true) && valid;
+            valid = usernameInput.validate() && valid;
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = passwordInput.validate(true) && valid;
+            valid = passwordInput.validate() && valid;
         }
         return valid;
     }

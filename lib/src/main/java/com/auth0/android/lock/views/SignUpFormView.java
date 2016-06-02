@@ -148,13 +148,13 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public boolean validateForm() {
         boolean valid = true;
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = usernameInput.validate(true);
+            valid = usernameInput.validate();
         }
         if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate(true) && valid;
+            valid = emailInput.validate() && valid;
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = passwordInput.validate(true) && valid;
+            valid = passwordInput.validate() && valid;
         }
         return valid;
     }
