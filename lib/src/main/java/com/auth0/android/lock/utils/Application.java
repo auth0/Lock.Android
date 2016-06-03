@@ -31,7 +31,6 @@ import static com.auth0.android.lock.utils.Strategies.Type.DATABASE;
 import static com.auth0.android.lock.utils.Strategies.Type.ENTERPRISE;
 import static com.auth0.android.lock.utils.Strategies.Type.PASSWORDLESS;
 import static com.auth0.android.lock.utils.Strategies.Type.SOCIAL;
-import static com.auth0.util.CheckHelper.checkArgument;
 
 /**
  * Class with your Auth0's application information and the list of enabled connections (DB, Social, Enterprise, Passwordless).
@@ -83,10 +82,6 @@ public class Application {
      * @param strategies        list of the strategies enabled for the app (Social, DB, etc).
      */
     public Application(String id, String tenant, String authorizeURL, String callbackURL, String subscription, boolean hasAllowedOrigins, List<Strategy> strategies) {
-        checkArgument(id != null, "id must be non-null");
-        checkArgument(tenant != null, "tenant must be non-null");
-        checkArgument(authorizeURL != null, "authorize must be non-null");
-        checkArgument(strategies != null && strategies.size() > 0, "Must have at least 1 strategy");
         this.id = id;
         this.tenant = tenant;
         this.authorizeURL = authorizeURL;

@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.utils.json.JsonUtils;
 import com.auth0.callback.BaseCallback;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;

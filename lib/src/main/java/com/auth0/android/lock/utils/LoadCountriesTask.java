@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.auth0.android.lock.utils.json.JsonUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;

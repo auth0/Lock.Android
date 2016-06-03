@@ -1,5 +1,5 @@
 /*
- * ListSerializer.java
+ * ApplicationDeserializer.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,8 +22,10 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
+import com.auth0.android.lock.utils.Application;
+import com.auth0.android.lock.utils.Strategy;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -38,10 +40,14 @@ public class ApplicationDeserializer implements JsonDeserializer<Application> {
     @Override
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject map = json.getAsJsonObject();
+        JsonUtils.checkRequiredValue(map, "id");
+        JsonUtils.checkRequiredValue(map, "tenant");
+        JsonUtils.checkRequiredValue(map, "authorize");
+        JsonUtils.checkRequiredValue(map, "strategies");
+
         String id = map.get("id").getAsString();
         String tenant = map.get("tenant").getAsString();
         String authorizeURL = map.get("authorize").getAsString();
-
         final JsonElement callbackURLJson = map.get("callback");
         String callbackURL = callbackURLJson == null ? null : callbackURLJson.getAsString();
         final JsonElement subscriptionJson = map.get("subscription");

@@ -25,6 +25,7 @@
 package com.auth0.android.lock.utils;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +36,10 @@ public class Strategy {
     private String name;
     private List<Connection> connections;
     private Strategies strategyMetadata;
+
+    public Strategy() {
+        this.connections = new ArrayList<>();
+    }
 
     public Strategy(String name, List<Connection> connections) {
         this.name = name;

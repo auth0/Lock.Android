@@ -29,8 +29,8 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.JsonUtils;
 import com.auth0.android.lock.utils.Strategy;
+import com.auth0.android.lock.utils.json.JsonUtils;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;

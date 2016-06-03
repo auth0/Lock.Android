@@ -29,7 +29,7 @@ import android.os.Build;
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.JsonUtils;
+import com.auth0.android.lock.utils.json.JsonUtils;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;

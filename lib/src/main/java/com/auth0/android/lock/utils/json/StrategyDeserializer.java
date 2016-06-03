@@ -22,8 +22,10 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
+import com.auth0.android.lock.utils.Connection;
+import com.auth0.android.lock.utils.Strategy;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -38,8 +40,10 @@ public class StrategyDeserializer implements JsonDeserializer<Strategy> {
     @Override
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject map = json.getAsJsonObject();
-        String name = map.get("name").getAsString();
+        JsonUtils.checkRequiredValue(map, "name");
+        JsonUtils.checkRequiredValue(map, "connections");
 
+        String name = map.get("name").getAsString();
         Type connectionType = new TypeToken<List<Connection>>() {
         }.getType();
         List<Connection> connections = context.deserialize(map.get("connections"), connectionType);
