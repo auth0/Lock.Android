@@ -36,6 +36,8 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.LockCallback.LockEvent;
+import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
@@ -293,22 +295,57 @@ public class Lock {
         }
 
         /**
-         * Sign Up can be disabled locally, regardless the Dashboard configuration.
+         * Social Button style to use when Social connections are available. If social
+         * is the only connection type, by default it will use the Big style. If social and db or
+         * enterprise are present and there's only one social connection, the button will use the
+         * Big style. In the rest of the cases, it will use Small style.
          *
+         * @param style a valid SocialButtonStyle.
          * @return the current builder instance
          */
-        public Builder disableSignUp() {
-            options.setSignUpEnabled(false);
+        public Builder withSocialButtonStyle(@SocialButtonStyle int style) {
+            options.setSocialButtonStyle(style);
             return this;
         }
 
         /**
-         * Password change can be disabled locally, regardless the Dashboard configuration.
+         * Decide which screen is going to show first when launching the Lock Activity.
+         *
+         * @param screen a valid InitialScreen.
+         * @return the current builder instance
+         */
+        public Builder initialScreen(@InitialScreen int screen) {
+            options.setInitialScreen(screen);
+            return this;
+        }
+
+        /**
+         * Sign In can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
-        public Builder disableChangePassword() {
-            options.setChangePasswordEnabled(false);
+        public Builder allowSignIn(boolean allow) {
+            options.setAllowLogIn(allow);
+            return this;
+        }
+
+        /**
+         * Sign Up can be enabled/disabled locally, regardless the Dashboard configuration.
+         *
+         * @return the current builder instance
+         */
+        public Builder allowSignUp(boolean allow) {
+            options.setAllowSignUp(allow);
+            return this;
+        }
+
+        /**
+         * Password reset can be enabled/disabled locally, regardless the Dashboard configuration.
+         *
+         * @return the current builder instance
+         */
+        public Builder allowForgotPassword(boolean allow) {
+            options.setAllowForgotPassword(allow);
             return this;
         }
 

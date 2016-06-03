@@ -40,6 +40,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -155,6 +156,10 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         if (!showDatabase && !showEnterprise) {
             actionButton.setVisibility(GONE);
         }
+
+        if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
+            showChangePasswordForm(true);
+        }
     }
 
     /**
@@ -267,9 +272,12 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
      */
     public boolean onBackPressed() {
         if (subForm != null) {
-            showSignUpTerms(subForm instanceof CustomFieldsFormView);
-            removeSubForm();
-            return true;
+            final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
+            if (shouldDisplayPreviousForm) {
+                showSignUpTerms(subForm instanceof CustomFieldsFormView);
+                removeSubForm();
+                return true;
+            }
         }
 
         return formLayout != null && formLayout.onBackPressed();
