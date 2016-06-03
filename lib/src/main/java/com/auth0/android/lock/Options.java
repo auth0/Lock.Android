@@ -32,6 +32,7 @@ import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -52,6 +53,7 @@ class Options implements Parcelable {
     private boolean usePKCE;
     private boolean closable;
     private boolean fullscreen;
+    private int socialButtonStyle;
     private int usernameStyle;
     private boolean useCodePasswordless;
     private boolean allowLogIn;
@@ -92,6 +94,7 @@ class Options implements Parcelable {
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
+        socialButtonStyle = in.readInt();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -139,6 +142,7 @@ class Options implements Parcelable {
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
+        dest.writeInt(socialButtonStyle);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -232,6 +236,15 @@ class Options implements Parcelable {
 
     public void setAllowLogIn(boolean allowLogIn) {
         this.allowLogIn = allowLogIn;
+    }
+
+    public void setSocialButtonStyle(@SocialButtonStyle int socialButtonStyle) {
+        this.socialButtonStyle = socialButtonStyle;
+    }
+
+    @SocialButtonStyle
+    public int socialButtonStyle() {
+        return socialButtonStyle;
     }
 
     public boolean allowLogIn() {

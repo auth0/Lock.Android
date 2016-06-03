@@ -27,6 +27,7 @@ package com.auth0.android.lock;
 import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
@@ -107,6 +108,7 @@ public class ConfigurationTest {
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
+        assertThat(configuration.getSocialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
         assertThat(configuration.hasExtraFields(), is(false));
     }
 
@@ -118,6 +120,7 @@ public class ConfigurationTest {
         options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
+        options.setSocialButtonStyle(SocialButtonStyle.BIG);
         configuration = new Configuration(application, options);
         assertThat(configuration.isUsernameRequired(), is(false));
         assertThat(configuration.allowLogIn(), is(false));
@@ -125,6 +128,7 @@ public class ConfigurationTest {
         assertThat(configuration.allowForgotPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
+        assertThat(configuration.getSocialButtonStyle(), is(equalTo(SocialButtonStyle.BIG)));
         assertThat(configuration.hasExtraFields(), is(false));
     }
 

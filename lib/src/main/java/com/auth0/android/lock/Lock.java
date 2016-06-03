@@ -37,6 +37,7 @@ import android.util.Log;
 import com.auth0.Auth0;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
@@ -290,6 +291,20 @@ public class Lock {
          */
         public Builder withUsernameStyle(@UsernameStyle int style) {
             options.setUsernameStyle(style);
+            return this;
+        }
+
+        /**
+         * Social Button style to use when Social connections are available. If social
+         * is the only connection type, by default it will use the Big style. If social and db or
+         * enterprise are present and there's only one social connection, the button will use the
+         * Big style. In the rest of the cases, it will use Small style.
+         *
+         * @param style a valid SocialButtonStyle.
+         * @return the current builder instance
+         */
+        public Builder withSocialButtonStyle(@SocialButtonStyle int style) {
+            options.setSocialButtonStyle(style);
             return this;
         }
 
