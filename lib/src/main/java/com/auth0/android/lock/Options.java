@@ -31,6 +31,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.auth0.Auth0;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.authentication.AuthenticationAPIClient;
 
@@ -53,19 +54,23 @@ class Options implements Parcelable {
     private boolean fullscreen;
     private int usernameStyle;
     private boolean useCodePasswordless;
-    private boolean signUpEnabled;
-    private boolean changePasswordEnabled;
+    private boolean allowLogIn;
+    private boolean allowSignUp;
+    private boolean allowForgotPassword;
     private boolean loginAfterSignUp;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
     private HashMap<String, Object> authenticationParameters;
     private List<CustomField> customFields;
+    private int initialScreen;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
-        signUpEnabled = true;
-        changePasswordEnabled = true;
+        initialScreen = InitialScreen.LOG_IN;
+        allowLogIn = true;
+        allowSignUp = true;
+        allowForgotPassword = true;
         loginAfterSignUp = true;
         useCodePasswordless = true;
         authenticationParameters = new HashMap<>();
@@ -79,12 +84,14 @@ class Options implements Parcelable {
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         fullscreen = in.readByte() != WITHOUT_DATA;
-        signUpEnabled = in.readByte() != WITHOUT_DATA;
-        changePasswordEnabled = in.readByte() != WITHOUT_DATA;
+        allowLogIn = in.readByte() != WITHOUT_DATA;
+        allowSignUp = in.readByte() != WITHOUT_DATA;
+        allowForgotPassword = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
+        initialScreen = in.readInt();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -124,12 +131,14 @@ class Options implements Parcelable {
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (signUpEnabled ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (changePasswordEnabled ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowLogIn ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowForgotPassword ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
+        dest.writeInt(initialScreen);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -221,20 +230,28 @@ class Options implements Parcelable {
         this.usernameStyle = usernameStyle;
     }
 
-    public boolean isSignUpEnabled() {
-        return signUpEnabled;
+    public void setAllowLogIn(boolean allowLogIn) {
+        this.allowLogIn = allowLogIn;
     }
 
-    public void setSignUpEnabled(boolean signUpEnabled) {
-        this.signUpEnabled = signUpEnabled;
+    public boolean allowLogIn() {
+        return allowLogIn;
     }
 
-    public boolean isChangePasswordEnabled() {
-        return changePasswordEnabled;
+    public boolean allowSignUp() {
+        return allowSignUp;
     }
 
-    public void setChangePasswordEnabled(boolean changePasswordEnabled) {
-        this.changePasswordEnabled = changePasswordEnabled;
+    public void setAllowSignUp(boolean allowSignUp) {
+        this.allowSignUp = allowSignUp;
+    }
+
+    public void setAllowForgotPassword(boolean allowForgotPassword) {
+        this.allowForgotPassword = allowForgotPassword;
+    }
+
+    public boolean allowForgotPassword() {
+        return allowForgotPassword;
     }
 
     public String getDefaultDatabaseConnection() {
@@ -303,5 +320,14 @@ class Options implements Parcelable {
     @NonNull
     public List<CustomField> getCustomFields() {
         return customFields;
+    }
+
+    public void setInitialScreen(@InitialScreen int screen) {
+        this.initialScreen = screen;
+    }
+
+    @InitialScreen
+    public int initialScreen() {
+        return initialScreen;
     }
 }

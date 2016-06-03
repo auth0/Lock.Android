@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -76,7 +77,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
-        boolean showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
+        boolean showModeSelection = lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -106,7 +107,22 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
                 addSeparator();
             }
         }
-        changeFormMode(ModeSelectionView.Mode.LOG_IN);
+        displayInitialScreen();
+    }
+
+    private void displayInitialScreen() {
+        if (!showDatabase && !showEnterprise) {
+            return;
+        }
+        int initialScreen = lockWidget.getConfiguration().getInitialScreen();
+        switch (initialScreen) {
+            case InitialScreen.FORGOT_PASSWORD:
+            case InitialScreen.LOG_IN:
+                changeFormMode(ModeSelectionView.Mode.LOG_IN);
+            case InitialScreen.SIGN_UP:
+                changeFormMode(ModeSelectionView.Mode.SIGN_UP);
+                break;
+        }
     }
 
     private void addSocialLayout(boolean smallButtons) {
