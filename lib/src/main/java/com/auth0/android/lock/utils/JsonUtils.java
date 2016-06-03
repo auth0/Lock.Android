@@ -1,7 +1,7 @@
 /*
- * Strategy.java
+ * JsonUtils.java
  *
- * Copyright (c) 2015 Auth0 (http://auth0.com)
+ * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,44 +24,26 @@
 
 package com.auth0.android.lock.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.List;
+import java.lang.reflect.Type;
 
-/**
- * Class with Auth0 authentication strategy info
- */
-public class Strategy {
+public class JsonUtils {
 
-    private String name;
-    private List<Connection> connections;
-    private Strategies strategyMetadata;
-
-    public Strategy(String name, List<Connection> connections) {
-        this.name = name;
-        this.strategyMetadata = Strategies.fromName(name);
-        boolean isActiveFlowEnabled = isActiveFlowEnabled();
-        for (Connection c : connections) {
-            c.setActiveFlowEnabled(isActiveFlowEnabled);
-        }
-        this.connections = connections;
+    public static Gson createGson() {
+        Type applicationType = new TypeToken<Application>() {
+        }.getType();
+        Type strategyType = new TypeToken<Strategy>() {
+        }.getType();
+        Type connectionType = new TypeToken<Connection>() {
+        }.getType();
+        return new GsonBuilder()
+                .registerTypeAdapter(applicationType, new ApplicationDeserializer())
+                .registerTypeAdapter(strategyType, new StrategyDeserializer())
+                .registerTypeAdapter(connectionType, new ConnectionDeserializer())
+                .create();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public List<Connection> getConnections() {
-        return connections;
-    }
-
-    @Strategies.Type
-    public int getType() {
-        return this.strategyMetadata.getType();
-    }
-
-    public boolean isActiveFlowEnabled() {
-        return Strategies.ActiveDirectory.getName().equals(name)
-                || Strategies.ADFS.getName().equals(name)
-                || Strategies.Waad.getName().equals(name);
-    }
 }

@@ -29,7 +29,8 @@ import android.os.Build;
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Application;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.android.lock.utils.JsonUtils;
+import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.io.File;
+import java.io.FileReader;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -55,8 +56,8 @@ public class SocialConfigTest {
 
     @Before
     public void setUp() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        application = mapper.readValue(new File("src/test/resources/appinfo.json"), Application.class);
+        final FileReader fr = new FileReader("src/test/resources/appinfo.json");
+        application = JsonUtils.createGson().fromJson(new JsonReader(fr), Application.class);
 
         socialConfig = new SocialConfig(RuntimeEnvironment.application, application.getSocialStrategies().get(0));
         //sample appinfo.json has 'Facebook' Strategy at the first position

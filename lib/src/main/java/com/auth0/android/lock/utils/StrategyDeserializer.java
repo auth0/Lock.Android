@@ -1,7 +1,7 @@
 /*
- * Strategy.java
+ * StrategyDeserializer.java
  *
- * Copyright (c) 2015 Auth0 (http://auth0.com)
+ * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,44 +24,26 @@
 
 package com.auth0.android.lock.utils;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
-/**
- * Class with Auth0 authentication strategy info
- */
-public class Strategy {
+public class StrategyDeserializer implements JsonDeserializer<Strategy> {
+    @Override
+    public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        final JsonObject map = json.getAsJsonObject();
+        String name = map.get("name").getAsString();
 
-    private String name;
-    private List<Connection> connections;
-    private Strategies strategyMetadata;
+        Type connectionType = new TypeToken<List<Connection>>() {
+        }.getType();
+        List<Connection> connections = context.deserialize(map.get("connections"), connectionType);
 
-    public Strategy(String name, List<Connection> connections) {
-        this.name = name;
-        this.strategyMetadata = Strategies.fromName(name);
-        boolean isActiveFlowEnabled = isActiveFlowEnabled();
-        for (Connection c : connections) {
-            c.setActiveFlowEnabled(isActiveFlowEnabled);
-        }
-        this.connections = connections;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Connection> getConnections() {
-        return connections;
-    }
-
-    @Strategies.Type
-    public int getType() {
-        return this.strategyMetadata.getType();
-    }
-
-    public boolean isActiveFlowEnabled() {
-        return Strategies.ActiveDirectory.getName().equals(name)
-                || Strategies.ADFS.getName().equals(name)
-                || Strategies.Waad.getName().equals(name);
+        return new Strategy(name, connections);
     }
 }

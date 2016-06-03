@@ -29,8 +29,9 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Application;
 import com.auth0.android.lock.utils.Connection;
+import com.auth0.android.lock.utils.JsonUtils;
 import com.auth0.android.lock.utils.Strategy;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -91,8 +92,8 @@ public class ConfigurationTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ObjectMapper mapper = new ObjectMapper();
-        application = mapper.readValue(new File("src/test/resources/appinfo.json"), Application.class);
+        final FileReader fr = new FileReader("src/test/resources/appinfo.json");
+        application = JsonUtils.createGson().fromJson(new JsonReader(fr), Application.class);
         options = new Options();
     }
 

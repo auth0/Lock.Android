@@ -24,10 +24,6 @@
 
 package com.auth0.android.lock.utils;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +36,6 @@ import static com.auth0.util.CheckHelper.checkArgument;
 /**
  * Class with your Auth0's application information and the list of enabled connections (DB, Social, Enterprise, Passwordless).
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Application {
 
     private String id;
@@ -54,6 +49,13 @@ public class Application {
     private List<Strategy> enterpriseStrategies;
     private List<Strategy> passwordlessStrategies;
     private Strategy databaseStrategy;
+
+    public Application() {
+        strategies = new ArrayList<>();
+        socialStrategies = new ArrayList<>();
+        enterpriseStrategies = new ArrayList<>();
+        passwordlessStrategies = new ArrayList<>();
+    }
 
     public Application(Application application) {
         id = application.id;
@@ -80,14 +82,7 @@ public class Application {
      * @param hasAllowedOrigins if the app allows other origins
      * @param strategies        list of the strategies enabled for the app (Social, DB, etc).
      */
-    @JsonCreator
-    public Application(@JsonProperty(value = "id") String id,
-                       @JsonProperty(value = "tenant") String tenant,
-                       @JsonProperty(value = "authorize") String authorizeURL,
-                       @JsonProperty(value = "callback") String callbackURL,
-                       @JsonProperty(value = "subscription") String subscription,
-                       @JsonProperty(value = "hasAllowedOrigins") boolean hasAllowedOrigins,
-                       @JsonProperty(value = "strategies") List<Strategy> strategies) {
+    public Application(String id, String tenant, String authorizeURL, String callbackURL, String subscription, boolean hasAllowedOrigins, List<Strategy> strategies) {
         checkArgument(id != null, "id must be non-null");
         checkArgument(tenant != null, "tenant must be non-null");
         checkArgument(authorizeURL != null, "authorize must be non-null");
