@@ -123,7 +123,7 @@ abstract class ViewUtils {
         int height = 0;
         if (view != null && view.getVisibility() == View.VISIBLE) {
             ViewGroup.MarginLayoutParams modeSelectionParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            height = view.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin;
+            height = view.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin + view.getPaddingTop() + view.getPaddingBottom();
         }
         return height;
     }
