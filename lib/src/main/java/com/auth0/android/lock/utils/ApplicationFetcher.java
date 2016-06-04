@@ -30,8 +30,8 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
+import com.auth0.android.lock.utils.json.JsonUtils;
 import com.auth0.callback.BaseCallback;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -121,7 +121,7 @@ public class ApplicationFetcher {
                 throw tokenizer.syntaxError("Invalid JSON value of App Info");
             }
             JSONObject jsonObject = (JSONObject) nextValue;
-            return new ObjectMapper().reader(Application.class).readValue(jsonObject.toString());
+            return JsonUtils.createGson().fromJson(jsonObject.toString(), Application.class);
         } catch (IOException | JSONException e) {
             throw new Auth0Exception("Failed to parse response to request", e);
         }

@@ -25,8 +25,6 @@
 package com.auth0.android.lock.utils;
 
 import com.auth0.util.CheckHelper;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +34,6 @@ import java.util.Set;
 /**
  * Class with a Auth0 connection info
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Connection {
 
     protected String name;
@@ -58,7 +55,6 @@ public class Connection {
      *
      * @param values Connection values
      */
-    @JsonCreator
     public Connection(Map<String, Object> values) {
         CheckHelper.checkArgument(values != null && values.size() > 0, "Must have at least one value");
         final String name = (String) values.remove("name");

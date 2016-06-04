@@ -28,10 +28,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.android.lock.utils.json.JsonUtils;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,10 +52,11 @@ public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<Stri
     @Override
     protected Map<String, String> doInBackground(String... params) {
         Map<String, String> codes;
+        final Type mapType = new TypeToken<Map<String, String>>() {
+        }.getType();
         try {
-            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
-            };
-            codes = new ObjectMapper().readValue(context.getAssets().open(params[0]), typeRef);
+            final Reader reader = new InputStreamReader(context.getAssets().open(params[0]));
+            codes = JsonUtils.createGson().fromJson(reader, mapType);
             Log.d(TAG, String.format("Loaded %d countries", codes.size()));
         } catch (IOException e) {
             codes = new HashMap<>();

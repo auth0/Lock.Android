@@ -24,25 +24,24 @@
 
 package com.auth0.android.lock.utils;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class with Auth0 authentication strategy info
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Strategy {
 
     private String name;
     private List<Connection> connections;
     private Strategies strategyMetadata;
 
-    @JsonCreator
-    public Strategy(@JsonProperty(value = "name", required = true) String name,
-                    @JsonProperty(value = "connections", required = true) List<Connection> connections) {
+    public Strategy() {
+        this.connections = new ArrayList<>();
+    }
+
+    public Strategy(String name, List<Connection> connections) {
         this.name = name;
         this.strategyMetadata = Strategies.fromName(name);
         boolean isActiveFlowEnabled = isActiveFlowEnabled();
