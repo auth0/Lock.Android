@@ -29,17 +29,18 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -60,16 +61,23 @@ import static com.auth0.android.lock.views.ValidatedInputView.DataType.PHONE_NUM
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_OR_EMAIL;
 
-public class ValidatedInputView extends LinearLayout implements View.OnFocusChangeListener {
+public class ValidatedInputView extends LinearLayout {
 
+    private static final String USERNAME_REGEX = "^[a-zA-Z0-9_]{1,15}$";
+    private static final String PHONE_NUMBER_REGEX = "^[0-9]{6,14}$";
+    private static final String CODE_REGEX = "^[0-9]{4,12}$";
     private static final String TAG = ValidatedInputView.class.getSimpleName();
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int MIN_USERNAME_LENGTH = 6;
     private static final int MIN_PHONE_NUMBER_LENGTH = 10;
+    private static final int VALIDATION_DELAY = 500;
 
+    private TextView errorDescription;
     private EditText input;
     private ImageView icon;
     private int inputIcon;
+    private boolean isShowingError = true;
+    private boolean hasValidInput;
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE})
     @Retention(RetentionPolicy.SOURCE)
@@ -104,6 +112,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
 
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
+        errorDescription = (TextView) findViewById(R.id.errorDescription);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
 
@@ -112,18 +121,59 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
             return;
         }
 
-        input.setOnFocusChangeListener(this);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_ValidatedInput);
         //noinspection WrongConstant
         dataType = a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0);
         a.recycle();
 
         setupInputValidation();
-        updateBorder(false);
+        updateBorder(true);
     }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        input.addTextChangedListener(inputWatcher);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        input.removeTextChangedListener(inputWatcher);
+    }
+
+    private TextWatcher inputWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            runValidation();
+        }
+
+        private void runValidation() {
+            hasValidInput = validate(false);
+            Handler handler = getHandler();
+            handler.removeCallbacks(uiUpdater);
+            handler.postDelayed(uiUpdater, VALIDATION_DELAY);
+        }
+    };
+
+    private Runnable uiUpdater = new Runnable() {
+        @Override
+        public void run() {
+            updateBorder(hasValidInput);
+        }
+    };
 
     private void setupInputValidation() {
         String hint = "";
+        String error = "";
         input.setTransformationMethod(null);
         Log.v(TAG, "Setting up validation for field of type " + dataType);
         switch (dataType) {
@@ -131,6 +181,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_email;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_email);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_email);
                 break;
             case PASSWORD:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -138,50 +189,66 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
                 input.setTypeface(Typeface.DEFAULT);
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_password);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_password);
                 break;
             case USERNAME_OR_EMAIL:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_username_email);
                 break;
             case USERNAME:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_username);
                 break;
             case NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_code);
                 break;
             case MOBILE_PHONE:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_mobile;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
             case PHONE_NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
                 inputIcon = R.drawable.com_auth0_lock_ic_phone;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
             case DATE:
                 input.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
                 inputIcon = R.drawable.com_auth0_lock_ic_clock;
+                error = getResources().getString(R.string.com_auth0_lock_input_error_date);
                 break;
         }
         input.setHint(hint);
+        errorDescription.setText(error);
         icon.setImageResource(inputIcon);
     }
 
     private void updateBorder(boolean showError) {
+        if (isShowingError == showError) {
+            return;
+        }
+
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
         gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
-        int strokeColor = showError ? R.color.com_auth0_lock_input_field_border_error : R.color.com_auth0_lock_input_field_border_normal;
+        int strokeColor = showError ? R.color.com_auth0_lock_input_field_border_normal : R.color.com_auth0_lock_input_field_border_error;
         gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), strokeColor));
         gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
+
+        errorDescription.setVisibility(showError ? VISIBLE : INVISIBLE);
+        isShowingError = showError;
+        requestLayout();
     }
 
     private void createBackground() {
@@ -195,10 +262,12 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
+        int errorDescriptionHeight = ViewUtils.measureViewHeight(errorDescription);
         int inputHeight = ViewUtils.measureViewHeight(input);
         ViewGroup iconHolder = (ViewGroup) icon.getParent();
         int iconHeight = ViewUtils.measureViewHeight(iconHolder);
-        setMeasuredDimension(getMeasuredWidth(), Math.max(inputHeight, iconHeight));
+        int sumHeight = Math.max(inputHeight, iconHeight) + errorDescriptionHeight;
+        setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 
     /**
@@ -208,7 +277,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      */
     public void setDataType(@DataType int type) {
         dataType = type;
-        updateBorder(false);
+        updateBorder(true);
         setupInputValidation();
     }
 
@@ -217,42 +286,44 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
      *
      * @return whether the data is valid or not.
      */
-    public boolean validate(boolean validateEmptyFields) {
-        //also called on EditText focus change
-        String value = getText();
+    public boolean validate() {
+        boolean isValid = validate(true);
+        updateBorder(isValid);
+        return isValid;
+    }
+
+    private boolean validate(boolean validateEmptyFields) {
         boolean isValid = false;
+        String value = getText();
         if (!validateEmptyFields && value.isEmpty()) {
-            updateBorder(false);
             return true;
         }
 
-
         switch (dataType) {
             case EMAIL:
-                isValid = !value.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(value).matches();
+                isValid = Patterns.EMAIL_ADDRESS.matcher(value).matches();
                 break;
             case PASSWORD:
-                isValid = !value.isEmpty() && value.length() >= MIN_PASSWORD_LENGTH;
+                isValid = value.length() >= MIN_PASSWORD_LENGTH;
                 break;
             case USERNAME:
-                String withoutSpaces = value.replace(" ", "");
-                isValid = !withoutSpaces.isEmpty() && withoutSpaces.length() >= MIN_USERNAME_LENGTH;
+                isValid = value.matches(USERNAME_REGEX);
                 break;
             case USERNAME_OR_EMAIL:
-                isValid = !value.isEmpty() && (Patterns.EMAIL_ADDRESS.matcher(value).matches() || value.length() >= MIN_USERNAME_LENGTH);
+                final boolean validEmail = Patterns.EMAIL_ADDRESS.matcher(value).matches();
+                final boolean validUsername = value.matches(USERNAME_REGEX);
+                isValid = validEmail || validUsername;
                 break;
             case MOBILE_PHONE:
             case PHONE_NUMBER:
-                value = value.replace(" ", "");
-                isValid = !value.isEmpty() && value.length() >= MIN_PHONE_NUMBER_LENGTH;
+                isValid = value.matches(PHONE_NUMBER_REGEX);
                 break;
             case DATE:
             case NUMBER:
-                isValid = !value.isEmpty();
+                isValid = value.matches(CODE_REGEX);
                 break;
         }
 
-        updateBorder(!isValid);
         Log.v(TAG, "Field validation results: Is valid? " + isValid);
         return isValid;
     }
@@ -313,15 +384,7 @@ public class ValidatedInputView extends LinearLayout implements View.OnFocusChan
     public void clearInput() {
         Log.v(TAG, "Input cleared and validation errors removed");
         input.setText("");
-        updateBorder(false);
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            Log.v(TAG, "Field validation running because of focus change");
-            validate(false);
-        }
+        updateBorder(true);
     }
 
     /**

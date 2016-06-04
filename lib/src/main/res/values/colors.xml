@@ -21,7 +21,7 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   ~ THE SOFTWARE.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@color/com_auth0_lock_social_*">
     <color name="com_auth0_lock_social_unknown">#E33B1B</color>
     <color name="com_auth0_lock_social_yahoo">#410093</color>
     <color name="com_auth0_lock_social_linkedin">#0077B5</color>
@@ -59,11 +59,13 @@
     <color name="com_auth0_lock_social_dwolla">#F5891F</color>
     <color name="com_auth0_lock_social_text">#FFFFFF</color>
 
+    <color name="com_auth0_lock_validation_error_text">#ff0000</color>
+
     <color name="com_auth0_lock_header_background">#E5E5E5</color>
     <color name="com_auth0_lock_form_background">#ffffff</color>
     <color name="com_auth0_lock_terms_background">#EEEEEE</color>
     <color name="com_auth0_lock_terms_text">#666666</color>
-    <color name="com_auth0_lock_sso_text">#d9000000</color>
+    <color name="com_auth0_lock_sso_text">#8e000000</color>
     <color name="com_auth0_lock_sso_background">#F5F7F9</color>
     <color name="com_auth0_lock_radio_button_checked_color">#5C666F</color>
     <color name="com_auth0_lock_radio_button_unchecked_color">#FFFFFF</color>

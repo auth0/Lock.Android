@@ -109,7 +109,18 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         int sumHeight = usernameHeight + emailHeight + passwordHeight;
 
         Log.v(TAG, String.format("Parent height %d, Children height %d (%d + %d + %d)", parentHeight, sumHeight, usernameHeight, emailHeight, passwordHeight));
-        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        switch (heightMode){
+            case MeasureSpec.UNSPECIFIED:
+                setMeasuredDimension(getMeasuredWidth(), sumHeight);
+                break;
+            case MeasureSpec.AT_MOST:
+                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
+                break;
+            case MeasureSpec.EXACTLY:
+                setMeasuredDimension(getMeasuredWidth(), parentHeight);
+                break;
+        }
     }
 
     @Override
@@ -137,13 +148,13 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public boolean validateForm() {
         boolean valid = true;
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = usernameInput.validate(true);
+            valid = usernameInput.validate();
         }
         if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate(true) && valid;
+            valid = emailInput.validate() && valid;
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = passwordInput.validate(true) && valid;
+            valid = passwordInput.validate() && valid;
         }
         return valid;
     }

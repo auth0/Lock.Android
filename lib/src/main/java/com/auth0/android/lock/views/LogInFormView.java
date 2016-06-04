@@ -85,7 +85,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
-        changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().isChangePasswordEnabled();
+        changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
         changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -219,13 +219,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     public boolean validateForm() {
         boolean valid = true;
         if (emailInput.getVisibility() == VISIBLE) {
-            valid = emailInput.validate(true);
+            valid = emailInput.validate();
         }
         if (usernameInput.getVisibility() == VISIBLE) {
-            valid = usernameInput.validate(true) && valid;
+            valid = usernameInput.validate() && valid;
         }
         if (passwordInput.getVisibility() == VISIBLE) {
-            valid = passwordInput.validate(true) && valid;
+            valid = passwordInput.validate() && valid;
         }
         return valid;
     }
@@ -273,7 +273,18 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         int sumHeight = topMessageHeight + changePasswordHeight + usernameHeight + emailHeight + passwordHeight;
 
         Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
-        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        switch (heightMode){
+            case MeasureSpec.UNSPECIFIED:
+                setMeasuredDimension(getMeasuredWidth(), sumHeight);
+                break;
+            case MeasureSpec.AT_MOST:
+                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
+                break;
+            case MeasureSpec.EXACTLY:
+                setMeasuredDimension(getMeasuredWidth(), parentHeight);
+                break;
+        }
     }
 
     /**

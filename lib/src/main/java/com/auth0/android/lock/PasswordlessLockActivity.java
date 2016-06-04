@@ -48,6 +48,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.auth0.Auth0Exception;
@@ -107,7 +108,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private String lastPasswordlessEmailOrNumber;
     private Country lastPasswordlessCountry;
     private Bus lockBus;
-    private RelativeLayout rootView;
+    private ScrollView rootView;
     private TextView resendButton;
 
     private ProgressDialog progressDialog;
@@ -138,7 +139,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         int paddingTop = getStatusBarHeight();
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
-        rootView = (RelativeLayout) findViewById(R.id.com_auth0_lock_content);
+        rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         lockView = new PasswordlessLockView(this, lockBus);
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

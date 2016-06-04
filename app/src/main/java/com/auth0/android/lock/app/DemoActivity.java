@@ -40,6 +40,7 @@ import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
@@ -124,7 +125,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
                     .useCode()
                     .usePKCE(true)
-                    .fullscreen(true)
+                    .fullscreen(false)
                     .closable(true)
                     .build();
         } else {
@@ -177,6 +178,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .withProviderResolver(new AuthProviderHandler())
                 .withSignUpFields(customFields)
                 .loginAfterSignUp(false)
+                .initialScreen(InitialScreen.FORGOT_PASSWORD)
+                .allowForgotPassword(true)
+                .allowSignIn(false)
+                .allowSignUp(false)
 //                .setDefaultDatabaseConnection("mfa-connection")
                 .usePKCE(true)
                 .closable(true)

@@ -43,6 +43,12 @@
         <item name="android:textColor">@color/com_auth0_lock_text</item>
     </style>
 
+    <style name="Lock.Theme.Text.ValidationError">
+        <item name="android:textColor">@color/com_auth0_lock_validation_error_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
+        <item name="android:maxLines">2</item>
+    </style>
+
     <style name="Lock.Theme.Text.Terms">
         <item name="android:gravity">center</item>
         <item name="android:layout_marginBottom">@dimen/com_auth0_lock_terms_text_spacing_negative
@@ -190,7 +196,33 @@
     <style name="Lock.Theme.Widget.CountryCodeSelector" parent="Lock.Theme.Widget.Field">
         <item name="android:background">@color/com_auth0_lock_input_country_code_background</item>
         <item name="android:textColor">@color/com_auth0_lock_hint_text</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
     </style>
+
+    <style name="Lock.Theme.Widget.CountryCodeSelector.CountryName">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+    </style>
+
+    <style name="Lock.Theme.Widget.CountryCodeSelector.CountryCode">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:paddingLeft">
+            @dimen/com_auth0_lock_widget_small_margin
+        </item>
+        <item name="android:paddingRight">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+    </style>
+
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
@@ -215,7 +247,7 @@
 
     <style name="Lock.Theme.Widget.SubmitButton">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/com_auth0_lock_submit_disabled</item>
     </style>
 
@@ -235,8 +267,7 @@
         <item name="android:lines">1</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
-        <item name="android:layout_marginTop">
-            @dimen/com_auth0_lock_widget_vertical_margin_header_icon
+        <item name="android:layout_marginTop">@dimen/com_auth0_lock_header_logo_vertical_margin
         </item>
     </style>
 

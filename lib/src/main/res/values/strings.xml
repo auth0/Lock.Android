@@ -22,7 +22,7 @@
   ~ THE SOFTWARE.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/com_auth0_lock_social_*">
     <!-- Social Authentication -->
     <string name="com_auth0_lock_social_error_authentication">Error parsing Authentication data</string>
     <string name="com_auth0_lock_social_error_title">There was an error during authentication</string>
@@ -32,41 +32,41 @@
     <string name="com_auth0_lock_social_invalid_state">The received URI state is invalid.</string>
 
     <!-- Social Buttons -->
-    <string name="com_auth0_lock_social_unknown_placeholder">LOGIN WITH %s</string>
-    <string name="com_auth0_lock_social_yahoo">LOGIN WITH YAHOO!</string>
-    <string name="com_auth0_lock_social_linkedin">LOGIN WITH LINKEDIN</string>
-    <string name="com_auth0_lock_social_google_oauth2">LOGIN WITH GOOGLE</string>
-    <string name="com_auth0_lock_social_twitter">LOGIN WITH TWITTER</string>
-    <string name="com_auth0_lock_social_facebook">LOGIN WITH FACEBOOK</string>
-    <string name="com_auth0_lock_social_amazon">LOGIN WITH AMAZON</string>
-    <string name="com_auth0_lock_social_aol">LOGIN WITH AOL</string>
-    <string name="com_auth0_lock_social_box">LOGIN WITH BOX</string>
-    <string name="com_auth0_lock_social_evernote">LOGIN WITH EVERNOTE</string>
-    <string name="com_auth0_lock_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANDBOX)</string>
-    <string name="com_auth0_lock_social_exact">LOGIN WITH EXACT</string>
-    <string name="com_auth0_lock_social_github">LOGIN WITH GITHUB</string>
-    <string name="com_auth0_lock_social_instagram">LOGIN WITH INSTAGRAM</string>
-    <string name="com_auth0_lock_social_miicard">LOGIN WITH MIICARD</string>
-    <string name="com_auth0_lock_social_paypal">LOGIN WITH PAYPAL</string>
-    <string name="com_auth0_lock_social_salesforce">LOGIN WITH SALESFORCE</string>
-    <string name="com_auth0_lock_social_salesforce_community">LOGIN WITH SALESFORCE (COMMUNITY)</string>
-    <string name="com_auth0_lock_social_salesforce_sandbox">LOGIN WITH SALESFORCE (SANDBOX)</string>
-    <string name="com_auth0_lock_social_soundcloud">LOGIN WITH SOUNDCLOUD</string>
-    <string name="com_auth0_lock_social_windowslive">LOGIN WITH MICROSOFT</string>
-    <string name="com_auth0_lock_social_yammer">LOGIN WITH YAMMER</string>
-    <string name="com_auth0_lock_social_baidu">LOGIN WITH 百度</string>
-    <string name="com_auth0_lock_social_fitbit">LOGIN WITH FITBIT</string>
-    <string name="com_auth0_lock_social_planningcenter">LOGIN WITH PLANNING CENTER</string>
-    <string name="com_auth0_lock_social_renren">LOGIN WITH 人人</string>
-    <string name="com_auth0_lock_social_thecity">LOGIN WITH THE CITY</string>
-    <string name="com_auth0_lock_social_thecity_sandbox">LOGIN WITH THE CITY (SANDBOX)</string>
-    <string name="com_auth0_lock_social_thirtysevensignals">LOGIN WITH 37 SIGNALS</string>
-    <string name="com_auth0_lock_social_vkontakte">LOGIN WITH VKONTAKTE</string>
-    <string name="com_auth0_lock_social_weibo">LOGIN WITH 新浪微博</string>
-    <string name="com_auth0_lock_social_wordpress">LOGIN WITH WORDPRESS</string>
-    <string name="com_auth0_lock_social_yandex">LOGIN WITH YANDEX</string>
-    <string name="com_auth0_lock_social_shopify">LOGIN WITH SHOPIFY</string>
-    <string name="com_auth0_lock_social_dwolla">LOGIN WITH DWOLLA</string>
+    <string name="com_auth0_lock_social_unknown_placeholder">LOG IN WITH %s</string>
+    <string name="com_auth0_lock_social_yahoo">LOG IN WITH YAHOO!</string>
+    <string name="com_auth0_lock_social_linkedin">LOG IN WITH LINKEDIN</string>
+    <string name="com_auth0_lock_social_google_oauth2">LOG IN WITH GOOGLE</string>
+    <string name="com_auth0_lock_social_twitter">LOG IN WITH TWITTER</string>
+    <string name="com_auth0_lock_social_facebook">LOG IN WITH FACEBOOK</string>
+    <string name="com_auth0_lock_social_amazon">LOG IN WITH AMAZON</string>
+    <string name="com_auth0_lock_social_aol">LOG IN WITH AOL</string>
+    <string name="com_auth0_lock_social_box">LOG IN WITH BOX</string>
+    <string name="com_auth0_lock_social_evernote">LOG IN WITH EVERNOTE</string>
+    <string name="com_auth0_lock_social_evernote_sandbox">LOG IN WITH EVERNOTE (SANDBOX)</string>
+    <string name="com_auth0_lock_social_exact">LOG IN WITH EXACT</string>
+    <string name="com_auth0_lock_social_github">LOG IN WITH GITHUB</string>
+    <string name="com_auth0_lock_social_instagram">LOG IN WITH INSTAGRAM</string>
+    <string name="com_auth0_lock_social_miicard">LOG IN WITH MIICARD</string>
+    <string name="com_auth0_lock_social_paypal">LOG IN WITH PAYPAL</string>
+    <string name="com_auth0_lock_social_salesforce">LOG IN WITH SALESFORCE</string>
+    <string name="com_auth0_lock_social_salesforce_community">LOG IN WITH SALESFORCE (COMMUNITY)</string>
+    <string name="com_auth0_lock_social_salesforce_sandbox">LOG IN WITH SALESFORCE (SANDBOX)</string>
+    <string name="com_auth0_lock_social_soundcloud">LOG IN WITH SOUNDCLOUD</string>
+    <string name="com_auth0_lock_social_windowslive">LOG IN WITH MICROSOFT</string>
+    <string name="com_auth0_lock_social_yammer">LOG IN WITH YAMMER</string>
+    <string name="com_auth0_lock_social_baidu">LOG IN WITH 百度</string>
+    <string name="com_auth0_lock_social_fitbit">LOG IN WITH FITBIT</string>
+    <string name="com_auth0_lock_social_planningcenter">LOG IN WITH PLANNING CENTER</string>
+    <string name="com_auth0_lock_social_renren">LOG IN WITH 人人</string>
+    <string name="com_auth0_lock_social_thecity">LOG IN WITH THE CITY</string>
+    <string name="com_auth0_lock_social_thecity_sandbox">LOG IN WITH THE CITY (SANDBOX)</string>
+    <string name="com_auth0_lock_social_thirtysevensignals">LOG IN WITH 37 SIGNALS</string>
+    <string name="com_auth0_lock_social_vkontakte">LOG IN WITH VKONTAKTE</string>
+    <string name="com_auth0_lock_social_weibo">LOG IN WITH 新浪微博</string>
+    <string name="com_auth0_lock_social_wordpress">LOG IN WITH WORDPRESS</string>
+    <string name="com_auth0_lock_social_yandex">LOG IN WITH YANDEX</string>
+    <string name="com_auth0_lock_social_shopify">LOG IN WITH SHOPIFY</string>
+    <string name="com_auth0_lock_social_dwolla">LOG IN WITH DWOLLA</string>
     <string name="com_auth0_lock_social_icon_yahoo">Y</string>
     <string name="com_auth0_lock_social_icon_linkedin">L</string>
     <string name="com_auth0_lock_social_icon_google_oauth2">+</string>
@@ -106,6 +106,13 @@
     <string name="com_auth0_lock_default_country_code_fallback">+1</string>
     <string name="com_auth0_lock_header_title">Auth0</string>
     <string name="com_auth0_lock_network_error">Network error</string>
+    <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
+    <string name="com_auth0_lock_input_error_password">Invalid Password</string>
+    <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
+    <string name="com_auth0_lock_input_error_username">Invalid Username. Can only contain between 1 to 15 alphanumeric characters and \'_\'.</string>
+    <string name="com_auth0_lock_input_error_code">Invalid Code</string>
+    <string name="com_auth0_lock_input_error_phone_number">Invalid Phone Number</string>
+    <string name="com_auth0_lock_input_error_date">Invalid Date</string>
     <string name="com_auth0_lock_hint_email">Email</string>
     <string name="com_auth0_lock_hint_password">Password</string>
     <string name="com_auth0_lock_hint_username">Username</string>
@@ -128,7 +135,6 @@
     <string name="com_auth0_lock_description_change_password">Please enter your email and the new\n password. We will send you an email to\n confirm the password change.</string>
     <string name="com_auth0_lock_title_passwordless_code_email_sent">An email with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
-    <string name="com_auth0_lock_title_passwordless_country_code_item_format" formatted="false">%s %s</string>
     <string name="com_auth0_lock_title_passwordless_link_sent">We sent you a link to sign in to\n %s</string>
     <string name="com_auth0_lock_title_passwordless_code_retry">Did not get the code?</string>
     <string name="com_auth0_lock_title_passwordless_got_code">I have a code</string>
@@ -156,5 +162,6 @@
     <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">The code is invalid or has expired</string>
     <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
+
 
 </resources>

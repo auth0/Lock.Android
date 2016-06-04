@@ -195,8 +195,8 @@ As in the previous version, `Lock` can be configured with extra options. Check b
 1. `isClosable` has been renamed to `closable` By default, it's not closable.
 1. `setFullscreen` has been renamed to `fullscreen`. By default, it's not fullscreen.
 1. `shouldLoginAfterSignUp` has been renamed to `loginAfterSignUp`.
-1. `disableSignupAction` has been renamed to `disableSignUp`.
-1. `disableResetAction` has been renamed to `disableChangePassword`.
+1. `disableSignupAction` has been renamed to `allowSignUp`.
+1. `disableResetAction` has been renamed to `allowForgotPassword`.
 1. `defaultUserPasswordConnection` has been renamed to `setDefaultDatabaseConnection`.
 1. `setConnections` has been renamed to `onlyUseConnections`.
 1. `setAuthenticationParameters` has been renamed to `withAuthenticationParameters`.

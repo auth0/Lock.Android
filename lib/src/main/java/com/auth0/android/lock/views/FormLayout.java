@@ -38,6 +38,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -76,7 +78,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
-        boolean showModeSelection = showDatabase && lockWidget.getConfiguration().isSignUpEnabled();
+        boolean showModeSelection = lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -91,26 +93,49 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
-        formsHolder.setGravity(CENTER_IN_PARENT);
         formsHolder.setOrientation(LinearLayout.VERTICAL);
         formsHolder.setGravity(Gravity.CENTER);
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
-        holderParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        holderParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formsHolder, holderParams);
 
         if (showSocial) {
-            addSocialLayout(showDatabase || showEnterprise);
+            addSocialLayout();
             if (showDatabase || showEnterprise) {
                 addSeparator();
             }
         }
-        changeFormMode(ModeSelectionView.Mode.LOG_IN);
+        displayInitialScreen();
     }
 
-    private void addSocialLayout(boolean smallButtons) {
-        socialLayout = new SocialView(lockWidget, smallButtons);
+    private void displayInitialScreen() {
+        if (!showDatabase && !showEnterprise) {
+            return;
+        }
+        int initialScreen = lockWidget.getConfiguration().getInitialScreen();
+        switch (initialScreen) {
+            case InitialScreen.FORGOT_PASSWORD:
+            case InitialScreen.LOG_IN:
+                changeFormMode(ModeSelectionView.Mode.LOG_IN);
+            case InitialScreen.SIGN_UP:
+                changeFormMode(ModeSelectionView.Mode.SIGN_UP);
+                break;
+        }
+    }
+
+    private void addSocialLayout() {
+        int style = lockWidget.getConfiguration().getSocialButtonStyle();
+        boolean formContainsFields = showDatabase || showEnterprise;
+        boolean singleConnection = lockWidget.getConfiguration().getSocialStrategies().size() == 1;
+
+        if (style == SocialButtonStyle.UNSPECIFIED) {
+            socialLayout = new SocialView(lockWidget, formContainsFields && !singleConnection);
+        } else {
+            socialLayout = new SocialView(lockWidget, style == SocialButtonStyle.SMALL);
+        }
+
         formsHolder.addView(socialLayout);
     }
 
@@ -187,13 +212,28 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
         int modeSelectionHeight = ViewUtils.measureViewHeight(modeSelectionView);
-        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
         int socialHeight = ViewUtils.measureViewHeight(socialLayout);
-        int fieldsHeight = ViewUtils.measureViewHeight(getExistingForm());
-        int sumHeight = modeSelectionHeight + separatorHeight + socialHeight + fieldsHeight;
+        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
+        int logInHeight = ViewUtils.measureViewHeight(logInForm);
+        int signUpHeight = ViewUtils.measureViewHeight(signUpForm);
+        int formHeight = modeSelectionHeight + socialHeight + separatorHeight + logInHeight + signUpHeight;
+        int customFieldsHeight = ViewUtils.measureViewHeight(customFieldsForm);
+        MarginLayoutParams holderParams = (MarginLayoutParams) formsHolder.getLayoutParams();
+        int sumHeight = formHeight + customFieldsHeight + holderParams.topMargin + holderParams.bottomMargin;
 
         Log.v(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
-        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        switch (heightMode) {
+            case MeasureSpec.UNSPECIFIED:
+                setMeasuredDimension(getMeasuredWidth(), sumHeight);
+                break;
+            case MeasureSpec.AT_MOST:
+                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
+                break;
+            case MeasureSpec.EXACTLY:
+                setMeasuredDimension(getMeasuredWidth(), parentHeight);
+                break;
+        }
     }
 
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {

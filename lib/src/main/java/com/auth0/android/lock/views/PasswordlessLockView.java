@@ -26,9 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +45,7 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessLockView extends PercentRelativeLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
+public class PasswordlessLockView extends LinearLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
 
     private static final String TAG = PasswordlessLockView.class.getSimpleName();
     private final Bus bus;
@@ -70,6 +68,7 @@ public class PasswordlessLockView extends PercentRelativeLayout implements LockW
     }
 
     private void init() {
+        setOrientation(VERTICAL);
         if (configuration == null) {
             Log.w(TAG, "Configuration is missing, the view won't init.");
             showConfigurationMissingLayout();
@@ -79,50 +78,31 @@ public class PasswordlessLockView extends PercentRelativeLayout implements LockW
     }
 
     private void showWaitForConfigurationLayout() {
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_IN_PARENT, TRUE);
+        LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        wrapHeightParams.gravity = Gravity.CENTER;
         loadingProgressBar = new ProgressBar(getContext());
         loadingProgressBar.setIndeterminate(true);
-        addView(loadingProgressBar, params);
+        addView(loadingProgressBar, wrapHeightParams);
     }
 
     private void showContentLayout() {
-        TypedValue typedValue = new TypedValue();
-        getResources().getValue(R.dimen.com_auth0_lock_header_view_height, typedValue, true);
-        float height = typedValue.getFloat();
-
-        LayoutParams headerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        headerViewParams.addRule(ALIGN_PARENT_TOP);
-        headerViewParams.getPercentLayoutInfo().heightPercent = height;
-
-        getResources().getValue(R.dimen.com_auth0_lock_action_button_height, typedValue, true);
-        height = typedValue.getFloat();
-        LayoutParams actionButtonParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        actionButtonParams.addRule(ALIGN_PARENT_BOTTOM);
-        actionButtonParams.getPercentLayoutInfo().heightPercent = height;
-
-        LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        formLayoutParams.alignWithParent = true;
-        formLayoutParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
-        formLayoutParams.addRule(CENTER_IN_PARENT);
-        formLayoutParams.addRule(BELOW, R.id.com_auth0_lock_header);
+        LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         headerView = new HeaderView(getContext());
-        headerView.setId(R.id.com_auth0_lock_header);
-        addView(headerView, headerViewParams);
+        addView(headerView, wrapHeightParams);
+
+        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        formLayout = new PasswordlessFormLayout(this);
+        LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        formLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        addView(formLayout, formLayoutParams);
 
         boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
         if (showPasswordless) {
             actionButton = new ActionButton(getContext());
-            actionButton.setId(R.id.com_auth0_lock_action_button);
             actionButton.setOnClickListener(this);
-            addView(actionButton, actionButtonParams);
+            addView(actionButton, wrapHeightParams);
         }
-
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        formLayout = new PasswordlessFormLayout(this);
-        formLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
-        addView(formLayout, formLayoutParams);
     }
 
     public void configure(@Nullable Configuration configuration) {
@@ -142,7 +122,7 @@ public class PasswordlessLockView extends PercentRelativeLayout implements LockW
         errorLayout.setOrientation(LinearLayout.VERTICAL);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(horizontalMargin, 0, horizontalMargin, 0);
-        params.addRule(CENTER_IN_PARENT, TRUE);
+        params.gravity = Gravity.CENTER;
 
         TextView errorText = new TextView(getContext());
         errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);

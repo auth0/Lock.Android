@@ -27,9 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +38,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -48,9 +47,10 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicLockView extends PercentRelativeLayout implements View.OnClickListener, LockWidget, LockWidgetForm {
+public class ClassicLockView extends LinearLayout implements View.OnClickListener, LockWidget, LockWidgetForm {
 
     private static final String TAG = ClassicLockView.class.getSimpleName();
+    private static final int FORM_INDEX = 2;
     private final Bus bus;
     private Configuration configuration;
 
@@ -77,6 +77,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     }
 
     private void init() {
+        setOrientation(VERTICAL);
         if (configuration == null) {
             Log.w(TAG, "Configuration is missing, the view won't init.");
             showConfigurationMissingLayout();
@@ -86,74 +87,43 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     }
 
     private void showWaitForConfigurationLayout() {
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(CENTER_IN_PARENT, TRUE);
+        LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        wrapHeightParams.gravity = Gravity.CENTER;
         loadingProgressBar = new ProgressBar(getContext());
         loadingProgressBar.setIndeterminate(true);
-        addView(loadingProgressBar, params);
+        addView(loadingProgressBar, wrapHeightParams);
     }
 
     private void showContentLayout() {
-        TypedValue typedValue = new TypedValue();
-
-        getResources().getValue(R.dimen.com_auth0_lock_header_view_height, typedValue, true);
-        float height = typedValue.getFloat();
-        LayoutParams headerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        headerViewParams.addRule(ALIGN_PARENT_TOP);
-        headerViewParams.getPercentLayoutInfo().heightPercent = height;
-
-        getResources().getValue(R.dimen.com_auth0_lock_top_banner_height, typedValue, true);
-        height = typedValue.getFloat();
-        LayoutParams topBannerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        topBannerParams.addRule(BELOW, R.id.com_auth0_lock_header);
-        topBannerParams.getPercentLayoutInfo().heightPercent = height;
-
-        getResources().getValue(R.dimen.com_auth0_lock_bottom_banner_height, typedValue, true);
-        height = typedValue.getFloat();
-        LayoutParams bottomBannerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        bottomBannerParams.addRule(ABOVE, R.id.com_auth0_lock_action_button);
-        bottomBannerParams.alignWithParent = true;
-        bottomBannerParams.getPercentLayoutInfo().heightPercent = height;
-
-        getResources().getValue(R.dimen.com_auth0_lock_action_button_height, typedValue, true);
-        height = typedValue.getFloat();
-        LayoutParams actionButtonParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        actionButtonParams.addRule(ALIGN_PARENT_BOTTOM);
-        actionButtonParams.getPercentLayoutInfo().heightPercent = height;
-
-        LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        formLayoutParams.alignWithParent = true;
-        formLayoutParams.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
-        formLayoutParams.addRule(BELOW, R.id.com_auth0_lock_banner_top);
+        LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
         headerView = new HeaderView(getContext());
-        headerView.setId(R.id.com_auth0_lock_header);
-        addView(headerView, headerViewParams);
+        addView(headerView, wrapHeightParams);
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
-        topBanner.setId(R.id.com_auth0_lock_banner_top);
         topBanner.setVisibility(GONE);
-        addView(topBanner, topBannerParams);
-
-        actionButton = new ActionButton(getContext());
-        actionButton.setId(R.id.com_auth0_lock_action_button);
-        actionButton.setOnClickListener(this);
-        addView(actionButton, actionButtonParams);
-
-        bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
-        bottomBanner.setId(R.id.com_auth0_lock_banner_bottom);
-        bottomBanner.setVisibility(GONE);
-        addView(bottomBanner, bottomBannerParams);
+        addView(topBanner, wrapHeightParams);
 
         formLayout = new FormLayout(this);
-        formLayout.setId(R.id.com_auth0_lock_form_layout);
         addView(formLayout, formLayoutParams);
 
+        bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+        bottomBanner.setVisibility(GONE);
+        addView(bottomBanner, wrapHeightParams);
+
+        actionButton = new ActionButton(getContext());
+        actionButton.setOnClickListener(this);
+        addView(actionButton, wrapHeightParams);
 
         boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
         boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
         if (!showDatabase && !showEnterprise) {
             actionButton.setVisibility(GONE);
+        }
+
+        if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
+            showChangePasswordForm(true);
         }
     }
 
@@ -179,7 +149,7 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         errorLayout.setOrientation(LinearLayout.VERTICAL);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(horizontalMargin, 0, horizontalMargin, 0);
-        params.addRule(CENTER_IN_PARENT, TRUE);
+        params.gravity = Gravity.CENTER;
 
         TextView errorText = new TextView(getContext());
         errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);
@@ -212,22 +182,23 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
     }
 
     private void addSubForm(@NonNull FormView form) {
-        formLayout.setVisibility(GONE);
-
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.addRule(ABOVE, R.id.com_auth0_lock_banner_bottom);
-        params.addRule(BELOW, R.id.com_auth0_lock_banner_top);
-        params.addRule(CENTER_IN_PARENT, TRUE);
-        addView(form, params);
+        if (subForm != null) {
+            return;
+        }
+        removeView(formLayout);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         this.subForm = form;
+        addView(subForm, FORM_INDEX, params);
     }
 
     private void removeSubForm() {
-        formLayout.setVisibility(VISIBLE);
-        if (this.subForm != null) {
-            removeView(this.subForm);
-            this.subForm = null;
+        if (subForm == null) {
+            return;
         }
+        removeView(subForm);
+        subForm = null;
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        addView(formLayout, FORM_INDEX, params);
     }
 
     @Override
@@ -247,17 +218,6 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
         int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
 
         Log.v(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
-        changeHeaderSize(freeFormSpace < formHeight || subForm instanceof CustomFieldsFormView);
-    }
-
-    private void changeHeaderSize(boolean collapse) {
-        TypedValue typedValue = new TypedValue();
-        getResources().getValue(collapse ? R.dimen.com_auth0_lock_small_header_view_height : R.dimen.com_auth0_lock_header_view_height, typedValue, true);
-        float height = typedValue.getFloat();
-
-        PercentRelativeLayout.LayoutParams headerViewParams = (PercentRelativeLayout.LayoutParams) headerView.getLayoutParams();
-        headerViewParams.getPercentLayoutInfo().heightPercent = height;
-        headerView.showTitle(!collapse);
     }
 
     /**
@@ -267,9 +227,12 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
      */
     public boolean onBackPressed() {
         if (subForm != null) {
-            showSignUpTerms(subForm instanceof CustomFieldsFormView);
-            removeSubForm();
-            return true;
+            final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
+            if (shouldDisplayPreviousForm) {
+                showSignUpTerms(subForm instanceof CustomFieldsFormView);
+                removeSubForm();
+                return true;
+            }
         }
 
         return formLayout != null && formLayout.onBackPressed();
@@ -351,6 +314,8 @@ public class ClassicLockView extends PercentRelativeLayout implements View.OnCli
 
     @Override
     public void showBottomBanner(boolean show) {
-        bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        if (bottomBanner != null) {
+            bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        }
     }
 }
