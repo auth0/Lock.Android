@@ -38,12 +38,9 @@ import java.lang.reflect.Type;
 public class JsonUtils {
 
     public static Gson createGson() {
-        Type applicationType = new TypeToken<Application>() {
-        }.getType();
-        Type strategyType = new TypeToken<Strategy>() {
-        }.getType();
-        Type connectionType = new TypeToken<Connection>() {
-        }.getType();
+        Type applicationType = TypeToken.get(Application.class).getType();
+        Type strategyType = TypeToken.get(Strategy.class).getType();
+        Type connectionType = TypeToken.get(Connection.class).getType();
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(applicationType, new ApplicationDeserializer())
@@ -57,5 +54,4 @@ public class JsonUtils {
             throw new JsonParseException("Missing value in Json: " + valueName);
         }
     }
-
 }

@@ -44,8 +44,7 @@ public class StrategyDeserializer implements JsonDeserializer<Strategy> {
         JsonUtils.checkRequiredValue(map, "connections");
 
         String name = map.get("name").getAsString();
-        Type connectionType = new TypeToken<List<Connection>>() {
-        }.getType();
+        Type connectionType = new TypeToken<List<Connection>>() {}.getType();
         List<Connection> connections = context.deserialize(map.get("connections"), connectionType);
 
         return new Strategy(name, connections);

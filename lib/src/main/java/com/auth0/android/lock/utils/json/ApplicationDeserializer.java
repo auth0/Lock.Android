@@ -55,8 +55,7 @@ public class ApplicationDeserializer implements JsonDeserializer<Application> {
         final JsonElement hasAllowedOriginsJson = map.get("hasAllowedOrigins");
         boolean hasAllowedOrigins = hasAllowedOriginsJson != null && hasAllowedOriginsJson.getAsBoolean();
 
-        Type strategyType = new TypeToken<List<Strategy>>() {
-        }.getType();
+        Type strategyType = new TypeToken<List<Strategy>>() {}.getType();
         List<Strategy> strategies = context.deserialize(map.get("strategies"), strategyType);
 
         return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, strategies);

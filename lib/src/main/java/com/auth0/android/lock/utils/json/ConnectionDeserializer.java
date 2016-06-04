@@ -39,8 +39,7 @@ public class ConnectionDeserializer implements JsonDeserializer<Connection> {
     @Override
     public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject map = json.getAsJsonObject();
-        Type mapType = new TypeToken<Map<String, Object>>() {
-        }.getType();
+        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> values = context.deserialize(map, mapType);
 
         return new Connection(values);
