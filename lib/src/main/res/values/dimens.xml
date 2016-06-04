@@ -23,43 +23,32 @@
   -->
 
 <resources>
-    <dimen name="com_auth0_lock_webview_button_text_padding_left">10dp</dimen>
-    <dimen name="com_auth0_lock_webview_button_icon_label_size">50dp</dimen>
-
     <dimen name="com_auth0_lock_list_item_height">55dp</dimen>
     <dimen name="com_auth0_lock_header_logo_size">70dp</dimen>
 
     <dimen name="com_auth0_lock_input_field_stroke_width">1dp</dimen>
-    <dimen name="com_auth0_lock_widget_with_text_horizontal_padding">20dp</dimen>
-    <dimen name="com_auth0_lock_login_height">80dp</dimen>
+    <dimen name="com_auth0_lock_widget_with_text_horizontal_padding">13dp</dimen>
 
     <dimen name="com_auth0_lock_social_button_height">44dp</dimen>
     <dimen name="com_auth0_lock_widget_height">40dp</dimen>
     <dimen name="com_auth0_lock_field_icon_height">16dp</dimen>
-    <dimen name="com_auth0_lock_form_selector_height">37dp</dimen>
+    <dimen name="com_auth0_lock_form_selector_height">34dp</dimen>
     <dimen name="com_auth0_lock_result_message_height">31dp</dimen>
-    <dimen name="com_auth0_lock_sso_height">31dp</dimen>
-    <dimen name="com_auth0_lock_terms_height">68dp</dimen>
     <dimen name="com_auth0_lock_widget_small_margin">3dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless_sent">29dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_link">33dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field">10dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field_with_error">5dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_social">6dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_header_icon">8dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_header">4dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_switcher">20dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless">36dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">9dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin">45dp</dimen>
 
     <!-- TEXTS -->
-    <dimen name="com_auth0_lock_webview_button_text">13sp</dimen>
     <dimen name="com_auth0_lock_header_text">21.3sp</dimen>
     <dimen name="com_auth0_lock_title_text">16sp</dimen>
     <dimen name="com_auth0_lock_change_password_title_text">26sp</dimen>
     <dimen name="com_auth0_lock_sign_up_custom_fields_title_text">24sp</dimen>
-    <dimen name="com_auth0_lock_link_sent_text">22sp</dimen>
 
     <dimen name="com_auth0_lock_small_clickable_text">14sp</dimen>
     <dimen name="com_auth0_lock_terms_text">14sp</dimen>
@@ -79,11 +68,11 @@
     <dimen name="com_auth0_lock_link_sent_text_spacing">16dp</dimen>
     <dimen name="com_auth0_lock_result_message_text_spacing">5dp</dimen>
     <dimen name="com_auth0_lock_widget_corner_radius">3dp</dimen>
-
-    <item name="com_auth0_lock_top_banner_height" format="float" type="dimen">0.075</item>
-    <item name="com_auth0_lock_bottom_banner_height" format="float" type="dimen">0.129</item>
-    <item name="com_auth0_lock_action_button_height" format="float" type="dimen">0.141</item>
-    <item name="com_auth0_lock_header_view_height" format="float" type="dimen">0.208</item>
-    <item name="com_auth0_lock_small_header_view_height" format="float" type="dimen">0.066</item>
+    
+    <dimen name="com_auth0_lock_header_vertical_margin">9dp</dimen>
+    <dimen name="com_auth0_lock_header_logo_vertical_margin">5dp</dimen>
+    <dimen name="com_auth0_lock_action_button_vertical_margin">19dp</dimen>
+    <dimen name="com_auth0_lock_bottom_banner_vertical_margin">9dp</dimen>
+    <dimen name="com_auth0_lock_top_banner_vertical_margin">15dp</dimen>
 
 </resources>

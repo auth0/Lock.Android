@@ -22,7 +22,7 @@
   ~ THE SOFTWARE.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/com_auth0_lock_social_*">
     <!-- Social Authentication -->
     <string name="com_auth0_lock_social_error_authentication">Error parsing Authentication data</string>
     <string name="com_auth0_lock_social_error_title">There was an error during authentication</string>
@@ -67,38 +67,6 @@
     <string name="com_auth0_lock_social_yandex">LOGIN WITH YANDEX</string>
     <string name="com_auth0_lock_social_shopify">LOGIN WITH SHOPIFY</string>
     <string name="com_auth0_lock_social_dwolla">LOGIN WITH DWOLLA</string>
-    <string name="com_auth0_lock_social_icon_yahoo">Y</string>
-    <string name="com_auth0_lock_social_icon_linkedin">L</string>
-    <string name="com_auth0_lock_social_icon_google_oauth2">+</string>
-    <string name="com_auth0_lock_social_icon_twitter">T</string>
-    <string name="com_auth0_lock_social_icon_facebook">f</string>
-    <string name="com_auth0_lock_social_icon_amazon">a</string>
-    <string name="com_auth0_lock_social_icon_aol">l</string>
-    <string name="com_auth0_lock_social_icon_box">x</string>
-    <string name="com_auth0_lock_social_icon_evernote">n</string>
-    <string name="com_auth0_lock_social_icon_evernote_sandbox">n</string>
-    <string name="com_auth0_lock_social_icon_github">è</string>
-    <string name="com_auth0_lock_social_icon_instagram">i</string>
-    <string name="com_auth0_lock_social_icon_miicard">m</string>
-    <string name="com_auth0_lock_social_icon_paypal">$</string>
-    <string name="com_auth0_lock_social_icon_salesforce">*</string>
-    <string name="com_auth0_lock_social_icon_salesforce_sandbox">*</string>
-    <string name="com_auth0_lock_social_icon_soundcloud">t</string>
-    <string name="com_auth0_lock_social_icon_windowslive">W</string>
-    <string name="com_auth0_lock_social_icon_yammer">!</string>
-    <string name="com_auth0_lock_social_icon_baidu">u</string>
-    <string name="com_auth0_lock_social_icon_fitbit">#</string>
-    <string name="com_auth0_lock_social_icon_planningcenter">y</string>
-    <string name="com_auth0_lock_social_icon_renren">r</string>
-    <string name="com_auth0_lock_social_icon_thecity">c</string>
-    <string name="com_auth0_lock_social_icon_thecity_sandbox">c</string>
-    <string name="com_auth0_lock_social_icon_thirtysevensignals">b</string>
-    <string name="com_auth0_lock_social_icon_vkontakte">N</string>
-    <string name="com_auth0_lock_social_icon_weibo">S</string>
-    <string name="com_auth0_lock_social_icon_wordpress">w</string>
-    <string name="com_auth0_lock_social_icon_yandex">&amp;</string>
-    <string name="com_auth0_lock_social_icon_shopify">s</string>
-    <string name="com_auth0_lock_social_icon_dwolla">D</string>
 
     <!-- Lock General -->
     <string name="com_auth0_lock_webview_loading_retry">Retry</string>
@@ -135,7 +103,6 @@
     <string name="com_auth0_lock_description_change_password">Please enter your email and the new\n password. We will send you an email to\n confirm the password change.</string>
     <string name="com_auth0_lock_title_passwordless_code_email_sent">An email with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
-    <string name="com_auth0_lock_title_passwordless_country_code_item_format" formatted="false">%s %s</string>
     <string name="com_auth0_lock_title_passwordless_link_sent">We sent you a link to sign in to\n %s</string>
     <string name="com_auth0_lock_title_passwordless_code_retry">Did not get the code?</string>
     <string name="com_auth0_lock_title_passwordless_got_code">I have a code</string>
