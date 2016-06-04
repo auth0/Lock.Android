@@ -121,22 +121,14 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private void passwordlessLogin(boolean useCode) {
         Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
 
+        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback);
         if (useCode) {
-            passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
-                    .useCode()
-                    .usePKCE(true)
-                    .fullscreen(false)
-                    .closable(true)
-                    .build();
+            builder.useCode();
         } else {
-            passwordlessLock = PasswordlessLock.newBuilder(auth0, callback)
-                    .useLink()
-                    .usePKCE(true)
-                    .fullscreen(true)
-                    .closable(true)
-                    .build();
+            builder.useLink();
         }
 
+        passwordlessLock = builder.build();
         passwordlessLock.onCreate(this);
 
         startActivity(passwordlessLock.newIntent(this));
@@ -156,36 +148,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
                 .asDictionary();
 
-        CustomField fieldName = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "firstName", R.string.hint_name);
-        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "surname", R.string.hint_surname);
-        CustomField fieldWork = new CustomField(R.drawable.com_auth0_lock_ic_work, FieldType.TYPE_TEXT_NAME, "organization", R.string.hint_work);
-        CustomField fieldCountry = new CustomField(R.drawable.com_auth0_lock_ic_world, FieldType.TYPE_TEXT_NAME, "country", R.string.hint_country);
-        CustomField fieldPhone = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "phoneNumber", R.string.hint_phone);
-        CustomField fieldDate = new CustomField(R.drawable.com_auth0_lock_ic_clock, FieldType.TYPE_DATE, "date", R.string.hint_date);
-
-        List<CustomField> customFields = new ArrayList<>();
-        customFields.add(fieldName);
-        customFields.add(fieldSurname);
-        customFields.add(fieldWork);
-        customFields.add(fieldCountry);
-//        customFields.add(fieldPhone);
-//        customFields.add(fieldDate);
-
         // create/configure lock
         lock = Lock.newBuilder(auth0, callback)
                 .useBrowser(useBrowser)
                 .withAuthenticationParameters(params)
-                .withProviderResolver(new AuthProviderHandler())
-                .withSignUpFields(customFields)
-                .loginAfterSignUp(false)
-                .initialScreen(InitialScreen.FORGOT_PASSWORD)
-                .allowForgotPassword(true)
-                .allowSignIn(false)
-                .allowSignUp(false)
-//                .setDefaultDatabaseConnection("mfa-connection")
-                .usePKCE(true)
                 .closable(true)
-                .fullscreen(false)
                 .build();
 
         lock.onCreate(this);

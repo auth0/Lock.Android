@@ -68,8 +68,6 @@ public class ValidatedInputView extends LinearLayout {
     private static final String CODE_REGEX = "^[0-9]{4,12}$";
     private static final String TAG = ValidatedInputView.class.getSimpleName();
     private static final int MIN_PASSWORD_LENGTH = 6;
-    private static final int MIN_USERNAME_LENGTH = 6;
-    private static final int MIN_PHONE_NUMBER_LENGTH = 10;
     private static final int VALIDATION_DELAY = 500;
 
     private TextView errorDescription;
@@ -232,22 +230,18 @@ public class ValidatedInputView extends LinearLayout {
         icon.setImageResource(inputIcon);
     }
 
-    private void updateBorder(boolean showError) {
-        if (isShowingError == showError) {
-            return;
-        }
-
+    private void updateBorder(boolean isValid) {
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
         gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
-        int strokeColor = showError ? R.color.com_auth0_lock_input_field_border_normal : R.color.com_auth0_lock_input_field_border_error;
+        int strokeColor = isValid ? R.color.com_auth0_lock_input_field_border_normal : R.color.com_auth0_lock_input_field_border_error;
         gd.setStroke((int) getResources().getDimension(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), strokeColor));
         gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
 
-        errorDescription.setVisibility(showError ? VISIBLE : INVISIBLE);
-        isShowingError = showError;
+        errorDescription.setVisibility(isValid ? INVISIBLE : VISIBLE);
+        isShowingError = !isValid;
         requestLayout();
     }
 
