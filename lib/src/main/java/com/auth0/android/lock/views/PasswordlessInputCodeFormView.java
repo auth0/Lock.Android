@@ -123,7 +123,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
 
     @Override
     public boolean validateForm() {
-        return passwordlessInput.validate(true);
+        return passwordlessInput.validate();
     }
 
     @Nullable

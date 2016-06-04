@@ -170,7 +170,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         for (int i = 0; i < fieldContainer.getChildCount(); i++) {
             ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
             if (input.isEnabled()) {
-                valid = input.validate(true) && valid;
+                valid = input.validate() && valid;
             }
         }
         Log.d(TAG, "Is form data valid? " + valid);
