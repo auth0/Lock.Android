@@ -12,6 +12,10 @@
     public static final ** CREATOR;
 }
 
+-keepclassmembers class ** {
+    com.auth0.android.lock.views.ViewUtils$Corners *;
+}
+
 ## Data Models / POJOs
 -keep class com.auth0.android.lock.utils.Strategies { *; }
 -keep class com.auth0.android.lock.utils.Strategy { *; }
