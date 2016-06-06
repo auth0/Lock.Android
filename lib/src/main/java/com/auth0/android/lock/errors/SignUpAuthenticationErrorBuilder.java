@@ -61,7 +61,7 @@ public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuil
             if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && errorDescription != null) {
                 return new AuthenticationError(errorDescription, ErrorType.UNAUTHORIZED, throwable);
             } else if (USER_EXISTS_ERROR.equalsIgnoreCase(errorCode) || USERNAME_EXISTS_ERROR.equalsIgnoreCase(errorCode)) {
-                return new AuthenticationError(userExistsResource, ErrorType.INVALID_CREDENTIALS, throwable);
+                return new AuthenticationError(userExistsResource, ErrorType.USER_EXISTS, throwable);
             } else if (errorDescription != null) {
                 return new AuthenticationError(errorDescription, ErrorType.UNKNOWN, throwable);
             }
