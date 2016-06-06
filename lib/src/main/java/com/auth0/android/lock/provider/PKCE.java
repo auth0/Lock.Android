@@ -92,7 +92,9 @@ public class PKCE {
      * @param callback          to notify the result of this call to.
      */
     public void getToken(String authorizationCode, @NonNull final AuthCallback callback) {
-        apiClient.token(authorizationCode, codeVerifier, redirectUri).start(new BaseCallback<Credentials>() {
+        apiClient.token(authorizationCode, redirectUri)
+                .setCodeVerifier(codeVerifier)
+                .start(new BaseCallback<Credentials>() {
             @Override
             public void onSuccess(Credentials payload) {
                 callback.onSuccess(payload);

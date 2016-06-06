@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock.app;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,23 +34,17 @@ import android.widget.Button;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
-import com.auth0.android.lock.CustomField;
-import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
-import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
-import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Credentials;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
-    private static final int AUTH_REQUEST = 333;
 
     private Lock lock;
     private PasswordlessLock passwordlessLock;
@@ -85,17 +78,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //should we ask for null lock?
-        if (lock != null && requestCode == AUTH_REQUEST) {
-            lock.onActivityResult(this, resultCode, data);
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_normal_webview:
@@ -121,7 +103,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private void passwordlessLogin(boolean useCode) {
         Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
 
-        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback);
+        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback).closable(true);
         if (useCode) {
             builder.useCode();
         } else {
@@ -155,14 +137,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .closable(true)
                 .build();
 
+        //this should be called only once
         lock.onCreate(this);
 
         // launch, the results will be received in the callback
-        if (useBrowser) {
-            startActivity(lock.newIntent(this));
-        } else {
-            startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
-        }
+        startActivity(lock.newIntent(this));
     }
 
     /**
@@ -176,8 +155,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
     private LockCallback callback = new AuthenticationCallback() {
         @Override
-        public void onAuthentication(Authentication authentication) {
-            showResult("OK > " + authentication.getProfile().getName() + " > " + authentication.getCredentials().getIdToken());
+        public void onAuthentication(Credentials credentials) {
+            showResult("OK > " + credentials.getIdToken());
         }
 
         @Override

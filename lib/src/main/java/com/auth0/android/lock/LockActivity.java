@@ -210,8 +210,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         boolean launchedForResult = getCallingActivity() != null;
-        if (options.useBrowser() && launchedForResult) {
-            Log.e(TAG, "You're not allowed to useBrowser and startActivityForResult at the same time.");
+        if (launchedForResult){
+            Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }
         boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
@@ -243,7 +243,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
         intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
         intent.putExtra(Constants.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
-        intent.putExtra(Constants.PROFILE_EXTRA, result.getProfile());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();

@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Credentials;
 import com.jayway.awaitility.Duration;
 import com.jayway.awaitility.core.ConditionTimeoutException;
 
@@ -32,9 +32,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import java.util.concurrent.TimeUnit;
-
-import static com.jayway.awaitility.Awaitility.await;
 import static com.jayway.awaitility.Awaitility.waitAtMost;
 import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.anyOf;
@@ -44,11 +41,11 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 public class AuthenticationCallbackMatcher<T> extends BaseMatcher<MockLockCallback> {
-    private final Matcher<Authentication> authenticationMatcher;
+    private final Matcher<Credentials> authenticationMatcher;
     private final Matcher<Boolean> canceledMatcher;
     private final Matcher<Throwable> errorMatcher;
 
-    public AuthenticationCallbackMatcher(Matcher<Authentication> authenticationMatcher, Matcher<Boolean> canceledMatcher, Matcher<Throwable> errorMatcher) {
+    public AuthenticationCallbackMatcher(Matcher<Credentials> authenticationMatcher, Matcher<Boolean> canceledMatcher, Matcher<Throwable> errorMatcher) {
         this.authenticationMatcher = authenticationMatcher;
         this.canceledMatcher = canceledMatcher;
         this.errorMatcher = errorMatcher;
@@ -75,19 +72,19 @@ public class AuthenticationCallbackMatcher<T> extends BaseMatcher<MockLockCallba
     }
 
     public static Matcher<MockLockCallback> isCanceled() {
-        return new AuthenticationCallbackMatcher<>(is(nullValue(Authentication.class)), equalTo(true), is(nullValue(Throwable.class)));
+        return new AuthenticationCallbackMatcher<>(is(nullValue(Credentials.class)), equalTo(true), is(nullValue(Throwable.class)));
     }
 
     public static Matcher<MockLockCallback> hasAuthentication() {
-        return new AuthenticationCallbackMatcher<>(is(notNullValue(Authentication.class)), equalTo(false), is(nullValue(Throwable.class)));
+        return new AuthenticationCallbackMatcher<>(is(notNullValue(Credentials.class)), equalTo(false), is(nullValue(Throwable.class)));
     }
 
     public static Matcher<MockLockCallback> hasError() {
-        return new AuthenticationCallbackMatcher<>(is(nullValue(Authentication.class)), equalTo(false), is(notNullValue(Throwable.class)));
+        return new AuthenticationCallbackMatcher<>(is(nullValue(Credentials.class)), equalTo(false), is(notNullValue(Throwable.class)));
     }
 
     public static Matcher<MockLockCallback> hasNoError() {
-        return new AuthenticationCallbackMatcher<>(anyOf(nullValue(Authentication.class), notNullValue(Authentication.class)), any(Boolean.class), is(nullValue(Throwable.class)));
+        return new AuthenticationCallbackMatcher<>(anyOf(nullValue(Credentials.class), notNullValue(Credentials.class)), any(Boolean.class), is(nullValue(Throwable.class)));
     }
 
 }

@@ -122,7 +122,9 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
             actionButton.setVisibility(GONE);
         }
 
-        if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
+        if (configuration.getInitialScreen() == InitialScreen.SIGN_UP) {
+            showBottomBanner(true);
+        } else if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
             showChangePasswordForm(true);
         }
     }

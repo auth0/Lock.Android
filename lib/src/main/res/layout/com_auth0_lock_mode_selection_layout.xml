@@ -37,7 +37,6 @@
             style="@style/Lock.Theme.Text.ModeSwitcher"
             android:layout_marginLeft="2dp"
             android:background="@drawable/com_auth0_lock_radio_button_left_background"
-            android:checked="true"
             android:text="@string/com_auth0_lock_action_log_in" />
 
         <RadioButton
