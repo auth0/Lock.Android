@@ -115,14 +115,12 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             return;
         }
         int initialScreen = lockWidget.getConfiguration().getInitialScreen();
-        switch (initialScreen) {
-            case InitialScreen.FORGOT_PASSWORD:
-            case InitialScreen.LOG_IN:
-                changeFormMode(ModeSelectionView.Mode.LOG_IN);
-                break;
-            case InitialScreen.SIGN_UP:
-                changeFormMode(ModeSelectionView.Mode.SIGN_UP);
-                break;
+        int mode = initialScreen == InitialScreen.SIGN_UP ? ModeSelectionView.Mode.SIGN_UP : ModeSelectionView.Mode.LOG_IN;
+
+        if (modeSelectionView != null) {
+            modeSelectionView.setSelectedMode(mode);
+        } else {
+            changeFormMode(mode);
         }
     }
 

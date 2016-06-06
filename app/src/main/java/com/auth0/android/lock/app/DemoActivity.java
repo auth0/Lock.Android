@@ -103,7 +103,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private void passwordlessLogin(boolean useCode) {
         Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
 
-        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback);
+        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback).closable(true);
         if (useCode) {
             builder.useCode();
         } else {
