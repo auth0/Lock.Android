@@ -37,7 +37,6 @@ abstract class Constants {
     static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
     static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
     static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
-    static final String PROFILE_EXTRA = "com.auth0.android.lock.extra.Profile";
     static final String EMAIL_EXTRA = "com.auth0.android.lock.extra.Email";
     static final String USERNAME_EXTRA = "com.auth0.android.lock.extra.Username";
 }

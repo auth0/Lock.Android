@@ -28,9 +28,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
-import com.auth0.authentication.result.UserProfile;
 
 
 /**
@@ -44,9 +42,9 @@ public abstract class AuthenticationCallback implements LockCallback {
     /**
      * Called when the authentication flow finished successfully.
      *
-     * @param authentication with the tokens.
+     * @param credentials with the tokens.
      */
-    public abstract void onAuthentication(Authentication authentication);
+    public abstract void onAuthentication(Credentials credentials);
 
     /**
      * Called when the user goes back and closes the activity, without using an Authentication flow.
@@ -79,13 +77,10 @@ public abstract class AuthenticationCallback implements LockCallback {
         String tokenType = data.getStringExtra(Constants.TOKEN_TYPE_EXTRA);
         String refreshToken = data.getStringExtra(Constants.REFRESH_TOKEN_EXTRA);
         Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken);
-        UserProfile profile = (UserProfile) data.getSerializableExtra(Constants.PROFILE_EXTRA);
-
-        Authentication authentication = new Authentication(profile, credentials);
 
         if (idToken != null && accessToken != null) {
             Log.d(TAG, "User authenticated!");
-            onAuthentication(authentication);
+            onAuthentication(credentials);
         } else {
             Log.e(TAG, "Error parsing authentication data: id_token or access_token are missing.");
             LockException up = new LockException(R.string.com_auth0_lock_social_error_authentication);

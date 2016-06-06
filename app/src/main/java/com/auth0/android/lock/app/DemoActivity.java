@@ -40,7 +40,7 @@ import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
-import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Credentials;
 
 import java.util.Map;
 
@@ -171,8 +171,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
     private LockCallback callback = new AuthenticationCallback() {
         @Override
-        public void onAuthentication(Authentication authentication) {
-            showResult("OK > " + authentication.getProfile().getName() + " > " + authentication.getCredentials().getIdToken());
+        public void onAuthentication(Credentials credentials) {
+            showResult("OK > " + credentials.getIdToken());
         }
 
         @Override

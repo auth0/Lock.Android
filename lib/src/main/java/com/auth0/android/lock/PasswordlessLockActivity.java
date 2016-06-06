@@ -261,7 +261,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
         intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
         intent.putExtra(Constants.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
-        intent.putExtra(Constants.PROFILE_EXTRA, result.getProfile());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();

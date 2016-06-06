@@ -28,14 +28,11 @@ import android.content.Intent;
 
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.utils.MockLockCallback;
-import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
-import com.auth0.authentication.result.UserProfile;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -44,10 +41,8 @@ import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasErro
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasNoError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.isCanceled;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
@@ -73,13 +68,12 @@ public class AuthenticationCallbackTest {
     public void shouldReturnValidAuthentication() {
         Intent data = getValidAuthenticationData();
         callback.onEvent(LockEvent.AUTHENTICATION, data);
-        Authentication authentication = authenticationFromData(data);
+        Credentials credentials = credentialsFromData(data);
 
-        assertThat(callback.getAuthentication().getProfile(), equalTo(authentication.getProfile()));
-        assertThat(callback.getAuthentication().getCredentials().getAccessToken(), equalTo(authentication.getCredentials().getAccessToken()));
-        assertThat(callback.getAuthentication().getCredentials().getIdToken(), equalTo(authentication.getCredentials().getIdToken()));
-        assertThat(callback.getAuthentication().getCredentials().getRefreshToken(), equalTo(authentication.getCredentials().getRefreshToken()));
-        assertThat(callback.getAuthentication().getCredentials().getType(), equalTo(authentication.getCredentials().getType()));
+        assertThat(callback.getCredentials().getAccessToken(), equalTo(credentials.getAccessToken()));
+        assertThat(callback.getCredentials().getIdToken(), equalTo(credentials.getIdToken()));
+        assertThat(callback.getCredentials().getRefreshToken(), equalTo(credentials.getRefreshToken()));
+        assertThat(callback.getCredentials().getType(), equalTo(credentials.getType()));
         assertThat(callback, hasNoError());
     }
 
@@ -127,7 +121,6 @@ public class AuthenticationCallbackTest {
         i.putExtra(Constants.ACCESS_TOKEN_EXTRA, "");
         i.putExtra(Constants.TOKEN_TYPE_EXTRA, "");
         i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "");
-        i.putExtra(Constants.PROFILE_EXTRA, Mockito.mock(UserProfile.class));
         return i;
     }
 
@@ -135,19 +128,16 @@ public class AuthenticationCallbackTest {
         Intent i = new Intent(Constants.AUTHENTICATION_ACTION);
         i.putExtra(Constants.TOKEN_TYPE_EXTRA, "");
         i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "");
-        i.putExtra(Constants.PROFILE_EXTRA, Mockito.mock(UserProfile.class));
         return i;
     }
 
-    public Authentication authenticationFromData(Intent data) {
+    public Credentials credentialsFromData(Intent data) {
         String idToken = data.getStringExtra(Constants.ID_TOKEN_EXTRA);
         String accessToken = data.getStringExtra(Constants.ACCESS_TOKEN_EXTRA);
         String tokenType = data.getStringExtra(Constants.TOKEN_TYPE_EXTRA);
         String refreshToken = data.getStringExtra(Constants.REFRESH_TOKEN_EXTRA);
-        Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken);
-        UserProfile profile = (UserProfile) data.getSerializableExtra(Constants.PROFILE_EXTRA);
 
-        return new Authentication(profile, credentials);
+        return new Credentials(idToken, accessToken, tokenType, refreshToken);
     }
 
 }

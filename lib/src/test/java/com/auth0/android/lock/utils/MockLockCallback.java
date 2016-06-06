@@ -25,22 +25,22 @@
 package com.auth0.android.lock.utils;
 
 import com.auth0.android.lock.AuthenticationCallback;
-import com.auth0.authentication.result.Authentication;
+import com.auth0.authentication.result.Credentials;
 
 import java.util.concurrent.Callable;
 
 public class MockLockCallback extends AuthenticationCallback {
 
-    private Authentication authentication;
+    private Credentials credentials;
     private boolean canceled;
     private LockException error;
 
-    public Callable<Authentication> authentication() {
-        return new Callable<Authentication>() {
+    public Callable<Credentials> authentication() {
+        return new Callable<Credentials>() {
             @Override
             @LockEvent
-            public Authentication call() throws Exception {
-                return authentication;
+            public Credentials call() throws Exception {
+                return credentials;
             }
         };
     }
@@ -65,8 +65,8 @@ public class MockLockCallback extends AuthenticationCallback {
     }
 
     @Override
-    public void onAuthentication(Authentication authentication) {
-        this.authentication = authentication;
+    public void onAuthentication(Credentials credentials) {
+        this.credentials = credentials;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MockLockCallback extends AuthenticationCallback {
         this.error = error;
     }
 
-    public Authentication getAuthentication() {
-        return this.authentication;
+    public Credentials getCredentials() {
+        return this.credentials;
     }
 }
