@@ -35,18 +35,13 @@ import android.widget.Button;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
-import com.auth0.android.lock.CustomField;
-import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
-import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Authentication;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener {

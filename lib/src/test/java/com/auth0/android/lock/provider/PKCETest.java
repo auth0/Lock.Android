@@ -26,7 +26,7 @@ package com.auth0.android.lock.provider;
 
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.request.AuthenticationRequest;
+import com.auth0.authentication.TokenRequest;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -91,9 +91,11 @@ public class PKCETest {
 
     @Test
     public void testGetToken() throws Exception {
-        AuthenticationRequest authenticationRequest = Mockito.mock(AuthenticationRequest.class);
-        Mockito.when(apiClient.token(AUTHORIZATION_CODE, CODE_VERIFIER, REDIRECT_URI)).thenReturn(authenticationRequest);
+        TokenRequest tokenRequest = Mockito.mock(TokenRequest.class);
+        Mockito.when(apiClient.token(AUTHORIZATION_CODE, REDIRECT_URI)).thenReturn(tokenRequest);
+        Mockito.when(tokenRequest.setCodeVerifier(CODE_VERIFIER)).thenReturn(tokenRequest);
         pkce.getToken(AUTHORIZATION_CODE, callback);
-        Mockito.verify(apiClient).token(AUTHORIZATION_CODE, CODE_VERIFIER, REDIRECT_URI);
+        Mockito.verify(apiClient).token(AUTHORIZATION_CODE, REDIRECT_URI);
+        Mockito.verify(tokenRequest).setCodeVerifier(CODE_VERIFIER);
     }
 }
