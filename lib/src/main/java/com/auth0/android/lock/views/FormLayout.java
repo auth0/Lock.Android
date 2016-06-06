@@ -119,6 +119,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             case InitialScreen.FORGOT_PASSWORD:
             case InitialScreen.LOG_IN:
                 changeFormMode(ModeSelectionView.Mode.LOG_IN);
+                break;
             case InitialScreen.SIGN_UP:
                 changeFormMode(ModeSelectionView.Mode.SIGN_UP);
                 break;
