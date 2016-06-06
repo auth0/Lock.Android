@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock.app;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,7 +45,6 @@ import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
-    private static final int AUTH_REQUEST = 333;
 
     private Lock lock;
     private PasswordlessLock passwordlessLock;
@@ -77,17 +75,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         if (passwordlessLock != null) {
             passwordlessLock.onDestroy(this);
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //should we ask for null lock?
-        if (lock != null && requestCode == AUTH_REQUEST) {
-            lock.onActivityResult(this, resultCode, data);
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -150,14 +137,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 .closable(true)
                 .build();
 
+        //this should be called only once
         lock.onCreate(this);
 
         // launch, the results will be received in the callback
-        if (useBrowser) {
-            startActivity(lock.newIntent(this));
-        } else {
-            startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
-        }
+        startActivity(lock.newIntent(this));
     }
 
     /**

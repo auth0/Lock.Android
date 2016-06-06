@@ -84,7 +84,7 @@ If you're going to use our `OAuth2WebProvider` with Browser instead of WebView, 
 
 If you forget this mode, and the code is running on devices with Android version above KITKAT, an error will raise in the console and the Activity won't launch. This is to sort the way Android handles calling an existing Activity with a result. Previous versions of Android are also affected by this issue, but won't get the warning and can crash if it's not properly handled.
 
-Also note that you can't use Browser and launch the `LockActivity` calling `startActivityForResult` at the same time.
+Also note that for the time being, `LockActivity` can't be launched calling`startActivityForResult`.
 
 ### Lock instance
 
@@ -103,7 +103,7 @@ You'll also need a `LockCallback` implementation. We suggest you to extend the `
 ```java
 private LockCallback callback = new AuthenticationCallback() {
      @Override
-     public void onAuthentication(Authentication authentication) {
+     public void onAuthentication(Credentials credentials) {
         //Authenticated
      }
 
@@ -126,7 +126,6 @@ This is how your activity should look like.
 
 ```java
 public class MainActivity extends Activity {
-  public static final int AUTH_REQUEST = 333;
   private Lock lock;
 
   @Override
@@ -144,27 +143,13 @@ public class MainActivity extends Activity {
     super.onDestroy();
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == AUTH_REQUEST) {
-      lock.onActivityResult(this, resultCode, data);
-      return;
-    }
-
-    super.onActivityResult(requestCode, resultCode, data);
-  }
-
   private void performLogin(boolean useBrowser) {
-    if (useBrowser) {
-      startActivity(lock.newIntent(this));
-    } else {
-      startActivityForResult(lock.newIntent(this), AUTH_REQUEST);
-    }
+    startActivity(lock.newIntent(this));
   }
 
   private LockCallback callback = new AuthenticationCallback() {
        @Override
-       public void onAuthentication(Authentication authentication) {
+       public void onAuthentication(Credentials credentials) {
           //Authenticated
        }
 
@@ -181,7 +166,7 @@ public class MainActivity extends Activity {
 }
 ```
 
->Remember to notify the `LockActivity` on every `OnCreate`, `OnDestroy` and `OnActivityResult` call on your Activity, as it helps to keep the Lock state.
+>Remember to notify the `LockActivity` on every `OnCreate` and `OnDestroy` call on your Activity, as it helps to keep the Lock state.
 
 That's it! **Lock** will handle the rest for you.
 

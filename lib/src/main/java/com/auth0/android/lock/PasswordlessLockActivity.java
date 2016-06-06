@@ -222,8 +222,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         boolean launchedForResult = getCallingActivity() != null;
-        if (options.useBrowser() && launchedForResult) {
-            Log.e(TAG, "You're not allowed to useBrowser and startActivityForResult at the same time.");
+        if (launchedForResult){
+            Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
