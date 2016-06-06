@@ -63,7 +63,6 @@ public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCh
     }
 
     public void setSelectedMode(@Mode int mode) {
-        modeGroup.clearCheck();
         modeGroup.check(mode == LOG_IN ? R.id.com_auth0_lock_mode_log_in : R.id.com_auth0_lock_mode_sign_up);
     }
 
