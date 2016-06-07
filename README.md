@@ -113,7 +113,7 @@ Then just start `LockActivity` from inside your `Activity`
 startActivity(this.lock.newIntent(this));
 ```
 
-### Passwordless
+### Passwordless & Social authentication
 
 `LockPasswordlessActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
