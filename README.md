@@ -7,7 +7,7 @@ Lock for Android
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
-> Lock v2 is currently in Beta, you can use our stable version [Lock.Android v1](https://github.com/auth0/Lock.Android/v1)
+> Lock v2 is currently in Beta, you can use our stable version of [Lock.Android](https://github.com/auth0/Lock.Android/tree/v1)
 
 ## Key features
 
