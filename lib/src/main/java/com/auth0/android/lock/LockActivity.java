@@ -126,7 +126,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
-        int paddingTop = getStatusBarHeight();
+        int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         ScrollView rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
@@ -144,18 +144,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
-    }
-
-    private int getStatusBarHeight() {
-        int result = 0;
-        if (options.isFullscreen()) {
-            return result;
-        }
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 
     private void setupKeyboardListener() {

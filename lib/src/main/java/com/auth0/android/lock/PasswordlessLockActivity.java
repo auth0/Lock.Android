@@ -136,7 +136,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
-        int paddingTop = getStatusBarHeight();
+        int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
@@ -157,18 +157,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
-    }
-
-    private int getStatusBarHeight() {
-        int result = 0;
-        if (options.isFullscreen()) {
-            return result;
-        }
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 
     private void setupKeyboardListener() {

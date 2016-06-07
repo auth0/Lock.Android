@@ -39,7 +39,7 @@ public abstract class ActivityUIHelper {
     public static void setFullscreenMode(Activity activity) {
         Log.d(TAG, "Activity in fullscreen mode");
         final Window window = activity.getWindow();
-        if (Build.VERSION.SDK_INT >= 16) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             View decorView = window.getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
@@ -51,7 +51,7 @@ public abstract class ActivityUIHelper {
     public static void useStatusBarSpace(Activity activity, boolean fullscreen) {
         Window window = activity.getWindow();
 
-        if (Build.VERSION.SDK_INT >= 16) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             View decorView = window.getDecorView();
             int uiFullscreenOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             int uiNormalOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -60,5 +60,17 @@ public abstract class ActivityUIHelper {
             window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         Log.d(TAG, String.format("Activity in %s mode", fullscreen ? "fullscreen" : "normal"));
+    }
+
+    public static int getStatusBarHeight(Activity activity, boolean isFullscreen) {
+        int result = 0;
+        if (isFullscreen || Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return result;
+        }
+        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = activity.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
