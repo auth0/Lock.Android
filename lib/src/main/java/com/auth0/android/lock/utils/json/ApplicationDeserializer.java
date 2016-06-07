@@ -39,6 +39,10 @@ import java.util.List;
 public class ApplicationDeserializer implements JsonDeserializer<Application> {
     @Override
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!json.isJsonObject() || json.isJsonNull()) {
+            throw new JsonParseException("Application json is not a valid json object");
+        }
+
         final JsonObject map = json.getAsJsonObject();
         JsonUtils.checkRequiredValue(map, "id");
         JsonUtils.checkRequiredValue(map, "tenant");

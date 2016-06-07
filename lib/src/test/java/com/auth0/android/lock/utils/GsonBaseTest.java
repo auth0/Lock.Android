@@ -1,5 +1,5 @@
 /*
- * ConnectionDeserializer.java
+ * GsonBaseTest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,31 +22,29 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils.json;
+package com.auth0.android.lock.utils;
 
-import com.auth0.android.lock.utils.Connection;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
-public class ConnectionDeserializer implements JsonDeserializer<Connection> {
-    @Override
-    public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (!json.isJsonObject() || json.isJsonNull()) {
-            throw new JsonParseException("Connection json is not a valid json object");
-        }
+abstract class GsonBaseTest {
 
-        final JsonObject map = json.getAsJsonObject();
-        JsonUtils.checkRequiredValue(map, "name");
-        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> values = context.deserialize(map, mapType);
+    static final String EMPTY_OBJECT = "src/test/resources/empty_object.json";
+    static final String INVALID = "src/test/resources/invalid.json";
 
-        return new Connection(values);
+
+    Gson gson;
+
+    <T> T pojoFrom(Reader json, Class<T> clazz) throws IOException {
+        return gson.getAdapter(clazz).fromJson(json);
     }
+
+    FileReader json(String name) throws FileNotFoundException {
+        return new FileReader(name);
+    }
+
 }

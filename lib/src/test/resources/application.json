@@ -1,0 +1,18 @@
+{
+  "id": "CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA",
+  "tenant": "samples",
+  "authorize": "https://samples.auth0.com/authorize",
+  "subscription": "dev",
+  "callback": "http://localhost:3000/",
+  "hasAllowedOrigins": true,
+  "strategies": [
+    {
+      "name": "twitter",
+      "connections": [
+        {
+          "name": "twitter"
+        }
+      ]
+    }
+  ]
+}

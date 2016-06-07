@@ -39,6 +39,10 @@ import java.util.List;
 public class StrategyDeserializer implements JsonDeserializer<Strategy> {
     @Override
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!json.isJsonObject() || json.isJsonNull()) {
+            throw new JsonParseException("Strategy json is not a valid json object");
+        }
+
         final JsonObject map = json.getAsJsonObject();
         JsonUtils.checkRequiredValue(map, "name");
         JsonUtils.checkRequiredValue(map, "connections");

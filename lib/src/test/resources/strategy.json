@@ -1,0 +1,6 @@
+{
+  "name": "twitter",
+  "connections": [{
+    "name": "twitter"
+  }]
+}

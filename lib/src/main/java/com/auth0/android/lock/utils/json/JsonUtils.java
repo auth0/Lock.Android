@@ -35,7 +35,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-public class JsonUtils {
+public abstract class JsonUtils {
 
     public static Gson createGson() {
         Type applicationType = TypeToken.get(Application.class).getType();
