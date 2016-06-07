@@ -28,6 +28,7 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -40,6 +41,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -374,6 +376,20 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         });
     }
 
+    private void showMissingConnectionsDialog() {
+        new AlertDialog.Builder(PasswordlessLockActivity.this)
+                .setCancelable(false)
+                .setMessage(R.string.com_auth0_lock_missing_connections_message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PasswordlessLockActivity.this.finish();
+                    }
+                })
+                .create()
+                .show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == COUNTRY_CODE_REQUEST) {
@@ -502,11 +518,21 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
+            if (configuration.isPasswordlessLockAvailable()) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        lockView.configure(configuration);
+                        reloadRecentPasswordlessData();
+                    }
+                });
+                return;
+            }
+
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    lockView.configure(configuration);
-                    reloadRecentPasswordlessData();
+                    showMissingConnectionsDialog();
                 }
             });
         }

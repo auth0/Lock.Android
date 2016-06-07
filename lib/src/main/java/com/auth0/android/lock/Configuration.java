@@ -69,6 +69,8 @@ public class Configuration {
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean usernameRequired;
+    private final boolean classicLockAvailable;
+    private final boolean passwordlessLockAvailable;
     @UsernameStyle
     private int usernameStyle;
     @SocialButtonStyle
@@ -91,6 +93,8 @@ public class Configuration {
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
         this.application = application;
+        this.classicLockAvailable = !socialStrategies.isEmpty() || !enterpriseStrategies.isEmpty() || defaultDatabaseConnection != null;
+        this.passwordlessLockAvailable = !socialStrategies.isEmpty() || !passwordlessStrategies.isEmpty();
         parseLocalOptions(options);
     }
 
@@ -346,4 +350,13 @@ public class Configuration {
     public boolean hasExtraFields() {
         return !extraSignUpFields.isEmpty();
     }
+
+    public boolean isClassicLockAvailable() {
+        return classicLockAvailable;
+    }
+
+    public boolean isPasswordlessLockAvailable() {
+        return passwordlessLockAvailable;
+    }
+
 }
