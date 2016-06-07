@@ -3,8 +3,50 @@
 ## [2.0.0-beta.2](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.2) (2016-06-06)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.1...2.0.0-beta.2)
 
+**Changed**
 - Use new version of auth0-java to fix issue with json parsing [\#286](https://github.com/auth0/Lock.Android/pull/286) ([lbalmaceda](https://github.com/lbalmaceda))
-- Fix issues with default values of `allow****` and `initialScreen` options
+- Fix issues with default values of `allow****` and `initialScreen` options [\#286](https://github.com/auth0/Lock.Android/pull/286) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Breaking changes**
+
+`AuthenticationCallback` no longer returns `UserProfile`, it only returns `Credentials` object with the tokens of the authenticated user:
+
+```java
+private LockCallback callback = new AuthenticationCallback() {
+     @Override
+     public void onAuthentication(Credentials credentials) {
+        //Authenticated
+     }
+
+     @Override
+     public void onCanceled() {
+        //User pressed back
+     }
+
+     @Override
+     public void onError(LockException error)
+        //Exception occurred
+     }
+ };
+```
+
+To request the `UserProfile`, just use `AuthenticationAPIClient` from [auth0-java](https://github.com/auth0/auth0-java)
+
+```java
+@Override
+public void onAuthentication(Credentials credentials) {
+    AuthenticationAPIClient client = new AuthenticationAPIClient(new Auth0("YOUR_CLIENT_ID", "YOUR_DOMAIN"));
+
+    client.tokenInfo(credentials.idToken)
+        .start(new BaseCallback<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile payload) { }
+
+            @Override
+            public void onFailure(Auth0Exception error) { }
+        });
+}
+```
 
 ## [2.0.0-beta.1](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.1) (2016-06-03)
 
@@ -65,7 +107,7 @@ You'll also need a `LockCallback` implementation, we provide `AuthenticationCall
 ```java
 private LockCallback callback = new AuthenticationCallback() {
      @Override
-     public void onAuthentication(Credentials credentials) {
+     public void onAuthentication(Authentication authentication) {
         //Authenticated
      }
 
@@ -111,7 +153,7 @@ public class MainActivity extends Activity {
 
   private LockCallback callback = new AuthenticationCallback() {
        @Override
-       public void onAuthentication(Credentials credentials) {
+       public void onAuthentication(Authentication authentication) {
           //Authenticated
        }
 
