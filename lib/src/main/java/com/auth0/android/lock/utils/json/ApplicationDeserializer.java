@@ -37,7 +37,7 @@ public class ApplicationDeserializer extends GsonDeserializer<Application> {
 
     @Override
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        checkValidJson(json, Application.class);
+        checkValidJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
         checkRequiredValue(object, "id");

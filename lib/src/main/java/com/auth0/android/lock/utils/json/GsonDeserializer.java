@@ -37,9 +37,9 @@ abstract class GsonDeserializer<T> implements JsonDeserializer<T> {
         }
     }
 
-    void checkValidJson(JsonElement jsonObject, Class<T> clazz) throws JsonParseException {
+    void checkValidJsonObject(JsonElement jsonObject) throws JsonParseException {
         if (jsonObject.isJsonNull() || !jsonObject.isJsonObject()) {
-            throw new JsonParseException(String.format("Received %s json is not a valid json object.", clazz.getSimpleName()));
+            throw new JsonParseException("Received json is not a valid json object.");
         }
     }
 }

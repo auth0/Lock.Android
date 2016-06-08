@@ -36,7 +36,7 @@ import java.util.List;
 public class StrategyDeserializer extends GsonDeserializer<Strategy> {
     @Override
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        checkValidJson(json, Strategy.class);
+        checkValidJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
         checkRequiredValue(object, "name");

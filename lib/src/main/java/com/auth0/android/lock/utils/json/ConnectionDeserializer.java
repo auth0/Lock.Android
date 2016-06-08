@@ -36,7 +36,7 @@ import java.util.Map;
 public class ConnectionDeserializer extends GsonDeserializer<Connection> {
     @Override
     public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        checkValidJson(json, Connection.class);
+        checkValidJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
         checkRequiredValue(object, "name");
