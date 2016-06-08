@@ -27,7 +27,6 @@ package com.auth0.android.lock;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
@@ -39,7 +38,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -287,20 +285,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    private void showMissingConnectionsDialog() {
-        new AlertDialog.Builder(LockActivity.this)
-                .setCancelable(false)
-                .setMessage(R.string.com_auth0_lock_missing_connections_message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        LockActivity.this.finish();
-                    }
-                })
-                .create()
-                .show();
-    }
-
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
         currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
@@ -470,23 +454,17 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
-            configuration = new Configuration(app, options);
-            if (configuration.isClassicLockAvailable()) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        lockView.configure(configuration);
-                    }
-                });
-                return;
-            }
-
+            final Configuration successConfig = new Configuration(app, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showMissingConnectionsDialog();
+                    lockView.configure(successConfig);
                 }
             });
+            if (successConfig.isClassicLockAvailable()) {
+                configuration = successConfig;
+            }
+            applicationFetcher = null;
         }
 
         @Override

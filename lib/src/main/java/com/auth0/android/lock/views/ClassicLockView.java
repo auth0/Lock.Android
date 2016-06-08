@@ -82,7 +82,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         setOrientation(VERTICAL);
         if (configuration == null) {
             Log.w(TAG, "Configuration is missing, the view won't init.");
-            showConfigurationMissingLayout();
+            showConfigurationMissingLayout(false);
         } else {
             showContentLayout();
         }
@@ -141,14 +141,14 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
-        if (configuration != null) {
+        if (configuration != null && configuration.isClassicLockAvailable()) {
             init();
-            return;
+        } else {
+            showConfigurationMissingLayout(configuration != null && !configuration.isClassicLockAvailable());
         }
-        showConfigurationMissingLayout();
     }
 
-    private void showConfigurationMissingLayout() {
+    private void showConfigurationMissingLayout(boolean missingConnections) {
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         final LinearLayout errorLayout = new LinearLayout(getContext());
         errorLayout.setOrientation(LinearLayout.VERTICAL);
@@ -157,7 +157,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         params.gravity = Gravity.CENTER;
 
         TextView errorText = new TextView(getContext());
-        errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);
+        errorText.setText(missingConnections ? R.string.com_auth0_lock_missing_connections_message : R.string.com_auth0_lock_configuration_retrieving_error);
         errorText.setGravity(Gravity.CENTER);
 
         Button retryButton = new Button(getContext());

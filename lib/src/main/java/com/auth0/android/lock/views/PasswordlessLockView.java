@@ -73,7 +73,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         setOrientation(VERTICAL);
         if (configuration == null) {
             Log.w(TAG, "Configuration is missing, the view won't init.");
-            showConfigurationMissingLayout();
+            showConfigurationMissingLayout(false);
         } else {
             showContentLayout();
         }
@@ -112,14 +112,14 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
-        if (configuration != null) {
+        if (configuration != null && configuration.isPasswordlessLockAvailable()) {
             init();
-            return;
+        } else {
+            showConfigurationMissingLayout(configuration != null && !configuration.isPasswordlessLockAvailable());
         }
-        showConfigurationMissingLayout();
     }
 
-    private void showConfigurationMissingLayout() {
+    private void showConfigurationMissingLayout(boolean missingConnections) {
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         final LinearLayout errorLayout = new LinearLayout(getContext());
         errorLayout.setOrientation(LinearLayout.VERTICAL);
@@ -128,7 +128,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         params.gravity = Gravity.CENTER;
 
         TextView errorText = new TextView(getContext());
-        errorText.setText(R.string.com_auth0_lock_configuration_retrieving_error);
+        errorText.setText(missingConnections ? R.string.com_auth0_lock_missing_connections_message : R.string.com_auth0_lock_configuration_retrieving_error);
         errorText.setGravity(Gravity.CENTER);
 
         Button retryButton = new Button(getContext());
@@ -154,7 +154,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        return formLayout.onBackPressed();
+        return formLayout != null && formLayout.onBackPressed();
     }
 
     /**

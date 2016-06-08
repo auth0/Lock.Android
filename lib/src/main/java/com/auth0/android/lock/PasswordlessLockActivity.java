@@ -212,7 +212,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         boolean launchedForResult = getCallingActivity() != null;
-        if (launchedForResult){
+        if (launchedForResult) {
             Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }
@@ -517,24 +517,18 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
-            configuration = new Configuration(app, options);
-            if (configuration.isPasswordlessLockAvailable()) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        lockView.configure(configuration);
-                        reloadRecentPasswordlessData();
-                    }
-                });
-                return;
-            }
-
+            final Configuration successConfig = new Configuration(app, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showMissingConnectionsDialog();
+                    lockView.configure(successConfig);
+                    reloadRecentPasswordlessData();
                 }
             });
+            if (successConfig.isClassicLockAvailable()) {
+                configuration = successConfig;
+            }
+            applicationFetcher = null;
         }
 
         @Override
