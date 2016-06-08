@@ -60,14 +60,10 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
                 type = DataType.EMAIL;
                 break;
             case USERNAME:
-                type = DataType.USERNAME;
+                type = configuration.isUsernameRequired() ? DataType.USERNAME : DataType.EMAIL;
                 break;
             case DEFAULT:
-                if (configuration.isUsernameRequired()) {
-                    type = DataType.USERNAME_OR_EMAIL;
-                } else {
-                    type = DataType.EMAIL;
-                }
+                type = configuration.isUsernameRequired() ? DataType.USERNAME_OR_EMAIL : DataType.EMAIL;
                 break;
         }
         setDataType(type);

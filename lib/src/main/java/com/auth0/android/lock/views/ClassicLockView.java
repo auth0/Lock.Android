@@ -296,7 +296,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
 
     @Override
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
-        addSubForm(new CustomFieldsFormView(this, event.getEmail(), event.getUsername(), event.getPassword()));
+        addSubForm(new CustomFieldsFormView(this, event.getEmail(), event.getPassword(), event.getUsername()));
         showSignUpTerms(false);
     }
 

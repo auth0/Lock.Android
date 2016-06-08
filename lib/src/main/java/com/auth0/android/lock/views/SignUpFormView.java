@@ -28,24 +28,35 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SignUpFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = SignUpFormView.class.getSimpleName();
+    public static final int MAX_FEW_CUSTOM_FIELDS = 2;
+
     private final LockWidgetForm lockWidget;
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
+    private LinearLayout fieldContainer;
+    private boolean displayFewCustomFields;
 
     public SignUpFormView(Context context) {
         super(context);
@@ -61,41 +72,55 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private void init() {
         Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
+        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        usernameInput.setOnEditorActionListener(this);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        emailInput.setOnEditorActionListener(this);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         passwordInput.setOnEditorActionListener(this);
 
-        if (configuration.getExtraSignUpFields().size() == 1) {
-            Log.d(TAG, "There is just 1 extra field. Showing special SignUp layout.");
-            boolean askEmail = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT;
-            if (askEmail) {
-                usernameInput.setVisibility(View.GONE);
-                emailInput.setVisibility(View.VISIBLE);
-                emailInput.setOnEditorActionListener(this);
-            } else {
-                emailInput.setVisibility(View.GONE);
-                usernameInput.setVisibility(View.VISIBLE);
-                usernameInput.setOnEditorActionListener(this);
-            }
-            passwordInput.setVisibility(View.GONE);
-            return;
-        }
+        usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);
 
-        if (configuration.isUsernameRequired()) {
-            emailInput.setVisibility(View.VISIBLE);
-            usernameInput.setVisibility(View.VISIBLE);
-        } else if (configuration.getUsernameStyle() == UsernameStyle.USERNAME) {
-            emailInput.setVisibility(View.GONE);
-            usernameInput.setVisibility(View.VISIBLE);
-        } else if (configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT) {
-            emailInput.setVisibility(View.VISIBLE);
-            usernameInput.setVisibility(View.GONE);
+        displayFewCustomFields = lockWidget.getConfiguration().getExtraSignUpFields().size() <= MAX_FEW_CUSTOM_FIELDS;
+        if (displayFewCustomFields) {
+            addCustomFields(configuration.getExtraSignUpFields());
         }
+    }
+
+    private void addCustomFields(List<CustomField> customFields) {
+        Log.d(TAG, String.format("Adding %d custom fields.", customFields.size()));
+        ViewGroup.LayoutParams fieldParams = defineFieldParams();
+
+        for (CustomField data : customFields) {
+            ValidatedInputView field = new ValidatedInputView(getContext());
+            data.configureField(field);
+            field.setLayoutParams(fieldParams);
+            field.setOnEditorActionListener(this);
+            fieldContainer.addView(field);
+        }
+    }
+
+    private Map<String, String> getCustomFieldValues() {
+        Map<String, String> map = new HashMap<>();
+        for (CustomField data : lockWidget.getConfiguration().getExtraSignUpFields()) {
+            map.put(data.getKey(), data.findValue(fieldContainer));
+        }
+        Log.d(TAG, "Custom field values are" + map.values().toString());
+
+        return map;
+    }
+
+    private LinearLayout.LayoutParams defineFieldParams() {
+        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.setMargins(0, verticalMargin, 0, 0);
+        return params;
     }
 
     @Override
@@ -106,11 +131,12 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         int usernameHeight = ViewUtils.measureViewHeight(usernameInput);
         int emailHeight = ViewUtils.measureViewHeight(emailInput);
         int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
-        int sumHeight = usernameHeight + emailHeight + passwordHeight;
+        int customFields = ViewUtils.measureViewHeight(fieldContainer);
+        int sumHeight = usernameHeight + emailHeight + passwordHeight + customFields;
 
         Log.v(TAG, String.format("Parent height %d, Children height %d (%d + %d + %d)", parentHeight, sumHeight, usernameHeight, emailHeight, passwordHeight));
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode){
+        switch (heightMode) {
             case MeasureSpec.UNSPECIFIED:
                 setMeasuredDimension(getMeasuredWidth(), sumHeight);
                 break;
@@ -124,6 +150,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     }
 
     @Override
+    @NonNull
     public Object getActionEvent() {
         Log.d(TAG, String.format("Triggered sign up with email %s and username %s", getEmail(), getUsername()));
         return new DatabaseSignUpEvent(getEmail(), getPassword(), getUsername());
@@ -156,6 +183,12 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         if (passwordInput.getVisibility() == VISIBLE) {
             valid = passwordInput.validate() && valid;
         }
+        if (displayFewCustomFields) {
+            for (int i = 0; i < fieldContainer.getChildCount(); i++) {
+                ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
+                valid = input.validate() && valid;
+            }
+        }
         return valid;
     }
 
@@ -164,10 +197,12 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public Object submitForm() {
         if (validateForm()) {
             DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
-            if (!lockWidget.getConfiguration().hasExtraFields()) {
+            if (displayFewCustomFields) {
+                event.setExtraFields(getCustomFieldValues());
                 return event;
+            } else if (lockWidget.getConfiguration().hasExtraFields()) {
+                lockWidget.showCustomFieldsForm(event);
             }
-            lockWidget.showCustomFieldsForm(event);
         }
         return null;
     }
