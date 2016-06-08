@@ -25,7 +25,6 @@
 package com.auth0.android.lock.utils.json;
 
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -34,18 +33,17 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class ApplicationDeserializer implements JsonDeserializer<Application> {
+public class ApplicationDeserializer extends GsonDeserializer<Application> {
+
     @Override
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (!json.isJsonObject() || json.isJsonNull()) {
-            throw new JsonParseException("Application json is not a valid json object");
-        }
+        checkValidJson(json, Application.class);
 
         final JsonObject map = json.getAsJsonObject();
-        JsonUtils.checkRequiredValue(map, "id");
-        JsonUtils.checkRequiredValue(map, "tenant");
-        JsonUtils.checkRequiredValue(map, "authorize");
-        JsonUtils.checkRequiredValue(map, "strategies");
+        checkRequiredValue(map, "id");
+        checkRequiredValue(map, "tenant");
+        checkRequiredValue(map, "authorize");
+        checkRequiredValue(map, "strategies");
 
         String id = map.get("id").getAsString();
         String tenant = map.get("tenant").getAsString();

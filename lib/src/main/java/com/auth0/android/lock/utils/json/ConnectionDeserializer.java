@@ -25,7 +25,6 @@
 package com.auth0.android.lock.utils.json;
 
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -34,15 +33,13 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class ConnectionDeserializer implements JsonDeserializer<Connection> {
+public class ConnectionDeserializer extends GsonDeserializer<Connection> {
     @Override
     public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (!json.isJsonObject() || json.isJsonNull()) {
-            throw new JsonParseException("Connection json is not a valid json object");
-        }
+        checkValidJson(json, Connection.class);
 
         final JsonObject map = json.getAsJsonObject();
-        JsonUtils.checkRequiredValue(map, "name");
+        checkRequiredValue(map, "name");
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> values = context.deserialize(map, mapType);
 
