@@ -66,7 +66,7 @@ public class LoginAuthenticationErrorBuilder implements AuthenticationErrorBuild
         if (throwable instanceof APIException) {
             APIException exception = (APIException) throwable;
             Map errorResponse = exception.getResponseError();
-            final String errorCode = (String) errorResponse.get(ERROR_KEY);
+            final String errorCode = errorResponse.containsKey(ERROR_KEY) ? (String) errorResponse.get(ERROR_KEY) : (String) errorResponse.get(CODE_KEY);
             final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
             if (INVALID_USER_PASSWORD_ERROR.equalsIgnoreCase(errorCode)) {
                 return new AuthenticationError(invalidCredentialsResource, ErrorType.INVALID_CREDENTIALS, throwable);
