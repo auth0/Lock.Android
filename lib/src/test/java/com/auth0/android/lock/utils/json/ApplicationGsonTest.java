@@ -22,13 +22,11 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.json.JsonUtils;
 import com.google.gson.JsonParseException;
 
 import org.hamcrest.collection.IsCollectionWithSize;
-import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +35,6 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -52,7 +49,7 @@ public class ApplicationGsonTest extends GsonBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        gson = JsonUtils.createGson();
+        gson = createGson();
     }
 
     @Test

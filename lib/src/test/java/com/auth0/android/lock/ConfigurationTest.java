@@ -29,10 +29,10 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.Strategy;
-import com.auth0.android.lock.utils.json.JsonUtils;
+import com.auth0.android.lock.utils.json.Application;
+import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.utils.json.GsonBaseTest;
+import com.auth0.android.lock.utils.json.Strategy;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;
@@ -48,7 +48,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.auth0.android.lock.utils.ConnectionMatcher.isConnection;
 import static com.auth0.android.lock.utils.Strategies.ActiveDirectory;
 import static com.auth0.android.lock.utils.Strategies.Email;
 import static com.auth0.android.lock.utils.Strategies.Facebook;
@@ -60,7 +59,8 @@ import static com.auth0.android.lock.utils.Strategies.Twitter;
 import static com.auth0.android.lock.utils.Strategies.Yahoo;
 import static com.auth0.android.lock.utils.Strategies.Yammer;
 import static com.auth0.android.lock.utils.Strategies.Yandex;
-import static com.auth0.android.lock.utils.StrategyMatcher.isStrategy;
+import static com.auth0.android.lock.utils.json.ConnectionMatcher.isConnection;
+import static com.auth0.android.lock.utils.json.StrategyMatcher.isStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -76,7 +76,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
-public class ConfigurationTest {
+public class ConfigurationTest extends GsonBaseTest {
 
     private static final String RESTRICTIVE_DATABASE = "RestrictiveDatabase";
     private static final String CUSTOM_DATABASE = "CustomDatabase";
@@ -95,7 +95,7 @@ public class ConfigurationTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         final FileReader fr = new FileReader("src/test/resources/appinfo.json");
-        application = JsonUtils.createGson().fromJson(new JsonReader(fr), Application.class);
+        application = createGson().fromJson(new JsonReader(fr), Application.class);
         options = new Options();
     }
 

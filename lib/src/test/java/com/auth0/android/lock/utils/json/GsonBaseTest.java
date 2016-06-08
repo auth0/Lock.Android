@@ -22,16 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-abstract class GsonBaseTest {
+public abstract class GsonBaseTest {
 
     static final String EMPTY_OBJECT = "src/test/resources/empty_object.json";
     static final String INVALID = "src/test/resources/invalid.json";
@@ -47,4 +48,7 @@ abstract class GsonBaseTest {
         return new FileReader(name);
     }
 
+    public Gson createGson() {
+        return ApplicationFetcher.createGson();
+    }
 }

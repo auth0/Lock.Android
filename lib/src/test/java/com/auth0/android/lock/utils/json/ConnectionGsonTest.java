@@ -1,5 +1,5 @@
 /*
- * CredentialsGsonTest.java
+ * ConnectionGsonTest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,9 +22,8 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.json.JsonUtils;
 import com.google.gson.JsonParseException;
 
 import org.hamcrest.core.IsCollectionContaining;
@@ -52,7 +51,7 @@ public class ConnectionGsonTest extends GsonBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        gson = JsonUtils.createGson();
+        gson = createGson();
     }
 
     @Test

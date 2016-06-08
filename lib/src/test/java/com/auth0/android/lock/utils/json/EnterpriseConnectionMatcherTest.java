@@ -1,5 +1,5 @@
 /*
- * EmailParserTest.java
+ * EnterpriseConnectionMatcherTest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,7 +22,11 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
+
+import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
+import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.utils.json.Strategy;
 
 import org.junit.Before;
 import org.junit.Test;

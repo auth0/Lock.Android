@@ -22,9 +22,8 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.json.JsonUtils;
 import com.google.gson.JsonParseException;
 
 import org.hamcrest.collection.IsCollectionWithSize;
@@ -50,7 +49,7 @@ public class StrategyGsonTest extends GsonBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        gson = JsonUtils.createGson();
+        gson = createGson();
     }
 
     @Test

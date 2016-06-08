@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.utils.Strategy;
+import com.auth0.android.lock.utils.json.Strategy;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 import java.util.List;

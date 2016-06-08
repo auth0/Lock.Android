@@ -35,7 +35,7 @@ import android.util.Log;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.Strategies;
-import com.auth0.android.lock.utils.Strategy;
+import com.auth0.android.lock.utils.json.Strategy;
 
 class SocialConfig {
     private static final String TAG = SocialConfig.class.getSimpleName();

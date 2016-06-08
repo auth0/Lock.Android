@@ -1,5 +1,5 @@
 /*
- * StrategyTest.java
+ * StrategyMatcher.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,7 +22,9 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
+
+import com.auth0.android.lock.utils.Strategies;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;

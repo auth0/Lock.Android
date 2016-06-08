@@ -24,9 +24,6 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.Strategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -35,21 +32,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-public abstract class JsonUtils {
+abstract class JsonUtils {
 
-    public static Gson createGson() {
-        Type applicationType = TypeToken.get(Application.class).getType();
-        Type strategyType = TypeToken.get(Strategy.class).getType();
-        Type connectionType = TypeToken.get(Connection.class).getType();
-        return new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(applicationType, new ApplicationDeserializer())
-                .registerTypeAdapter(strategyType, new StrategyDeserializer())
-                .registerTypeAdapter(connectionType, new ConnectionDeserializer())
-                .create();
-    }
-
-    public static void checkRequiredValue(JsonObject map, String valueName) throws JsonParseException {
+    static void checkRequiredValue(JsonObject map, String valueName) throws JsonParseException {
         if (map.get(valueName) == null) {
             throw new JsonParseException("Missing value in Json: " + valueName);
         }

@@ -24,8 +24,6 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Strategy;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

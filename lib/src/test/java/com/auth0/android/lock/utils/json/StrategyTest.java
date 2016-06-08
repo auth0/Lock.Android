@@ -22,7 +22,10 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
+
+import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.utils.json.Strategy;
 
 import org.junit.Before;
 import org.junit.Test;
