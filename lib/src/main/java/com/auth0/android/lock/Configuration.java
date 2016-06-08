@@ -93,9 +93,12 @@ public class Configuration {
         this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
         this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
         this.application = application;
-        this.classicLockAvailable = !socialStrategies.isEmpty() || !enterpriseStrategies.isEmpty() || defaultDatabaseConnection != null;
-        this.passwordlessLockAvailable = !socialStrategies.isEmpty() || !passwordlessStrategies.isEmpty();
         parseLocalOptions(options);
+        boolean atLeastOneSocialModeEnabled = allowLogIn || allowSignUp;
+        boolean atLeastOneDatabaseModeEnabled = atLeastOneSocialModeEnabled || allowForgotPassword;
+        this.classicLockAvailable = (!socialStrategies.isEmpty() && atLeastOneSocialModeEnabled) || (!enterpriseStrategies.isEmpty() && allowLogIn)
+                || (defaultDatabaseConnection != null && atLeastOneDatabaseModeEnabled);
+        this.passwordlessLockAvailable = !socialStrategies.isEmpty() || !passwordlessStrategies.isEmpty();
     }
 
     @NonNull
@@ -179,7 +182,7 @@ public class Configuration {
         }
 
         if (connection == null || (defaultDatabaseName != null && !connection.getName().equals(defaultDatabaseName))) {
-            Log.w(TAG, "Your chosen default database name was not found in your Auth0 connections configuration.");
+            Log.w(TAG, String.format("You've chosen '%s' as your default database name, but it wasn't found in your Auth0 connections configuration.", defaultDatabaseName));
         }
         return connection;
     }
@@ -232,55 +235,58 @@ public class Configuration {
         socialButtonStyle = options.socialButtonStyle();
         loginAfterSignUp = options.loginAfterSignUp();
 
+        final boolean socialAvailable = !getSocialStrategies().isEmpty();
         final boolean dbAvailable = getDefaultDatabaseConnection() != null;
         final boolean enterpriseAvailable = !getEnterpriseStrategies().isEmpty();
-        if (dbAvailable || enterpriseAvailable) {
+        if (dbAvailable || enterpriseAvailable || socialAvailable) {
             //let user disable logIn only if connection have enabled it.
             allowLogIn = options.allowLogIn();
         }
-        if (dbAvailable) {
-            //let user disable signUp only if connection have enabled it.
-            allowSignUp = getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
-            if (allowSignUp && !options.allowSignUp()) {
-                allowSignUp = false;
-            }
+        //let user disable signUp only if connection have enabled it.
+        allowSignUp = options.allowSignUp() && (socialAvailable || dbAvailable && getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY));
 
+        if (dbAvailable) {
             //let user disable password reset only if connection have enabled it.
-            allowForgotPassword = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY);
-            if (allowForgotPassword && !options.allowForgotPassword()) {
-                allowForgotPassword = false;
-            }
+            allowForgotPassword = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY) && options.allowForgotPassword();
 
             usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
-        }
 
-        initialScreen = options.initialScreen();
-        switch (initialScreen) {
-            case InitialScreen.FORGOT_PASSWORD:
-                if (!allowForgotPassword) {
-                    //Continue to the LOG_IN case to try to default to another option.
-                    Log.w(TAG, "Configuration conflict: Check you options of allowForgotPassword and initialScreen on the Lock.Builder instance.");
-                } else {
+            initialScreen = options.initialScreen();
+            switch (initialScreen) {
+                case InitialScreen.FORGOT_PASSWORD:
+                    if (!allowForgotPassword) {
+                        //Continue to the LOG_IN case to try to default to another option.
+                        Log.w(TAG, "You chose 'FORGOT_PASSWORD' as the initial screen but your configuration doesn't have 'allowForgotPassword' enabled. Trying to default to 'LOG_IN'.");
+                    } else {
+                        break;
+                    }
+                case InitialScreen.LOG_IN:
+                    if (allowLogIn) {
+                        initialScreen = InitialScreen.LOG_IN;
+                    } else if (allowSignUp) {
+                        Log.w(TAG, "You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled. Defaulting to 'SIGN_UP'.");
+                        initialScreen = InitialScreen.SIGN_UP;
+                    } else if (allowForgotPassword) {
+                        initialScreen = InitialScreen.FORGOT_PASSWORD;
+                        Log.w(TAG, "You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled. Defaulting to 'FORGOT_PASSWORD'");
+                    } else {
+                        Log.w(TAG, "You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled.");
+                    }
                     break;
-                }
-            case InitialScreen.LOG_IN:
-                if (allowLogIn) {
-                    initialScreen = InitialScreen.LOG_IN;
-                } else if (allowSignUp) {
-                    initialScreen = InitialScreen.SIGN_UP;
-                } else {
-                    Log.w(TAG, "Configuration conflict: Check you options of allowLogIn, allowSignUp and initialScreen on the Lock.Builder instance.");
-                }
-                break;
-            case InitialScreen.SIGN_UP:
-                if (allowSignUp) {
-                    initialScreen = InitialScreen.SIGN_UP;
-                } else if (allowLogIn) {
-                    initialScreen = InitialScreen.LOG_IN;
-                } else {
-                    Log.w(TAG, "Configuration conflict: Check you options of allowLogIn, allowSignUp and initialScreen on the Lock.Builder instance.");
-                }
-                break;
+                case InitialScreen.SIGN_UP:
+                    if (allowSignUp) {
+                        initialScreen = InitialScreen.SIGN_UP;
+                    } else if (allowLogIn) {
+                        Log.w(TAG, "You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled. Defaulting to 'LOG_IN'.");
+                        initialScreen = InitialScreen.LOG_IN;
+                    } else if (allowForgotPassword) {
+                        initialScreen = InitialScreen.FORGOT_PASSWORD;
+                        Log.w(TAG, "You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled. Defaulting to 'FORGOT_PASSWORD'");
+                    } else {
+                        Log.w(TAG, "You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled.");
+                    }
+                    break;
+            }
         }
 
         Strategy passwordlessStrategy = getDefaultPasswordlessStrategy();
