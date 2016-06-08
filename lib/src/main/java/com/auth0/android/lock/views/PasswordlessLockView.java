@@ -55,6 +55,8 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
     private ProgressBar loadingProgressBar;
     private HeaderView headerView;
 
+    private int headerPadding;
+
 
     public PasswordlessLockView(Context context) {
         super(context);
@@ -89,6 +91,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         headerView = new HeaderView(getContext());
+        headerView.setPaddingTop(headerPadding);
         addView(headerView, wrapHeightParams);
 
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -164,6 +167,15 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         if (actionButton != null) {
             actionButton.showProgress(show);
         }
+    }
+
+    /**
+     * Updates the header's top padding. This is useful in LOLLIPOP or greater devices.
+     *
+     * @param padding the padding value
+     */
+    public void setHeaderPadding(int padding) {
+        headerPadding = padding;
     }
 
     /**

@@ -144,7 +144,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lockView = new PasswordlessLockView(this, lockBus);
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
-        lockView.setPadding(0, paddingTop, 0, 0);
+        lockView.setHeaderPadding(paddingTop);
         rootView.addView(lockView);
 
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());

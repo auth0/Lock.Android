@@ -133,7 +133,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lockView = new ClassicLockView(this, lockBus);
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
-        lockView.setPadding(0, paddingTop, 0, 0);
+        lockView.setHeaderPadding(paddingTop);
         rootView.addView(lockView);
 
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
@@ -198,7 +198,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         boolean launchedForResult = getCallingActivity() != null;
-        if (launchedForResult){
+        if (launchedForResult) {
             Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }

@@ -25,6 +25,7 @@
 package com.auth0.android.lock.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -62,14 +63,14 @@ public abstract class ActivityUIHelper {
         Log.d(TAG, String.format("Activity in %s mode", fullscreen ? "fullscreen" : "normal"));
     }
 
-    public static int getStatusBarHeight(Activity activity, boolean isFullscreen) {
+    public static int getStatusBarHeight(Context context, boolean isFullscreen) {
         int result = 0;
-        if (isFullscreen || Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (isFullscreen) {
             return result;
         }
-        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = activity.getResources().getDimensionPixelSize(resourceId);
+            result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }
