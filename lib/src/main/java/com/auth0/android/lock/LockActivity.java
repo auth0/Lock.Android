@@ -126,14 +126,14 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
-        int paddingTop = getStatusBarHeight();
+        int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         ScrollView rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         lockView = new ClassicLockView(this, lockBus);
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
-        lockView.setPadding(0, paddingTop, 0, 0);
+        lockView.setHeaderPadding(paddingTop);
         rootView.addView(lockView);
 
         resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
@@ -144,18 +144,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
-    }
-
-    private int getStatusBarHeight() {
-        int result = 0;
-        if (options.isFullscreen()) {
-            return result;
-        }
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 
     private void setupKeyboardListener() {
@@ -210,7 +198,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         boolean launchedForResult = getCallingActivity() != null;
-        if (launchedForResult){
+        if (launchedForResult) {
             Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }

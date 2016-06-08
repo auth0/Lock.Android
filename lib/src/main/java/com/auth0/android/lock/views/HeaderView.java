@@ -99,12 +99,7 @@ public class HeaderView extends RelativeLayout {
         setVisibility(isOpen ? GONE : VISIBLE);
     }
 
-    /**
-     * Just sets the top padding to the given one.
-     *
-     * @param paddingTop to set to this view.
-     */
-    public void setPaddingTop(int paddingTop) {
-        this.header.setPadding(0, paddingTop, 0, 0);
+    public void setPaddingTop(int padding) {
+        header.setPadding(0, padding, 0, 0);
     }
 }
