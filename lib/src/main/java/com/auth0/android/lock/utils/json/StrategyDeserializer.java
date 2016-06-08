@@ -38,14 +38,13 @@ public class StrategyDeserializer extends GsonDeserializer<Strategy> {
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         checkValidJson(json, Strategy.class);
 
-        final JsonObject map = json.getAsJsonObject();
-        checkRequiredValue(map, "name");
-        checkRequiredValue(map, "connections");
+        final JsonObject object = json.getAsJsonObject();
+        checkRequiredValue(object, "name");
+        checkRequiredValue(object, "connections");
 
-        String name = map.get("name").getAsString();
-        Type connectionType = new TypeToken<List<Connection>>() {
-        }.getType();
-        List<Connection> connections = context.deserialize(map.get("connections"), connectionType);
+        String name = context.deserialize(object.remove("name"), String.class);
+        Type connectionType = new TypeToken<List<Connection>>() {}.getType();
+        List<Connection> connections = context.deserialize(object.remove("connections"), connectionType);
 
         return new Strategy(name, connections);
     }

@@ -38,10 +38,11 @@ public class ConnectionDeserializer extends GsonDeserializer<Connection> {
     public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         checkValidJson(json, Connection.class);
 
-        final JsonObject map = json.getAsJsonObject();
-        checkRequiredValue(map, "name");
+        final JsonObject object = json.getAsJsonObject();
+        checkRequiredValue(object, "name");
+
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> values = context.deserialize(map, mapType);
+        Map<String, Object> values = context.deserialize(object, mapType);
 
         return new Connection(values);
     }

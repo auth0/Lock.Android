@@ -39,24 +39,22 @@ public class ApplicationDeserializer extends GsonDeserializer<Application> {
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         checkValidJson(json, Application.class);
 
-        final JsonObject map = json.getAsJsonObject();
-        checkRequiredValue(map, "id");
-        checkRequiredValue(map, "tenant");
-        checkRequiredValue(map, "authorize");
-        checkRequiredValue(map, "strategies");
+        final JsonObject object = json.getAsJsonObject();
+        checkRequiredValue(object, "id");
+        checkRequiredValue(object, "tenant");
+        checkRequiredValue(object, "authorize");
+        checkRequiredValue(object, "strategies");
 
-        String id = map.get("id").getAsString();
-        String tenant = map.get("tenant").getAsString();
-        String authorizeURL = map.get("authorize").getAsString();
-        final JsonElement callbackURLJson = map.get("callback");
-        String callbackURL = callbackURLJson == null ? null : callbackURLJson.getAsString();
-        final JsonElement subscriptionJson = map.get("subscription");
-        String subscription = subscriptionJson == null ? null : subscriptionJson.getAsString();
-        final JsonElement hasAllowedOriginsJson = map.get("hasAllowedOrigins");
-        boolean hasAllowedOrigins = hasAllowedOriginsJson != null && hasAllowedOriginsJson.getAsBoolean();
+        String id = context.deserialize(object.remove("id"), String.class);
+        String tenant = context.deserialize(object.remove("tenant"), String.class);
+        String authorizeURL = context.deserialize(object.remove("authorize"), String.class);
+        String callbackURL = context.deserialize(object.remove("callback"), String.class);
+
+        String subscription = context.deserialize(object.remove("subscription"), String.class);
+        boolean hasAllowedOrigins = context.deserialize(object.remove("hasAllowedOrigins"), Boolean.class);
 
         Type strategyType = new TypeToken<List<Strategy>>() {}.getType();
-        List<Strategy> strategies = context.deserialize(map.get("strategies"), strategyType);
+        List<Strategy> strategies = context.deserialize(object.remove("strategies"), strategyType);
 
         return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, strategies);
     }
