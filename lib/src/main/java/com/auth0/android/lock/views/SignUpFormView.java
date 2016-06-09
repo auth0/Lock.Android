@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -40,18 +41,21 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
+import com.auth0.android.lock.views.interfaces.InputValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SignUpFormView extends FormView implements TextView.OnEditorActionListener {
+public class SignUpFormView extends FormView implements TextView.OnEditorActionListener, InputValidationCallback {
 
     private static final String TAG = SignUpFormView.class.getSimpleName();
     public static final int MAX_FEW_CUSTOM_FIELDS = 2;
 
     private final LockWidgetForm lockWidget;
+    private final IdentityListener identityListener;
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
@@ -61,11 +65,13 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public SignUpFormView(Context context) {
         super(context);
         this.lockWidget = null;
+        this.identityListener = null;
     }
 
-    public SignUpFormView(LockWidgetForm lockWidget) {
+    public SignUpFormView(LockWidgetForm lockWidget, IdentityListener identityListener) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
+        this.identityListener = identityListener;
         init();
     }
 
@@ -76,9 +82,11 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        usernameInput.setInputValidationCallback(this);
         usernameInput.setOnEditorActionListener(this);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        emailInput.setInputValidationCallback(this);
         emailInput.setOnEditorActionListener(this);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
@@ -217,5 +225,20 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
             lockWidget.onFormSubmit();
         }
         return false;
+    }
+
+    public void setUsernameOrEmail(String email, String username) {
+        emailInput.setText(email);
+        usernameInput.setText(username);
+        passwordInput.clearInput();
+    }
+
+    @Override
+    public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
+        if (id == R.id.com_auth0_lock_input_email) {
+            identityListener.onEmailChanged(currentValue);
+        } else if (id == R.id.com_auth0_lock_input_username) {
+            identityListener.onUsernameChanged(currentValue);
+        }
     }
 }

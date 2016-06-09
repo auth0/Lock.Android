@@ -390,7 +390,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
-        apiClient.requestChangePassword(event.getUsernameOrEmail())
+        apiClient.requestChangePassword(event.getEmail())
                 .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
     }

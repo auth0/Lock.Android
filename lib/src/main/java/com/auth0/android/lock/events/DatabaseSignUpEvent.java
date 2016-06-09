@@ -35,30 +35,15 @@ import com.auth0.authentication.result.DatabaseUser;
 
 import java.util.Map;
 
-public class DatabaseSignUpEvent {
+public class DatabaseSignUpEvent extends DatabaseEvent {
 
-    @NonNull
-    private String email;
-    @Nullable
-    private String username;
     @NonNull
     private String password;
     private Map<String, String> extraFields;
 
     public DatabaseSignUpEvent(@NonNull String email, @NonNull String password, @Nullable String username) {
-        this.email = email;
-        this.username = username;
+        super(email, username);
         this.password = password;
-    }
-
-    @NonNull
-    public String getEmail() {
-        return email;
-    }
-
-    @Nullable
-    public String getUsername() {
-        return username;
     }
 
     @NonNull

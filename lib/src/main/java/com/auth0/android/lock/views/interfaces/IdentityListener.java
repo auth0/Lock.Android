@@ -1,5 +1,5 @@
 /*
- * DbConnectionEvent.java
+ * IdentityListener.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,35 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.events;
+package com.auth0.android.lock.views.interfaces;
 
+public interface IdentityListener {
 
-import android.support.annotation.Nullable;
+    void onEmailChanged(String currentValue);
 
-public class DatabaseLoginEvent extends DatabaseEvent {
+    void onUsernameChanged(String currentValue);
 
-    private String password;
-    private String verificationCode;
-
-    public DatabaseLoginEvent(String usernameOrEmail, String password) {
-        super(usernameOrEmail);
-        this.password = password;
-    }
-
-    public String getUsernameOrEmail() {
-        return getEmail() != null ? getEmail() : getUsername();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setVerificationCode(String code) {
-        this.verificationCode = code;
-    }
-
-    @Nullable
-    public String getVerificationCode() {
-        return verificationCode;
-    }
 }

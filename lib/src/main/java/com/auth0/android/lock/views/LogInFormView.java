@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,14 +41,15 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
+import com.auth0.android.lock.views.interfaces.InputValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-import static com.auth0.android.lock.views.ValidatedInputView.*;
-
-public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
+public class LogInFormView extends FormView implements TextView.OnEditorActionListener, InputValidationCallback {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
+    private final IdentityListener identityListener;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
@@ -65,11 +67,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     public LogInFormView(Context context) {
         super(context);
         lockWidget = null;
+        identityListener = null;
     }
 
-    public LogInFormView(LockWidgetForm lockWidget) {
+    public LogInFormView(LockWidgetForm lockWidget, IdentityListener identityListener) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
+        this.identityListener = identityListener;
         init();
     }
 
@@ -84,7 +88,8 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
-        usernameInput.setDataType(DataType.USERNAME);
+        emailInput.setInputValidationCallback(this);
+        usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
@@ -276,7 +281,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
         Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode){
+        switch (heightMode) {
             case MeasureSpec.UNSPECIFIED:
                 setMeasuredDimension(getMeasuredWidth(), sumHeight);
                 break;
@@ -308,5 +313,19 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         keyboardIsOpen = isOpen;
         changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
         topMessage.setVisibility(topMessage.getText().length() > 0 ? isOpen ? GONE : VISIBLE : GONE);
+    }
+
+    public void setUsernameOrEmail(String email, String username) {
+        emailInput.setText(email != null ? email : username);
+        passwordInput.clearInput();
+    }
+
+    @Override
+    public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
+        if (lockWidget.getConfiguration().isUsernameRequired()) {
+            identityListener.onUsernameChanged(currentValue);
+        } else {
+            identityListener.onEmailChanged(currentValue);
+        }
     }
 }

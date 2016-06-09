@@ -1,5 +1,5 @@
 /*
- * DbConnectionEvent.java
+ * InputValidationCallback.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,35 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.events;
+package com.auth0.android.lock.views.interfaces;
 
+import android.support.annotation.IdRes;
 
-import android.support.annotation.Nullable;
+public interface InputValidationCallback {
 
-public class DatabaseLoginEvent extends DatabaseEvent {
-
-    private String password;
-    private String verificationCode;
-
-    public DatabaseLoginEvent(String usernameOrEmail, String password) {
-        super(usernameOrEmail);
-        this.password = password;
-    }
-
-    public String getUsernameOrEmail() {
-        return getEmail() != null ? getEmail() : getUsername();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setVerificationCode(String code) {
-        this.verificationCode = code;
-    }
-
-    @Nullable
-    public String getVerificationCode() {
-        return verificationCode;
-    }
+    /**
+     * Notifies that the current input value is either valid or empty.
+     *
+     * @param id           of the view
+     * @param currentValue the input has.
+     */
+    void onValidOrEmptyInput(@IdRes int id, String currentValue);
 }

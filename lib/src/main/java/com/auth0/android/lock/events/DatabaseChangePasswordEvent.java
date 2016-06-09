@@ -25,15 +25,9 @@
 package com.auth0.android.lock.events;
 
 
-public class DatabaseChangePasswordEvent {
+public class DatabaseChangePasswordEvent extends DatabaseEvent {
 
-    private String usernameOrEmail;
-
-    public DatabaseChangePasswordEvent(String usernameOrEmail) {
-        this.usernameOrEmail = usernameOrEmail;
-    }
-
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
+    public DatabaseChangePasswordEvent(String email) {
+        super(email);
     }
 }

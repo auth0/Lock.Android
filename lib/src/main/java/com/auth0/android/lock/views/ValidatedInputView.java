@@ -48,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.views.interfaces.InputValidationCallback;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -63,9 +64,10 @@ import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_
 
 public class ValidatedInputView extends LinearLayout {
 
-    private static final String USERNAME_REGEX = "^[a-zA-Z0-9_]{1,15}$";
-    private static final String PHONE_NUMBER_REGEX = "^[0-9]{6,14}$";
-    private static final String CODE_REGEX = "^[0-9]{4,12}$";
+    public static final String USERNAME_REGEX = "^[a-zA-Z0-9_]{1,15}$";
+    public static final String PHONE_NUMBER_REGEX = "^[0-9]{6,14}$";
+    public static final String CODE_REGEX = "^[0-9]{4,12}$";
+    public static final String EMAIL_REGEX = Patterns.EMAIL_ADDRESS.pattern();
     private static final String TAG = ValidatedInputView.class.getSimpleName();
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int VALIDATION_DELAY = 500;
@@ -73,6 +75,7 @@ public class ValidatedInputView extends LinearLayout {
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
+    private InputValidationCallback validationCallback;
     private int inputIcon;
     private boolean isShowingError = true;
     private boolean hasValidInput;
@@ -151,14 +154,18 @@ public class ValidatedInputView extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable s) {
-            runValidation();
+            boolean valid = runValidation();
+            if (validationCallback != null && (valid || s.length() == 0)) {
+                validationCallback.onValidOrEmptyInput(ValidatedInputView.this.getId(), s.toString());
+            }
         }
 
-        private void runValidation() {
+        private boolean runValidation() {
             hasValidInput = validate(false);
             Handler handler = getHandler();
             handler.removeCallbacks(uiUpdater);
             handler.postDelayed(uiUpdater, VALIDATION_DELAY);
+            return hasValidInput;
         }
     };
 
@@ -295,7 +302,7 @@ public class ValidatedInputView extends LinearLayout {
 
         switch (dataType) {
             case EMAIL:
-                isValid = Patterns.EMAIL_ADDRESS.matcher(value).matches();
+                isValid = value.matches(EMAIL_REGEX);
                 break;
             case PASSWORD:
                 isValid = value.length() >= MIN_PASSWORD_LENGTH;
@@ -304,7 +311,7 @@ public class ValidatedInputView extends LinearLayout {
                 isValid = value.matches(USERNAME_REGEX);
                 break;
             case USERNAME_OR_EMAIL:
-                final boolean validEmail = Patterns.EMAIL_ADDRESS.matcher(value).matches();
+                final boolean validEmail = value.matches(EMAIL_REGEX);
                 final boolean validUsername = value.matches(USERNAME_REGEX);
                 isValid = validEmail || validUsername;
                 break;
@@ -338,6 +345,9 @@ public class ValidatedInputView extends LinearLayout {
      */
     public void setText(String text) {
         input.setText("");
+        if (text == null) {
+            text = "";
+        }
         input.append(text);
     }
 
@@ -397,5 +407,14 @@ public class ValidatedInputView extends LinearLayout {
      */
     public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
         input.setOnEditorActionListener(listener);
+    }
+
+    /**
+     * Sets the given InputValidationCallback to this view EditText.
+     *
+     * @param callback to set to this view.
+     */
+    public void setInputValidationCallback(InputValidationCallback callback) {
+        this.validationCallback = callback;
     }
 }

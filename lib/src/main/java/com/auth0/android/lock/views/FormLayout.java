@@ -40,10 +40,12 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.events.DatabaseEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class FormLayout extends RelativeLayout implements ModeSelectionView.ModeSelectedListener {
+public class FormLayout extends RelativeLayout implements ModeSelectionView.ModeSelectedListener, IdentityListener {
     private static final String TAG = FormLayout.class.getSimpleName();
     private static final int SINGLE_FORM_POSITION = 0;
     private static final int MULTIPLE_FORMS_POSITION = 2;
@@ -62,6 +64,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     private LinearLayout formsHolder;
     private ModeSelectionView modeSelectionView;
+
+    private String lastEmailInput;
+    private String lastUsernameInput;
 
     public FormLayout(Context context) {
         super(context);
@@ -192,8 +197,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         removePreviousForm();
 
         if (signUpForm == null) {
-            signUpForm = new SignUpFormView(lockWidget);
+            signUpForm = new SignUpFormView(lockWidget, this);
         }
+        signUpForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
         formsHolder.addView(signUpForm);
     }
 
@@ -201,8 +207,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         removePreviousForm();
 
         if (logInForm == null) {
-            logInForm = new LogInFormView(lockWidget);
+            logInForm = new LogInFormView(lockWidget, this);
         }
+        logInForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
         formsHolder.addView(logInForm);
     }
 
@@ -321,5 +328,15 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     public void onModeSelected(@ModeSelectionView.Mode int mode) {
         Log.d(TAG, "Mode changed to " + mode);
         changeFormMode(mode);
+    }
+
+    @Override
+    public void onEmailChanged(String currentValue) {
+        lastEmailInput = currentValue;
+    }
+
+    @Override
+    public void onUsernameChanged(String currentValue) {
+        lastUsernameInput = currentValue;
     }
 }

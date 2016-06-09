@@ -1,5 +1,5 @@
 /*
- * DbConnectionEvent.java
+ * EmailEvent.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,33 +24,47 @@
 
 package com.auth0.android.lock.events;
 
-
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public class DatabaseLoginEvent extends DatabaseEvent {
+import com.auth0.android.lock.views.ValidatedInputView;
 
-    private String password;
-    private String verificationCode;
+public class DatabaseEvent {
+    private String username;
+    private String email;
 
-    public DatabaseLoginEvent(String usernameOrEmail, String password) {
-        super(usernameOrEmail);
-        this.password = password;
+    public DatabaseEvent(@NonNull String identity) {
+        if (isEmail(identity)) {
+            this.email = identity;
+        } else if (isUsername(identity)) {
+            this.username = identity;
+        }
     }
 
-    public String getUsernameOrEmail() {
-        return getEmail() != null ? getEmail() : getUsername();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setVerificationCode(String code) {
-        this.verificationCode = code;
+    public DatabaseEvent(@NonNull String email, @Nullable String username) {
+        this.email = email;
+        this.username = username;
     }
 
     @Nullable
-    public String getVerificationCode() {
-        return verificationCode;
+    public String getEmail() {
+        return email;
+    }
+
+    @Nullable
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(@Nullable String username) {
+        this.username = username;
+    }
+
+    private boolean isUsername(String input) {
+        return input != null && input.matches(ValidatedInputView.USERNAME_REGEX);
+    }
+
+    private boolean isEmail(String input) {
+        return input != null && input.matches(ValidatedInputView.EMAIL_REGEX);
     }
 }
