@@ -319,4 +319,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     public void onValidOrEmptyEmail(String currentEmail) {
         lockWidget.onEmailChanged(currentEmail);
     }
+
+    public void clearEmptyFieldsError() {
+        if (usernameInput.getText().isEmpty()){
+            usernameInput.clearInput();
+        }
+        if (emailInput.getText().isEmpty()){
+            emailInput.clearInput();
+        }
+    }
 }

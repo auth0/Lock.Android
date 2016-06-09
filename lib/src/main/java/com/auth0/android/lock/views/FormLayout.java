@@ -198,6 +198,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             signUpForm = new SignUpFormView(lockWidget);
         }
         signUpForm.setLastEmail(lastEmailInput);
+        signUpForm.clearEmptyFieldsError();
         formsHolder.addView(signUpForm);
     }
 
@@ -208,6 +209,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             logInForm = new LogInFormView(lockWidget);
         }
         logInForm.setLastEmail(lastEmailInput);
+        logInForm.clearEmptyFieldsError();
         formsHolder.addView(logInForm);
     }
 
