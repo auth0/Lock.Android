@@ -24,15 +24,12 @@
 
 package com.auth0.android.lock.views.interfaces;
 
-import android.support.annotation.IdRes;
-
-public interface InputValidationCallback {
+public interface EmailValidationCallback {
 
     /**
      * Notifies that the current input value is either valid or empty.
      *
-     * @param id           of the view
-     * @param currentValue the input has.
+     * @param currentEmail the input has.
      */
-    void onValidOrEmptyInput(@IdRes int id, String currentValue);
+    void onValidOrEmptyEmail(String currentEmail);
 }

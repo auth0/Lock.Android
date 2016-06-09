@@ -28,6 +28,4 @@ public interface IdentityListener {
 
     void onEmailChanged(String currentValue);
 
-    void onUsernameChanged(String currentValue);
-
 }

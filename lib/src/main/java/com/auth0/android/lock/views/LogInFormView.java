@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,10 +40,10 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.views.interfaces.InputValidationCallback;
+import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class LogInFormView extends FormView implements TextView.OnEditorActionListener, InputValidationCallback {
+public class LogInFormView extends FormView implements TextView.OnEditorActionListener, EmailValidationCallback {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
@@ -84,7 +83,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
-        emailInput.setInputValidationCallback(this);
+        emailInput.setEmailValidationCallback(this);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
@@ -311,17 +310,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         topMessage.setVisibility(topMessage.getText().length() > 0 ? isOpen ? GONE : VISIBLE : GONE);
     }
 
-    public void setUsernameOrEmail(String email, String username) {
-        emailInput.setText(email != null ? email : username);
+    public void setLastEmail(String email) {
+        emailInput.setText(email);
         passwordInput.clearInput();
     }
 
     @Override
-    public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
-        if (lockWidget.getConfiguration().isUsernameRequired()) {
-            lockWidget.onUsernameChanged(currentValue);
-        } else {
-            lockWidget.onEmailChanged(currentValue);
-        }
+    public void onValidOrEmptyEmail(String currentEmail) {
+        lockWidget.onEmailChanged(currentEmail);
     }
 }

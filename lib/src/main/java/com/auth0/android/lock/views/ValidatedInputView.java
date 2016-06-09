@@ -48,7 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.views.interfaces.InputValidationCallback;
+import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -75,7 +75,7 @@ public class ValidatedInputView extends LinearLayout {
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
-    private InputValidationCallback validationCallback;
+    private EmailValidationCallback emailValidationCallback;
     private int inputIcon;
     private boolean isShowingError = true;
     private boolean hasValidInput;
@@ -154,18 +154,24 @@ public class ValidatedInputView extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable s) {
-            boolean valid = runValidation();
-            if (validationCallback != null && (valid || s.length() == 0)) {
-                validationCallback.onValidOrEmptyInput(ValidatedInputView.this.getId(), s.toString());
+            runValidation();
+            if (dataType == EMAIL || dataType == USERNAME_OR_EMAIL) {
+                notifyEmailChanged(s.toString());
             }
         }
 
-        private boolean runValidation() {
+        private void runValidation() {
             hasValidInput = validate(false);
             Handler handler = getHandler();
             handler.removeCallbacks(uiUpdater);
             handler.postDelayed(uiUpdater, VALIDATION_DELAY);
-            return hasValidInput;
+        }
+
+        private void notifyEmailChanged(String emailInput) {
+            boolean validOrEmptyEmail = emailInput.isEmpty() || emailInput.matches(EMAIL_REGEX);
+            if (emailValidationCallback != null && validOrEmptyEmail) {
+                emailValidationCallback.onValidOrEmptyEmail(emailInput);
+            }
         }
     };
 
@@ -410,11 +416,11 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
-     * Sets the given InputValidationCallback to this view EditText.
+     * Sets the given EmailValidationCallback to this view EditText.
      *
      * @param callback to set to this view.
      */
-    public void setInputValidationCallback(InputValidationCallback callback) {
-        this.validationCallback = callback;
+    public void setEmailValidationCallback(EmailValidationCallback callback) {
+        this.emailValidationCallback = callback;
     }
 }

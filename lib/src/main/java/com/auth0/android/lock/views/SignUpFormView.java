@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -41,14 +40,14 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.views.interfaces.InputValidationCallback;
+import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SignUpFormView extends FormView implements TextView.OnEditorActionListener, InputValidationCallback {
+public class SignUpFormView extends FormView implements TextView.OnEditorActionListener, EmailValidationCallback {
 
     private static final String TAG = SignUpFormView.class.getSimpleName();
     public static final int MAX_FEW_CUSTOM_FIELDS = 2;
@@ -78,11 +77,10 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
-        usernameInput.setInputValidationCallback(this);
         usernameInput.setOnEditorActionListener(this);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
-        emailInput.setInputValidationCallback(this);
+        emailInput.setEmailValidationCallback(this);
         emailInput.setOnEditorActionListener(this);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
@@ -223,18 +221,13 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         return false;
     }
 
-    public void setUsernameOrEmail(String email, String username) {
+    public void setLastEmail(String email) {
         emailInput.setText(email);
-        usernameInput.setText(username);
         passwordInput.clearInput();
     }
 
     @Override
-    public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
-        if (id == R.id.com_auth0_lock_input_email) {
-            lockWidget.onEmailChanged(currentValue);
-        } else if (id == R.id.com_auth0_lock_input_username) {
-            lockWidget.onUsernameChanged(currentValue);
-        }
+    public void onValidOrEmptyEmail(String currentEmail) {
+        lockWidget.onEmailChanged(currentEmail);
     }
 }

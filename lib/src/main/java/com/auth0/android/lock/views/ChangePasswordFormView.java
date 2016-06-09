@@ -34,10 +34,10 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
-import com.auth0.android.lock.views.interfaces.InputValidationCallback;
+import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener, InputValidationCallback {
+public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener, EmailValidationCallback {
 
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
@@ -62,7 +62,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         text = findViewById(R.id.com_auth0_lock_text);
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
-        emailInput.setInputValidationCallback(this);
+        emailInput.setEmailValidationCallback(this);
         emailInput.setOnEditorActionListener(this);
     }
 
@@ -110,7 +110,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     }
 
     @Override
-    public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
-        lockWidget.onEmailChanged(currentValue);
+    public void onValidOrEmptyEmail(String currentEmail) {
+        lockWidget.onEmailChanged(currentEmail);
     }
 }

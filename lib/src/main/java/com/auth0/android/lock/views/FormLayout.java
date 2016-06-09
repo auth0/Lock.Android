@@ -40,7 +40,6 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.events.DatabaseEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -66,7 +65,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private ModeSelectionView modeSelectionView;
 
     private String lastEmailInput;
-    private String lastUsernameInput;
 
     public FormLayout(Context context) {
         super(context);
@@ -199,7 +197,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         if (signUpForm == null) {
             signUpForm = new SignUpFormView(lockWidget);
         }
-        signUpForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
+        signUpForm.setLastEmail(lastEmailInput);
         formsHolder.addView(signUpForm);
     }
 
@@ -209,7 +207,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         if (logInForm == null) {
             logInForm = new LogInFormView(lockWidget);
         }
-        logInForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
+        logInForm.setLastEmail(lastEmailInput);
         formsHolder.addView(logInForm);
     }
 
@@ -335,17 +333,12 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         lastEmailInput = currentValue;
     }
 
-    @Override
-    public void onUsernameChanged(String currentValue) {
-        lastUsernameInput = currentValue;
-    }
-
     public void refreshIdentityInput() {
         if (logInForm != null) {
-            logInForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
+            logInForm.setLastEmail(lastEmailInput);
         }
         if (signUpForm != null) {
-            signUpForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
+            signUpForm.setLastEmail(lastEmailInput);
         }
     }
 }
