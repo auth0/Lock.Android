@@ -75,14 +75,6 @@ public class DatabaseSignUpEvent {
         this.extraFields = customFields;
     }
 
-    public void setPassword(@NonNull String password) {
-        this.password = password;
-    }
-
-    public void setUsername(@Nullable String username) {
-        this.username = username;
-    }
-
     public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient) {
         SignUpRequest request;
         if (getUsername() != null) {
