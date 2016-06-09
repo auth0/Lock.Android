@@ -24,20 +24,26 @@
 
 package com.auth0.android.lock.utils.json;
 
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 abstract class GsonDeserializer<T> implements JsonDeserializer<T> {
 
-    void checkRequiredValue(JsonObject map, String valueName) throws JsonParseException {
-        if (map.get(valueName) == null) {
-            throw new JsonParseException("Missing value in Json: " + valueName);
+    <U> U requiredValue(String name, Type type, JsonObject object, JsonDeserializationContext context) throws JsonParseException {
+        U value = context.deserialize(object.get(name), type);
+        if (value == null) {
+            throw new JsonParseException(String.format("Missing required attribute %s", name));
         }
+        return value;
     }
 
-    void checkValidJsonObject(JsonElement jsonObject) throws JsonParseException {
+    void assertJsonObject(JsonElement jsonObject) throws JsonParseException {
         if (jsonObject.isJsonNull() || !jsonObject.isJsonObject()) {
             throw new JsonParseException("Received json is not a valid json object.");
         }

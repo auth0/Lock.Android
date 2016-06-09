@@ -36,11 +36,11 @@ import java.util.Map;
 public class ConnectionDeserializer extends GsonDeserializer<Connection> {
     @Override
     public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        checkValidJsonObject(json);
+        assertJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
-        checkRequiredValue(object, "name");
 
+        requiredValue("name", String.class, object, context);
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> values = context.deserialize(object, mapType);
 

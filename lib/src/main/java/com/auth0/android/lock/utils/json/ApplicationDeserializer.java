@@ -37,18 +37,14 @@ public class ApplicationDeserializer extends GsonDeserializer<Application> {
 
     @Override
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        checkValidJsonObject(json);
+        assertJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
-        checkRequiredValue(object, "id");
-        checkRequiredValue(object, "tenant");
-        checkRequiredValue(object, "authorize");
-        checkRequiredValue(object, "strategies");
 
-        String id = context.deserialize(object.remove("id"), String.class);
-        String tenant = context.deserialize(object.remove("tenant"), String.class);
-        String authorizeURL = context.deserialize(object.remove("authorize"), String.class);
-        String callbackURL = context.deserialize(object.remove("callback"), String.class);
+        String id = requiredValue("id", String.class, object, context);
+        String tenant = requiredValue("tenant", String.class, object, context);
+        String authorizeURL = requiredValue("authorize", String.class, object, context);
+        String callbackURL = requiredValue("callback", String.class, object, context);
 
         String subscription = context.deserialize(object.remove("subscription"), String.class);
         boolean hasAllowedOrigins = context.deserialize(object.remove("hasAllowedOrigins"), Boolean.class);

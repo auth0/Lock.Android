@@ -25,7 +25,6 @@
 package com.auth0.android.lock.utils.json;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -36,7 +35,6 @@ public abstract class GsonBaseTest {
 
     static final String EMPTY_OBJECT = "src/test/resources/empty_object.json";
     static final String INVALID = "src/test/resources/invalid.json";
-
 
     Gson gson;
 

@@ -36,15 +36,13 @@ import java.util.List;
 public class StrategyDeserializer extends GsonDeserializer<Strategy> {
     @Override
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        checkValidJsonObject(json);
+        assertJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
-        checkRequiredValue(object, "name");
-        checkRequiredValue(object, "connections");
 
-        String name = context.deserialize(object.remove("name"), String.class);
+        String name = requiredValue("name", String.class, object, context);
         Type connectionType = new TypeToken<List<Connection>>() {}.getType();
-        List<Connection> connections = context.deserialize(object.remove("connections"), connectionType);
+        List<Connection> connections = requiredValue("connections", connectionType, object, context);
 
         return new Strategy(name, connections);
     }
