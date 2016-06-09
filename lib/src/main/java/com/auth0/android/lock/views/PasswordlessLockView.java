@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -73,7 +74,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         setOrientation(VERTICAL);
         if (configuration == null) {
             Log.w(TAG, "Configuration is missing, the view won't init.");
-            showConfigurationMissingLayout(false);
+            showConfigurationMissingLayout(R.string.com_auth0_lock_configuration_retrieving_error);
         } else {
             showContentLayout();
         }
@@ -115,11 +116,17 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         if (configuration != null && configuration.isPasswordlessLockAvailable()) {
             init();
         } else {
-            showConfigurationMissingLayout(configuration != null && !configuration.isPasswordlessLockAvailable());
+            int errorRes = 0;
+            if (configuration == null) {
+                errorRes = R.string.com_auth0_lock_configuration_retrieving_error;
+            } else if (!configuration.isPasswordlessLockAvailable()) {
+                errorRes = R.string.com_auth0_lock_missing_connections_message;
+            }
+            showConfigurationMissingLayout(errorRes);
         }
     }
 
-    private void showConfigurationMissingLayout(boolean missingConnections) {
+    private void showConfigurationMissingLayout(@StringRes int errorMessage) {
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
         final LinearLayout errorLayout = new LinearLayout(getContext());
         errorLayout.setOrientation(LinearLayout.VERTICAL);
@@ -128,7 +135,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetSoci
         params.gravity = Gravity.CENTER;
 
         TextView errorText = new TextView(getContext());
-        errorText.setText(missingConnections ? R.string.com_auth0_lock_missing_connections_message : R.string.com_auth0_lock_configuration_retrieving_error);
+        errorText.setText(errorMessage);
         errorText.setGravity(Gravity.CENTER);
 
         Button retryButton = new Button(getContext());
