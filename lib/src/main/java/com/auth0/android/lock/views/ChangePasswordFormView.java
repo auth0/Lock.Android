@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -33,13 +34,14 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
-import com.auth0.android.lock.views.interfaces.LockWidget;
+import com.auth0.android.lock.views.interfaces.InputValidationCallback;
+import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener {
+public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener, InputValidationCallback {
 
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
-    private final LockWidget lockWidget;
-    private ValidatedUsernameInputView usernameEmailInput;
+    private final LockWidgetForm lockWidget;
+    private ValidatedUsernameInputView emailInput;
     private View title;
     private View text;
 
@@ -48,19 +50,20 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         lockWidget = null;
     }
 
-    public ChangePasswordFormView(LockWidget lockWidget) {
+    public ChangePasswordFormView(LockWidgetForm lockWidget, String email) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        init();
+        init(email);
     }
 
-    private void init() {
+    private void init(String email) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
         title = findViewById(R.id.com_auth0_lock_title);
         text = findViewById(R.id.com_auth0_lock_text);
-        usernameEmailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        usernameEmailInput.chooseDataType(lockWidget.getConfiguration());
-        usernameEmailInput.setOnEditorActionListener(this);
+        emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_email);
+        emailInput.setText(email);
+        emailInput.setInputValidationCallback(this);
+        emailInput.setOnEditorActionListener(this);
     }
 
     @Override
@@ -69,12 +72,12 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     }
 
     private String getUsernameOrEmail() {
-        return usernameEmailInput.getText();
+        return emailInput.getText();
     }
 
     @Override
     public boolean validateForm() {
-        return usernameEmailInput.validate();
+        return emailInput.validate();
     }
 
     @Override
@@ -104,5 +107,10 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     public void onKeyboardStateChanged(boolean isOpen) {
         title.setVisibility(isOpen ? GONE : VISIBLE);
         text.setVisibility(isOpen ? GONE : VISIBLE);
+    }
+
+    @Override
+    public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
+        lockWidget.onEmailChanged(currentValue);
     }
 }

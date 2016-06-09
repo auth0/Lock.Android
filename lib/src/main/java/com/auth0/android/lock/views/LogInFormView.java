@@ -41,7 +41,6 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.InputValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -49,7 +48,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
     private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
-    private final IdentityListener identityListener;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
@@ -67,13 +65,11 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     public LogInFormView(Context context) {
         super(context);
         lockWidget = null;
-        identityListener = null;
     }
 
-    public LogInFormView(LockWidgetForm lockWidget, IdentityListener identityListener) {
+    public LogInFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        this.identityListener = identityListener;
         init();
     }
 
@@ -323,9 +319,9 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     @Override
     public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
         if (lockWidget.getConfiguration().isUsernameRequired()) {
-            identityListener.onUsernameChanged(currentValue);
+            lockWidget.onUsernameChanged(currentValue);
         } else {
-            identityListener.onEmailChanged(currentValue);
+            lockWidget.onEmailChanged(currentValue);
         }
     }
 }

@@ -26,7 +26,7 @@ package com.auth0.android.lock.views.interfaces;
 
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 
-public interface LockWidgetForm extends LockWidgetSocial {
+public interface LockWidgetForm extends LockWidgetSocial, IdentityListener {
 
     void showChangePasswordForm(boolean show);
 

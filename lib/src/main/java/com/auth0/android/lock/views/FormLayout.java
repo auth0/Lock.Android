@@ -197,7 +197,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         removePreviousForm();
 
         if (signUpForm == null) {
-            signUpForm = new SignUpFormView(lockWidget, this);
+            signUpForm = new SignUpFormView(lockWidget);
         }
         signUpForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
         formsHolder.addView(signUpForm);
@@ -207,7 +207,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         removePreviousForm();
 
         if (logInForm == null) {
-            logInForm = new LogInFormView(lockWidget, this);
+            logInForm = new LogInFormView(lockWidget);
         }
         logInForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
         formsHolder.addView(logInForm);
@@ -338,5 +338,14 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     @Override
     public void onUsernameChanged(String currentValue) {
         lastUsernameInput = currentValue;
+    }
+
+    public void refreshIdentityInput() {
+        if (logInForm != null) {
+            logInForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
+        }
+        if (signUpForm != null) {
+            signUpForm.setUsernameOrEmail(lastEmailInput, lastUsernameInput);
+        }
     }
 }

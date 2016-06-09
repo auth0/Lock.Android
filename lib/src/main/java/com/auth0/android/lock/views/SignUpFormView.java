@@ -41,7 +41,6 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.InputValidationCallback;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -55,7 +54,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public static final int MAX_FEW_CUSTOM_FIELDS = 2;
 
     private final LockWidgetForm lockWidget;
-    private final IdentityListener identityListener;
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedInputView passwordInput;
@@ -65,13 +63,11 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public SignUpFormView(Context context) {
         super(context);
         this.lockWidget = null;
-        this.identityListener = null;
     }
 
-    public SignUpFormView(LockWidgetForm lockWidget, IdentityListener identityListener) {
+    public SignUpFormView(LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        this.identityListener = identityListener;
         init();
     }
 
@@ -236,9 +232,9 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     @Override
     public void onValidOrEmptyInput(@IdRes int id, String currentValue) {
         if (id == R.id.com_auth0_lock_input_email) {
-            identityListener.onEmailChanged(currentValue);
+            lockWidget.onEmailChanged(currentValue);
         } else if (id == R.id.com_auth0_lock_input_username) {
-            identityListener.onUsernameChanged(currentValue);
+            lockWidget.onUsernameChanged(currentValue);
         }
     }
 }
