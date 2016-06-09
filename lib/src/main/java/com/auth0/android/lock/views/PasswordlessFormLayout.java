@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
@@ -45,6 +46,8 @@ import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener, PasswordlessRequestCodeFormView.OnAlreadyGotCodeListener {
 
     private static final String TAG = PasswordlessFormLayout.class.getSimpleName();
+    private static final int MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS = 3;
+
     private final LockWidget lockWidget;
     private SocialView socialLayout;
     private TextView orSeparatorMessage;
@@ -80,8 +83,16 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
     }
 
-    private void addSocialLayout(boolean smallButtons) {
-        socialLayout = new SocialView((LockWidgetSocial) lockWidget, smallButtons);
+    private void addSocialLayout(boolean passwordlessAvailable) {
+        int style = lockWidget.getConfiguration().getSocialButtonStyle();
+        boolean fewConnections = lockWidget.getConfiguration().getSocialStrategies().size() <= MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS;
+
+        if (style == SocialButtonStyle.UNSPECIFIED) {
+            socialLayout = new SocialView((LockWidgetSocial) lockWidget, passwordlessAvailable && !fewConnections);
+        } else {
+            socialLayout = new SocialView((LockWidgetSocial) lockWidget, style == SocialButtonStyle.SMALL);
+        }
+
         addView(socialLayout);
     }
 
