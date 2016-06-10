@@ -24,8 +24,9 @@
 
 <resources>
     <declare-styleable name="Lock.Theme">
-        <attr name="Auth0.HeaderBackground" format="color|reference" />
         <attr name="Auth0.HeaderLogo" format="reference" />
+        <attr name="Auth0.HeaderTitle" format="string|reference" />
+        <attr name="Auth0.HeaderBackground" format="color|reference" />
         <attr name="Auth0.PrimaryColor" format="color|reference" />
         <attr name="Auth0.DarkPrimaryColor" format="color|reference" />
     </declare-styleable>
