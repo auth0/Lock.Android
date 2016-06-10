@@ -1,4 +1,4 @@
-include ':app', ':oauth2'
+include ':app', ':auth0'
 
 include ':lock'
 project(':lock').projectDir = new File(rootProject.projectDir, '/lib')
