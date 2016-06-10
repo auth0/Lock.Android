@@ -332,6 +332,21 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetTheme() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        Theme theme = Theme.newBuilder().build();
+        options.withTheme(theme);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getTheme(), is(equalTo(parceledOptions.getTheme())));
+    }
+
+    @Test
     public void shouldSetConnections() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -468,6 +483,7 @@ public class OptionsTest {
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
+        assertThat(options.getTheme(), is(notNullValue()));
     }
 
 

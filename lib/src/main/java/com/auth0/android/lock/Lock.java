@@ -261,6 +261,17 @@ public class Lock {
         }
 
         /**
+         * Customize Lock's appearance.
+         *
+         * @param theme to use.
+         * @return the current Builder instance
+         */
+        public Builder withTheme(@NonNull Theme theme) {
+            options.withTheme(theme);
+            return this;
+        }
+
+        /**
          * Additional Authentication parameters can be set to use with different Identity Providers.
          *
          * @param authenticationParameters a non-null Map containing the parameters as Key-Values

@@ -66,6 +66,7 @@ class Options implements Parcelable {
     private HashMap<String, Object> authenticationParameters;
     private List<CustomField> customFields;
     private int initialScreen;
+    private Theme theme;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -77,6 +78,7 @@ class Options implements Parcelable {
         useCodePasswordless = true;
         authenticationParameters = new HashMap<>();
         customFields = new ArrayList<>();
+        theme = Theme.newBuilder().build();
     }
 
     protected Options(Parcel in) {
@@ -95,6 +97,7 @@ class Options implements Parcelable {
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
         socialButtonStyle = in.readInt();
+        theme = in.readParcelable(Theme.class.getClassLoader());
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -143,6 +146,7 @@ class Options implements Parcelable {
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
         dest.writeInt(socialButtonStyle);
+        dest.writeParcelable(theme, flags);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -199,6 +203,14 @@ class Options implements Parcelable {
 
     public void setUseBrowser(boolean useBrowser) {
         this.useBrowser = useBrowser;
+    }
+
+    public void withTheme(Theme theme) {
+        this.theme = theme;
+    }
+
+    public Theme getTheme() {
+        return theme;
     }
 
     public boolean usePKCE() {
