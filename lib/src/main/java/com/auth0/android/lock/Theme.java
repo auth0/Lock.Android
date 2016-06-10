@@ -24,13 +24,16 @@
 
 package com.auth0.android.lock;
 
-import android.content.res.Resources;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.AnyRes;
+import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 
 public class Theme implements Parcelable {
@@ -49,36 +52,57 @@ public class Theme implements Parcelable {
         this.darkPrimaryColor = darkPrimaryColor;
     }
 
-    @AnyRes
-    private int getAttributeValue(Resources.Theme theme, int resId) {
+    public String getHeaderTitle(Context context) {
+        if (headerTitle > 0) {
+            return context.getString(headerTitle);
+        }
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{R.attr.Auth0_HeaderTitle});
+        String title = a.getString(0);
+        a.recycle();
+        return title;
+    }
+
+    public Drawable getHeaderLogo(Context context) {
+        if (headerLogo > 0) {
+            return ContextCompat.getDrawable(context, headerLogo);
+        }
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{R.attr.Auth0_HeaderLogo});
+        final Drawable logo = a.getDrawable(0);
+        a.recycle();
+        return logo;
+    }
+
+    @ColorInt
+    public int getHeaderColor(Context context) {
+        if (headerColor > 0) {
+            return ContextCompat.getColor(context, headerColor);
+        }
+        return getColorValue(context, R.attr.Auth0_HeaderBackground);
+    }
+
+    @ColorInt
+    public int getPrimaryColor(Context context) {
+        if (primaryColor > 0) {
+            return ContextCompat.getColor(context, primaryColor);
+        }
+        return getColorValue(context, R.attr.Auth0_PrimaryColor);
+    }
+
+    @ColorInt
+    public int getDarkPrimaryColor(Context context) {
+        if (darkPrimaryColor > 0) {
+            return ContextCompat.getColor(context, darkPrimaryColor);
+        }
+        return getColorValue(context, R.attr.Auth0_DarkPrimaryColor);
+    }
+
+    @ColorInt
+    private int getColorValue(Context context, int resId) {
         TypedValue typedValue = new TypedValue();
-        theme.resolveAttribute(resId, typedValue, true);
+        context.getTheme().resolveAttribute(resId, typedValue, true);
         return typedValue.data;
-    }
-
-    @StringRes
-    public int getHeaderTitle(Resources.Theme theme) {
-        return headerTitle <= 0 ? getAttributeValue(theme, R.attr.Auth0_HeaderTitle) : headerTitle;
-    }
-
-    @DrawableRes
-    public int getHeaderLogo(Resources.Theme theme) {
-        return headerLogo <= 0 ? getAttributeValue(theme, R.attr.Auth0_HeaderLogo) : headerLogo;
-    }
-
-    @ColorRes
-    public int getHeaderColor(Resources.Theme theme) {
-        return headerColor <= 0 ? getAttributeValue(theme, R.attr.Auth0_HeaderBackground) : headerColor;
-    }
-
-    @ColorRes
-    public int getPrimaryColor(Resources.Theme theme) {
-        return primaryColor <= 0 ? getAttributeValue(theme, R.attr.Auth0_PrimaryColor) : primaryColor;
-    }
-
-    @ColorRes
-    public int getDarkPrimaryColor(Resources.Theme theme) {
-        return darkPrimaryColor <= 0 ? getAttributeValue(theme, R.attr.Auth0_DarkPrimaryColor) : darkPrimaryColor;
     }
 
     protected Theme(Parcel in) {
@@ -163,8 +187,8 @@ public class Theme implements Parcelable {
             return this;
         }
 
-        public Builder withHeaderColor(@ColorRes int header) {
-            headerColorRes = header;
+        public Builder withHeaderColor(@ColorRes int color) {
+            headerColorRes = color;
             return this;
         }
 

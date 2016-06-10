@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.Theme;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -50,6 +51,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
     private static final String TAG = PasswordlessLockView.class.getSimpleName();
     private final Bus bus;
+    private final Theme lockTheme;
     private Configuration configuration;
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
@@ -58,15 +60,10 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
     private int headerPadding;
 
-
-    public PasswordlessLockView(Context context) {
-        super(context);
-        bus = null;
-    }
-
-    public PasswordlessLockView(Context context, Bus lockBus) {
+    public PasswordlessLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
         this.bus = lockBus;
+        this.lockTheme = lockTheme;
         showWaitForConfigurationLayout();
     }
 
@@ -91,7 +88,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private void showContentLayout() {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        headerView = new HeaderView(getContext());
+        headerView = new HeaderView(getContext(), lockTheme);
         headerView.setPaddingTop(headerPadding);
         addView(headerView, wrapHeightParams);
 
@@ -103,7 +100,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
         boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
         if (showPasswordless) {
-            actionButton = new ActionButton(getContext());
+            actionButton = new ActionButton(getContext(), lockTheme);
             actionButton.setOnClickListener(this);
             addView(actionButton, wrapHeightParams);
         }

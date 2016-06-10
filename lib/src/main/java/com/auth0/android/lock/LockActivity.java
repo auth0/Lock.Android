@@ -126,7 +126,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         ScrollView rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
-        lockView = new ClassicLockView(this, lockBus);
+        lockView = new ClassicLockView(this, lockBus, options.getTheme());
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
         lockView.setHeaderPadding(paddingTop);

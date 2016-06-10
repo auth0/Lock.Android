@@ -29,39 +29,32 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.Theme;
 
 public class HeaderView extends RelativeLayout {
     private View header;
     private ImageView logo;
     private TextView text;
 
-    public HeaderView(Context context) {
+    public HeaderView(Context context, Theme lockTheme) {
         super(context);
-        init();
+        init(lockTheme);
     }
 
-    public HeaderView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public HeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
+    private void init(Theme lockTheme) {
         inflate(getContext(), R.layout.com_auth0_lock_header, this);
         header = findViewById(R.id.com_auth0_lock_header_background);
         logo = (ImageView) findViewById(R.id.com_auth0_lock_header_logo);
         text = (TextView) findViewById(R.id.com_auth0_lock_header_text);
+        header.setBackgroundColor(lockTheme.getHeaderColor(getContext()));
+        logo.setImageDrawable(lockTheme.getHeaderLogo(getContext()));
+        text.setText(lockTheme.getHeaderTitle(getContext()));
     }
 
     /**
