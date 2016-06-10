@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -30,8 +30,10 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.Auth0Exception;
-import com.auth0.android.lock.utils.json.JsonUtils;
 import com.auth0.callback.BaseCallback;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -42,6 +44,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class ApplicationFetcher {
 
@@ -121,9 +124,21 @@ public class ApplicationFetcher {
                 throw tokenizer.syntaxError("Invalid JSON value of App Info");
             }
             JSONObject jsonObject = (JSONObject) nextValue;
-            return JsonUtils.createGson().fromJson(jsonObject.toString(), Application.class);
+            return createGson().fromJson(jsonObject.toString(), Application.class);
         } catch (IOException | JSONException e) {
             throw new Auth0Exception("Failed to parse response to request", e);
         }
+    }
+
+    static Gson createGson() {
+        Type applicationType = TypeToken.get(Application.class).getType();
+        Type strategyType = TypeToken.get(Strategy.class).getType();
+        Type connectionType = TypeToken.get(Connection.class).getType();
+        return new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(applicationType, new ApplicationDeserializer())
+                .registerTypeAdapter(strategyType, new StrategyDeserializer())
+                .registerTypeAdapter(connectionType, new ConnectionDeserializer())
+                .create();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * ConnectionMatcher.java
+ * StrategyMatcher.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,35 +22,36 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
+import com.auth0.android.lock.utils.Strategies;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-public class ConnectionMatcher extends BaseMatcher<Connection> {
+public class StrategyMatcher extends BaseMatcher<Strategy> {
 
     private final String name;
 
-    public ConnectionMatcher(String name) {
+    public StrategyMatcher(String name) {
         this.name = name;
     }
 
     @Override
     public boolean matches(Object o) {
-        if (!(o instanceof Connection)) {
+        if (!(o instanceof Strategy)) {
             return false;
         }
-        Connection connection = (Connection) o;
-        return name.equals(connection.getName());
+        Strategy strategy = (Strategy) o;
+        return name.equals(strategy.getName());
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("connection with name ").appendValue(this.name);
+        description.appendText("a Strategy with name ").appendValue(name);
     }
 
-    public static ConnectionMatcher isConnection(String name) {
-        return new ConnectionMatcher(name);
+    public static StrategyMatcher isStrategy(Strategies strategy) {
+        return new StrategyMatcher(strategy.getName());
     }
 }

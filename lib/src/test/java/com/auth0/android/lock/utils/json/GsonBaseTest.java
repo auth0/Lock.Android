@@ -1,5 +1,5 @@
 /*
- * ConnectionDeserializer.java
+ * GsonBaseTest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,26 +24,29 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
-public class ConnectionDeserializer extends GsonDeserializer<Connection> {
-    @Override
-    public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        assertJsonObject(json);
+public abstract class GsonBaseTest {
 
-        final JsonObject object = json.getAsJsonObject();
+    static final String EMPTY_OBJECT = "src/test/resources/empty_object.json";
+    static final String INVALID = "src/test/resources/invalid.json";
 
-        requiredValue("name", String.class, object, context);
-        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> values = context.deserialize(object, mapType);
+    Gson gson;
 
-        return new Connection(values);
+    <T> T pojoFrom(Reader json, Class<T> clazz) throws IOException {
+        return gson.getAdapter(clazz).fromJson(json);
+    }
+
+    FileReader json(String name) throws FileNotFoundException {
+        return new FileReader(name);
+    }
+
+    public Gson createGson() {
+        return ApplicationFetcher.createGson();
     }
 }

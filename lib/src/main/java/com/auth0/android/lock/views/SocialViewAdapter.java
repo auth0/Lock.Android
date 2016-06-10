@@ -31,7 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.auth0.android.lock.utils.Strategy;
+import com.auth0.android.lock.utils.json.Strategy;
 
 import java.util.List;
 

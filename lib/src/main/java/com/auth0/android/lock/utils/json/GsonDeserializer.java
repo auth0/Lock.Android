@@ -1,5 +1,5 @@
 /*
- * StrategyTest.java
+ * JsonUtils.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,34 +22,30 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
-public class StrategyMatcher extends BaseMatcher<Strategy> {
+import java.lang.reflect.Type;
 
-    private final String name;
+abstract class GsonDeserializer<T> implements JsonDeserializer<T> {
 
-    public StrategyMatcher(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean matches(Object o) {
-        if (!(o instanceof Strategy)) {
-            return false;
+    <U> U requiredValue(String name, Type type, JsonObject object, JsonDeserializationContext context) throws JsonParseException {
+        U value = context.deserialize(object.get(name), type);
+        if (value == null) {
+            throw new JsonParseException(String.format("Missing required attribute %s", name));
         }
-        Strategy strategy = (Strategy) o;
-        return name.equals(strategy.getName());
+        return value;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("a Strategy with name ").appendValue(name);
-    }
-
-    public static StrategyMatcher isStrategy(Strategies strategy) {
-        return new StrategyMatcher(strategy.getName());
+    void assertJsonObject(JsonElement jsonObject) throws JsonParseException {
+        if (jsonObject.isJsonNull() || !jsonObject.isJsonObject()) {
+            throw new JsonParseException("Received json is not a valid json object.");
+        }
     }
 }

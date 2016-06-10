@@ -18,6 +18,6 @@
 
 ## Data Models / POJOs
 -keep class com.auth0.android.lock.utils.Strategies { *; }
--keep class com.auth0.android.lock.utils.Strategy { *; }
--keep class com.auth0.android.lock.utils.Connection { *; }
--keep class com.auth0.android.lock.utils.Application { *; }
+-keep class com.auth0.android.lock.utils.json.Strategy { *; }
+-keep class com.auth0.android.lock.utils.json.Connection { *; }
+-keep class com.auth0.android.lock.utils.json.Application { *; }

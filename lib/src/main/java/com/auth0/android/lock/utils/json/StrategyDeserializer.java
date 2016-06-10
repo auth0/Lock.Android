@@ -24,10 +24,7 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.Connection;
-import com.auth0.android.lock.utils.Strategy;
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -36,16 +33,16 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class StrategyDeserializer implements JsonDeserializer<Strategy> {
+public class StrategyDeserializer extends GsonDeserializer<Strategy> {
     @Override
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        final JsonObject map = json.getAsJsonObject();
-        JsonUtils.checkRequiredValue(map, "name");
-        JsonUtils.checkRequiredValue(map, "connections");
+        assertJsonObject(json);
 
-        String name = map.get("name").getAsString();
+        final JsonObject object = json.getAsJsonObject();
+
+        String name = requiredValue("name", String.class, object, context);
         Type connectionType = new TypeToken<List<Connection>>() {}.getType();
-        List<Connection> connections = context.deserialize(map.get("connections"), connectionType);
+        List<Connection> connections = requiredValue("connections", connectionType, object, context);
 
         return new Strategy(name, connections);
     }

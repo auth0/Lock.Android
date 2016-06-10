@@ -22,13 +22,13 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.lock.utils.json;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.auth0.android.lock.utils.json.JsonUtils;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<Stri
         }.getType();
         try {
             final Reader reader = new InputStreamReader(context.getAssets().open(params[0]));
-            codes = JsonUtils.createGson().fromJson(reader, mapType);
+            codes = new Gson().fromJson(reader, mapType);
             Log.d(TAG, String.format("Loaded %d countries", codes.size()));
         } catch (IOException e) {
             codes = new HashMap<>();

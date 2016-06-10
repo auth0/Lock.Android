@@ -24,10 +24,7 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.Strategy;
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -36,27 +33,24 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class ApplicationDeserializer implements JsonDeserializer<Application> {
+public class ApplicationDeserializer extends GsonDeserializer<Application> {
+
     @Override
     public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        final JsonObject map = json.getAsJsonObject();
-        JsonUtils.checkRequiredValue(map, "id");
-        JsonUtils.checkRequiredValue(map, "tenant");
-        JsonUtils.checkRequiredValue(map, "authorize");
-        JsonUtils.checkRequiredValue(map, "strategies");
+        assertJsonObject(json);
 
-        String id = map.get("id").getAsString();
-        String tenant = map.get("tenant").getAsString();
-        String authorizeURL = map.get("authorize").getAsString();
-        final JsonElement callbackURLJson = map.get("callback");
-        String callbackURL = callbackURLJson == null ? null : callbackURLJson.getAsString();
-        final JsonElement subscriptionJson = map.get("subscription");
-        String subscription = subscriptionJson == null ? null : subscriptionJson.getAsString();
-        final JsonElement hasAllowedOriginsJson = map.get("hasAllowedOrigins");
-        boolean hasAllowedOrigins = hasAllowedOriginsJson != null && hasAllowedOriginsJson.getAsBoolean();
+        final JsonObject object = json.getAsJsonObject();
+
+        String id = requiredValue("id", String.class, object, context);
+        String tenant = requiredValue("tenant", String.class, object, context);
+        String authorizeURL = requiredValue("authorize", String.class, object, context);
+        String callbackURL = requiredValue("callback", String.class, object, context);
+
+        String subscription = context.deserialize(object.remove("subscription"), String.class);
+        boolean hasAllowedOrigins = context.deserialize(object.remove("hasAllowedOrigins"), Boolean.class);
 
         Type strategyType = new TypeToken<List<Strategy>>() {}.getType();
-        List<Strategy> strategies = context.deserialize(map.get("strategies"), strategyType);
+        List<Strategy> strategies = context.deserialize(object.remove("strategies"), strategyType);
 
         return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, strategies);
     }

@@ -1,5 +1,5 @@
 /*
- * ConnectionDeserializer.java
+ * ConnectionMatcher.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,26 +24,33 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 
-public class ConnectionDeserializer extends GsonDeserializer<Connection> {
+public class ConnectionMatcher extends BaseMatcher<Connection> {
+
+    private final String name;
+
+    public ConnectionMatcher(String name) {
+        this.name = name;
+    }
+
     @Override
-    public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        assertJsonObject(json);
+    public boolean matches(Object o) {
+        if (!(o instanceof Connection)) {
+            return false;
+        }
+        Connection connection = (Connection) o;
+        return name.equals(connection.getName());
+    }
 
-        final JsonObject object = json.getAsJsonObject();
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("connection with name ").appendValue(this.name);
+    }
 
-        requiredValue("name", String.class, object, context);
-        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> values = context.deserialize(object, mapType);
-
-        return new Connection(values);
+    public static ConnectionMatcher isConnection(String name) {
+        return new ConnectionMatcher(name);
     }
 }

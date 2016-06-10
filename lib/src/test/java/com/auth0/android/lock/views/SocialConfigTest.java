@@ -28,8 +28,8 @@ import android.os.Build;
 
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.utils.Application;
-import com.auth0.android.lock.utils.json.JsonUtils;
+import com.auth0.android.lock.utils.json.Application;
+import com.auth0.android.lock.utils.json.GsonBaseTest;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;
@@ -49,7 +49,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
-public class SocialConfigTest {
+public class SocialConfigTest extends GsonBaseTest {
 
     private Application application;
     private SocialConfig socialConfig;
@@ -57,7 +57,7 @@ public class SocialConfigTest {
     @Before
     public void setUp() throws Exception {
         final FileReader fr = new FileReader("src/test/resources/appinfo.json");
-        application = JsonUtils.createGson().fromJson(new JsonReader(fr), Application.class);
+        application = createGson().fromJson(new JsonReader(fr), Application.class);
 
         socialConfig = new SocialConfig(RuntimeEnvironment.application, application.getSocialStrategies().get(0));
         //sample appinfo.json has 'Facebook' Strategy at the first position
