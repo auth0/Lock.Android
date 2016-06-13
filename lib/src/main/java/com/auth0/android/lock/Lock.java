@@ -320,11 +320,11 @@ public class Lock {
         }
 
         /**
-         * Sign In can be enabled/disabled locally, regardless the Dashboard configuration.
+         * Log In can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
-        public Builder allowSignIn(boolean allow) {
+        public Builder allowLogIn(boolean allow) {
             options.setAllowLogIn(allow);
             return this;
         }
