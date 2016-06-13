@@ -164,7 +164,7 @@ public class Application {
      *
      * @return hasAllowedOrigins flag
      */
-    public boolean isHasAllowedOrigins() {
+    public boolean hasAllowedOrigins() {
         return hasAllowedOrigins;
     }
 
