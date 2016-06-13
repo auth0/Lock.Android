@@ -29,6 +29,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -52,57 +53,60 @@ public class Theme implements Parcelable {
         this.darkPrimaryColor = darkPrimaryColor;
     }
 
-    public String getHeaderTitle(Context context) {
-        if (headerTitle > 0) {
-            return context.getString(headerTitle);
+    private String resolveStringResource(Context context, @StringRes int res, @AttrRes int defaultRes) {
+        if (res > 0) {
+            return context.getString(res);
         }
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{R.attr.Auth0_HeaderTitle});
-        String title = a.getString(0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{defaultRes});
+        String s = a.getString(0);
         a.recycle();
-        return title;
+        return s;
     }
 
-    public Drawable getHeaderLogo(Context context) {
-        if (headerLogo > 0) {
-            return ContextCompat.getDrawable(context, headerLogo);
+    @ColorInt
+    private int resolveColorResource(Context context, @ColorRes int res, @AttrRes int defaultRes) {
+        if (res > 0) {
+            return ContextCompat.getColor(context, res);
         }
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{R.attr.Auth0_HeaderLogo});
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(defaultRes, typedValue, true);
+        return typedValue.data;
+    }
+
+    private Drawable resolveDrawableResource(Context context, @DrawableRes int res, @AttrRes int defaultRes) {
+        if (res > 0) {
+            return ContextCompat.getDrawable(context, res);
+        }
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{defaultRes});
         final Drawable logo = a.getDrawable(0);
         a.recycle();
         return logo;
     }
 
+    public String getHeaderTitle(Context context) {
+        return resolveStringResource(context, headerTitle, R.attr.Auth0_HeaderTitle);
+    }
+
+    public Drawable getHeaderLogo(Context context) {
+        return resolveDrawableResource(context, headerLogo, R.attr.Auth0_HeaderLogo);
+    }
+
     @ColorInt
     public int getHeaderColor(Context context) {
-        if (headerColor > 0) {
-            return ContextCompat.getColor(context, headerColor);
-        }
-        return getColorValue(context, R.attr.Auth0_HeaderBackground);
+        return resolveColorResource(context, headerColor, R.attr.Auth0_HeaderBackground);
     }
 
     @ColorInt
     public int getPrimaryColor(Context context) {
-        if (primaryColor > 0) {
-            return ContextCompat.getColor(context, primaryColor);
-        }
-        return getColorValue(context, R.attr.Auth0_PrimaryColor);
+        return resolveColorResource(context, primaryColor, R.attr.Auth0_PrimaryColor);
     }
 
     @ColorInt
     public int getDarkPrimaryColor(Context context) {
-        if (darkPrimaryColor > 0) {
-            return ContextCompat.getColor(context, darkPrimaryColor);
-        }
-        return getColorValue(context, R.attr.Auth0_DarkPrimaryColor);
-    }
-
-    @ColorInt
-    private int getColorValue(Context context, int resId) {
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(resId, typedValue, true);
-        return typedValue.data;
+        return resolveColorResource(context, darkPrimaryColor, R.attr.Auth0_DarkPrimaryColor);
     }
 
     protected Theme(Parcel in) {
