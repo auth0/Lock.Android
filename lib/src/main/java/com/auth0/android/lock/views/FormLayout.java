@@ -87,9 +87,10 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
             modeSelectionView = new ModeSelectionView(getContext(), this);
             modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
+            int verticalModeSelectionMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_mode_selection);
             LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             modeSelectionParams.addRule(ALIGN_PARENT_TOP);
-            modeSelectionParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+            modeSelectionParams.setMargins(horizontalMargin, verticalModeSelectionMargin, horizontalMargin, 0);
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
