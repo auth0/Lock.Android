@@ -74,6 +74,11 @@ public class SpacingTextView extends TextView {
         super.setLayoutParams(params);
     }
 
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom + calculateOffset());
+    }
+
     @SuppressWarnings("ResourceType")
     private void parseAttrs(Context context, AttributeSet attrs) {
         int[] attributes = new int[]{android.R.attr.layout_margin, android.R.attr.layout_marginTop,
@@ -93,7 +98,7 @@ public class SpacingTextView extends TextView {
         marginBottom = arr.getDimensionPixelOffset(2, 0);
         marginLeft = arr.getDimensionPixelOffset(3, 0);
         marginRight = arr.getDimensionPixelOffset(4, 0);
-        lineSpacingAdd = arr.getDimensionPixelOffset(5, 0);
+        lineSpacingAdd = arr.getDimensionPixelOffset(5, 1);
         arr.recycle();
     }
 
@@ -106,16 +111,16 @@ public class SpacingTextView extends TextView {
     }
 
     private ViewGroup.LayoutParams updateLayoutParams(ViewGroup.LayoutParams params) {
-        if (lineSpacingAdd <= 0) {
-            return params;
-        }
         parseMargins(params);
         ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
-        int extraBottom = 0;
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            extraBottom = (int) (lineSpacingAdd / -2);
-        }
-        marginParams.setMargins(marginLeft, marginTop, marginRight, marginBottom + extraBottom);
+        marginParams.setMargins(marginLeft, marginTop, marginRight, marginBottom + calculateOffset());
         return marginParams;
+    }
+
+    private int calculateOffset() {
+        if (lineSpacingAdd <= 1 || Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            return 0;
+        }
+        return (int) (lineSpacingAdd / -2);
     }
 }
