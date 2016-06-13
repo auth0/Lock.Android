@@ -85,7 +85,7 @@ public class HomeActivity extends Activity {
     super.onDestroy();
     // Your own Activity code
     lock.onDestroy(this);
-    lock = nil;
+    lock = null;
   }
 
   private LockCallback callback = new AuthenticationCallback() {
@@ -169,7 +169,7 @@ public class HomeActivity extends Activity {
     super.onDestroy();
     // Your own Activity code
     lock.onDestroy(this);
-    lock = nil;
+    lock = null;
   }
 
   private LockCallback callback = new AuthenticationCallback() {
