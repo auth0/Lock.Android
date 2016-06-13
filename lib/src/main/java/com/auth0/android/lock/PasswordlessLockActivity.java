@@ -73,9 +73,7 @@ import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
-import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
@@ -245,12 +243,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         super.onBackPressed();
     }
 
-    private void deliverAuthenticationResult(Authentication result) {
+    private void deliverAuthenticationResult(Credentials credentials) {
         Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
-        intent.putExtra(Constants.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
-        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
-        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
-        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
+        intent.putExtra(Constants.ID_TOKEN_EXTRA, credentials.getIdToken());
+        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, credentials.getAccessToken());
+        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, credentials.getRefreshToken());
+        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
@@ -482,7 +480,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
         if (event.getCode() != null) {
             event.getLoginRequest(apiClient, lastPasswordlessEmailOrNumber)
-                    .addParameters(options.getAuthenticationParameters())
+                    .addAuthenticationParameters(options.getAuthenticationParameters())
                     .setConnection(connectionName)
                     .start(authCallback);
             return;
@@ -570,11 +568,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
+    private BaseCallback<Credentials> authCallback = new BaseCallback<Credentials>() {
         @Override
-        public void onSuccess(Authentication authentication) {
+        public void onSuccess(Credentials credentials) {
             clearRecentPasswordlessData();
-            deliverAuthenticationResult(authentication);
+            deliverAuthenticationResult(credentials);
         }
 
         @Override
@@ -615,29 +613,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onSuccess(@NonNull final Credentials credentials) {
-            showProgressDialog(true);
-            options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
-                    .start(new BaseCallback<UserProfile>() {
-                        @Override
-                        public void onSuccess(UserProfile profile) {
-                            showProgressDialog(false);
-                            Authentication authentication = new Authentication(profile, credentials);
-                            deliverAuthenticationResult(authentication);
-                        }
-
-                        @Override
-                        public void onFailure(final Auth0Exception error) {
-                            Log.e(TAG, "Failed to fetch the user profile: " + error.getMessage(), error);
-                            showProgressDialog(false);
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    String message = loginErrorBuilder.buildFrom(error).getMessage(PasswordlessLockActivity.this);
-                                    showErrorMessage(message);
-                                }
-                            });
-                        }
-                    });
+            deliverAuthenticationResult(credentials);
         }
     };
 }

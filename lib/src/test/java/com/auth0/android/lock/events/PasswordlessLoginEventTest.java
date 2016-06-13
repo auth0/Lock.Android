@@ -28,7 +28,6 @@ import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.PasswordlessType;
-import com.auth0.authentication.ProfileRequest;
 import com.auth0.request.AuthenticationRequest;
 import com.auth0.request.ParameterizableRequest;
 
@@ -45,6 +44,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -241,14 +241,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_CODE, CODE);
-        ProfileRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
+        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
 
         Assert.assertThat(resultRequest, notNullValue());
-        Assert.assertThat(resultRequest, equalTo(profileRequest));
+        Assert.assertThat(resultRequest, equalTo(authRequest));
     }
 
     @Test
@@ -256,14 +254,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_LINK, CODE);
-        ProfileRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
+        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
 
         Assert.assertThat(resultRequest, notNullValue());
-        Assert.assertThat(resultRequest, equalTo(profileRequest));
+        Assert.assertThat(resultRequest, equalTo(authRequest));
     }
 
     @Test
@@ -271,14 +267,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_CODE, CODE);
-        ProfileRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
+        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
 
         Assert.assertThat(resultRequest, notNullValue());
-        Assert.assertThat(resultRequest, equalTo(profileRequest));
+        Assert.assertThat(resultRequest, equalTo(authRequest));
     }
 
     @Test
@@ -286,14 +280,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_LINK, CODE);
-        ProfileRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
+        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
 
         Assert.assertThat(resultRequest, notNullValue());
-        Assert.assertThat(resultRequest, equalTo(profileRequest));
+        Assert.assertThat(resultRequest, equalTo(authRequest));
     }
 
     @Test
@@ -301,14 +293,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_CODE, CODE);
         emailCodeEvent.getLoginRequest(client, EMAIL);
 
         verify(client).loginWithEmail(EMAIL, CODE);
-        verify(client).getProfileAfter(authRequest);
+        verify(client, never()).getProfileAfter(authRequest);
     }
 
     @Test
@@ -316,14 +306,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_LINK, CODE);
         emailCodeEvent.getLoginRequest(client, EMAIL);
 
         verify(client).loginWithEmail(EMAIL, CODE);
-        verify(client).getProfileAfter(authRequest);
+        verify(client, never()).getProfileAfter(authRequest);
     }
 
     @Test
@@ -331,14 +319,12 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_CODE, CODE);
         emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
 
         verify(client).loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE);
-        verify(client).getProfileAfter(authRequest);
+        verify(client, never()).getProfileAfter(authRequest);
     }
 
     @Test
@@ -346,13 +332,11 @@ public class PasswordlessLoginEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
-        ProfileRequest profileRequest = mock(ProfileRequest.class);
-        when(client.getProfileAfter(authRequest)).thenReturn(profileRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_LINK, CODE);
         emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
 
         verify(client).loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE);
-        verify(client).getProfileAfter(authRequest);
+        verify(client, never()).getProfileAfter(authRequest);
     }
 }
