@@ -26,7 +26,6 @@ package com.auth0.android.lock;
 
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
@@ -65,9 +64,9 @@ import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.ActivityUIHelper;
+import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
-import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.Credentials;
@@ -99,7 +98,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private ClassicLockView lockView;
     private TextView resultMessage;
 
-    private ProgressDialog progressDialog;
     private AuthProvider currentProvider;
 
     private boolean keyboardIsShown;
@@ -261,27 +259,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
 
-
     private Runnable resultMessageHider = new Runnable() {
         @Override
         public void run() {
             resultMessage.setVisibility(View.GONE);
         }
     };
-
-    private void showProgressDialog(final boolean show) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (show) {
-                    progressDialog = ProgressDialog.show(LockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
-                } else if (progressDialog != null) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
-                }
-            }
-        });
-    }
 
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);

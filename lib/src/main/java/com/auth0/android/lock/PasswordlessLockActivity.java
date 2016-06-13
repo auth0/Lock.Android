@@ -26,7 +26,6 @@ package com.auth0.android.lock;
 
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -110,8 +109,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private Bus lockBus;
     private ScrollView rootView;
     private TextView resendButton;
-
-    private ProgressDialog progressDialog;
 
     private boolean keyboardIsShown;
     private ViewGroup contentView;
@@ -358,20 +355,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
                 .putInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED)
                 .apply();
-    }
-
-    private void showProgressDialog(final boolean show) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (show) {
-                    progressDialog = ProgressDialog.show(PasswordlessLockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
-                } else if (progressDialog != null) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
-                }
-            }
-        });
     }
 
     private void showMissingConnectionsDialog() {
