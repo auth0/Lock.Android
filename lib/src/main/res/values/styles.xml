@@ -53,8 +53,6 @@
 
     <style name="Lock.Theme.Text.Terms">
         <item name="android:gravity">center</item>
-        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_terms_text_spacing_negative
-        </item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_terms_text_spacing</item>
         <item name="android:textColor">@color/com_auth0_lock_terms_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_terms_text</item>

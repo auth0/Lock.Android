@@ -9,13 +9,14 @@
         android:id="@+id/com_auth0_lock_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:isScrollContainer="true"
-        android:fillViewport="true"/>
+        android:fillViewport="true"
+        android:isScrollContainer="true" />
 
-    <TextView
+    <com.auth0.android.lock.views.SpacingTextView
         android:id="@+id/com_auth0_lock_result_message"
         style="@style/Lock.Theme.Text.ResultMessage"
         android:visibility="gone"
+        tools:background="@color/com_auth0_lock_result_message_error_background"
         tools:text="There was an error"
         tools:visibility="visible" />
 
