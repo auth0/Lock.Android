@@ -240,7 +240,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         removePreviousForm();
 
         if (customFieldsForm == null) {
-            customFieldsForm = new CustomFieldsFormView(lockWidget, event.getEmail(), event.getUsername(), event.getPassword());
+            customFieldsForm = new CustomFieldsFormView(lockWidget, event.getEmail(), event.getPassword(), event.getUsername());
         }
         formsHolder.addView(customFieldsForm);
     }
@@ -306,7 +306,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
         FormView form = (FormView) existingForm;
         Object ev = form.submitForm();
-        if (ev == null || !lockWidget.getConfiguration().hasExtraFields()) {
+        if (ev == null || lockWidget.getConfiguration().getExtraSignUpFields().size() <= SignUpFormView.MAX_FEW_CUSTOM_FIELDS) {
             return ev;
         } else if (existingForm == signUpForm) {
             //User has configured some extra SignUp custom fields.

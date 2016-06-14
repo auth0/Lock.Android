@@ -42,6 +42,8 @@ import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
+import static com.auth0.android.lock.views.ValidatedInputView.*;
+
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
@@ -82,7 +84,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
-        usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        usernameInput.setDataType(DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();

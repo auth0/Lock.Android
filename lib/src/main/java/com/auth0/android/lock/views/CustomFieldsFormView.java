@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,10 +35,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -45,29 +44,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.auth0.android.lock.views.ValidatedInputView.DataType;
-
 public class CustomFieldsFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = CustomFieldsFormView.class.getSimpleName();
 
+    @NonNull
     private String email;
-    private String username;
+    @NonNull
     private String password;
+    @Nullable
+    private String username;
     private LockWidgetForm lockWidget;
     private List<CustomField> fieldsData;
     private TextView title;
     private LinearLayout fieldContainer;
-    private ValidatedInputView usernameField;
-    private ValidatedInputView passwordField;
-    private boolean mustUseFieldsFromFirstStep;
     private LinearLayout.LayoutParams fieldParams;
 
     public CustomFieldsFormView(Context context) {
         super(context);
     }
 
-    public CustomFieldsFormView(LockWidgetForm lockWidget, String email, String username, String password) {
+    public CustomFieldsFormView(LockWidgetForm lockWidget, @NonNull String email, @NonNull String password, @Nullable String username) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         this.email = email;
@@ -83,10 +80,6 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
 
         fieldParams = defineFieldParams();
-        mustUseFieldsFromFirstStep = lockWidget.getConfiguration().getExtraSignUpFields().size() == 1;
-        if (mustUseFieldsFromFirstStep) {
-            addFirstStepFields();
-        }
         addCustomFields();
     }
 
@@ -97,38 +90,6 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);
         return params;
-    }
-
-    private void addFirstStepFields() {
-        Configuration configuration = lockWidget.getConfiguration();
-        boolean showEmail = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.EMAIL || configuration.getUsernameStyle() == UsernameStyle.DEFAULT;
-        boolean showUsername = configuration.isUsernameRequired() || configuration.getUsernameStyle() == UsernameStyle.USERNAME;
-
-        if (showEmail && showUsername) {
-            ValidatedInputView emailField = new ValidatedInputView(getContext());
-            emailField.setDataType(DataType.EMAIL);
-            emailField.setLayoutParams(fieldParams);
-            emailField.setText(email);
-            emailField.setEnabled(false);
-            fieldContainer.addView(emailField);
-
-            usernameField = new ValidatedInputView(getContext());
-            usernameField.setDataType(DataType.USERNAME);
-            usernameField.setLayoutParams(fieldParams);
-            fieldContainer.addView(usernameField);
-        } else {
-            ValidatedInputView emailOrUsernameField = new ValidatedInputView(getContext());
-            emailOrUsernameField.setDataType(showUsername ? DataType.USERNAME : DataType.EMAIL);
-            emailOrUsernameField.setLayoutParams(fieldParams);
-            emailOrUsernameField.setText(username == null ? email : username);
-            emailOrUsernameField.setEnabled(false);
-            fieldContainer.addView(emailOrUsernameField);
-        }
-
-        passwordField = new ValidatedInputView(getContext());
-        passwordField.setDataType(DataType.PASSWORD);
-        passwordField.setLayoutParams(fieldParams);
-        fieldContainer.addView(passwordField);
     }
 
     private void addCustomFields() {
@@ -156,10 +117,6 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     @Override
     public Object getActionEvent() {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, password, username);
-        if (mustUseFieldsFromFirstStep) {
-            event.setUsername(usernameField != null ? usernameField.getText() : null);
-            event.setPassword(passwordField.getText());
-        }
         event.setExtraFields(getCustomFieldValues());
         return event;
     }
