@@ -23,7 +23,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:lock="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_header_background"
     android:layout_width="match_parent"
@@ -38,7 +38,7 @@
         style="@style/Lock.Theme.Widget.Logo"
         android:fitsSystemWindows="false"
         android:paddingTop="@dimen/com_auth0_lock_header_vertical_margin"
-        app:srcCompat="?attr/Auth0.HeaderLogo"
+        lock:srcCompat="?attr/Auth0.HeaderLogo"
         tools:ignore="MissingPrefix"
         tools:srcCompat="@drawable/com_auth0_lock_header_logo" />
 
