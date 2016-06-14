@@ -144,7 +144,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lockView.setHeaderPadding(paddingTop);
         rootView.addView(lockView);
 
-        resultMessage.setPadding(0, paddingTop, 0, resultMessage.getPaddingBottom());
+        resultMessage.setPadding(0, resultMessage.getPaddingTop() + paddingTop, 0, resultMessage.getPaddingBottom());
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {

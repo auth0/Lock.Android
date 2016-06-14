@@ -138,7 +138,6 @@
 
     <style name="Lock.Theme.Text.ResultMessage">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:minHeight">@dimen/com_auth0_lock_result_message_height</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:maxLines">2</item>
         <item name="android:singleLine">false</item>
