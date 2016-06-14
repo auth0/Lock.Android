@@ -58,7 +58,6 @@
             tools:text="email@domain.com" />
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/errorDescription"
         style="@style/Lock.Theme.Text.ValidationError"

@@ -30,6 +30,10 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+/**
+ * TextView that removes the extra padding added in pre Lollipop APIs when
+ * using the lineSpacingExtra attribute.
+ */
 public class SpacingTextView extends TextView {
 
     public SpacingTextView(Context context) {

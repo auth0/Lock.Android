@@ -95,7 +95,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     private void addSeparator() {
-        orSeparatorMessage = new TextView(getContext());
+        orSeparatorMessage = new SpacingTextView(getContext());
         int passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
         int stringRes = R.string.com_auth0_lock_passwordless_email_forms_separator;
         if (passwordlessMode == PasswordlessMode.SMS_LINK || passwordlessMode == PasswordlessMode.SMS_CODE) {

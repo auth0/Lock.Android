@@ -32,13 +32,13 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
+    <com.auth0.android.lock.views.SpacingTextView
         android:id="@+id/com_auth0_lock_title"
         style="@style/Lock.Theme.Text.Title.ResetPassword"
         android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_field"
         android:text="@string/com_auth0_lock_title_change_password" />
 
-    <TextView
+    <com.auth0.android.lock.views.SpacingTextView
         android:id="@+id/com_auth0_lock_text"
         style="@style/Lock.Theme.Text.Subtitle.ResetPassword"
         android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
