@@ -12,7 +12,7 @@
         android:fillViewport="true"
         android:isScrollContainer="true" />
 
-    <com.auth0.android.lock.views.SpacingTextView
+    <com.auth0.android.lock.views.LineSpacingTextView
         android:id="@+id/com_auth0_lock_result_message"
         style="@style/Lock.Theme.Text.ResultMessage"
         android:visibility="gone"

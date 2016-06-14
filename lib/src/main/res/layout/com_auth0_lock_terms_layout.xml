@@ -31,7 +31,7 @@
     android:paddingTop="@dimen/com_auth0_lock_bottom_banner_vertical_margin"
     android:orientation="vertical">
 
-    <com.auth0.android.lock.views.SpacingTextView
+    <com.auth0.android.lock.views.LineSpacingTextView
         style="@style/Lock.Theme.Text.Terms"
         android:text="@string/com_auth0_lock_sign_up_terms" />
 
