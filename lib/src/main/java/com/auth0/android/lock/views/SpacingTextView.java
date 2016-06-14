@@ -26,19 +26,11 @@ package com.auth0.android.lock.views;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class SpacingTextView extends TextView {
-
-    private int marginTop;
-    private int marginBottom;
-    private int marginLeft;
-    private int marginRight;
-    private float lineSpacingAdd;
 
     public SpacingTextView(Context context) {
         super(context);
@@ -46,81 +38,24 @@ public class SpacingTextView extends TextView {
 
     public SpacingTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        parseAttrs(context, attrs);
     }
 
     public SpacingTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        parseAttrs(context, attrs);
     }
 
     @SuppressWarnings("unused")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SpacingTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        parseAttrs(context, attrs);
     }
 
     @Override
-    public void setLineSpacing(float add, float mult) {
-        super.setLineSpacing(add, mult);
-        lineSpacingAdd = add;
-        requestLayout();
-    }
-
-    @Override
-    public void setLayoutParams(ViewGroup.LayoutParams params) {
-        params = updateLayoutParams(params);
-        super.setLayoutParams(params);
-    }
-
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom + calculateOffset());
-    }
-
-    @SuppressWarnings("ResourceType")
-    private void parseAttrs(Context context, AttributeSet attrs) {
-        int[] attributes = new int[]{android.R.attr.layout_margin, android.R.attr.layout_marginTop,
-                android.R.attr.layout_marginBottom, android.R.attr.layout_marginLeft,
-                android.R.attr.layout_marginRight, android.R.attr.lineSpacingExtra};
-
-        TypedArray arr = context.obtainStyledAttributes(attrs, attributes);
-
-        int allMargins = arr.getDimensionPixelOffset(0, 0);
-        if (allMargins != 0) {
-            marginTop = allMargins;
-            marginBottom = allMargins;
-            marginLeft = allMargins;
-            marginRight = allMargins;
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int truncatedHeight = getPaint().getFontMetricsInt(null) - getLineHeight();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight() + truncatedHeight);
         }
-        marginTop = arr.getDimensionPixelOffset(1, 0);
-        marginBottom = arr.getDimensionPixelOffset(2, 0);
-        marginLeft = arr.getDimensionPixelOffset(3, 0);
-        marginRight = arr.getDimensionPixelOffset(4, 0);
-        lineSpacingAdd = arr.getDimensionPixelOffset(5, 1);
-        arr.recycle();
-    }
-
-    private void parseMargins(ViewGroup.LayoutParams params) {
-        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
-        marginTop = marginParams.topMargin;
-        marginBottom = marginParams.bottomMargin;
-        marginLeft = marginParams.leftMargin;
-        marginRight = marginParams.rightMargin;
-    }
-
-    private ViewGroup.LayoutParams updateLayoutParams(ViewGroup.LayoutParams params) {
-        parseMargins(params);
-        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
-        marginParams.setMargins(marginLeft, marginTop, marginRight, marginBottom + calculateOffset());
-        return marginParams;
-    }
-
-    private int calculateOffset() {
-        if (lineSpacingAdd <= 1 || Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return 0;
-        }
-        return (int) (lineSpacingAdd / -2);
     }
 }
