@@ -183,9 +183,6 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
      * @param isOpen whether the keyboard is open or close.
      */
     public void onKeyboardStateChanged(boolean isOpen) {
-        if (passwordlessMode == SMS_LINK || passwordlessMode == SMS_CODE) {
-            countryCodeSelector.setVisibility(isOpen ? GONE : VISIBLE);
-        }
         if (listener.shouldShowGotCodeButton()) {
             gotCodeButton.setVisibility(isOpen ? GONE : VISIBLE);
         }

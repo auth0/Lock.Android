@@ -78,7 +78,7 @@ public class ApplicationTest {
         assertThat(application.getAuthorizeURL(), equalTo(AUTHORIZE_URL));
         assertThat(application.getCallbackURL(), equalTo(CALLBACK_URL));
         assertThat(application.getSubscription(), equalTo(SUBSCRIPTION));
-        assertThat(application.isHasAllowedOrigins(), equalTo(HAS_ALLOWED_ORIGINS));
+        assertThat(application.hasAllowedOrigins(), equalTo(HAS_ALLOWED_ORIGINS));
     }
 
     @Test

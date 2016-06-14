@@ -191,6 +191,9 @@
         <item name="android:hint">@string/com_auth0_lock_hint_search_country</item>
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:theme">@style/Lock.Theme</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:imeOptions">actionDone</item>
     </style>
 
     <style name="Lock.Theme.Widget.CountryCodeSelector" parent="Lock.Theme.Widget.Field">

@@ -100,7 +100,7 @@ public class ApplicationGsonTest extends GsonBaseTest {
         assertThat(application.getStrategies().get(0), instanceOf(Strategy.class));
         assertThat(application.getSubscription(), is("dev"));
         assertThat(application.getCallbackURL(), is("http://localhost:3000/"));
-        assertThat(application.isHasAllowedOrigins(), is(true));
+        assertThat(application.hasAllowedOrigins(), is(true));
     }
 
     private Application buildApplicationFrom(Reader json) throws IOException {
