@@ -183,11 +183,9 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         if (passwordInput.getVisibility() == VISIBLE) {
             valid = passwordInput.validate() && valid;
         }
-        if (displayFewCustomFields) {
-            for (int i = 0; i < fieldContainer.getChildCount(); i++) {
-                ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
-                valid = input.validate() && valid;
-            }
+        for (int i = 0; displayFewCustomFields && i < fieldContainer.getChildCount(); i++) {
+            ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
+            valid = input.validate() && valid;
         }
         return valid;
     }
@@ -200,7 +198,8 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
             if (displayFewCustomFields) {
                 event.setExtraFields(getCustomFieldValues());
                 return event;
-            } else if (lockWidget.getConfiguration().hasExtraFields()) {
+            }
+            if (lockWidget.getConfiguration().hasExtraFields()) {
                 lockWidget.showCustomFieldsForm(event);
             }
         }
