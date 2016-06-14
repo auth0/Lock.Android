@@ -144,31 +144,7 @@ public class Theme implements Parcelable {
         }
     };
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Theme theme = (Theme) o;
-
-        if (headerTitle != theme.headerTitle) return false;
-        if (headerLogo != theme.headerLogo) return false;
-        if (headerColor != theme.headerColor) return false;
-        if (primaryColor != theme.primaryColor) return false;
-        return darkPrimaryColor == theme.darkPrimaryColor;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = headerTitle;
-        result = 31 * result + headerLogo;
-        result = 31 * result + headerColor;
-        result = 31 * result + primaryColor;
-        result = 31 * result + darkPrimaryColor;
-        return result;
-    }
-
+    
     public static Builder newBuilder() {
         return new Theme.Builder();
     }
