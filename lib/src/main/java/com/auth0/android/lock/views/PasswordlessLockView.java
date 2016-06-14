@@ -46,7 +46,7 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
-public class PasswordlessLockView extends LinearLayout implements LockWidgetSocial, LockWidgetPasswordless, View.OnClickListener {
+public class PasswordlessLockView extends LinearLayout implements LockWidgetPasswordless, View.OnClickListener {
 
     private static final String TAG = PasswordlessLockView.class.getSimpleName();
     private final Bus bus;
