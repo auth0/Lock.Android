@@ -48,7 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -75,7 +75,7 @@ public class ValidatedInputView extends LinearLayout {
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
-    private EmailValidationCallback emailValidationCallback;
+    private IdentityListener identityListener;
     private int inputIcon;
     private boolean isShowingError = true;
     private boolean hasValidInput;
@@ -169,8 +169,8 @@ public class ValidatedInputView extends LinearLayout {
 
         private void notifyEmailChanged(String emailInput) {
             boolean validOrEmptyEmail = emailInput.isEmpty() || emailInput.matches(EMAIL_REGEX);
-            if (emailValidationCallback != null && validOrEmptyEmail) {
-                emailValidationCallback.onValidOrEmptyEmail(emailInput);
+            if (identityListener != null && validOrEmptyEmail) {
+                identityListener.onEmailChanged(emailInput);
             }
         }
     };
@@ -351,10 +351,9 @@ public class ValidatedInputView extends LinearLayout {
      */
     public void setText(String text) {
         input.setText("");
-        if (text == null) {
-            text = "";
+        if (text != null) {
+            input.append(text);
         }
-        input.append(text);
     }
 
     @Override
@@ -416,11 +415,11 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
-     * Sets the given EmailValidationCallback to this view EditText.
+     * Sets the given IdentityListener to this view EditText.
      *
-     * @param callback to set to this view.
+     * @param listener to set to this view.
      */
-    public void setEmailValidationCallback(EmailValidationCallback callback) {
-        this.emailValidationCallback = callback;
+    public void setIdentityListener(IdentityListener listener) {
+        this.identityListener = listener;
     }
 }

@@ -38,12 +38,12 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
-import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
+import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class LogInFormView extends FormView implements TextView.OnEditorActionListener, EmailValidationCallback {
+public class LogInFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
@@ -83,7 +83,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
-        emailInput.setEmailValidationCallback(this);
+        emailInput.setIdentityListener(this);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
@@ -316,15 +316,15 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     }
 
     @Override
-    public void onValidOrEmptyEmail(String currentEmail) {
-        lockWidget.onEmailChanged(currentEmail);
+    public void onEmailChanged(String email) {
+        lockWidget.onEmailChanged(email);
     }
 
     public void clearEmptyFieldsError() {
-        if (usernameInput.getText().isEmpty()){
+        if (usernameInput.getText().isEmpty()) {
             usernameInput.clearInput();
         }
-        if (emailInput.getText().isEmpty()){
+        if (emailInput.getText().isEmpty()) {
             emailInput.clearInput();
         }
     }

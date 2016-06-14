@@ -25,7 +25,6 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,10 +33,10 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
-import com.auth0.android.lock.views.interfaces.EmailValidationCallback;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener, EmailValidationCallback {
+public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
@@ -62,7 +61,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         text = findViewById(R.id.com_auth0_lock_text);
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
-        emailInput.setEmailValidationCallback(this);
+        emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);
     }
 
@@ -110,7 +109,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     }
 
     @Override
-    public void onValidOrEmptyEmail(String currentEmail) {
-        lockWidget.onEmailChanged(currentEmail);
+    public void onEmailChanged(String email) {
+        lockWidget.onEmailChanged(email);
     }
 }

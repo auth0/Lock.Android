@@ -344,8 +344,8 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     }
 
     @Override
-    public void onEmailChanged(String currentValue) {
-        lastEmailInput = currentValue;
-        formLayout.onEmailChanged(currentValue);
+    public void onEmailChanged(String email) {
+        lastEmailInput = email;
+        formLayout.onEmailChanged(email);
     }
 }
