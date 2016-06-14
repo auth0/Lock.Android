@@ -78,7 +78,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
-        boolean showModeSelection = lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
+        boolean showModeSelection = showDatabase && lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 
         int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);

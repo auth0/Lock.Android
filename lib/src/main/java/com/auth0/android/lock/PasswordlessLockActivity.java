@@ -28,6 +28,7 @@ package com.auth0.android.lock;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -40,6 +41,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -210,7 +212,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         boolean launchedForResult = getCallingActivity() != null;
-        if (launchedForResult){
+        if (launchedForResult) {
             Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }
@@ -374,6 +376,20 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         });
     }
 
+    private void showMissingConnectionsDialog() {
+        new AlertDialog.Builder(PasswordlessLockActivity.this)
+                .setCancelable(false)
+                .setMessage(R.string.com_auth0_lock_missing_connections_message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PasswordlessLockActivity.this.finish();
+                    }
+                })
+                .create()
+                .show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == COUNTRY_CODE_REQUEST) {
@@ -439,7 +455,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
-        if (configuration == null && applicationFetcher == null) {
+        if (applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
@@ -509,6 +525,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                     reloadRecentPasswordlessData();
                 }
             });
+            applicationFetcher = null;
         }
 
         @Override

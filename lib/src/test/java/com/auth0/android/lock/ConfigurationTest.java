@@ -81,6 +81,8 @@ public class ConfigurationTest extends GsonBaseTest {
     private static final String RESTRICTIVE_DATABASE = "RestrictiveDatabase";
     private static final String CUSTOM_DATABASE = "CustomDatabase";
     private static final String USERNAME_PASSWORD_AUTHENTICATION = "Username-Password-Authentication";
+    private static final String TWITTER = "twitter";
+    private static final String EMAIL = "email";
     private static final String MY_AD = "MyAD";
     private static final String MY_SECOND_AD = "mySecondAD";
     private static final String UNKNOWN_AD = "UnknownAD";
@@ -141,6 +143,98 @@ public class ConfigurationTest extends GsonBaseTest {
         configuration = new Configuration(application, options);
         assertThat(configuration.allowSignUp(), is(false));
         assertThat(configuration.allowForgotPassword(), is(false));
+    }
+
+    @Test
+    public void shouldNotUseClassicLockIfNoConnectionsAreAvailable() throws Exception {
+        configuration = filteredConfigBy("");
+        assertThat(configuration.isClassicLockAvailable(), is(false));
+    }
+
+    @Test
+    public void shouldNotUseClassicLockIfAllScreensAreDisabled() throws Exception {
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(false);
+        configuration = new Configuration(application, options);
+        assertThat(configuration.isClassicLockAvailable(), is(false));
+    }
+
+    @Test
+    public void shouldUseClassicLockWithEnterpriseConnections() throws Exception {
+        configuration = filteredConfigBy(MY_AD);
+        assertThat(configuration.isClassicLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldNotUseClassicLockWithEnterpriseConnectionsAndLogInDisabled() throws Exception {
+        options.setAllowLogIn(false);
+        configuration = filteredConfigBy(MY_AD);
+        assertThat(configuration.isClassicLockAvailable(), is(false));
+    }
+
+    @Test
+    public void shouldUseClassicLockWithSocialConnections() throws Exception {
+        configuration = filteredConfigBy(TWITTER);
+        assertThat(configuration.isClassicLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldUseClassicLockWithSocialConnectionsInLogInScreen() throws Exception {
+        options.setAllowLogIn(true);
+        options.setAllowSignUp(false);
+        configuration = filteredConfigBy(TWITTER);
+        assertThat(configuration.isClassicLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldUseClassicLockWithSocialConnectionsInSignUpScreen() throws Exception {
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(true);
+        configuration = filteredConfigBy(TWITTER);
+        assertThat(configuration.isClassicLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldNotUseClassicLockWithSocialConnectionsAndScreensDisabled() throws Exception {
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(false);
+        configuration = filteredConfigBy(TWITTER);
+        assertThat(configuration.isClassicLockAvailable(), is(false));
+    }
+
+    @Test
+    public void shouldUseClassicLockWithDatabaseConnections() throws Exception {
+        options.useDatabaseConnection(USERNAME_PASSWORD_AUTHENTICATION);
+        configuration = filteredConfigBy(USERNAME_PASSWORD_AUTHENTICATION);
+        assertThat(configuration.isClassicLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldNotUsePasswordlessLockWithoutConnections() throws Exception {
+        configuration = filteredConfigBy("");
+        assertThat(configuration.isPasswordlessLockAvailable(), is(false));
+    }
+
+    @Test
+    public void shouldUsePasswordlessLockWithSocialConnections() throws Exception {
+        configuration = filteredConfigBy(TWITTER);
+        assertThat(configuration.isPasswordlessLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldUsePasswordlessLockWithPasswordlessConnections() throws Exception {
+        configuration = filteredConfigBy(EMAIL);
+        assertThat(configuration.isPasswordlessLockAvailable(), is(true));
+    }
+
+    @Test
+    public void shouldPasswordlessLockNotBeAffectedByClassicLockScreenFlags() throws Exception {
+        configuration = filteredConfigBy(EMAIL, TWITTER);
+        options.setAllowLogIn(false);
+        options.setAllowSignUp(false);
+        options.setAllowForgotPassword(false);
+        assertThat(configuration.isPasswordlessLockAvailable(), is(true));
     }
 
     @Test

@@ -333,7 +333,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
-        if (configuration == null && applicationFetcher == null) {
+        if (applicationFetcher == null) {
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
@@ -461,6 +461,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                     lockView.configure(configuration);
                 }
             });
+            applicationFetcher = null;
         }
 
         @Override
