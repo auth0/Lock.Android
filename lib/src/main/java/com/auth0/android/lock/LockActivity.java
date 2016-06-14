@@ -26,7 +26,6 @@ package com.auth0.android.lock;
 
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
@@ -65,15 +64,13 @@ import com.auth0.android.lock.provider.CallbackHelper;
 import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.ActivityUIHelper;
+import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
-import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Authentication;
 import com.auth0.authentication.result.Credentials;
 import com.auth0.authentication.result.DatabaseUser;
-import com.auth0.authentication.result.UserProfile;
 import com.auth0.callback.BaseCallback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
@@ -101,7 +98,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private ClassicLockView lockView;
     private TextView resultMessage;
 
-    private ProgressDialog progressDialog;
     private AuthProvider currentProvider;
 
     private boolean keyboardIsShown;
@@ -225,12 +221,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         super.onBackPressed();
     }
 
-    private void deliverAuthenticationResult(Authentication result) {
+    private void deliverAuthenticationResult(Credentials credentials) {
         Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
-        intent.putExtra(Constants.ID_TOKEN_EXTRA, result.getCredentials().getIdToken());
-        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, result.getCredentials().getAccessToken());
-        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, result.getCredentials().getRefreshToken());
-        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, result.getCredentials().getType());
+        intent.putExtra(Constants.ID_TOKEN_EXTRA, credentials.getIdToken());
+        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, credentials.getAccessToken());
+        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, credentials.getRefreshToken());
+        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
@@ -263,27 +259,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
 
-
     private Runnable resultMessageHider = new Runnable() {
         @Override
         public void run() {
             resultMessage.setVisibility(View.GONE);
         }
     };
-
-    private void showProgressDialog(final boolean show) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (show) {
-                    progressDialog = ProgressDialog.show(LockActivity.this, getString(R.string.com_auth0_lock_title_social_progress_dialog), getString(R.string.com_auth0_lock_message_social_progress_dialog), true, false);
-                } else if (progressDialog != null) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
-                }
-            }
-        });
-    }
 
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
@@ -360,9 +341,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.getVerificationCode() != null) {
             parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
         }
-        apiClient.getProfileAfter(apiClient.login(event.getUsernameOrEmail(), event.getPassword()))
+        apiClient.login(event.getUsernameOrEmail(), event.getPassword())
                 .setConnection(configuration.getDefaultDatabaseConnection().getName())
-                .addParameters(parameters)
+                .addAuthenticationParameters(parameters)
                 .start(authCallback);
     }
 
@@ -384,8 +365,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            apiClient.getProfileAfter(event.getSignUpRequest(apiClient))
-                    .addParameters(authParameters)
+            event.getSignUpRequest(apiClient)
+                    .addAuthenticationParameters(authParameters)
                     .start(authCallback);
         } else {
             Map<String, Object> parameters = new HashMap<>();
@@ -439,9 +420,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.useRO()) {
             Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-            apiClient.getProfileAfter(apiClient.login(event.getUsername(), event.getPassword()))
+            apiClient.login(event.getUsername(), event.getPassword())
                     .setConnection(event.getConnectionName())
-                    .addParameters(options.getAuthenticationParameters())
+                    .addAuthenticationParameters(options.getAuthenticationParameters())
                     .start(authCallback);
             return;
         }
@@ -504,36 +485,14 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onSuccess(@NonNull final Credentials credentials) {
-            showProgressDialog(true);
-            options.getAuthenticationAPIClient().tokenInfo(credentials.getIdToken())
-                    .start(new BaseCallback<UserProfile>() {
-                        @Override
-                        public void onSuccess(UserProfile profile) {
-                            showProgressDialog(false);
-                            Authentication authentication = new Authentication(profile, credentials);
-                            deliverAuthenticationResult(authentication);
-                        }
-
-                        @Override
-                        public void onFailure(final Auth0Exception error) {
-                            Log.e(TAG, "Failed to fetch the user profile: " + error.getMessage(), error);
-                            showProgressDialog(false);
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    String message = loginErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
-                                    showErrorMessage(message);
-                                }
-                            });
-                        }
-                    });
+            deliverAuthenticationResult(credentials);
         }
     };
 
-    private BaseCallback<Authentication> authCallback = new BaseCallback<Authentication>() {
+    private BaseCallback<Credentials> authCallback = new BaseCallback<Credentials>() {
         @Override
-        public void onSuccess(Authentication authentication) {
-            deliverAuthenticationResult(authentication);
+        public void onSuccess(Credentials credentials) {
+            deliverAuthenticationResult(credentials);
             lastDatabaseLogin = null;
         }
 
