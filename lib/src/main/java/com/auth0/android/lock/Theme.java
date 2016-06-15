@@ -41,13 +41,15 @@ public class Theme implements Parcelable {
     private final int headerTitle;
     private final int headerLogo;
     private final int headerColor;
+    private final int headerTitleColor;
     private final int primaryColor;
     private final int darkPrimaryColor;
 
-    private Theme(int headerTitle, int headerLogo, int headerColor, int primaryColor, int darkPrimaryColor) {
+    private Theme(int headerTitle, int headerLogo, int headerColor, int headerTitleColor, int primaryColor, int darkPrimaryColor) {
         this.headerTitle = headerTitle;
         this.headerLogo = headerLogo;
         this.headerColor = headerColor;
+        this.headerTitleColor = headerTitleColor;
         this.primaryColor = primaryColor;
         this.darkPrimaryColor = darkPrimaryColor;
     }
@@ -101,6 +103,11 @@ public class Theme implements Parcelable {
     }
 
     @ColorInt
+    public int getHeaderTitleColor(Context context) {
+        return resolveColorResource(context, headerTitleColor, R.attr.Auth0_HeaderTitleColor);
+    }
+
+    @ColorInt
     public int getPrimaryColor(Context context) {
         return resolveColorResource(context, primaryColor, R.attr.Auth0_PrimaryColor);
     }
@@ -122,6 +129,10 @@ public class Theme implements Parcelable {
         return headerColor;
     }
 
+    int getCustomHeaderTitleColorRes() {
+        return headerTitleColor;
+    }
+
     int getCustomPrimaryColorRes() {
         return primaryColor;
     }
@@ -134,6 +145,7 @@ public class Theme implements Parcelable {
         headerTitle = in.readInt();
         headerLogo = in.readInt();
         headerColor = in.readInt();
+        headerTitleColor = in.readInt();
         primaryColor = in.readInt();
         darkPrimaryColor = in.readInt();
     }
@@ -148,6 +160,7 @@ public class Theme implements Parcelable {
         dest.writeInt(headerTitle);
         dest.writeInt(headerLogo);
         dest.writeInt(headerColor);
+        dest.writeInt(headerTitleColor);
         dest.writeInt(primaryColor);
         dest.writeInt(darkPrimaryColor);
     }
@@ -175,6 +188,7 @@ public class Theme implements Parcelable {
         private int headerTitleRes;
         private int headerLogoRes;
         private int headerColorRes;
+        private int headerTitleColorRes;
         private int primaryColorRes;
         private int darkPrimaryColorRes;
 
@@ -193,6 +207,11 @@ public class Theme implements Parcelable {
             return this;
         }
 
+        public Builder withHeaderTitleColor(@ColorRes int color) {
+            headerTitleColorRes = color;
+            return this;
+        }
+
         public Builder withPrimaryColor(@ColorRes int primary) {
             primaryColorRes = primary;
             return this;
@@ -204,7 +223,7 @@ public class Theme implements Parcelable {
         }
 
         public Theme build() {
-            return new Theme(headerTitleRes, headerLogoRes, headerColorRes, primaryColorRes, darkPrimaryColorRes);
+            return new Theme(headerTitleRes, headerLogoRes, headerColorRes, headerTitleColorRes, primaryColorRes, darkPrimaryColorRes);
         }
     }
 }

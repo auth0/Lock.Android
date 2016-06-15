@@ -354,6 +354,7 @@ public class OptionsTest {
                 .withHeaderTitle(R.string.com_auth0_lock_header_title)
                 .withHeaderLogo(R.drawable.com_auth0_lock_header_logo)
                 .withHeaderColor(R.color.com_auth0_lock_social_unknown)
+                .withHeaderTitleColor(R.color.com_auth0_lock_social_unknown)
                 .withPrimaryColor(R.color.com_auth0_lock_social_unknown)
                 .withDarkPrimaryColor(R.color.com_auth0_lock_social_unknown)
                 .build();
@@ -369,6 +370,7 @@ public class OptionsTest {
         assertThat(options.getTheme().getCustomHeaderColorRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderColorRes())));
         assertThat(options.getTheme().getCustomHeaderLogoRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderLogoRes())));
         assertThat(options.getTheme().getCustomHeaderTitleRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderTitleRes())));
+        assertThat(options.getTheme().getCustomHeaderTitleColorRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderTitleColorRes())));
     }
 
     @Test

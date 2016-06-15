@@ -91,6 +91,15 @@ public class ThemeTest {
     }
 
     @Test
+    public void shouldResolveDefaultHeaderTitleColor() throws Exception {
+        final Theme theme = builder.build();
+        final Context context = RuntimeEnvironment.application;
+
+        final int titleColor = theme.getHeaderTitleColor(context);
+        assertThat(titleColor, is(equalTo(ContextCompat.getColor(context, getLockThemeResourceId(context, R.attr.Auth0_HeaderTitleColor)))));
+    }
+
+    @Test
     public void shouldResolveDefaultPrimaryColor() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
@@ -140,6 +149,16 @@ public class ThemeTest {
     }
 
     @Test
+    public void shouldResolveCustomHeaderTitleColor() throws Exception {
+        final Theme theme = builder.withHeaderTitleColor(COLOR_RES).build();
+        final Context context = RuntimeEnvironment.application;
+
+        final int titleColor = theme.getHeaderTitleColor(context);
+        final int actualColor = ContextCompat.getColor(context, COLOR_RES);
+        assertThat(titleColor, is(equalTo(actualColor)));
+    }
+
+    @Test
     public void shouldResolveCustomPrimaryColor() throws Exception {
         final Theme theme = builder.withPrimaryColor(COLOR_RES).build();
         final Context context = RuntimeEnvironment.application;
@@ -181,6 +200,13 @@ public class ThemeTest {
     }
 
     @Test
+    public void shouldSetHeaderTitleColor() throws Exception {
+        final Theme theme = builder.withHeaderTitleColor(COLOR_RES)
+                .build();
+        assertThat(theme.getCustomHeaderTitleColorRes(), is(equalTo(COLOR_RES)));
+    }
+
+    @Test
     public void shouldSetPrimaryColor() throws Exception {
         final Theme theme = builder.withPrimaryColor(COLOR_RES)
                 .build();
@@ -200,6 +226,7 @@ public class ThemeTest {
         assertThat(theme.getCustomHeaderTitleRes(), is(equalTo(NOT_SET_RES)));
         assertThat(theme.getCustomHeaderLogoRes(), is(equalTo(NOT_SET_RES)));
         assertThat(theme.getCustomHeaderColorRes(), is(equalTo(NOT_SET_RES)));
+        assertThat(theme.getCustomHeaderTitleColorRes(), is(equalTo(NOT_SET_RES)));
         assertThat(theme.getCustomPrimaryColorRes(), is(equalTo(NOT_SET_RES)));
         assertThat(theme.getCustomDarkPrimaryColorRes(), is(equalTo(NOT_SET_RES)));
     }

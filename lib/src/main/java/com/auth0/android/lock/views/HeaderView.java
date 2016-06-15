@@ -55,6 +55,7 @@ public class HeaderView extends RelativeLayout {
         header.setBackgroundColor(lockTheme.getHeaderColor(getContext()));
         logo.setImageDrawable(lockTheme.getHeaderLogo(getContext()));
         text.setText(lockTheme.getHeaderTitle(getContext()));
+        text.setTextColor(lockTheme.getHeaderTitleColor(getContext()));
     }
 
     /**
