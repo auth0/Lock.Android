@@ -332,10 +332,31 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldSetTheme() {
+    public void shouldSetDefaultTheme() {
         Options options = new Options();
         options.setAccount(auth0);
-        Theme theme = Theme.newBuilder().build();
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getTheme(), is(notNullValue()));
+        assertThat(parceledOptions.getTheme(), is(notNullValue()));
+    }
+
+
+    @Test
+    public void shouldSetCustomTheme() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        Theme theme = Theme.newBuilder()
+                .withHeaderTitle(R.string.com_auth0_lock_header_title)
+                .withHeaderLogo(R.drawable.com_auth0_lock_header_logo)
+                .withHeaderColor(R.color.com_auth0_lock_social_unknown)
+                .withPrimaryColor(R.color.com_auth0_lock_social_unknown)
+                .withDarkPrimaryColor(R.color.com_auth0_lock_social_unknown)
+                .build();
         options.withTheme(theme);
 
         Parcel parcel = Parcel.obtain();
@@ -343,7 +364,11 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getTheme(), is(equalTo(parceledOptions.getTheme())));
+        assertThat(options.getTheme().getCustomDarkPrimaryColorRes(), is(equalTo(parceledOptions.getTheme().getCustomDarkPrimaryColorRes())));
+        assertThat(options.getTheme().getCustomPrimaryColorRes(), is(equalTo(parceledOptions.getTheme().getCustomPrimaryColorRes())));
+        assertThat(options.getTheme().getCustomHeaderColorRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderColorRes())));
+        assertThat(options.getTheme().getCustomHeaderLogoRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderLogoRes())));
+        assertThat(options.getTheme().getCustomHeaderTitleRes(), is(equalTo(parceledOptions.getTheme().getCustomHeaderTitleRes())));
     }
 
     @Test

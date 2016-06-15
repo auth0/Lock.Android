@@ -35,7 +35,6 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.util.TypedValue;
 
 public class Theme implements Parcelable {
 
@@ -58,7 +57,7 @@ public class Theme implements Parcelable {
             return context.getString(res);
         }
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{defaultRes});
+        TypedArray a = context.obtainStyledAttributes(com.auth0.android.lock.R.style.Lock_Theme, new int[]{defaultRes});
         String s = a.getString(0);
         a.recycle();
         return s;
@@ -70,9 +69,11 @@ public class Theme implements Parcelable {
             return ContextCompat.getColor(context, res);
         }
 
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(defaultRes, typedValue, true);
-        return typedValue.data;
+        TypedArray a = context.obtainStyledAttributes(R.style.Lock_Theme, new int[]{defaultRes});
+        final int c = a.getColor(0, 0);
+        a.recycle();
+
+        return c;
     }
 
     private Drawable resolveDrawableResource(Context context, @DrawableRes int res, @AttrRes int defaultRes) {
@@ -80,14 +81,14 @@ public class Theme implements Parcelable {
             return ContextCompat.getDrawable(context, res);
         }
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(R.style.Lock_Theme, new int[]{defaultRes});
+        TypedArray a = context.obtainStyledAttributes(R.style.Lock_Theme, new int[]{defaultRes});
         final Drawable logo = a.getDrawable(0);
         a.recycle();
         return logo;
     }
 
     public String getHeaderTitle(Context context) {
-        return resolveStringResource(context, headerTitle, R.attr.Auth0_HeaderTitle);
+        return resolveStringResource(context, headerTitle, com.auth0.android.lock.R.attr.Auth0_HeaderTitle);
     }
 
     public Drawable getHeaderLogo(Context context) {
@@ -107,6 +108,26 @@ public class Theme implements Parcelable {
     @ColorInt
     public int getDarkPrimaryColor(Context context) {
         return resolveColorResource(context, darkPrimaryColor, R.attr.Auth0_DarkPrimaryColor);
+    }
+
+    int getCustomHeaderTitleRes() {
+        return headerTitle;
+    }
+
+    int getCustomHeaderLogoRes() {
+        return headerLogo;
+    }
+
+    int getCustomHeaderColorRes() {
+        return headerColor;
+    }
+
+    int getCustomPrimaryColorRes() {
+        return primaryColor;
+    }
+
+    int getCustomDarkPrimaryColorRes() {
+        return darkPrimaryColor;
     }
 
     protected Theme(Parcel in) {
@@ -144,7 +165,7 @@ public class Theme implements Parcelable {
         }
     };
 
-    
+
     public static Builder newBuilder() {
         return new Theme.Builder();
     }
