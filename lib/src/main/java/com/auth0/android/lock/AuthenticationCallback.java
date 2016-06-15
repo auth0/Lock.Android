@@ -27,8 +27,8 @@ package com.auth0.android.lock;
 import android.content.Intent;
 import android.util.Log;
 
+import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Credentials;
 
 
 /**

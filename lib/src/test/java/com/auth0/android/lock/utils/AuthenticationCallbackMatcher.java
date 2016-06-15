@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.authentication.result.Credentials;
+import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.jayway.awaitility.Duration;
 import com.jayway.awaitility.core.ConditionTimeoutException;
 

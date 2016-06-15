@@ -45,10 +45,62 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.auth0:auth0:0.4.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'org.robolectric:robolectric:3.0'
-    testCompile 'org.mockito:mockito-core:1.10.19'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile "com.google.code.gson:gson:2.6.2"
 
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'com.squareup.okhttp:mockwebserver:2.5.0'
+    testCompile 'com.jayway.awaitility:awaitility:1.6.4'
+    testCompile 'org.robolectric:robolectric:3.0'
+}
+
+
+def semver = defineVersion()
+version = semver.stringVersion
+
+logger.lifecycle("Using version ${version} for ${name}")
+
+def defineVersion() {
+    def current = describeGit(false)
+    def snapshot = current == null
+    if (snapshot) {
+        current = describeGit(snapshot, "0.0.1")
+    }
+    return new Semver(snapshot: snapshot, version: current)
+}
+
+def describeGit(boolean snapshot, String defaultValue = null) {
+    def arguments = ['describe', '--tags']
+    arguments.add(snapshot ? '--abbrev=0' : '--exact-match')
+    def stdout = new ByteArrayOutputStream()
+    def string = defaultValue
+    try {
+        def result = project.exec {
+            executable = 'git'
+            args = arguments
+            standardOutput = stdout
+        }
+
+        result.assertNormalExitValue()
+
+        if (stdout.toByteArray().length > 0) {
+            string = stdout.toString().replace("\n", "")
+        }
+    } catch(Exception e) {
+        logger.debug("Failed git describe command", e)
+    } finally {
+        stdout.close()
+    }
+    return string
+}
+
+class Semver {
+    def version
+    def snapshot
+
+    def getStringVersion() {
+        return snapshot ? version + "-SNAPSHOT" : version
+    }
 }

@@ -28,10 +28,10 @@ package com.auth0.android.lock.events;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.DatabaseConnectionRequest;
-import com.auth0.authentication.SignUpRequest;
-import com.auth0.authentication.result.DatabaseUser;
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.DatabaseConnectionRequest;
+import com.auth0.android.auth0.lib.authentication.SignUpRequest;
+import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
 
 import java.util.Map;
 

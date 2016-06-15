@@ -27,11 +27,11 @@ package com.auth0.android.lock;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.auth0.Auth0;
+import com.auth0.android.auth0.lib.Auth0;
 
 
 /**
- * This class wraps a {@link com.auth0.Auth0} to make it Parcelable
+ * This class wraps a {@link Auth0} to make it Parcelable
  */
 public class Auth0Parcelable implements Parcelable {
 

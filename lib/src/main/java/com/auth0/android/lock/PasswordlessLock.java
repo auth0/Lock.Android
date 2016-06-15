@@ -34,13 +34,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.auth0.Auth0;
+import com.auth0.android.auth0.lib.Auth0;
+import com.auth0.android.auth0.lib.BuildConfig;
+import com.auth0.android.auth0.lib.authentication.ParameterBuilder;
+import com.auth0.android.auth0.lib.util.Telemetry;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.authentication.ParameterBuilder;
-import com.auth0.util.Telemetry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -87,8 +88,9 @@ public class PasswordlessLock {
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull LockCallback callback) {
         if (account.getTelemetry() != null) {
-            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
-            account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.BuildConfig.VERSION));
+            //TODO: Fix telemetry version
+            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, BuildConfig.NAME, BuildConfig.VERSION));
+            account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.NAME, BuildConfig.VERSION));
         }
         return new PasswordlessLock.Builder(account, callback);
     }

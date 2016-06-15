@@ -24,12 +24,12 @@
 
 package com.auth0.android.lock.events;
 
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.PasswordlessType;
+import com.auth0.android.auth0.lib.request.AuthenticationRequest;
+import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.PasswordlessType;
-import com.auth0.request.AuthenticationRequest;
-import com.auth0.request.ParameterizableRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

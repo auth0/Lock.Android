@@ -30,11 +30,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.auth0.Auth0;
+import com.auth0.android.auth0.lib.Auth0;
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.authentication.AuthenticationAPIClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;

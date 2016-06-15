@@ -2,7 +2,7 @@ package com.auth0.android.lock;
 
 import android.os.Bundle;
 
-import com.auth0.Auth0;
+import com.auth0.android.auth0.lib.Auth0;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

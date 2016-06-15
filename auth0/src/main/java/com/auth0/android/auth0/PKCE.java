@@ -28,10 +28,10 @@ import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 
-import com.auth0.Auth0Exception;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Credentials;
-import com.auth0.callback.BaseCallback;
+import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.result.Credentials;
+import com.auth0.android.auth0.lib.callback.BaseCallback;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

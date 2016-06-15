@@ -31,9 +31,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.auth0.Auth0;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Credentials;
+import com.auth0.android.auth0.lib.Auth0;
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;

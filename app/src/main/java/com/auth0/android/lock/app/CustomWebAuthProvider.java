@@ -32,12 +32,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.auth0.Auth0;
-import com.auth0.authentication.result.Credentials;
 import com.auth0.android.auth0.AuthCallback;
 import com.auth0.android.auth0.AuthProvider;
 import com.auth0.android.auth0.AuthorizeResult;
 import com.auth0.android.auth0.CallbackHelper;
+import com.auth0.android.auth0.lib.Auth0;
+import com.auth0.android.auth0.lib.authentication.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;

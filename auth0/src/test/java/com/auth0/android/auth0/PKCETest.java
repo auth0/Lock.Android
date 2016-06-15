@@ -24,10 +24,8 @@
 
 package com.auth0.android.auth0;
 
-import com.auth0.android.auth0.AuthCallback;
-import com.auth0.android.auth0.PKCE;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.TokenRequest;
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.TokenRequest;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;

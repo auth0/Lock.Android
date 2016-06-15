@@ -28,9 +28,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.auth0.Auth0;
-import com.auth0.Auth0Exception;
-import com.auth0.callback.BaseCallback;
+import com.auth0.android.auth0.lib.Auth0;
+import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

@@ -24,12 +24,10 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.Auth0;
-import com.auth0.Auth0Exception;
+import com.auth0.android.auth0.lib.Auth0;
+import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.MockBaseCallback;
-import com.auth0.android.lock.utils.json.Application;
-import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.hamcrest.CoreMatchers;
