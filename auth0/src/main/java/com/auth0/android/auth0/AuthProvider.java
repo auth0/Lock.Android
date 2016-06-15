@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.oauth2;
+package com.auth0.android.auth0;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import java.util.List;

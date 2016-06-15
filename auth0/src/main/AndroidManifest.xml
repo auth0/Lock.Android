@@ -22,4 +22,4 @@
   ~ THE SOFTWARE.
   -->
 
-<manifest package="com.auth0.oauth2" />
+<manifest package="com.auth0.android.auth0" />

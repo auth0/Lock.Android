@@ -22,8 +22,10 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.oauth2;
+package com.auth0.android.auth0;
 
+import com.auth0.android.auth0.AuthCallback;
+import com.auth0.android.auth0.PKCE;
 import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.TokenRequest;
 
@@ -46,7 +48,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@Config(constants = com.auth0.android.auth0.BuildConfig.class, sdk = 18, manifest = Config.NONE)
 public class PKCETest {
 
     private static final String CODE_VERIFIER = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";

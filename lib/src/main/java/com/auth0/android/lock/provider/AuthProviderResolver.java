@@ -28,8 +28,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.auth0.oauth2.AuthCallback;
-import com.auth0.oauth2.AuthProvider;
+import com.auth0.android.auth0.AuthCallback;
+import com.auth0.android.auth0.AuthProvider;
 
 public interface AuthProviderResolver {
 

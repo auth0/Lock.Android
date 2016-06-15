@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.oauth2;
+package com.auth0.android.auth0;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -34,7 +34,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(constants = com.auth0.android.auth0.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class CallbackHelperTest {
 
     private static final String PACKAGE_NAME = "com.auth0.lock.android.app";

@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.oauth2;
+package com.auth0.android.auth0;
 
 import android.app.Activity;
 import android.content.Intent;

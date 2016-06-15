@@ -34,10 +34,10 @@ import android.util.Log;
 
 import com.auth0.Auth0;
 import com.auth0.authentication.result.Credentials;
-import com.auth0.oauth2.AuthCallback;
-import com.auth0.oauth2.AuthProvider;
-import com.auth0.oauth2.AuthorizeResult;
-import com.auth0.oauth2.CallbackHelper;
+import com.auth0.android.auth0.AuthCallback;
+import com.auth0.android.auth0.AuthProvider;
+import com.auth0.android.auth0.AuthorizeResult;
+import com.auth0.android.auth0.CallbackHelper;
 
 import java.util.HashMap;
 import java.util.Map;

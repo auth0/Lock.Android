@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.oauth2;
+package com.auth0.android.auth0;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -39,7 +39,7 @@ import org.robolectric.annotation.Config;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = com.auth0.oauth2.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(constants = com.auth0.android.auth0.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class AuthorizeResultTest {
 
     private static final int REQUEST_CODE = 11;
