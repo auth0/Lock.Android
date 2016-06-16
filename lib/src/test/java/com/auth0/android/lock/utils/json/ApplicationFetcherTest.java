@@ -85,6 +85,6 @@ public class ApplicationFetcherTest {
 
         assertThat(callback, hasNoPayloadOfType(Application.class));
         assertThat(callback.getError(), CoreMatchers.instanceOf(Auth0Exception.class));
-        assertThat(callback.getError().getCause().getMessage(), CoreMatchers.containsString("Invalid App Info JSONP"));
+        assertThat(callback.getError().getCause().getCause().getMessage(), CoreMatchers.containsString("Invalid App Info JSONP"));
     }
 }

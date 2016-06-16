@@ -27,6 +27,7 @@ package com.auth0.android.auth0.lib.request.internal;
 import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.ParameterBuilder;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.auth0.android.auth0.lib.request.AuthorizableRequest;
@@ -80,7 +81,7 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
         this.callback.onSuccess(payload);
     }
 
-    protected final void postOnFailure(final Auth0Exception error) {
+    protected final void postOnFailure(final AuthenticationException error) {
         this.callback.onFailure(error);
     }
 
@@ -119,7 +120,8 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
 
     @Override
     public void onFailure(Request request, IOException e) {
-        postOnFailure(new Auth0Exception("Failed to execute request to " + url.toString(), e));
+        Auth0Exception exception = new Auth0Exception("Failed to execute request to " + url.toString(), e);
+        postOnFailure(new AuthenticationException(exception));
     }
 
     @Override
@@ -153,7 +155,7 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
             Request request = doBuildRequest(newBuilder());
             client.newCall(request).enqueue(this);
         } catch (RequestBodyBuildException e) {
-            callback.onFailure(e);
+            callback.onFailure(new AuthenticationException(e));
         }
     }
 

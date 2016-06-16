@@ -27,6 +27,7 @@ package com.auth0.android.auth0.lib.request.internal;
 import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,7 +51,8 @@ class SimpleRequest<T> extends com.auth0.android.auth0.lib.request.internal.Base
     }
 
     public SimpleRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod) {
-        super(url, client, gson, gson.getAdapter(new TypeToken<T>(){}));
+        super(url, client, gson, gson.getAdapter(new TypeToken<T>() {
+        }));
         this.method = httpMethod;
     }
 
@@ -58,7 +60,7 @@ class SimpleRequest<T> extends com.auth0.android.auth0.lib.request.internal.Base
     public void onResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
             APIException exception = parseUnsuccessfulResponse(response);
-            postOnFailure(exception);
+            postOnFailure(new AuthenticationException(exception));
             return;
         }
 
@@ -67,7 +69,7 @@ class SimpleRequest<T> extends com.auth0.android.auth0.lib.request.internal.Base
             T payload = getAdapter().fromJson(charStream);
             postOnSuccess(payload);
         } catch (IOException e) {
-            postOnFailure(new Auth0Exception("Failed to parse response to request to " + url, e));
+            postOnFailure(new AuthenticationException(new Auth0Exception("Failed to parse response to request to " + url, e)));
         }
     }
 

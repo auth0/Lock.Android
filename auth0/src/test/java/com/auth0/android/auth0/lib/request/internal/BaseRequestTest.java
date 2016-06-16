@@ -27,6 +27,7 @@ package com.auth0.android.auth0.lib.request.internal;
 
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -55,7 +56,7 @@ public class BaseRequestTest {
     @Mock
     private BaseCallback<String> callback;
     @Mock
-    private Auth0Exception throwable;
+    private AuthenticationException throwable;
     @Mock
     private OkHttpClient client;
     @Mock

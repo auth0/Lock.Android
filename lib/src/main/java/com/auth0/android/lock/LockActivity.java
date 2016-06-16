@@ -52,7 +52,6 @@ import com.auth0.android.auth0.AuthProvider;
 import com.auth0.android.auth0.AuthorizeResult;
 import com.auth0.android.auth0.CallbackHelper;
 import com.auth0.android.auth0.OAuth2WebAuthProvider;
-import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
@@ -446,7 +445,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
@@ -497,7 +496,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -527,7 +526,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
             Log.e(TAG, "Failed to create the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -553,7 +552,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
             Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override

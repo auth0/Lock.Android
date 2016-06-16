@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.auth0.android.auth0.lib.Auth0;
 import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -86,7 +87,7 @@ public class ApplicationFetcher {
             public void onFailure(Request request, final IOException e) {
                 Log.e(TAG, "Failed to fetch the Application: " + e.getMessage(), e);
                 Auth0Exception exception = new Auth0Exception("Failed to fetch the Application: " + e.getMessage());
-                callback.onFailure(exception);
+                callback.onFailure(new AuthenticationException(exception));
             }
 
             @Override
@@ -96,7 +97,7 @@ public class ApplicationFetcher {
                     application = parseJSONP(response);
                 } catch (Auth0Exception e) {
                     Log.e(TAG, "Could not parse Application JSONP: " + e.getMessage());
-                    callback.onFailure(e);
+                    callback.onFailure(new AuthenticationException(e));
                     return;
                 }
 

@@ -28,8 +28,8 @@ import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 
-import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 
@@ -94,17 +94,17 @@ public class PKCE {
         apiClient.token(authorizationCode, redirectUri)
                 .setCodeVerifier(codeVerifier)
                 .start(new BaseCallback<Credentials>() {
-            @Override
-            public void onSuccess(Credentials payload) {
-                callback.onSuccess(payload);
-            }
+                    @Override
+                    public void onSuccess(Credentials payload) {
+                        callback.onSuccess(payload);
+                    }
 
-            @Override
-            public void onFailure(Auth0Exception error) {
-                Log.e(TAG, "OnFailure called when trying to get the OAuth Token: " + error.getMessage(), error);
-                callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_access_denied_message, error);
-            }
-        });
+                    @Override
+                    public void onFailure(AuthenticationException error) {
+                        Log.e(TAG, "OnFailure called when trying to get the OAuth Token: " + error);
+                        callback.onFailure(R.string.com_auth0_lock_social_error_title, R.string.com_auth0_lock_social_access_denied_message, error);
+                    }
+                });
     }
 
     /**

@@ -102,14 +102,14 @@ public class ProfileRequest implements Request<Authentication> {
                             }
 
                             @Override
-                            public void onFailure(Auth0Exception error) {
+                            public void onFailure(AuthenticationException error) {
                                 callback.onFailure(error);
                             }
                         });
             }
 
             @Override
-            public void onFailure(Auth0Exception error) {
+            public void onFailure(AuthenticationException error) {
                 callback.onFailure(error);
             }
         });

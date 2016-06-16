@@ -1,5 +1,5 @@
 /*
- * MockBaseCallback.java
+ * AuthenticationError.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,48 +22,17 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils;
+package com.auth0.android.auth0.lib.authentication;
 
-import com.auth0.android.auth0.lib.Auth0Exception;
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
-import com.auth0.android.auth0.lib.callback.BaseCallback;
+import java.util.Map;
 
-import java.util.concurrent.Callable;
+public interface AuthenticationError {
+    String ERROR_KEY = "error";
+    String ERROR_DESCRIPTION_KEY = "error_description";
 
-public class MockBaseCallback<T> implements BaseCallback<T> {
+    String getError();
 
-    private T payload;
-    private Auth0Exception error;
+    String getDescription();
 
-    @Override
-    public void onSuccess(T payload) {
-        this.payload = payload;
-    }
-
-    @Override
-    public void onFailure(AuthenticationException error) {
-        this.error = error;
-    }
-
-    public Callable<T> payload() {
-        return new Callable<T>() {
-            @Override
-            public T call() throws Exception {
-                return payload;
-            }
-        };
-    }
-
-    public Callable<Auth0Exception> error() {
-        return new Callable<Auth0Exception>() {
-            @Override
-            public Auth0Exception call() throws Exception {
-                return error;
-            }
-        };
-    }
-
-    public Auth0Exception getError() {
-        return error;
-    }
+    Map<String, Object> getValues();
 }

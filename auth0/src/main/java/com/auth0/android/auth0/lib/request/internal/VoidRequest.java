@@ -26,6 +26,7 @@ package com.auth0.android.auth0.lib.request.internal;
 
 import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.request.internal.*;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
@@ -50,7 +51,7 @@ class VoidRequest extends com.auth0.android.auth0.lib.request.internal.BaseReque
     public void onResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
             APIException exception = parseUnsuccessfulResponse(response);
-            postOnFailure(exception);
+            postOnFailure(new AuthenticationException(exception));
             return;
         }
 

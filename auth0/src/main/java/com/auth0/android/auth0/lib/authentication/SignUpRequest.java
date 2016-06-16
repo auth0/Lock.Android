@@ -119,7 +119,7 @@ public class SignUpRequest implements Request<Credentials>, AuthenticationReques
             }
 
             @Override
-            public void onFailure(Auth0Exception error) {
+            public void onFailure(AuthenticationException error) {
                 callback.onFailure(error);
             }
         });

@@ -24,7 +24,7 @@
 
 package com.auth0.android.auth0.lib.callback;
 
-import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 
 /**
  * Interface for all callbacks used with Auth0 API clients
@@ -33,8 +33,9 @@ public interface Callback {
 
     /**
      * Method called on Auth0 API request failure
-     * @param error Auth0Exception with the reason of the failure
+     *
+     * @param error AuthenticationException with the reason of the failure
      */
-    void onFailure(Auth0Exception error);
+    void onFailure(AuthenticationException error);
 
 }

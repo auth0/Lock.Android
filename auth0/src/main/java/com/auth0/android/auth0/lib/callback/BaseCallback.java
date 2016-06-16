@@ -24,15 +24,14 @@
 
 package com.auth0.android.auth0.lib.callback;
 
-import com.auth0.android.auth0.lib.callback.*;
-
 /**
  * Callback that receives a single value on success.
  */
-public interface BaseCallback<T> extends com.auth0.android.auth0.lib.callback.Callback {
+public interface BaseCallback<T> extends Callback {
 
     /**
      * Method called on success with the payload or null.
+     *
      * @param payload Request payload or null
      */
     void onSuccess(T payload);
