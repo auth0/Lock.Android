@@ -40,13 +40,14 @@ import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SignUpFormView extends FormView implements TextView.OnEditorActionListener {
+public class SignUpFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
     private static final String TAG = SignUpFormView.class.getSimpleName();
     public static final int MAX_FEW_CUSTOM_FIELDS = 2;
@@ -79,6 +80,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         usernameInput.setOnEditorActionListener(this);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
+        emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
@@ -217,5 +219,24 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
             lockWidget.onFormSubmit();
         }
         return false;
+    }
+
+    public void setLastEmail(String email) {
+        emailInput.setText(email);
+        passwordInput.clearInput();
+    }
+
+    @Override
+    public void onEmailChanged(String email) {
+        lockWidget.onEmailChanged(email);
+    }
+
+    public void clearEmptyFieldsError() {
+        if (usernameInput.getText().isEmpty()) {
+            usernameInput.clearInput();
+        }
+        if (emailInput.getText().isEmpty()) {
+            emailInput.clearInput();
+        }
     }
 }

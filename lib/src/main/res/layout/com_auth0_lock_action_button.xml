@@ -23,7 +23,7 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:lock="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Lock.Theme.Widget.SubmitButton">
 
@@ -35,7 +35,7 @@
         android:paddingBottom="@dimen/com_auth0_lock_action_button_vertical_margin"
         android:paddingTop="@dimen/com_auth0_lock_action_button_vertical_margin"
         android:scaleType="center"
-        app:srcCompat="@drawable/com_auth0_lock_ic_submit"
+        lock:srcCompat="@drawable/com_auth0_lock_ic_submit"
         tools:ignore="MissingPrefix" />
 
     <ProgressBar

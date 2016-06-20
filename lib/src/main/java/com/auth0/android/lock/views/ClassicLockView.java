@@ -65,6 +65,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     private ProgressBar loadingProgressBar;
 
     private int headerPadding;
+    private String lastEmailInput;
 
     public ClassicLockView(Context context) {
         super(context);
@@ -187,7 +188,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     @Override
     public void showChangePasswordForm(boolean show) {
         if (show) {
-            addSubForm(new ChangePasswordFormView(this));
+            addSubForm(new ChangePasswordFormView(this, lastEmailInput));
         } else {
             removeSubForm();
         }
@@ -210,6 +211,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         removeView(subForm);
         subForm = null;
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        formLayout.refreshIdentityInput();
         addView(formLayout, FORM_INDEX, params);
     }
 
@@ -242,6 +244,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
             final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
             if (shouldDisplayPreviousForm) {
                 showSignUpTerms(subForm instanceof CustomFieldsFormView);
+
                 removeSubForm();
                 return true;
             }
@@ -338,5 +341,11 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         if (bottomBanner != null) {
             bottomBanner.setVisibility(show ? VISIBLE : GONE);
         }
+    }
+
+    @Override
+    public void onEmailChanged(String email) {
+        lastEmailInput = email;
+        formLayout.onEmailChanged(email);
     }
 }

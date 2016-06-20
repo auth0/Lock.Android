@@ -23,7 +23,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:lock="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -46,11 +46,11 @@
         android:textSize="@dimen/com_auth0_lock_title_text" />
 
     <com.auth0.android.lock.views.ValidatedUsernameInputView
-        android:id="@+id/com_auth0_lock_input_username_email"
+        android:id="@+id/com_auth0_lock_input_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/com_auth0_lock_widget_horizontal_margin"
         android:layout_marginRight="@dimen/com_auth0_lock_widget_horizontal_margin"
-        app:Auth0.InputDataType="username_or_email" />
+        lock:Auth0.InputDataType="email" />
 
 </LinearLayout>
