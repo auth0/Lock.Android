@@ -48,7 +48,7 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicLockView extends LinearLayout implements View.OnClickListener, LockWidget, LockWidgetForm {
+public class ClassicLockView extends LinearLayout implements View.OnClickListener, LockWidgetForm {
 
     private static final String TAG = ClassicLockView.class.getSimpleName();
     private static final int FORM_INDEX = 2;

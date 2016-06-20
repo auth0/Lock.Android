@@ -30,8 +30,6 @@
     android:layout_height="wrap_content"
     android:background="?attr/Auth0.HeaderBackground"
     android:gravity="center"
-    android:paddingBottom="@dimen/com_auth0_lock_header_vertical_margin"
-    android:paddingTop="@dimen/com_auth0_lock_header_vertical_margin"
     tools:background="#40000000"
     tools:context=".LockActivity">
 
@@ -39,6 +37,7 @@
         android:id="@+id/com_auth0_lock_header_logo"
         style="@style/Lock.Theme.Widget.Logo"
         android:fitsSystemWindows="false"
+        android:paddingTop="@dimen/com_auth0_lock_header_vertical_margin"
         app:srcCompat="?attr/Auth0.HeaderLogo"
         tools:ignore="MissingPrefix"
         tools:srcCompat="@drawable/com_auth0_lock_header_logo" />
@@ -47,5 +46,6 @@
         android:id="@+id/com_auth0_lock_header_text"
         style="@style/Lock.Theme.Text.Header"
         android:layout_below="@id/com_auth0_lock_header_logo"
+        android:paddingBottom="@dimen/com_auth0_lock_header_vertical_margin"
         tools:text="Auth0" />
 </RelativeLayout>
