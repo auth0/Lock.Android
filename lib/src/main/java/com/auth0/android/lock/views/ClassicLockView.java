@@ -92,6 +92,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         wrapHeightParams.gravity = Gravity.CENTER;
         loadingProgressBar = new ProgressBar(getContext());
         loadingProgressBar.setIndeterminate(true);
+        ViewUtils.tintWidget(loadingProgressBar, lockTheme.getPrimaryColor(getContext()));
         addView(loadingProgressBar, wrapHeightParams);
     }
 

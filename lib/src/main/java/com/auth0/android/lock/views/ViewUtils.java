@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -31,10 +32,12 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.auth0.android.lock.R;
 
@@ -126,5 +129,18 @@ abstract class ViewUtils {
             height = view.getMeasuredHeight() + modeSelectionParams.topMargin + modeSelectionParams.bottomMargin + view.getPaddingTop() + view.getPaddingBottom();
         }
         return height;
+    }
+
+    /**
+     * Tints the progress bar drawable to the given color. Only for devices running Lollipop or greater.
+     *
+     * @param progressBar the view to tint
+     * @param color       the color to use
+     */
+    static void tintWidget(@NonNull ProgressBar progressBar, @ColorInt int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ColorStateList tint = ColorStateList.valueOf(color);
+            progressBar.setIndeterminateTintList(tint);
+        }
     }
 }
