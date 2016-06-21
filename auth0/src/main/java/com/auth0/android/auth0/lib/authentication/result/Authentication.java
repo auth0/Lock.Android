@@ -25,26 +25,30 @@
 package com.auth0.android.auth0.lib.authentication.result;
 
 
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.request.AuthenticationRequest;
+
 import static com.auth0.android.auth0.lib.util.CheckHelper.checkArgument;
 
 /**
  * The result of a successful authentication against Auth0
- * Contains the logged in user's {@link com.auth0.android.auth0.lib.authentication.result.Credentials} and {@link com.auth0.android.auth0.lib.authentication.result.UserProfile}.
- * @see com.auth0.authentication.AuthenticationAPIClient#getProfileAfter(AuthenticationRequest) 
+ * Contains the logged in user's {@link Credentials} and {@link UserProfile}.
+ *
+ * @see AuthenticationAPIClient#getProfileAfter(AuthenticationRequest)
  */
 public class Authentication {
 
-    private final com.auth0.android.auth0.lib.authentication.result.UserProfile profile;
-    private final com.auth0.android.auth0.lib.authentication.result.Credentials credentials;
+    private final UserProfile profile;
+    private final Credentials credentials;
 
-    public Authentication(com.auth0.android.auth0.lib.authentication.result.UserProfile profile, com.auth0.android.auth0.lib.authentication.result.Credentials credentials) {
+    public Authentication(UserProfile profile, Credentials credentials) {
         checkArgument(profile != null, "profile must be non-null");
         checkArgument(credentials != null, "credentials must be non-null");
         this.profile = profile;
         this.credentials = credentials;
     }
 
-    public com.auth0.android.auth0.lib.authentication.result.UserProfile getProfile() {
+    public UserProfile getProfile() {
         return profile;
     }
 

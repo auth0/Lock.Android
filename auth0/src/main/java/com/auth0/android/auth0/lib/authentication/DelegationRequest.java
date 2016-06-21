@@ -82,7 +82,7 @@ public class DelegationRequest<T> implements Request<T> {
      * @return itself
      */
     public DelegationRequest<T> setScope(String scope) {
-        request.addParameter(com.auth0.android.auth0.lib.authentication.ParameterBuilder.SCOPE_KEY, scope);
+        request.addParameter(ParameterBuilder.SCOPE_KEY, scope);
         return this;
     }
 

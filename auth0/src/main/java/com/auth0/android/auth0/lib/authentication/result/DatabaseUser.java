@@ -25,14 +25,15 @@
 package com.auth0.android.auth0.lib.authentication.result;
 
 
+import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
 import com.auth0.android.auth0.lib.util.JsonRequired;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Auth0 user created in a Database connection.
  *
- * @see com.auth0.authentication.AuthenticationAPIClient#signUp(String, String)
- * @see com.auth0.authentication.AuthenticationAPIClient#signUp(String, String, String)
+ * @see AuthenticationAPIClient#signUp(String, String)
+ * @see AuthenticationAPIClient#signUp(String, String, String)
  */
 public class DatabaseUser {
 

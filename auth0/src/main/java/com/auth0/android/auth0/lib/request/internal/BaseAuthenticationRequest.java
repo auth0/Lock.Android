@@ -14,7 +14,7 @@ import static com.auth0.android.auth0.lib.authentication.ParameterBuilder.DEVICE
 import static com.auth0.android.auth0.lib.authentication.ParameterBuilder.GRANT_TYPE_KEY;
 import static com.auth0.android.auth0.lib.authentication.ParameterBuilder.SCOPE_KEY;
 
-class BaseAuthenticationRequest extends com.auth0.android.auth0.lib.request.internal.SimpleRequest<Credentials> implements AuthenticationRequest {
+class BaseAuthenticationRequest extends SimpleRequest<Credentials> implements AuthenticationRequest {
 
     public BaseAuthenticationRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod, Class<Credentials> clazz) {
         super(url, client, gson, httpMethod, clazz);

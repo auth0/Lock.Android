@@ -41,6 +41,6 @@ public class Telemetry {
             return null;
         }
         String json = new Gson().toJson(values);
-        return com.auth0.android.auth0.lib.util.Base64.encodeUrlSafe(json);
+        return Base64.encodeUrlSafe(json);
     }
 }

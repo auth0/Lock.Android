@@ -92,7 +92,7 @@ public class AuthenticationAPIClient {
      * @param auth0 account information
      */
     public AuthenticationAPIClient(Auth0 auth0) {
-        this(auth0, new OkHttpClient(), com.auth0.android.auth0.lib.authentication.GsonProvider.buildGson());
+        this(auth0, new OkHttpClient(), GsonProvider.buildGson());
     }
 
     private AuthenticationAPIClient(Auth0 auth0, OkHttpClient client, Gson gson) {
@@ -155,7 +155,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public AuthenticationRequest login(String usernameOrEmail, String password) {
-        Map<String, Object> requestParameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newAuthenticationBuilder()
+        Map<String, Object> requestParameters = ParameterBuilder.newAuthenticationBuilder()
                 .set(USERNAME_KEY, usernameOrEmail)
                 .set(PASSWORD_KEY, password)
                 .setGrantType(GRANT_TYPE_PASSWORD)
@@ -189,7 +189,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(ACCESS_TOKEN_PATH)
                 .build();
 
-        Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newAuthenticationBuilder()
+        Map<String, Object> parameters = ParameterBuilder.newAuthenticationBuilder()
                 .setClientId(getClientId())
                 .setConnection(connection)
                 .setAccessToken(token)
@@ -219,7 +219,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public AuthenticationRequest loginWithPhoneNumber(String phoneNumber, String verificationCode) {
-        Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newAuthenticationBuilder()
+        Map<String, Object> parameters = ParameterBuilder.newAuthenticationBuilder()
                 .set(USERNAME_KEY, phoneNumber)
                 .set(PASSWORD_KEY, verificationCode)
                 .setGrantType(GRANT_TYPE_PASSWORD)
@@ -249,7 +249,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public AuthenticationRequest loginWithEmail(String email, String verificationCode) {
-        Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newAuthenticationBuilder()
+        Map<String, Object> parameters = ParameterBuilder.newAuthenticationBuilder()
                 .set(USERNAME_KEY, email)
                 .set(PASSWORD_KEY, verificationCode)
                 .setGrantType(GRANT_TYPE_PASSWORD)
@@ -279,7 +279,7 @@ public class AuthenticationAPIClient {
     @SuppressWarnings("WeakerAccess")
     public Request<UserProfile> tokenInfo(String idToken) {
         return profileRequest()
-                .addParameter(com.auth0.android.auth0.lib.authentication.ParameterBuilder.ID_TOKEN_KEY, idToken);
+                .addParameter(ParameterBuilder.ID_TOKEN_KEY, idToken);
     }
 
     /**
@@ -309,7 +309,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(SIGN_UP_PATH)
                 .build();
 
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(USERNAME_KEY, username)
                 .set(EMAIL_KEY, email)
                 .set(PASSWORD_KEY, password)
@@ -367,10 +367,10 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start that will yield {@link Credentials}
      */
     @SuppressWarnings("WeakerAccess")
-    public com.auth0.android.auth0.lib.authentication.SignUpRequest signUp(String email, String password, String username) {
+    public SignUpRequest signUp(String email, String password, String username) {
         final DatabaseConnectionRequest<DatabaseUser> createUserRequest = createUser(email, password, username);
         final AuthenticationRequest authenticationRequest = login(email, password);
-        return new com.auth0.android.auth0.lib.authentication.SignUpRequest(createUserRequest, authenticationRequest);
+        return new SignUpRequest(createUserRequest, authenticationRequest);
     }
 
     /**
@@ -394,7 +394,7 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start that will yield {@link Credentials}
      */
     @SuppressWarnings("WeakerAccess")
-    public com.auth0.android.auth0.lib.authentication.SignUpRequest signUp(String email, String password) {
+    public SignUpRequest signUp(String email, String password) {
         DatabaseConnectionRequest<DatabaseUser> createUserRequest = createUser(email, password);
         final AuthenticationRequest authenticationRequest = login(email, password);
         return new SignUpRequest(createUserRequest, authenticationRequest);
@@ -424,7 +424,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(CHANGE_PASSWORD_PATH)
                 .build();
 
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .setClientId(getClientId())
                 .setConnection(defaultDatabaseConnection)
@@ -452,12 +452,12 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public com.auth0.android.auth0.lib.authentication.DelegationRequest<Delegation> delegationWithIdToken(String idToken) {
+    public DelegationRequest<Delegation> delegationWithIdToken(String idToken) {
         ParameterizableRequest<Delegation> request = delegation(Delegation.class)
-                .addParameter(com.auth0.android.auth0.lib.authentication.ParameterBuilder.ID_TOKEN_KEY, idToken);
+                .addParameter(ParameterBuilder.ID_TOKEN_KEY, idToken);
 
-        return new com.auth0.android.auth0.lib.authentication.DelegationRequest<>(request)
-                .setApiType(com.auth0.android.auth0.lib.authentication.DelegationRequest.DEFAULT_API_TYPE);
+        return new DelegationRequest<>(request)
+                .setApiType(DelegationRequest.DEFAULT_API_TYPE);
     }
 
     /**
@@ -479,12 +479,12 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public com.auth0.android.auth0.lib.authentication.DelegationRequest<Delegation> delegationWithRefreshToken(String refreshToken) {
+    public DelegationRequest<Delegation> delegationWithRefreshToken(String refreshToken) {
         ParameterizableRequest<Delegation> request = delegation(Delegation.class)
-                .addParameter(com.auth0.android.auth0.lib.authentication.ParameterBuilder.REFRESH_TOKEN_KEY, refreshToken);
+                .addParameter(ParameterBuilder.REFRESH_TOKEN_KEY, refreshToken);
 
-        return new com.auth0.android.auth0.lib.authentication.DelegationRequest<>(request)
-                .setApiType(com.auth0.android.auth0.lib.authentication.DelegationRequest.DEFAULT_API_TYPE);
+        return new DelegationRequest<>(request)
+                .setApiType(DelegationRequest.DEFAULT_API_TYPE);
     }
 
     /**
@@ -506,9 +506,9 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public com.auth0.android.auth0.lib.authentication.DelegationRequest<Map<String, Object>> delegationWithIdToken(String idToken, String apiType) {
+    public DelegationRequest<Map<String, Object>> delegationWithIdToken(String idToken, String apiType) {
         ParameterizableRequest<Map<String, Object>> request = delegation()
-                .addParameter(com.auth0.android.auth0.lib.authentication.ParameterBuilder.ID_TOKEN_KEY, idToken);
+                .addParameter(ParameterBuilder.ID_TOKEN_KEY, idToken);
 
         return new DelegationRequest<>(request)
                 .setApiType(apiType);
@@ -538,7 +538,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(UNLINK_PATH)
                 .build();
 
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setAccessToken(accessToken)
                 .set(CLIENT_ID_KEY, getClientId())
                 .set(USER_ID_KEY, userId)
@@ -567,8 +567,8 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public ParameterizableRequest<Void> passwordlessWithEmail(String email, com.auth0.android.auth0.lib.authentication.PasswordlessType passwordlessType) {
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+    public ParameterizableRequest<Void> passwordlessWithEmail(String email, PasswordlessType passwordlessType) {
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .setSend(passwordlessType)
                 .setConnection(EMAIL_CONNECTION)
@@ -598,7 +598,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public ParameterizableRequest<Void> passwordlessWithSMS(String phoneNumber, PasswordlessType passwordlessType) {
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(PHONE_NUMBER_KEY, phoneNumber)
                 .setSend(passwordlessType)
                 .setConnection(SMS_CONNECTION)
@@ -631,9 +631,9 @@ public class AuthenticationAPIClient {
                 .addPathSegment(DELEGATION_PATH)
                 .build();
 
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setClientId(getClientId())
-                .setGrantType(com.auth0.android.auth0.lib.authentication.ParameterBuilder.GRANT_TYPE_JWT)
+                .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
         return factory.rawPOST(url, client, gson)
                 .addParameters(parameters);
@@ -644,9 +644,9 @@ public class AuthenticationAPIClient {
                 .addPathSegment(DELEGATION_PATH)
                 .build();
 
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setClientId(getClientId())
-                .setGrantType(com.auth0.android.auth0.lib.authentication.ParameterBuilder.GRANT_TYPE_JWT)
+                .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
 
         return factory.POST(url, client, gson, clazz)
@@ -665,7 +665,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(START_PATH)
                 .build();
 
-        final Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+        final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setClientId(getClientId())
                 .asDictionary();
         return factory.POST(url, client, gson)
@@ -677,9 +677,9 @@ public class AuthenticationAPIClient {
      * If the login request fails, the returned request will fail
      *
      * @param authenticationRequest that will authenticate a user with Auth0 and return a {@link Credentials}
-     * @return a {@link com.auth0.android.auth0.lib.authentication.ProfileRequest} that first logins and the fetches the profile
+     * @return a {@link ProfileRequest} that first logins and the fetches the profile
      */
-    public com.auth0.android.auth0.lib.authentication.ProfileRequest getProfileAfter(AuthenticationRequest authenticationRequest) {
+    public ProfileRequest getProfileAfter(AuthenticationRequest authenticationRequest) {
         final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
         return new ProfileRequest(authenticationRequest, profileRequest);
     }
@@ -713,8 +713,8 @@ public class AuthenticationAPIClient {
      * @return a request to obtain access_token by exchanging a authorization code.
      */
     @SuppressWarnings("WeakerAccess")
-    public com.auth0.android.auth0.lib.authentication.TokenRequest token(String authorizationCode, String redirectUri) {
-        Map<String, Object> parameters = com.auth0.android.auth0.lib.authentication.ParameterBuilder.newBuilder()
+    public TokenRequest token(String authorizationCode, String redirectUri) {
+        Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setClientId(getClientId())
                 .setGrantType(GRANT_TYPE_AUTHORIZATION_CODE)
                 .set(OAUTH_CODE_KEY, authorizationCode)

@@ -24,8 +24,6 @@
 
 package com.auth0.android.auth0.lib.request;
 
-import com.auth0.android.auth0.lib.request.*;
-
 import java.util.Map;
 
 /**
@@ -33,7 +31,7 @@ import java.util.Map;
  *
  * @param <T>
  */
-public interface ParameterizableRequest<T> extends com.auth0.android.auth0.lib.request.Request<T> {
+public interface ParameterizableRequest<T> extends Request<T> {
 
     /**
      * Add parameters to the request as a Map of Object with the keys as String

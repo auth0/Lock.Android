@@ -27,7 +27,6 @@ package com.auth0.android.auth0.lib.request.internal;
 import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
-import com.auth0.android.auth0.lib.request.internal.*;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
@@ -38,7 +37,7 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-class VoidRequest extends com.auth0.android.auth0.lib.request.internal.BaseRequest<Void> implements Callback {
+class VoidRequest extends BaseRequest<Void> implements Callback {
 
     private final String httpMethod;
 

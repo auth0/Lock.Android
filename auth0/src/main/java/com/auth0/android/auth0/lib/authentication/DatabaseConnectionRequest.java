@@ -56,7 +56,7 @@ public class DatabaseConnectionRequest<T> {
      * @return itself
      */
     public DatabaseConnectionRequest<T> setConnection(String connection) {
-        request.addParameter(com.auth0.android.auth0.lib.authentication.ParameterBuilder.CONNECTION_KEY, connection);
+        request.addParameter(ParameterBuilder.CONNECTION_KEY, connection);
         return this;
     }
 

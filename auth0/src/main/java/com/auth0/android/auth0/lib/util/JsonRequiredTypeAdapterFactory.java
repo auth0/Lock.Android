@@ -1,6 +1,5 @@
 package com.auth0.android.auth0.lib.util;
 
-import com.auth0.android.auth0.lib.util.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;

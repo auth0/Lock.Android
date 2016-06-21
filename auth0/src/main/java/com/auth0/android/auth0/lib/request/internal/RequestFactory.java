@@ -49,7 +49,7 @@ public class RequestFactory {
     }
 
     public <T> ParameterizableRequest<T> GET(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final com.auth0.android.auth0.lib.request.internal.SimpleRequest<T> request = new com.auth0.android.auth0.lib.request.internal.SimpleRequest<>(url, client, gson, "GET", clazz);
+        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "GET", clazz);
         addMetrics(request);
         return request;
     }
@@ -61,44 +61,44 @@ public class RequestFactory {
     }
 
     public <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final com.auth0.android.auth0.lib.request.internal.SimpleRequest<T> request = new com.auth0.android.auth0.lib.request.internal.SimpleRequest<>(url, client, gson, "POST", clazz);
+        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "POST", clazz);
         addMetrics(request);
         return request;
     }
 
     public ParameterizableRequest<Map<String, Object>> rawPOST(HttpUrl url, OkHttpClient client, Gson gson) {
-        final com.auth0.android.auth0.lib.request.internal.SimpleRequest<Map<String, Object>> request = new com.auth0.android.auth0.lib.request.internal.SimpleRequest<>(url, client, gson, "POST");
+        final SimpleRequest<Map<String, Object>> request = new SimpleRequest<>(url, client, gson, "POST");
         addMetrics(request);
         return request;
     }
 
     public ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Gson gson) {
-        final com.auth0.android.auth0.lib.request.internal.VoidRequest request = new com.auth0.android.auth0.lib.request.internal.VoidRequest(url, client, gson, "POST");
+        final VoidRequest request = new VoidRequest(url, client, gson, "POST");
         addMetrics(request);
         return request;
     }
 
     public ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Gson gson, String jwt) {
-        final AuthorizableRequest<Void> request = new com.auth0.android.auth0.lib.request.internal.VoidRequest(url, client, gson, "POST")
+        final AuthorizableRequest<Void> request = new VoidRequest(url, client, gson, "POST")
                 .setBearer(jwt);
         addMetrics(request);
         return request;
     }
 
     public <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final com.auth0.android.auth0.lib.request.internal.SimpleRequest<T> request = new com.auth0.android.auth0.lib.request.internal.SimpleRequest<>(url, client, gson, "PUT", clazz);
+        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "PUT", clazz);
         addMetrics(request);
         return request;
     }
 
     public <T> ParameterizableRequest<T> PATCH(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final com.auth0.android.auth0.lib.request.internal.SimpleRequest<T> request = new com.auth0.android.auth0.lib.request.internal.SimpleRequest<>(url, client, gson, "GET", clazz);
+        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "GET", clazz);
         addMetrics(request);
         return request;
     }
 
     public <T> ParameterizableRequest<T> DELETE(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final com.auth0.android.auth0.lib.request.internal.SimpleRequest<T> request = new com.auth0.android.auth0.lib.request.internal.SimpleRequest<>(url, client, gson, "DELETE", clazz);
+        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "DELETE", clazz);
         addMetrics(request);
         return request;
     }
