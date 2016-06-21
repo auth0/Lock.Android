@@ -78,7 +78,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
-        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
