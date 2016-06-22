@@ -31,13 +31,13 @@ import com.auth0.android.auth0.lib.callback.BaseCallback;
  * Defines a request that can be started
  * @param <T>
  */
-public interface Request<T> {
+public interface Request<T, U> {
 
     /**
      * Performs an async HTTP request against Auth0 API
      * @param callback called either on success or failure
      */
-    void start(BaseCallback<T> callback);
+    void start(BaseCallback<T, U> callback);
 
     /**
      * Executes the HTTP request against Auth0 API (blocking the current thread)

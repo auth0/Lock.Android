@@ -48,7 +48,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class BaseRequest<T> implements ParameterizableRequest<T>, AuthorizableRequest<T>, Callback {
+abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, AuthorizableRequest<T, U>, Callback {
 
     private final Map<String, String> headers;
     protected final HttpUrl url;
@@ -57,13 +57,13 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     private final Gson gson;
     private final ParameterBuilder builder;
 
-    private BaseCallback<T> callback;
+    private BaseCallback<T, U> callback;
 
     protected BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter) {
         this(url, client, gson, adapter, null);
     }
 
-    public BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter, BaseCallback<T> callback) {
+    public BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter, BaseCallback<T, U> callback) {
         this.url = url;
         this.client = client;
         this.gson = gson;
@@ -73,7 +73,7 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
         this.builder = ParameterBuilder.newBuilder();
     }
 
-    protected void setCallback(BaseCallback<T> callback) {
+    protected void setCallback(BaseCallback<T, U> callback) {
         this.callback = callback;
     }
 
@@ -125,31 +125,31 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     }
 
     @Override
-    public ParameterizableRequest<T> addHeader(String name, String value) {
+    public ParameterizableRequest<T, U> addHeader(String name, String value) {
         headers.put(name, value);
         return this;
     }
 
     @Override
-    public AuthorizableRequest<T> setBearer(String jwt) {
+    public AuthorizableRequest<T, U> setBearer(String jwt) {
         addHeader("Authorization", "Bearer " + jwt);
         return this;
     }
 
     @Override
-    public ParameterizableRequest<T> addParameters(Map<String, Object> parameters) {
+    public ParameterizableRequest<T, U> addParameters(Map<String, Object> parameters) {
         builder.addAll(parameters);
         return this;
     }
 
     @Override
-    public ParameterizableRequest<T> addParameter(String name, Object value) {
+    public ParameterizableRequest<T, U> addParameter(String name, Object value) {
         builder.set(name, value);
         return this;
     }
 
     @Override
-    public void start(BaseCallback<T> callback) {
+    public void start(BaseCallback<T, U> callback) {
         setCallback(callback);
         try {
             Request request = doBuildRequest(newBuilder());
@@ -159,5 +159,5 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
         }
     }
 
-    protected abstract Request doBuildRequest(Request.Builder builder) throws RequestBodyBuildException;
+    protected abstract Request doBuildRequest(Request.Builder builder);
 }

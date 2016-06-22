@@ -1,5 +1,6 @@
 package com.auth0.android.auth0.lib.request;
 
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.Map;
 /**
  * Request to authenticate a user with Auth0 Authentication API
  */
-public interface AuthenticationRequest extends Request<Credentials> {
+public interface AuthenticationRequest extends Request<Credentials, AuthenticationException> {
 
     /**
      * Sets the 'grant_type' parameter

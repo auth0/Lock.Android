@@ -40,16 +40,16 @@ import java.util.Map;
  *            use {@link Delegation}, otherwise you’ll need to provide an object that can be created from the JSON
  *            payload or just use {@code Map<String, Object>}
  */
-public class DelegationRequest<T> implements Request<T> {
+public class DelegationRequest<T> implements Request<T, AuthenticationException> {
 
     private static final String API_TYPE_KEY = "api_type";
     public static final String DEFAULT_API_TYPE = "app";
 
     private static final String TARGET_KEY = "target";
 
-    private final ParameterizableRequest<T> request;
+    private final ParameterizableRequest<T, AuthenticationException> request;
 
-    DelegationRequest(ParameterizableRequest<T> request) {
+    DelegationRequest(ParameterizableRequest<T, AuthenticationException> request) {
         this.request = request;
     }
 
@@ -103,7 +103,7 @@ public class DelegationRequest<T> implements Request<T> {
      * @param callback called either on success or failure
      */
     @Override
-    public void start(final BaseCallback<T> callback) {
+    public void start(final BaseCallback<T, AuthenticationException> callback) {
         request.start(callback);
     }
 

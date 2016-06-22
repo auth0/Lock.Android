@@ -31,14 +31,14 @@ import java.util.Map;
  *
  * @param <T>
  */
-public interface ParameterizableRequest<T> extends Request<T> {
+public interface ParameterizableRequest<T, U> extends Request<T, U> {
 
     /**
      * Add parameters to the request as a Map of Object with the keys as String
      * @param parameters to send with the request
      * @return itself
      */
-    ParameterizableRequest<T> addParameters(Map<String, Object> parameters);
+    ParameterizableRequest<T, U> addParameters(Map<String, Object> parameters);
 
     /**
      * Add parameter to the request with a given name
@@ -46,7 +46,7 @@ public interface ParameterizableRequest<T> extends Request<T> {
      * @param value of the parameter
      * @return itself
      */
-    ParameterizableRequest<T> addParameter(String name, Object value);
+    ParameterizableRequest<T, U> addParameter(String name, Object value);
 
     /**
      * Adds an additional header for the request
@@ -55,6 +55,6 @@ public interface ParameterizableRequest<T> extends Request<T> {
      * @param value of the header
      * @return itself
      */
-    ParameterizableRequest<T> addHeader(String name, String value);
+    ParameterizableRequest<T, U> addHeader(String name, String value);
 
 }

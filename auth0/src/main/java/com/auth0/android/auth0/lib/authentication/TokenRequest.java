@@ -10,14 +10,14 @@ import com.auth0.android.auth0.lib.request.Request;
  * Auth Request to obtain tokens using OAuth2 {@literal /oauth/token} method
  */
 @SuppressWarnings("WeakerAccess")
-public class TokenRequest implements Request<Credentials> {
+public class TokenRequest implements Request<Credentials, AuthenticationException> {
 
     private static final String OAUTH_CODE_VERIFIER_KEY = "code_verifier";
     private static final String OAUTH_CLIENT_SECRET_KEY = "client_secret";
 
-    private final ParameterizableRequest<Credentials> request;
+    private final ParameterizableRequest<Credentials, AuthenticationException> request;
 
-    TokenRequest(ParameterizableRequest<Credentials> request) {
+    TokenRequest(ParameterizableRequest<Credentials, AuthenticationException> request) {
         this.request = request;
     }
 
@@ -46,7 +46,7 @@ public class TokenRequest implements Request<Credentials> {
     }
 
     @Override
-    public void start(BaseCallback<Credentials> callback) {
+    public void start(BaseCallback<Credentials, AuthenticationException> callback) {
         request.start(callback);
     }
 

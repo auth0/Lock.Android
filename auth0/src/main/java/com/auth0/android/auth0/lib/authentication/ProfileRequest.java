@@ -38,14 +38,14 @@ import java.util.Map;
 /**
  * Request to fetch a profile after a successful authentication with Auth0 Authentication API
  */
-public class ProfileRequest implements Request<Authentication> {
+public class ProfileRequest implements Request<Authentication, AuthenticationException> {
 
     private static final String ID_TOKEN_KEY = "id_token";
 
     private final AuthenticationRequest credentialsRequest;
-    private final ParameterizableRequest<UserProfile> tokenInfoRequest;
+    private final ParameterizableRequest<UserProfile, AuthenticationException> tokenInfoRequest;
 
-    ProfileRequest(AuthenticationRequest credentialsRequest, ParameterizableRequest<UserProfile> tokenInfoRequest) {
+    ProfileRequest(AuthenticationRequest credentialsRequest, ParameterizableRequest<UserProfile, AuthenticationException> tokenInfoRequest) {
         this.credentialsRequest = credentialsRequest;
         this.tokenInfoRequest = tokenInfoRequest;
     }
@@ -89,13 +89,13 @@ public class ProfileRequest implements Request<Authentication> {
      * @param callback called on either success or failure
      */
     @Override
-    public void start(final BaseCallback<Authentication> callback) {
-        credentialsRequest.start(new BaseCallback<Credentials>() {
+    public void start(final BaseCallback<Authentication, AuthenticationException> callback) {
+        credentialsRequest.start(new BaseCallback<Credentials, AuthenticationException>() {
             @Override
             public void onSuccess(final Credentials credentials) {
                 tokenInfoRequest
                         .addParameter(ID_TOKEN_KEY, credentials.getIdToken())
-                        .start(new BaseCallback<UserProfile>() {
+                        .start(new BaseCallback<UserProfile, AuthenticationException>() {
                             @Override
                             public void onSuccess(UserProfile profile) {
                                 callback.onSuccess(new Authentication(profile, credentials));

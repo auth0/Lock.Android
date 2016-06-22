@@ -37,7 +37,7 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-class VoidRequest extends BaseRequest<Void> implements Callback {
+class VoidRequest<U> extends BaseRequest<Void, U> implements Callback {
 
     private final String httpMethod;
 

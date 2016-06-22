@@ -36,12 +36,12 @@ import java.util.Map;
 /**
  * Represent a request that creates a user in a Auth0 Database connection and then logs in.
  */
-public class SignUpRequest implements Request<Credentials>, AuthenticationRequest {
+public class SignUpRequest implements Request<Credentials, AuthenticationException>, AuthenticationRequest {
 
-    private final DatabaseConnectionRequest<DatabaseUser> signUpRequest;
+    private final DatabaseConnectionRequest<DatabaseUser, AuthenticationException> signUpRequest;
     private final AuthenticationRequest authenticationRequest;
 
-    SignUpRequest(DatabaseConnectionRequest<DatabaseUser> signUpRequest, AuthenticationRequest authenticationRequest) {
+    SignUpRequest(DatabaseConnectionRequest<DatabaseUser, AuthenticationException> signUpRequest, AuthenticationRequest authenticationRequest) {
         this.signUpRequest = signUpRequest;
         this.authenticationRequest = authenticationRequest;
     }
@@ -111,8 +111,8 @@ public class SignUpRequest implements Request<Credentials>, AuthenticationReques
      * @param callback called on either success or failure.
      */
     @Override
-    public void start(final BaseCallback<Credentials> callback) {
-        signUpRequest.start(new BaseCallback<DatabaseUser>() {
+    public void start(final BaseCallback<Credentials, AuthenticationException> callback) {
+        signUpRequest.start(new BaseCallback<DatabaseUser, AuthenticationException>() {
             @Override
             public void onSuccess(final DatabaseUser user) {
                 authenticationRequest.start(callback);

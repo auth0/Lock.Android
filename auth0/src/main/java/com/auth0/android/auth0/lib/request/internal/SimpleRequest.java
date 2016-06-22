@@ -41,7 +41,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.Reader;
 
-class SimpleRequest<T> extends BaseRequest<T> implements ParameterizableRequest<T>, Callback {
+class SimpleRequest<T, U> extends BaseRequest<T, U> implements ParameterizableRequest<T, U>, Callback {
 
     private final String method;
 

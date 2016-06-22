@@ -277,7 +277,7 @@ public class AuthenticationAPIClient {
      * @return a request to start
      */
     @SuppressWarnings("WeakerAccess")
-    public Request<UserProfile> tokenInfo(String idToken) {
+    public Request<UserProfile, AuthenticationException> tokenInfo(String idToken) {
         return profileRequest()
                 .addParameter(ParameterBuilder.ID_TOKEN_KEY, idToken);
     }
@@ -303,7 +303,7 @@ public class AuthenticationAPIClient {
      * @return a request to start
      */
     @SuppressWarnings("WeakerAccess")
-    public DatabaseConnectionRequest<DatabaseUser> createUser(String email, String password, String username) {
+    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> createUser(String email, String password, String username) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(DB_CONNECTIONS_PATH)
                 .addPathSegment(SIGN_UP_PATH)
@@ -316,8 +316,10 @@ public class AuthenticationAPIClient {
                 .setConnection(defaultDatabaseConnection)
                 .setClientId(getClientId())
                 .asDictionary();
-        final ParameterizableRequest<DatabaseUser> request = factory.POST(url, client, gson, DatabaseUser.class)
-                .addParameters(parameters);
+
+        //FIXME: Try to chain calls using the builder.
+        final ParameterizableRequest<DatabaseUser, AuthenticationException> request = factory.POST(url, client, gson, DatabaseUser.class);
+        request.addParameters(parameters);
         return new DatabaseConnectionRequest<>(request);
     }
 
@@ -341,7 +343,7 @@ public class AuthenticationAPIClient {
      * @return a request to start
      */
     @SuppressWarnings("WeakerAccess")
-    public DatabaseConnectionRequest<DatabaseUser> createUser(String email, String password) {
+    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> createUser(String email, String password) {
         return createUser(email, password, null);
     }
 
@@ -368,7 +370,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public SignUpRequest signUp(String email, String password, String username) {
-        final DatabaseConnectionRequest<DatabaseUser> createUserRequest = createUser(email, password, username);
+        final DatabaseConnectionRequest<DatabaseUser, AuthenticationException> createUserRequest = createUser(email, password, username);
         final AuthenticationRequest authenticationRequest = login(email, password);
         return new SignUpRequest(createUserRequest, authenticationRequest);
     }
@@ -395,7 +397,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public SignUpRequest signUp(String email, String password) {
-        DatabaseConnectionRequest<DatabaseUser> createUserRequest = createUser(email, password);
+        DatabaseConnectionRequest<DatabaseUser, AuthenticationException> createUserRequest = createUser(email, password);
         final AuthenticationRequest authenticationRequest = login(email, password);
         return new SignUpRequest(createUserRequest, authenticationRequest);
     }
@@ -418,7 +420,7 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public DatabaseConnectionRequest<Void> requestChangePassword(String email) {
+    public DatabaseConnectionRequest<Void, AuthenticationException> requestChangePassword(String email) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(DB_CONNECTIONS_PATH)
                 .addPathSegment(CHANGE_PASSWORD_PATH)
@@ -429,8 +431,10 @@ public class AuthenticationAPIClient {
                 .setClientId(getClientId())
                 .setConnection(defaultDatabaseConnection)
                 .asDictionary();
-        final ParameterizableRequest<Void> request = factory.POST(url, client, gson)
-                .addParameters(parameters);
+
+        //FIXME: Try to chain calls using the builder.
+        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson);
+        request.addParameters(parameters);
         return new DatabaseConnectionRequest<>(request);
     }
 
@@ -453,7 +457,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public DelegationRequest<Delegation> delegationWithIdToken(String idToken) {
-        ParameterizableRequest<Delegation> request = delegation(Delegation.class)
+        ParameterizableRequest<Delegation, AuthenticationException> request = delegation(Delegation.class)
                 .addParameter(ParameterBuilder.ID_TOKEN_KEY, idToken);
 
         return new DelegationRequest<>(request)
@@ -480,7 +484,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public DelegationRequest<Delegation> delegationWithRefreshToken(String refreshToken) {
-        ParameterizableRequest<Delegation> request = delegation(Delegation.class)
+        ParameterizableRequest<Delegation, AuthenticationException> request = delegation(Delegation.class)
                 .addParameter(ParameterBuilder.REFRESH_TOKEN_KEY, refreshToken);
 
         return new DelegationRequest<>(request)
@@ -507,7 +511,7 @@ public class AuthenticationAPIClient {
      */
     @SuppressWarnings("WeakerAccess")
     public DelegationRequest<Map<String, Object>> delegationWithIdToken(String idToken, String apiType) {
-        ParameterizableRequest<Map<String, Object>> request = delegation()
+        ParameterizableRequest<Map<String, Object>, AuthenticationException> request = delegation()
                 .addParameter(ParameterBuilder.ID_TOKEN_KEY, idToken);
 
         return new DelegationRequest<>(request)
@@ -533,7 +537,7 @@ public class AuthenticationAPIClient {
      * @return a request to start
      */
     @SuppressWarnings("WeakerAccess")
-    public Request<Void> unlink(String userId, String accessToken) {
+    public Request<Void, AuthenticationException> unlink(String userId, String accessToken) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(UNLINK_PATH)
                 .build();
@@ -544,8 +548,11 @@ public class AuthenticationAPIClient {
                 .set(USER_ID_KEY, userId)
                 .asDictionary();
 
-        return factory.POST(url, client, gson)
-                .addParameters(parameters);
+        //FIXME: Try to chain calls using the builder.
+        final ParameterizableRequest<Void, AuthenticationException> post = factory.POST(url, client, gson);
+        post.addParameters(parameters);
+
+        return post;
     }
 
     /**
@@ -567,7 +574,7 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public ParameterizableRequest<Void> passwordlessWithEmail(String email, PasswordlessType passwordlessType) {
+    public ParameterizableRequest<Void, AuthenticationException> passwordlessWithEmail(String email, PasswordlessType passwordlessType) {
         final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(EMAIL_KEY, email)
                 .setSend(passwordlessType)
@@ -597,7 +604,7 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public ParameterizableRequest<Void> passwordlessWithSMS(String phoneNumber, PasswordlessType passwordlessType) {
+    public ParameterizableRequest<Void, AuthenticationException> passwordlessWithSMS(String phoneNumber, PasswordlessType passwordlessType) {
         final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .set(PHONE_NUMBER_KEY, phoneNumber)
                 .setSend(passwordlessType)
@@ -626,7 +633,7 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public ParameterizableRequest<Map<String, Object>> delegation() {
+    public ParameterizableRequest<Map<String, Object>, AuthenticationException> delegation() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(DELEGATION_PATH)
                 .build();
@@ -635,11 +642,13 @@ public class AuthenticationAPIClient {
                 .setClientId(getClientId())
                 .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
-        return factory.rawPOST(url, client, gson)
-                .addParameters(parameters);
+
+        //FIXME: Try to chain calls using the builder.
+        final ParameterizableRequest<Map<String, Object>, AuthenticationException> request = factory.rawPOST(url, client, gson);
+        return request.addParameters(parameters);
     }
 
-    private <T> ParameterizableRequest<T> delegation(Class<T> clazz) {
+    private <T> ParameterizableRequest<T, AuthenticationException> delegation(Class<T> clazz) {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(DELEGATION_PATH)
                 .build();
@@ -649,8 +658,9 @@ public class AuthenticationAPIClient {
                 .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
 
-        return factory.POST(url, client, gson, clazz)
-                .addParameters(parameters);
+        //FIXME: Try to chain calls using the builder.
+        final ParameterizableRequest<T, AuthenticationException> request = factory.POST(url, client, gson, clazz);
+        return request.addParameters(parameters);
     }
 
     /**
@@ -659,7 +669,7 @@ public class AuthenticationAPIClient {
      * @return a request to configure and start
      */
     @SuppressWarnings("WeakerAccess")
-    public ParameterizableRequest<Void> passwordless() {
+    public ParameterizableRequest<Void, AuthenticationException> passwordless() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(PASSWORDLESS_PATH)
                 .addPathSegment(START_PATH)
@@ -668,8 +678,10 @@ public class AuthenticationAPIClient {
         final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setClientId(getClientId())
                 .asDictionary();
-        return factory.POST(url, client, gson)
-                .addParameters(parameters);
+
+        //FIXME: Try to chain calls using the builder.
+        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson);
+        return request.addParameters(parameters);
     }
 
     /**
@@ -680,7 +692,7 @@ public class AuthenticationAPIClient {
      * @return a {@link ProfileRequest} that first logins and the fetches the profile
      */
     public ProfileRequest getProfileAfter(AuthenticationRequest authenticationRequest) {
-        final ParameterizableRequest<UserProfile> profileRequest = profileRequest();
+        final ParameterizableRequest<UserProfile, AuthenticationException> profileRequest = profileRequest();
         return new ProfileRequest(authenticationRequest, profileRequest);
     }
 
@@ -726,7 +738,8 @@ public class AuthenticationAPIClient {
                 .addPathSegment(TOKEN_PATH)
                 .build();
 
-        ParameterizableRequest<Credentials> request = factory.POST(url, client, gson, Credentials.class).addParameters(parameters);
+        ParameterizableRequest<Credentials, AuthenticationException> request = factory.POST(url, client, gson, Credentials.class);
+        request.addParameters(parameters);
         return new TokenRequest(request);
     }
 
@@ -745,7 +758,7 @@ public class AuthenticationAPIClient {
                 .addAuthenticationParameters(requestParameters);
     }
 
-    private ParameterizableRequest<UserProfile> profileRequest() {
+    private ParameterizableRequest<UserProfile, AuthenticationException> profileRequest() {
         HttpUrl url = HttpUrl.parse(auth0.getDomainUrl()).newBuilder()
                 .addPathSegment(TOKEN_INFO_PATH)
                 .build();

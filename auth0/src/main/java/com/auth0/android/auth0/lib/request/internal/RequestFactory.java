@@ -24,6 +24,7 @@
 
 package com.auth0.android.auth0.lib.request.internal;
 
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.request.AuthenticationRequest;
 import com.auth0.android.auth0.lib.request.AuthorizableRequest;
@@ -48,8 +49,8 @@ public class RequestFactory {
         this.userAgent = userAgent;
     }
 
-    public <T> ParameterizableRequest<T> GET(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "GET", clazz);
+    public <T, U> ParameterizableRequest<T, U> GET(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
+        final SimpleRequest<T, U> request = new SimpleRequest<>(url, client, gson, "GET", clazz);
         addMetrics(request);
         return request;
     }
@@ -60,50 +61,50 @@ public class RequestFactory {
         return request;
     }
 
-    public <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "POST", clazz);
+    public <T, U> ParameterizableRequest<T, U> POST(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
+        final SimpleRequest<T, U> request = new SimpleRequest<>(url, client, gson, "POST", clazz);
         addMetrics(request);
         return request;
     }
 
-    public ParameterizableRequest<Map<String, Object>> rawPOST(HttpUrl url, OkHttpClient client, Gson gson) {
-        final SimpleRequest<Map<String, Object>> request = new SimpleRequest<>(url, client, gson, "POST");
+    public <U> ParameterizableRequest<Map<String, Object>, U> rawPOST(HttpUrl url, OkHttpClient client, Gson gson) {
+        final SimpleRequest<Map<String, Object>, U> request = new SimpleRequest<>(url, client, gson, "POST");
         addMetrics(request);
         return request;
     }
 
-    public ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Gson gson) {
-        final VoidRequest request = new VoidRequest(url, client, gson, "POST");
+    public <U> ParameterizableRequest<Void, U> POST(HttpUrl url, OkHttpClient client, Gson gson) {
+        final VoidRequest<U> request = new VoidRequest<>(url, client, gson, "POST");
         addMetrics(request);
         return request;
     }
 
-    public ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Gson gson, String jwt) {
-        final AuthorizableRequest<Void> request = new VoidRequest(url, client, gson, "POST")
+    public <U> ParameterizableRequest<Void, U> POST(HttpUrl url, OkHttpClient client, Gson gson, String jwt) {
+        final AuthorizableRequest<Void, U> request = new VoidRequest<U>(url, client, gson, "POST")
                 .setBearer(jwt);
         addMetrics(request);
         return request;
     }
 
-    public <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "PUT", clazz);
+    public <T, U> ParameterizableRequest<T, U> PUT(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
+        final SimpleRequest<T, U> request = new SimpleRequest<>(url, client, gson, "PUT", clazz);
         addMetrics(request);
         return request;
     }
 
-    public <T> ParameterizableRequest<T> PATCH(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "GET", clazz);
+    public <T, U> ParameterizableRequest<T, U> PATCH(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
+        final SimpleRequest<T, U> request = new SimpleRequest<>(url, client, gson, "GET", clazz);
         addMetrics(request);
         return request;
     }
 
-    public <T> ParameterizableRequest<T> DELETE(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
-        final SimpleRequest<T> request = new SimpleRequest<>(url, client, gson, "DELETE", clazz);
+    public <T, U> ParameterizableRequest<T, U> DELETE(HttpUrl url, OkHttpClient client, Gson gson, Class<T> clazz) {
+        final SimpleRequest<T, U> request = new SimpleRequest<>(url, client, gson, "DELETE", clazz);
         addMetrics(request);
         return request;
     }
 
-    private <T> void addMetrics(ParameterizableRequest<T> request) {
+    private <T, U> void addMetrics(ParameterizableRequest<T, U> request) {
         if (this.clientInfo != null) {
             request.addHeader(Telemetry.HEADER_NAME, this.clientInfo);
         }

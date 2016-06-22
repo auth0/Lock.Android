@@ -28,13 +28,13 @@ package com.auth0.android.auth0.lib.request;
  * Interface for a Auth0 request that need Authorization using a JWT
  * @param <T>
  */
-public interface AuthorizableRequest<T> extends ParameterizableRequest<T> {
+public interface AuthorizableRequest<T, U> extends ParameterizableRequest<T, U> {
 
     /**
      * Set the JWT used in 'Authorization' header value
      * @param jwt token to send to the API
      * @return itself
      */
-    AuthorizableRequest<T> setBearer(String jwt);
+    AuthorizableRequest<T, U> setBearer(String jwt);
 
 }

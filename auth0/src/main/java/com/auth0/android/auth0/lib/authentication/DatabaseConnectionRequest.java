@@ -10,11 +10,11 @@ import java.util.Map;
  * Request to perform a non-authentication related action
  * like creating a user or requesting a change password
  */
-public class DatabaseConnectionRequest<T> {
+public class DatabaseConnectionRequest<T, U> {
 
-    private final ParameterizableRequest<T> request;
+    private final ParameterizableRequest<T, U> request;
 
-    public DatabaseConnectionRequest(ParameterizableRequest<T> request) {
+    public DatabaseConnectionRequest(ParameterizableRequest<T, U> request) {
         this.request = request;
     }
 
@@ -23,7 +23,7 @@ public class DatabaseConnectionRequest<T> {
      * @param parameters to be sent with the request
      * @return itself
      */
-    public DatabaseConnectionRequest<T> addParameters(Map<String, Object> parameters) {
+    public DatabaseConnectionRequest<T, U> addParameters(Map<String, Object> parameters) {
         request.addParameters(parameters);
         return this;
     }
@@ -34,7 +34,7 @@ public class DatabaseConnectionRequest<T> {
      * @param value of the parameter
      * @return itself
      */
-    public DatabaseConnectionRequest<T> addParameter(String name, Object value) {
+    public DatabaseConnectionRequest<T, U> addParameter(String name, Object value) {
         request.addParameter(name, value);
         return this;
     }
@@ -45,7 +45,7 @@ public class DatabaseConnectionRequest<T> {
      * @param value of the header
      * @return itself
      */
-    public DatabaseConnectionRequest<T> addHeader(String name, String value) {
+    public DatabaseConnectionRequest<T, U> addHeader(String name, String value) {
         request.addHeader(name, value);
         return this;
     }
@@ -55,7 +55,7 @@ public class DatabaseConnectionRequest<T> {
      * @param connection name
      * @return itself
      */
-    public DatabaseConnectionRequest<T> setConnection(String connection) {
+    public DatabaseConnectionRequest<T, U> setConnection(String connection) {
         request.addParameter(ParameterBuilder.CONNECTION_KEY, connection);
         return this;
     }
@@ -64,7 +64,7 @@ public class DatabaseConnectionRequest<T> {
      * Executes the request async and returns its results via callback
      * @param callback called on success or failure of the request
      */
-    public void start(BaseCallback<T> callback) {
+    public void start(BaseCallback<T, U> callback) {
         request.start(callback);
     }
 

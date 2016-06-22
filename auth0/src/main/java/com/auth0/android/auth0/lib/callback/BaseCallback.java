@@ -27,7 +27,7 @@ package com.auth0.android.auth0.lib.callback;
 /**
  * Callback that receives a single value on success.
  */
-public interface BaseCallback<T> extends Callback {
+public interface BaseCallback<T, U> extends Callback<U> {
 
     /**
      * Method called on success with the payload or null.
