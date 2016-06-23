@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.jayway.awaitility.Duration;

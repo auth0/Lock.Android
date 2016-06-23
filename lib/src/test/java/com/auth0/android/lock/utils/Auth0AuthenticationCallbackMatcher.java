@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.auth0.lib.util;
+package com.auth0.android.lock.utils;
 
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.callback.AuthenticationCallback;
@@ -39,11 +39,11 @@ import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
-public class AuthenticationCallbackMatcher<T> extends BaseMatcher<AuthenticationCallback<T>> {
+public class Auth0AuthenticationCallbackMatcher<T> extends BaseMatcher<AuthenticationCallback<T>> {
     private final Matcher<T> payloadMatcher;
     private final Matcher<AuthenticationException> errorMatcher;
 
-    public AuthenticationCallbackMatcher(Matcher<T> payloadMatcher, Matcher<AuthenticationException> errorMatcher) {
+    public Auth0AuthenticationCallbackMatcher(Matcher<T> payloadMatcher, Matcher<AuthenticationException> errorMatcher) {
         this.payloadMatcher = payloadMatcher;
         this.errorMatcher = errorMatcher;
     }
@@ -68,22 +68,22 @@ public class AuthenticationCallbackMatcher<T> extends BaseMatcher<Authentication
     }
 
     public static <T> Matcher<AuthenticationCallback<T>> hasPayloadOfType(Class<T> tClazz) {
-        return new AuthenticationCallbackMatcher<>(isA(tClazz), is(nullValue(AuthenticationException.class)));
+        return new Auth0AuthenticationCallbackMatcher<>(isA(tClazz), is(nullValue(AuthenticationException.class)));
     }
 
     public static <T> Matcher<AuthenticationCallback<T>> hasPayload(T payload) {
-        return new AuthenticationCallbackMatcher<>(equalTo(payload), is(nullValue(AuthenticationException.class)));
+        return new Auth0AuthenticationCallbackMatcher<>(equalTo(payload), is(nullValue(AuthenticationException.class)));
     }
 
     public static <T> Matcher<AuthenticationCallback<T>> hasNoPayloadOfType(Class<T> tClazz) {
-        return new AuthenticationCallbackMatcher<>(is(nullValue(tClazz)), is(notNullValue(AuthenticationException.class)));
+        return new Auth0AuthenticationCallbackMatcher<>(is(nullValue(tClazz)), is(notNullValue(AuthenticationException.class)));
     }
 
     public static Matcher<AuthenticationCallback<Void>> hasNoError() {
-        return new AuthenticationCallbackMatcher<>(is(nullValue(Void.class)), is(nullValue(AuthenticationException.class)));
+        return new Auth0AuthenticationCallbackMatcher<>(is(nullValue(Void.class)), is(nullValue(AuthenticationException.class)));
     }
 
     public static Matcher<AuthenticationCallback<Void>> hasError() {
-        return new AuthenticationCallbackMatcher<>(is(nullValue(Void.class)), is(notNullValue(AuthenticationException.class)));
+        return new Auth0AuthenticationCallbackMatcher<>(is(nullValue(Void.class)), is(notNullValue(AuthenticationException.class)));
     }
 }

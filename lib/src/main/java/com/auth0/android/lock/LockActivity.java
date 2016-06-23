@@ -56,7 +56,6 @@ import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
-import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
 import com.auth0.android.lock.errors.SignUpAuthenticationErrorBuilder;
@@ -432,7 +431,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private BaseCallback<Application, AuthenticationException> applicationCallback = new BaseCallback<Application, AuthenticationException>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -489,7 +488,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Credentials, AuthenticationException> authCallback = new BaseCallback<Credentials, AuthenticationException>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
             deliverAuthenticationResult(credentials);
@@ -515,7 +514,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<DatabaseUser, AuthenticationException> createCallback = new BaseCallback<DatabaseUser, AuthenticationException>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback<DatabaseUser> createCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<DatabaseUser>() {
         @Override
         public void onSuccess(final DatabaseUser user) {
             handler.post(new Runnable() {
@@ -539,7 +538,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Void, AuthenticationException> changePwdCallback = new BaseCallback<Void, AuthenticationException>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback<Void> changePwdCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {

@@ -60,7 +60,6 @@ import com.auth0.android.auth0.OAuth2WebAuthProvider;
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
-import com.auth0.android.auth0.lib.callback.*;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;

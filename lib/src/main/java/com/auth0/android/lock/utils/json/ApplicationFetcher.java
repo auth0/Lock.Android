@@ -31,6 +31,7 @@ import android.util.Log;
 import com.auth0.android.auth0.lib.Auth0;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
+import com.auth0.android.auth0.lib.callback.AuthenticationCallback;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -70,11 +71,11 @@ public class ApplicationFetcher {
      *
      * @param callback to notify on success/error
      */
-    public void fetch(@NonNull BaseCallback<Application, AuthenticationException> callback) {
+    public void fetch(@NonNull AuthenticationCallback<Application> callback) {
         makeApplicationRequest(callback);
     }
 
-    private void makeApplicationRequest(final BaseCallback<Application, AuthenticationException> callback) {
+    private void makeApplicationRequest(final AuthenticationCallback<Application> callback) {
         Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
                 .appendPath(account.getClientId() + ".js").build();
 

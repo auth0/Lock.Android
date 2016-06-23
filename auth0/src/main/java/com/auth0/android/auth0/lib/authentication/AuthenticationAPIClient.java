@@ -320,9 +320,8 @@ public class AuthenticationAPIClient {
                 .setClientId(getClientId())
                 .asDictionary();
 
-        //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<DatabaseUser, AuthenticationException> request = factory.POST(url, client, gson, DatabaseUser.class, authErrorBuilder);
-        request.addParameters(parameters);
+        final ParameterizableRequest<DatabaseUser, AuthenticationException> request = factory.POST(url, client, gson, DatabaseUser.class, authErrorBuilder)
+                .addParameters(parameters);
         return new DatabaseConnectionRequest<>(request);
     }
 
@@ -435,9 +434,8 @@ public class AuthenticationAPIClient {
                 .setConnection(defaultDatabaseConnection)
                 .asDictionary();
 
-        //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson, authErrorBuilder);
-        request.addParameters(parameters);
+        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson, authErrorBuilder)
+                .addParameters(parameters);
         return new DatabaseConnectionRequest<>(request);
     }
 
@@ -551,11 +549,8 @@ public class AuthenticationAPIClient {
                 .set(USER_ID_KEY, userId)
                 .asDictionary();
 
-        //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Void, AuthenticationException> post = factory.POST(url, client, gson, authErrorBuilder);
-        post.addParameters(parameters);
-
-        return post;
+        return factory.POST(url, client, gson, authErrorBuilder)
+                .addParameters(parameters);
     }
 
     /**
@@ -646,9 +641,8 @@ public class AuthenticationAPIClient {
                 .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
 
-        //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Map<String, Object>, AuthenticationException> request = factory.rawPOST(url, client, gson, authErrorBuilder);
-        return request.addParameters(parameters);
+        return factory.rawPOST(url, client, gson, authErrorBuilder)
+                .addParameters(parameters);
     }
 
     private <T> ParameterizableRequest<T, AuthenticationException> delegation(Class<T> clazz) {
@@ -661,9 +655,8 @@ public class AuthenticationAPIClient {
                 .setGrantType(ParameterBuilder.GRANT_TYPE_JWT)
                 .asDictionary();
 
-        //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<T, AuthenticationException> request = factory.POST(url, client, gson, clazz, authErrorBuilder);
-        return request.addParameters(parameters);
+        return factory.POST(url, client, gson, clazz, authErrorBuilder)
+                .addParameters(parameters);
     }
 
     /**
@@ -682,9 +675,8 @@ public class AuthenticationAPIClient {
                 .setClientId(getClientId())
                 .asDictionary();
 
-        //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson, authErrorBuilder);
-        return request.addParameters(parameters);
+        return factory.POST(url, client, gson, authErrorBuilder)
+                .addParameters(parameters);
     }
 
     /**

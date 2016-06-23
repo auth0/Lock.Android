@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.auth0.lib.util;
+package com.auth0.android.lock.utils;
 
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.callback.AuthenticationCallback;
