@@ -1,7 +1,7 @@
 /*
- * AuthenticationError.java
+ * MockBaseCallback.java
  *
- * Copyright (c) 2016 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,28 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.auth0.lib.authentication;
+package com.auth0.android.auth0.lib.util;
 
-import java.util.Map;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 
-public interface AuthenticationError {
-    String ERROR_KEY = "error";
-    String ERROR_DESCRIPTION_KEY = "error_description";
+import java.util.concurrent.Callable;
 
-    String getError();
+public class MockAuthenticationCallback<T> extends MockBaseCallback<T, AuthenticationException> {
 
-    String getDescription();
+    private AuthenticationException error;
 
-    Map<String, Object> getValues();
+    @Override
+    public void onFailure(AuthenticationException error) {
+        this.error = error;
+    }
+
+    @Override
+    public Callable<AuthenticationException> error() {
+        return new Callable<AuthenticationException>() {
+            @Override
+            public AuthenticationException call() throws Exception {
+                return error;
+            }
+        };
+    }
 }

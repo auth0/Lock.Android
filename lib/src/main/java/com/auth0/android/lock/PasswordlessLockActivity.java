@@ -60,7 +60,7 @@ import com.auth0.android.auth0.OAuth2WebAuthProvider;
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
-import com.auth0.android.auth0.lib.callback.BaseCallback;
+import com.auth0.android.auth0.lib.callback.*;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;
@@ -495,7 +495,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     //Callbacks
-    private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback applicationCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -522,7 +522,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private BaseCallback<Void> passwordlessCodeCallback = new BaseCallback<Void>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback passwordlessCodeCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
@@ -551,7 +551,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private BaseCallback<Credentials> authCallback = new BaseCallback<Credentials>() {
+    private com.auth0.android.auth0.lib.callback.AuthenticationCallback authCallback = new com.auth0.android.auth0.lib.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
             clearRecentPasswordlessData();

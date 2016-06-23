@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.DatabaseConnectionRequest;
 import com.auth0.android.auth0.lib.authentication.SignUpRequest;
 import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
@@ -70,8 +71,8 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return request;
     }
 
-    public DatabaseConnectionRequest<DatabaseUser> getCreateUserRequest(AuthenticationAPIClient apiClient) {
-        DatabaseConnectionRequest<DatabaseUser> request;
+    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(AuthenticationAPIClient apiClient) {
+        DatabaseConnectionRequest<DatabaseUser, AuthenticationException> request;
         if (getUsername() != null) {
             request = apiClient.createUser(getEmail(), getPassword(), getUsername());
         } else {

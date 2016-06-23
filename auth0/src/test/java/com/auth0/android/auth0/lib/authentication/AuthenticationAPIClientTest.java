@@ -32,7 +32,7 @@ import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
 import com.auth0.android.auth0.lib.authentication.result.Delegation;
 import com.auth0.android.auth0.lib.authentication.result.UserProfile;
 import com.auth0.android.auth0.lib.util.AuthenticationAPI;
-import com.auth0.android.auth0.lib.util.MockBaseCallback;
+import com.auth0.android.auth0.lib.util.MockAuthenticationCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -46,10 +46,12 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.android.auth0.lib.util.AuthenticationAPI.*;
-import static com.auth0.android.auth0.lib.util.CallbackMatcher.hasNoError;
-import static com.auth0.android.auth0.lib.util.CallbackMatcher.hasPayload;
-import static com.auth0.android.auth0.lib.util.CallbackMatcher.hasPayloadOfType;
+import static com.auth0.android.auth0.lib.util.AuthenticationAPI.GENERIC_TOKEN;
+import static com.auth0.android.auth0.lib.util.AuthenticationAPI.ID_TOKEN;
+import static com.auth0.android.auth0.lib.util.AuthenticationAPI.REFRESH_TOKEN;
+import static com.auth0.android.auth0.lib.util.AuthenticationCallbackMatcher.hasNoError;
+import static com.auth0.android.auth0.lib.util.AuthenticationCallbackMatcher.hasPayload;
+import static com.auth0.android.auth0.lib.util.AuthenticationCallbackMatcher.hasPayloadOfType;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
@@ -104,7 +106,7 @@ public class AuthenticationAPIClientTest {
         mockAPI
                 .willReturnSuccessfulLogin();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
 
         client
                 .login(SUPPORT_AUTH0_COM, "voidpassword")
@@ -128,7 +130,7 @@ public class AuthenticationAPIClientTest {
     @Test
     public void shouldFetchTokenInfo() throws Exception {
         mockAPI.willReturnTokenInfo();
-        final MockBaseCallback<UserProfile> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<UserProfile> callback = new MockAuthenticationCallback<>();
 
         client.tokenInfo("ID_TOKEN")
                 .start(callback);
@@ -158,7 +160,7 @@ public class AuthenticationAPIClientTest {
         mockAPI
                 .willReturnSuccessfulLogin();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.loginWithOAuthAccessToken("fbtoken", "facebook")
                 .start(callback);
 
@@ -196,7 +198,7 @@ public class AuthenticationAPIClientTest {
     public void shouldLoginWithPhoneNumber() throws Exception {
         mockAPI.willReturnSuccessfulLogin();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.loginWithPhoneNumber("+10101010101", "1234")
                 .start(callback);
 
@@ -236,7 +238,7 @@ public class AuthenticationAPIClientTest {
     public void shouldLoginWithEmailOnly() throws Exception {
         mockAPI.willReturnSuccessfulLogin();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.loginWithEmail(SUPPORT_AUTH0_COM, "1234")
                 .start(callback);
 
@@ -278,7 +280,7 @@ public class AuthenticationAPIClientTest {
     public void shouldCreateUser() throws Exception {
         mockAPI.willReturnSuccessfulSignUp();
 
-        final MockBaseCallback<DatabaseUser> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<DatabaseUser> callback = new MockAuthenticationCallback<>();
         client.createUser(SUPPORT_AUTH0_COM, PASSWORD, SUPPORT)
                 .start(callback);
 
@@ -316,7 +318,7 @@ public class AuthenticationAPIClientTest {
     public void shouldCreateUserWithoutUsername() throws Exception {
         mockAPI.willReturnSuccessfulSignUp();
 
-        final MockBaseCallback<DatabaseUser> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<DatabaseUser> callback = new MockAuthenticationCallback<>();
         client.createUser(SUPPORT_AUTH0_COM, PASSWORD)
                 .start(callback);
 
@@ -354,7 +356,7 @@ public class AuthenticationAPIClientTest {
     public void shouldNotSendNullUsernameOnSignUp() throws Exception {
         mockAPI.willReturnSuccessfulSignUp();
 
-        final MockBaseCallback<DatabaseUser> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<DatabaseUser> callback = new MockAuthenticationCallback<>();
         client.createUser(SUPPORT_AUTH0_COM, PASSWORD, null)
                 .start(callback);
 
@@ -392,7 +394,7 @@ public class AuthenticationAPIClientTest {
         mockAPI.willReturnSuccessfulSignUp()
                 .willReturnSuccessfulLogin();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.signUp(SUPPORT_AUTH0_COM, PASSWORD, SUPPORT)
                 .start(callback);
 
@@ -422,7 +424,7 @@ public class AuthenticationAPIClientTest {
         mockAPI.willReturnSuccessfulSignUp()
                 .willReturnSuccessfulLogin();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         final Map<String, Object> custom = ParameterBuilder.newBuilder()
                 .set("first_name", FIRST_NAME)
                 .set("last_name", LAST_NAME)
@@ -454,7 +456,7 @@ public class AuthenticationAPIClientTest {
                 .willReturnSuccessfulLogin()
                 .willReturnTokenInfo();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.signUp(SUPPORT_AUTH0_COM, PASSWORD)
                 .setConnection(MY_CONNECTION)
                 .start(callback);
@@ -517,7 +519,7 @@ public class AuthenticationAPIClientTest {
                 .willReturnSuccessfulLogin()
                 .willReturnTokenInfo();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.signUp(SUPPORT_AUTH0_COM, PASSWORD)
                 .start(callback);
 
@@ -559,7 +561,7 @@ public class AuthenticationAPIClientTest {
     public void shouldChangePassword() throws Exception {
         mockAPI.willReturnSuccessfulChangePassword();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.requestChangePassword(SUPPORT_AUTH0_COM)
                 .start(callback);
 
@@ -592,7 +594,7 @@ public class AuthenticationAPIClientTest {
     public void shouldRequestChangePassword() throws Exception {
         mockAPI.willReturnSuccessfulChangePassword();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.requestChangePassword(SUPPORT_AUTH0_COM)
                 .start(callback);
 
@@ -611,7 +613,7 @@ public class AuthenticationAPIClientTest {
     public void shouldRequestChangePasswordForAConnection() throws Exception {
         mockAPI.willReturnSuccessfulChangePassword();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.requestChangePassword(SUPPORT_AUTH0_COM)
                 .setConnection(MY_CONNECTION)
                 .start(callback);
@@ -646,7 +648,7 @@ public class AuthenticationAPIClientTest {
     public void shouldCallDelegation() throws Exception {
         mockAPI.willReturnGenericDelegationToken();
 
-        final MockBaseCallback<Map<String, Object>> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Map<String, Object>> callback = new MockAuthenticationCallback<>();
         client.delegation()
                 .start(callback);
 
@@ -686,7 +688,7 @@ public class AuthenticationAPIClientTest {
     public void shouldGetNewIdTokenWithIdToken() throws Exception {
         mockAPI.willReturnNewIdToken();
 
-        final MockBaseCallback<Delegation> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Delegation> callback = new MockAuthenticationCallback<>();
         client.delegationWithIdToken(ID_TOKEN)
                 .start(callback);
 
@@ -726,7 +728,7 @@ public class AuthenticationAPIClientTest {
     public void shouldGetCustomizedDelegationRequestWithIdToken() throws Exception {
         mockAPI.willReturnNewIdToken();
 
-        final MockBaseCallback<Map<String, Object>> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Map<String, Object>> callback = new MockAuthenticationCallback<>();
         client.delegationWithIdToken(ID_TOKEN, "custom_api_type")
                 .setScope("custom_scope")
                 .setTarget("custom_target")
@@ -770,7 +772,7 @@ public class AuthenticationAPIClientTest {
     public void shouldGetNewIdTokenWithRefreshToken() throws Exception {
         mockAPI.willReturnNewIdToken();
 
-        final MockBaseCallback<Delegation> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Delegation> callback = new MockAuthenticationCallback<>();
         client.delegationWithRefreshToken(REFRESH_TOKEN)
                 .start(callback);
 
@@ -810,7 +812,7 @@ public class AuthenticationAPIClientTest {
     public void shouldUnlinkAccount() throws Exception {
         mockAPI.willReturnSuccessfulUnlinkAccount();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.unlink("user id", "access token")
                 .start(callback);
 
@@ -845,7 +847,7 @@ public class AuthenticationAPIClientTest {
     public void shouldStartPasswordless() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         final Map<String, Object> parameters = ParameterBuilder.newBuilder()
                 .setConnection("email")
                 .set("send", "code")
@@ -896,7 +898,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendEmailCode() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithEmail(SUPPORT_AUTH0_COM, PasswordlessType.CODE)
                 .start(callback);
 
@@ -933,7 +935,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendEmailLink() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithEmail(SUPPORT_AUTH0_COM, PasswordlessType.LINK_WEB)
                 .start(callback);
 
@@ -970,7 +972,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendEmailLinkAndroid() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithEmail(SUPPORT_AUTH0_COM, PasswordlessType.LINK_ANDROID)
                 .start(callback);
 
@@ -1007,7 +1009,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendEmailLinkIOS() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithEmail(SUPPORT_AUTH0_COM, PasswordlessType.LINK_IOS)
                 .start(callback);
 
@@ -1044,7 +1046,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendSMSCode() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithSMS("+1123123123", PasswordlessType.CODE)
                 .start(callback);
 
@@ -1081,7 +1083,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendSMSLink() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithSMS("+1123123123", PasswordlessType.LINK_WEB)
                 .start(callback);
 
@@ -1118,7 +1120,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendSMSLinkAndroid() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithSMS("+1123123123", PasswordlessType.LINK_ANDROID)
                 .start(callback);
 
@@ -1155,7 +1157,7 @@ public class AuthenticationAPIClientTest {
     public void shouldSendSMSLinkIOS() throws Exception {
         mockAPI.willReturnSuccessfulPasswordlessStart();
 
-        final MockBaseCallback<Void> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Void> callback = new MockAuthenticationCallback<>();
         client.passwordlessWithSMS("+1123123123", PasswordlessType.LINK_IOS)
                 .start(callback);
 
@@ -1194,7 +1196,7 @@ public class AuthenticationAPIClientTest {
                 .willReturnSuccessfulLogin()
                 .willReturnTokenInfo();
 
-        MockBaseCallback<Authentication> callback = new MockBaseCallback<>();
+        MockAuthenticationCallback<Authentication> callback = new MockAuthenticationCallback<>();
         client.getProfileAfter(client.login(SUPPORT_AUTH0_COM, "voidpassword"))
                 .start(callback);
 
@@ -1217,7 +1219,7 @@ public class AuthenticationAPIClientTest {
                 .willReturnTokens()
                 .willReturnTokenInfo();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.token("code", "http://redirect.uri")
                 .setCodeVerifier("codeVerifier")
                 .start(callback);
@@ -1241,7 +1243,7 @@ public class AuthenticationAPIClientTest {
                 .willReturnTokens()
                 .willReturnTokenInfo();
 
-        final MockBaseCallback<Credentials> callback = new MockBaseCallback<>();
+        final MockAuthenticationCallback<Credentials> callback = new MockAuthenticationCallback<>();
         client.token("code", "http://redirect.uri")
                 .setClientSecret("clientSecret")
                 .start(callback);

@@ -24,9 +24,8 @@
 
 package com.auth0.android.auth0.lib.request.internal;
 
-import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
+import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.HttpUrl;
@@ -37,20 +36,19 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-class VoidRequest<U> extends BaseRequest<Void, U> implements Callback {
+class VoidRequest<U extends Auth0Exception> extends BaseRequest<Void, U> implements Callback {
 
     private final String httpMethod;
 
-    public VoidRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod) {
-        super(url, client, gson, gson.getAdapter(Void.class));
+    public VoidRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod, ErrorBuilder<U> errorBuilder) {
+        super(url, client, gson, gson.getAdapter(Void.class), errorBuilder);
         this.httpMethod = httpMethod;
     }
 
     @Override
     public void onResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
-            APIException exception = parseUnsuccessfulResponse(response);
-            postOnFailure(new AuthenticationException(exception));
+            postOnFailure(parseUnsuccessfulResponse(response));
             return;
         }
 

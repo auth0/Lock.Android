@@ -24,10 +24,12 @@
 
 package com.auth0.android.auth0.lib.callback;
 
+import com.auth0.android.auth0.lib.Auth0Exception;
+
 /**
  * Callback that receives a single value on success.
  */
-public interface BaseCallback<T, U> extends Callback<U> {
+public interface BaseCallback<T, U extends Auth0Exception> extends Callback<U> {
 
     /**
      * Method called on success with the payload or null.

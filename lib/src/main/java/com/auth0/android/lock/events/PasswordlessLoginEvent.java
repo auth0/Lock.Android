@@ -29,6 +29,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.PasswordlessType;
 import com.auth0.android.auth0.lib.request.AuthenticationRequest;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
@@ -91,9 +92,9 @@ public class PasswordlessLoginEvent {
      * @param apiClient the API Client instance
      * @return the Passwordless code request request.
      */
-    public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
+    public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
         Log.d(TAG, String.format("Generating Passwordless Code/Link request for connection %s", connectionName));
-        ParameterizableRequest<Void> request;
+        ParameterizableRequest<Void, AuthenticationException> request;
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
             request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
         } else if (getMode() == PasswordlessMode.EMAIL_LINK) {

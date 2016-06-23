@@ -24,11 +24,13 @@
 
 package com.auth0.android.auth0.lib.request;
 
+import com.auth0.android.auth0.lib.Auth0Exception;
+
 /**
  * Interface for a Auth0 request that need Authorization using a JWT
  * @param <T>
  */
-public interface AuthorizableRequest<T, U> extends ParameterizableRequest<T, U> {
+public interface AuthorizableRequest<T, U extends Auth0Exception> extends ParameterizableRequest<T, U> {
 
     /**
      * Set the JWT used in 'Authorization' header value

@@ -24,10 +24,12 @@
 
 package com.auth0.android.auth0.lib.callback;
 
+import com.auth0.android.auth0.lib.Auth0Exception;
+
 /**
  * Interface for all callbacks used with Auth0 API clients
  */
-public interface Callback<U> {
+public interface Callback<U extends Auth0Exception> {
 
     /**
      * Method called on Auth0 API request failure

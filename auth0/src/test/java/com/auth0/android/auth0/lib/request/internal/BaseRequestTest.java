@@ -29,6 +29,7 @@ import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
+import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.squareup.okhttp.HttpUrl;
@@ -44,6 +45,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -51,12 +53,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 public class BaseRequestTest {
 
-    private BaseRequest<String> baseRequest;
+    private BaseRequest<String, Auth0Exception> baseRequest;
 
     @Mock
-    private BaseCallback<String> callback;
+    private BaseCallback<String, Auth0Exception> callback;
     @Mock
-    private AuthenticationException throwable;
+    private Auth0Exception throwable;
+    @Mock
+    private ErrorBuilder<Auth0Exception> errorBuilder;
     @Mock
     private OkHttpClient client;
     @Mock
@@ -68,7 +72,19 @@ public class BaseRequestTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         HttpUrl url = HttpUrl.parse("https://auth0.com");
-        baseRequest = new BaseRequest<String>(url, client, new Gson(), adapter, callback) {
+        errorBuilder = new ErrorBuilder<Auth0Exception>() {
+            @Override
+            public Auth0Exception from(String message, Auth0Exception exception) {
+                return exception;
+            }
+
+            @Override
+            public Auth0Exception from(Map<String, Object> values) {
+                return null;
+            }
+        };
+
+        baseRequest = new BaseRequest<String, Auth0Exception>(url, client, new Gson(), adapter, errorBuilder, callback) {
             @Override
             public String execute() throws Auth0Exception {
                 return null;

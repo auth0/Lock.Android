@@ -31,7 +31,7 @@ import com.auth0.android.auth0.lib.callback.BaseCallback;
  * Defines a request that can be started
  * @param <T>
  */
-public interface Request<T, U> {
+public interface Request<T, U extends Auth0Exception> {
 
     /**
      * Performs an async HTTP request against Auth0 API

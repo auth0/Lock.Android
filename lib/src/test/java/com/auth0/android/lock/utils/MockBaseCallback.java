@@ -1,7 +1,7 @@
 /*
  * MockBaseCallback.java
  *
- * Copyright (c) 2016 Auth0 (http://auth0.com)
+ * Copyright (c) 2015 Auth0 (http://auth0.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,14 @@
 package com.auth0.android.lock.utils;
 
 import com.auth0.android.auth0.lib.Auth0Exception;
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 
 import java.util.concurrent.Callable;
 
-public class MockBaseCallback<T> implements BaseCallback<T> {
+public class MockBaseCallback<T, U extends Auth0Exception> implements BaseCallback<T, U> {
 
     private T payload;
-    private Auth0Exception error;
+    private U error;
 
     @Override
     public void onSuccess(T payload) {
@@ -41,7 +40,7 @@ public class MockBaseCallback<T> implements BaseCallback<T> {
     }
 
     @Override
-    public void onFailure(AuthenticationException error) {
+    public void onFailure(U error) {
         this.error = error;
     }
 
@@ -54,16 +53,20 @@ public class MockBaseCallback<T> implements BaseCallback<T> {
         };
     }
 
-    public Callable<Auth0Exception> error() {
-        return new Callable<Auth0Exception>() {
+    public Callable<U> error() {
+        return new Callable<U>() {
             @Override
-            public Auth0Exception call() throws Exception {
+            public U call() throws Exception {
                 return error;
             }
         };
     }
 
-    public Auth0Exception getError() {
+    public T getPayload() {
+        return payload;
+    }
+
+    public U getError() {
         return error;
     }
 }

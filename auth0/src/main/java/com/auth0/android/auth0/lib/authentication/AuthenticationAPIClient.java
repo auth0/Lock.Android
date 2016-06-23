@@ -30,6 +30,7 @@ import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
 import com.auth0.android.auth0.lib.authentication.result.Delegation;
 import com.auth0.android.auth0.lib.authentication.result.UserProfile;
 import com.auth0.android.auth0.lib.request.AuthenticationRequest;
+import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.auth0.android.auth0.lib.request.Request;
 import com.auth0.android.auth0.lib.request.internal.RequestFactory;
@@ -83,6 +84,7 @@ public class AuthenticationAPIClient {
     private final OkHttpClient client;
     private final Gson gson;
     private final RequestFactory factory;
+    private final ErrorBuilder<AuthenticationException> authErrorBuilder;
 
     private String defaultDatabaseConnection = DEFAULT_DB_CONNECTION;
 
@@ -100,6 +102,7 @@ public class AuthenticationAPIClient {
         this.client = client;
         this.gson = gson;
         this.factory = new RequestFactory();
+        this.authErrorBuilder = new AuthenticationErrorBuilder();
         final Telemetry telemetry = auth0.getTelemetry();
         if (telemetry != null) {
             factory.setClientInfo(telemetry.getValue());
@@ -318,7 +321,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<DatabaseUser, AuthenticationException> request = factory.POST(url, client, gson, DatabaseUser.class);
+        final ParameterizableRequest<DatabaseUser, AuthenticationException> request = factory.POST(url, client, gson, DatabaseUser.class, authErrorBuilder);
         request.addParameters(parameters);
         return new DatabaseConnectionRequest<>(request);
     }
@@ -433,7 +436,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson);
+        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson, authErrorBuilder);
         request.addParameters(parameters);
         return new DatabaseConnectionRequest<>(request);
     }
@@ -549,7 +552,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Void, AuthenticationException> post = factory.POST(url, client, gson);
+        final ParameterizableRequest<Void, AuthenticationException> post = factory.POST(url, client, gson, authErrorBuilder);
         post.addParameters(parameters);
 
         return post;
@@ -644,7 +647,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Map<String, Object>, AuthenticationException> request = factory.rawPOST(url, client, gson);
+        final ParameterizableRequest<Map<String, Object>, AuthenticationException> request = factory.rawPOST(url, client, gson, authErrorBuilder);
         return request.addParameters(parameters);
     }
 
@@ -659,7 +662,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<T, AuthenticationException> request = factory.POST(url, client, gson, clazz);
+        final ParameterizableRequest<T, AuthenticationException> request = factory.POST(url, client, gson, clazz, authErrorBuilder);
         return request.addParameters(parameters);
     }
 
@@ -680,7 +683,7 @@ public class AuthenticationAPIClient {
                 .asDictionary();
 
         //FIXME: Try to chain calls using the builder.
-        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson);
+        final ParameterizableRequest<Void, AuthenticationException> request = factory.POST(url, client, gson, authErrorBuilder);
         return request.addParameters(parameters);
     }
 
@@ -738,7 +741,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(TOKEN_PATH)
                 .build();
 
-        ParameterizableRequest<Credentials, AuthenticationException> request = factory.POST(url, client, gson, Credentials.class);
+        ParameterizableRequest<Credentials, AuthenticationException> request = factory.POST(url, client, gson, Credentials.class, authErrorBuilder);
         request.addParameters(parameters);
         return new TokenRequest(request);
     }
@@ -763,7 +766,7 @@ public class AuthenticationAPIClient {
                 .addPathSegment(TOKEN_INFO_PATH)
                 .build();
 
-        return factory.POST(url, client, gson, UserProfile.class);
+        return factory.POST(url, client, gson, UserProfile.class, authErrorBuilder);
     }
 
 }

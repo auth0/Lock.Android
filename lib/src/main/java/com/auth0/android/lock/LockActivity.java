@@ -53,6 +53,7 @@ import com.auth0.android.auth0.AuthorizeResult;
 import com.auth0.android.auth0.CallbackHelper;
 import com.auth0.android.auth0.OAuth2WebAuthProvider;
 import com.auth0.android.auth0.lib.authentication.AuthenticationAPIClient;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
@@ -431,7 +432,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
+    private BaseCallback<Application, AuthenticationException> applicationCallback = new BaseCallback<Application, AuthenticationException>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -445,7 +446,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
@@ -488,7 +489,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Credentials> authCallback = new BaseCallback<Credentials>() {
+    private BaseCallback<Credentials, AuthenticationException> authCallback = new BaseCallback<Credentials, AuthenticationException>() {
         @Override
         public void onSuccess(Credentials credentials) {
             deliverAuthenticationResult(credentials);
@@ -496,7 +497,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -514,7 +515,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<DatabaseUser> createCallback = new BaseCallback<DatabaseUser>() {
+    private BaseCallback<DatabaseUser, AuthenticationException> createCallback = new BaseCallback<DatabaseUser, AuthenticationException>() {
         @Override
         public void onSuccess(final DatabaseUser user) {
             handler.post(new Runnable() {
@@ -526,7 +527,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to create the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -538,7 +539,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Void> changePwdCallback = new BaseCallback<Void>() {
+    private BaseCallback<Void, AuthenticationException> changePwdCallback = new BaseCallback<Void, AuthenticationException>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
@@ -552,7 +553,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final com.auth0.android.auth0.lib.authentication.AuthenticationException error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override

@@ -24,7 +24,7 @@
 
 package com.auth0.android.auth0.lib.util;
 
-import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.jayway.awaitility.core.ConditionTimeoutException;
 
 import org.hamcrest.BaseMatcher;
@@ -38,11 +38,11 @@ import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
-public class CallbackMatcher<T, U extends Auth0Exception> extends BaseMatcher<MockBaseCallback<T, U>> {
+public class AuthenticationCallbackMatcher<T> extends BaseMatcher<MockAuthenticationCallback<T>> {
     private final Matcher<T> payloadMatcher;
-    private final Matcher<U> errorMatcher;
+    private final Matcher<AuthenticationException> errorMatcher;
 
-    public CallbackMatcher(Matcher<T> payloadMatcher, Matcher<U> errorMatcher) {
+    public AuthenticationCallbackMatcher(Matcher<T> payloadMatcher, Matcher<AuthenticationException> errorMatcher) {
         this.payloadMatcher = payloadMatcher;
         this.errorMatcher = errorMatcher;
     }
@@ -50,7 +50,7 @@ public class CallbackMatcher<T, U extends Auth0Exception> extends BaseMatcher<Mo
     @Override
     @SuppressWarnings("unchecked")
     public boolean matches(Object item) {
-        MockBaseCallback<T, U> callback = (MockBaseCallback<T, U>) item;
+        MockAuthenticationCallback<T> callback = (MockAuthenticationCallback<T>) item;
         try {
             await().until(callback.payload(), payloadMatcher);
             await().until(callback.error(), errorMatcher);
@@ -66,23 +66,23 @@ public class CallbackMatcher<T, U extends Auth0Exception> extends BaseMatcher<Mo
                 .appendText("successful method be called");
     }
 
-    public static <T, U extends Auth0Exception> Matcher<MockBaseCallback<T, U>> hasPayloadOfType(Class<T> tClazz, Class<U> uClazz) {
-        return new CallbackMatcher<>(isA(tClazz), is(nullValue(uClazz)));
+    public static <T> Matcher<MockAuthenticationCallback<T>> hasPayloadOfType(Class<T> tClazz) {
+        return new AuthenticationCallbackMatcher<>(isA(tClazz), is(nullValue(AuthenticationException.class)));
     }
 
-    public static <T, U extends Auth0Exception> Matcher<MockBaseCallback<T, U>> hasPayload(T payload, Class<U> uClazz) {
-        return new CallbackMatcher<>(equalTo(payload), is(nullValue(uClazz)));
+    public static <T> Matcher<MockAuthenticationCallback<T>> hasPayload(T payload) {
+        return new AuthenticationCallbackMatcher<>(equalTo(payload), is(nullValue(AuthenticationException.class)));
     }
 
-    public static <T, U extends Auth0Exception> Matcher<MockBaseCallback<T, U>> hasNoPayloadOfType(Class<T> tClazz, Class<U> uClazz) {
-        return new CallbackMatcher<>(is(nullValue(tClazz)), is(notNullValue(uClazz)));
+    public static <T> Matcher<MockAuthenticationCallback<T>> hasNoPayloadOfType(Class<T> tClazz) {
+        return new AuthenticationCallbackMatcher<>(is(nullValue(tClazz)), is(notNullValue(AuthenticationException.class)));
     }
 
-    public static <U extends Auth0Exception> Matcher<MockBaseCallback<Void, U>> hasNoError(Class<U> uClazz) {
-        return new CallbackMatcher<>(is(nullValue(Void.class)), is(nullValue(uClazz)));
+    public static Matcher<MockAuthenticationCallback<Void>> hasNoError() {
+        return new AuthenticationCallbackMatcher<>(is(nullValue(Void.class)), is(nullValue(AuthenticationException.class)));
     }
 
-    public static <U extends Auth0Exception> Matcher<MockBaseCallback<Void, U>> hasError(Class<U> uClazz) {
-        return new CallbackMatcher<>(is(nullValue(Void.class)), is(notNullValue(uClazz)));
+    public static Matcher<MockAuthenticationCallback<Void>> hasError() {
+        return new AuthenticationCallbackMatcher<>(is(nullValue(Void.class)), is(notNullValue(AuthenticationException.class)));
     }
 }

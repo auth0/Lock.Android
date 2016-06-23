@@ -26,6 +26,7 @@ package com.auth0.android.lock.utils.json;
 
 import com.auth0.android.auth0.lib.Auth0;
 import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.MockBaseCallback;
 import com.squareup.okhttp.OkHttpClient;
@@ -38,9 +39,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static com.auth0.android.lock.utils.CallbackMatcher.hasNoPayloadOfType;
-import static com.auth0.android.lock.utils.CallbackMatcher.hasPayloadOfType;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasNoPayloadOfType;
+import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasPayloadOfType;
+import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
@@ -69,7 +70,7 @@ public class ApplicationFetcherTest {
     @Test
     public void shouldReturnApplicationOnValidJSONPResponse() throws Exception {
         mockAPI.willReturnValidJSONPResponse();
-        final MockBaseCallback<Application> callback = new MockBaseCallback<>();
+        final MockBaseCallback<Application, AuthenticationException> callback = new MockBaseCallback<>();
         appFetcher.fetch(callback);
         mockAPI.takeRequest();
 
@@ -79,7 +80,7 @@ public class ApplicationFetcherTest {
     @Test
     public void shouldReturnExceptionOnInvalidJSONPResponse() throws Exception {
         mockAPI.willReturnInvalidJSONPLengthResponse();
-        final MockBaseCallback<Application> callback = new MockBaseCallback<>();
+        final MockBaseCallback<Application, AuthenticationException> callback = new MockBaseCallback<>();
         appFetcher.fetch(callback);
         mockAPI.takeRequest();
 

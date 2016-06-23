@@ -27,10 +27,10 @@ package com.auth0.android.auth0.lib.request.internal;
 import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.ParameterBuilder;
 import com.auth0.android.auth0.lib.callback.BaseCallback;
 import com.auth0.android.auth0.lib.request.AuthorizableRequest;
+import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -48,7 +48,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, AuthorizableRequest<T, U>, Callback {
+abstract class BaseRequest<T, U extends Auth0Exception> implements ParameterizableRequest<T, U>, AuthorizableRequest<T, U>, Callback {
 
     private final Map<String, String> headers;
     protected final HttpUrl url;
@@ -56,14 +56,15 @@ abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, Author
     private final TypeAdapter<T> adapter;
     private final Gson gson;
     private final ParameterBuilder builder;
+    private final ErrorBuilder<U> errorBuilder;
 
     private BaseCallback<T, U> callback;
 
-    protected BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter) {
-        this(url, client, gson, adapter, null);
+    protected BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter, ErrorBuilder<U> errorBuilder) {
+        this(url, client, gson, adapter, errorBuilder, null);
     }
 
-    public BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter, BaseCallback<T, U> callback) {
+    public BaseRequest(HttpUrl url, OkHttpClient client, Gson gson, TypeAdapter<T> adapter, ErrorBuilder<U> errorBuilder, BaseCallback<T, U> callback) {
         this.url = url;
         this.client = client;
         this.gson = gson;
@@ -71,6 +72,7 @@ abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, Author
         this.callback = callback;
         this.headers = new HashMap<>();
         this.builder = ParameterBuilder.newBuilder();
+        this.errorBuilder = errorBuilder;
     }
 
     protected void setCallback(BaseCallback<T, U> callback) {
@@ -81,8 +83,8 @@ abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, Author
         this.callback.onSuccess(payload);
     }
 
-    protected final void postOnFailure(final AuthenticationException error) {
-        this.callback.onFailure(error);
+    protected final void postOnFailure(final Auth0Exception error) {
+        this.callback.onFailure(errorBuilder.from("Error processing the API response.", error));
     }
 
     protected Request.Builder newBuilder() {
@@ -121,7 +123,7 @@ abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, Author
     @Override
     public void onFailure(Request request, IOException e) {
         Auth0Exception exception = new Auth0Exception("Failed to execute request to " + url.toString(), e);
-        postOnFailure(new AuthenticationException(exception));
+        postOnFailure(exception);
     }
 
     @Override
@@ -155,7 +157,8 @@ abstract class BaseRequest<T, U> implements ParameterizableRequest<T, U>, Author
             Request request = doBuildRequest(newBuilder());
             client.newCall(request).enqueue(this);
         } catch (RequestBodyBuildException e) {
-            callback.onFailure(new AuthenticationException(e));
+            final U exception = errorBuilder.from("Error parsing the request body", e);
+            callback.onFailure(exception);
         }
     }
 

@@ -10,7 +10,7 @@ import java.util.Map;
  * Request to perform a non-authentication related action
  * like creating a user or requesting a change password
  */
-public class DatabaseConnectionRequest<T, U> {
+public class DatabaseConnectionRequest<T, U extends Auth0Exception> {
 
     private final ParameterizableRequest<T, U> request;
 

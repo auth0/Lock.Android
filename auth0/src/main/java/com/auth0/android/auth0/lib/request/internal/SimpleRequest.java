@@ -28,6 +28,7 @@ import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
+import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,18 +42,18 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.Reader;
 
-class SimpleRequest<T, U> extends BaseRequest<T, U> implements ParameterizableRequest<T, U>, Callback {
+class SimpleRequest<T, U extends Auth0Exception> extends BaseRequest<T, U> implements ParameterizableRequest<T, U>, Callback {
 
     private final String method;
 
-    public SimpleRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod, Class<T> clazz) {
-        super(url, client, gson, gson.getAdapter(clazz));
+    public SimpleRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod, Class<T> clazz, ErrorBuilder<U> errorBuilder) {
+        super(url, client, gson, gson.getAdapter(clazz), errorBuilder);
         this.method = httpMethod;
     }
 
-    public SimpleRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod) {
+    public SimpleRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod, ErrorBuilder<U> errorBuilder) {
         super(url, client, gson, gson.getAdapter(new TypeToken<T>() {
-        }));
+        }), errorBuilder);
         this.method = httpMethod;
     }
 
@@ -69,7 +70,7 @@ class SimpleRequest<T, U> extends BaseRequest<T, U> implements ParameterizableRe
             T payload = getAdapter().fromJson(charStream);
             postOnSuccess(payload);
         } catch (IOException e) {
-            postOnFailure(new AuthenticationException(new Auth0Exception("Failed to parse response to request to " + url, e)));
+            postOnFailure(new Auth0Exception("Failed to parse response to request to " + url, e));
         }
     }
 

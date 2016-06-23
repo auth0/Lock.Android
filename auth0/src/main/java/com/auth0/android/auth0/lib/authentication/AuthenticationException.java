@@ -27,46 +27,37 @@ package com.auth0.android.auth0.lib.authentication;
 import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class AuthenticationException extends Auth0Exception implements AuthenticationError {
+public class AuthenticationException extends Auth0Exception {
+
+    private static final String ERROR_KEY = "error";
+    private static final String ERROR_DESCRIPTION_KEY = "error_description";
+    private static final String DEFAULT_MESSAGE = "Error while trying to authenticate with Auth0.";
 
     private String error;
     private String description;
-    private Map<String, Object> values;
+    private Map<String, Object> rawValues;
 
-    public AuthenticationException(Auth0Exception exception) {
-        super(exception.getMessage(), exception);
+    public AuthenticationException(String message, Auth0Exception exception) {
+        super(message, exception);
+    }
+
+    public AuthenticationException(String message) {
+        this(message, null);
+    }
+
+    public AuthenticationException(Map<String, Object> values) {
+        this(DEFAULT_MESSAGE);
+        this.rawValues = values;
+
+        final HashMap<String, Object> valuesCopy = new HashMap<>(values);
+        this.error = (String) valuesCopy.remove(ERROR_KEY);
+        this.description = (String) valuesCopy.remove(ERROR_DESCRIPTION_KEY);
     }
 
     public AuthenticationException(APIException exception) {
         super(null, exception);
-        this.error = (String) exception.getResponseError().remove(ERROR_KEY);
-        this.description = (String) exception.getResponseError().remove(ERROR_DESCRIPTION_KEY);
-        this.values = exception.getResponseError();
-    }
-
-    @Override
-    public String getError() {
-        return error;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public Map<String, Object> getValues() {
-        return values;
-    }
-
-    @Override
-    public String getMessage() {
-        if (super.getMessage() != null) {
-            return super.getMessage();
-        }
-        //TODO: Parse error and generate a message
-        throw new RuntimeException("Not implemented");
     }
 }

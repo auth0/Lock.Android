@@ -1,6 +1,7 @@
 package com.auth0.android.auth0.lib.request.internal;
 
 import com.auth0.android.auth0.lib.authentication.AuthenticationException;
+import com.auth0.android.auth0.lib.authentication.AuthenticationErrorBuilder;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.request.AuthenticationRequest;
 import com.google.gson.Gson;
@@ -18,7 +19,7 @@ import static com.auth0.android.auth0.lib.authentication.ParameterBuilder.SCOPE_
 class BaseAuthenticationRequest extends SimpleRequest<Credentials, AuthenticationException> implements AuthenticationRequest {
 
     public BaseAuthenticationRequest(HttpUrl url, OkHttpClient client, Gson gson, String httpMethod, Class<Credentials> clazz) {
-        super(url, client, gson, httpMethod, clazz);
+        super(url, client, gson, httpMethod, clazz, new AuthenticationErrorBuilder());
     }
 
     /**
