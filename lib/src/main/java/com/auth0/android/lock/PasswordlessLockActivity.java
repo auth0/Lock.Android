@@ -63,7 +63,7 @@ import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;
-import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
+import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
@@ -115,7 +115,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private AuthProvider currentProvider;
 
-    private LoginAuthenticationErrorBuilder loginErrorBuilder;
+    private LoginErrorMessageBuilder loginErrorBuilder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,9 +147,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
-            loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
+            loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         } else {
-            loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
+            loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         }
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
@@ -582,8 +582,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(@StringRes int titleResource, @StringRes final int messageResource, final Throwable cause) {
-            final String message = new AuthenticationError(messageResource, cause).getMessage(PasswordlessLockActivity.this);
+        public void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause) {
+            final String message = new AuthenticationError(messageResource).getMessage(PasswordlessLockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
                 @Override

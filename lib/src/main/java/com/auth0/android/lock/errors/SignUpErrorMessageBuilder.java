@@ -26,46 +26,47 @@ package com.auth0.android.lock.errors;
 
 import android.support.annotation.StringRes;
 
-import com.auth0.android.auth0.lib.APIException;
+import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.errors.AuthenticationError.ErrorType;
 
-import java.util.Map;
-
-public class SignUpAuthenticationErrorBuilder implements AuthenticationErrorBuilder {
+public class SignUpErrorMessageBuilder implements ErrorMessageBuilder<AuthenticationException> {
 
     private static final String USER_EXISTS_ERROR = "user_exists";
     private static final String USERNAME_EXISTS_ERROR = "username_exists";
-    private static final String UNAUTHORIZED_ERROR = "unauthorized";
 
     @StringRes
     private final int defaultMessage;
 
     private static final int userExistsResource = R.string.com_auth0_lock_db_signup_user_already_exists_error_message;
+    private static final int passwordAlreadyUsedResource = R.string.com_auth0_lock_db_signup_password_already_used_error_message;
+    private static final int passwordNotStrongResource = R.string.com_auth0_lock_db_signup_password_not_strong_error_message;
 
-    public SignUpAuthenticationErrorBuilder(@StringRes int defaultMessage) {
+    public SignUpErrorMessageBuilder(@StringRes int defaultMessage) {
         this.defaultMessage = defaultMessage;
     }
 
-    public SignUpAuthenticationErrorBuilder() {
+    public SignUpErrorMessageBuilder() {
         this(R.string.com_auth0_lock_db_sign_up_error_message);
     }
 
     @Override
-    public AuthenticationError buildFrom(Throwable throwable) {
-        if (throwable instanceof APIException) {
-            APIException exception = (APIException) throwable;
-            Map errorResponse = exception.getResponseError();
-            final String errorCode = errorResponse.containsKey(ERROR_KEY) ? (String) errorResponse.get(ERROR_KEY) : (String) errorResponse.get(CODE_KEY);
-            final String errorDescription = (String) errorResponse.get(ERROR_DESCRIPTION_KEY);
-            if (UNAUTHORIZED_ERROR.equalsIgnoreCase(errorCode) && errorDescription != null) {
-                return new AuthenticationError(errorDescription, ErrorType.UNAUTHORIZED, throwable);
-            } else if (USER_EXISTS_ERROR.equalsIgnoreCase(errorCode) || USERNAME_EXISTS_ERROR.equalsIgnoreCase(errorCode)) {
-                return new AuthenticationError(userExistsResource, ErrorType.USER_EXISTS, throwable);
-            } else if (errorDescription != null) {
-                return new AuthenticationError(errorDescription, ErrorType.UNKNOWN, throwable);
-            }
+    public AuthenticationError buildFrom(AuthenticationException exception) {
+        int messageRes;
+        String description = null;
+
+        if (USER_EXISTS_ERROR.equals(exception.getCode()) || USERNAME_EXISTS_ERROR.equals(exception.getCode())) {
+            messageRes = userExistsResource;
+        } else if (exception.isPasswordAlreadyUsed()) {
+            messageRes = passwordAlreadyUsedResource;
+        } else if (exception.isPasswordNotStrongEnough()) {
+            messageRes = passwordNotStrongResource;
+        } else if (exception.isRuleError()) {
+            messageRes = defaultMessage;
+            description = exception.getDescription();
+        } else {
+            messageRes = defaultMessage;
         }
-        return new AuthenticationError(defaultMessage, throwable);
+        return new AuthenticationError(messageRes, description);
     }
+
 }

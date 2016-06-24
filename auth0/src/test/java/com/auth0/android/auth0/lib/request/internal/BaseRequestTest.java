@@ -74,13 +74,23 @@ public class BaseRequestTest {
         HttpUrl url = HttpUrl.parse("https://auth0.com");
         errorBuilder = new ErrorBuilder<Auth0Exception>() {
             @Override
+            public Auth0Exception from(String message) {
+                return new Auth0Exception(message);
+            }
+
+            @Override
             public Auth0Exception from(String message, Auth0Exception exception) {
                 return exception;
             }
 
             @Override
             public Auth0Exception from(Map<String, Object> values) {
-                return null;
+                return new Auth0Exception("Error");
+            }
+
+            @Override
+            public Auth0Exception from(String payload, int statusCode) {
+                return new Auth0Exception(payload);
             }
         };
 

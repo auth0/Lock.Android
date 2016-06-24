@@ -24,10 +24,8 @@
 
 package com.auth0.android.auth0.lib.request.internal;
 
-import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.google.gson.Gson;
@@ -60,8 +58,7 @@ class SimpleRequest<T, U extends Auth0Exception> extends BaseRequest<T, U> imple
     @Override
     public void onResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
-            APIException exception = parseUnsuccessfulResponse(response);
-            postOnFailure(new AuthenticationException(exception));
+            postOnFailure(parseUnsuccessfulResponse(response));
             return;
         }
 
@@ -70,7 +67,8 @@ class SimpleRequest<T, U extends Auth0Exception> extends BaseRequest<T, U> imple
             T payload = getAdapter().fromJson(charStream);
             postOnSuccess(payload);
         } catch (IOException e) {
-            postOnFailure(new Auth0Exception("Failed to parse response to request to " + url, e));
+            final Auth0Exception auth0Exception = new Auth0Exception("Failed to parse response to request to " + url, e);
+            postOnFailure(getErrorBuilder().from("Failed to parse a successful response", auth0Exception));
         }
     }
 

@@ -24,7 +24,6 @@
 
 package com.auth0.android.auth0.lib.request.internal;
 
-import com.auth0.android.auth0.lib.APIException;
 import com.auth0.android.auth0.lib.Auth0Exception;
 import com.auth0.android.auth0.lib.RequestBodyBuildException;
 import com.auth0.android.auth0.lib.authentication.ParameterBuilder;
@@ -33,6 +32,7 @@ import com.auth0.android.auth0.lib.request.AuthorizableRequest;
 import com.auth0.android.auth0.lib.request.ErrorBuilder;
 import com.auth0.android.auth0.lib.request.ParameterizableRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Callback;
@@ -83,8 +83,8 @@ abstract class BaseRequest<T, U extends Auth0Exception> implements Parameterizab
         this.callback.onSuccess(payload);
     }
 
-    protected final void postOnFailure(final Auth0Exception error) {
-        this.callback.onFailure(errorBuilder.from("Error processing the API response.", error));
+    protected final void postOnFailure(final U error) {
+        this.callback.onFailure(error);
     }
 
     protected Request.Builder newBuilder() {
@@ -100,6 +100,10 @@ abstract class BaseRequest<T, U extends Auth0Exception> implements Parameterizab
         return adapter;
     }
 
+    protected ErrorBuilder<U> getErrorBuilder() {
+        return errorBuilder;
+    }
+
     protected RequestBody buildBody() throws RequestBodyBuildException {
         Map<String, Object> dictionary = builder.asDictionary();
         if (!dictionary.isEmpty()) {
@@ -108,22 +112,31 @@ abstract class BaseRequest<T, U extends Auth0Exception> implements Parameterizab
         return null;
     }
 
-    protected APIException parseUnsuccessfulResponse(Response response) {
+    protected U parseUnsuccessfulResponse(Response response) {
         try {
             final Reader charStream = response.body().charStream();
             Type mapType = new TypeToken<Map<String, Object>>() {
             }.getType();
-            Map<String, Object> payload = gson.fromJson(charStream, mapType);
-            return new APIException("Request to " + url + " failed with response " + payload, response.code(), payload);
-        } catch (Exception e) {
-            return new APIException("Request to " + url + " failed", response.code(), null);
+            Map<String, Object> mapPayload = gson.fromJson(charStream, mapType);
+            return errorBuilder.from(mapPayload);
+        } catch (JsonSyntaxException e) {
+            try {
+                String stringPayload = response.body().string();
+                return errorBuilder.from(stringPayload, response.code());
+            } catch (IOException e1) {
+                final Auth0Exception auth0Exception = new Auth0Exception("Error parsing the server response", e);
+                return errorBuilder.from("Request to " + url.toString() + " failed", auth0Exception);
+            }
+        } catch (IOException e) {
+            final Auth0Exception auth0Exception = new Auth0Exception("Error parsing the server response", e);
+            return errorBuilder.from("Request to " + url.toString() + " failed", auth0Exception);
         }
     }
 
     @Override
     public void onFailure(Request request, IOException e) {
         Auth0Exception exception = new Auth0Exception("Failed to execute request to " + url.toString(), e);
-        postOnFailure(exception);
+        postOnFailure(errorBuilder.from("Request failed", exception));
     }
 
     @Override

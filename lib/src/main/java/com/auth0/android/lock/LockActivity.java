@@ -57,8 +57,8 @@ import com.auth0.android.auth0.lib.authentication.AuthenticationException;
 import com.auth0.android.auth0.lib.authentication.result.Credentials;
 import com.auth0.android.auth0.lib.authentication.result.DatabaseUser;
 import com.auth0.android.lock.errors.AuthenticationError;
-import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
-import com.auth0.android.lock.errors.SignUpAuthenticationErrorBuilder;
+import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
+import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -77,8 +77,6 @@ import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.auth0.android.lock.errors.AuthenticationError.ErrorType;
 
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -102,8 +100,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private boolean keyboardIsShown;
     private ViewGroup contentView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
-    private LoginAuthenticationErrorBuilder loginErrorBuilder;
-    private SignUpAuthenticationErrorBuilder signUpErrorBuilder;
+    private LoginErrorMessageBuilder loginErrorBuilder;
+    private SignUpErrorMessageBuilder signUpErrorBuilder;
     private DatabaseLoginEvent lastDatabaseLogin;
 
     @Override
@@ -134,8 +132,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage.setPadding(0, resultMessage.getPaddingTop() + paddingTop, 0, resultMessage.getPaddingBottom());
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
-        loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
-        signUpErrorBuilder = new SignUpAuthenticationErrorBuilder();
+        loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
+        signUpErrorBuilder = new SignUpErrorMessageBuilder();
 
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
@@ -471,8 +469,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(@StringRes int titleResource, @StringRes final int messageResource, final Throwable cause) {
-            final String message = new AuthenticationError(messageResource, cause).getMessage(LockActivity.this);
+        public void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause) {
+            final String message = new AuthenticationError(messageResource).getMessage(LockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
                 @Override
@@ -502,8 +500,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     lockView.showProgress(false);
+
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
-                    if (authError.getErrorType() == ErrorType.MFA_REQUIRED || authError.getErrorType() == ErrorType.MFA_NOT_ENROLLED) {
+                    if (error.isMultifactorRequired() || error.isMultifactorEnrollRequired()) {
                         lockView.showMFACodeForm(lastDatabaseLogin);
                         return;
                     }
@@ -552,12 +551,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final AuthenticationException error) {
+        public void onFailure(AuthenticationException error) {
             Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error, error).getMessage(LockActivity.this);
+                    String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error).getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
             });
