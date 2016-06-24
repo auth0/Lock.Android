@@ -79,6 +79,15 @@ public class AuthenticationException extends Auth0Exception {
     }
 
     /**
+     * Http Response status code. Can have value of 0 if not set.
+     *
+     * @return the status code.
+     */
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    /**
      * Description of the error.
      * important: You should avoid displaying description to the user, it's meant for debugging only.
      *
@@ -88,11 +97,8 @@ public class AuthenticationException extends Auth0Exception {
         if (description != null) {
             return description;
         }
-        if (UNKNOWN_ERROR.equals(code)) {
-            return String.format("Received error with code %s", code);
-        }
-        if (statusCode != 0) {
-            return String.format("Failed with unknown error and HTTP status %s", statusCode);
+        if (UNKNOWN_ERROR.equals(getCode())) {
+            return String.format("Received error with code %s", getCode());
         }
         return "Failed with unknown error";
     }

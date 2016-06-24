@@ -29,10 +29,10 @@ package com.auth0.android.auth0.lib;
  */
 public class Auth0Exception extends RuntimeException {
 
-    protected static final String UNKNOWN_ERROR = "a0.sdk.internal_error.unknown";
-    protected static final String NON_JSON_ERROR = "a0.sdk.internal_error.plain";
-    protected static final String EMPTY_BODY_ERROR = "a0.sdk.internal_error.empty";
-    protected static final String EMPTY_RESPONSE_BODY_DESCRIPTION = "Empty response body";
+    public static final String UNKNOWN_ERROR = "a0.sdk.internal_error.unknown";
+    public static final String NON_JSON_ERROR = "a0.sdk.internal_error.plain";
+    public static final String EMPTY_BODY_ERROR = "a0.sdk.internal_error.empty";
+    public static final String EMPTY_RESPONSE_BODY_DESCRIPTION = "Empty response body";
 
     public Auth0Exception(String message, Throwable cause) {
         super(message, cause);
