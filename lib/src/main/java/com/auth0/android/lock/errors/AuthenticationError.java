@@ -56,4 +56,11 @@ public class AuthenticationError {
         return context.getResources().getString(message);
     }
 
+    int getMessageRes() {
+        return message;
+    }
+
+    String getCustomMessage() {
+        return customMessage;
+    }
 }
