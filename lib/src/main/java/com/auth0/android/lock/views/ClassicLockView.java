@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.Theme;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -53,6 +54,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     private static final String TAG = ClassicLockView.class.getSimpleName();
     private static final int FORM_INDEX = 2;
     private final Bus bus;
+    private final Theme lockTheme;
     private Configuration configuration;
 
     private FormLayout formLayout;
@@ -67,16 +69,11 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     private int headerPadding;
     private String lastEmailInput;
 
-    public ClassicLockView(Context context) {
-        super(context);
-        bus = null;
-        configuration = null;
-    }
-
-    public ClassicLockView(Context context, Bus lockBus) {
+    public ClassicLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
         this.bus = lockBus;
         this.configuration = null;
+        this.lockTheme = lockTheme;
         showWaitForConfigurationLayout();
     }
 
@@ -95,6 +92,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         wrapHeightParams.gravity = Gravity.CENTER;
         loadingProgressBar = new ProgressBar(getContext());
         loadingProgressBar.setIndeterminate(true);
+        ViewUtils.tintWidget(loadingProgressBar, lockTheme.getPrimaryColor(getContext()));
         addView(loadingProgressBar, wrapHeightParams);
     }
 
@@ -102,7 +100,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
-        headerView = new HeaderView(getContext());
+        headerView = new HeaderView(getContext(), lockTheme);
         headerView.setPaddingTop(headerPadding);
         addView(headerView, wrapHeightParams);
 
@@ -117,7 +115,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         bottomBanner.setVisibility(GONE);
         addView(bottomBanner, wrapHeightParams);
 
-        actionButton = new ActionButton(getContext());
+        actionButton = new ActionButton(getContext(), lockTheme);
         actionButton.setOnClickListener(this);
         addView(actionButton, wrapHeightParams);
 

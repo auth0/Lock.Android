@@ -138,7 +138,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
-        lockView = new PasswordlessLockView(this, lockBus);
+        lockView = new PasswordlessLockView(this, lockBus, options.getTheme());
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
         lockView.setHeaderPadding(paddingTop);
@@ -283,7 +283,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             public void onClick(View v) {
                 resendButton.setVisibility(View.GONE);
                 rootView.removeView(lockView);
-                lockView = new PasswordlessLockView(PasswordlessLockActivity.this, lockBus);
+                lockView = new PasswordlessLockView(PasswordlessLockActivity.this, lockBus, options.getTheme());
                 if (configuration != null) {
                     lockView.configure(configuration);
                     reloadRecentPasswordlessData();

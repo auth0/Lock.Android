@@ -26,21 +26,19 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.v4.content.ContextCompat;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.Theme;
 
 public class ActionButton extends FrameLayout {
 
@@ -48,37 +46,23 @@ public class ActionButton extends FrameLayout {
     private ProgressBar progress;
     private ImageView icon;
 
-    public ActionButton(Context context) {
+    public ActionButton(Context context, Theme lockTheme) {
         super(context);
-        init();
+        init(lockTheme);
     }
 
-    public ActionButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public ActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
+    private void init(Theme lockTheme) {
         inflate(getContext(), R.layout.com_auth0_lock_action_button, this);
         progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
 
-        ViewUtils.setBackground(icon, generateStateBackground());
+        ViewUtils.setBackground(icon, generateStateBackground(lockTheme));
     }
 
-    private Drawable generateStateBackground() {
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getContext().getTheme();
-        theme.resolveAttribute(R.attr.Auth0_PrimaryColor, typedValue, true);
-        int normalColor = typedValue.data;
-        theme.resolveAttribute(R.attr.Auth0_DarkPrimaryColor, typedValue, true);
-        int pressedColor = typedValue.data;
+    private Drawable generateStateBackground(Theme lockTheme) {
+        int normalColor = lockTheme.getPrimaryColor(getContext());
+        int pressedColor = lockTheme.getDarkPrimaryColor(getContext());
         int disabledColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_submit_disabled);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

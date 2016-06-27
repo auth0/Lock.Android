@@ -271,6 +271,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Customize Lock's appearance.
+         *
+         * @param theme to use.
+         * @return the current Builder instance
+         */
+        public Builder withTheme(@NonNull Theme theme) {
+            options.withTheme(theme);
+            return this;
+        }
+
+        /**
          * Social Button style to use when Social connections are available. If social
          * is the only connection type, by default it will use the Big style. If social and db or
          * enterprise are present and there's only one social connection, the button will use the
