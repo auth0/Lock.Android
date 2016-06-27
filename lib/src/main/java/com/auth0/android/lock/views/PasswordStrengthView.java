@@ -40,6 +40,7 @@ public class PasswordStrengthView extends LinearLayout {
     private static final String LOWERCASE_REGEX = "^[az]$";
     private static final String SPECIAL_REGEX = "^[ !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]$";
     private static final String NUMERIC_REGEX = "^[09]$";
+    private static final String IDENTICAL_REGEX = "(.)\\1\\1";
 
     @PasswordStrength
     private int strength;
@@ -74,8 +75,26 @@ public class PasswordStrengthView extends LinearLayout {
     /**
      * @see "https://auth0.com/docs/connections/database/password-strength"
      */
-    private void showStrengthPolicy() {
+    private void showPolicyUI() {
         setVisibility(strength == PasswordStrength.NONE ? View.GONE : VISIBLE);
+
+        switch (strength) {
+            case PasswordStrength.EXCELLENT:
+                break;
+            case PasswordStrength.GOOD:
+                break;
+            case PasswordStrength.FAIR:
+                break;
+            case PasswordStrength.LOW:
+                break;
+            case PasswordStrength.NONE:
+
+                break;
+        }
+    }
+
+    private boolean hasIdenticalCharacters(@NonNull String input) {
+        return IDENTICAL_REGEX.matches(input);
     }
 
     private boolean hasUppercaseCharacters(@NonNull String input) {
@@ -98,6 +117,13 @@ public class PasswordStrengthView extends LinearLayout {
         return input.length() >= length;
     }
 
+    private boolean atLeastThree(boolean a, boolean b, boolean c, boolean d) {
+        boolean one = a && b && (c ^ d);
+        boolean two = b && c && (d ^ a);
+        boolean three = c && d && (a ^ b);
+
+        return one || two || three;
+    }
 
     /**
      * Sets the current level of Strength that this widget is going to validate.
@@ -115,7 +141,34 @@ public class PasswordStrengthView extends LinearLayout {
      * @return whether the given password complies with this password policy or not.
      */
     public boolean isValid(String password) {
-        return false;
+        if (password == null || password.isEmpty()) {
+            return false;
+        }
+
+        boolean length = true;
+        boolean atLeast = true;
+        switch (strength) {
+            case PasswordStrength.EXCELLENT:
+                atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password))
+                        && !hasIdenticalCharacters(password);
+                length = hasMinimumLength(password, 10);
+                break;
+            case PasswordStrength.GOOD:
+                atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
+                length = hasMinimumLength(password, 8);
+                break;
+            case PasswordStrength.FAIR:
+                atLeast = hasLowercaseCharacters(password) && hasUppercaseCharacters(password) && hasNumericCharacters(password);
+                length = hasMinimumLength(password, 8);
+                break;
+            case PasswordStrength.LOW:
+                length = hasMinimumLength(password, 6);
+                break;
+            case PasswordStrength.NONE:
+                length = hasMinimumLength(password, 1);
+                break;
+        }
+        return length && atLeast;
     }
 
 }
