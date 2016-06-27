@@ -36,14 +36,15 @@ import com.auth0.android.lock.enums.PasswordStrength;
 
 public class PasswordStrengthView extends LinearLayout {
 
+    private static final String TAG = PasswordStrengthView.class.getSimpleName();
+
     private static final String UPPERCASE_REGEX = "^[AZ]$";
     private static final String LOWERCASE_REGEX = "^[az]$";
     private static final String SPECIAL_REGEX = "^[ !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]$";
     private static final String NUMERIC_REGEX = "^[09]$";
-    private static final String IDENTICAL_REGEX = "(.)\\1\\1";
 
     @PasswordStrength
-    private int strength;
+    private int strength = PasswordStrength.EXCELLENT;
 
     private TextView titleMustHave;
     private TextView titleAtLeast;
@@ -94,7 +95,21 @@ public class PasswordStrengthView extends LinearLayout {
     }
 
     private boolean hasIdenticalCharacters(@NonNull String input) {
-        return IDENTICAL_REGEX.matches(input);
+        int count = 0;
+        char lastChar = 0;
+        for (char c : input.toCharArray()) {
+            if (lastChar == c) {
+                count++;
+            } else {
+                lastChar = c;
+                count = 1;
+            }
+
+            if (count > 2) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasUppercaseCharacters(@NonNull String input) {
@@ -146,19 +161,19 @@ public class PasswordStrengthView extends LinearLayout {
         }
 
         boolean length = true;
-        boolean atLeast = true;
+        boolean other = true;
         switch (strength) {
             case PasswordStrength.EXCELLENT:
-                atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password))
-                        && !hasIdenticalCharacters(password);
+                boolean atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
+                other = hasIdenticalCharacters(password) && atLeast;
                 length = hasMinimumLength(password, 10);
                 break;
             case PasswordStrength.GOOD:
-                atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
+                other = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
                 length = hasMinimumLength(password, 8);
                 break;
             case PasswordStrength.FAIR:
-                atLeast = hasLowercaseCharacters(password) && hasUppercaseCharacters(password) && hasNumericCharacters(password);
+                other = hasLowercaseCharacters(password) && hasUppercaseCharacters(password) && hasNumericCharacters(password);
                 length = hasMinimumLength(password, 8);
                 break;
             case PasswordStrength.LOW:
@@ -168,7 +183,7 @@ public class PasswordStrengthView extends LinearLayout {
                 length = hasMinimumLength(password, 1);
                 break;
         }
-        return length && atLeast;
+        return length && other;
     }
 
 }
