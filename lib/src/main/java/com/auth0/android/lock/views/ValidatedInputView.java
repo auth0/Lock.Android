@@ -41,6 +41,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,12 +73,12 @@ public class ValidatedInputView extends LinearLayout {
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int VALIDATION_DELAY = 500;
 
+    protected LinearLayout rootView;
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
     private IdentityListener identityListener;
     private int inputIcon;
-    private boolean isShowingError = true;
     private boolean hasValidInput;
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE})
@@ -113,6 +114,7 @@ public class ValidatedInputView extends LinearLayout {
 
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
+        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
         errorDescription = (TextView) findViewById(R.id.errorDescription);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
@@ -243,7 +245,7 @@ public class ValidatedInputView extends LinearLayout {
         icon.setImageResource(inputIcon);
     }
 
-    private void updateBorder(boolean isValid) {
+    protected void updateBorder(boolean isValid) {
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
@@ -254,7 +256,6 @@ public class ValidatedInputView extends LinearLayout {
         ViewUtils.setBackground(parent, gd);
 
         errorDescription.setVisibility(isValid ? INVISIBLE : VISIBLE);
-        isShowingError = !isValid;
         requestLayout();
     }
 
@@ -299,7 +300,7 @@ public class ValidatedInputView extends LinearLayout {
         return isValid;
     }
 
-    private boolean validate(boolean validateEmptyFields) {
+    protected boolean validate(boolean validateEmptyFields) {
         boolean isValid = false;
         String value = getText();
         if (!validateEmptyFields && value.isEmpty()) {

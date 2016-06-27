@@ -25,15 +25,17 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 
-public class CheckableOptionView extends View {
+public class CheckableOptionView extends LinearLayout {
 
     private ImageView icon;
     private TextView description;
@@ -43,23 +45,33 @@ public class CheckableOptionView extends View {
 
     public CheckableOptionView(Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public CheckableOptionView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public CheckableOptionView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
-    private void init() {
-        final View v = inflate(getContext(), R.layout.com_auth0_lock_checkable_option, null);
+    private void init(AttributeSet attrs) {
+        final View v = inflate(getContext(), R.layout.com_auth0_lock_checkable_option, this);
         icon = (ImageView) v.findViewById(R.id.com_auth0_lock_checkable_text_icon);
         description = (TextView) v.findViewById(R.id.com_auth0_lock_checkable_text_description);
+
+        if (attrs == null) {
+            return;
+        }
+
+        int[] set = {android.R.attr.text};
+        TypedArray a = getContext().obtainStyledAttributes(attrs, set);
+        CharSequence text = a.getText(0);
+        a.recycle();
+        description.setText(text);
     }
 
     public void setChecked(boolean checked) {

@@ -49,7 +49,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
-    private ValidatedInputView passwordInput;
+    private ValidatedPasswordInputView passwordInput;
     private View changePasswordBtn;
     private TextView topMessage;
     private Connection currentConnection;
