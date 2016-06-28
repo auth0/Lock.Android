@@ -75,6 +75,10 @@ public class CheckableOptionView extends LinearLayout {
         updateStatus();
     }
 
+    public void setText(String text) {
+        this.description.setText(text);
+    }
+
     public void setChecked(boolean checked) {
         this.checked = checked;
         updateStatus();
