@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         lock:Auth0.InputDataType="email" />
 
-    <com.auth0.android.lock.views.ValidatedInputView
+    <com.auth0.android.lock.views.ValidatedPasswordInputView
         android:id="@+id/com_auth0_lock_input_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

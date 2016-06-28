@@ -49,7 +49,7 @@
         android:visibility="gone"
         lock:Auth0.InputDataType="username" />
 
-    <com.auth0.android.lock.views.ValidatedPasswordInputView
+    <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

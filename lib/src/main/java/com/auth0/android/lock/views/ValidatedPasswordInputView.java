@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.auth0.android.lock.enums.PasswordStrength;
+
 
 public class ValidatedPasswordInputView extends ValidatedInputView {
     private static final String TAG = ValidatedPasswordInputView.class.getSimpleName();
@@ -47,5 +49,14 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
 
         Log.v(TAG, "Field validation results: Is valid? " + valid);
         return valid;
+    }
+
+    /**
+     * Sets the Password Strength Policy level for this view.
+     *
+     * @param strength the new Policy level.
+     */
+    public void setPasswordPolicy(@PasswordStrength int strength) {
+        strengthView.setStrength(strength);
     }
 }

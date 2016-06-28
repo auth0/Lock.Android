@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 import com.auth0.android.lock.CustomField.FieldType;
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
@@ -113,6 +114,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
         assertThat(configuration.getSocialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
         assertThat(configuration.hasExtraFields(), is(false));
+        assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
     }
 
     @Test

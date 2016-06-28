@@ -82,7 +82,7 @@ public class PasswordStrengthView extends LinearLayout {
         optionUppercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_uppercase);
         optionNumeric = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_numeric);
         optionSpecialCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
-        setStrength(PasswordStrength.EXCELLENT);
+        setStrength(PasswordStrength.NONE);
     }
 
     /**

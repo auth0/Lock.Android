@@ -49,7 +49,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
-    private ValidatedPasswordInputView passwordInput;
+    private ValidatedInputView passwordInput;
     private View changePasswordBtn;
     private TextView topMessage;
     private Connection currentConnection;
@@ -78,7 +78,8 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
-        passwordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
