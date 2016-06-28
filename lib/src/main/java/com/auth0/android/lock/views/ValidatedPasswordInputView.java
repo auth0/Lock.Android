@@ -39,11 +39,12 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
     @Override
     protected boolean validate(boolean validateEmptyFields) {
         String value = getText();
+        //Run strength validation to update ui
+        final boolean valid = strengthView.isValid(value);
         if (!validateEmptyFields && value.isEmpty()) {
             return true;
         }
 
-        final boolean valid = strengthView.isValid(value);
         Log.v(TAG, "Field validation results: Is valid? " + valid);
         return valid;
     }
