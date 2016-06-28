@@ -39,7 +39,7 @@ public class PasswordStrengthView extends LinearLayout {
 
     private static final String TAG = PasswordStrengthView.class.getSimpleName();
 
-    private static final int MAX_IDENTICAL_CHARACTERS_IN_A_ROW = 2;
+    private static final int MAX_IDENTICAL_CHARACTERS = 2;
     private static final int MAX_LENGTH = 128;
     private static final int MIN_LENGTH_EXCELLENT = 10;
     private static final int MIN_LENGTH_GOOD = 8;
@@ -51,11 +51,11 @@ public class PasswordStrengthView extends LinearLayout {
     private final Pattern patternLowercase = Pattern.compile("^.*[a-z]+.*$");
     private final Pattern patternSpecial = Pattern.compile("^.*[ !\"#\\$%&'\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\\\\\]\\^_`{\\|}~]+.*$");
     private final Pattern patternNumeric = Pattern.compile("^.*[0-9]+.*$");
+    private final Pattern patternIdentical = Pattern.compile("^.*(?=(.)\\1{" + MAX_IDENTICAL_CHARACTERS + ",}).*$");
 
     @PasswordStrength
     private int strength;
 
-    private TextView titleMustHave;
     private TextView titleAtLeast;
     private CheckableOptionView optionLength;
     private CheckableOptionView optionIdenticalCharacters;
@@ -71,18 +71,18 @@ public class PasswordStrengthView extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_password_strength, this);
-        titleMustHave = (TextView) findViewById(R.id.com_auth0_lock_password_strength_title_must_have);
         titleAtLeast = (TextView) findViewById(R.id.com_auth0_lock_password_strength_title_at_least);
 
         optionLength = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_length);
         optionLength.setMandatory(true);
         optionIdenticalCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_identical_characters);
         optionIdenticalCharacters.setMandatory(true);
+        optionIdenticalCharacters.setChecked(true);
         optionLowercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_lowercase);
         optionUppercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_uppercase);
         optionNumeric = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_numeric);
         optionSpecialCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
-        setStrength(PasswordStrength.LOW);
+        setStrength(PasswordStrength.EXCELLENT);
     }
 
     /**
@@ -111,23 +111,9 @@ public class PasswordStrengthView extends LinearLayout {
     }
 
     private boolean hasIdenticalCharacters(@NonNull String input) {
-        int count = 0;
-        char lastChar = 0;
-        for (char c : input.toCharArray()) {
-            if (lastChar == c) {
-                count++;
-            } else {
-                lastChar = c;
-                count = 1;
-            }
-
-            if (count > MAX_IDENTICAL_CHARACTERS_IN_A_ROW) {
-                optionIdenticalCharacters.setChecked(false);
-                return true;
-            }
-        }
-        optionIdenticalCharacters.setChecked(true);
-        return false;
+        boolean v = !patternIdentical.matcher(input).matches();
+        optionIdenticalCharacters.setChecked(v);
+        return v;
     }
 
     private boolean hasUppercaseCharacters(@NonNull String input) {
@@ -161,11 +147,12 @@ public class PasswordStrengthView extends LinearLayout {
     }
 
     private boolean atLeastThree(boolean a, boolean b, boolean c, boolean d) {
+        boolean all = a && b && c && d;
         boolean one = a && b && (c ^ d);
         boolean two = b && c && (d ^ a);
         boolean three = c && d && (a ^ b);
 
-        return one || two || three;
+        return all || one || two || three;
     }
 
     private boolean allThree(boolean a, boolean b, boolean c) {
