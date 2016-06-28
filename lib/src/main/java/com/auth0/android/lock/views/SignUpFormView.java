@@ -73,7 +73,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private void init() {
         Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
-        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
+        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_custom_fields_container);
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);

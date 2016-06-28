@@ -49,7 +49,7 @@
         lock:Auth0.InputDataType="password" />
 
     <LinearLayout
-        android:id="@+id/com_auth0_lock_container"
+        android:id="@+id/com_auth0_lock_custom_fields_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />
