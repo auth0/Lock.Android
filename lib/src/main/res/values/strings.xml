@@ -165,7 +165,7 @@
     <string name="com_auth0_lock_password_strength_uppercase_letters">Upper case letters (A-Z)</string>
     <string name="com_auth0_lock_password_strength_numbers">Numbers (i.e. 0–9)</string>
     <string name="com_auth0_lock_password_strength_special_chars">Special characters (e.g. !@#$%^&amp;* )</string>
-    <string name="com_auth0_lock_password_strength_title_at_least" formatted="false">And contain at least %d of the following %d types of characters:</string>
+    <string name="com_auth0_lock_password_strength_title_at_least">And contain at least 3 of the following 4 types of characters:</string>
     <string name="com_auth0_lock_password_strength_title_must_have">Must have:</string>
 
 </resources>
