@@ -75,20 +75,6 @@ public class CheckableOptionView extends LinearLayout {
         updateStatus();
     }
 
-    public void setText(String text) {
-        this.description.setText(text);
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-        updateStatus();
-    }
-
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
-        updateStatus();
-    }
-
     private void updateStatus() {
         if (checked) {
             icon.setImageResource(R.drawable.com_auth0_lock_ic_check_success);
@@ -97,5 +83,35 @@ public class CheckableOptionView extends LinearLayout {
         }
         icon.setImageResource(mandatory ? R.drawable.com_auth0_lock_ic_check_error : R.drawable.com_auth0_lock_ic_check_unset);
         description.setTextColor(ContextCompat.getColor(getContext(), mandatory ? R.color.com_auth0_lock_checkable_option_error : R.color.com_auth0_lock_checkable_option_unset));
+    }
+
+    /**
+     * Sets the current text/description for this Option.
+     *
+     * @param text to set.
+     */
+    public void setText(String text) {
+        this.description.setText(text);
+    }
+
+    /**
+     * Updates the current checked state of this Option widget.
+     *
+     * @param checked whether to check or uncheck the Option.
+     */
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+        updateStatus();
+    }
+
+    /**
+     * If this Option is a requirement that must be met, set it to mandatory.
+     * Used for displaying a different image on the side when unchecked.
+     *
+     * @param mandatory whether this Option is required or not.
+     */
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+        updateStatus();
     }
 }
