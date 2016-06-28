@@ -88,6 +88,6 @@
 
     <color name="com_auth0_lock_checkable_option_success">#518C11</color>
     <color name="com_auth0_lock_checkable_option_unset">#E2000000</color>
-    <color name="com_auth0_lock_checkable_option_error">#5C666F</color>
+    <color name="com_auth0_lock_checkable_option_error">#FF511A</color>
 
 </resources>
