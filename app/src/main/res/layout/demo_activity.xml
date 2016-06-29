@@ -212,6 +212,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:text="Default DB Connection" />
+
+            <RadioGroup
+                android:id="@+id/group_default_db"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_default_db_userpassword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Usr-Pwd" />
+
+                <RadioButton
+                    android:id="@+id/radio_default_db_mfa"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="MFA" />
+
+                <RadioButton
+                    android:id="@+id/radio_default_db_policy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pwd Policy" />
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="Social Button Style" />
 
             <RadioGroup
@@ -226,7 +261,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:text="Unset" />
+                    android:text="Default" />
 
                 <RadioButton
                     android:id="@+id/radio_social_style_big"
@@ -261,14 +296,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:text="Unset" />
-
-                <RadioButton
-                    android:id="@+id/radio_username_style_both"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Both" />
+                    android:text="Default" />
 
                 <RadioButton
                     android:id="@+id/radio_username_style_username"
@@ -374,7 +402,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
             <Button

@@ -41,10 +41,15 @@ import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
+import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Credentials;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity {
@@ -63,6 +68,7 @@ public class DemoActivity extends AppCompatActivity {
     private CheckBox checkboxConnectionsEnterprise;
     private CheckBox checkboxConnectionsSocial;
     private CheckBox checkboxConnectionsPasswordless;
+    private RadioGroup groupDefaultDB;
     private RadioGroup groupSocialStyle;
     private RadioGroup groupUsernameStyle;
     private CheckBox checkboxLoginAfterSignUp;
@@ -94,6 +100,7 @@ public class DemoActivity extends AppCompatActivity {
         groupPasswordlessMode = (RadioGroup) findViewById(R.id.group_passwordless_mode);
 
         //Advanced
+        groupDefaultDB = (RadioGroup) findViewById(R.id.group_default_db);
         groupSocialStyle = (RadioGroup) findViewById(R.id.group_social_style);
         groupUsernameStyle = (RadioGroup) findViewById(R.id.group_username_style);
         checkboxLoginAfterSignUp = (CheckBox) findViewById(R.id.checkbox_login_after_signup);
@@ -132,11 +139,102 @@ public class DemoActivity extends AppCompatActivity {
 
     private void showClassicLock() {
         //TODO:
+        final Lock.Builder builder = Lock.newBuilder(getAccount(), callback);
+        builder.closable(checkboxClosable.isChecked());
+        builder.fullscreen(checkboxFullscreen.isChecked());
+        builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
+        builder.loginAfterSignUp(checkboxLoginAfterSignUp.isChecked());
+
+        if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
+            builder.withSocialButtonStyle(SocialButtonStyle.BIG);
+        } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
+            builder.withSocialButtonStyle(SocialButtonStyle.SMALL);
+        }
+
+        if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_email) {
+            builder.withUsernameStyle(UsernameStyle.EMAIL);
+        } else if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_username) {
+            builder.withUsernameStyle(UsernameStyle.USERNAME);
+        }
+
+        builder.allowLogIn(checkboxScreenLogIn.isChecked());
+        builder.allowSignUp(checkboxScreenSignUp.isChecked());
+        builder.allowForgotPassword(checkboxScreenReset.isChecked());
+
+        if (groupInitialScreen.getCheckedRadioButtonId() == R.id.radio_initial_reset) {
+            builder.initialScreen(InitialScreen.FORGOT_PASSWORD);
+        } else if (groupInitialScreen.getCheckedRadioButtonId() == R.id.radio_initial_signup) {
+            builder.initialScreen(InitialScreen.SIGN_UP);
+        } else {
+            builder.initialScreen(InitialScreen.LOG_IN);
+        }
+
+        builder.onlyUseConnections(generateConnections());
+
+        if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_policy) {
+            builder.setDefaultDatabaseConnection("with-strength");
+        } else if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_mfa) {
+            builder.setDefaultDatabaseConnection("mfa-connection");
+        } else {
+            builder.setDefaultDatabaseConnection("Username-Password-Authentication");
+        }
+
+        lock = builder.build();
+
+        lock.onCreate(this);
+
+        startActivity(lock.newIntent(this));
     }
 
 
     private void showPasswordlessLock() {
-        //TODO:
+        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(getAccount(), callback);
+        builder.closable(checkboxClosable.isChecked());
+        builder.fullscreen(checkboxFullscreen.isChecked());
+        builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
+
+        if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
+            builder.withSocialButtonStyle(SocialButtonStyle.BIG);
+        } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
+            builder.withSocialButtonStyle(SocialButtonStyle.SMALL);
+        }
+
+        if (groupPasswordlessMode.getCheckedRadioButtonId() == R.id.radio_use_link) {
+            builder.useLink();
+        } else {
+            builder.useCode();
+        }
+
+        builder.onlyUseConnections(generateConnections());
+
+        passwordlessLock = builder.build();
+        passwordlessLock.onCreate(this);
+
+        startActivity(passwordlessLock.newIntent(this));
+    }
+
+    private Auth0 getAccount() {
+        return new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
+    }
+
+    private List<String> generateConnections() {
+        List<String> connections = new ArrayList<>();
+        if (checkboxConnectionsDB.isChecked()) {
+            connections.add("auth0");
+        }
+        if (checkboxConnectionsEnterprise.isChecked()) {
+            connections.add("ad");
+            connections.add("another");
+        }
+        if (checkboxConnectionsSocial.isChecked()) {
+            connections.add("google-oauth2");
+            connections.add("twitter");
+            connections.add("facebook");
+        }
+        if (checkboxConnectionsPasswordless.isChecked()) {
+            connections.add(groupPasswordlessChannel.getCheckedRadioButtonId() == R.id.radio_use_sms ? "sms" : "email");
+        }
+        return connections;
     }
 
 
