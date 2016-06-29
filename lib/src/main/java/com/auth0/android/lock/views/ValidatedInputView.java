@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
@@ -41,7 +42,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -245,6 +245,12 @@ public class ValidatedInputView extends LinearLayout {
         icon.setImageResource(inputIcon);
     }
 
+    /**
+     * Updates the view knowing if the input is valid or not.
+     *
+     * @param isValid if the input is valid or not for this kind of DataType.
+     */
+    @CallSuper
     protected void updateBorder(boolean isValid) {
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
@@ -267,6 +273,7 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     @Override
+    @CallSuper
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -291,6 +298,7 @@ public class ValidatedInputView extends LinearLayout {
 
     /**
      * Validates the input data and updates the icon. DataType must be set.
+     * Empty fields are considered valid.
      *
      * @return whether the data is valid or not.
      */
@@ -300,6 +308,12 @@ public class ValidatedInputView extends LinearLayout {
         return isValid;
     }
 
+    /**
+     * Validates the input data and updates the icon. DataType must be set.
+     *
+     * @param validateEmptyFields if an empty input should be considered invalid.
+     * @return whether the data is valid or not.
+     */
     protected boolean validate(boolean validateEmptyFields) {
         boolean isValid = false;
         String value = getText();
