@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock.app;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -45,12 +44,10 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DemoActivity extends AppCompatActivity {
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
@@ -138,7 +135,6 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private void showClassicLock() {
-        //TODO:
         final Lock.Builder builder = Lock.newBuilder(getAccount(), callback);
         builder.closable(checkboxClosable.isChecked());
         builder.fullscreen(checkboxFullscreen.isChecked());
@@ -247,55 +243,6 @@ public class DemoActivity extends AppCompatActivity {
         if (passwordlessLock != null) {
             passwordlessLock.onDestroy(this);
         }
-    }
-
-    /**
-     * Launches the login flow showing only the Passwordless widget.
-     *
-     * @param useCode on Passwordless Authentication.
-     */
-    private void passwordlessLogin(boolean useCode) {
-        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
-
-        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback).closable(true);
-        if (useCode) {
-            builder.useCode();
-        } else {
-            builder.useLink();
-        }
-
-        passwordlessLock = builder.build();
-        passwordlessLock.onCreate(this);
-
-        startActivity(passwordlessLock.newIntent(this));
-    }
-
-    /**
-     * Launches the login flow showing only the Social widget.
-     *
-     * @param useBrowser whether to use the webview (default) or the browser.
-     */
-    private void normalLogin(boolean useBrowser) {
-        // create account
-        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
-
-        Map<String, Object> params = ParameterBuilder.newAuthenticationBuilder()
-                .setDevice(Build.MODEL)
-                .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
-                .asDictionary();
-
-        // create/configure lock
-        lock = Lock.newBuilder(auth0, callback)
-                .useBrowser(useBrowser)
-                .withAuthenticationParameters(params)
-                .closable(true)
-                .build();
-
-        //this should be called only once
-        lock.onCreate(this);
-
-        // launch, the results will be received in the callback
-        startActivity(lock.newIntent(this));
     }
 
     /**
