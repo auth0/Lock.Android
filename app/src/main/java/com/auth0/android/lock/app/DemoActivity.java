@@ -31,39 +31,112 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
-import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Credentials;
 
 import java.util.Map;
 
-public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
+public class DemoActivity extends AppCompatActivity {
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
 
     private Lock lock;
     private PasswordlessLock passwordlessLock;
 
+    private View rootLayout;
+    private RadioGroup groupWebMode;
+    private CheckBox checkboxClosable;
+    private CheckBox checkboxFullscreen;
+    private RadioGroup groupPasswordlessChannel;
+    private RadioGroup groupPasswordlessMode;
+    private CheckBox checkboxConnectionsDB;
+    private CheckBox checkboxConnectionsEnterprise;
+    private CheckBox checkboxConnectionsSocial;
+    private CheckBox checkboxConnectionsPasswordless;
+    private RadioGroup groupSocialStyle;
+    private RadioGroup groupUsernameStyle;
+    private CheckBox checkboxLoginAfterSignUp;
+    private CheckBox checkboxScreenLogIn;
+    private CheckBox checkboxScreenSignUp;
+    private CheckBox checkboxScreenReset;
+    private RadioGroup groupInitialScreen;
+
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.demo_activity);
-        Button btnWebView = (Button) findViewById(R.id.btn_normal_webview);
-        Button btnBrowser = (Button) findViewById(R.id.btn_normal_browser);
-        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_code);
-        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_link);
 
-        btnWebView.setOnClickListener(this);
-        btnBrowser.setOnClickListener(this);
-        btnPasswordlessEmailCode.setOnClickListener(this);
-        btnPasswordlessEmailLink.setOnClickListener(this);
+        rootLayout = findViewById(R.id.scrollView);
+
+        //Basic
+        groupWebMode = (RadioGroup) findViewById(R.id.group_webmode);
+        checkboxClosable = (CheckBox) findViewById(R.id.checkbox_closable);
+        checkboxFullscreen = (CheckBox) findViewById(R.id.checkbox_fullscreen);
+
+        checkboxConnectionsDB = (CheckBox) findViewById(R.id.checkbox_connections_db);
+        checkboxConnectionsEnterprise = (CheckBox) findViewById(R.id.checkbox_connections_enterprise);
+        checkboxConnectionsSocial = (CheckBox) findViewById(R.id.checkbox_connections_social);
+        checkboxConnectionsPasswordless = (CheckBox) findViewById(R.id.checkbox_connections_Passwordless);
+
+        groupPasswordlessChannel = (RadioGroup) findViewById(R.id.group_passwordless_channel);
+        groupPasswordlessMode = (RadioGroup) findViewById(R.id.group_passwordless_mode);
+
+        //Advanced
+        groupSocialStyle = (RadioGroup) findViewById(R.id.group_social_style);
+        groupUsernameStyle = (RadioGroup) findViewById(R.id.group_username_style);
+        checkboxLoginAfterSignUp = (CheckBox) findViewById(R.id.checkbox_login_after_signup);
+
+        checkboxScreenLogIn = (CheckBox) findViewById(R.id.checkbox_enable_login);
+        checkboxScreenSignUp = (CheckBox) findViewById(R.id.checkbox_enable_signup);
+        checkboxScreenReset = (CheckBox) findViewById(R.id.checkbox_enable_reset);
+        groupInitialScreen = (RadioGroup) findViewById(R.id.group_initial_screen);
+
+        //Buttons
+        final LinearLayout advancedContainer = (LinearLayout) findViewById(R.id.advanced_container);
+        CheckBox checkboxShowAdvanced = (CheckBox) findViewById(R.id.checkbox_show_advanced);
+        checkboxShowAdvanced.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                advancedContainer.setVisibility(b ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        Button btnShowLockClassic = (Button) findViewById(R.id.btn_show_lock_classic);
+        btnShowLockClassic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showClassicLock();
+            }
+        });
+
+        Button btnShowLockPasswordless = (Button) findViewById(R.id.btn_show_lock_passwordless);
+        btnShowLockPasswordless.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPasswordlessLock();
+            }
+        });
+    }
+
+    private void showClassicLock() {
+        //TODO:
+    }
+
+
+    private void showPasswordlessLock() {
+        //TODO:
     }
 
 
@@ -75,24 +148,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (passwordlessLock != null) {
             passwordlessLock.onDestroy(this);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_normal_webview:
-                normalLogin(false);
-                break;
-            case R.id.btn_normal_browser:
-                normalLogin(true);
-                break;
-            case R.id.btn_passwordless_code:
-                passwordlessLogin(true);
-                break;
-            case R.id.btn_passwordless_link:
-                passwordlessLogin(false);
-                break;
         }
     }
 
@@ -150,8 +205,9 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @param message the text to show.
      */
+    @SuppressWarnings("ConstantConditions")
     private void showResult(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(rootLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
     private LockCallback callback = new AuthenticationCallback() {
