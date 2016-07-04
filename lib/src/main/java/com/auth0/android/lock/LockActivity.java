@@ -53,8 +53,7 @@ import com.auth0.android.auth0.authentication.result.Credentials;
 import com.auth0.android.auth0.authentication.result.DatabaseUser;
 import com.auth0.android.auth0.provider.AuthCallback;
 import com.auth0.android.auth0.provider.AuthProvider;
-import com.auth0.android.auth0.provider.AuthorizeResult;
-import com.auth0.android.auth0.provider.CallbackHelper;
+import com.auth0.android.auth0.provider.WebAuthProvider;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
@@ -84,7 +83,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
-    private static final int PERMISSION_REQUEST_CODE = 201;
+    private static final int WEB_AUTH_REQUEST_CODE = 200;
+    private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
+    private static final int PERMISSION_REQUEST_CODE = 202;
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -265,16 +266,18 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
         currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
-        if (currentProvider == null) {
-            Log.d(TAG, "Couldn't find an specific provider, using the default: " + OAuth2WebAuthProvider.class.getSimpleName());
-            String pkgName = getApplicationContext().getPackageName();
-            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
-            oauth2.setUseBrowser(options.useBrowser());
-            oauth2.setIsFullscreen(options.isFullscreen());
-            oauth2.setParameters(options.getAuthenticationParameters());
-            currentProvider = oauth2;
+        if (currentProvider != null) {
+            currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
+            return;
         }
-        currentProvider.start(this, connectionName, PERMISSION_REQUEST_CODE);
+
+        Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
+        WebAuthProvider.init(options.getAccount())
+                .useBrowser(options.useBrowser())
+                .useFullscreen(options.isFullscreen())
+                .withParameters(options.getAuthenticationParameters())
+                .withConnection(connectionName)
+                .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @Override
@@ -287,22 +290,33 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (currentProvider != null) {
-            //Deliver result to the IDP
-            lockView.showProgress(false);
-            AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
-            currentProvider.authorize(LockActivity.this, result);
+        switch (requestCode) {
+            case WEB_AUTH_REQUEST_CODE:
+                lockView.showProgress(false);
+                WebAuthProvider.resume(requestCode, resultCode, data);
+                break;
+            case CUSTOM_AUTH_REQUEST_CODE:
+                lockView.showProgress(false);
+                if (currentProvider != null) {
+                    currentProvider.authorize(requestCode, resultCode, data);
+                    currentProvider = null;
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if (currentProvider != null) {
-            //Deliver result to the IDP
+        lockView.showProgress(false);
+        if (WebAuthProvider.resume(intent)) {
+            return;
+        } else if (currentProvider != null) {
             lockView.showProgress(false);
-            AuthorizeResult result = new AuthorizeResult(intent);
-            currentProvider.authorize(LockActivity.this, result);
+            currentProvider.authorize(intent);
+            currentProvider = null;
+            return;
         }
         super.onNewIntent(intent);
     }
