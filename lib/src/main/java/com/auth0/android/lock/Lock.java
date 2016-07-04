@@ -34,10 +34,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.auth0.android.auth0.lib.Auth0;
-import com.auth0.android.auth0.lib.BuildConfig;
-import com.auth0.android.auth0.lib.authentication.ParameterBuilder;
-import com.auth0.android.auth0.lib.util.Telemetry;
+import com.auth0.android.auth0.Auth0;
+import com.auth0.android.auth0.BuildConfig;
+import com.auth0.android.auth0.authentication.ParameterBuilder;
+import com.auth0.android.auth0.util.Telemetry;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
@@ -94,8 +94,8 @@ public class Lock {
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull LockCallback callback) {
         if (account.getTelemetry() != null) {
-            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, BuildConfig.NAME, BuildConfig.VERSION));
-            account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, BuildConfig.NAME, BuildConfig.VERSION));
+            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
+            account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
         }
         return new Lock.Builder(account, callback);
     }

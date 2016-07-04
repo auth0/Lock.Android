@@ -28,11 +28,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.auth0.android.auth0.lib.Auth0;
-import com.auth0.android.auth0.lib.Auth0Exception;
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
-import com.auth0.android.auth0.lib.callback.AuthenticationCallback;
-import com.auth0.android.auth0.lib.callback.BaseCallback;
+import com.auth0.android.auth0.Auth0;
+import com.auth0.android.auth0.Auth0Exception;
+import com.auth0.android.auth0.authentication.AuthenticationException;
+import com.auth0.android.auth0.callback.AuthenticationCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

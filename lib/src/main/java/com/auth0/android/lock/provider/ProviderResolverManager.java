@@ -30,8 +30,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.auth0.android.auth0.AuthCallback;
-import com.auth0.android.auth0.AuthProvider;
+import com.auth0.android.auth0.provider.AuthCallback;
+import com.auth0.android.auth0.provider.AuthProvider;
 
 /**
  * Holds an instance of AuthProviderResolver that can be used to query for IdentityProviders given
