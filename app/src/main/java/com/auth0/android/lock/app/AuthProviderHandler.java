@@ -28,9 +28,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.auth0.android.auth0.provider.AuthCallback;
+import com.auth0.android.auth0.provider.AuthProvider;
 import com.auth0.android.lock.provider.AuthProviderResolver;
-import com.auth0.android.auth0.AuthCallback;
-import com.auth0.android.auth0.AuthProvider;
 
 public class AuthProviderHandler implements AuthProviderResolver {
 
@@ -39,7 +39,7 @@ public class AuthProviderHandler implements AuthProviderResolver {
     public AuthProvider onAuthProviderRequest(Context context, @NonNull AuthCallback callback, @NonNull String connectionName) {
         AuthProvider provider = null;
         if (connectionName.equals("google-oauth2")) {
-            provider = new CustomWebAuthProvider(callback);
+            provider = new CustomWebAuthProvider(context, connectionName);
         }
         return provider;
     }
