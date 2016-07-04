@@ -24,8 +24,8 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.android.auth0.lib.authentication.AuthenticationException;
-import com.auth0.android.auth0.lib.callback.AuthenticationCallback;
+import com.auth0.android.auth0.authentication.AuthenticationException;
+import com.auth0.android.auth0.callback.AuthenticationCallback;
 
 import java.util.concurrent.Callable;
 

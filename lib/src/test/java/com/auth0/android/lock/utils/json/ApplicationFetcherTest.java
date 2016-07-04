@@ -24,8 +24,8 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.auth0.lib.Auth0;
-import com.auth0.android.auth0.lib.Auth0Exception;
+import com.auth0.android.auth0.Auth0;
+import com.auth0.android.auth0.Auth0Exception;
 import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.Auth0AuthenticationCallbackMatcher;
 import com.auth0.android.lock.utils.MockAuthenticationCallback;

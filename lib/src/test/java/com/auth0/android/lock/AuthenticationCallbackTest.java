@@ -26,7 +26,7 @@ package com.auth0.android.lock;
 
 import android.content.Intent;
 
-import com.auth0.android.auth0.lib.authentication.result.Credentials;
+import com.auth0.android.auth0.authentication.result.Credentials;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.utils.MockLockCallback;
 
