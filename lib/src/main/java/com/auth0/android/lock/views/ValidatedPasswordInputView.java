@@ -54,7 +54,7 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
     @Override
     protected void updateBorder(boolean isValid) {
         super.updateBorder(isValid);
-        if (strengthView != null) {
+        if (strengthView != null && strengthView.isEnabled()) {
             strengthView.setVisibility(!isValid || !getText().isEmpty() ? VISIBLE : GONE);
         }
     }
