@@ -24,13 +24,16 @@
 
 package com.auth0.android.lock.app;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 
 import com.auth0.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
@@ -38,32 +41,196 @@ import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.ParameterBuilder;
 import com.auth0.authentication.result.Credentials;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
+public class DemoActivity extends AppCompatActivity {
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
 
     private Lock lock;
     private PasswordlessLock passwordlessLock;
 
+    private View rootLayout;
+    private RadioGroup groupWebMode;
+    private CheckBox checkboxClosable;
+    private CheckBox checkboxFullscreen;
+    private RadioGroup groupPasswordlessChannel;
+    private RadioGroup groupPasswordlessMode;
+    private CheckBox checkboxConnectionsDB;
+    private CheckBox checkboxConnectionsEnterprise;
+    private CheckBox checkboxConnectionsSocial;
+    private CheckBox checkboxConnectionsPasswordless;
+    private RadioGroup groupDefaultDB;
+    private RadioGroup groupSocialStyle;
+    private RadioGroup groupUsernameStyle;
+    private CheckBox checkboxLoginAfterSignUp;
+    private CheckBox checkboxScreenLogIn;
+    private CheckBox checkboxScreenSignUp;
+    private CheckBox checkboxScreenReset;
+    private RadioGroup groupInitialScreen;
+
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.demo_activity);
-        Button btnWebView = (Button) findViewById(R.id.btn_normal_webview);
-        Button btnBrowser = (Button) findViewById(R.id.btn_normal_browser);
-        Button btnPasswordlessEmailCode = (Button) findViewById(R.id.btn_passwordless_code);
-        Button btnPasswordlessEmailLink = (Button) findViewById(R.id.btn_passwordless_link);
 
-        btnWebView.setOnClickListener(this);
-        btnBrowser.setOnClickListener(this);
-        btnPasswordlessEmailCode.setOnClickListener(this);
-        btnPasswordlessEmailLink.setOnClickListener(this);
+        rootLayout = findViewById(R.id.scrollView);
+
+        //Basic
+        groupWebMode = (RadioGroup) findViewById(R.id.group_webmode);
+        checkboxClosable = (CheckBox) findViewById(R.id.checkbox_closable);
+        checkboxFullscreen = (CheckBox) findViewById(R.id.checkbox_fullscreen);
+
+        checkboxConnectionsDB = (CheckBox) findViewById(R.id.checkbox_connections_db);
+        checkboxConnectionsEnterprise = (CheckBox) findViewById(R.id.checkbox_connections_enterprise);
+        checkboxConnectionsSocial = (CheckBox) findViewById(R.id.checkbox_connections_social);
+        checkboxConnectionsPasswordless = (CheckBox) findViewById(R.id.checkbox_connections_Passwordless);
+
+        groupPasswordlessChannel = (RadioGroup) findViewById(R.id.group_passwordless_channel);
+        groupPasswordlessMode = (RadioGroup) findViewById(R.id.group_passwordless_mode);
+
+        //Advanced
+        groupDefaultDB = (RadioGroup) findViewById(R.id.group_default_db);
+        groupSocialStyle = (RadioGroup) findViewById(R.id.group_social_style);
+        groupUsernameStyle = (RadioGroup) findViewById(R.id.group_username_style);
+        checkboxLoginAfterSignUp = (CheckBox) findViewById(R.id.checkbox_login_after_signup);
+
+        checkboxScreenLogIn = (CheckBox) findViewById(R.id.checkbox_enable_login);
+        checkboxScreenSignUp = (CheckBox) findViewById(R.id.checkbox_enable_signup);
+        checkboxScreenReset = (CheckBox) findViewById(R.id.checkbox_enable_reset);
+        groupInitialScreen = (RadioGroup) findViewById(R.id.group_initial_screen);
+
+        //Buttons
+        final LinearLayout advancedContainer = (LinearLayout) findViewById(R.id.advanced_container);
+        CheckBox checkboxShowAdvanced = (CheckBox) findViewById(R.id.checkbox_show_advanced);
+        checkboxShowAdvanced.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                advancedContainer.setVisibility(b ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        Button btnShowLockClassic = (Button) findViewById(R.id.btn_show_lock_classic);
+        btnShowLockClassic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showClassicLock();
+            }
+        });
+
+        Button btnShowLockPasswordless = (Button) findViewById(R.id.btn_show_lock_passwordless);
+        btnShowLockPasswordless.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPasswordlessLock();
+            }
+        });
+    }
+
+    private void showClassicLock() {
+        final Lock.Builder builder = Lock.newBuilder(getAccount(), callback);
+        builder.closable(checkboxClosable.isChecked());
+        builder.fullscreen(checkboxFullscreen.isChecked());
+        builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
+        builder.loginAfterSignUp(checkboxLoginAfterSignUp.isChecked());
+
+        if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
+            builder.withSocialButtonStyle(SocialButtonStyle.BIG);
+        } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
+            builder.withSocialButtonStyle(SocialButtonStyle.SMALL);
+        }
+
+        if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_email) {
+            builder.withUsernameStyle(UsernameStyle.EMAIL);
+        } else if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_username) {
+            builder.withUsernameStyle(UsernameStyle.USERNAME);
+        }
+
+        builder.allowLogIn(checkboxScreenLogIn.isChecked());
+        builder.allowSignUp(checkboxScreenSignUp.isChecked());
+        builder.allowForgotPassword(checkboxScreenReset.isChecked());
+
+        if (groupInitialScreen.getCheckedRadioButtonId() == R.id.radio_initial_reset) {
+            builder.initialScreen(InitialScreen.FORGOT_PASSWORD);
+        } else if (groupInitialScreen.getCheckedRadioButtonId() == R.id.radio_initial_signup) {
+            builder.initialScreen(InitialScreen.SIGN_UP);
+        } else {
+            builder.initialScreen(InitialScreen.LOG_IN);
+        }
+
+        builder.onlyUseConnections(generateConnections());
+
+        if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_policy) {
+            builder.setDefaultDatabaseConnection("with-strength");
+        } else if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_mfa) {
+            builder.setDefaultDatabaseConnection("mfa-connection");
+        } else {
+            builder.setDefaultDatabaseConnection("Username-Password-Authentication");
+        }
+
+        lock = builder.build();
+
+        lock.onCreate(this);
+
+        startActivity(lock.newIntent(this));
+    }
+
+
+    private void showPasswordlessLock() {
+        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(getAccount(), callback);
+        builder.closable(checkboxClosable.isChecked());
+        builder.fullscreen(checkboxFullscreen.isChecked());
+        builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
+
+        if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
+            builder.withSocialButtonStyle(SocialButtonStyle.BIG);
+        } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
+            builder.withSocialButtonStyle(SocialButtonStyle.SMALL);
+        }
+
+        if (groupPasswordlessMode.getCheckedRadioButtonId() == R.id.radio_use_link) {
+            builder.useLink();
+        } else {
+            builder.useCode();
+        }
+
+        builder.onlyUseConnections(generateConnections());
+
+        passwordlessLock = builder.build();
+        passwordlessLock.onCreate(this);
+
+        startActivity(passwordlessLock.newIntent(this));
+    }
+
+    private Auth0 getAccount() {
+        return new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
+    }
+
+    private List<String> generateConnections() {
+        List<String> connections = new ArrayList<>();
+        if (checkboxConnectionsDB.isChecked()) {
+            connections.add("auth0");
+        }
+        if (checkboxConnectionsEnterprise.isChecked()) {
+            connections.add("ad");
+            connections.add("another");
+        }
+        if (checkboxConnectionsSocial.isChecked()) {
+            connections.add("google-oauth2");
+            connections.add("twitter");
+            connections.add("facebook");
+        }
+        if (checkboxConnectionsPasswordless.isChecked()) {
+            connections.add(groupPasswordlessChannel.getCheckedRadioButtonId() == R.id.radio_use_sms ? "sms" : "email");
+        }
+        return connections;
     }
 
 
@@ -78,80 +245,14 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_normal_webview:
-                normalLogin(false);
-                break;
-            case R.id.btn_normal_browser:
-                normalLogin(true);
-                break;
-            case R.id.btn_passwordless_code:
-                passwordlessLogin(true);
-                break;
-            case R.id.btn_passwordless_link:
-                passwordlessLogin(false);
-                break;
-        }
-    }
-
-    /**
-     * Launches the login flow showing only the Passwordless widget.
-     *
-     * @param useCode on Passwordless Authentication.
-     */
-    private void passwordlessLogin(boolean useCode) {
-        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
-
-        final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(auth0, callback).closable(true);
-        if (useCode) {
-            builder.useCode();
-        } else {
-            builder.useLink();
-        }
-
-        passwordlessLock = builder.build();
-        passwordlessLock.onCreate(this);
-
-        startActivity(passwordlessLock.newIntent(this));
-    }
-
-    /**
-     * Launches the login flow showing only the Social widget.
-     *
-     * @param useBrowser whether to use the webview (default) or the browser.
-     */
-    private void normalLogin(boolean useBrowser) {
-        // create account
-        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
-
-        Map<String, Object> params = ParameterBuilder.newAuthenticationBuilder()
-                .setDevice(Build.MODEL)
-                .setScope(SCOPE_OPENID_OFFLINE_ACCESS)
-                .asDictionary();
-
-        // create/configure lock
-        lock = Lock.newBuilder(auth0, callback)
-                .useBrowser(useBrowser)
-                .withAuthenticationParameters(params)
-                .closable(true)
-                .build();
-
-        //this should be called only once
-        lock.onCreate(this);
-
-        // launch, the results will be received in the callback
-        startActivity(lock.newIntent(this));
-    }
-
     /**
      * Shows a Snackbar on the bottom of the layout
      *
      * @param message the text to show.
      */
+    @SuppressWarnings("ConstantConditions")
     private void showResult(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(rootLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
     private LockCallback callback = new AuthenticationCallback() {
