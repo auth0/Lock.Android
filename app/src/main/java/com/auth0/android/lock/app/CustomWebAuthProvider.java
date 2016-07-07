@@ -30,16 +30,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.auth0.android.auth0.Auth0;
-import com.auth0.android.auth0.authentication.result.Credentials;
-import com.auth0.android.auth0.provider.AuthProvider;
-import com.auth0.android.auth0.provider.AuthorizeResult;
-import com.auth0.android.auth0.provider.CallbackHelper;
+import com.auth0.android.Auth0;
+import com.auth0.android.provider.AuthProvider;
+import com.auth0.android.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,14 +71,12 @@ public class CustomWebAuthProvider extends AuthProvider {
 
     private final Context context;
     private final String connectionName;
-    private CallbackHelper helper;
     private final Auth0 account;
     private String lastState;
 
     public CustomWebAuthProvider(Context context, String connectionName) {
         this.context = context;
         this.connectionName = connectionName;
-        this.helper = new CallbackHelper("com.auth0.android.lock.app");
         this.account = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
     }
 
@@ -122,20 +119,21 @@ public class CustomWebAuthProvider extends AuthProvider {
 
     @Override
     public boolean authorize(int requestCode, int resultCode, @Nullable Intent intent) {
-        return parseResult(new AuthorizeResult(requestCode, resultCode, intent));
+        Uri uri = intent != null ? intent.getData() : null;
+        if (uri == null || requestCode != WEBVIEW_AUTH_REQUEST_CODE || resultCode != Activity.RESULT_OK) {
+            return false;
+        }
+        return parseValidResult(intent);
     }
 
     @Override
     public boolean authorize(@Nullable Intent intent) {
-        return parseResult(new AuthorizeResult(intent));
+        Uri uri = intent != null ? intent.getData() : null;
+        return uri != null && parseValidResult(intent);
     }
 
-    private boolean parseResult(AuthorizeResult data) {
-        if (!data.isValid(WEBVIEW_AUTH_REQUEST_CODE)) {
-            return false;
-        }
-
-        final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
+    private boolean parseValidResult(Intent data) {
+        final Map<String, String> values = getValuesFromUri(data.getData());
         if (values.containsKey(KEY_ERROR)) {
             createDialog(R.string.native_provider_message_failed)
                     .show();
@@ -172,11 +170,34 @@ public class CustomWebAuthProvider extends AuthProvider {
         queryParameters.put(KEY_STATE, lastState);
         queryParameters.put(KEY_CONNECTION, connectionName);
         queryParameters.put(KEY_CLIENT_ID, account.getClientId());
-        queryParameters.put(KEY_REDIRECT_URI, helper.getCallbackURI(account.getDomainUrl()));
+        String callbackURI = getCallbackURI(account.getDomainUrl(), "com.auth0.android.lock.app");
+        queryParameters.put(KEY_REDIRECT_URI, callbackURI);
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
         }
         return builder.build();
     }
+
+    private String getCallbackURI(String domain, String packageName) {
+        return String.format("%s/android/%s/callback", domain, packageName);
+    }
+
+    public Map<String, String> getValuesFromUri(@NonNull Uri uri) {
+        return asMap(uri.getQuery() != null ? uri.getQuery() : uri.getFragment());
+    }
+
+    private Map<String, String> asMap(@NonNull String valueString) {
+        final String[] entries = valueString.length() > 0 ? valueString.split("&") : new String[]{};
+        Map<String, String> values = new HashMap<>(entries.length);
+        for (String entry : entries) {
+            final String[] value = entry.split("=");
+            if (value.length == 2) {
+                values.put(value[0], value[1]);
+            }
+        }
+        return values;
+    }
+
+
 }

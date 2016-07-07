@@ -1,6 +1,6 @@
 package com.auth0.android.lock.errors;
 
-import com.auth0.android.auth0.authentication.AuthenticationException;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 
@@ -15,7 +15,7 @@ import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)

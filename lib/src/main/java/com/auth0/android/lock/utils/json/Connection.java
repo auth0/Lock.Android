@@ -24,12 +24,15 @@
 
 package com.auth0.android.lock.utils.json;
 
+import com.auth0.android.util.CheckHelper;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.auth0.android.auth0.util.CheckHelper.checkArgument;
+import static com.auth0.android.util.CheckHelper.checkArgument;
+
 
 /**
  * Class with a Auth0 connection info

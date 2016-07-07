@@ -50,12 +50,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.auth0.android.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.android.auth0.authentication.AuthenticationException;
-import com.auth0.android.auth0.authentication.result.Credentials;
-import com.auth0.android.auth0.provider.AuthCallback;
-import com.auth0.android.auth0.provider.AuthProvider;
-import com.auth0.android.auth0.provider.WebAuthProvider;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.*;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;
@@ -69,6 +66,10 @@ import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.auth0.android.lock.views.PasswordlessLockView;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.AuthProvider;
+import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -490,7 +491,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     //Callbacks
-    private com.auth0.android.auth0.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.auth0.callback.AuthenticationCallback<Application>() {
+    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -517,7 +518,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private com.auth0.android.auth0.callback.AuthenticationCallback<Void> passwordlessCodeCallback = new com.auth0.android.auth0.callback.AuthenticationCallback<Void>() {
+    private com.auth0.android.callback.AuthenticationCallback<Void> passwordlessCodeCallback = new com.auth0.android.callback.AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
@@ -546,7 +547,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private com.auth0.android.auth0.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.auth0.callback.AuthenticationCallback<Credentials>() {
+    private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
             clearRecentPasswordlessData();

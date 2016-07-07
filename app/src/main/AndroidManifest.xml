@@ -65,7 +65,7 @@
 
         <!--Auth0 Lock Embedded WebView-->
         <activity
-            android:name="com.auth0.android.auth0.provider.WebViewActivity"
+            android:name="com.auth0.android.provider.WebAuthActivity"
             android:theme="@style/MyLock.Theme" />
         <!--Auth0 Lock Embedded WebView End-->
 

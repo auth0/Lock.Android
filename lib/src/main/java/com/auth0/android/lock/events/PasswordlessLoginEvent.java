@@ -28,13 +28,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.auth0.android.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.android.auth0.authentication.AuthenticationException;
-import com.auth0.android.auth0.authentication.PasswordlessType;
-import com.auth0.android.auth0.request.AuthenticationRequest;
-import com.auth0.android.auth0.request.ParameterizableRequest;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.ParameterizableRequest;
 
 public class PasswordlessLoginEvent {
     private static final String TAG = PasswordlessLoginEvent.class.getSimpleName();

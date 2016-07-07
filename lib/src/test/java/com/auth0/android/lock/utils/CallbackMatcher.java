@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.android.auth0.Auth0Exception;
+import com.auth0.android.Auth0Exception;
 import com.jayway.awaitility.core.ConditionTimeoutException;
 
 import org.hamcrest.BaseMatcher;

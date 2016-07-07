@@ -27,7 +27,7 @@ package com.auth0.android.lock;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.auth0.android.auth0.Auth0;
+import com.auth0.android.Auth0;
 
 
 /**

@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.events;
 
-import com.auth0.android.auth0.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationAPIClient;
 
 import org.junit.Assert;
 import org.junit.Test;

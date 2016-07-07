@@ -34,16 +34,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.auth0.android.auth0.Auth0;
-import com.auth0.android.auth0.BuildConfig;
-import com.auth0.android.auth0.authentication.ParameterBuilder;
-import com.auth0.android.auth0.util.Telemetry;
+import com.auth0.android.Auth0;
+import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.util.Telemetry;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -26,7 +26,7 @@ package com.auth0.android.lock.errors;
 
 import android.support.annotation.StringRes;
 
-import com.auth0.android.auth0.authentication.AuthenticationException;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.R;
 
 public class SignUpErrorMessageBuilder implements ErrorMessageBuilder<AuthenticationException> {

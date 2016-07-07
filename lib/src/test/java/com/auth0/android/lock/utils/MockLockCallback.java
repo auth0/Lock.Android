@@ -24,8 +24,8 @@
 
 package com.auth0.android.lock.utils;
 
-import com.auth0.android.auth0.authentication.result.Credentials;
 import com.auth0.android.lock.AuthenticationCallback;
+import com.auth0.android.result.Credentials;
 
 import java.util.concurrent.Callable;
 
