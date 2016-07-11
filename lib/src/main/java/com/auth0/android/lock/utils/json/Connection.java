@@ -24,8 +24,6 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.util.CheckHelper;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

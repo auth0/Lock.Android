@@ -98,11 +98,11 @@ public class PasswordlessLoginEvent {
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
             request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
         } else if (getMode() == PasswordlessMode.EMAIL_LINK) {
-            request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+            request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.ANDROID_LINK);
         } else if (getMode() == PasswordlessMode.SMS_CODE) {
             request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.CODE);
         } else {
-            request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+            request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.ANDROID_LINK);
         }
         return request.addParameter(KEY_CONNECTION, connectionName);
     }

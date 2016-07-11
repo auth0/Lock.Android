@@ -45,6 +45,7 @@ public class DatabaseSignUpEventTest {
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
     private static final String USERNAME = "username";
+    private static final String CONNECTION = "connection";
 
     @Test
     public void shouldSetAllValues() throws Exception {
@@ -69,8 +70,8 @@ public class DatabaseSignUpEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, USERNAME);
-        event.getSignUpRequest(client);
-        Mockito.verify(client).signUp(EMAIL, PASSWORD, USERNAME);
+        event.getSignUpRequest(client, CONNECTION);
+        Mockito.verify(client).signUp(EMAIL, PASSWORD, USERNAME, CONNECTION);
     }
 
     @Test
@@ -78,8 +79,8 @@ public class DatabaseSignUpEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, null);
-        event.getSignUpRequest(client);
-        Mockito.verify(client).signUp(EMAIL, PASSWORD);
+        event.getSignUpRequest(client, CONNECTION);
+        Mockito.verify(client).signUp(EMAIL, PASSWORD, CONNECTION);
     }
 
     @Test
@@ -87,8 +88,8 @@ public class DatabaseSignUpEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, USERNAME);
-        event.getCreateUserRequest(client);
-        Mockito.verify(client).createUser(EMAIL, PASSWORD, USERNAME);
+        event.getCreateUserRequest(client, CONNECTION);
+        Mockito.verify(client).createUser(EMAIL, PASSWORD, USERNAME, CONNECTION);
     }
 
     @Test
@@ -96,8 +97,8 @@ public class DatabaseSignUpEventTest {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, null);
-        event.getCreateUserRequest(client);
-        Mockito.verify(client).createUser(EMAIL, PASSWORD);
+        event.getCreateUserRequest(client, CONNECTION);
+        Mockito.verify(client).createUser(EMAIL, PASSWORD, CONNECTION);
     }
 
 }

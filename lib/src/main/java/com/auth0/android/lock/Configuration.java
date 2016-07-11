@@ -32,9 +32,9 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.Connection;
-import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Strategy;
 
 import java.util.ArrayList;

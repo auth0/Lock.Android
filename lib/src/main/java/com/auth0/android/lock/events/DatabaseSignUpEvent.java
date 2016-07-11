@@ -61,22 +61,22 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         this.extraFields = customFields;
     }
 
-    public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient) {
+    public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient, String connection) {
         SignUpRequest request;
         if (getUsername() != null) {
-            request = apiClient.signUp(getEmail(), getPassword(), getUsername());
+            request = apiClient.signUp(getEmail(), getPassword(), getUsername(), connection);
         } else {
-            request = apiClient.signUp(getEmail(), getPassword());
+            request = apiClient.signUp(getEmail(), getPassword(), connection);
         }
         return request;
     }
 
-    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(AuthenticationAPIClient apiClient) {
+    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(AuthenticationAPIClient apiClient, String connection) {
         DatabaseConnectionRequest<DatabaseUser, AuthenticationException> request;
         if (getUsername() != null) {
-            request = apiClient.createUser(getEmail(), getPassword(), getUsername());
+            request = apiClient.createUser(getEmail(), getPassword(), getUsername(), connection);
         } else {
-            request = apiClient.createUser(getEmail(), getPassword());
+            request = apiClient.createUser(getEmail(), getPassword(), connection);
         }
         return request;
     }

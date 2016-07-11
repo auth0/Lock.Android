@@ -351,8 +351,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.getVerificationCode() != null) {
             parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
         }
-        apiClient.login(event.getUsernameOrEmail(), event.getPassword())
-                .setConnection(configuration.getDefaultDatabaseConnection().getName())
+        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
                 .addAuthenticationParameters(parameters)
                 .start(authCallback);
     }
@@ -366,8 +366,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
-
+        final String connection = configuration.getDefaultDatabaseConnection().getName();
         lockView.showProgress(true);
 
         if (configuration.loginAfterSignUp()) {
@@ -375,7 +374,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            event.getSignUpRequest(apiClient)
+            event.getSignUpRequest(apiClient, connection)
                     .addAuthenticationParameters(authParameters)
                     .start(authCallback);
         } else {
@@ -383,7 +382,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 parameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            event.getCreateUserRequest(apiClient)
+            event.getCreateUserRequest(apiClient, connection)
                     .addParameters(parameters)
                     .start(createCallback);
         }
@@ -399,8 +398,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
-        apiClient.requestChangePassword(event.getEmail())
+        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        apiClient.requestChangePassword(event.getEmail(), connection)
                 .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
     }
@@ -430,8 +429,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.useRO()) {
             Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-            apiClient.login(event.getUsername(), event.getPassword())
-                    .setConnection(event.getConnectionName())
+            apiClient.login(event.getUsername(), event.getPassword(), event.getConnectionName())
                     .addAuthenticationParameters(options.getAuthenticationParameters())
                     .start(authCallback);
             return;

@@ -36,7 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.auth0.android.Auth0;
-import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;

@@ -52,7 +52,6 @@ import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.callback.*;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;
