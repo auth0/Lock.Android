@@ -166,15 +166,15 @@ public class DemoActivity extends AppCompatActivity {
         }
 
         builder.onlyUseConnections(generateConnections());
-
-        if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_policy) {
-            builder.setDefaultDatabaseConnection("with-strength");
-        } else if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_mfa) {
-            builder.setDefaultDatabaseConnection("mfa-connection");
-        } else {
-            builder.setDefaultDatabaseConnection("Username-Password-Authentication");
+        if (checkboxConnectionsDB.isChecked()) {
+            if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_policy) {
+                builder.setDefaultDatabaseConnection("with-strength");
+            } else if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_mfa) {
+                builder.setDefaultDatabaseConnection("mfa-connection");
+            } else {
+                builder.setDefaultDatabaseConnection("Username-Password-Authentication");
+            }
         }
-
         lock = builder.build();
 
         lock.onCreate(this);
@@ -216,7 +216,9 @@ public class DemoActivity extends AppCompatActivity {
     private List<String> generateConnections() {
         List<String> connections = new ArrayList<>();
         if (checkboxConnectionsDB.isChecked()) {
-            connections.add("auth0");
+            connections.add("Username-Password-Authentication");
+            connections.add("mfa-connection");
+            connections.add("with-strength");
         }
         if (checkboxConnectionsEnterprise.isChecked()) {
             connections.add("ad");
