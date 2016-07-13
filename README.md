@@ -31,9 +31,16 @@ compile 'com.auth0.android:lock:2.0.0-beta.2'
 
 ## Usage
 
+First go to [Auth0 Dashboard](https://manage.auth0.com/#/applications) and go to your application's settings. Make sure you have in *Allowed Callback URLs* a URL with the following format:
+
+```
+https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
+```
+
+
 ### Email/Password, Enterprise & Social authentication
 
-First, you'll need to configure LockActivity in your `AndroidManifest.xml`, inside the `application` tag:
+You'll need to configure LockActivity in your `AndroidManifest.xml`, inside the `application` tag:
 
 ```xml
 <activity
@@ -117,7 +124,7 @@ startActivity(this.lock.newIntent(this));
 
 `LockPasswordlessActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
-First, you'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`, inside the `application` tag:
+You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`, inside the `application` tag:
 
 ```xml
 <activity
