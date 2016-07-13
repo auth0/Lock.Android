@@ -100,7 +100,7 @@ public class HomeActivity extends Activity {
      }
 
      @Override
-     public void onError(LockException error)
+     public void onError(LockException error){
         //Exception occurred
      }
   };
