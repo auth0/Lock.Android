@@ -50,8 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
-    private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
-
     private Lock lock;
     private PasswordlessLock passwordlessLock;
 
@@ -231,6 +229,9 @@ public class DemoActivity extends AppCompatActivity {
         }
         if (checkboxConnectionsPasswordless.isChecked()) {
             connections.add(groupPasswordlessChannel.getCheckedRadioButtonId() == R.id.radio_use_sms ? "sms" : "email");
+        }
+        if (connections.isEmpty()) {
+            connections.add("no-connection");
         }
         return connections;
     }
