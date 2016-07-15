@@ -44,7 +44,6 @@ import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
-import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 import com.squareup.otto.Bus;
 
 public class PasswordlessLockView extends LinearLayout implements LockWidgetPasswordless, View.OnClickListener {

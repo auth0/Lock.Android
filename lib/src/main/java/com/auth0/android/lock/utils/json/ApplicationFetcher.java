@@ -28,9 +28,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.auth0.Auth0;
-import com.auth0.Auth0Exception;
-import com.auth0.callback.BaseCallback;
+import com.auth0.android.Auth0;
+import com.auth0.android.Auth0Exception;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.AuthenticationCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -69,11 +70,11 @@ public class ApplicationFetcher {
      *
      * @param callback to notify on success/error
      */
-    public void fetch(@NonNull BaseCallback<Application> callback) {
+    public void fetch(@NonNull AuthenticationCallback<Application> callback) {
         makeApplicationRequest(callback);
     }
 
-    private void makeApplicationRequest(final BaseCallback<Application> callback) {
+    private void makeApplicationRequest(final AuthenticationCallback<Application> callback) {
         Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
                 .appendPath(account.getClientId() + ".js").build();
 
@@ -86,7 +87,7 @@ public class ApplicationFetcher {
             public void onFailure(Request request, final IOException e) {
                 Log.e(TAG, "Failed to fetch the Application: " + e.getMessage(), e);
                 Auth0Exception exception = new Auth0Exception("Failed to fetch the Application: " + e.getMessage());
-                callback.onFailure(exception);
+                callback.onFailure(new AuthenticationException("Failed to fetch the Application", exception));
             }
 
             @Override
@@ -96,7 +97,7 @@ public class ApplicationFetcher {
                     application = parseJSONP(response);
                 } catch (Auth0Exception e) {
                     Log.e(TAG, "Could not parse Application JSONP: " + e.getMessage());
-                    callback.onFailure(e);
+                    callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
                     return;
                 }
 

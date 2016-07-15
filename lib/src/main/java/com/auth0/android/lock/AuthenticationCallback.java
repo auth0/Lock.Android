@@ -28,7 +28,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Credentials;
+import com.auth0.android.result.Credentials;
 
 
 /**

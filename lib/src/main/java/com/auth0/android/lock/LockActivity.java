@@ -47,39 +47,34 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.auth0.Auth0Exception;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.errors.AuthenticationError;
-import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
-import com.auth0.android.lock.errors.SignUpAuthenticationErrorBuilder;
+import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
+import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.provider.AuthCallback;
-import com.auth0.android.lock.provider.AuthProvider;
-import com.auth0.android.lock.provider.AuthorizeResult;
-import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.auth0.android.lock.views.ClassicLockView;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Credentials;
-import com.auth0.authentication.result.DatabaseUser;
-import com.auth0.callback.BaseCallback;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.AuthProvider;
+import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.result.Credentials;
+import com.auth0.android.result.DatabaseUser;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.auth0.android.lock.errors.AuthenticationError.ErrorType;
 
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -88,7 +83,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
-    private static final int PERMISSION_REQUEST_CODE = 201;
+    private static final int WEB_AUTH_REQUEST_CODE = 200;
+    private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
+    private static final int PERMISSION_REQUEST_CODE = 202;
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -103,8 +100,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private boolean keyboardIsShown;
     private ViewGroup contentView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
-    private LoginAuthenticationErrorBuilder loginErrorBuilder;
-    private SignUpAuthenticationErrorBuilder signUpErrorBuilder;
+    private LoginErrorMessageBuilder loginErrorBuilder;
+    private SignUpErrorMessageBuilder signUpErrorBuilder;
     private DatabaseLoginEvent lastDatabaseLogin;
 
     @Override
@@ -135,8 +132,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         resultMessage.setPadding(0, resultMessage.getPaddingTop() + paddingTop, 0, resultMessage.getPaddingBottom());
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
-        loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
-        signUpErrorBuilder = new SignUpAuthenticationErrorBuilder();
+        loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
+        signUpErrorBuilder = new SignUpErrorMessageBuilder();
 
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
@@ -269,16 +266,18 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
         currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
-        if (currentProvider == null) {
-            Log.d(TAG, "Couldn't find an specific provider, using the default: " + OAuth2WebAuthProvider.class.getSimpleName());
-            String pkgName = getApplicationContext().getPackageName();
-            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
-            oauth2.setUseBrowser(options.useBrowser());
-            oauth2.setIsFullscreen(options.isFullscreen());
-            oauth2.setParameters(options.getAuthenticationParameters());
-            currentProvider = oauth2;
+        if (currentProvider != null) {
+            currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
+            return;
         }
-        currentProvider.start(this, connectionName, PERMISSION_REQUEST_CODE);
+
+        Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
+        WebAuthProvider.init(options.getAccount())
+                .useBrowser(options.useBrowser())
+                .useFullscreen(options.isFullscreen())
+                .withParameters(options.getAuthenticationParameters())
+                .withConnection(connectionName)
+                .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @Override
@@ -291,22 +290,33 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (currentProvider != null) {
-            //Deliver result to the IDP
-            lockView.showProgress(false);
-            AuthorizeResult result = new AuthorizeResult(requestCode, resultCode, data);
-            currentProvider.authorize(LockActivity.this, result);
+        switch (requestCode) {
+            case WEB_AUTH_REQUEST_CODE:
+                lockView.showProgress(false);
+                WebAuthProvider.resume(requestCode, resultCode, data);
+                break;
+            case CUSTOM_AUTH_REQUEST_CODE:
+                lockView.showProgress(false);
+                if (currentProvider != null) {
+                    currentProvider.authorize(requestCode, resultCode, data);
+                    currentProvider = null;
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if (currentProvider != null) {
-            //Deliver result to the IDP
+        lockView.showProgress(false);
+        if (WebAuthProvider.resume(intent)) {
+            return;
+        } else if (currentProvider != null) {
             lockView.showProgress(false);
-            AuthorizeResult result = new AuthorizeResult(intent);
-            currentProvider.authorize(LockActivity.this, result);
+            currentProvider.authorize(intent);
+            currentProvider = null;
+            return;
         }
         super.onNewIntent(intent);
     }
@@ -341,8 +351,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.getVerificationCode() != null) {
             parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
         }
-        apiClient.login(event.getUsernameOrEmail(), event.getPassword())
-                .setConnection(configuration.getDefaultDatabaseConnection().getName())
+        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
                 .addAuthenticationParameters(parameters)
                 .start(authCallback);
     }
@@ -356,8 +366,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
-
+        final String connection = configuration.getDefaultDatabaseConnection().getName();
         lockView.showProgress(true);
 
         if (configuration.loginAfterSignUp()) {
@@ -365,7 +374,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 authParameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            event.getSignUpRequest(apiClient)
+            event.getSignUpRequest(apiClient, connection)
                     .addAuthenticationParameters(authParameters)
                     .start(authCallback);
         } else {
@@ -373,7 +382,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (event.extraFields() != null) {
                 parameters.put(KEY_USER_METADATA, event.extraFields());
             }
-            event.getCreateUserRequest(apiClient)
+            event.getCreateUserRequest(apiClient, connection)
                     .addParameters(parameters)
                     .start(createCallback);
         }
@@ -389,8 +398,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        apiClient.setDefaultDatabaseConnection(configuration.getDefaultDatabaseConnection().getName());
-        apiClient.requestChangePassword(event.getEmail())
+        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        apiClient.requestChangePassword(event.getEmail(), connection)
                 .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
     }
@@ -420,8 +429,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.useRO()) {
             Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
             AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-            apiClient.login(event.getUsername(), event.getPassword())
-                    .setConnection(event.getConnectionName())
+            apiClient.login(event.getUsername(), event.getPassword(), event.getConnectionName())
                     .addAuthenticationParameters(options.getAuthenticationParameters())
                     .start(authCallback);
             return;
@@ -432,7 +440,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
+    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -446,7 +454,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
@@ -472,8 +480,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(@StringRes int titleResource, @StringRes final int messageResource, final Throwable cause) {
-            final String message = new AuthenticationError(messageResource, cause).getMessage(LockActivity.this);
+        public void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause) {
+            final String message = new AuthenticationError(messageResource).getMessage(LockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
                 @Override
@@ -489,7 +497,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Credentials> authCallback = new BaseCallback<Credentials>() {
+    private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
             deliverAuthenticationResult(credentials);
@@ -497,14 +505,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     lockView.showProgress(false);
+
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
-                    if (authError.getErrorType() == ErrorType.MFA_REQUIRED || authError.getErrorType() == ErrorType.MFA_NOT_ENROLLED) {
+                    if (error.isMultifactorRequired() || error.isMultifactorEnrollRequired()) {
                         lockView.showMFACodeForm(lastDatabaseLogin);
                         return;
                     }
@@ -515,7 +524,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<DatabaseUser> createCallback = new BaseCallback<DatabaseUser>() {
+    private com.auth0.android.callback.AuthenticationCallback<DatabaseUser> createCallback = new com.auth0.android.callback.AuthenticationCallback<DatabaseUser>() {
         @Override
         public void onSuccess(final DatabaseUser user) {
             handler.post(new Runnable() {
@@ -527,7 +536,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to create the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -539,7 +548,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Void> changePwdCallback = new BaseCallback<Void>() {
+    private com.auth0.android.callback.AuthenticationCallback<Void> changePwdCallback = new com.auth0.android.callback.AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
@@ -553,12 +562,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(AuthenticationException error) {
             Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error, error).getMessage(LockActivity.this);
+                    String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error).getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
             });

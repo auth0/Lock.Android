@@ -35,7 +35,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
-import com.auth0.Auth0;
+import com.auth0.android.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
@@ -44,7 +44,7 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.authentication.result.Credentials;
+import com.auth0.android.result.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;

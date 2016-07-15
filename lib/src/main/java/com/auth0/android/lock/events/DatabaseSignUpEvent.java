@@ -28,10 +28,11 @@ package com.auth0.android.lock.events;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.DatabaseConnectionRequest;
-import com.auth0.authentication.SignUpRequest;
-import com.auth0.authentication.result.DatabaseUser;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.request.DatabaseConnectionRequest;
+import com.auth0.android.authentication.request.SignUpRequest;
+import com.auth0.android.result.DatabaseUser;
 
 import java.util.Map;
 
@@ -60,22 +61,22 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         this.extraFields = customFields;
     }
 
-    public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient) {
+    public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient, String connection) {
         SignUpRequest request;
         if (getUsername() != null) {
-            request = apiClient.signUp(getEmail(), getPassword(), getUsername());
+            request = apiClient.signUp(getEmail(), getPassword(), getUsername(), connection);
         } else {
-            request = apiClient.signUp(getEmail(), getPassword());
+            request = apiClient.signUp(getEmail(), getPassword(), connection);
         }
         return request;
     }
 
-    public DatabaseConnectionRequest<DatabaseUser> getCreateUserRequest(AuthenticationAPIClient apiClient) {
-        DatabaseConnectionRequest<DatabaseUser> request;
+    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(AuthenticationAPIClient apiClient, String connection) {
+        DatabaseConnectionRequest<DatabaseUser, AuthenticationException> request;
         if (getUsername() != null) {
-            request = apiClient.createUser(getEmail(), getPassword(), getUsername());
+            request = apiClient.createUser(getEmail(), getPassword(), getUsername(), connection);
         } else {
-            request = apiClient.createUser(getEmail(), getPassword());
+            request = apiClient.createUser(getEmail(), getPassword(), connection);
         }
         return request;
     }

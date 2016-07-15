@@ -24,12 +24,13 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.util.CheckHelper;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.auth0.android.util.CheckHelper.checkArgument;
+
 
 /**
  * Class with a Auth0 connection info
@@ -56,9 +57,9 @@ public class Connection {
      * @param values Connection values
      */
     public Connection(Map<String, Object> values) {
-        CheckHelper.checkArgument(values != null && values.size() > 0, "Must have at least one value");
+        checkArgument(values != null && values.size() > 0, "Must have at least one value");
         final String name = (String) values.remove("name");
-        CheckHelper.checkArgument(name != null, "Must have a non-null name");
+        checkArgument(name != null, "Must have a non-null name");
         this.name = name;
         this.values = values;
         this.activeFlowEnabled = isActiveFlowEnabled();

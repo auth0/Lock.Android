@@ -28,13 +28,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.PasswordlessType;
-import com.auth0.authentication.ProfileRequest;
-import com.auth0.request.AuthenticationRequest;
-import com.auth0.request.ParameterizableRequest;
+import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.ParameterizableRequest;
 
 public class PasswordlessLoginEvent {
     private static final String TAG = PasswordlessLoginEvent.class.getSimpleName();
@@ -92,17 +92,17 @@ public class PasswordlessLoginEvent {
      * @param apiClient the API Client instance
      * @return the Passwordless code request request.
      */
-    public ParameterizableRequest<Void> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
+    public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
         Log.d(TAG, String.format("Generating Passwordless Code/Link request for connection %s", connectionName));
-        ParameterizableRequest<Void> request;
+        ParameterizableRequest<Void, AuthenticationException> request;
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
             request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
         } else if (getMode() == PasswordlessMode.EMAIL_LINK) {
-            request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+            request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.ANDROID_LINK);
         } else if (getMode() == PasswordlessMode.SMS_CODE) {
             request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.CODE);
         } else {
-            request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.LINK_ANDROID);
+            request = apiClient.passwordlessWithSMS(getEmailOrNumber(), PasswordlessType.ANDROID_LINK);
         }
         return request.addParameter(KEY_CONNECTION, connectionName);
     }

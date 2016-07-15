@@ -28,6 +28,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.AuthProvider;
+
+
 public interface AuthProviderResolver {
 
     /**

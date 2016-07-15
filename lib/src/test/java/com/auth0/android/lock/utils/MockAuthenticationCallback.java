@@ -24,25 +24,33 @@
 
 package com.auth0.android.lock.utils;
 
-
-import com.auth0.android.Auth0Exception;
-import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.AuthenticationCallback;
 
 import java.util.concurrent.Callable;
 
-public class MockBaseCallback<T, U extends Auth0Exception> implements BaseCallback<T, U> {
+public class MockAuthenticationCallback<T> implements AuthenticationCallback<T> {
 
+    private AuthenticationException error;
     private T payload;
-    private U error;
+
+    @Override
+    public void onFailure(AuthenticationException error) {
+        this.error = error;
+    }
 
     @Override
     public void onSuccess(T payload) {
         this.payload = payload;
     }
 
-    @Override
-    public void onFailure(U error) {
-        this.error = error;
+    public Callable<AuthenticationException> error() {
+        return new Callable<AuthenticationException>() {
+            @Override
+            public AuthenticationException call() throws Exception {
+                return error;
+            }
+        };
     }
 
     public Callable<T> payload() {
@@ -54,20 +62,11 @@ public class MockBaseCallback<T, U extends Auth0Exception> implements BaseCallba
         };
     }
 
-    public Callable<U> error() {
-        return new Callable<U>() {
-            @Override
-            public U call() throws Exception {
-                return error;
-            }
-        };
+    public AuthenticationException getError() {
+        return error;
     }
 
     public T getPayload() {
         return payload;
-    }
-
-    public U getError() {
-        return error;
     }
 }

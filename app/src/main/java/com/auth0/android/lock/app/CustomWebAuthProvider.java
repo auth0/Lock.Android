@@ -26,18 +26,19 @@ package com.auth0.android.lock.app;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.auth0.Auth0;
-import com.auth0.android.lock.provider.AuthorizeResult;
-import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.AuthProvider;
-import com.auth0.android.lock.provider.AuthCallback;
-import com.auth0.authentication.result.Credentials;
+import com.auth0.android.Auth0;
+import com.auth0.android.provider.AuthProvider;
+import com.auth0.android.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,16 +69,15 @@ public class CustomWebAuthProvider extends AuthProvider {
     private static final String RESPONSE_TYPE_TOKEN = "token";
     private static final String SCOPE_TYPE_OPENID = "openid";
 
-    private CallbackHelper helper;
+    private final Context context;
+    private final String connectionName;
     private final Auth0 account;
-    private Map<String, Object> parameters;
     private String lastState;
 
-    public CustomWebAuthProvider(@NonNull AuthCallback callback) {
-        super(callback);
-        this.helper = new CallbackHelper("com.auth0.android.lock.app");
+    public CustomWebAuthProvider(Context context, String connectionName) {
+        this.context = context;
+        this.connectionName = connectionName;
         this.account = new Auth0(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
-        this.parameters = new HashMap<>();
     }
 
     @Override
@@ -85,11 +85,15 @@ public class CustomWebAuthProvider extends AuthProvider {
         return new String[]{Manifest.permission.GET_ACCOUNTS};
     }
 
+    private void startAuthorization(Activity activity, Uri authorizeUri) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        activity.startActivity(intent);
+    }
+
     @Override
-    protected void requestAuth(final Activity activity, final String connectionName) {
-        new android.support.v7.app.AlertDialog.Builder(activity)
-                .setTitle(R.string.native_provider_title)
-                .setMessage(R.string.native_provider_message_start)
+    protected void requestAuth(final Activity activity, int requestCode) {
+        createDialog(R.string.native_provider_message_start)
                 .setNegativeButton(R.string.native_provider_action_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -106,46 +110,44 @@ public class CustomWebAuthProvider extends AuthProvider {
 
                         //Generate random state
                         lastState = UUID.randomUUID().toString();
-                        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl(), connectionName, lastState, parameters));
+                        startAuthorization(activity, buildAuthorizeUri(account.getAuthorizeUrl()));
                     }
                 })
                 .setCancelable(false)
                 .show();
     }
 
-    private void startAuthorization(Activity activity, Uri authorizeUri) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW, authorizeUri);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        activity.startActivity(intent);
+    @Override
+    public boolean authorize(int requestCode, int resultCode, @Nullable Intent intent) {
+        Uri uri = intent != null ? intent.getData() : null;
+        if (uri == null || requestCode != WEBVIEW_AUTH_REQUEST_CODE || resultCode != Activity.RESULT_OK) {
+            return false;
+        }
+        return parseValidResult(intent);
     }
 
     @Override
-    public boolean authorize(Activity activity, @NonNull AuthorizeResult data) {
-        if (!data.isValid(WEBVIEW_AUTH_REQUEST_CODE)) {
-            return false;
-        }
+    public boolean authorize(@Nullable Intent intent) {
+        Uri uri = intent != null ? intent.getData() : null;
+        return uri != null && parseValidResult(intent);
+    }
 
-        final Map<String, String> values = helper.getValuesFromUri(data.getIntent().getData());
+    private boolean parseValidResult(Intent data) {
+        final Map<String, String> values = getValuesFromUri(data.getData());
         if (values.containsKey(KEY_ERROR)) {
-            new android.support.v7.app.AlertDialog.Builder(activity)
-                    .setTitle(R.string.native_provider_title)
-                    .setMessage(R.string.native_provider_message_failed)
+            createDialog(R.string.native_provider_message_failed)
                     .show();
             Log.e(TAG, "Error, access denied.");
             final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? com.auth0.android.lock.R.string.com_auth0_lock_social_access_denied_message : com.auth0.android.lock.R.string.com_auth0_lock_social_error_message;
             callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, message, null);
         } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
-            new android.support.v7.app.AlertDialog.Builder(activity)
-                    .setTitle(R.string.native_provider_title)
-                    .setMessage(R.string.native_provider_message_failed)
+            createDialog(R.string.native_provider_message_failed)
                     .show();
             Log.e(TAG, "Received state doesn't match");
             Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
             callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, com.auth0.android.lock.R.string.com_auth0_lock_social_invalid_state, null);
         } else if (values.size() > 0) {
-            new android.support.v7.app.AlertDialog.Builder(activity)
-                    .setTitle(R.string.native_provider_title)
-                    .setMessage(R.string.native_provider_message_succeeded)
+            createDialog(R.string.native_provider_message_succeeded)
                     .show();
             Log.d(TAG, "Authenticated using web flow");
             callback.onSuccess(new Credentials(values.get(KEY_ID_TOKEN), values.get(KEY_ACCESS_TOKEN), values.get(KEY_TOKEN_TYPE), values.get(KEY_REFRESH_TOKEN)));
@@ -153,38 +155,49 @@ public class CustomWebAuthProvider extends AuthProvider {
         return true;
     }
 
-    @Override
-    public void stop() {
+    private AlertDialog.Builder createDialog(@StringRes int messageRes) {
+        return new android.support.v7.app.AlertDialog.Builder(context)
+                .setTitle(R.string.native_provider_title)
+                .setMessage(messageRes);
     }
 
-    @Override
-    public void clearSession() {
-    }
-
-    private Uri buildAuthorizeUri(String url, String serviceName, String state, Map<String, Object> parameters) {
+    private Uri buildAuthorizeUri(String url) {
         final Uri authorizeUri = Uri.parse(url);
 
-        //refactor >
         final Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put(KEY_SCOPE, SCOPE_TYPE_OPENID);
-        if (parameters != null) {
-            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                Object value = entry.getValue();
-                if (value != null) {
-                    queryParameters.put(entry.getKey(), value.toString());
-                }
-            }
-        }
-
         queryParameters.put(KEY_RESPONSE_TYPE, RESPONSE_TYPE_TOKEN);
-        queryParameters.put(KEY_STATE, state);
-        queryParameters.put(KEY_CONNECTION, serviceName);
+        queryParameters.put(KEY_STATE, lastState);
+        queryParameters.put(KEY_CONNECTION, connectionName);
         queryParameters.put(KEY_CLIENT_ID, account.getClientId());
-        queryParameters.put(KEY_REDIRECT_URI, helper.getCallbackURI(account.getDomainUrl()));
+        String callbackURI = getCallbackURI(account.getDomainUrl(), "com.auth0.android.lock.app");
+        queryParameters.put(KEY_REDIRECT_URI, callbackURI);
         final Uri.Builder builder = authorizeUri.buildUpon();
         for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
         }
         return builder.build();
     }
+
+    private String getCallbackURI(String domain, String packageName) {
+        return String.format("%s/android/%s/callback", domain, packageName);
+    }
+
+    public Map<String, String> getValuesFromUri(@NonNull Uri uri) {
+        return asMap(uri.getQuery() != null ? uri.getQuery() : uri.getFragment());
+    }
+
+    private Map<String, String> asMap(@NonNull String valueString) {
+        final String[] entries = valueString.length() > 0 ? valueString.split("&") : new String[]{};
+        Map<String, String> values = new HashMap<>(entries.length);
+        for (String entry : entries) {
+            final String[] value = entry.split("=");
+            if (value.length == 2) {
+                values.put(value[0], value[1]);
+            }
+        }
+        return values;
+    }
+
+
 }

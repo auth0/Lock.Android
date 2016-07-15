@@ -27,7 +27,6 @@ package com.auth0.android.lock;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -40,7 +39,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -52,28 +50,25 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.auth0.Auth0Exception;
+import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;
-import com.auth0.android.lock.errors.LoginAuthenticationErrorBuilder;
+import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.provider.AuthCallback;
-import com.auth0.android.lock.provider.AuthProvider;
-import com.auth0.android.lock.provider.AuthorizeResult;
-import com.auth0.android.lock.provider.CallbackHelper;
-import com.auth0.android.lock.provider.OAuth2WebAuthProvider;
 import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.auth0.android.lock.views.PasswordlessLockView;
-import com.auth0.authentication.AuthenticationAPIClient;
-import com.auth0.authentication.result.Credentials;
-import com.auth0.callback.BaseCallback;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.AuthProvider;
+import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -81,8 +76,10 @@ import com.squareup.otto.Subscribe;
 public class PasswordlessLockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = PasswordlessLockActivity.class.getSimpleName();
+    private static final int WEB_AUTH_REQUEST_CODE = 200;
+    private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
     private static final int PERMISSION_REQUEST_CODE = 202;
-    private static final int COUNTRY_CODE_REQUEST = 120;
+    private static final int COUNTRY_CODE_REQUEST_CODE = 120;
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final long RESEND_TIMEOUT = 20 * 1000;
@@ -116,7 +113,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private AuthProvider currentProvider;
 
-    private LoginAuthenticationErrorBuilder loginErrorBuilder;
+    private LoginErrorMessageBuilder loginErrorBuilder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,9 +145,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
-            loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
+            loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         } else {
-            loginErrorBuilder = new LoginAuthenticationErrorBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
+            loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         }
         lockBus.post(new FetchApplicationEvent());
         setupKeyboardListener();
@@ -357,55 +354,50 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 .apply();
     }
 
-    private void showMissingConnectionsDialog() {
-        new AlertDialog.Builder(PasswordlessLockActivity.this)
-                .setCancelable(false)
-                .setMessage(R.string.com_auth0_lock_missing_connections_message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        PasswordlessLockActivity.this.finish();
-                    }
-                })
-                .create()
-                .show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == COUNTRY_CODE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE_EXTRA);
-                String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE_EXTRA);
-                lockView.onCountryCodeSelected(country, dialCode);
-            }
-            return;
+        switch (requestCode) {
+            case COUNTRY_CODE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    String country = data.getStringExtra(CountryCodeActivity.COUNTRY_CODE_EXTRA);
+                    String dialCode = data.getStringExtra(CountryCodeActivity.COUNTRY_DIAL_CODE_EXTRA);
+                    lockView.onCountryCodeSelected(country, dialCode);
+                }
+                break;
+            case WEB_AUTH_REQUEST_CODE:
+                lockView.showProgress(false);
+                WebAuthProvider.resume(requestCode, resultCode, data);
+                break;
+            case CUSTOM_AUTH_REQUEST_CODE:
+                lockView.showProgress(false);
+                if (currentProvider != null) {
+                    currentProvider.authorize(requestCode, resultCode, data);
+                    currentProvider = null;
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
-        processIncomingIntent(data);
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        processIncomingIntent(intent);
-
-        super.onNewIntent(intent);
-    }
-
-    private void processIncomingIntent(Intent intent) {
         lockView.showProgress(false);
+        if (WebAuthProvider.resume(intent)) {
+            return;
+        } else if (currentProvider != null) {
+            lockView.showProgress(false);
+            currentProvider.authorize(intent);
+            currentProvider = null;
+            return;
+        }
+
+        //Passwordless result
         if (intent == null) {
             return;
         }
         if (configuration == null) {
             Log.w(TAG, String.format("Intent arrived with data %s but is going to be discarded as the Activity lacks of Configuration", intent.getData()));
-            return;
-        }
-
-        if (currentProvider != null) {
-            AuthorizeResult result = new AuthorizeResult(intent);
-            currentProvider.authorize(PasswordlessLockActivity.this, result);
             return;
         }
 
@@ -423,6 +415,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             Log.w(TAG, "Invalid Activity state");
         }
 
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -447,7 +440,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     public void onCountryCodeChangeRequest(CountryCodeChangeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
         intent.putExtra(CountryCodeActivity.FULLSCREEN_EXTRA, options.isFullscreen());
-        startActivityForResult(intent, COUNTRY_CODE_REQUEST);
+        startActivityForResult(intent, COUNTRY_CODE_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")
@@ -482,20 +475,22 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
         currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, event.getConnectionName());
-        if (currentProvider == null) {
-            Log.d(TAG, "Couldn't find an specific provider, using the default: " + OAuth2WebAuthProvider.class.getSimpleName());
-            String pkgName = getApplicationContext().getPackageName();
-            OAuth2WebAuthProvider oauth2 = new OAuth2WebAuthProvider(new CallbackHelper(pkgName), options.getAccount(), authProviderCallback, options.usePKCE());
-            oauth2.setUseBrowser(options.useBrowser());
-            oauth2.setIsFullscreen(options.isFullscreen());
-            oauth2.setParameters(options.getAuthenticationParameters());
-            currentProvider = oauth2;
+        if (currentProvider != null) {
+            currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
+            return;
         }
-        currentProvider.start(this, event.getConnectionName(), PERMISSION_REQUEST_CODE);
+
+        Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
+        WebAuthProvider.init(options.getAccount())
+                .useBrowser(options.useBrowser())
+                .useFullscreen(options.isFullscreen())
+                .withParameters(options.getAuthenticationParameters())
+                .withConnection(event.getConnectionName())
+                .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     //Callbacks
-    private BaseCallback<Application> applicationCallback = new BaseCallback<Application>() {
+    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -510,7 +505,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
@@ -522,7 +517,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private BaseCallback<Void> passwordlessCodeCallback = new BaseCallback<Void>() {
+    private com.auth0.android.callback.AuthenticationCallback<Void> passwordlessCodeCallback = new com.auth0.android.callback.AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
@@ -539,7 +534,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to request a passwordless Code/Link: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -551,7 +546,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private BaseCallback<Credentials> authCallback = new BaseCallback<Credentials>() {
+    private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
             clearRecentPasswordlessData();
@@ -559,7 +554,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(final Auth0Exception error) {
+        public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override
@@ -583,8 +578,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(@StringRes int titleResource, @StringRes final int messageResource, final Throwable cause) {
-            final String message = new AuthenticationError(messageResource, cause).getMessage(PasswordlessLockActivity.this);
+        public void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause) {
+            final String message = new AuthenticationError(messageResource).getMessage(PasswordlessLockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, cause);
             handler.post(new Runnable() {
                 @Override
