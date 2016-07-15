@@ -70,7 +70,6 @@ public class ValidatedInputView extends LinearLayout {
     public static final String CODE_REGEX = "^[0-9]{4,12}$";
     public static final String EMAIL_REGEX = Patterns.EMAIL_ADDRESS.pattern();
     private static final String TAG = ValidatedInputView.class.getSimpleName();
-    private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int VALIDATION_DELAY = 500;
 
     protected LinearLayout rootView;
@@ -316,7 +315,7 @@ public class ValidatedInputView extends LinearLayout {
      */
     protected boolean validate(boolean validateEmptyFields) {
         boolean isValid = false;
-        String value = getText();
+        String value = dataType == PASSWORD ? getText() : getText().trim();
         if (!validateEmptyFields && value.isEmpty()) {
             return true;
         }
@@ -326,7 +325,7 @@ public class ValidatedInputView extends LinearLayout {
                 isValid = value.matches(EMAIL_REGEX);
                 break;
             case PASSWORD:
-                isValid = value.length() >= MIN_PASSWORD_LENGTH;
+                isValid = !value.isEmpty();
                 break;
             case USERNAME:
                 isValid = value.matches(USERNAME_REGEX);
@@ -351,12 +350,12 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
-     * Gets the current text from the input field, without spaces at the end.
+     * Gets the current text from the input field.
      *
      * @return the current text
      */
     public String getText() {
-        return input.getText().toString().trim();
+        return input.getText().toString();
     }
 
     /**

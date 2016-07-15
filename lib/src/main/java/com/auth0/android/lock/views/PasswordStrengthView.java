@@ -102,7 +102,7 @@ public class PasswordStrengthView extends LinearLayout {
         optionNumeric.setMandatory(strength == PasswordStrength.FAIR);
 
         titleAtLeast.setVisibility(strength == PasswordStrength.FAIR || strength == PasswordStrength.LOW ? GONE : VISIBLE);
-        String lengthRequirements = getContext().getResources().getString(R.string.password_strength_chars_length);
+        String lengthRequirements = getContext().getResources().getString(R.string.com_auth0_lock_password_strength_chars_length);
         optionLength.setText(String.format(lengthRequirements, getMinimumLength()));
 
         optionLowercase.setVisibility(strength == PasswordStrength.LOW ? GONE : VISIBLE);
