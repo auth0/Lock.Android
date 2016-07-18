@@ -56,10 +56,12 @@ import java.lang.annotation.RetentionPolicy;
 
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.DATE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.MFA_CODE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.NUMBER;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.PASSWORD;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.PHONE_NUMBER;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.TEXT_NAME;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_OR_EMAIL;
 
@@ -80,17 +82,19 @@ public class ValidatedInputView extends LinearLayout {
     private int inputIcon;
     private boolean hasValidInput;
 
-    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE})
+    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE, TEXT_NAME, NUMBER})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DataType {
         int USERNAME = 0;
         int EMAIL = 1;
         int USERNAME_OR_EMAIL = 2;
-        int NUMBER = 3;
+        int MFA_CODE = 3;
         int PHONE_NUMBER = 4;
         int PASSWORD = 5;
         int MOBILE_PHONE = 6;
         int DATE = 7;
+        int TEXT_NAME = 8;
+        int NUMBER = 9;
     }
 
     @DataType
@@ -209,6 +213,12 @@ public class ValidatedInputView extends LinearLayout {
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username_or_email);
                 error = getResources().getString(R.string.com_auth0_lock_input_error_username_email);
                 break;
+            case TEXT_NAME:
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                inputIcon = R.drawable.com_auth0_lock_ic_username;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_username);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_empty);
+                break;
             case USERNAME:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
@@ -216,6 +226,12 @@ public class ValidatedInputView extends LinearLayout {
                 error = getResources().getString(R.string.com_auth0_lock_input_error_username);
                 break;
             case NUMBER:
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                inputIcon = R.drawable.com_auth0_lock_ic_password;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_code);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_empty);
+                break;
+            case MFA_CODE:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputIcon = R.drawable.com_auth0_lock_ic_password;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_code);
@@ -321,11 +337,14 @@ public class ValidatedInputView extends LinearLayout {
         }
 
         switch (dataType) {
-            case EMAIL:
-                isValid = value.matches(EMAIL_REGEX);
-                break;
+            case TEXT_NAME:
+            case DATE:
+            case NUMBER:
             case PASSWORD:
                 isValid = !value.isEmpty();
+                break;
+            case EMAIL:
+                isValid = value.matches(EMAIL_REGEX);
                 break;
             case USERNAME:
                 isValid = value.matches(USERNAME_REGEX);
@@ -339,8 +358,7 @@ public class ValidatedInputView extends LinearLayout {
             case PHONE_NUMBER:
                 isValid = value.matches(PHONE_NUMBER_REGEX);
                 break;
-            case DATE:
-            case NUMBER:
+            case MFA_CODE:
                 isValid = value.matches(CODE_REGEX);
                 break;
         }

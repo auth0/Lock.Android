@@ -70,7 +70,6 @@
     <dimen name="com_auth0_lock_result_message_text_spacing">3dp</dimen>
     <dimen name="com_auth0_lock_widget_corner_radius">3dp</dimen>
 
-
     <dimen name="com_auth0_lock_header_logo_vertical_margin">3dp</dimen>
     <dimen name="com_auth0_lock_header_vertical_margin">7dp</dimen>
     <dimen name="com_auth0_lock_action_button_vertical_margin">14dp</dimen>

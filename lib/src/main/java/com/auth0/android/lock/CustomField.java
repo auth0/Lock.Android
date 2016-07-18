@@ -44,14 +44,14 @@ import static com.auth0.android.lock.CustomField.FieldType.TYPE_DATE;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_EMAIL;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_NUMBER;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_PHONE_NUMBER;
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_TEXT_NAME;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_NAME;
 
 public class CustomField implements Parcelable {
 
-    @IntDef({TYPE_TEXT_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_DATE, TYPE_EMAIL})
+    @IntDef({TYPE_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_DATE, TYPE_EMAIL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FieldType {
-        int TYPE_TEXT_NAME = 0;
+        int TYPE_NAME = 0;
         int TYPE_NUMBER = 1;
         int TYPE_PHONE_NUMBER = 2;
         int TYPE_DATE = 3;
@@ -78,8 +78,8 @@ public class CustomField implements Parcelable {
 
     public void configureField(@NonNull ValidatedInputView field) {
         switch (type) {
-            case TYPE_TEXT_NAME:
-                field.setDataType(DataType.USERNAME);
+            case TYPE_NAME:
+                field.setDataType(DataType.TEXT_NAME);
                 break;
             case TYPE_NUMBER:
                 field.setDataType(DataType.NUMBER);

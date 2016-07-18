@@ -103,7 +103,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
                 break;
         }
         topMessage.setText(String.format(getContext().getString(sentMessage), identity));
-        passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
+        passwordlessInput.setDataType(ValidatedInputView.DataType.MFA_CODE);
         passwordlessInput.setVisibility(VISIBLE);
         passwordlessInput.clearInput();
         resendButton.setVisibility(GONE);

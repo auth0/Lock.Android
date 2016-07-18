@@ -580,7 +580,7 @@ public class OptionsTest {
 
     private List<CustomField> createCustomFields() {
         CustomField fieldNumber = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "number", R.string.com_auth0_lock_hint_phone_number);
-        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_TEXT_NAME, "surname", R.string.com_auth0_lock_hint_username);
+        CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_NAME, "surname", R.string.com_auth0_lock_hint_username);
 
         List<CustomField> customFields = new ArrayList<>();
         customFields.add(fieldNumber);
