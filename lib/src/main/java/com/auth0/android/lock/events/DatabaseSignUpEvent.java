@@ -34,9 +34,12 @@ import com.auth0.android.authentication.request.DatabaseConnectionRequest;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.result.DatabaseUser;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseSignUpEvent extends DatabaseEvent {
+
+    private static final String KEY_USER_METADATA = "user_metadata";
 
     @NonNull
     private String password;
@@ -68,6 +71,11 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         } else {
             request = apiClient.signUp(getEmail(), getPassword(), connection);
         }
+        if (extraFields != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put(KEY_USER_METADATA, extraFields);
+            request.addSignUpParameters(params);
+        }
         return request;
     }
 
@@ -77,6 +85,9 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
             request = apiClient.createUser(getEmail(), getPassword(), getUsername(), connection);
         } else {
             request = apiClient.createUser(getEmail(), getPassword(), connection);
+        }
+        if (extraFields != null) {
+            request.addParameter(KEY_USER_METADATA, extraFields);
         }
         return request;
     }
