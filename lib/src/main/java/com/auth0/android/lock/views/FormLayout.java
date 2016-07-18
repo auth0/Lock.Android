@@ -91,16 +91,16 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             int verticalModeSelectionMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_mode_selection);
             LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             modeSelectionParams.addRule(ALIGN_PARENT_TOP);
-            modeSelectionParams.setMargins(horizontalMargin, verticalModeSelectionMargin, horizontalMargin, 0);
+            modeSelectionView.setPadding(horizontalMargin, verticalModeSelectionMargin, horizontalMargin, 0);
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
         formsHolder.setOrientation(LinearLayout.VERTICAL);
         formsHolder.setGravity(Gravity.CENTER);
+        formsHolder.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
-        holderParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formsHolder, holderParams);
 
         if (showSocial) {
@@ -141,7 +141,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void addSeparator() {
-        orSeparatorMessage = new TextView(getContext());
+        orSeparatorMessage = new LineSpacingTextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
         orSeparatorMessage.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
