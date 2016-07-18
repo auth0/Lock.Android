@@ -52,14 +52,13 @@ public abstract class ActivityUIHelper {
     public static void useStatusBarSpace(Activity activity, boolean fullscreen) {
         Window window = activity.getWindow();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            View decorView = window.getDecorView();
-            int uiFullscreenOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            int uiNormalOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(fullscreen ? uiFullscreenOptions : uiNormalOptions);
-        } else if (fullscreen) {
-            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            int uiFullscreenOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+//            int uiNormalOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+//            window.getDecorView().setSystemUiVisibility(fullscreen ? uiFullscreenOptions : uiNormalOptions);
+//        } else if (fullscreen) {
+//            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        }
         Log.d(TAG, String.format("Activity in %s mode", fullscreen ? "fullscreen" : "normal"));
     }
 

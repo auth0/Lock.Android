@@ -126,32 +126,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int usernameHeight = ViewUtils.measureViewHeight(usernameInput);
-        int emailHeight = ViewUtils.measureViewHeight(emailInput);
-        int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
-        int customFields = ViewUtils.measureViewHeight(fieldContainer);
-        int sumHeight = usernameHeight + emailHeight + passwordHeight + customFields;
-
-        Log.v(TAG, String.format("Parent height %d, Children height %d (%d + %d + %d)", parentHeight, sumHeight, usernameHeight, emailHeight, passwordHeight));
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode) {
-            case MeasureSpec.UNSPECIFIED:
-                setMeasuredDimension(getMeasuredWidth(), sumHeight);
-                break;
-            case MeasureSpec.AT_MOST:
-                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
-                break;
-            case MeasureSpec.EXACTLY:
-                setMeasuredDimension(getMeasuredWidth(), parentHeight);
-                break;
-        }
-    }
-
-    @Override
     @NonNull
     public Object getActionEvent() {
         Log.d(TAG, String.format("Triggered sign up with email %s and username %s", getEmail(), getUsername()));
@@ -206,11 +180,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
             }
         }
         return null;
-    }
-
-    @Override
-    public void onKeyboardStateChanged(boolean isOpen) {
-        //Do nothing
     }
 
     @Override

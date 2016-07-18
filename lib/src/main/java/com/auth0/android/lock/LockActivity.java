@@ -27,7 +27,6 @@ package com.auth0.android.lock;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,7 +40,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -49,6 +47,7 @@ import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.AuthenticationCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
@@ -82,7 +81,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private static final String KEY_USER_METADATA = "user_metadata";
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final long RESULT_MESSAGE_DURATION = 3000;
-    private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final int WEB_AUTH_REQUEST_CODE = 200;
     private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
     private static final int PERMISSION_REQUEST_CODE = 202;
@@ -97,9 +95,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private AuthProvider currentProvider;
 
-    private boolean keyboardIsShown;
-    private ViewGroup contentView;
-    private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
     private LoginErrorMessageBuilder loginErrorBuilder;
     private SignUpErrorMessageBuilder signUpErrorBuilder;
     private DatabaseLoginEvent lastDatabaseLogin;
@@ -120,7 +115,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
-        contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         ScrollView rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         lockView = new ClassicLockView(this, lockBus, options.getTheme());
@@ -136,50 +130,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         signUpErrorBuilder = new SignUpErrorMessageBuilder();
 
         lockBus.post(new FetchApplicationEvent());
-        setupKeyboardListener();
-    }
-
-    private void setupKeyboardListener() {
-        keyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                contentView.getWindowVisibleDisplayFrame(r);
-                int screenHeight = contentView.getRootView().getHeight();
-                int keypadHeight = screenHeight - r.bottom;
-                onKeyboardStateChanged(keypadHeight > screenHeight * KEYBOARD_OPENED_DELTA);
-            }
-        };
-        contentView.getViewTreeObserver().addOnGlobalLayoutListener(keyboardListener);
-    }
-
-    private void removeKeyboardListener() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
-        }
-        keyboardListener = null;
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
-    }
-
-    @Override
-    protected void onDestroy() {
-        removeKeyboardListener();
-        super.onDestroy();
-    }
-
-
-    private void onKeyboardStateChanged(boolean isOpen) {
-        if (isOpen == keyboardIsShown || configuration == null) {
-            return;
-        }
-        Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
-        keyboardIsShown = isOpen;
-        lockView.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {
@@ -440,7 +396,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<Application>() {
+    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new AuthenticationCallback<Application>() {
         @Override
         public void onSuccess(Application app) {
             configuration = new Configuration(app, options);
@@ -497,7 +453,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
+    private AuthenticationCallback<Credentials> authCallback = new AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
             deliverAuthenticationResult(credentials);
@@ -524,7 +480,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private com.auth0.android.callback.AuthenticationCallback<DatabaseUser> createCallback = new com.auth0.android.callback.AuthenticationCallback<DatabaseUser>() {
+    private AuthenticationCallback<DatabaseUser> createCallback = new AuthenticationCallback<DatabaseUser>() {
         @Override
         public void onSuccess(final DatabaseUser user) {
             handler.post(new Runnable() {
@@ -548,7 +504,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private com.auth0.android.callback.AuthenticationCallback<Void> changePwdCallback = new com.auth0.android.callback.AuthenticationCallback<Void>() {
+    private AuthenticationCallback<Void> changePwdCallback = new AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {

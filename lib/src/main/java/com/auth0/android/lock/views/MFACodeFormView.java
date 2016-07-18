@@ -40,8 +40,6 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
     private final String password;
 
     private LockWidget lockWidget;
-    private TextView title;
-    private TextView description;
     private ValidatedInputView codeInput;
 
 
@@ -55,8 +53,6 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_mfa_input_code_form_view, this);
-        title = (TextView) findViewById(R.id.com_auth0_lock_title);
-        description = (TextView) findViewById(R.id.com_auth0_lock_text);
         codeInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_code);
         codeInput.setHint(R.string.com_auth0_lock_hint_mfa_code);
         codeInput.setOnEditorActionListener(this);
@@ -91,17 +87,6 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        title.setVisibility(isOpen ? GONE : VISIBLE);
-        description.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
 }

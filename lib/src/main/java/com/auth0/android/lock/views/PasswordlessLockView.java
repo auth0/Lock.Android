@@ -55,7 +55,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
-    private HeaderView headerView;
 
     private int headerPadding;
 
@@ -87,7 +86,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private void showContentLayout() {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        headerView = new HeaderView(getContext(), lockTheme);
+        HeaderView headerView = new HeaderView(getContext(), lockTheme);
         headerView.setPaddingTop(headerPadding);
         addView(headerView, wrapHeightParams);
 
@@ -228,17 +227,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
      */
     public void onCountryCodeSelected(String country, String dialCode) {
         formLayout.onCountryCodeSelected(country, dialCode);
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        formLayout.onKeyboardStateChanged(isOpen);
-        headerView.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
     public void loadPasswordlessData(String input, @Nullable Country country) {

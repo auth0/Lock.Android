@@ -29,7 +29,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,7 +42,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -81,7 +79,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private static final int PERMISSION_REQUEST_CODE = 202;
     private static final int COUNTRY_CODE_REQUEST_CODE = 120;
     private static final long RESULT_MESSAGE_DURATION = 3000;
-    private static final double KEYBOARD_OPENED_DELTA = 0.15;
     private static final long RESEND_TIMEOUT = 20 * 1000;
     private static final long CODE_TTL = 2 * 60 * 1000;
 
@@ -107,10 +104,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private ScrollView rootView;
     private TextView resendButton;
 
-    private boolean keyboardIsShown;
-    private ViewGroup contentView;
-    private ViewTreeObserver.OnGlobalLayoutListener keyboardListener;
-
     private AuthProvider currentProvider;
 
     private LoginErrorMessageBuilder loginErrorBuilder;
@@ -131,7 +124,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
         int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
-        contentView = (ViewGroup) findViewById(R.id.com_auth0_lock_container);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
@@ -150,49 +142,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         }
         lockBus.post(new FetchApplicationEvent());
-        setupKeyboardListener();
-    }
-
-    private void setupKeyboardListener() {
-        keyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                contentView.getWindowVisibleDisplayFrame(r);
-                int screenHeight = contentView.getRootView().getHeight();
-                int keypadHeight = screenHeight - r.bottom;
-                onKeyboardStateChanged(keypadHeight > screenHeight * KEYBOARD_OPENED_DELTA);
-            }
-        };
-        contentView.getViewTreeObserver().addOnGlobalLayoutListener(keyboardListener);
-    }
-
-    private void removeKeyboardListener() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardListener);
-        }
-        keyboardListener = null;
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
-    }
-
-    @Override
-    protected void onDestroy() {
-        removeKeyboardListener();
-        super.onDestroy();
-    }
-
-    private void onKeyboardStateChanged(boolean isOpen) {
-        if (isOpen == keyboardIsShown || configuration == null) {
-            return;
-        }
-        Log.d(TAG, String.format("Keyboard state changed to %s", isOpen ? "opened" : "closed"));
-        keyboardIsShown = isOpen;
-        lockView.onKeyboardStateChanged(isOpen);
     }
 
     private boolean isLaunchConfigValid() {
