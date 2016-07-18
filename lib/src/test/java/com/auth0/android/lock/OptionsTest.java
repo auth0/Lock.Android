@@ -134,20 +134,6 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldBeFullscreen() {
-        Options options = new Options();
-        options.setAccount(auth0);
-        options.setFullscreen(true);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
-    }
-
-    @Test
     public void shouldNotLoginAfterSignUp() {
         Options options = new Options();
         options.setAccount(auth0);
@@ -517,7 +503,6 @@ public class OptionsTest {
         Options options = new Options();
         options.setAccount(auth0);
 
-        options.setFullscreen(true);
         options.setUseBrowser(true);
         options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
@@ -536,7 +521,6 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
-        assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
@@ -554,7 +538,6 @@ public class OptionsTest {
         options.setAccount(auth0);
 
         options.setClosable(false);
-        options.setFullscreen(false);
         options.setUseBrowser(false);
         options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
@@ -572,7 +555,6 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
-        assertThat(options.isFullscreen(), is(equalTo(parceledOptions.isFullscreen())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));

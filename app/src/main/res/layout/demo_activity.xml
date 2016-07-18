@@ -55,29 +55,12 @@
                 android:text="Use Browser" />
         </RadioGroup>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/checkbox_closable"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/checkbox_closable"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Can be Closed" />
-
-            <CheckBox
-                android:id="@+id/checkbox_fullscreen"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Use Fullscreen" />
-        </LinearLayout>
-
+            android:checked="true"
+            android:text="Can be Closed" />
 
         <TextView
             android:layout_width="match_parent"

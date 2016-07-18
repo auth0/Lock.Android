@@ -64,7 +64,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
 
-    private int headerPadding;
     private String lastEmailInput;
 
     public ClassicLockView(Context context, Bus lockBus, Theme lockTheme) {
@@ -99,7 +98,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
         HeaderView headerView = new HeaderView(getContext(), lockTheme);
-        headerView.setPaddingTop(headerPadding);
         addView(headerView, wrapHeightParams);
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
@@ -241,15 +239,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
             actionButton.showProgress(show);
         }
         formLayout.setEnabled(!show);
-    }
-
-    /**
-     * Updates the header's top padding. This is used in LOLLIPOP or greater devices to draw behind the status bar.
-     *
-     * @param padding the padding value
-     */
-    public void setHeaderPadding(int padding) {
-        headerPadding = padding;
     }
 
     private void showSignUpTerms(boolean show) {

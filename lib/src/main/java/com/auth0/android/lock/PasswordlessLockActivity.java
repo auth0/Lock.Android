@@ -59,7 +59,6 @@ import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.auth0.android.lock.views.PasswordlessLockView;
@@ -123,18 +122,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
-        int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
         rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         lockView = new PasswordlessLockView(this, lockBus, options.getTheme());
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
-        lockView.setHeaderPadding(paddingTop);
         rootView.addView(lockView);
-
-        resultMessage.setPadding(0, resultMessage.getPaddingTop() + paddingTop, 0, resultMessage.getPaddingBottom());
-        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         if (options.useCodePasswordless()) {
             loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_code_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
@@ -142,12 +136,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         }
         lockBus.post(new FetchApplicationEvent());
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
     }
 
     private boolean isLaunchConfigValid() {
@@ -394,7 +382,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Subscribe
     public void onCountryCodeChangeRequest(CountryCodeChangeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
-        intent.putExtra(CountryCodeActivity.FULLSCREEN_EXTRA, options.isFullscreen());
         startActivityForResult(intent, COUNTRY_CODE_REQUEST_CODE);
     }
 
@@ -438,7 +425,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
         WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
-                .useFullscreen(options.isFullscreen())
                 .withParameters(options.getAuthenticationParameters())
                 .withConnection(event.getConnectionName())
                 .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);

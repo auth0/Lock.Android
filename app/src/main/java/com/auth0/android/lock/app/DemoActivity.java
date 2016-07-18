@@ -56,7 +56,6 @@ public class DemoActivity extends AppCompatActivity {
     private View rootLayout;
     private RadioGroup groupWebMode;
     private CheckBox checkboxClosable;
-    private CheckBox checkboxFullscreen;
     private RadioGroup groupPasswordlessChannel;
     private RadioGroup groupPasswordlessMode;
     private CheckBox checkboxConnectionsDB;
@@ -84,7 +83,6 @@ public class DemoActivity extends AppCompatActivity {
         //Basic
         groupWebMode = (RadioGroup) findViewById(R.id.group_webmode);
         checkboxClosable = (CheckBox) findViewById(R.id.checkbox_closable);
-        checkboxFullscreen = (CheckBox) findViewById(R.id.checkbox_fullscreen);
 
         checkboxConnectionsDB = (CheckBox) findViewById(R.id.checkbox_connections_db);
         checkboxConnectionsEnterprise = (CheckBox) findViewById(R.id.checkbox_connections_enterprise);
@@ -135,7 +133,6 @@ public class DemoActivity extends AppCompatActivity {
     private void showClassicLock() {
         final Lock.Builder builder = Lock.newBuilder(getAccount(), callback);
         builder.closable(checkboxClosable.isChecked());
-        builder.fullscreen(checkboxFullscreen.isChecked());
         builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
         builder.loginAfterSignUp(checkboxLoginAfterSignUp.isChecked());
 
@@ -184,7 +181,6 @@ public class DemoActivity extends AppCompatActivity {
     private void showPasswordlessLock() {
         final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(getAccount(), callback);
         builder.closable(checkboxClosable.isChecked());
-        builder.fullscreen(checkboxFullscreen.isChecked());
         builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
 
         if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {

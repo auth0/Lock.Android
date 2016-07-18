@@ -56,8 +56,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
 
-    private int headerPadding;
-
     public PasswordlessLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
         this.bus = lockBus;
@@ -87,7 +85,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         HeaderView headerView = new HeaderView(getContext(), lockTheme);
-        headerView.setPaddingTop(headerPadding);
         addView(headerView, wrapHeightParams);
 
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -169,15 +166,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         if (actionButton != null) {
             actionButton.showProgress(show);
         }
-    }
-
-    /**
-     * Updates the header's top padding. This is useful in LOLLIPOP or greater devices.
-     *
-     * @param padding the padding value
-     */
-    public void setHeaderPadding(int padding) {
-        headerPadding = padding;
     }
 
     /**

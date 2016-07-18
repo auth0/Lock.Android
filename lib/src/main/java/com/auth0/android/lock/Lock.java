@@ -251,17 +251,6 @@ public class Lock {
         }
 
         /**
-         * Whether the LockActivity will go fullscreen or will show the status bar.
-         *
-         * @param fullscreen or not. By default, the LockActivity will not be Fullscreen.
-         * @return the current builder instance
-         */
-        public Builder fullscreen(boolean fullscreen) {
-            options.setFullscreen(fullscreen);
-            return this;
-        }
-
-        /**
          * Customize Lock's appearance.
          *
          * @param theme to use.

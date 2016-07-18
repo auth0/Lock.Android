@@ -58,7 +58,6 @@ import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
@@ -114,28 +113,17 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler = new Handler(getMainLooper());
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
-        int paddingTop = ActivityUIHelper.getStatusBarHeight(this, options.isFullscreen());
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
         ScrollView rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
         lockView = new ClassicLockView(this, lockBus, options.getTheme());
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
-        lockView.setHeaderPadding(paddingTop);
         rootView.addView(lockView);
-
-        resultMessage.setPadding(0, resultMessage.getPaddingTop() + paddingTop, 0, resultMessage.getPaddingBottom());
-        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
 
         loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
         signUpErrorBuilder = new SignUpErrorMessageBuilder();
 
         lockBus.post(new FetchApplicationEvent());
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        ActivityUIHelper.useStatusBarSpace(this, options.isFullscreen());
     }
 
     private boolean isLaunchConfigValid() {
@@ -230,7 +218,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
         WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
-                .useFullscreen(options.isFullscreen())
                 .withParameters(options.getAuthenticationParameters())
                 .withConnection(connectionName)
                 .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
