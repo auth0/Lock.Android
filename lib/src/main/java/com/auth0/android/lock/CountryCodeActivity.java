@@ -63,7 +63,6 @@ import android.widget.ListView;
 
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.adapters.CountryAdapter;
-import com.auth0.android.lock.utils.ActivityUIHelper;
 import com.auth0.android.lock.utils.json.LoadCountriesTask;
 
 import java.util.ArrayList;
@@ -75,7 +74,6 @@ public class CountryCodeActivity extends AppCompatActivity {
 
     public static final String COUNTRY_CODE_EXTRA = "COUNTRY_CODE";
     public static final String COUNTRY_DIAL_CODE_EXTRA = "COUNTRY_DIAL_CODE";
-    public static final String FULLSCREEN_EXTRA = "fullscreen";
 
     private static final String TAG = CountryCodeActivity.class.getName();
 
@@ -86,9 +84,6 @@ public class CountryCodeActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
 
         setContentView(R.layout.com_auth0_lock_passwordless_activity_country_code);
         final EditText searchText = (EditText) findViewById(R.id.com_auth0_lock_passwordless_sms_search_country);
@@ -156,11 +151,4 @@ public class CountryCodeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (getIntent().getBooleanExtra(FULLSCREEN_EXTRA, false)) {
-            ActivityUIHelper.setFullscreenMode(this);
-        }
-    }
 }

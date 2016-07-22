@@ -55,9 +55,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
-    private HeaderView headerView;
-
-    private int headerPadding;
 
     public PasswordlessLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
@@ -87,8 +84,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private void showContentLayout() {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        headerView = new HeaderView(getContext(), lockTheme);
-        headerView.setPaddingTop(headerPadding);
+        HeaderView headerView = new HeaderView(getContext(), lockTheme);
         addView(headerView, wrapHeightParams);
 
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
@@ -173,15 +169,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     }
 
     /**
-     * Updates the header's top padding. This is useful in LOLLIPOP or greater devices.
-     *
-     * @param padding the padding value
-     */
-    public void setHeaderPadding(int padding) {
-        headerPadding = padding;
-    }
-
-    /**
      * Notifies the form that the code was correctly sent and it should now wait
      * for the user to input the valid code.
      */
@@ -228,17 +215,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
      */
     public void onCountryCodeSelected(String country, String dialCode) {
         formLayout.onCountryCodeSelected(country, dialCode);
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        formLayout.onKeyboardStateChanged(isOpen);
-        headerView.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
     public void loadPasswordlessData(String input, @Nullable Country country) {

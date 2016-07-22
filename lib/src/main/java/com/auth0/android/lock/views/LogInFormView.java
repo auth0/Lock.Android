@@ -59,7 +59,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private boolean fallbackToDatabase;
     private boolean corporateSSO;
     private boolean changePasswordEnabled;
-    private boolean keyboardIsOpen;
 
     public LogInFormView(Context context) {
         super(context);
@@ -250,7 +249,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
     private void showSSOMessage(boolean show) {
         lockWidget.showTopBanner(show);
-        if (changePasswordEnabled && !keyboardIsOpen) {
+        if (changePasswordEnabled) {
             changePasswordBtn.setVisibility(show ? GONE : VISIBLE);
         }
     }
@@ -263,33 +262,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         return false;
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int topMessageHeight = ViewUtils.measureViewHeight(topMessage);
-        int changePasswordHeight = ViewUtils.measureViewHeight(changePasswordBtn);
-        int usernameHeight = ViewUtils.measureViewHeight(usernameInput);
-        int emailHeight = ViewUtils.measureViewHeight(emailInput);
-        int passwordHeight = ViewUtils.measureViewHeight(passwordInput);
-        int sumHeight = topMessageHeight + changePasswordHeight + usernameHeight + emailHeight + passwordHeight;
-
-        Log.v(TAG, String.format("Parent height %d, FormReal height %d (%d + %d + %d + %d + %d)", parentHeight, sumHeight, topMessageHeight, changePasswordHeight, usernameHeight, emailHeight, passwordHeight));
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode) {
-            case MeasureSpec.UNSPECIFIED:
-                setMeasuredDimension(getMeasuredWidth(), sumHeight);
-                break;
-            case MeasureSpec.AT_MOST:
-                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
-                break;
-            case MeasureSpec.EXACTLY:
-                setMeasuredDimension(getMeasuredWidth(), parentHeight);
-                break;
-        }
-    }
-
     /**
      * Getter for the current state of enterprise matched domain.
      *
@@ -297,18 +269,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
      */
     public boolean isEnterpriseDomainMatch() {
         return currentConnection != null && !singleConnection;
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        keyboardIsOpen = isOpen;
-        changePasswordBtn.setVisibility(!isOpen && !isEnterpriseDomainMatch() && changePasswordEnabled ? VISIBLE : GONE);
-        topMessage.setVisibility(topMessage.getText().length() > 0 ? isOpen ? GONE : VISIBLE : GONE);
     }
 
     public void setLastEmail(String email) {

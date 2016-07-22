@@ -27,7 +27,6 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -41,8 +40,6 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView emailInput;
-    private View title;
-    private View text;
 
     public ChangePasswordFormView(Context context) {
         super(context);
@@ -57,8 +54,6 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     private void init(String email) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
-        title = findViewById(R.id.com_auth0_lock_title);
-        text = findViewById(R.id.com_auth0_lock_text);
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
         emailInput.setIdentityListener(this);
@@ -95,17 +90,6 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        title.setVisibility(isOpen ? GONE : VISIBLE);
-        text.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
     @Override

@@ -176,21 +176,6 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         return false;
     }
 
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        if (listener.shouldShowGotCodeButton()) {
-            gotCodeButton.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-        if (topMessage.getText().length() > 0) {
-            topMessage.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-    }
-
     public void setInputText(String text) {
         passwordlessInput.setText(text);
     }

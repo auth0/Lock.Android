@@ -43,7 +43,6 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
 
     private static final String TAG = SocialView.class.getSimpleName();
     private LockWidgetSocial lockWidget;
-    private RecyclerView recycler;
 
     public SocialView(LockWidgetSocial lockWidget, boolean smallButtons) {
         super(lockWidget.getContext());
@@ -55,7 +54,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     private void init(boolean smallButtons) {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
-        recycler = new RecyclerView(getContext());
+        RecyclerView recycler = new RecyclerView(getContext());
         List<Strategy> socialStrategies = lockWidget.getConfiguration().getSocialStrategies();
         SocialViewAdapter adapter = new SocialViewAdapter(getContext(), socialStrategies);
         adapter.setButtonSize(smallButtons);
@@ -75,23 +74,4 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         lockWidget.onSocialLogin(new SocialConnectionEvent(connectionName));
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int recyclerHeight = ViewUtils.measureViewHeight(recycler);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode){
-            case MeasureSpec.UNSPECIFIED:
-                setMeasuredDimension(getMeasuredWidth(), recyclerHeight);
-                break;
-            case MeasureSpec.AT_MOST:
-                setMeasuredDimension(getMeasuredWidth(), Math.min(recyclerHeight, parentHeight));
-                break;
-            case MeasureSpec.EXACTLY:
-                setMeasuredDimension(getMeasuredWidth(), parentHeight);
-                break;
-        }
-    }
 }

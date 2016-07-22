@@ -59,13 +59,11 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     private FormLayout formLayout;
     private FormView subForm;
 
-    private HeaderView headerView;
     private View topBanner;
     private View bottomBanner;
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
 
-    private int headerPadding;
     private String lastEmailInput;
 
     public ClassicLockView(Context context, Bus lockBus, Theme lockTheme) {
@@ -99,8 +97,7 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
-        headerView = new HeaderView(getContext(), lockTheme);
-        headerView.setPaddingTop(headerPadding);
+        HeaderView headerView = new HeaderView(getContext(), lockTheme);
         addView(headerView, wrapHeightParams);
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
@@ -212,25 +209,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         addView(formLayout, FORM_INDEX, params);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        if (configuration == null) {
-            return;
-        }
-
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
-        int headerViewHeight = ViewUtils.measureViewHeight(headerView);
-        int topBannerHeight = ViewUtils.measureViewHeight(topBanner);
-        int formHeight = ViewUtils.measureViewHeight(formLayout);
-        int bottomBannerHeight = ViewUtils.measureViewHeight(bottomBanner);
-        int actionButtonHeight = ViewUtils.measureViewHeight(actionButton);
-        int freeFormSpace = parentHeight - headerViewHeight - topBannerHeight - bottomBannerHeight - actionButtonHeight;
-
-        Log.v(TAG, String.format("Parent is %d and free space for form: %d. The form needs %d (header %d + topBanner %d + botBanner %d + actionButton %d)", parentHeight, freeFormSpace, formHeight, headerViewHeight, topBannerHeight, bottomBannerHeight, actionButtonHeight));
-    }
-
     /**
      * Triggers the back action on the form.
      *
@@ -261,15 +239,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
             actionButton.showProgress(show);
         }
         formLayout.setEnabled(!show);
-    }
-
-    /**
-     * Updates the header's top padding. This is used in LOLLIPOP or greater devices to draw behind the status bar.
-     *
-     * @param padding the padding value
-     */
-    public void setHeaderPadding(int padding) {
-        headerPadding = padding;
     }
 
     private void showSignUpTerms(boolean show) {
@@ -308,21 +277,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     public void onSocialLogin(SocialConnectionEvent event) {
         Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
         bus.post(event);
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        if (subForm != null) {
-            subForm.onKeyboardStateChanged(isOpen);
-            bottomBanner.setVisibility(!isOpen && subForm instanceof SignUpFormView ? VISIBLE : GONE);
-        }
-        headerView.setVisibility(isOpen ? GONE : VISIBLE);
-        formLayout.onKeyboardStateChanged(isOpen);
     }
 
     @Override

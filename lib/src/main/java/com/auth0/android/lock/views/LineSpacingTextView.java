@@ -57,8 +57,8 @@ public class LineSpacingTextView extends TextView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int truncatedHeight = getPaint().getFontMetricsInt(null) - getLineHeight();
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            int truncatedHeight = getPaint().getFontMetricsInt(null) - getLineHeight();
             setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight() + truncatedHeight);
         }
     }

@@ -53,8 +53,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private boolean showDatabase;
     private boolean showEnterprise;
 
-    private boolean keyboardIsOpen;
-
     private SignUpFormView signUpForm;
     private LogInFormView logInForm;
     private SocialView socialLayout;
@@ -93,16 +91,16 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             int verticalModeSelectionMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_mode_selection);
             LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             modeSelectionParams.addRule(ALIGN_PARENT_TOP);
-            modeSelectionParams.setMargins(horizontalMargin, verticalModeSelectionMargin, horizontalMargin, 0);
+            modeSelectionView.setPadding(horizontalMargin, verticalModeSelectionMargin, horizontalMargin, 0);
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
         formsHolder.setOrientation(LinearLayout.VERTICAL);
         formsHolder.setGravity(Gravity.CENTER);
+        formsHolder.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
-        holderParams.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formsHolder, holderParams);
 
         if (showSocial) {
@@ -143,7 +141,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void addSeparator() {
-        orSeparatorMessage = new TextView(getContext());
+        orSeparatorMessage = new LineSpacingTextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
         orSeparatorMessage.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
@@ -177,9 +175,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     public void showOnlyEnterprise(boolean show) {
-        if (keyboardIsOpen) {
-            return;
-        }
         if (socialLayout != null) {
             socialLayout.setVisibility(show ? GONE : VISIBLE);
         }
@@ -213,36 +208,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.addView(logInForm);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int modeSelectionHeight = ViewUtils.measureViewHeight(modeSelectionView);
-        int socialHeight = ViewUtils.measureViewHeight(socialLayout);
-        int separatorHeight = ViewUtils.measureViewHeight(orSeparatorMessage);
-        int logInHeight = ViewUtils.measureViewHeight(logInForm);
-        int signUpHeight = ViewUtils.measureViewHeight(signUpForm);
-        int formHeight = modeSelectionHeight + socialHeight + separatorHeight + logInHeight + signUpHeight;
-        int customFieldsHeight = ViewUtils.measureViewHeight(customFieldsForm);
-        MarginLayoutParams holderParams = (MarginLayoutParams) formsHolder.getLayoutParams();
-        int sumHeight = formHeight + customFieldsHeight + holderParams.topMargin + holderParams.bottomMargin;
-
-        Log.v(TAG, String.format("Parent height %d, FormReal height %d", parentHeight, sumHeight));
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode) {
-            case MeasureSpec.UNSPECIFIED:
-                setMeasuredDimension(getMeasuredWidth(), sumHeight);
-                break;
-            case MeasureSpec.AT_MOST:
-                setMeasuredDimension(getMeasuredWidth(), Math.min(sumHeight, parentHeight));
-                break;
-            case MeasureSpec.EXACTLY:
-                setMeasuredDimension(getMeasuredWidth(), parentHeight);
-                break;
-        }
-    }
-
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
         removePreviousForm();
 
@@ -262,31 +227,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     @Nullable
     private View getExistingForm() {
         return formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        keyboardIsOpen = isOpen;
-        if (logInForm != null) {
-            logInForm.onKeyboardStateChanged(isOpen);
-            if (logInForm.isEnterpriseDomainMatch()) {
-                isOpen = true;
-            }
-        }
-        if (modeSelectionView != null) {
-            modeSelectionView.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-        if (orSeparatorMessage != null) {
-            orSeparatorMessage.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-        if (socialLayout != null) {
-            socialLayout.setVisibility(isOpen ? GONE : VISIBLE);
-        }
     }
 
     /**

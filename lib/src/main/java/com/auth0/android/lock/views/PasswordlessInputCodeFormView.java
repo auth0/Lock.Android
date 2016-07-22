@@ -53,8 +53,6 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     private ValidatedInputView passwordlessInput;
     @PasswordlessMode
     private int passwordlessMode;
-    private boolean resendShown;
-    private boolean keyboardIsOpen;
     private TextView topMessage;
     private TextView resendButton;
 
@@ -105,7 +103,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
                 break;
         }
         topMessage.setText(String.format(getContext().getString(sentMessage), identity));
-        passwordlessInput.setDataType(ValidatedInputView.DataType.NUMBER);
+        passwordlessInput.setDataType(ValidatedInputView.DataType.MFA_CODE);
         passwordlessInput.setVisibility(VISIBLE);
         passwordlessInput.clearInput();
         resendButton.setVisibility(GONE);
@@ -135,10 +133,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     final Runnable resendTimeoutShower = new Runnable() {
         @Override
         public void run() {
-            resendShown = true;
-            if (!keyboardIsOpen) {
-                resendButton.setVisibility(View.VISIBLE);
-            }
+            resendButton.setVisibility(View.VISIBLE);
         }
     };
 
@@ -156,20 +151,6 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        keyboardIsOpen = isOpen;
-        if (resendShown) {
-            resendButton.setVisibility(isOpen ? GONE : VISIBLE);
-        }
-        topMessage.setVisibility(isOpen ? GONE : VISIBLE);
     }
 
     public interface OnCodeResendListener {

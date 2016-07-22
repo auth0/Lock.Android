@@ -219,28 +219,6 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
     }
 
-    /**
-     * Notifies this forms and its child views that the keyboard state changed, so that
-     * it can change the layout in order to fit all the fields.
-     *
-     * @param isOpen whether the keyboard is open or close.
-     */
-    public void onKeyboardStateChanged(boolean isOpen) {
-        boolean waitingForCode = passwordlessInputCodeLayout != null;
-        if (orSeparatorMessage != null) {
-            orSeparatorMessage.setVisibility(waitingForCode || isOpen ? GONE : VISIBLE);
-        }
-        if (socialLayout != null) {
-            socialLayout.setVisibility(waitingForCode || isOpen ? GONE : VISIBLE);
-        }
-        if (passwordlessRequestCodeLayout != null) {
-            passwordlessRequestCodeLayout.onKeyboardStateChanged(isOpen);
-        }
-        if (passwordlessInputCodeLayout != null) {
-            passwordlessInputCodeLayout.onKeyboardStateChanged(isOpen);
-        }
-    }
-
     public void loadPasswordlessData(String emailOrNumber, @Nullable Country country) {
         if (passwordlessRequestCodeLayout != null) {
             Log.d(TAG, String.format("Loading recent passwordless data into the form. Identity %s with Country %s", emailOrNumber, country));

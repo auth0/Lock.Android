@@ -52,7 +52,6 @@ class Options implements Parcelable {
     private boolean useBrowser;
     private boolean usePKCE;
     private boolean closable;
-    private boolean fullscreen;
     private int socialButtonStyle;
     private int usernameStyle;
     private boolean useCodePasswordless;
@@ -87,7 +86,6 @@ class Options implements Parcelable {
         useBrowser = in.readByte() != WITHOUT_DATA;
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
-        fullscreen = in.readByte() != WITHOUT_DATA;
         allowLogIn = in.readByte() != WITHOUT_DATA;
         allowSignUp = in.readByte() != WITHOUT_DATA;
         allowForgotPassword = in.readByte() != WITHOUT_DATA;
@@ -136,7 +134,6 @@ class Options implements Parcelable {
         dest.writeByte((byte) (useBrowser ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (fullscreen ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowLogIn ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowForgotPassword ? HAS_DATA : WITHOUT_DATA));
@@ -227,14 +224,6 @@ class Options implements Parcelable {
 
     public void setClosable(boolean closable) {
         this.closable = closable;
-    }
-
-    public boolean isFullscreen() {
-        return fullscreen;
-    }
-
-    public void setFullscreen(boolean fullscreen) {
-        this.fullscreen = fullscreen;
     }
 
     @UsernameStyle

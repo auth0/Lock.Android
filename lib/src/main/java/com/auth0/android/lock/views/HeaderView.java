@@ -89,10 +89,6 @@ public class HeaderView extends RelativeLayout {
         this.logo.setImageResource(logo);
     }
 
-    public void onKeyboardStateChanged(boolean isOpen) {
-        setVisibility(isOpen ? GONE : VISIBLE);
-    }
-
     public void setPaddingTop(int padding) {
         header.setPadding(0, padding, 0, 0);
     }

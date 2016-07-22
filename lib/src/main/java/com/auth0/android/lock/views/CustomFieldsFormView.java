@@ -56,7 +56,6 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     private String username;
     private LockWidgetForm lockWidget;
     private List<CustomField> fieldsData;
-    private TextView title;
     private LinearLayout fieldContainer;
     private LinearLayout.LayoutParams fieldParams;
 
@@ -76,9 +75,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_custom_fields_form_view, this);
-        title = (TextView) findViewById(R.id.com_auth0_lock_title);
         fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
-
         fieldParams = defineFieldParams();
         addCustomFields();
     }
@@ -146,9 +143,5 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    public void onKeyboardStateChanged(boolean isOpen) {
-        title.setVisibility(isOpen ? GONE : VISIBLE);
     }
 }
