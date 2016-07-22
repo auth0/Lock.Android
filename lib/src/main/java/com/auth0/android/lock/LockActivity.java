@@ -77,7 +77,6 @@ import java.util.Map;
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = LockActivity.class.getSimpleName();
-    private static final String KEY_USER_METADATA = "user_metadata";
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final int WEB_AUTH_REQUEST_CODE = 200;
@@ -314,19 +313,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         if (configuration.loginAfterSignUp()) {
             Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
-            if (event.extraFields() != null) {
-                authParameters.put(KEY_USER_METADATA, event.extraFields());
-            }
             event.getSignUpRequest(apiClient, connection)
                     .addAuthenticationParameters(authParameters)
                     .start(authCallback);
         } else {
-            Map<String, Object> parameters = new HashMap<>();
-            if (event.extraFields() != null) {
-                parameters.put(KEY_USER_METADATA, event.extraFields());
-            }
             event.getCreateUserRequest(apiClient, connection)
-                    .addParameters(parameters)
                     .start(createCallback);
         }
     }
