@@ -158,4 +158,14 @@
     <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
 
+    <!-- Password Strength/Policies -->
+    <string name="com_auth0_lock_password_strength_identical_chars">No more than 2 identical characters in a row (e.g., "111" not allowed)</string>
+    <string name="com_auth0_lock_password_strength_chars_length" formatted="false">At least %d characters in length</string>
+    <string name="com_auth0_lock_password_strength_lowercase_letters">Lower case letters (a-z)</string>
+    <string name="com_auth0_lock_password_strength_uppercase_letters">Upper case letters (A-Z)</string>
+    <string name="com_auth0_lock_password_strength_numbers">Numbers (i.e. 0–9)</string>
+    <string name="com_auth0_lock_password_strength_special_chars">Special characters (e.g. !@#$%^&amp;* )</string>
+    <string name="com_auth0_lock_password_strength_title_at_least">And contain at least 3 of the following 4 types of characters:</string>
+    <string name="com_auth0_lock_password_strength_title_must_have">Must have:</string>
+
 </resources>

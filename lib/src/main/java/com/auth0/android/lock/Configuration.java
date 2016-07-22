@@ -29,6 +29,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
@@ -49,6 +50,7 @@ public class Configuration {
     private static final String SHOW_SIGNUP_KEY = "showSignup";
     private static final String SHOW_FORGOT_KEY = "showForgot";
     private static final String REQUIRES_USERNAME_KEY = "requires_username";
+    public static final String PASSWORD_POLICY_KEY = "passwordPolicy";
     private final List<CustomField> extraSignUpFields;
 
     private Connection defaultDatabaseConnection;
@@ -69,6 +71,8 @@ public class Configuration {
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean usernameRequired;
+    @PasswordStrength
+    private int passwordPolicy;
     private final boolean classicLockAvailable;
     private final boolean passwordlessLockAvailable;
     @UsernameStyle
@@ -250,6 +254,7 @@ public class Configuration {
             allowForgotPassword = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY) && options.allowForgotPassword();
 
             usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
+            passwordPolicy = parsePasswordPolicy((String) getDefaultDatabaseConnection().getValueForKey(PASSWORD_POLICY_KEY));
 
             initialScreen = options.initialScreen();
             switch (initialScreen) {
@@ -301,6 +306,21 @@ public class Configuration {
         }
     }
 
+    @PasswordStrength
+    private int parsePasswordPolicy(String policyName) {
+        if ("excellent".equalsIgnoreCase(policyName)) {
+            return PasswordStrength.EXCELLENT;
+        } else if ("good".equalsIgnoreCase(policyName)) {
+            return PasswordStrength.GOOD;
+        } else if ("fair".equalsIgnoreCase(policyName)) {
+            return PasswordStrength.FAIR;
+        } else if ("low".equalsIgnoreCase(policyName)) {
+            return PasswordStrength.LOW;
+        } else {
+            return PasswordStrength.NONE;
+        }
+    }
+
     private boolean shouldSelect(Connection connection, Set<String> connections) {
         return connections.isEmpty() || connections.contains(connection.getName());
     }
@@ -347,6 +367,11 @@ public class Configuration {
     @PasswordlessMode
     public int getPasswordlessMode() {
         return passwordlessMode;
+    }
+
+    @PasswordStrength
+    public int getPasswordPolicy() {
+        return passwordPolicy;
     }
 
     public boolean loginAfterSignUp() {

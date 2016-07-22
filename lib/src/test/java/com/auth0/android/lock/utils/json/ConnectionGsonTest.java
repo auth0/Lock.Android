@@ -79,8 +79,8 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connection.getName(), is("ad"));
         assertThat(connection.getValues(), is(notNullValue()));
         assertThat(connection.getValues().isEmpty(), is(false));
-        assertThat((String) connection.getValues().get("domain"), is("auth10.com"));
-        assertThat((List<String>) connection.getValues().get("domain_aliases"), IsCollectionContaining.hasItem("auth10.com"));
+        assertThat((String) connection.getValueForKey("domain"), is("auth10.com"));
+        assertThat((List<String>) connection.getValueForKey("domain_aliases"), IsCollectionContaining.hasItem("auth10.com"));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connection.getName(), is("twitter"));
         assertThat(connection.getValues(), is(notNullValue()));
         assertThat(connection.getValues().isEmpty(), is(false));
-        assertThat((String) connection.getValues().get("scope"), is("public_profile"));
+        assertThat((String) connection.getValueForKey("scope"), is("public_profile"));
     }
 
     @Test
@@ -100,11 +100,12 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connection.getName(), is("Username-Password-Authentication"));
         assertThat(connection.getValues(), is(notNullValue()));
         assertThat(connection.getValues().isEmpty(), is(false));
-        assertThat((String) connection.getValues().get("forgot_password_url"), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
-        assertThat((String) connection.getValues().get("signup_url"), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat((String) connection.getValueForKey("forgot_password_url"), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat((String) connection.getValueForKey("signup_url"), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
         assertThat(connection.booleanForKey("showSignup"), is(true));
         assertThat(connection.booleanForKey("showForgot"), is(true));
         assertThat(connection.booleanForKey("requires_username"), is(false));
+        assertThat((String) connection.getValueForKey("passwordPolicy"), is("good"));
     }
 
     private Connection buildConnectionFrom(Reader json) throws IOException {

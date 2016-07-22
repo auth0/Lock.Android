@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
@@ -69,15 +70,14 @@ public class ValidatedInputView extends LinearLayout {
     public static final String CODE_REGEX = "^[0-9]{4,12}$";
     public static final String EMAIL_REGEX = Patterns.EMAIL_ADDRESS.pattern();
     private static final String TAG = ValidatedInputView.class.getSimpleName();
-    private static final int MIN_PASSWORD_LENGTH = 6;
     private static final int VALIDATION_DELAY = 500;
 
+    protected LinearLayout rootView;
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
     private IdentityListener identityListener;
     private int inputIcon;
-    private boolean isShowingError = true;
     private boolean hasValidInput;
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, NUMBER, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE})
@@ -113,6 +113,7 @@ public class ValidatedInputView extends LinearLayout {
 
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
+        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
         errorDescription = (TextView) findViewById(R.id.errorDescription);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
@@ -243,7 +244,13 @@ public class ValidatedInputView extends LinearLayout {
         icon.setImageResource(inputIcon);
     }
 
-    private void updateBorder(boolean isValid) {
+    /**
+     * Updates the view knowing if the input is valid or not.
+     *
+     * @param isValid if the input is valid or not for this kind of DataType.
+     */
+    @CallSuper
+    protected void updateBorder(boolean isValid) {
         ViewGroup parent = ((ViewGroup) input.getParent());
         Drawable bg = parent.getBackground();
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
@@ -254,7 +261,6 @@ public class ValidatedInputView extends LinearLayout {
         ViewUtils.setBackground(parent, gd);
 
         errorDescription.setVisibility(isValid ? INVISIBLE : VISIBLE);
-        isShowingError = !isValid;
         requestLayout();
     }
 
@@ -266,6 +272,7 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     @Override
+    @CallSuper
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -290,6 +297,7 @@ public class ValidatedInputView extends LinearLayout {
 
     /**
      * Validates the input data and updates the icon. DataType must be set.
+     * Empty fields are considered valid.
      *
      * @return whether the data is valid or not.
      */
@@ -299,9 +307,15 @@ public class ValidatedInputView extends LinearLayout {
         return isValid;
     }
 
-    private boolean validate(boolean validateEmptyFields) {
+    /**
+     * Validates the input data and updates the icon. DataType must be set.
+     *
+     * @param validateEmptyFields if an empty input should be considered invalid.
+     * @return whether the data is valid or not.
+     */
+    protected boolean validate(boolean validateEmptyFields) {
         boolean isValid = false;
-        String value = getText();
+        String value = dataType == PASSWORD ? getText() : getText().trim();
         if (!validateEmptyFields && value.isEmpty()) {
             return true;
         }
@@ -311,7 +325,7 @@ public class ValidatedInputView extends LinearLayout {
                 isValid = value.matches(EMAIL_REGEX);
                 break;
             case PASSWORD:
-                isValid = value.length() >= MIN_PASSWORD_LENGTH;
+                isValid = !value.isEmpty();
                 break;
             case USERNAME:
                 isValid = value.matches(USERNAME_REGEX);
@@ -336,12 +350,12 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
-     * Gets the current text from the input field, without spaces at the end.
+     * Gets the current text from the input field.
      *
      * @return the current text
      */
     public String getText() {
-        return input.getText().toString().trim();
+        return input.getText().toString();
     }
 
     /**

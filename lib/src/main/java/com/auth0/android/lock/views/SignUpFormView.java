@@ -55,7 +55,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private final LockWidgetForm lockWidget;
     private ValidatedInputView usernameInput;
     private ValidatedInputView emailInput;
-    private ValidatedInputView passwordInput;
+    private ValidatedPasswordInputView passwordInput;
     private LinearLayout fieldContainer;
     private boolean displayFewCustomFields;
 
@@ -73,7 +73,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private void init() {
         Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
-        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
+        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_custom_fields_container);
 
         usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
@@ -82,8 +82,8 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
         emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);
-        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput.setPasswordPolicy(configuration.getPasswordPolicy());
         passwordInput.setOnEditorActionListener(this);
 
         usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);

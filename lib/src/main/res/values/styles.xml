@@ -45,6 +45,10 @@
         <item name="android:textColor">@color/com_auth0_lock_text</item>
     </style>
 
+    <style name="Lock.Theme.Text.PasswordPolicy">
+        <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
+    </style>
+
     <style name="Lock.Theme.Text.ValidationError">
         <item name="android:textColor">@color/com_auth0_lock_validation_error_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>

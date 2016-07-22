@@ -39,6 +39,7 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_mode_selection">16dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field">8dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field_with_error">3dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_password_strength">13dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_social">4dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless">28dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">7dp</dimen>
@@ -57,6 +58,7 @@
     <dimen name="com_auth0_lock_switcher_text">12sp</dimen>
     <dimen name="com_auth0_lock_field_text">13dp</dimen>
     <dimen name="com_auth0_lock_field_error_text">11sp</dimen>
+    <dimen name="com_auth0_lock_password_policy_text">11sp</dimen>
     <dimen name="com_auth0_lock_list_item_text">16sp</dimen>
     <dimen name="com_auth0_lock_result_message_text">12sp</dimen>
 
@@ -74,4 +76,5 @@
     <dimen name="com_auth0_lock_action_button_vertical_margin">14dp</dimen>
     <dimen name="com_auth0_lock_bottom_banner_vertical_margin">7dp</dimen>
     <dimen name="com_auth0_lock_top_banner_vertical_margin">12dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_checkable_option">1.6dp</dimen>
 </resources>
