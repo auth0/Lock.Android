@@ -207,11 +207,12 @@ startActivity(this.lock.newIntent(this));
 ##Proguard
 In the [proguard directory](proguard) you can find the *Proguard* configuration for Lock and its dependencies.
 By default you should at least use the following files:
-* `proguard-okhttp-2.pro`
 * `proguard-okio.pro`
 * `proguard-gson.pro`
 * `proguard-otto.pro`
 * `proguard-lock-2.pro`
+
+As this library depends on `Auth0.Android`, you should keep the files up to date with the rules defined in that [repository](https://github.com/auth0/Auth0.Android).
 
 ## What is Auth0?
 

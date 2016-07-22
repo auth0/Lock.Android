@@ -28,7 +28,6 @@ android {
         release {
             minifyEnabled true
             proguardFile '../proguard/proguard-lock-2.pro'
-            proguardFile '../proguard/proguard-okhttp-2.pro'
             proguardFile '../proguard/proguard-okio.pro'
             proguardFile '../proguard/proguard-otto.pro'
             proguardFile '../proguard/proguard-gson.pro'
