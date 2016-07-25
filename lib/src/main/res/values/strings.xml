@@ -156,6 +156,7 @@
     <string name="com_auth0_lock_db_signup_user_already_exists_error_message">The user already exists</string>
     <string name="com_auth0_lock_db_signup_password_already_used_error_message">The password was used previously</string>
     <string name="com_auth0_lock_db_signup_password_not_strong_error_message">The password is not strong enough</string>
+    <string name="com_auth0_lock_db_too_many_attempts_error_message">Your account has been blocked after multiple consecutive login attempts.</string>
     <string name="com_auth0_lock_passwordless_code_request_error_message">There was an error sending the code</string>
     <string name="com_auth0_lock_passwordless_link_request_error_message">There was an error sending the link</string>
     <string name="com_auth0_lock_passwordless_login_error_invalid_credentials_message">Wrong identity or passcode</string>

@@ -95,4 +95,11 @@ public class LoginErrorMessageBuilderTest {
         assertThat(error.getMessageRes(), is(equalTo(R.string.com_auth0_lock_db_login_error_unauthorized_message)));
     }
 
+    @Test
+    public void shouldHaveCustomMessageIfIsTooManyAttempts() throws Exception {
+        Mockito.when(exception.getCode()).thenReturn("too_many_attempts");
+        final AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error.getMessageRes(), is(equalTo(R.string.com_auth0_lock_db_too_many_attempts_error_message)));
+    }
+
 }

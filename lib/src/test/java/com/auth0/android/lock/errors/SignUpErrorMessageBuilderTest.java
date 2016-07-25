@@ -60,6 +60,13 @@ public class SignUpErrorMessageBuilderTest {
     }
 
     @Test
+    public void shouldHaveCustomMessageIfIsTooManyAttempts() throws Exception {
+        Mockito.when(exception.getCode()).thenReturn("too_many_attempts");
+        final AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error.getMessageRes(), is(equalTo(R.string.com_auth0_lock_db_too_many_attempts_error_message)));
+    }
+
+    @Test
     public void shouldHaveCustomMessageIfPasswordNotStrongEnough() throws Exception {
         Mockito.when(exception.isPasswordNotStrongEnough()).thenReturn(true);
         final AuthenticationError error = builder.buildFrom(exception);
