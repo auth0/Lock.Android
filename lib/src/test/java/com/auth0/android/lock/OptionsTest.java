@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -61,6 +62,64 @@ public class OptionsTest {
         assertThat(options.getAccount().getClientId(), is(equalTo(parceledOptions.getAccount().getClientId())));
         assertThat(options.getAccount().getConfigurationUrl(), is(equalTo(parceledOptions.getAccount().getConfigurationUrl())));
         assertThat(options.getAccount().getDomainUrl(), is(equalTo(parceledOptions.getAccount().getDomainUrl())));
+    }
+
+    @Test
+    public void shouldSetPrivacyPolicyURL() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setPrivacyURL("https://valid.url/privacy");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getPrivacyURL(), is(equalTo(parceledOptions.getPrivacyURL())));
+    }
+
+    @Test
+    public void shouldNotSetPrivacyPolicyURLWhenInvalidURL() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setPrivacyURL("an-invalid/url");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getPrivacyURL(), is(nullValue()));
+        assertThat(parceledOptions.getPrivacyURL(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldSetTermsOfServiceURL() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setTermsURL("https://valid.url/terms");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getTermsURL(), is(equalTo(parceledOptions.getTermsURL())));
+    }
+
+    @Test
+    public void shouldNotSetTermsOfServiceURLWhenInvalidURL() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setTermsURL("an-invalid/url");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getTermsURL(), is(nullValue()));
+        assertThat(parceledOptions.getTermsURL(), is(nullValue()));
     }
 
     @Test

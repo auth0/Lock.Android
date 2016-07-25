@@ -138,7 +138,11 @@
     <string name="com_auth0_lock_sign_up_terms">By signing up, you agree to our terms of\n service and privacy policy</string>
     <string name="com_auth0_lock_title_passwordless_email">Enter your email address to sign in\n or create an account</string>
     <string name="com_auth0_lock_title_passwordless_sms">Enter your phone to sign in\n or create an account</string>
-
+    <string name="com_auth0_lock_sign_up_terms_dialog_title">Terms &amp; Policy</string>
+    <string name="com_auth0_lock_sign_up_terms_dialog_message" formatted="false"><![CDATA[
+    By signing up, you agree to our <a href=\'%s\'>terms of service</a> and <a href=\'%s\'>privacy policy</a>
+    ]]></string>
+    
     <!-- Custom Error Messages -->
     <string name="com_auth0_lock_missing_connections_message">There isn\'t any connection configured for this Application. Check your dashboard configuration on http://auth0.com</string>
     <string name="com_auth0_lock_configuration_retrieving_error">Error retrieving the Dashboard configuration</string>
@@ -168,5 +172,4 @@
     <string name="com_auth0_lock_password_strength_special_chars">Special characters (e.g. !@#$%^&amp;* )</string>
     <string name="com_auth0_lock_password_strength_title_at_least">And contain at least 3 of the following 4 types of characters:</string>
     <string name="com_auth0_lock_password_strength_title_must_have">Must have:</string>
-
 </resources>

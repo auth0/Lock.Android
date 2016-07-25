@@ -33,6 +33,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.Patterns;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.ParameterBuilder;
@@ -394,6 +395,38 @@ public class Lock {
         public Builder withSignUpFields(List<CustomField> customFields) {
             final List<CustomField> withoutDuplicates = removeDuplicatedKeys(customFields);
             options.setCustomFields(withoutDuplicates);
+            return this;
+        }
+
+        /**
+         * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
+         * The default value is 'https://auth0.com/privacy'
+         *
+         * @param url a valid url to use.
+         * @return the current builder instance
+         */
+        public Builder setPrivacyURL(@NonNull String url) {
+            if (Patterns.WEB_URL.matcher(url).matches()) {
+                options.setPrivacyURL(url);
+            } else {
+                Log.w(TAG, "The given Privacy Policy URL doesn't have a valid URL format. Will default to 'https://auth0.com/privacy'.");
+            }
+            return this;
+        }
+
+        /**
+         * Choose a custom Terms of Service URL to access when the user clicks the link on the Sign Up form.
+         * The default value is 'https://auth0.com/terms'
+         *
+         * @param url a valid url to use.
+         * @return the current builder instance
+         */
+        public Builder setTermsURL(@NonNull String url) {
+            if (Patterns.WEB_URL.matcher(url).matches()) {
+                options.setTermsURL(url);
+            } else {
+                Log.w(TAG, "The given Terms of Service URL doesn't have a valid URL format. Will default to 'https://auth0.com/terms'.");
+            }
             return this;
         }
 
