@@ -384,12 +384,15 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldReturnSpecifiedDBConnection() throws Exception {
-        options.setConnections(Arrays.asList(CUSTOM_DATABASE, USERNAME_PASSWORD_AUTHENTICATION));
-        options.useDatabaseConnection(USERNAME_PASSWORD_AUTHENTICATION);
+    public void shouldReturnSpecifiedDBConnectionWhenMoreThanOneDBConnectionIsAvailable() throws Exception {
+        options.setConnections(Arrays.asList(CUSTOM_DATABASE, USERNAME_PASSWORD_AUTHENTICATION, RESTRICTIVE_DATABASE, UNKNOWN_CONNECTION));
+        options.useDatabaseConnection(RESTRICTIVE_DATABASE);
         configuration = new Configuration(application, options);
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(USERNAME_PASSWORD_AUTHENTICATION));
+        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(RESTRICTIVE_DATABASE));
+    }
 
+    @Test
+    public void shouldReturnSpecifiedDBConnection() throws Exception{
         options.setConnections(null);
         options.useDatabaseConnection(CUSTOM_DATABASE);
         configuration = new Configuration(application, options);

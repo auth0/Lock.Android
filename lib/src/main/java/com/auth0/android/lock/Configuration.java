@@ -181,9 +181,11 @@ public class Configuration {
         }
         Connection connection = null;
         for (Connection db : dbs) {
-            if (db.getName().equals(defaultDatabaseName) || shouldSelect(db, set)) {
+            if (db.getName().equals(defaultDatabaseName)) {
                 connection = db;
                 break;
+            } else if (connection == null && shouldSelect(db, set)) {
+                connection = db;
             }
         }
 
