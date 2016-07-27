@@ -45,14 +45,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Use Webview" />
+                android:text="Use Browser" />
 
             <RadioButton
                 android:id="@+id/radio_use_webview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Use Browser" />
+                android:text="Use WebView" />
         </RadioGroup>
 
         <CheckBox

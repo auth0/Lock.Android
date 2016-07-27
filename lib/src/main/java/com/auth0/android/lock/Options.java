@@ -78,6 +78,7 @@ class Options implements Parcelable {
         allowForgotPassword = true;
         loginAfterSignUp = true;
         useCodePasswordless = true;
+        usePKCE = true;
         authenticationParameters = new HashMap<>();
         customFields = new ArrayList<>();
         theme = Theme.newBuilder().build();
