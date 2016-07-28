@@ -45,5 +45,7 @@
             android:layout_weight="1"
             tools:background="#90FF3333"
             tools:text="Login with facebook" />
+
     </LinearLayout>
+
 </RelativeLayout>

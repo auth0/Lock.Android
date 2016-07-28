@@ -23,7 +23,6 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:lock="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_container"
     android:layout_width="match_parent"
@@ -44,8 +43,9 @@
             <ImageView
                 android:id="@+id/com_auth0_lock_icon"
                 style="@style/Lock.Theme.Widget.Icon"
-                lock:srcCompat="@drawable/com_auth0_lock_ic_email"
+                android:src="@drawable/com_auth0_lock_ic_email"
                 tools:ignore="MissingPrefix" />
+
         </FrameLayout>
 
         <EditText
@@ -57,6 +57,7 @@
             android:layout_weight="1"
             android:background="@null"
             tools:text="email@domain.com" />
+
     </LinearLayout>
 
     <TextView

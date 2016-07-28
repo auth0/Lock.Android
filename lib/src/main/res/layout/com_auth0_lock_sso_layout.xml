@@ -23,7 +23,6 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:lock="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_sso_message"
     android:layout_width="match_parent"
@@ -38,7 +37,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        lock:srcCompat="@drawable/com_auth0_lock_ic_sso"
+        android:src="@drawable/com_auth0_lock_ic_sso"
         tools:ignore="MissingPrefix" />
 
     <TextView
