@@ -392,11 +392,30 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldReturnSpecifiedDBConnection() throws Exception{
+    public void shouldReturnSpecifiedDBConnectionIfAvailable() throws Exception{
         options.setConnections(null);
+
         options.useDatabaseConnection(CUSTOM_DATABASE);
         configuration = new Configuration(application, options);
         assertThat(configuration.getDefaultDatabaseConnection(), isConnection(CUSTOM_DATABASE));
+    }
+
+    @Test
+    public void shouldIgnoreSpecifiedDBConnectionIfNotAvailable() throws Exception{
+        options.setConnections(null);
+
+        options.useDatabaseConnection("non-existing-db-connection");
+        configuration = new Configuration(application, options);
+        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(USERNAME_PASSWORD_AUTHENTICATION));
+    }
+
+    @Test
+    public void shouldIgnoreSpecifiedDBConnectionIfFiltered() throws Exception{
+        options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
+
+        options.useDatabaseConnection("non-existing-db-connection");
+        configuration = new Configuration(application, options);
+        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(USERNAME_PASSWORD_AUTHENTICATION));
     }
 
     @Test
