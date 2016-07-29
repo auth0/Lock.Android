@@ -175,22 +175,31 @@ public class Configuration {
         if (dbs == null) {
             return null;
         }
-        Set<String> set = new HashSet<>(connections);
-        if (defaultDatabaseName != null) {
-            set.add(defaultDatabaseName);
-        }
-        Connection connection = null;
-        for (Connection db : dbs) {
-            if (db.getName().equals(defaultDatabaseName) || shouldSelect(db, set)) {
-                connection = db;
-                break;
-            }
+
+        Connection defaultDb = getConnectionForName(dbs, defaultDatabaseName);
+        if (defaultDb != null && shouldSelect(defaultDb, connections)) {
+            return defaultDb;
         }
 
-        if (connection == null || (defaultDatabaseName != null && !connection.getName().equals(defaultDatabaseName))) {
+        if (defaultDatabaseName != null) {
             Log.w(TAG, String.format("You've chosen '%s' as your default database name, but it wasn't found in your Auth0 connections configuration.", defaultDatabaseName));
         }
-        return connection;
+
+        for (Connection db : dbs) {
+            if (shouldSelect(db, connections)) {
+                return db;
+            }
+        }
+        return null;
+    }
+
+    private Connection getConnectionForName(List<Connection> connections, String name) {
+        for (Connection c : connections) {
+            if (c.getName().equals(name)) {
+                return c;
+            }
+        }
+        return null;
     }
 
     private Strategy filterStrategy(Strategy strategy, Set<String> connections) {
