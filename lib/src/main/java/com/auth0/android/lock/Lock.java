@@ -229,14 +229,14 @@ public class Lock {
         }
 
         /**
-         * Whether to use PKCE or the implicit token grant when performing calls to /authenticate.
-         * Default is {@code true}
+         * Whether to use implicit grant or code grant when performing calls to /authenticate.
+         * Default is {@code false}
          *
-         * @param usePKCE if Lock will use PKCE instead of the implicit token grant.
+         * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
          * @return the current Builder instance
          */
-        public Builder usePKCE(boolean usePKCE) {
-            options.setUsePKCE(usePKCE);
+        public Builder useImplicitGrant(boolean useImplicitGrant) {
+            options.setUsePKCE(!useImplicitGrant);
             return this;
         }
 
