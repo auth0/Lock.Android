@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class RequestFactory {
@@ -47,49 +48,78 @@ public class RequestFactory {
     }
 
     public static <T> ParameterizableRequest<T> GET(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "GET", clazz));
+        final SimpleRequest<T> request = new SimpleRequest<>(handler, url, client, mapper, "GET", clazz);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static <T> ParameterizableRequest<T> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "POST", clazz));
+        final SimpleRequest<T> request = new SimpleRequest<>(handler, url, client, mapper, "POST", clazz);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static ParameterizableRequest<Map<String, Object>> rawPOST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
         final SimpleRequest<Map<String, Object>> request = new SimpleRequest<>(handler, url, client, mapper, "POST");
         addMetricHeader(request);
+        addLocaleHeader(request);
         return request;
     }
 
     public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
-        return addMetricHeader(new VoidRequest(handler, url, client, mapper, "POST"));
+        final VoidRequest request = new VoidRequest(handler, url, client, mapper, "POST");
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static ParameterizableRequest<Void> POST(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, String jwt) {
-        final AuthorizableRequest<Void> request = new VoidRequest(handler, url, client, mapper, "POST")
-                .setBearer(jwt);
-        return addMetricHeader(request);
+        final AuthorizableRequest<Void> request = new VoidRequest(handler, url, client, mapper, "POST").setBearer(jwt);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static <T> ParameterizableRequest<T> PUT(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "PUT", clazz));
+        final SimpleRequest<T> request = new SimpleRequest<>(handler, url, client, mapper, "PUT", clazz);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static <T> ParameterizableRequest<T> PATCH(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "GET", clazz));
+        final SimpleRequest<T> request = new SimpleRequest<>(handler, url, client, mapper, "GET", clazz);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static <T> ParameterizableRequest<T> DELETE(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper, Class<T> clazz) {
-        return addMetricHeader(new SimpleRequest<>(handler, url, client, mapper, "DELETE", clazz));
+        final SimpleRequest<T> request = new SimpleRequest<>(handler, url, client, mapper, "DELETE", clazz);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     public static Request<Application> newApplicationInfoRequest(HttpUrl url, OkHttpClient client, Handler handler, ObjectMapper mapper) {
-        return addMetricHeader(new ApplicationInfoRequest(handler, client, url, mapper));
+        final ApplicationInfoRequest request = new ApplicationInfoRequest(handler, client, url, mapper);
+        addMetricHeader(request);
+        addLocaleHeader(request);
+        return request;
     }
 
     private static <T> ParameterizableRequest<T> addMetricHeader(ParameterizableRequest<T> request) {
         if (CLIENT_INFO != null) {
             request.addHeader("Auth0-Client", CLIENT_INFO);
         }
+        return request;
+    }
+
+    private static <T> ParameterizableRequest<T> addLocaleHeader(ParameterizableRequest<T> request) {
+        String language = Locale.getDefault().getLanguage();
+        request.addHeader("Accept-Language", language != null ? language : "en");
         return request;
     }
 }
