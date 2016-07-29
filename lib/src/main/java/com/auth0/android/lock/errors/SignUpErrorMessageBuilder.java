@@ -33,6 +33,7 @@ public class SignUpErrorMessageBuilder implements ErrorMessageBuilder<Authentica
 
     private static final String USER_EXISTS_ERROR = "user_exists";
     private static final String USERNAME_EXISTS_ERROR = "username_exists";
+    private static final String TOO_MANY_ATTEMPTS_ERROR = "too_many_attempts";
 
     @StringRes
     private final int defaultMessage;
@@ -40,6 +41,7 @@ public class SignUpErrorMessageBuilder implements ErrorMessageBuilder<Authentica
     private static final int userExistsResource = R.string.com_auth0_lock_db_signup_user_already_exists_error_message;
     private static final int passwordAlreadyUsedResource = R.string.com_auth0_lock_db_signup_password_already_used_error_message;
     private static final int passwordNotStrongResource = R.string.com_auth0_lock_db_signup_password_not_strong_error_message;
+    private static final int tooManyAttemptsResource = R.string.com_auth0_lock_db_too_many_attempts_error_message;
 
     public SignUpErrorMessageBuilder(@StringRes int defaultMessage) {
         this.defaultMessage = defaultMessage;
@@ -63,6 +65,8 @@ public class SignUpErrorMessageBuilder implements ErrorMessageBuilder<Authentica
         } else if (exception.isRuleError()) {
             messageRes = defaultMessage;
             description = exception.getDescription();
+        } else if (TOO_MANY_ATTEMPTS_ERROR.equals(exception.getCode())) {
+            messageRes = tooManyAttemptsResource;
         } else {
             messageRes = defaultMessage;
         }
