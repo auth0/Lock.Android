@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Patterns;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
@@ -66,6 +67,8 @@ class Options implements Parcelable {
     private List<CustomField> customFields;
     private int initialScreen;
     private Theme theme;
+    private String privacyURL;
+    private String termsURL;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -96,6 +99,8 @@ class Options implements Parcelable {
         initialScreen = in.readInt();
         socialButtonStyle = in.readInt();
         theme = in.readParcelable(Theme.class.getClassLoader());
+        privacyURL = in.readString();
+        termsURL = in.readString();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -144,6 +149,8 @@ class Options implements Parcelable {
         dest.writeInt(initialScreen);
         dest.writeInt(socialButtonStyle);
         dest.writeParcelable(theme, flags);
+        dest.writeString(privacyURL);
+        dest.writeString(termsURL);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -343,5 +350,25 @@ class Options implements Parcelable {
     @InitialScreen
     public int initialScreen() {
         return initialScreen;
+    }
+
+    public void setPrivacyURL(@NonNull String url) {
+        if (Patterns.WEB_URL.matcher(url).matches()) {
+            this.privacyURL = url;
+        }
+    }
+
+    public String getPrivacyURL() {
+        return privacyURL;
+    }
+
+    public void setTermsURL(@NonNull String url) {
+        if (Patterns.WEB_URL.matcher(url).matches()) {
+            this.termsURL = url;
+        }
+    }
+
+    public String getTermsURL() {
+        return termsURL;
     }
 }

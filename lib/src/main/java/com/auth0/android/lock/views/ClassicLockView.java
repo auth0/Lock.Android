@@ -28,6 +28,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -108,6 +111,12 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         addView(formLayout, formLayoutParams);
 
         bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+        bottomBanner.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSignUpTermsDialog();
+            }
+        });
         bottomBanner.setVisibility(GONE);
         addView(bottomBanner, wrapHeightParams);
 
@@ -243,6 +252,20 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
 
     private void showSignUpTerms(boolean show) {
         bottomBanner.setVisibility(show ? VISIBLE : GONE);
+    }
+
+    private void showSignUpTermsDialog() {
+        final String content = String.format(getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_message), configuration.getTermsURL(), configuration.getPrivacyURL());
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle(getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_title))
+                .setPositiveButton(android.R.string.ok, null)
+                .setMessage(Html.fromHtml(content))
+                .show();
+
+        final TextView message = (TextView) dialog.findViewById(android.R.id.message);
+        if (message != null) {
+            message.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     @Override

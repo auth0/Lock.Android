@@ -522,6 +522,36 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(false));
     }
 
+    @Test
+    public void shouldHaveDefaultPrivacyPolicyURL() throws Exception {
+        configuration = unfilteredConfig();
+        assertThat(configuration.getPrivacyURL(), is(notNullValue()));
+        assertThat(configuration.getPrivacyURL(), is(equalTo("https://auth0.com/privacy")));
+    }
+
+    @Test
+    public void shouldHaveCustomPrivacyPolicyURL() throws Exception {
+        options.setPrivacyURL("https://google.com/privacy");
+        configuration = new Configuration(application, options);
+        assertThat(configuration.getPrivacyURL(), is(notNullValue()));
+        assertThat(configuration.getPrivacyURL(), is(equalTo("https://google.com/privacy")));
+    }
+
+    @Test
+    public void shouldHaveDefaultTermsOfServiceURL() throws Exception {
+        configuration = unfilteredConfig();
+        assertThat(configuration.getTermsURL(), is(notNullValue()));
+        assertThat(configuration.getTermsURL(), is(equalTo("https://auth0.com/terms")));
+    }
+
+    @Test
+    public void shouldHaveCustomTermsOfServiceURL() throws Exception {
+        options.setTermsURL("https://google.com/terms");
+        configuration = new Configuration(application, options);
+        assertThat(configuration.getTermsURL(), is(notNullValue()));
+        assertThat(configuration.getTermsURL(), is(equalTo("https://google.com/terms")));
+    }
+
     private Configuration unfilteredConfig() {
         return new Configuration(application, options);
     }

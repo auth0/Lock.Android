@@ -84,6 +84,8 @@ public class Configuration {
     private int passwordlessMode;
     @InitialScreen
     private int initialScreen;
+    private String termsURL;
+    private String privacyURL;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
@@ -304,6 +306,9 @@ public class Configuration {
         } else {
             passwordlessMode = PasswordlessMode.DISABLED;
         }
+
+        this.termsURL = options.getTermsURL() == null ? "https://auth0.com/terms" : options.getTermsURL();
+        this.privacyURL = options.getPrivacyURL() == null ? "https://auth0.com/privacy" : options.getPrivacyURL();
     }
 
     @PasswordStrength
@@ -390,4 +395,13 @@ public class Configuration {
         return passwordlessLockAvailable;
     }
 
+    @NonNull
+    public String getTermsURL() {
+        return termsURL;
+    }
+
+    @NonNull
+    public String getPrivacyURL() {
+        return privacyURL;
+    }
 }
