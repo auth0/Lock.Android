@@ -165,7 +165,21 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUsePKCE() {
+    public void shouldHavePKCEEnabledByDefault() {
+        Options options = new Options();
+        options.setAccount(auth0);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usePKCE(), is(true));
+        assertThat(parceledOptions.usePKCE(), is(true));
+    }
+
+    @Test
+    public void shouldEnablePKCE() {
         Options options = new Options();
         options.setAccount(auth0);
         options.setUsePKCE(true);
@@ -175,7 +189,23 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
+        assertThat(options.usePKCE(), is(true));
+        assertThat(parceledOptions.usePKCE(), is(true));
+    }
+
+    @Test
+    public void shouldDisablePKCE() {
+        Options options = new Options();
+        options.setAccount(auth0);
+        options.setUsePKCE(false);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usePKCE(), is(false));
+        assertThat(parceledOptions.usePKCE(), is(false));
     }
 
     @Test
@@ -545,7 +575,7 @@ public class OptionsTest {
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
         assertThat(options.useBrowser(), is(false));
-        assertThat(options.usePKCE(), is(false));
+        assertThat(options.usePKCE(), is(true));
         assertThat(options.allowLogIn(), is(true));
         assertThat(options.allowSignUp(), is(true));
         assertThat(options.allowForgotPassword(), is(true));
