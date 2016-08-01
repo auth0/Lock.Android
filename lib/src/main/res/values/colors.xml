@@ -69,8 +69,8 @@
     <color name="com_auth0_lock_terms_text">#666666</color>
     <color name="com_auth0_lock_sso_text">#8e000000</color>
     <color name="com_auth0_lock_sso_background">#F5F7F9</color>
-    <color name="com_auth0_lock_radio_button_checked_color">#5C666F</color>
-    <color name="com_auth0_lock_radio_button_unchecked_color">#FFFFFF</color>
+    <color name="com_auth0_lock_tab_underline">#325C666F</color>
+    <color name="com_auth0_lock_tab_text">#5C666F</color>
 
     <color name="com_auth0_lock_input_field_border_normal">#f1f1f1</color>
     <color name="com_auth0_lock_input_field_border_error">#ff0000</color>
