@@ -118,6 +118,8 @@
     <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
+        <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin</item>
     </style>
 
     <style name="Lock.Theme.Text.SocialButton">
