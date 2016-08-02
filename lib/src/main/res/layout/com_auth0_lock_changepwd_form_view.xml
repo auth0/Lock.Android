@@ -27,8 +27,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_field"
-    android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
+    android:paddingBottom="@dimen/com_auth0_lock_widget_vertical_margin_field"
+    android:paddingTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
     android:gravity="center"
     android:orientation="vertical">
 

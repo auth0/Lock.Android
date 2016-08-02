@@ -81,8 +81,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     }
 
     private LinearLayout.LayoutParams defineFieldParams() {
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        int verticalMargin =  getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);

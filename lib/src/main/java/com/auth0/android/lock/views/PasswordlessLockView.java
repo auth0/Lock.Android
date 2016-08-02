@@ -87,10 +87,11 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         HeaderView headerView = new HeaderView(getContext(), lockTheme);
         addView(headerView, wrapHeightParams);
 
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        int verticalMargin =  getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout = new PasswordlessFormLayout(this);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-        formLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 0);
+        formLayout.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formLayout, formLayoutParams);
 
         boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
@@ -119,7 +120,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     }
 
     private void showConfigurationMissingLayout(@StringRes int errorMessage) {
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
         final LinearLayout errorLayout = new LinearLayout(getContext());
         errorLayout.setOrientation(LinearLayout.VERTICAL);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

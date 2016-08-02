@@ -28,9 +28,7 @@
 
     <ImageView
         android:id="@+id/com_auth0_lock_icon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="center"
+        style="@style/Lock.Theme.Widget.Icon.Social"
         tools:background="#FF3333"
         tools:src="@drawable/com_auth0_lock_ic_social_auth0" />
 
