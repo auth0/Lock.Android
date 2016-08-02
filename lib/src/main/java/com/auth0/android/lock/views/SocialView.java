@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.utils.json.Strategy;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
@@ -59,14 +60,17 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         SocialViewAdapter adapter = new SocialViewAdapter(getContext(), socialStrategies);
         adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
-        LayoutManager lm = new GridLayoutManager(getContext(), 1, smallButtons ? HORIZONTAL : VERTICAL, false);
+        final int orientation = smallButtons ? HORIZONTAL : VERTICAL;
+        LayoutManager lm = new GridLayoutManager(getContext(), 1, orientation, false);
         recycler.setLayoutManager(lm);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
         recycler.setOverScrollMode(OVER_SCROLL_NEVER);
+        final SpacesItemDecoration spaceDecoration = new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_social), orientation);
+        recycler.addItemDecoration(spaceDecoration);
         LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(recycler, recyclerParams);
-        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override
