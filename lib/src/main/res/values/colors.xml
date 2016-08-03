@@ -31,6 +31,8 @@
     <color name="com_auth0_lock_social_amazon">#FF9900</color>
     <color name="com_auth0_lock_social_aol">#E60E04</color>
     <color name="com_auth0_lock_social_box">#267BB6</color>
+    <color name="com_auth0_lock_social_dropbox">#007ee5</color>
+    <color name="com_auth0_lock_social_bitbucket">#205081</color>
     <color name="com_auth0_lock_social_evernote">#82B137</color>
     <color name="com_auth0_lock_social_evernote_sandbox">#82B137</color>
     <color name="com_auth0_lock_social_exact">#ED1C24</color>
