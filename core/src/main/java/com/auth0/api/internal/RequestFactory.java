@@ -118,7 +118,7 @@ public class RequestFactory {
     }
 
     private static <T> ParameterizableRequest<T> addLocaleHeader(ParameterizableRequest<T> request) {
-        String language = Locale.getDefault().getLanguage();
+        String language = Locale.getDefault().toString();
         request.addHeader("Accept-Language", language != null ? language : "en");
         return request;
     }
