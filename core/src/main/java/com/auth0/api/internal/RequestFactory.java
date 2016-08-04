@@ -41,7 +41,8 @@ public class RequestFactory {
 
     private static String CLIENT_INFO;
 
-    private RequestFactory() {}
+    private RequestFactory() {
+    }
 
     public static void setClientInfo(String clientInfo) {
         CLIENT_INFO = clientInfo;
@@ -119,7 +120,7 @@ public class RequestFactory {
 
     private static <T> ParameterizableRequest<T> addLocaleHeader(ParameterizableRequest<T> request) {
         String language = Locale.getDefault().toString();
-        request.addHeader("Accept-Language", language != null ? language : "en");
+        request.addHeader("Accept-Language", !language.isEmpty() ? language : "en");
         return request;
     }
 }
