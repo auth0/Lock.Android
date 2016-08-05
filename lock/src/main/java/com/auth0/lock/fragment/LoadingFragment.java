@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.auth0.api.APIClient;
+import com.auth0.api.Request;
 import com.auth0.api.authentication.AuthenticationAPIClient;
 import com.auth0.api.callback.BaseCallback;
 import com.auth0.core.Application;
@@ -28,6 +28,7 @@ public class LoadingFragment extends Fragment {
     private static final String TAG = LoadingFragment.class.getName();
     private AuthenticationAPIClient client;
     private Bus bus;
+    private Request<Application> applicationRequest;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,35 +65,43 @@ public class LoadingFragment extends Fragment {
             return;
         }
 
-        client.fetchApplicationInfo()
-                .start(new BaseCallback<Application>() {
-                    @Override
-                    public void onSuccess(Application application) {
-                        Log.i(TAG, "Fetched app info for tenant " + application.getTenant());
-                        bus.post(application);
-                    }
+        applicationRequest = client.fetchApplicationInfo();
+        applicationRequest.start(new BaseCallback<Application>() {
+            @Override
+            public void onSuccess(Application application) {
+                Log.i(TAG, "Fetched app info for tenant " + application.getTenant());
+                bus.post(application);
+            }
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.e(TAG, "Failed to fetch app info", throwable);
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.com_auth0_application_load_failed_title)
-                                .setMessage(R.string.com_auth0_application_load_failed_message)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.com_auth0_application_retry_button_text, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        loadInfo();
-                                    }
-                                })
-                                .show();
-                    }
-                });
+            @Override
+            public void onFailure(Throwable throwable) {
+                Log.e(TAG, "Failed to fetch app info", throwable);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.com_auth0_application_load_failed_title)
+                        .setMessage(R.string.com_auth0_application_load_failed_message)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.com_auth0_application_retry_button_text, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                loadInfo();
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        //Cancel any pending request
+        applicationRequest.cancel();
+        applicationRequest = null;
     }
 
     private boolean isConnectionAvailable() {
         if (getActivity().checkCallingOrSelfPermission("android.permission.ACCESS_NETWORK_STATE") == PackageManager.PERMISSION_GRANTED) {
-            ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             return activeNetwork != null &&
                     activeNetwork.isConnectedOrConnecting();
