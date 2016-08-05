@@ -30,8 +30,8 @@ import android.util.Log;
 
 import com.auth0.api.APIClientException;
 import com.auth0.api.AuthorizableRequest;
-import com.auth0.api.RequestBodyBuildException;
 import com.auth0.api.ParameterizableRequest;
+import com.auth0.api.RequestBodyBuildException;
 import com.auth0.api.callback.BaseCallback;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -45,7 +45,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class BaseRequest<T> implements ParameterizableRequest<T>, AuthorizableRequest<T>, Callback {
+abstract class BaseRequest<T> implements ParameterizableRequest<T>, AuthorizableRequest<T>, Callback, com.auth0.api.Request<T> {
 
     private static final String TAG = BaseCallback.class.getName();
 
@@ -58,6 +58,7 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     private final ObjectWriter writer;
 
     private BaseCallback<T> callback;
+    private boolean isCanceled;
 
     protected BaseRequest(Handler handler, HttpUrl url, OkHttpClient client, ObjectReader reader, ObjectWriter writer) {
         this(handler, url, client, reader, writer, null);
@@ -80,6 +81,9 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     }
 
     protected void postOnSuccess(final T payload) {
+        if (isCanceled) {
+            return;
+        }
         handler.post(new CallbackTask<T>(callback) {
             @Override
             public void run() {
@@ -89,6 +93,9 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
     }
 
     protected final void postOnFailure(final Throwable error) {
+        if (isCanceled) {
+            return;
+        }
         Log.e(TAG, "Failed to make request to " + url, error);
         handler.post(new CallbackTask<T>(callback) {
             @Override
@@ -162,6 +169,11 @@ abstract class BaseRequest<T> implements ParameterizableRequest<T>, Authorizable
             Log.e(TAG, "Failed to build JSON body with parameters " + parameters, e);
             callback.onFailure(new APIClientException("Failed to send request to " + url.toString(), e));
         }
+    }
+
+    @Override
+    public void cancel() {
+        isCanceled = true;
     }
 
     protected abstract Request doBuildRequest(Request.Builder builder) throws RequestBodyBuildException;
