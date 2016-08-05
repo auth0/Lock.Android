@@ -26,31 +26,18 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import static com.auth0.android.lock.views.ModeSelectionView.Mode.LOG_IN;
-import static com.auth0.android.lock.views.ModeSelectionView.Mode.SIGN_UP;
+import com.auth0.android.lock.enums.AuthMode;
 
 public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSelectedListener {
 
     private final ModeSelectedListener callback;
     private TabLayout tabLayout;
-
-    @IntDef({LOG_IN, SIGN_UP})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Mode {
-        int LOG_IN = 0;
-        int SIGN_UP = 1;
-    }
 
     public ModeSelectionView(Context context, @NonNull ModeSelectedListener listener) {
         super(context);
@@ -70,7 +57,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         tabLayout.setOnTabSelectedListener(this);
     }
 
-    public void setSelectedMode(@Mode int mode) {
+    public void setSelectedMode(@AuthMode int mode) {
         tabLayout.getTabAt(mode).select();
     }
 
@@ -99,6 +86,6 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
     }
 
     public interface ModeSelectedListener {
-        void onModeSelected(@Mode int mode);
+        void onModeSelected(@AuthMode int mode);
     }
 }

@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.AuthMode;
 
 class SocialButton extends RelativeLayout {
 
@@ -52,15 +53,18 @@ class SocialButton extends RelativeLayout {
      * Configures the button with the given connection information.
      *
      * @param config contains the connection information.
+     * @param mode   the current button mode. Used to prefix the title with "Log In" or "Sign Up".
      */
-    public void setSocialConfig(SocialConfig config) {
+    public void setSocialConfig(SocialConfig config, @AuthMode int mode) {
         int titleRes = config.getTitle();
         int iconRes = config.getIcon();
         int backgroundColor = config.getBackgroundColor();
 
         ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
         if (!smallSize) {
-            title.setText(titleRes);
+            final String prefix = mode == AuthMode.LOG_IN ? getResources().getString(R.string.com_auth0_lock_social_log_in) : getResources().getString(R.string.com_auth0_lock_social_sign_up);
+            final String name = getResources().getString(titleRes);
+            title.setText(String.format("%s %s", prefix, name));
             ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
             rightBackground.getPaint().setAlpha(230);
             ViewUtils.setBackground(title, rightBackground);

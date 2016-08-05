@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.auth0.android.lock.enums.AuthMode;
 import com.auth0.android.lock.utils.json.Strategy;
 
 import java.util.List;
@@ -42,6 +43,8 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     private final List<Strategy> strategyList;
     private boolean useSmallButtons;
     private ConnectionAuthenticationListener callback;
+    @AuthMode
+    private int buttonMode;
 
     public SocialViewAdapter(Context context, @NonNull List<Strategy> strategyList) {
         this.context = context;
@@ -57,7 +60,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Strategy item = strategyList.get(i);
-        viewHolder.socialButton.setSocialConfig(new SocialConfig(context, item));
+        viewHolder.socialButton.setSocialConfig(new SocialConfig(context, item), buttonMode);
     }
 
     @Override
@@ -73,6 +76,15 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
      */
     public void setButtonSize(boolean useSmall) {
         this.useSmallButtons = useSmall;
+    }
+
+    /**
+     * Sets the button mode to Sign Up or Log In. This will prefix the mode text before the title.
+     *
+     * @param mode the mode to use on the current button list.
+     */
+    public void setButtonMode(@AuthMode int mode) {
+        this.buttonMode = mode;
     }
 
     /**
