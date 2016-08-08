@@ -41,6 +41,8 @@
     <string name="com_auth0_social_amazon">LOGIN WITH AMAZON</string>
     <string name="com_auth0_social_aol">LOGIN WITH AOL</string>
     <string name="com_auth0_social_box">LOGIN WITH BOX</string>
+    <string name="com_auth0_social_dropbox">LOG IN WITH DROPBOX</string>
+    <string name="com_auth0_social_bitbucket">LOG IN WITH BITBUCKET</string>
     <string name="com_auth0_social_evernote">LOGIN WITH EVERNOTE</string>
     <string name="com_auth0_social_evernote_sandbox">LOGIN WITH EVERNOTE (SANDBOX)</string>
     <string name="com_auth0_social_exact">LOGIN WITH EXACT</string>

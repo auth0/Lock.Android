@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ colors.xml
   ~
   ~ Copyright (c) 2015 Auth0 (http://auth0.com)
@@ -32,6 +31,8 @@
     <color name="com_auth0_social_amazon">#ffad1d</color>
     <color name="com_auth0_social_aol">#355FA7</color>
     <color name="com_auth0_social_box">#4A79B5</color>
+    <color name="com_auth0_social_dropbox">#007ee5</color>
+    <color name="com_auth0_social_bitbucket">#205081</color>
     <color name="com_auth0_social_evernote">#82B137</color>
     <color name="com_auth0_social_evernote_sandbox">#82B137</color>
     <color name="com_auth0_social_exact">#A21D22</color>
@@ -68,6 +69,8 @@
     <color name="com_auth0_social_amazon_text">#000000</color>
     <color name="com_auth0_social_aol_text">#ffffff</color>
     <color name="com_auth0_social_box_text">#ffffff</color>
+    <color name="com_auth0_social_dropbox_text">#ffffff</color>
+    <color name="com_auth0_social_bitbucket_text">#ffffff</color>
     <color name="com_auth0_social_evernote_text">#ffffff</color>
     <color name="com_auth0_social_evernote_sandbox_text">#ffffff</color>
     <color name="com_auth0_social_exact_text">#ffffff</color>
