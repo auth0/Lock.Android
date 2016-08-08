@@ -115,6 +115,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.getSocialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
         assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
+        assertThat(configuration.mustAcceptTerms(), is(false));
     }
 
     @Test
@@ -572,6 +573,13 @@ public class ConfigurationTest extends GsonBaseTest {
         configuration = new Configuration(application, options);
         assertThat(configuration.getTermsURL(), is(notNullValue()));
         assertThat(configuration.getTermsURL(), is(equalTo("https://google.com/terms")));
+    }
+
+    @Test
+    public void shouldHaveMustAcceptTermsEnabled() throws Exception {
+        options.setMustAcceptTerms(true);
+        configuration = new Configuration(application, options);
+        assertThat(configuration.mustAcceptTerms(), is(true));
     }
 
     private Configuration unfilteredConfig() {

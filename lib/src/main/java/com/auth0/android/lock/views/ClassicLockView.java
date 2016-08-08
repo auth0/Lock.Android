@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -51,7 +52,7 @@ import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
-public class ClassicLockView extends LinearLayout implements View.OnClickListener, LockWidgetForm {
+public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     private static final String TAG = ClassicLockView.class.getSimpleName();
     private static final int FORM_INDEX = 2;
@@ -114,14 +115,32 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         bottomBanner.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSignUpTermsDialog();
+                showSignUpTermsDialog(null);
             }
         });
         bottomBanner.setVisibility(GONE);
         addView(bottomBanner, wrapHeightParams);
 
         actionButton = new ActionButton(getContext(), lockTheme);
-        actionButton.setOnClickListener(this);
+        actionButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Object event = subForm != null ? subForm.submitForm() : formLayout.onActionPressed();
+                if (event == null) {
+                    return;
+                }
+                if (!configuration.mustAcceptTerms() || !(event instanceof DatabaseSignUpEvent)) {
+                    bus.post(event);
+                    return;
+                }
+                showSignUpTermsDialog(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        bus.post(event);
+                    }
+                });
+            }
+        });
         addView(actionButton, wrapHeightParams);
 
         boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
@@ -254,15 +273,26 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
         bottomBanner.setVisibility(show ? VISIBLE : GONE);
     }
 
-    private void showSignUpTermsDialog() {
+    /**
+     * Create a dialog to show the Privacy Policy and Terms of Service text.
+     * If the provided callback it's not null, it will ask for acceptance.
+     *
+     * @param acceptCallback the callback to receive the acceptance. Can be null.
+     */
+    private void showSignUpTermsDialog(@Nullable DialogInterface.OnClickListener acceptCallback) {
         final String content = String.format(getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_message), configuration.getTermsURL(), configuration.getPrivacyURL());
-        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setTitle(getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_title))
-                .setPositiveButton(android.R.string.ok, null)
-                .setMessage(Html.fromHtml(content))
-                .show();
+                .setPositiveButton(R.string.com_auth0_lock_action_ok, null)
+                .setMessage(Html.fromHtml(content));
+        if (acceptCallback != null) {
+            builder.setNegativeButton(R.string.com_auth0_lock_action_cancel, null)
+                    .setPositiveButton(R.string.com_auth0_lock_action_accept, acceptCallback)
+                    .setCancelable(false);
+        }
 
-        final TextView message = (TextView) dialog.findViewById(android.R.id.message);
+        //the dialog needs to be shown before we can get it's view.
+        final TextView message = (TextView) builder.show().findViewById(android.R.id.message);
         if (message != null) {
             message.setMovementMethod(LinkMovementMethod.getInstance());
         }
@@ -276,14 +306,6 @@ public class ClassicLockView extends LinearLayout implements View.OnClickListene
     @Override
     public void onFormSubmit() {
         actionButton.callOnClick();
-    }
-
-    @Override
-    public void onClick(View v) {
-        Object event = subForm != null ? subForm.submitForm() : formLayout.onActionPressed();
-        if (event != null) {
-            bus.post(event);
-        }
     }
 
     @Override

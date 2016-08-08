@@ -430,6 +430,18 @@ public class Lock {
             return this;
         }
 
+        /**
+         * Prompts the user to accept the Privacy Policy and Terms of Service before signing up.
+         * The default value is false.
+         *
+         * @param mustAcceptTerms whether the user needs to accept the terms before sign up or not.
+         * @return the current builder instance
+         */
+        public Builder setMustAcceptTerms(boolean mustAcceptTerms) {
+            options.setMustAcceptTerms(mustAcceptTerms);
+            return this;
+        }
+
         private List<CustomField> removeDuplicatedKeys(List<CustomField> customFields) {
             int originalSize = customFields.size();
             final List<CustomField> withoutDuplicates = new ArrayList<>();

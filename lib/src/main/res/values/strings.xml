@@ -92,6 +92,9 @@
     <string name="com_auth0_lock_action_forgot_password">Don\'t remember your password?</string>
     <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
     <string name="com_auth0_lock_action_retry">Retry</string>
+    <string name="com_auth0_lock_action_accept">Accept</string>
+    <string name="com_auth0_lock_action_cancel">Cancel</string>
+    <string name="com_auth0_lock_action_ok">OK</string>
     <string name="com_auth0_lock_single_sign_on_enabled">Single Sign On Enabled</string>
     <string name="com_auth0_lock_forms_separator">OR</string>
     <string name="com_auth0_lock_passwordless_sms_forms_separator">Otherwise, enter your phone to sign in or create an account</string>
