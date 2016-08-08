@@ -51,6 +51,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.auth0.util.AuthenticationAPI.CODE;
@@ -178,6 +179,7 @@ public class AuthenticationAPIClientTest {
         assertThat(callback, hasPayloadOfType(Token.class));
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/oauth/ro"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -230,6 +232,7 @@ public class AuthenticationAPIClientTest {
         assertThat(callback, hasPayloadOfType(UserProfile.class));
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/tokeninfo"));
     }
 
@@ -244,6 +247,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/oauth/access_token"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -265,6 +269,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/oauth/ro"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -287,6 +292,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/oauth/ro"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -307,6 +313,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/dbconnections/signup"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -327,6 +334,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/dbconnections/signup"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -349,6 +357,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/dbconnections/signup"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -370,6 +379,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/dbconnections/signup"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -389,6 +399,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/dbconnections/change_password"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -408,6 +419,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/dbconnections/change_password"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -427,6 +439,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/delegation"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -447,6 +460,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/delegation"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -467,6 +481,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/delegation"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -487,6 +502,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/unlink"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -513,6 +529,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/passwordless/start"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -533,6 +550,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/passwordless/start"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -553,6 +571,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/passwordless/start"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -573,6 +592,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/passwordless/start"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -593,6 +613,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/passwordless/start"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -615,6 +636,7 @@ public class AuthenticationAPIClientTest {
                 .start(callback);
 
         final RecordedRequest request = mockAPI.takeRequest();
+        assertThat(request.getHeader("Accept-Language"), equalTo(defaultLocale()));
         assertThat(request.getPath(), equalTo("/oauth/token"));
 
         Map<String, String> body = bodyFromRequest(request);
@@ -630,5 +652,10 @@ public class AuthenticationAPIClientTest {
     private Map<String, String> bodyFromRequest(RecordedRequest request) throws java.io.IOException {
         return new ObjectMapper().readValue(request.getBody().inputStream(), new TypeReference<Map<String, String>>() {
         });
+    }
+
+    private String defaultLocale() {
+        String language = Locale.getDefault().toString();
+        return !language.isEmpty() ? language : "en";
     }
 }
