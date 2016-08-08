@@ -64,6 +64,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     private String lastEmailInput;
 
+    @ModeSelectionView.Mode
+    private int lastFormMode = -1;
+
     public FormLayout(Context context) {
         super(context);
         lockWidget = null;
@@ -85,13 +88,11 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
         if (showModeSelection) {
-            Log.v(TAG, "SignUp enabled. Adding the Login/SignUp Mode Switcher");
+            Log.v(TAG, "Showing the LogIn/SignUp tabs");
             modeSelectionView = new ModeSelectionView(getContext(), this);
             modeSelectionView.setId(R.id.com_auth0_lock_form_selector);
-            int verticalModeSelectionMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_mode_selection);
             LayoutParams modeSelectionParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             modeSelectionParams.addRule(ALIGN_PARENT_TOP);
-            modeSelectionView.setPadding(horizontalMargin, verticalModeSelectionMargin, horizontalMargin, 0);
             addView(modeSelectionView, modeSelectionParams);
         }
         formsHolder = new LinearLayout(getContext());
@@ -157,10 +158,11 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      * @param mode the new DatabaseMode to change to
      */
     private void changeFormMode(@ModeSelectionView.Mode int mode) {
-        Log.d(TAG, "Mode changed to " + mode);
-        if (!showDatabase && !showEnterprise) {
+        if (lastFormMode == mode || !showDatabase && !showEnterprise) {
             return;
         }
+        Log.d(TAG, "Mode changed to " + mode);
+        lastFormMode = mode;
         lockWidget.showTopBanner(false);
         switch (mode) {
             case ModeSelectionView.Mode.LOG_IN:
@@ -226,7 +228,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     @Nullable
     private View getExistingForm() {
-        return formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
+        return formsHolder == null ? null : formsHolder.getChildAt(formsHolder.getChildCount() == 1 ? SINGLE_FORM_POSITION : MULTIPLE_FORMS_POSITION);
     }
 
     /**

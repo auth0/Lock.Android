@@ -45,6 +45,12 @@
         <item name="android:textColor">@color/com_auth0_lock_text</item>
     </style>
 
+    <style name="Lock.Theme.TextAppearance.Tab" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">@dimen/com_auth0_lock_tab_text</item>
+        <item name="android:textColor">@color/com_auth0_lock_tab_text</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="Lock.Theme.Text.PasswordPolicy">
         <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
     </style>
@@ -112,17 +118,6 @@
     <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
-    </style>
-
-    <style name="Lock.Theme.Text.ModeSwitcher">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_form_selector_height</item>
-        <item name="android:layout_weight">.5</item>
-        <item name="android:button">@android:color/transparent</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@drawable/com_auth0_lock_radio_button_text_color</item>
-        <item name="android:textSize">@dimen/com_auth0_lock_switcher_text</item>
     </style>
 
     <style name="Lock.Theme.Text.SocialButton">

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:lines="1"
+        android:gravity="center"
+        android:textAppearance="@style/Lock.Theme.TextAppearance.Tab" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/com_auth0_lock_widget_tab_strip_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/com_auth0_lock_tab_underline" />
+</RelativeLayout>

@@ -25,10 +25,12 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
+import android.support.design.widget.TabLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 
@@ -38,10 +40,10 @@ import java.lang.annotation.RetentionPolicy;
 import static com.auth0.android.lock.views.ModeSelectionView.Mode.LOG_IN;
 import static com.auth0.android.lock.views.ModeSelectionView.Mode.SIGN_UP;
 
-public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
+public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSelectedListener {
 
     private final ModeSelectedListener callback;
-    private RadioGroup modeGroup;
+    private TabLayout tabLayout;
 
     @IntDef({LOG_IN, SIGN_UP})
     @Retention(RetentionPolicy.SOURCE)
@@ -57,22 +59,43 @@ public class ModeSelectionView extends RelativeLayout implements RadioGroup.OnCh
     }
 
     private void init() {
-        inflate(getContext(), R.layout.com_auth0_lock_mode_selection_layout, this);
-        modeGroup = (RadioGroup) findViewById(R.id.com_auth0_lock_form_radio_mode_group);
-        modeGroup.setOnCheckedChangeListener(this);
+        inflate(getContext(), R.layout.com_auth0_lock_tab_layout, this);
+        tabLayout = (TabLayout) findViewById(R.id.com_auth0_lock_tab_layout);
+        tabLayout.addTab(tabLayout.newTab()
+                .setCustomView(R.layout.com_auth0_lock_tab)
+                .setText(R.string.com_auth0_lock_action_log_in));
+        tabLayout.addTab(tabLayout.newTab()
+                .setCustomView(R.layout.com_auth0_lock_tab)
+                .setText(R.string.com_auth0_lock_action_sign_up));
+        tabLayout.setOnTabSelectedListener(this);
     }
 
     public void setSelectedMode(@Mode int mode) {
-        modeGroup.check(mode == LOG_IN ? R.id.com_auth0_lock_mode_log_in : R.id.com_auth0_lock_mode_sign_up);
+        tabLayout.getTabAt(mode).select();
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        if (checkedId == R.id.com_auth0_lock_mode_log_in) {
-            callback.onModeSelected(LOG_IN);
-        } else if (checkedId == R.id.com_auth0_lock_mode_sign_up) {
-            callback.onModeSelected(SIGN_UP);
-        }
+    public void onTabSelected(TabLayout.Tab tab) {
+        final TextView text = (TextView) tab.getCustomView().findViewById(android.R.id.text1);
+        setBoldFont(text, true);
+        //noinspection WrongConstant
+        callback.onModeSelected(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+        final TextView text = (TextView) tab.getCustomView().findViewById(android.R.id.text1);
+        setBoldFont(text, false);
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+        //noinspection WrongConstant
+        callback.onModeSelected(tab.getPosition());
+    }
+
+    private void setBoldFont(TextView view, boolean bold) {
+        view.setTypeface(bold ? view.getTypeface() : null, bold ? Typeface.BOLD : Typeface.NORMAL);
     }
 
     public interface ModeSelectedListener {
