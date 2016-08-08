@@ -29,7 +29,6 @@ import android.content.res.Resources;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -40,11 +39,10 @@ import com.auth0.android.lock.utils.json.Strategy;
 class SocialConfig {
     private static final String TAG = SocialConfig.class.getSimpleName();
     private static final String ICON_RESOURCE_FORMAT = "com_auth0_lock_ic_social_%s";
-    private static final String TITLE_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
+    private static final String NAME_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
     private static final String BACKGROUND_COLOR_RESOURCE_FORMAT = "com_auth0_lock_social_%s";
 
-    @StringRes
-    private int title;
+    private String name;
     @ColorInt
     private int backgroundColor;
     @DrawableRes
@@ -62,23 +60,22 @@ class SocialConfig {
     private void generateResourcesForStrategy(Context context, String strategyName) {
         final Resources resources = context.getResources();
         final String pkgName = context.getPackageName();
-        strategyName = strategyName.replace("-", "_");
+        final String xmlSafeStrategyName = strategyName.replace("-", "_");
 
-        icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, strategyName), "drawable", pkgName);
+        icon = resources.getIdentifier(String.format(ICON_RESOURCE_FORMAT, xmlSafeStrategyName), "drawable", pkgName);
         icon = icon == 0 ? R.drawable.com_auth0_lock_ic_social_auth0 : icon;
 
-        title = resources.getIdentifier(String.format(TITLE_RESOURCE_FORMAT, strategyName), "string", pkgName);
-        title = title == 0 ? R.string.com_auth0_lock_social_unknown_placeholder : title;
+        int nameRes = resources.getIdentifier(String.format(NAME_RESOURCE_FORMAT, xmlSafeStrategyName), "string", pkgName);
+        name = nameRes == 0 ? strategyName : context.getString(nameRes);
 
-        int backgroundColorRes = resources.getIdentifier(String.format(BACKGROUND_COLOR_RESOURCE_FORMAT, strategyName), "color", pkgName);
+        int backgroundColorRes = resources.getIdentifier(String.format(BACKGROUND_COLOR_RESOURCE_FORMAT, xmlSafeStrategyName), "color", pkgName);
         backgroundColorRes = backgroundColorRes == 0 ? R.color.com_auth0_lock_social_unknown : backgroundColorRes;
 
         backgroundColor = ContextCompat.getColor(context, backgroundColorRes);
     }
 
-    @StringRes
-    public int getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     @ColorInt

@@ -27,45 +27,44 @@
     <string name="com_auth0_lock_social_error_authentication">Error parsing Authentication data</string>
 
     <!-- Social Buttons -->
-    <string name="com_auth0_lock_social_log_in">LOG IN </string>
-    <string name="com_auth0_lock_social_sign_up">SIGN UP </string>
-    <string name="com_auth0_lock_social_unknown_placeholder">WITH %s</string>
-    <string name="com_auth0_lock_social_yahoo">WITH YAHOO!</string>
-    <string name="com_auth0_lock_social_linkedin">WITH LINKEDIN</string>
-    <string name="com_auth0_lock_social_dropbox">WITH DROPBOX</string>
-    <string name="com_auth0_lock_social_bitbucket">WITH BITBUCKET</string>
-    <string name="com_auth0_lock_social_google_oauth2">WITH GOOGLE</string>
-    <string name="com_auth0_lock_social_twitter">WITH TWITTER</string>
-    <string name="com_auth0_lock_social_facebook">WITH FACEBOOK</string>
-    <string name="com_auth0_lock_social_amazon">WITH AMAZON</string>
-    <string name="com_auth0_lock_social_aol">WITH AOL</string>
-    <string name="com_auth0_lock_social_box">WITH BOX</string>
-    <string name="com_auth0_lock_social_evernote">WITH EVERNOTE</string>
-    <string name="com_auth0_lock_social_evernote_sandbox">WITH EVERNOTE (SANDBOX)</string>
-    <string name="com_auth0_lock_social_exact">WITH EXACT</string>
-    <string name="com_auth0_lock_social_github">WITH GITHUB</string>
-    <string name="com_auth0_lock_social_instagram">WITH INSTAGRAM</string>
-    <string name="com_auth0_lock_social_miicard">WITH MIICARD</string>
-    <string name="com_auth0_lock_social_paypal">WITH PAYPAL</string>
-    <string name="com_auth0_lock_social_salesforce">WITH SALESFORCE</string>
-    <string name="com_auth0_lock_social_salesforce_community">WITH SALESFORCE (COMMUNITY)</string>
-    <string name="com_auth0_lock_social_salesforce_sandbox">WITH SALESFORCE (SANDBOX)</string>
-    <string name="com_auth0_lock_social_soundcloud">WITH SOUNDCLOUD</string>
-    <string name="com_auth0_lock_social_windowslive">WITH MICROSOFT</string>
-    <string name="com_auth0_lock_social_yammer">WITH YAMMER</string>
-    <string name="com_auth0_lock_social_baidu">WITH 百度</string>
-    <string name="com_auth0_lock_social_fitbit">WITH FITBIT</string>
-    <string name="com_auth0_lock_social_planningcenter">WITH PLANNING CENTER</string>
-    <string name="com_auth0_lock_social_renren">WITH 人人</string>
-    <string name="com_auth0_lock_social_thecity">WITH THE CITY</string>
-    <string name="com_auth0_lock_social_thecity_sandbox">WITH THE CITY (SANDBOX)</string>
-    <string name="com_auth0_lock_social_thirtysevensignals">WITH 37 SIGNALS</string>
-    <string name="com_auth0_lock_social_vkontakte">WITH VKONTAKTE</string>
-    <string name="com_auth0_lock_social_weibo">WITH 新浪微博</string>
-    <string name="com_auth0_lock_social_wordpress">WITH WORDPRESS</string>
-    <string name="com_auth0_lock_social_yandex">WITH YANDEX</string>
-    <string name="com_auth0_lock_social_shopify">WITH SHOPIFY</string>
-    <string name="com_auth0_lock_social_dwolla">WITH DWOLLA</string>
+    <string name="com_auth0_lock_social_log_in">LOG IN WITH %s</string>
+    <string name="com_auth0_lock_social_sign_up">SIGN UP WITH %s</string>
+    <string name="com_auth0_lock_social_dropbox">DROPBOX</string>
+    <string name="com_auth0_lock_social_bitbucket">BITBUCKET</string>
+    <string name="com_auth0_lock_social_yahoo">YAHOO!</string>
+    <string name="com_auth0_lock_social_linkedin">LINKEDIN</string>
+    <string name="com_auth0_lock_social_google_oauth2">GOOGLE</string>
+    <string name="com_auth0_lock_social_twitter">TWITTER</string>
+    <string name="com_auth0_lock_social_facebook">FACEBOOK</string>
+    <string name="com_auth0_lock_social_amazon">AMAZON</string>
+    <string name="com_auth0_lock_social_aol">AOL</string>
+    <string name="com_auth0_lock_social_box">BOX</string>
+    <string name="com_auth0_lock_social_evernote">EVERNOTE</string>
+    <string name="com_auth0_lock_social_evernote_sandbox">EVERNOTE (SANDBOX)</string>
+    <string name="com_auth0_lock_social_exact">EXACT</string>
+    <string name="com_auth0_lock_social_github">GITHUB</string>
+    <string name="com_auth0_lock_social_instagram">INSTAGRAM</string>
+    <string name="com_auth0_lock_social_miicard">MIICARD</string>
+    <string name="com_auth0_lock_social_paypal">PAYPAL</string>
+    <string name="com_auth0_lock_social_salesforce">SALESFORCE</string>
+    <string name="com_auth0_lock_social_salesforce_community">SALESFORCE (COMMUNITY)</string>
+    <string name="com_auth0_lock_social_salesforce_sandbox">SALESFORCE (SANDBOX)</string>
+    <string name="com_auth0_lock_social_soundcloud">SOUNDCLOUD</string>
+    <string name="com_auth0_lock_social_windowslive">MICROSOFT</string>
+    <string name="com_auth0_lock_social_yammer">YAMMER</string>
+    <string name="com_auth0_lock_social_baidu">百度</string>
+    <string name="com_auth0_lock_social_fitbit">FITBIT</string>
+    <string name="com_auth0_lock_social_planningcenter">PLANNING CENTER</string>
+    <string name="com_auth0_lock_social_renren">人人</string>
+    <string name="com_auth0_lock_social_thecity">THE CITY</string>
+    <string name="com_auth0_lock_social_thecity_sandbox">THE CITY (SANDBOX)</string>
+    <string name="com_auth0_lock_social_thirtysevensignals">37 SIGNALS</string>
+    <string name="com_auth0_lock_social_vkontakte">VKONTAKTE</string>
+    <string name="com_auth0_lock_social_weibo">新浪微博</string>
+    <string name="com_auth0_lock_social_wordpress">WORDPRESS</string>
+    <string name="com_auth0_lock_social_yandex">YANDEX</string>
+    <string name="com_auth0_lock_social_shopify">SHOPIFY</string>
+    <string name="com_auth0_lock_social_dwolla">DWOLLA</string>
 
     <!-- Lock General -->
     <string name="com_auth0_lock_default_country_name_fallback">US</string>
@@ -114,7 +113,7 @@
     <string name="com_auth0_lock_sign_up_terms_dialog_message" formatted="false"><![CDATA[
     By signing up, you agree to our <a href=\'%s\'>terms of service</a> and <a href=\'%s\'>privacy policy</a>
     ]]></string>
-    
+
     <!-- Custom Error Messages -->
     <string name="com_auth0_lock_missing_connections_message">There isn\'t any connection configured for this Application. Check your dashboard configuration on http://auth0.com</string>
     <string name="com_auth0_lock_configuration_retrieving_error">Error retrieving the Dashboard configuration</string>

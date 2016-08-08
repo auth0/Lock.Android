@@ -56,15 +56,14 @@ class SocialButton extends RelativeLayout {
      * @param mode   the current button mode. Used to prefix the title with "Log In" or "Sign Up".
      */
     public void setSocialConfig(SocialConfig config, @AuthMode int mode) {
-        int titleRes = config.getTitle();
+        String name = config.getName();
         int iconRes = config.getIcon();
         int backgroundColor = config.getBackgroundColor();
 
         ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
         if (!smallSize) {
-            final String prefix = mode == AuthMode.LOG_IN ? getResources().getString(R.string.com_auth0_lock_social_log_in) : getResources().getString(R.string.com_auth0_lock_social_sign_up);
-            final String name = getResources().getString(titleRes);
-            title.setText(String.format("%s %s", prefix, name));
+            final String prefixFormat = getResources().getString(mode == AuthMode.LOG_IN ? R.string.com_auth0_lock_social_log_in : R.string.com_auth0_lock_social_sign_up);
+            title.setText(String.format(prefixFormat, name));
             ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
             rightBackground.getPaint().setAlpha(230);
             ViewUtils.setBackground(title, rightBackground);

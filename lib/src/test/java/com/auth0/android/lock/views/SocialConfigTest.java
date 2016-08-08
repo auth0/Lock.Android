@@ -29,7 +29,9 @@ import android.os.Build;
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.json.Application;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.json.GsonBaseTest;
+import com.auth0.android.lock.utils.json.Strategy;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;
@@ -40,6 +42,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.io.FileReader;
+import java.util.Collections;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -84,17 +87,25 @@ public class SocialConfigTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldGetTitle() {
-        assertThat(socialConfig.getTitle(), is(R.string.com_auth0_lock_social_facebook));
+    public void shouldGetUnknownName() throws Exception {
+        Strategy unknownStrategy = new Strategy("MY-NEW SOCIAL-NETWORK *#!", Collections.<Connection>emptyList());
+        SocialConfig unknownSocialConfig = new SocialConfig(RuntimeEnvironment.application, unknownStrategy);
+        assertThat(unknownSocialConfig.getName(), is("MY-NEW SOCIAL-NETWORK *#!"));
     }
 
     @Test
-    public void shouldGetIcon() {
+    public void shouldGetName() throws Exception {
+        String name = RuntimeEnvironment.application.getString(R.string.com_auth0_lock_social_facebook);
+        assertThat(socialConfig.getName(), is(name));
+    }
+
+    @Test
+    public void shouldGetIcon() throws Exception {
         assertThat(socialConfig.getIcon(), is(R.drawable.com_auth0_lock_ic_social_facebook));
     }
 
     @Test
-    public void shouldGetBackgroundColor() {
+    public void shouldGetBackgroundColor() throws Exception {
         android.app.Application context = RuntimeEnvironment.application;
         int expectedColor;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
