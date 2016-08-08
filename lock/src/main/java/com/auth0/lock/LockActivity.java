@@ -195,7 +195,7 @@ public class LockActivity extends FragmentActivity {
         lock.setConfiguration(configuration);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, builder.root())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @SuppressWarnings("unused")

@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -119,5 +120,19 @@ public class BaseRequestTest {
         runnable.run();
         verify(callback).onFailure(eq(throwable));
         verifyNoMoreInteractions(callback, handler);
+    }
+
+    @Test
+    public void shouldNotPostOnSuccessIfCanceled() throws Exception {
+        baseRequest.cancel();
+        baseRequest.postOnSuccess("OK");
+        verify(handler, never()).post(captor.capture());
+    }
+
+    @Test
+    public void shouldNotPostOnFailureIfCanceled() throws Exception {
+        baseRequest.cancel();
+        baseRequest.postOnFailure(throwable);
+        verify(handler, never()).post(captor.capture());
     }
 }

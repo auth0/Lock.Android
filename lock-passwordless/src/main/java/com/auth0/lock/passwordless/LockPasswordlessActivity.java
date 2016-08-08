@@ -112,6 +112,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
         lock = getLock();
         client = lock.getAuthenticationAPIClient();
         bus = lock.getBus();
+        bus.register(this);
 
         if (savedInstanceState == null) {
             isInProgress = false;
@@ -181,12 +182,6 @@ public class LockPasswordlessActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        bus.register(this);
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
@@ -206,8 +201,8 @@ public class LockPasswordlessActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         bus.unregister(this);
     }
 
@@ -304,7 +299,7 @@ public class LockPasswordlessActivity extends FragmentActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.com_auth0_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @SuppressWarnings("unused")
