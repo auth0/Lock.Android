@@ -23,8 +23,6 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:lock="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Lock.Theme.Widget.SubmitButton">
 
     <ImageView
@@ -35,8 +33,7 @@
         android:paddingBottom="@dimen/com_auth0_lock_action_button_vertical_margin"
         android:paddingTop="@dimen/com_auth0_lock_action_button_vertical_margin"
         android:scaleType="center"
-        lock:srcCompat="@drawable/com_auth0_lock_ic_submit"
-        tools:ignore="MissingPrefix" />
+        android:src="@drawable/com_auth0_lock_ic_submit" />
 
     <ProgressBar
         android:id="@+id/com_auth0_lock_progress"
@@ -44,4 +41,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true" />
+
 </FrameLayout>

@@ -33,6 +33,8 @@
     <string name="com_auth0_lock_social_google_oauth2">LOG IN WITH GOOGLE</string>
     <string name="com_auth0_lock_social_twitter">LOG IN WITH TWITTER</string>
     <string name="com_auth0_lock_social_facebook">LOG IN WITH FACEBOOK</string>
+    <string name="com_auth0_lock_social_dropbox">LOG IN WITH DROPBOX</string>
+    <string name="com_auth0_lock_social_bitbucket">LOG IN WITH BITBUCKET</string>
     <string name="com_auth0_lock_social_amazon">LOG IN WITH AMAZON</string>
     <string name="com_auth0_lock_social_aol">LOG IN WITH AOL</string>
     <string name="com_auth0_lock_social_box">LOG IN WITH BOX</string>
@@ -62,38 +64,6 @@
     <string name="com_auth0_lock_social_yandex">LOG IN WITH YANDEX</string>
     <string name="com_auth0_lock_social_shopify">LOG IN WITH SHOPIFY</string>
     <string name="com_auth0_lock_social_dwolla">LOG IN WITH DWOLLA</string>
-    <string name="com_auth0_lock_social_icon_yahoo">Y</string>
-    <string name="com_auth0_lock_social_icon_linkedin">L</string>
-    <string name="com_auth0_lock_social_icon_google_oauth2">+</string>
-    <string name="com_auth0_lock_social_icon_twitter">T</string>
-    <string name="com_auth0_lock_social_icon_facebook">f</string>
-    <string name="com_auth0_lock_social_icon_amazon">a</string>
-    <string name="com_auth0_lock_social_icon_aol">l</string>
-    <string name="com_auth0_lock_social_icon_box">x</string>
-    <string name="com_auth0_lock_social_icon_evernote">n</string>
-    <string name="com_auth0_lock_social_icon_evernote_sandbox">n</string>
-    <string name="com_auth0_lock_social_icon_github">è</string>
-    <string name="com_auth0_lock_social_icon_instagram">i</string>
-    <string name="com_auth0_lock_social_icon_miicard">m</string>
-    <string name="com_auth0_lock_social_icon_paypal">$</string>
-    <string name="com_auth0_lock_social_icon_salesforce">*</string>
-    <string name="com_auth0_lock_social_icon_salesforce_sandbox">*</string>
-    <string name="com_auth0_lock_social_icon_soundcloud">t</string>
-    <string name="com_auth0_lock_social_icon_windowslive">W</string>
-    <string name="com_auth0_lock_social_icon_yammer">!</string>
-    <string name="com_auth0_lock_social_icon_baidu">u</string>
-    <string name="com_auth0_lock_social_icon_fitbit">#</string>
-    <string name="com_auth0_lock_social_icon_planningcenter">y</string>
-    <string name="com_auth0_lock_social_icon_renren">r</string>
-    <string name="com_auth0_lock_social_icon_thecity">c</string>
-    <string name="com_auth0_lock_social_icon_thecity_sandbox">c</string>
-    <string name="com_auth0_lock_social_icon_thirtysevensignals">b</string>
-    <string name="com_auth0_lock_social_icon_vkontakte">N</string>
-    <string name="com_auth0_lock_social_icon_weibo">S</string>
-    <string name="com_auth0_lock_social_icon_wordpress">w</string>
-    <string name="com_auth0_lock_social_icon_yandex">&amp;</string>
-    <string name="com_auth0_lock_social_icon_shopify">s</string>
-    <string name="com_auth0_lock_social_icon_dwolla">D</string>
 
     <!-- Lock General -->
     <string name="com_auth0_lock_default_country_name_fallback">US</string>
