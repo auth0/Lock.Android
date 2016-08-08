@@ -2,7 +2,7 @@ Lock for Android
 ============
 [![CI Status](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
-[![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#artifactdetails%7Ccom.auth0.android%7Clock%7C1.8.0%7Caar)
+[![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#artifactdetails%7Ccom.auth0.android%7Clock%7C1.17.0%7Caar)
 [ ![Download](https://api.bintray.com/packages/auth0/lock-android/lock/images/download.svg) ](https://bintray.com/auth0/lock-android/lock/_latestVersion)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
@@ -17,14 +17,14 @@ Lock for Android
 ## Requirements
 
 Android API level 15+ is required in order to use Lock's UI.
-If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.16.+`, the minimum required API level is 9.
+If you'll create your own API and just call Auth0 API via the `com.auth0.android:core:1.17.+`, the minimum required API level is 9.
 
 ##Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:1.16.+'
+compile 'com.auth0.android:lock:1.17.+'
 ```
 
 Once it's installed, you'll need to configure LockActivity in your`AndroidManifest.xml`, inside the `application` tag:
@@ -139,7 +139,7 @@ Also, if you would like to use passwordless with *magic links*, please read and 
 
 `LockPasswordlessActivity` is part of the library `lock-passwordless` and you can add it with this line in your `build.gradle`:
 ```gradle
-compile 'com.auth0.android:lock-passwordless:1.16.+'
+compile 'com.auth0.android:lock-passwordless:1.17.+'
 ```
 
 Then in your `AndroidManifest.xml` register the following activities:

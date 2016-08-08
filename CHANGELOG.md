@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.17.0](https://github.com/auth0/Lock.Android/tree/1.17.0) (2016-08-18)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.16.1...1.17.0)
+
+**Merged pull requests:**
+
+- Send Accept-Language Header [\#312](https://github.com/auth0/Lock.Android/pull/312) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add Dropbox and Bitbucket social connections [\#316](https://github.com/auth0/Lock.Android/pull/316) ([lbalmaceda](https://github.com/lbalmaceda))
+- Allow to cancel requests [\#318](https://github.com/auth0/Lock.Android/pull/318) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [1.16.1](https://github.com/auth0/Lock.Android/tree/1.16.1) (2016-05-18)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.16.0...1.16.1)
 
