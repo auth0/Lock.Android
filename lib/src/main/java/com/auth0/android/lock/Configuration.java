@@ -50,7 +50,7 @@ public class Configuration {
     private static final String SHOW_SIGNUP_KEY = "showSignup";
     private static final String SHOW_FORGOT_KEY = "showForgot";
     private static final String REQUIRES_USERNAME_KEY = "requires_username";
-    public static final String PASSWORD_POLICY_KEY = "passwordPolicy";
+    private static final String PASSWORD_POLICY_KEY = "passwordPolicy";
     private final List<CustomField> extraSignUpFields;
 
     private Connection defaultDatabaseConnection;

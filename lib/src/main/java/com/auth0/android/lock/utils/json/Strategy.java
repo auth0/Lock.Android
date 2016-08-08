@@ -25,6 +25,8 @@
 package com.auth0.android.lock.utils.json;
 
 
+import android.support.annotation.NonNull;
+
 import com.auth0.android.lock.utils.Strategies;
 
 import java.util.ArrayList;
@@ -70,5 +72,16 @@ public class Strategy {
         return Strategies.ActiveDirectory.getName().equals(name)
                 || Strategies.ADFS.getName().equals(name)
                 || Strategies.Waad.getName().equals(name);
+    }
+
+    /**
+     * Returns the name of the first connection found in this strategy. When no connections available,
+     * it will default to the strategy name.
+     *
+     * @return the first connection found or the strategy name if no connections are available.
+     */
+    @NonNull
+    public String getDefaultConnectionName() {
+        return !connections.isEmpty() ? connections.get(0).getName() : this.name;
     }
 }

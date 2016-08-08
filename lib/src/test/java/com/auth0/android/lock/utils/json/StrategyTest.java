@@ -24,19 +24,18 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.json.Connection;
-import com.auth0.android.lock.utils.json.Strategy;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -51,6 +50,26 @@ public class StrategyTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "default");
         connection = new Connection(values);
+    }
+
+    @Test
+    public void shouldReturnTheFirstConnectionName() throws Exception {
+        Map<String, Object> firstValues = new HashMap<>();
+        firstValues.put("name", "firstConnection");
+        Connection firstConnection = new Connection(firstValues);
+        Map<String, Object> secondValues = new HashMap<>();
+        secondValues.put("name", "secondConnection");
+        Connection secondConnection = new Connection(secondValues);
+        Strategy strategy = new Strategy("facebook", Arrays.asList(firstConnection, secondConnection));
+        assertThat(strategy.getDefaultConnectionName(), is("firstConnection"));
+        assertThat(strategy.getConnections().get(0), is(equalTo(firstConnection)));
+    }
+
+    @Test
+    public void shouldReturnStrategyNameWhenNoConnections() throws Exception {
+        Strategy strategy = new Strategy("facebook", Collections.<Connection>emptyList());
+        assertThat(strategy.getDefaultConnectionName(), is("facebook"));
+        assertThat(strategy.getConnections().isEmpty(), is(true));
     }
 
     @Test
