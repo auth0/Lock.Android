@@ -25,7 +25,7 @@
 package com.auth0.android.lock.utils.json;
 
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.auth0.android.lock.utils.Strategies;
 
@@ -75,13 +75,16 @@ public class Strategy {
     }
 
     /**
-     * Returns the name of the first connection found in this strategy. When no connections available,
-     * it will default to the strategy name.
+     * Returns the name of the first connection found in this strategy. When no connections are available,
+     * it will return the strategy name if this is a social connection or return null in any other case.
      *
-     * @return the first connection found or the strategy name if no connections are available.
+     * @return the first connection found or null if no connections available.
      */
-    @NonNull
+    @Nullable
     public String getDefaultConnectionName() {
-        return !connections.isEmpty() ? connections.get(0).getName() : this.name;
+        if (!connections.isEmpty()) {
+            return connections.get(0).getName();
+        }
+        return strategyMetadata.getType() == Strategies.Type.SOCIAL ? this.name : null;
     }
 }

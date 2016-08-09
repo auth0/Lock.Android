@@ -37,6 +37,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -66,9 +67,30 @@ public class StrategyTest {
     }
 
     @Test
-    public void shouldReturnStrategyNameWhenNoConnections() throws Exception {
+    public void shouldReturnStrategyNameWhenNoConnectionsAndTypeSocial() throws Exception {
         Strategy strategy = new Strategy("facebook", Collections.<Connection>emptyList());
         assertThat(strategy.getDefaultConnectionName(), is("facebook"));
+        assertThat(strategy.getConnections().isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldReturnNullWhenNoConnectionsAndTypeEnterprise() throws Exception {
+        Strategy strategy = new Strategy("adfs", Collections.<Connection>emptyList());
+        assertThat(strategy.getDefaultConnectionName(), is(nullValue()));
+        assertThat(strategy.getConnections().isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldReturnNullWhenNoConnectionsAndTypeDatabase() throws Exception {
+        Strategy strategy = new Strategy("auth0", Collections.<Connection>emptyList());
+        assertThat(strategy.getDefaultConnectionName(), is(nullValue()));
+        assertThat(strategy.getConnections().isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldReturnNullWhenNoConnectionsAndTypePasswordless() throws Exception {
+        Strategy strategy = new Strategy("sms", Collections.<Connection>emptyList());
+        assertThat(strategy.getDefaultConnectionName(), is(nullValue()));
         assertThat(strategy.getConnections().isEmpty(), is(true));
     }
 
