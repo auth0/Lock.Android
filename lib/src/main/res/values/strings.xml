@@ -124,6 +124,7 @@
     <string name="com_auth0_lock_db_login_error_message">There was an error processing the sign in</string>
     <string name="com_auth0_lock_db_login_error_invalid_credentials_message">Wrong email or password</string>
     <string name="com_auth0_lock_db_login_error_unauthorized_message">User is blocked</string>
+    <string name="com_auth0_lock_db_login_error_wrong_client_type_message">Enable PKCE on your Client\'s Dashboard by setting \'Client Type\' to \'Native\'.</string>
     <string name="com_auth0_lock_db_sign_up_error_message">There was an error processing the sign up</string>
     <string name="com_auth0_lock_db_change_password_message_success">We\'ve just sent you an email to reset your password</string>
     <string name="com_auth0_lock_db_message_change_password_error">Couldn\'t reset your password.</string>
