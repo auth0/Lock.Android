@@ -118,6 +118,8 @@
     <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
+        <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin</item>
     </style>
 
     <style name="Lock.Theme.Text.SocialButton">
@@ -159,14 +161,13 @@
     <style name="Lock.Theme.Widget.Icon">
         <item name="android:layout_gravity">center</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_field_icon_height</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_field_icon_height</item>
+        <item name="android:padding">@dimen/com_auth0_lock_widget_field_icon_padding</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">
-        <item name="android:scaleType">center</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:padding">@dimen/com_auth0_lock_widget_field_icon_padding</item>
     </style>
 
     <style name="Lock.Theme.Widget.Field" parent="Lock.Theme.Text">
@@ -227,23 +228,12 @@
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_margin">@dimen/com_auth0_lock_widget_vertical_margin_social
-        </item>
-        <item name="android:layout_centerInParent">true</item>
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
         <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_small_margin</item>
-        <item name="android:layout_marginLeft">
-            @dimen/com_auth0_lock_widget_horizontal_margin_small
-        </item>
-        <item name="android:layout_marginRight">
-            @dimen/com_auth0_lock_widget_horizontal_margin_small
-        </item>
-        <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_small_margin</item>
     </style>
 
     <style name="Lock.Theme.Widget.SubmitButton">

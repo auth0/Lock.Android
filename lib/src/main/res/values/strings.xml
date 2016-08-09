@@ -97,7 +97,7 @@
     <string name="com_auth0_lock_passwordless_email_forms_separator">Otherwise, enter your email to sign in or create an account</string>
     <string name="com_auth0_lock_title_change_password">Reset Password</string>
     <string name="com_auth0_lock_title_sign_up_custom_fields">Complete the sign up process</string>
-    <string name="com_auth0_lock_description_change_password">Please enter your email and the new\n password. We will send you an email to\n confirm the password change.</string>
+    <string name="com_auth0_lock_description_change_password">Please enter your email address. We will send you an email to reset your password.</string>
     <string name="com_auth0_lock_title_passwordless_code_email_sent">An email with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_code_sms_sent">An SMS with the code has been sent to %s</string>
     <string name="com_auth0_lock_title_passwordless_link_sent">We sent you a link to sign in to\n %s</string>

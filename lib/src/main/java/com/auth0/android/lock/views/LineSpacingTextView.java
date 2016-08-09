@@ -34,7 +34,7 @@ import android.widget.TextView;
  * TextView that removes the extra padding added in pre Lollipop APIs when
  * using the lineSpacingExtra attribute.
  */
-public class LineSpacingTextView extends TextView {
+class LineSpacingTextView extends TextView {
 
     public LineSpacingTextView(Context context) {
         super(context);

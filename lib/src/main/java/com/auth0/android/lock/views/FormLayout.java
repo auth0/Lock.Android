@@ -84,8 +84,8 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
         boolean showModeSelection = showDatabase && lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 
-        int verticalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
-        int horizontalMargin = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_horizontal_margin);
+        int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
 
         if (showModeSelection) {
             Log.v(TAG, "Showing the LogIn/SignUp tabs");
@@ -147,9 +147,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         orSeparatorMessage.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));
         orSeparatorMessage.setGravity(Gravity.CENTER);
-        int verticalPadding = (int) getResources().getDimension(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int verticalPadding = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-        formsHolder.addView(orSeparatorMessage, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        formsHolder.addView(orSeparatorMessage, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     /**
