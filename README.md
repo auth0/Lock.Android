@@ -64,6 +64,15 @@ You'll need to configure LockActivity in your `AndroidManifest.xml`, inside the 
 </activity>
 ```
 
+Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the WebAuthActivity inside the `application` tag:
+
+```xml
+<activity
+    android:name="com.auth0.android.provider.WebAuthActivity"
+    android:theme="@style/MyAppTheme"/>
+```
+
+
 Also, you'll need to add *Internet* permission to your application:
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
@@ -146,6 +155,14 @@ You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`,
         android:scheme="https" />
     </intent-filter>
 </activity>
+```
+
+Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the WebAuthActivity inside the `application` tag:
+
+```xml
+<activity
+    android:name="com.auth0.android.provider.WebAuthActivity"
+    android:theme="@style/MyAppTheme"/>
 ```
 
 Also, you'll need to add *Internet* permission to your application:
