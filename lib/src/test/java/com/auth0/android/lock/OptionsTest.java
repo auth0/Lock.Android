@@ -11,7 +11,9 @@ import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
@@ -44,6 +46,9 @@ public class OptionsTest {
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
 
     private Options options;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -89,21 +94,15 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getPrivacyURL(), is(notNullValue()));
+        assertThat(options.getPrivacyURL(), is("https://valid.url/privacy"));
         assertThat(options.getPrivacyURL(), is(equalTo(parceledOptions.getPrivacyURL())));
     }
 
     @Test
-    public void shouldNotSetPrivacyPolicyURLWhenInvalidURL() throws Exception {
+    public void shouldThrowWhenSettingPrivacyPolicyURLWithInvalidURL() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The given Policy Privacy URL doesn't have a valid URL format: an-invalid/url");
         options.setPrivacyURL("an-invalid/url");
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getPrivacyURL(), is(nullValue()));
-        assertThat(parceledOptions.getPrivacyURL(), is(nullValue()));
     }
 
     @Test
@@ -115,21 +114,15 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getTermsURL(), is(notNullValue()));
+        assertThat(options.getTermsURL(), is("https://valid.url/terms"));
         assertThat(options.getTermsURL(), is(equalTo(parceledOptions.getTermsURL())));
     }
 
     @Test
-    public void shouldNotSetTermsOfServiceURLWhenInvalidURL() throws Exception {
+    public void shouldThrowWhenSettingTermsOfServiceURLWithInvalidURL() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The given Terms of Service URL doesn't have a valid URL format: an-invalid/url");
         options.setTermsURL("an-invalid/url");
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getTermsURL(), is(nullValue()));
-        assertThat(parceledOptions.getTermsURL(), is(nullValue()));
     }
 
     @Test

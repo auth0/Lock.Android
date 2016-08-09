@@ -356,20 +356,22 @@ class Options implements Parcelable {
         return initialScreen;
     }
 
-    public void setPrivacyURL(@NonNull String url) {
-        if (Patterns.WEB_URL.matcher(url).matches()) {
-            this.privacyURL = url;
+    public void setPrivacyURL(@NonNull String url) throws IllegalArgumentException {
+        if (!Patterns.WEB_URL.matcher(url).matches()) {
+            throw new IllegalArgumentException("The given Policy Privacy URL doesn't have a valid URL format: " + url);
         }
+        this.privacyURL = url;
     }
 
     public String getPrivacyURL() {
         return privacyURL;
     }
 
-    public void setTermsURL(@NonNull String url) {
-        if (Patterns.WEB_URL.matcher(url).matches()) {
-            this.termsURL = url;
+    public void setTermsURL(@NonNull String url) throws IllegalArgumentException {
+        if (!Patterns.WEB_URL.matcher(url).matches()) {
+            throw new IllegalArgumentException("The given Terms of Service URL doesn't have a valid URL format: " + url);
         }
+        this.termsURL = url;
     }
 
     public String getTermsURL() {
