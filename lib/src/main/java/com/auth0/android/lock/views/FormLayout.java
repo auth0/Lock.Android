@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.enums.AuthMode;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -64,7 +65,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     private String lastEmailInput;
 
-    @ModeSelectionView.Mode
+    @AuthMode
     private int lastFormMode = -1;
 
     public FormLayout(Context context) {
@@ -118,7 +119,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             return;
         }
         int initialScreen = lockWidget.getConfiguration().getInitialScreen();
-        int mode = initialScreen == InitialScreen.SIGN_UP ? ModeSelectionView.Mode.SIGN_UP : ModeSelectionView.Mode.LOG_IN;
+        int mode = initialScreen == InitialScreen.SIGN_UP ? AuthMode.SIGN_UP : AuthMode.LOG_IN;
 
         if (modeSelectionView != null) {
             modeSelectionView.setSelectedMode(mode);
@@ -157,19 +158,23 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      *
      * @param mode the new DatabaseMode to change to
      */
-    private void changeFormMode(@ModeSelectionView.Mode int mode) {
+    private void changeFormMode(@AuthMode int mode) {
+        Log.d(TAG, "Mode changed to " + mode);
         if (lastFormMode == mode || !showDatabase && !showEnterprise) {
             return;
         }
         Log.d(TAG, "Mode changed to " + mode);
         lastFormMode = mode;
         lockWidget.showTopBanner(false);
+        if (socialLayout != null) {
+            socialLayout.setCurrentMode(mode);
+        }
         switch (mode) {
-            case ModeSelectionView.Mode.LOG_IN:
+            case AuthMode.LOG_IN:
                 showLogInForm();
                 lockWidget.showBottomBanner(false);
                 break;
-            case ModeSelectionView.Mode.SIGN_UP:
+            case AuthMode.SIGN_UP:
                 showSignUpForm();
                 lockWidget.showBottomBanner(true);
                 break;
@@ -267,7 +272,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     @Override
-    public void onModeSelected(@ModeSelectionView.Mode int mode) {
+    public void onModeSelected(@AuthMode int mode) {
         Log.d(TAG, "Mode changed to " + mode);
         changeFormMode(mode);
     }
