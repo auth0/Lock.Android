@@ -71,6 +71,7 @@ public class Configuration {
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean usernameRequired;
+    private boolean mustAcceptTerms;
     @PasswordStrength
     private int passwordPolicy;
     private final boolean classicLockAvailable;
@@ -249,6 +250,7 @@ public class Configuration {
         usernameStyle = options.usernameStyle();
         socialButtonStyle = options.socialButtonStyle();
         loginAfterSignUp = options.loginAfterSignUp();
+        mustAcceptTerms = options.mustAcceptTerms();
 
         final boolean socialAvailable = !getSocialStrategies().isEmpty();
         final boolean dbAvailable = getDefaultDatabaseConnection() != null;
@@ -412,5 +414,9 @@ public class Configuration {
     @NonNull
     public String getPrivacyURL() {
         return privacyURL;
+    }
+
+    public boolean mustAcceptTerms() {
+        return mustAcceptTerms;
     }
 }

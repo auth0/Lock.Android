@@ -11,7 +11,9 @@ import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
@@ -21,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -42,15 +45,20 @@ public class OptionsTest {
     private static final String DEVICE_KEY = "device";
     private static final String SCOPE_OPENID_OFFLINE_ACCESS = "openid offline_access";
 
-    private Auth0 auth0;
+    private Options options;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
-        auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        options = new Options();
+        options.setAccount(new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN));
     }
 
     @Test
-    public void shouldSetAccount() {
+    public void shouldSetAccount() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         Options options = new Options();
         options.setAccount(auth0);
 
@@ -65,9 +73,20 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldSetPrivacyPolicyURL() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetMustAcceptTerms() throws Exception {
+        options.setMustAcceptTerms(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.mustAcceptTerms(), is(true));
+        assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
+    }
+
+    @Test
+    public void shouldSetPrivacyPolicyURL() throws Exception {
         options.setPrivacyURL("https://valid.url/privacy");
 
         Parcel parcel = Parcel.obtain();
@@ -75,28 +94,19 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getPrivacyURL(), is("https://valid.url/privacy"));
         assertThat(options.getPrivacyURL(), is(equalTo(parceledOptions.getPrivacyURL())));
     }
 
     @Test
-    public void shouldNotSetPrivacyPolicyURLWhenInvalidURL() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldThrowWhenSettingPrivacyPolicyURLWithInvalidURL() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The given Policy Privacy URL doesn't have a valid URL format: an-invalid/url");
         options.setPrivacyURL("an-invalid/url");
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getPrivacyURL(), is(nullValue()));
-        assertThat(parceledOptions.getPrivacyURL(), is(nullValue()));
     }
 
     @Test
-    public void shouldSetTermsOfServiceURL() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetTermsOfServiceURL() throws Exception {
         options.setTermsURL("https://valid.url/terms");
 
         Parcel parcel = Parcel.obtain();
@@ -104,28 +114,19 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getTermsURL(), is("https://valid.url/terms"));
         assertThat(options.getTermsURL(), is(equalTo(parceledOptions.getTermsURL())));
     }
 
     @Test
-    public void shouldNotSetTermsOfServiceURLWhenInvalidURL() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldThrowWhenSettingTermsOfServiceURLWithInvalidURL() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The given Terms of Service URL doesn't have a valid URL format: an-invalid/url");
         options.setTermsURL("an-invalid/url");
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getTermsURL(), is(nullValue()));
-        assertThat(parceledOptions.getTermsURL(), is(nullValue()));
     }
 
     @Test
-    public void shouldUseBrowser() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUseBrowser() throws Exception {
         options.setUseBrowser(true);
 
         Parcel parcel = Parcel.obtain();
@@ -133,13 +134,12 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.useBrowser(), is(true));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
     }
 
     @Test
-    public void shouldUseBigSocialButtonStyle() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUseBigSocialButtonStyle() throws Exception {
         options.setSocialButtonStyle(SocialButtonStyle.BIG);
 
         Parcel parcel = Parcel.obtain();
@@ -147,13 +147,12 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.socialButtonStyle(), is(SocialButtonStyle.BIG));
         assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
     }
 
     @Test
-    public void shouldUseSmallSocialButtonStyle() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUseSmallSocialButtonStyle() throws Exception {
         options.setSocialButtonStyle(SocialButtonStyle.SMALL);
 
         Parcel parcel = Parcel.obtain();
@@ -161,27 +160,24 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.SMALL)));
         assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
     }
 
     @Test
-    public void shouldHavePKCEEnabledByDefault() {
-        Options options = new Options();
-        options.setAccount(auth0);
-
+    public void shouldHavePKCEEnabledByDefault() throws Exception {
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usePKCE(), is(parceledOptions.usePKCE()));
         assertThat(options.usePKCE(), is(true));
         assertThat(parceledOptions.usePKCE(), is(true));
     }
 
     @Test
-    public void shouldEnablePKCE() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldEnablePKCE() throws Exception {
         options.setUsePKCE(true);
 
         Parcel parcel = Parcel.obtain();
@@ -189,14 +185,13 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usePKCE(), is(parceledOptions.usePKCE()));
         assertThat(options.usePKCE(), is(true));
         assertThat(parceledOptions.usePKCE(), is(true));
     }
 
     @Test
-    public void shouldDisablePKCE() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldDisablePKCE() throws Exception {
         options.setUsePKCE(false);
 
         Parcel parcel = Parcel.obtain();
@@ -204,14 +199,13 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.usePKCE(), is(parceledOptions.usePKCE()));
         assertThat(options.usePKCE(), is(false));
         assertThat(parceledOptions.usePKCE(), is(false));
     }
 
     @Test
-    public void shouldBeClosable() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldBeClosable() throws Exception {
         options.setClosable(true);
 
         Parcel parcel = Parcel.obtain();
@@ -220,12 +214,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
+        assertThat(options.isClosable(), is(true));
     }
 
     @Test
-    public void shouldNotLoginAfterSignUp() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldNotLoginAfterSignUp() throws Exception {
         options.setLoginAfterSignUp(false);
 
         Parcel parcel = Parcel.obtain();
@@ -234,12 +227,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
+        assertThat(options.loginAfterSignUp(), is(false));
     }
 
     @Test
-    public void shouldChangeInitialScreenToLogIn() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldChangeInitialScreenToLogIn() throws Exception {
         options.setInitialScreen(InitialScreen.LOG_IN);
 
         Parcel parcel = Parcel.obtain();
@@ -248,12 +240,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+        assertThat(options.initialScreen(), is(InitialScreen.LOG_IN));
     }
 
     @Test
-    public void shouldChangeInitialScreenToSignUp() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldChangeInitialScreenToSignUp() throws Exception {
         options.setInitialScreen(InitialScreen.SIGN_UP);
 
         Parcel parcel = Parcel.obtain();
@@ -262,12 +253,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+        assertThat(options.initialScreen(), is(InitialScreen.SIGN_UP));
     }
 
     @Test
-    public void shouldChangeInitialScreenToForgotPassword() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldChangeInitialScreenToForgotPassword() throws Exception {
         options.setInitialScreen(InitialScreen.FORGOT_PASSWORD);
 
         Parcel parcel = Parcel.obtain();
@@ -276,12 +266,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+        assertThat(options.initialScreen(), is(InitialScreen.FORGOT_PASSWORD));
     }
 
     @Test
-    public void shouldUseEmailUsernameStyle() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUseEmailUsernameStyle() throws Exception {
         options.setUsernameStyle(UsernameStyle.EMAIL);
 
         Parcel parcel = Parcel.obtain();
@@ -290,12 +279,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+        assertThat(options.usernameStyle(), is(UsernameStyle.EMAIL));
     }
 
     @Test
-    public void shouldUseUsernameUsernameStyle() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUseUsernameUsernameStyle() throws Exception {
         options.setUsernameStyle(UsernameStyle.USERNAME);
 
         Parcel parcel = Parcel.obtain();
@@ -304,12 +292,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+        assertThat(options.usernameStyle(), is(UsernameStyle.USERNAME));
     }
 
     @Test
-    public void shouldUseDefaultUsernameStyle() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUseDefaultUsernameStyle() throws Exception {
         options.setUsernameStyle(UsernameStyle.DEFAULT);
 
         Parcel parcel = Parcel.obtain();
@@ -318,12 +305,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
+        assertThat(options.usernameStyle(), is(UsernameStyle.DEFAULT));
     }
 
     @Test
-    public void shouldAllowLogIn() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldAllowLogIn() throws Exception {
         options.setAllowLogIn(true);
 
         Parcel parcel = Parcel.obtain();
@@ -332,12 +318,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
+        assertThat(options.allowLogIn(), is(true));
     }
 
     @Test
-    public void shouldAllowSignUp() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldAllowSignUp() throws Exception {
         options.setAllowSignUp(true);
 
         Parcel parcel = Parcel.obtain();
@@ -346,12 +331,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
+        assertThat(options.allowSignUp(), is(true));
     }
 
     @Test
-    public void shouldAllowForgotPassword() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldAllowForgotPassword() throws Exception {
         options.setAllowForgotPassword(true);
 
         Parcel parcel = Parcel.obtain();
@@ -360,12 +344,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
+        assertThat(options.allowForgotPassword(), is(true));
     }
 
     @Test
-    public void shouldUsePasswordlessCode() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldUsePasswordlessCode() throws Exception {
         options.setUseCodePasswordless(false);
 
         Parcel parcel = Parcel.obtain();
@@ -374,26 +357,23 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.useCodePasswordless(), is(equalTo(parceledOptions.useCodePasswordless())));
+        assertThat(options.useCodePasswordless(), is(false));
     }
 
     @Test
-    public void shouldHavePasswordlessCodeByDefault() {
-        Options options = new Options();
-        options.setAccount(auth0);
-
+    public void shouldHavePasswordlessCodeByDefault() throws Exception {
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.useCodePasswordless(), is(equalTo(parceledOptions.useCodePasswordless())));
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(parceledOptions.useCodePasswordless(), is(true));
     }
 
     @Test
-    public void shouldSetDefaultDatabaseConnection() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetDefaultDatabaseConnection() throws Exception {
         options.useDatabaseConnection("default_db_connection");
 
         Parcel parcel = Parcel.obtain();
@@ -402,13 +382,11 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getDefaultDatabaseConnection(), is(equalTo(parceledOptions.getDefaultDatabaseConnection())));
+        assertThat(options.getDefaultDatabaseConnection(), is("default_db_connection"));
     }
 
     @Test
     public void shouldSetDefaultTheme() {
-        Options options = new Options();
-        options.setAccount(auth0);
-
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
@@ -420,9 +398,7 @@ public class OptionsTest {
 
 
     @Test
-    public void shouldSetCustomTheme() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetCustomTheme() throws Exception {
         Theme theme = Theme.newBuilder()
                 .withHeaderTitle(R.string.com_auth0_lock_header_title)
                 .withHeaderLogo(R.drawable.com_auth0_lock_header_logo)
@@ -447,9 +423,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldSetConnections() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetConnections() throws Exception {
         options.setConnections(createConnections("twitter", "facebook"));
 
         Parcel parcel = Parcel.obtain();
@@ -457,14 +431,13 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getConnections(), is(containsInAnyOrder("twitter", "facebook")));
         assertThat(options.getConnections(), is(equalTo(parceledOptions.getConnections())));
     }
 
 
     @Test
-    public void shouldSetEnterpriseConnectionsUsingWebForm() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetEnterpriseConnectionsUsingWebForm() throws Exception {
         options.setEnterpriseConnectionsUsingWebForm(createEnterpriseConnectionsUsingWebForm("myAD"));
 
         Parcel parcel = Parcel.obtain();
@@ -472,13 +445,12 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getEnterpriseConnectionsUsingWebForm(), containsInAnyOrder("myAD"));
         assertThat(options.getEnterpriseConnectionsUsingWebForm(), is(equalTo(parceledOptions.getEnterpriseConnectionsUsingWebForm())));
     }
 
     @Test
-    public void shouldSetAuthenticationParameters() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetAuthenticationParameters() throws Exception {
         options.setAuthenticationParameters(createAuthenticationParameters(654123));
 
         Parcel parcel = Parcel.obtain();
@@ -490,9 +462,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldSetCustomFields() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetCustomFields() throws Exception {
         options.setCustomFields(createCustomFields());
 
         Parcel parcel = Parcel.obtain();
@@ -509,10 +479,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldGetEmptyCustomFieldsIfNotSet() {
-        Options options = new Options();
-        options.setAccount(auth0);
-
+    public void shouldGetEmptyCustomFieldsIfNotSet() throws Exception {
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
@@ -525,9 +492,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldSetDeviceParameterIfUsingOfflineAccessScope() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldSetDeviceParameterIfUsingOfflineAccessScope() throws Exception {
         HashMap<String, Object> params = new HashMap<>();
         params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
         options.setAuthenticationParameters(params);
@@ -544,9 +509,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldNotOverrideDeviceParameterIfAlreadySet() {
-        Options options = new Options();
-        options.setAccount(auth0);
+    public void shouldNotOverrideDeviceParameterIfAlreadySet() throws Exception {
         HashMap<String, Object> params = new HashMap<>();
         params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
         params.put(DEVICE_KEY, "my_device 2016");
@@ -564,10 +527,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldSetDefaultValues() {
-        Options options = new Options();
-        options.setAccount(auth0);
-
+    public void shouldSetDefaultValues() throws Exception {
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
@@ -581,6 +541,7 @@ public class OptionsTest {
         assertThat(options.allowForgotPassword(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
+        assertThat(options.mustAcceptTerms(), is(false));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));
@@ -589,9 +550,6 @@ public class OptionsTest {
 
     @Test
     public void shouldSetAllTrueFields() throws Exception {
-        Options options = new Options();
-        options.setAccount(auth0);
-
         options.setUseBrowser(true);
         options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
@@ -600,6 +558,7 @@ public class OptionsTest {
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
         options.setClosable(true);
+        options.setMustAcceptTerms(true);
         options.setSocialButtonStyle(SocialButtonStyle.BIG);
         options.setLoginAfterSignUp(true);
 
@@ -609,6 +568,7 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
@@ -623,9 +583,6 @@ public class OptionsTest {
 
     @Test
     public void shouldSetAllFalseFields() throws Exception {
-        Options options = new Options();
-        options.setAccount(auth0);
-
         options.setClosable(false);
         options.setUseBrowser(false);
         options.setUsePKCE(false);
@@ -634,6 +591,7 @@ public class OptionsTest {
         options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
+        options.setMustAcceptTerms(false);
         options.setSocialButtonStyle(SocialButtonStyle.SMALL);
         options.setLoginAfterSignUp(false);
 
@@ -643,6 +601,7 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));

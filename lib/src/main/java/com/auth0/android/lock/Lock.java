@@ -33,7 +33,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.util.Patterns;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.ParameterBuilder;
@@ -406,11 +405,7 @@ public class Lock {
          * @return the current builder instance
          */
         public Builder setPrivacyURL(@NonNull String url) {
-            if (Patterns.WEB_URL.matcher(url).matches()) {
-                options.setPrivacyURL(url);
-            } else {
-                Log.w(TAG, "The given Privacy Policy URL doesn't have a valid URL format. Will default to 'https://auth0.com/privacy'.");
-            }
+            options.setPrivacyURL(url);
             return this;
         }
 
@@ -422,11 +417,19 @@ public class Lock {
          * @return the current builder instance
          */
         public Builder setTermsURL(@NonNull String url) {
-            if (Patterns.WEB_URL.matcher(url).matches()) {
-                options.setTermsURL(url);
-            } else {
-                Log.w(TAG, "The given Terms of Service URL doesn't have a valid URL format. Will default to 'https://auth0.com/terms'.");
-            }
+            options.setTermsURL(url);
+            return this;
+        }
+
+        /**
+         * Prompts the user to accept the Privacy Policy and Terms of Service before signing up.
+         * The default value is false.
+         *
+         * @param mustAcceptTerms whether the user needs to accept the terms before sign up or not.
+         * @return the current builder instance
+         */
+        public Builder setMustAcceptTerms(boolean mustAcceptTerms) {
+            options.setMustAcceptTerms(mustAcceptTerms);
             return this;
         }
 

@@ -60,6 +60,7 @@ class Options implements Parcelable {
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean loginAfterSignUp;
+    private boolean mustAcceptTerms;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -94,6 +95,7 @@ class Options implements Parcelable {
         allowSignUp = in.readByte() != WITHOUT_DATA;
         allowForgotPassword = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
+        mustAcceptTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
@@ -144,6 +146,7 @@ class Options implements Parcelable {
         dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowForgotPassword ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
@@ -353,23 +356,33 @@ class Options implements Parcelable {
         return initialScreen;
     }
 
-    public void setPrivacyURL(@NonNull String url) {
-        if (Patterns.WEB_URL.matcher(url).matches()) {
-            this.privacyURL = url;
+    public void setPrivacyURL(@NonNull String url) throws IllegalArgumentException {
+        if (!Patterns.WEB_URL.matcher(url).matches()) {
+            throw new IllegalArgumentException("The given Policy Privacy URL doesn't have a valid URL format: " + url);
         }
+        this.privacyURL = url;
     }
 
     public String getPrivacyURL() {
         return privacyURL;
     }
 
-    public void setTermsURL(@NonNull String url) {
-        if (Patterns.WEB_URL.matcher(url).matches()) {
-            this.termsURL = url;
+    public void setTermsURL(@NonNull String url) throws IllegalArgumentException {
+        if (!Patterns.WEB_URL.matcher(url).matches()) {
+            throw new IllegalArgumentException("The given Terms of Service URL doesn't have a valid URL format: " + url);
         }
+        this.termsURL = url;
     }
 
     public String getTermsURL() {
         return termsURL;
+    }
+
+    public void setMustAcceptTerms(boolean mustAcceptTerms) {
+        this.mustAcceptTerms = mustAcceptTerms;
+    }
+
+    public boolean mustAcceptTerms() {
+        return mustAcceptTerms;
     }
 }
