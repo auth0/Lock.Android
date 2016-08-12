@@ -29,7 +29,24 @@
 
 **Breaking changes**
 
-`Lock.Builder` method `allowSignIn` is renamed to `allowLogIn` and `fullscreen` was removed
+**Lock** `Builder` method
+
+```java
+public Builder allowSignIn(boolean allow) {...}
+```
+
+was renamed to
+
+```java
+public Builder allowLogIn(boolean allow) {...}
+```
+
+Also this method (and feature) is no longer supported in **Lock**
+
+```java
+public Builder fullscreen(boolean fullscreen) {...}
+```
+
 
 ## [2.0.0-beta.2](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.2) (2016-06-06)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.1...2.0.0-beta.2)
