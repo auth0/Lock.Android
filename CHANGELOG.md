@@ -1,5 +1,36 @@
 # Change Log
 
+## [2.0.0-beta.3](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.3) (2016-07-22)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.2...2.0.0-beta.3)
+
+**Added**
+
+- Locally Configurable Lock sample app [\#298](https://github.com/auth0/Lock.Android/pull/298) ([lbalmaceda](https://github.com/lbalmaceda)
+- Password Strength Widget [\#297](https://github.com/auth0/Lock.Android/pull/297) ([lbalmaceda](https://github.com/lbalmaceda)
+
+**Changed**
+
+- Update Proguard rules [\#305](https://github.com/auth0/Lock.Android/pull/305) ([lbalmaceda](https://github.com/lbalmaceda)
+- Remove Fullscreen feature [\#302](https://github.com/auth0/Lock.Android/pull/302) ([lbalmaceda](https://github.com/lbalmaceda)
+- Add callback setup on dashboard [\#300](https://github.com/auth0/Lock.Android/pull/300) ([lbalmaceda](https://github.com/lbalmaceda)
+- Allow to customize Lock's theme programmatically  [\#294](https://github.com/auth0/Lock.Android/pull/294) ([lbalmaceda](https://github.com/lbalmaceda)
+- Remove unused User Profile calls. [\#293](https://github.com/auth0/Lock.Android/pull/293) ([lbalmaceda](https://github.com/lbalmaceda)
+- Take email input across the forms [\#292](https://github.com/auth0/Lock.Android/pull/292) ([lbalmaceda](https://github.com/lbalmaceda)
+- Allow up to 3 Social Big Buttons on Passwordless mode [\#291](https://github.com/auth0/Lock.Android/pull/291) ([lbalmaceda](https://github.com/lbalmaceda)
+- Improve Custom Fields flow and layout [\#290](https://github.com/auth0/Lock.Android/pull/290) ([lbalmaceda](https://github.com/lbalmaceda)
+- Handle Application without Connections [\#289](https://github.com/auth0/Lock.Android/pull/289) ([lbalmaceda](https://github.com/lbalmaceda)
+- Draw the header behind the statusBar in Lollipop or greater [\#288](https://github.com/auth0/Lock.Android/pull/288) ([lbalmaceda](https://github.com/lbalmaceda)
+
+**Fixed**
+
+- Fix sign up request not sending the user metadata [\#303](https://github.com/auth0/Lock.Android/pull/303) ([lbalmaceda](https://github.com/lbalmaceda)
+- Fix TextView extra padding. [\#296](https://github.com/auth0/Lock.Android/pull/296) ([lbalmaceda](https://github.com/lbalmaceda)
+- Country code selection widget fixes  [\#295](https://github.com/auth0/Lock.Android/pull/295) ([lbalmaceda](https://github.com/lbalmaceda)
+
+**Breaking changes**
+
+`Lock.Builder` method `allowSignIn` is renamed to `allowLogIn` and `fullscreen` was removed
+
 ## [2.0.0-beta.2](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.2) (2016-06-06)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.1...2.0.0-beta.2)
 
