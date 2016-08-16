@@ -36,6 +36,12 @@
         <item name="Auth0.DarkPrimaryColor">@color/com_auth0_lock_submit_pressed</item>
     </style>
 
+    <style name="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_unknown</item>
+        <item name="Auth0.Name" />
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_auth0</item>
+    </style>
+
     <style name="Lock.Theme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
 
     <style name="Lock.Theme.Text">
@@ -119,7 +125,8 @@
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
         <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
-        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
     </style>
 
     <style name="Lock.Theme.Text.SocialButton">

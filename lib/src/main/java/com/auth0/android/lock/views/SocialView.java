@@ -37,6 +37,7 @@ import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.utils.json.Strategy;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.LayoutManager;
@@ -59,7 +60,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         setGravity(Gravity.CENTER);
         RecyclerView recycler = new RecyclerView(getContext());
         List<Strategy> socialStrategies = lockWidget.getConfiguration().getSocialStrategies();
-        adapter = new SocialViewAdapter(getContext(), socialStrategies);
+        adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(socialStrategies));
         adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
         final int orientation = smallButtons ? HORIZONTAL : VERTICAL;
@@ -73,6 +74,20 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(recycler, recyclerParams);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    private List<AuthConfig> generateAuthConfigs(List<Strategy> socialStrategies) {
+        List<AuthConfig> configs = new ArrayList<>();
+        for (Strategy s : socialStrategies) {
+            int style = lockWidget.getConfiguration().authStyleForStrategy(s.getName());
+            configs.add(new AuthConfig(s.getName(), getConnectionName(s), style));
+        }
+        return configs;
+    }
+
+    private String getConnectionName(Strategy strategy) {
+        //FIXME: The strategy should have a method like this, to return the first found connection.
+        return strategy.getConnections().isEmpty() ? strategy.getName() : strategy.getConnections().get(0).getName();
     }
 
     @Override

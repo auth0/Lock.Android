@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
 import android.util.Patterns;
 
 import com.auth0.android.Auth0;
@@ -40,11 +41,13 @@ import com.auth0.android.lock.enums.UsernameStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
+    private static final String KEY_AUTH_STYLES = "authStyles";
     private static final String SCOPE_KEY = "scope";
     private static final String DEVICE_KEY = "device";
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
@@ -64,6 +67,7 @@ class Options implements Parcelable {
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
+    private HashMap<String, Integer> authStyles;
     private HashMap<String, Object> authenticationParameters;
     private List<CustomField> customFields;
     private int initialScreen;
@@ -81,6 +85,7 @@ class Options implements Parcelable {
         useCodePasswordless = true;
         usePKCE = true;
         authenticationParameters = new HashMap<>();
+        authStyles = new HashMap<>();
         customFields = new ArrayList<>();
         theme = Theme.newBuilder().build();
     }
@@ -122,6 +127,13 @@ class Options implements Parcelable {
             authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
         } else {
             authenticationParameters = null;
+        }
+        if (in.readByte() == HAS_DATA) {
+            // FIXME this is something to improve
+            Bundle mapBundle = in.readBundle();
+            authStyles = (HashMap<String, Integer>) mapBundle.getSerializable(KEY_AUTH_STYLES);
+        } else {
+            authStyles = null;
         }
         if (in.readByte() == HAS_DATA) {
             customFields = new ArrayList<>();
@@ -174,6 +186,15 @@ class Options implements Parcelable {
             // FIXME this is something to improve
             Bundle mapBundle = new Bundle();
             mapBundle.putSerializable(KEY_AUTHENTICATION_PARAMETERS, authenticationParameters);
+            dest.writeBundle(mapBundle);
+        }
+        if (authStyles == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            // FIXME this is something to improve
+            Bundle mapBundle = new Bundle();
+            mapBundle.putSerializable(KEY_AUTH_STYLES, authStyles);
             dest.writeBundle(mapBundle);
         }
         if (customFields == null) {
@@ -384,5 +405,14 @@ class Options implements Parcelable {
 
     public boolean mustAcceptTerms() {
         return mustAcceptTerms;
+    }
+
+    public void withAuthStyle(@NonNull String connectionName, @StyleRes int style) {
+        authStyles.put(connectionName, style);
+    }
+
+    @NonNull
+    public Map<String, Integer> getAuthStyles() {
+        return new HashMap<>(authStyles);
     }
 }

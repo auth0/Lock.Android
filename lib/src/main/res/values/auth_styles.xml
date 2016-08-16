@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Lock.Theme.AuthStyle.Dropbox" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_dropbox</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_dropbox</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_dropbox</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.BitBucket" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_bitbucket</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_bitbucket</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_bitbucket</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Yahoo" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_yahoo</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_yahoo</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_yahoo</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.LinkedIn" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_linkedin</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_linkedin</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_linkedin</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.GoogleOAuth2" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_google_oauth2</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_google_oauth2</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_google_oauth2</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Twitter" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_twitter</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_twitter</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_twitter</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Facebook" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_facebook</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_facebook</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_facebook</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Amazon" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_amazon</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_amazon</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_amazon</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.AOL" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_aol</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_aol</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_aol</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Box" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_box</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_box</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_box</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Evernote" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_evernote</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_evernote</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_evernote</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.EvernoteSandbox" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_evernote_sandbox</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_evernote_sandbox</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_evernote_sandbox</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Exact" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_exact</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_exact</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_exact</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.GitHub" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_github</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_github</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_github</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Instagram" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_instagram</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_instagram</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_instagram</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.MiiCard" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_miicard</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_miicard</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_miicard</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Paypal" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_paypal</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_paypal</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_paypal</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Salesforce" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_salesforce</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_salesforce</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_salesforce</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.SalesforceCommunity" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_salesforce_community</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_salesforce_community</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_salesforce_community</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.SalesforceSandbox" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_salesforce_sandbox</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_salesforce_sandbox</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_salesforce_sandbox</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.SoundCloud" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_soundcloud</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_soundcloud</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_soundcloud</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.WindowsLive" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_windowslive</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_windowslive</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_windowslive</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Yammer" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_yammer</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_yammer</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_yammer</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Baidu" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_baidu</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_baidu</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_baidu</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Fitbit" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_fitbit</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_fitbit</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_fitbit</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.PlanningCenter" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_planningcenter</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_planningcenter</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_planningcenter</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.RenRen" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_renren</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_renren</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_renren</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.TheCity" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_thecity</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_thecity</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_thecity</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.TheCitySandbox" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_thecity_sandbox</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_thecity_sandbox</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_thecity_sandbox</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.ThirtySevenSignals" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_thirtysevensignals</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_thirtysevensignals</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_thirtysevensignals</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Vkontakte" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_vkontakte</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_vkontakte</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_vkontakte</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Weibo" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_weibo</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_weibo</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_weibo</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Wordpress" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_wordpress</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_wordpress</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_wordpress</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Yandex" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_yandex</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_yandex</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_yandex</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Shopify" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_shopify</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_shopify</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_shopify</item>
+    </style>
+
+    <style name="Lock.Theme.AuthStyle.Dwolla" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_dwolla</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_dwolla</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_dwolla</item>
+    </style>
+
+</resources>

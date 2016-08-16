@@ -10,6 +10,7 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +30,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -461,6 +461,25 @@ public class OptionsTest {
         assertThat(options.getAuthenticationParameters(), is(equalTo(parceledOptions.getAuthenticationParameters())));
     }
 
+    @SuppressWarnings("ResourceType")
+    @Test
+    public void shouldAddAuthStyles() throws Exception {
+        options.withAuthStyle("firstConnection", 1);
+        options.withAuthStyle("secondConnection", 2);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAuthStyles().size(), is(2));
+        assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("firstConnection", 1)));
+        assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("secondConnection", 2)));
+        assertThat(parceledOptions.getAuthStyles().size(), is(2));
+        assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("firstConnection", 1)));
+        assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("secondConnection", 2)));
+    }
+
     @Test
     public void shouldSetCustomFields() throws Exception {
         options.setCustomFields(createCustomFields());
@@ -545,6 +564,8 @@ public class OptionsTest {
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));
+        assertThat(options.getAuthenticationParameters(), is(notNullValue()));
+        assertThat(options.getAuthStyles(), is(notNullValue()));
     }
 
 

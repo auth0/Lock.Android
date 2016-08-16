@@ -55,10 +55,10 @@ class SocialButton extends RelativeLayout {
      * @param config contains the connection information.
      * @param mode   the current button mode. Used to prefix the title with "Log In" or "Sign Up".
      */
-    public void setSocialConfig(SocialConfig config, @AuthMode int mode) {
-        String name = config.getName();
-        int iconRes = config.getIcon();
-        int backgroundColor = config.getBackgroundColor();
+    public void setStyle(AuthConfig config, @AuthMode int mode) {
+        final String name = config.getName(getContext());
+        final Drawable logo = config.getLogo(getContext());
+        final int backgroundColor = config.getBackgroundColor(getContext());
 
         ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
         if (!smallSize) {
@@ -74,7 +74,7 @@ class SocialButton extends RelativeLayout {
         Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
         ViewUtils.setBackground(touchArea, touchBackground);
         ViewUtils.setBackground(icon, leftBackground);
-        icon.setImageResource(iconRes);
+        icon.setImageDrawable(logo);
     }
 
     @Override
