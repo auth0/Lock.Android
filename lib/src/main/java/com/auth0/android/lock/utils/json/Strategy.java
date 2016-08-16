@@ -34,6 +34,7 @@ import java.util.List;
 
 /**
  * Class with Auth0 authentication strategy info
+ * Disclaimer: This class may change in future releases. Don't use it directly.
  */
 public class Strategy {
 
