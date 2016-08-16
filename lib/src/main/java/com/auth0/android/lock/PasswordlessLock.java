@@ -266,7 +266,7 @@ public class PasswordlessLock {
          * @param theme to use.
          * @return the current Builder instance
          */
-        public Builder withTheme(@NonNull Theme theme) {
+        private Builder withTheme(@NonNull Theme theme) {
             options.withTheme(theme);
             return this;
         }
