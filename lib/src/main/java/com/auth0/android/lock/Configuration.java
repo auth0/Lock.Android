@@ -328,9 +328,9 @@ public class Configuration {
     }
 
     @StyleRes
-    public int authStyleForStrategy(String strategy) {
-        if (authStyles.containsKey(strategy)) {
-            return authStyles.get(strategy);
+    public int authStyleForConnection(String strategy, String connection) {
+        if (authStyles.containsKey(connection)) {
+            return authStyles.get(connection);
         }
         return AuthConfig.styleForStrategy(strategy);
     }

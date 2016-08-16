@@ -311,14 +311,14 @@ public class Lock {
         }
 
         /**
-         * Authentication Style to use with the given strategy name. It will override any lock defaults.
+         * Authentication Style to use with the given strategy or connection name. It will override any lock defaults.
          *
-         * @param strategyName to use this style with
-         * @param style        a valid Style with the Auth0.BackgroundColor, Auth0.Logo and Auth0.Name values defined.
+         * @param connectionName to use this style with
+         * @param style          a valid Style with the Auth0.BackgroundColor, Auth0.Logo and Auth0.Name values defined.
          * @return the current builder instance
          */
-        public Builder withAuthStyle(@NonNull String strategyName, @StyleRes int style) {
-            options.withAuthStyle(strategyName, style);
+        public Builder withAuthStyle(@NonNull String connectionName, @StyleRes int style) {
+            options.withAuthStyle(connectionName, style);
             return this;
         }
 

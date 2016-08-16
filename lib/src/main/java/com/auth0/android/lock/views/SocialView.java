@@ -79,15 +79,10 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     private List<AuthConfig> generateAuthConfigs(List<Strategy> socialStrategies) {
         List<AuthConfig> configs = new ArrayList<>();
         for (Strategy s : socialStrategies) {
-            int style = lockWidget.getConfiguration().authStyleForStrategy(s.getName());
-            configs.add(new AuthConfig(s.getName(), getConnectionName(s), style));
+            int style = lockWidget.getConfiguration().authStyleForConnection(s.getName(), s.getDefaultConnectionName());
+            configs.add(new AuthConfig(s.getName(), s.getDefaultConnectionName(), style));
         }
         return configs;
-    }
-
-    private String getConnectionName(Strategy strategy) {
-        //FIXME: The strategy should have a method like this, to return the first found connection.
-        return strategy.getConnections().isEmpty() ? strategy.getName() : strategy.getConnections().get(0).getName();
     }
 
     @Override

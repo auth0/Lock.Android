@@ -119,17 +119,17 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldGetValidStyleForNotOverridenStrategy() throws Exception {
+    public void shouldGetValidStyleForNotOverriddenStrategy() throws Exception {
         configuration = new Configuration(application, options);
-        assertThat(configuration.authStyleForStrategy("facebook"), is(R.style.Lock_Theme_AuthStyle_Facebook));
+        assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), is(R.style.Lock_Theme_AuthStyle_Facebook));
     }
 
     @Test
-    public void shouldGetStyleForOverridenStrategy() throws Exception {
+    public void shouldGetStyleForOverriddenStrategy() throws Exception {
         //noinspection ResourceType
-        options.withAuthStyle("facebook", 123456);
+        options.withAuthStyle("facebook-prod", 123456);
         configuration = new Configuration(application, options);
-        assertThat(configuration.authStyleForStrategy("facebook"), is(123456));
+        assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), is(123456));
     }
 
     @Test

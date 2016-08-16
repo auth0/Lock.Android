@@ -47,7 +47,6 @@ class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
-    private static final String KEY_AUTH_STYLES = "authStyles";
     private static final String SCOPE_KEY = "scope";
     private static final String DEVICE_KEY = "device";
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
