@@ -129,9 +129,14 @@ class Options implements Parcelable {
             authenticationParameters = null;
         }
         if (in.readByte() == HAS_DATA) {
-            // FIXME this is something to improve
-            Bundle mapBundle = in.readBundle();
-            authStyles = (HashMap<String, Integer>) mapBundle.getSerializable(KEY_AUTH_STYLES);
+            List<String> authStylesKeys = new ArrayList<>();
+            List<Integer> authStylesValues = new ArrayList<>();
+            in.readList(authStylesKeys, String.class.getClassLoader());
+            in.readList(authStylesValues, Integer.class.getClassLoader());
+            authStyles = new HashMap<>();
+            for (int i = 0; i < authStylesKeys.size(); i++) {
+                authStyles.put(authStylesKeys.get(i), authStylesValues.get(i));
+            }
         } else {
             authStyles = null;
         }
@@ -192,10 +197,8 @@ class Options implements Parcelable {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
             dest.writeByte((byte) (HAS_DATA));
-            // FIXME this is something to improve
-            Bundle mapBundle = new Bundle();
-            mapBundle.putSerializable(KEY_AUTH_STYLES, authStyles);
-            dest.writeBundle(mapBundle);
+            dest.writeList(new ArrayList<>(authStyles.keySet()));
+            dest.writeList(new ArrayList<>(authStyles.values()));
         }
         if (customFields == null) {
             dest.writeByte((byte) (WITHOUT_DATA));

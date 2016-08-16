@@ -466,18 +466,21 @@ public class OptionsTest {
     public void shouldAddAuthStyles() throws Exception {
         options.withAuthStyle("firstConnection", 1);
         options.withAuthStyle("secondConnection", 2);
+        options.withAuthStyle("thirdConnection", 3);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getAuthStyles().size(), is(2));
+        assertThat(options.getAuthStyles().size(), is(3));
         assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("firstConnection", 1)));
         assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("secondConnection", 2)));
-        assertThat(parceledOptions.getAuthStyles().size(), is(2));
+        assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("thirdConnection", 3)));
+        assertThat(parceledOptions.getAuthStyles().size(), is(3));
         assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("firstConnection", 1)));
         assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("secondConnection", 2)));
+        assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("thirdConnection", 3)));
     }
 
     @Test
