@@ -79,6 +79,8 @@ Also, you'll need to add *Internet* permission to your application:
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 
+> The `android.permission.ACCESS_NETWORK_STATE` permission is only used if you chose WebView over Browser for OAuth authentication.
+
 Then in any of your Activities you need to initialize **Lock**
 
 ```java
@@ -117,7 +119,7 @@ public class HomeActivity extends Activity {
      }
 
      @Override
-     public void onError(LockException error)
+     public void onError(LockException error) {
         //Exception occurred
      }
   };
@@ -171,6 +173,8 @@ Also, you'll need to add *Internet* permission to your application:
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 
+> The `android.permission.ACCESS_NETWORK_STATE` permission is only used if you chose WebView over Browser for OAuth authentication.
+
 Then in any of your Activities you need to initialize **PasswordlessLock**
 
 ```java
@@ -209,7 +213,7 @@ public class HomeActivity extends Activity {
      }
 
      @Override
-     public void onError(LockException error)
+     public void onError(LockException error) {
         //Exception occurred
      }
   };
