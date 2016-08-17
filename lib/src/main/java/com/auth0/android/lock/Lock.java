@@ -85,7 +85,6 @@ public class Lock {
 
     /**
      * Creates a new Lock.Builder instance with the given account and callback.
-     * ¬
      *
      * @param account  details to use against the Auth0 Authentication API.
      * @param callback that will receive the authentication results.
@@ -93,11 +92,21 @@ public class Lock {
      */
     @SuppressWarnings("unused")
     public static Builder newBuilder(@NonNull Auth0 account, @NonNull LockCallback callback) {
-        if (account.getTelemetry() != null) {
-            Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
-            account.setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
-        }
         return new Lock.Builder(account, callback);
+    }
+
+    /**
+     * Creates a new Lock.Builder instance with the given callback. The account information
+     * will be retrieved from the String resources file (strings.xml) using
+     * the keys 'com_auth0_client_id' and 'com_auth0_domain'.
+     *
+     * @param callback that will receive the authentication results.
+     * @return a new Lock.Builder instance.
+     */
+    @SuppressWarnings("unused")
+    public static Builder newBuilder(@NonNull LockCallback callback) {
+        //noinspection ConstantConditions
+        return newBuilder(null, callback);
     }
 
     /**
@@ -181,14 +190,23 @@ public class Lock {
          */
         public Lock build(@NonNull Activity activity) {
             if (options.getAccount() == null) {
-                Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
-                throw new IllegalStateException("Missing Auth0 account information.");
+                Log.w(TAG, "com.auth0.Auth0 account details not defined. Trying to create it from the String resources.");
+                try {
+                    options.setAccount(new Auth0(activity));
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalStateException("Missing Auth0 account information.", e);
+                }
             }
             if (callback == null) {
                 Log.e(TAG, "You need to specify the callback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing callback.");
             }
             Log.v(TAG, "Lock instance created");
+
+            if (options.getAccount().getTelemetry() != null) {
+                Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
+                options.getAccount().setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
+            }
 
             final Lock lock = new Lock(options, callback);
             lock.initialize(activity);
