@@ -108,20 +108,6 @@ public class PasswordlessLock {
     }
 
     /**
-     * Should be called on the Activity holding the Lock instance's OnCreate method, as it
-     * ensures the correct Lock lifecycle handling.
-     *
-     * @param activity a valid Activity context
-     */
-    @SuppressWarnings("unused")
-    public void onCreate(Activity activity) {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.AUTHENTICATION_ACTION);
-        filter.addAction(Constants.CANCELED_ACTION);
-        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
-    }
-
-    /**
      * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
      * ensures the correct Lock lifecycle handling.
      *
@@ -130,6 +116,13 @@ public class PasswordlessLock {
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
+    }
+    
+    private void initialize(Activity activity) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.AUTHENTICATION_ACTION);
+        filter.addAction(Constants.CANCELED_ACTION);
+        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
     private void processEvent(Intent data) {
@@ -172,9 +165,10 @@ public class PasswordlessLock {
          * Finishes the construction of the Lock.Options and generates a new Lock instance
          * with those Lock.Options.
          *
+         * @param activity a valid Activity context
          * @return a new Lock instance configured as in the Builder.
          */
-        public PasswordlessLock build() {
+        public PasswordlessLock build(@NonNull Activity activity) {
             if (options.getAccount() == null) {
                 Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
                 throw new IllegalStateException("Missing Auth0 account information.");
@@ -184,7 +178,9 @@ public class PasswordlessLock {
                 throw new IllegalStateException("Missing callback.");
             }
             Log.v(TAG, "PasswordlessLock instance created");
-            return new PasswordlessLock(options, callback);
+            final PasswordlessLock lock = new PasswordlessLock(options, callback);
+            lock.initialize(activity);
+            return lock;
         }
 
         /**

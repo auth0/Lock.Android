@@ -95,8 +95,7 @@ public class HomeActivity extends Activity {
     Auth0 auth0 = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
     this.lock = Lock.newBuilder(auth0, callback)
       //Customize Lock
-      .build();
-    lock.onCreate(this);
+      .build(this);
   }
 
   @Override
@@ -189,8 +188,7 @@ public class HomeActivity extends Activity {
     Auth0 auth0 = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
     this.lock = PasswordlessLock.newBuilder(auth0, callback)
       //Customize Lock
-      .build();
-    lock.onCreate(this);
+      .build(this);
   }
 
   @Override

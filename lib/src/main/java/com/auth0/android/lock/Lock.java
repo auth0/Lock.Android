@@ -114,21 +114,6 @@ public class Lock {
     }
 
     /**
-     * Should be called on the Activity holding the Lock instance's OnCreate method, as it
-     * ensures the correct Lock lifecycle handling.
-     *
-     * @param activity a valid Activity context
-     */
-    @SuppressWarnings("unused")
-    public void onCreate(Activity activity) {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.AUTHENTICATION_ACTION);
-        filter.addAction(Constants.SIGN_UP_ACTION);
-        filter.addAction(Constants.CANCELED_ACTION);
-        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
-    }
-
-    /**
      * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
      * ensures the correct Lock lifecycle handling.
      *
@@ -137,6 +122,14 @@ public class Lock {
     @SuppressWarnings("unused")
     public void onDestroy(Activity activity) {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
+    }
+
+    private void initialize(Activity activity) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.AUTHENTICATION_ACTION);
+        filter.addAction(Constants.SIGN_UP_ACTION);
+        filter.addAction(Constants.CANCELED_ACTION);
+        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
     private void processEvent(Intent data) {
@@ -183,9 +176,10 @@ public class Lock {
          * Finishes the construction of the Lock.Options and generates a new Lock instance
          * with those Lock.Options.
          *
+         * @param activity a valid Activity context
          * @return a new Lock instance configured as in the Builder.
          */
-        public Lock build() {
+        public Lock build(@NonNull Activity activity) {
             if (options.getAccount() == null) {
                 Log.e(TAG, "You need to specify the com.auth0.Auth0 object with the Auth0 Account details.");
                 throw new IllegalStateException("Missing Auth0 account information.");
@@ -195,7 +189,10 @@ public class Lock {
                 throw new IllegalStateException("Missing callback.");
             }
             Log.v(TAG, "Lock instance created");
-            return new Lock(options, callback);
+
+            final Lock lock = new Lock(options, callback);
+            lock.initialize(activity);
+            return lock;
         }
 
         /**

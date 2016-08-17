@@ -170,9 +170,7 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
-        lock = builder.build();
-
-        lock.onCreate(this);
+        lock = builder.build(this);
 
         startActivity(lock.newIntent(this));
     }
@@ -197,8 +195,7 @@ public class DemoActivity extends AppCompatActivity {
 
         builder.onlyUseConnections(generateConnections());
 
-        passwordlessLock = builder.build();
-        passwordlessLock.onCreate(this);
+        passwordlessLock = builder.build(this);
 
         startActivity(passwordlessLock.newIntent(this));
     }
