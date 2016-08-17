@@ -36,7 +36,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/auth0_domain"
+                    android:host="@string/com_auth0_domain"
                     android:pathPrefix="/android/com.auth0.android.lock.app/callback"
                     android:scheme="https" />
             </intent-filter>
@@ -57,7 +57,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/auth0_domain"
+                    android:host="@string/com_auth0_domain"
                     android:pathPrefix="/android/com.auth0.android.lock.app/email"
                     android:scheme="https" />
             </intent-filter>
