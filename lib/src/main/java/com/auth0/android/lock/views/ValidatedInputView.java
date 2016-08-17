@@ -54,7 +54,6 @@ import com.auth0.android.lock.views.interfaces.IdentityListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.views.ValidatedInputView.DataType.DATE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MFA_CODE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
@@ -82,7 +81,7 @@ public class ValidatedInputView extends LinearLayout {
     private int inputIcon;
     private boolean hasValidInput;
 
-    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, DATE, TEXT_NAME, NUMBER})
+    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, TEXT_NAME, NUMBER})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DataType {
         int USERNAME = 0;
@@ -92,9 +91,8 @@ public class ValidatedInputView extends LinearLayout {
         int PHONE_NUMBER = 4;
         int PASSWORD = 5;
         int MOBILE_PHONE = 6;
-        int DATE = 7;
-        int TEXT_NAME = 8;
-        int NUMBER = 9;
+        int TEXT_NAME = 7;
+        int NUMBER = 8;
     }
 
     @DataType
@@ -249,11 +247,6 @@ public class ValidatedInputView extends LinearLayout {
                 hint = getResources().getString(R.string.com_auth0_lock_hint_phone_number);
                 error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
-            case DATE:
-                input.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
-                inputIcon = R.drawable.com_auth0_lock_ic_clock;
-                error = getResources().getString(R.string.com_auth0_lock_input_error_date);
-                break;
         }
         input.setHint(hint);
         errorDescription.setText(error);
@@ -338,7 +331,6 @@ public class ValidatedInputView extends LinearLayout {
 
         switch (dataType) {
             case TEXT_NAME:
-            case DATE:
             case NUMBER:
             case PASSWORD:
                 isValid = !value.isEmpty();
