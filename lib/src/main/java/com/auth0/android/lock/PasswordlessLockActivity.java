@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -52,7 +51,6 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -519,13 +517,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         @Override
-        public void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause) {
-            final String message = new AuthenticationError(messageResource).getMessage(PasswordlessLockActivity.this);
-            Log.e(TAG, "Failed to authenticate the user: " + message, cause);
+        public void onFailure(final AuthenticationException exception) {
+            Log.e(TAG, "Failed to authenticate the user: " + exception.getDescription());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(message);
+                    showErrorMessage(exception.getDescription());
                 }
             });
         }

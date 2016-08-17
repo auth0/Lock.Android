@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -333,7 +332,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
         final String connection = configuration.getDefaultDatabaseConnection().getName();
-        apiClient.requestChangePassword(event.getEmail(), connection)
+        apiClient.resetPassword(event.getEmail(), connection)
                 .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
     }
@@ -414,13 +413,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(@StringRes int titleResource, @StringRes int messageResource, Throwable cause) {
-            final String message = new AuthenticationError(messageResource).getMessage(LockActivity.this);
-            Log.e(TAG, "Failed to authenticate the user: " + message, cause);
+        public void onFailure(final AuthenticationException exception) {
+            Log.e(TAG, "Failed to authenticate the user: " + exception.getDescription());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(message);
+                    showErrorMessage(exception.getDescription());
                 }
             });
         }
