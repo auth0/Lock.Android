@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 
 import com.auth0.android.Auth0;
+import com.squareup.okhttp.HttpUrl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ public class Auth0ParcelableTest {
         Auth0 auth0bundle = auth0Parcelable.getAuth0();
 
         assertThat(auth0bundle.getClientId(), is(equalTo(CLIENT_ID)));
-        assertThat(auth0bundle.getDomainUrl(), is(equalTo(DOMAIN)));
-        assertThat(auth0bundle.getConfigurationUrl(), is(equalTo(CONFIG_DOMAIN)));
+        assertThat(HttpUrl.parse(auth0bundle.getDomainUrl()), is(equalTo(HttpUrl.parse(DOMAIN))));
+        assertThat(HttpUrl.parse(auth0bundle.getConfigurationUrl()), is(equalTo(HttpUrl.parse(CONFIG_DOMAIN))));
     }
 }

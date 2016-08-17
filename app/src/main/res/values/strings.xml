@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Lock</string>
+    <string name="native_provider_message_invalid_authorize_url">The authorize URL is invalid.</string>
     <string name="native_provider_message_canceled">Canceled</string>
     <string name="native_provider_title">Native Identity Provider</string>
     <string name="native_provider_message_start">About to start the authentication with a Native Identity Provider. Click next to continue or cancel to go back.</string>

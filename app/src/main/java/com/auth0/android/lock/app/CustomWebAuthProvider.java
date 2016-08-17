@@ -37,6 +37,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.result.Credentials;
 
@@ -65,7 +66,6 @@ public class CustomWebAuthProvider extends AuthProvider {
     private static final String KEY_REDIRECT_URI = "redirect_uri";
     private static final String KEY_SCOPE = "scope";
 
-    private static final String ERROR_VALUE_ACCESS_DENIED = "access_denied";
     private static final String RESPONSE_TYPE_TOKEN = "token";
     private static final String SCOPE_TYPE_OPENID = "openid";
 
@@ -97,14 +97,14 @@ public class CustomWebAuthProvider extends AuthProvider {
                 .setNegativeButton(R.string.native_provider_action_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        callback.onFailure(R.string.native_provider_title, R.string.native_provider_message_canceled, null);
+                        callback.onFailure(createDialog(R.string.native_provider_message_canceled).create());
                     }
                 })
                 .setPositiveButton(R.string.native_provider_action_continue, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (account.getAuthorizeUrl() == null) {
-                            callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, com.auth0.android.lock.R.string.com_auth0_lock_social_invalid_authorize_url, null);
+                            callback.onFailure(createDialog(R.string.native_provider_message_invalid_authorize_url).create());
                             return;
                         }
 
@@ -138,14 +138,13 @@ public class CustomWebAuthProvider extends AuthProvider {
             createDialog(R.string.native_provider_message_failed)
                     .show();
             Log.e(TAG, "Error, access denied.");
-            final int message = ERROR_VALUE_ACCESS_DENIED.equalsIgnoreCase(values.get(KEY_ERROR)) ? com.auth0.android.lock.R.string.com_auth0_lock_social_access_denied_message : com.auth0.android.lock.R.string.com_auth0_lock_social_error_message;
-            callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, message, null);
+            callback.onFailure(new AuthenticationException(values.get(KEY_ERROR)));
         } else if (values.containsKey(KEY_STATE) && !values.get(KEY_STATE).equals(lastState)) {
             createDialog(R.string.native_provider_message_failed)
                     .show();
             Log.e(TAG, "Received state doesn't match");
             Log.d(TAG, "Expected: " + lastState + " / Received: " + values.get(KEY_STATE));
-            callback.onFailure(com.auth0.android.lock.R.string.com_auth0_lock_social_error_title, com.auth0.android.lock.R.string.com_auth0_lock_social_invalid_state, null);
+            callback.onFailure(new AuthenticationException("Authentication failed, please retry."));
         } else if (values.size() > 0) {
             createDialog(R.string.native_provider_message_succeeded)
                     .show();
