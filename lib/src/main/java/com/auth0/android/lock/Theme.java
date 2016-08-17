@@ -179,11 +179,11 @@ public class Theme implements Parcelable {
     };
 
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Theme.Builder();
     }
 
-    public static class Builder {
+    static class Builder {
 
         private int headerTitleRes;
         private int headerLogoRes;
