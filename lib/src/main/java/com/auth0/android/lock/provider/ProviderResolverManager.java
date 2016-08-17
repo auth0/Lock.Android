@@ -70,7 +70,7 @@ public abstract class ProviderResolverManager {
     private static class NullProviderResolver implements AuthProviderResolver {
         @Nullable
         @Override
-        public AuthProvider onAuthProviderRequest(Context context, @NonNull AuthCallback callback, @NonNull String connectionName) {
+        public AuthProvider onAuthProviderRequest(Context context, @NonNull String connectionName) {
             return null;
         }
     }

@@ -445,7 +445,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
-        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, event.getConnectionName());
+        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, event.getConnectionName());
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;

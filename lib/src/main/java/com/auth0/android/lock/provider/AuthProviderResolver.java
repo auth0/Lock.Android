@@ -38,11 +38,10 @@ public interface AuthProviderResolver {
      * Requests a custom AuthProvider to use with the given connection.
      *
      * @param context        a valid context.
-     * @param callback       the callback Lock will call with the authN result.
      * @param connectionName the requested connection name
      * @return the auth provider to use with this connection, or null if you there is no
      * associated provider for the connection name.
      */
     @Nullable
-    AuthProvider onAuthProviderRequest(Context context, @NonNull AuthCallback callback, @NonNull String connectionName);
+    AuthProvider onAuthProviderRequest(Context context, @NonNull String connectionName);
 }

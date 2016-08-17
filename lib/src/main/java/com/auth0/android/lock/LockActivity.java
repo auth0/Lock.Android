@@ -222,7 +222,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
-        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
+        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, connectionName);
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
