@@ -82,4 +82,8 @@ public class MockLockCallback extends AuthenticationCallback {
     public Credentials getCredentials() {
         return this.credentials;
     }
+
+    public LockException getError() {
+        return error;
+    }
 }

@@ -27,7 +27,6 @@ package com.auth0.android.lock;
 import android.content.Intent;
 import android.util.Log;
 
-import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.result.Credentials;
 
 
@@ -78,14 +77,7 @@ public abstract class AuthenticationCallback implements LockCallback {
         String refreshToken = data.getStringExtra(Constants.REFRESH_TOKEN_EXTRA);
         Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken);
 
-        if (idToken != null && accessToken != null) {
-            Log.d(TAG, "User authenticated!");
-            onAuthentication(credentials);
-        } else {
-            Log.e(TAG, "Error parsing authentication data: id_token or access_token are missing.");
-            LockException up = new LockException(R.string.com_auth0_lock_social_error_authentication);
-            onError(up);
-            //throw up. haha
-        }
+        Log.d(TAG, "User authenticated!");
+        onAuthentication(credentials);
     }
 }
