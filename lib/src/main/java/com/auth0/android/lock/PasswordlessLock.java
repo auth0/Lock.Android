@@ -141,8 +141,8 @@ public class PasswordlessLock {
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                if (data.getExtras().containsKey("error")) {
-                    callback.onError(new LockException(data.getStringExtra("error")));
+                if (data.getExtras().containsKey(Constants.ERROR_EXTRA)) {
+                    callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
                 } else {
                     callback.onEvent(LockEvent.AUTHENTICATION, data);
                 }
