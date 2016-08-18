@@ -62,7 +62,7 @@ import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.json.ApplicationFetcher;
 import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -445,7 +445,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
-        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, event.getConnectionName());
+        //FIXME: Make the SocialConnectionEvent also deliver the strategy.
+        currentProvider = AuthResolver.providerFor(event.getConnectionName(), event.getConnectionName());
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;

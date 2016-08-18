@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,7 +43,7 @@ import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.LayoutManager;
 
-public class SocialView extends LinearLayout implements SocialViewAdapter.ConnectionAuthenticationListener {
+public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthListener {
 
     private static final String TAG = SocialView.class.getSimpleName();
     private LockWidgetSocial lockWidget;
@@ -86,8 +87,8 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
     }
 
     @Override
-    public void onConnectionClicked(String connectionName) {
-        lockWidget.onSocialLogin(new SocialConnectionEvent(connectionName));
+    public void onAuthenticationRequest(@NonNull String connection) {
+        lockWidget.onSocialLogin(new SocialConnectionEvent(connection));
     }
 
     /**

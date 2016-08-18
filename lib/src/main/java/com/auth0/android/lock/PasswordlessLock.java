@@ -40,8 +40,8 @@ import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.Theme;
-import com.auth0.android.lock.provider.AuthProviderResolver;
-import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.provider.AuthHandler;
+import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.util.Telemetry;
 
@@ -129,7 +129,7 @@ public class PasswordlessLock {
     public void onDestroy(Activity activity) {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     }
-    
+
     private void initialize(Activity activity) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.AUTHENTICATION_ACTION);
@@ -323,13 +323,13 @@ public class PasswordlessLock {
         }
 
         /**
-         * Uses the given AuthProviderResolver to ask for Native IdentityProviders.
+         * Uses the given AuthHandlers to query for AuthProviders on a new authentication request.
          *
-         * @param resolver the AuthProviderResolver to use
+         * @param handlers that Lock will query for AuthProviders.
          * @return the current builder instance
          */
-        public Builder withProviderResolver(@NonNull AuthProviderResolver resolver) {
-            ProviderResolverManager.set(resolver);
+        public Builder withAuthHandlers(@NonNull List<AuthHandler> handlers) {
+            AuthResolver.setAuthHandlers(handlers);
             return this;
         }
     }

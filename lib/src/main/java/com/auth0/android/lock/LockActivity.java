@@ -58,9 +58,9 @@ import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.internal.json.ApplicationFetcher;
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -222,7 +222,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private void fetchProviderAndBeginAuthentication(String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
-        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, connectionName);
+        //FIXME: Make the SocialConnectionEvent also deliver the strategy.
+        currentProvider = AuthResolver.providerFor(connectionName, connectionName);
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;

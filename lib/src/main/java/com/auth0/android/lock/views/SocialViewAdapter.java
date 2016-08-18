@@ -41,7 +41,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     private final Context context;
     private final List<AuthConfig> authConfigs;
     private boolean useSmallButtons;
-    private ConnectionAuthenticationListener callback;
+    private OAuthListener callback;
     @AuthMode
     private int buttonMode;
 
@@ -90,7 +90,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
      *
      * @param callback the callback
      */
-    public void setCallback(ConnectionAuthenticationListener callback) {
+    public void setCallback(OAuthListener callback) {
         this.callback = callback;
     }
 
@@ -106,7 +106,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         @Override
         public void onClick(View view) {
             if (callback != null) {
-                callback.onConnectionClicked(authConfigs.get(getAdapterPosition()).getConnectionName());
+                callback.onAuthenticationRequest(authConfigs.get(getAdapterPosition()).getConnectionName());
             } else {
                 Log.w(TAG, "No callback was configured");
             }
@@ -114,12 +114,12 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
 
     }
 
-    public interface ConnectionAuthenticationListener {
+    public interface OAuthListener {
         /**
          * Called when a SocialButton is clicked.
          *
-         * @param connectionName the connectionName associated to the button.
+         * @param connection the connection associated to the button.
          */
-        void onConnectionClicked(String connectionName);
+        void onAuthenticationRequest(@NonNull String connection);
     }
 }

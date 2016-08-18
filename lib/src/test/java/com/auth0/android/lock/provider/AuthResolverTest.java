@@ -1,5 +1,5 @@
 /*
- * IdentityProviderHandler.java
+ * ProviderResolverManagerTest.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,24 +24,38 @@
 
 package com.auth0.android.lock.provider;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
-public interface AuthProviderResolver {
+import java.util.Arrays;
 
-    /**
-     * Requests a custom AuthProvider to use with the given connection.
-     *
-     * @param context        a valid context.
-     * @param connectionName the requested connection name
-     * @return the auth provider to use with this connection, or null if you there is no
-     * associated provider for the connection name.
-     */
-    @Nullable
-    AuthProvider onAuthProviderRequest(Context context, @NonNull String connectionName);
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+public class AuthResolverTest {
+
+    @Test
+    public void shouldHaveDefaultProviderResolver() {
+        assertThat(AuthResolver.providerFor("", ""), nullValue());
+    }
+
+    @Test
+    public void shouldSetProviderResolver() {
+        AuthProvider provider = Mockito.mock(AuthProvider.class);
+        AuthHandler handler = Mockito.mock(AuthHandler.class);
+        Mockito.when(handler.providerFor("a", "a")).thenReturn(provider);
+        AuthResolver.setAuthHandlers(Arrays.asList(handler));
+
+        assertThat(AuthResolver.providerFor("", ""), nullValue());
+        assertThat(AuthResolver.providerFor("a", "a"), is(equalTo(provider)));
+    }
 }
