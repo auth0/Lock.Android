@@ -84,7 +84,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
         emailInput.setIdentityListener(this);
-        usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        usernameInput.setDataType(ValidatedInputView.DataType.SSO_USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
