@@ -170,9 +170,7 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
-        lock = builder.build();
-
-        lock.onCreate(this);
+        lock = builder.build(this);
 
         startActivity(lock.newIntent(this));
     }
@@ -197,14 +195,13 @@ public class DemoActivity extends AppCompatActivity {
 
         builder.onlyUseConnections(generateConnections());
 
-        passwordlessLock = builder.build();
-        passwordlessLock.onCreate(this);
+        passwordlessLock = builder.build(this);
 
         startActivity(passwordlessLock.newIntent(this));
     }
 
     private Auth0 getAccount() {
-        return new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
+        return new Auth0(getString(R.string.com_auth0_client_id), getString(R.string.com_auth0_domain));
     }
 
     private List<String> generateConnections() {
