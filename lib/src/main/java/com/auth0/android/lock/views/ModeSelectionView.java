@@ -66,7 +66,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         final TextView text = (TextView) tab.getCustomView().findViewById(android.R.id.text1);
         setBoldFont(text, true);
         //noinspection WrongConstant
-        callback.onModeSelected(tab.getPosition());
+        callback.onModeSelected(getCurrentMode(tab));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
         //noinspection WrongConstant
-        callback.onModeSelected(tab.getPosition());
+        callback.onModeSelected(getCurrentMode(tab));
     }
 
     private void setBoldFont(TextView view, boolean bold) {
@@ -87,5 +87,10 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
 
     public interface ModeSelectedListener {
         void onModeSelected(@AuthMode int mode);
+    }
+
+    @AuthMode
+    private int getCurrentMode(TabLayout.Tab tab) {
+        return tab.getPosition() == 1 ? AuthMode.SIGN_UP : AuthMode.LOG_IN;
     }
 }
