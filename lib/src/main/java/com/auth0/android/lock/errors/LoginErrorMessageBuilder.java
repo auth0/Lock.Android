@@ -36,11 +36,13 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
     private static final String USERNAME_EXISTS_ERROR = "username_exists";
     private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
     private static final String TOO_MANY_ATTEMPTS_ERROR = "too_many_attempts";
+    private static final String WRONG_CLIENT_TYPE_ERROR = "Unauthorized";
 
     private static final int userExistsResource = R.string.com_auth0_lock_db_signup_user_already_exists_error_message;
     private static final int unauthorizedResource = R.string.com_auth0_lock_db_login_error_unauthorized_message;
     private static final int invalidMFACodeResource = R.string.com_auth0_lock_db_login_error_invalid_mfa_code_message;
     private static final int tooManyAttemptsResource = R.string.com_auth0_lock_db_too_many_attempts_error_message;
+    private static final int wrongClientTypeResource = R.string.com_auth0_lock_db_login_error_wrong_client_type_message;
 
     private int invalidCredentialsResource;
     private int defaultMessage;
@@ -70,6 +72,8 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
             if (!USER_IS_BLOCKED_DESCRIPTION.equals(exception.getDescription())) {
                 description = exception.getDescription();
             }
+        } else if (WRONG_CLIENT_TYPE_ERROR.equals(exception.getDescription())) {
+            messageRes = wrongClientTypeResource;
         } else if (TOO_MANY_ATTEMPTS_ERROR.equals(exception.getCode())) {
             messageRes = tooManyAttemptsResource;
         } else {

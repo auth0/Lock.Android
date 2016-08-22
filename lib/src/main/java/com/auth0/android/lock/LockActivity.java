@@ -414,11 +414,13 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(final AuthenticationException exception) {
-            Log.e(TAG, "Failed to authenticate the user: " + exception.getDescription());
+            final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
+            final String message = authError.getMessage(LockActivity.this);
+            Log.e(TAG, "Failed to authenticate the user: " + message, exception);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(exception.getDescription());
+                    showErrorMessage(message);
                 }
             });
         }

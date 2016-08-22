@@ -51,6 +51,7 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -518,11 +519,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onFailure(final AuthenticationException exception) {
-            Log.e(TAG, "Failed to authenticate the user: " + exception.getDescription());
+            final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
+            final String message = authError.getMessage(PasswordlessLockActivity.this);;
+            Log.e(TAG, "Failed to authenticate the user: " + message, exception);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showErrorMessage(exception.getDescription());
+                    showErrorMessage(message);
                 }
             });
         }
