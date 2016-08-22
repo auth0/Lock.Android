@@ -40,22 +40,20 @@ import com.auth0.android.lock.views.ValidatedInputView.DataType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_DATE;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_EMAIL;
+import static com.auth0.android.lock.CustomField.FieldType.TYPE_NAME;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_NUMBER;
 import static com.auth0.android.lock.CustomField.FieldType.TYPE_PHONE_NUMBER;
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_NAME;
 
 public class CustomField implements Parcelable {
 
-    @IntDef({TYPE_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_DATE, TYPE_EMAIL})
+    @IntDef({TYPE_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_EMAIL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FieldType {
         int TYPE_NAME = 0;
         int TYPE_NUMBER = 1;
         int TYPE_PHONE_NUMBER = 2;
-        int TYPE_DATE = 3;
-        int TYPE_EMAIL = 4;
+        int TYPE_EMAIL = 3;
     }
 
     @DrawableRes
@@ -86,9 +84,6 @@ public class CustomField implements Parcelable {
                 break;
             case TYPE_PHONE_NUMBER:
                 field.setDataType(DataType.PHONE_NUMBER);
-                break;
-            case TYPE_DATE:
-                field.setDataType(DataType.DATE);
                 break;
             case TYPE_EMAIL:
                 field.setDataType(DataType.EMAIL);

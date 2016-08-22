@@ -139,25 +139,6 @@ public class Lock {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     }
 
-    /**
-     * Should be called on the Activity holding the Lock instance's OnActivityResult method, as
-     * it ensures the correct parsing of the received Authentication data.
-     *
-     * @param activity   a valid Activity context
-     * @param resultCode received in the OnActivityResult call
-     * @param data       intent received in the OnActivityResult call
-     */
-    @SuppressWarnings("unused")
-    public void onActivityResult(Activity activity, int resultCode, @NonNull Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            processEvent(data);
-            return;
-        }
-
-        //user pressed back.
-        callback.onEvent(LockEvent.CANCELED, new Intent());
-    }
-
     private void processEvent(Intent data) {
         String action = data.getAction();
         switch (action) {
