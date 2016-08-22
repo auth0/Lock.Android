@@ -36,6 +36,7 @@ import static com.auth0.android.lock.utils.Strategies.Type.SOCIAL;
 
 /**
  * Class with your Auth0's application information and the list of enabled connections (DB, Social, Enterprise, Passwordless).
+ * Disclaimer: This class may change in future releases. Don't use it directly.
  */
 public class Application {
 

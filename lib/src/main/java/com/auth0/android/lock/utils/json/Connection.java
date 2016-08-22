@@ -34,6 +34,7 @@ import static com.auth0.android.util.CheckHelper.checkArgument;
 
 /**
  * Class with a Auth0 connection info
+ * Disclaimer: This class may change in future releases. Don't use it directly.
  */
 public class Connection {
 

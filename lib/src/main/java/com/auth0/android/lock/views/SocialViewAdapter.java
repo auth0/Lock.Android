@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.auth0.android.lock.enums.AuthMode;
-import com.auth0.android.lock.utils.json.Strategy;
 
 import java.util.List;
 
@@ -40,15 +39,15 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     private static final String TAG = SocialViewAdapter.class.getSimpleName();
 
     private final Context context;
-    private final List<Strategy> strategyList;
+    private final List<AuthConfig> authConfigs;
     private boolean useSmallButtons;
     private ConnectionAuthenticationListener callback;
     @AuthMode
     private int buttonMode;
 
-    public SocialViewAdapter(Context context, @NonNull List<Strategy> strategyList) {
+    public SocialViewAdapter(Context context, @NonNull List<AuthConfig> authConfigs) {
         this.context = context;
-        this.strategyList = strategyList;
+        this.authConfigs = authConfigs;
     }
 
     @Override
@@ -59,13 +58,12 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Strategy item = strategyList.get(i);
-        viewHolder.socialButton.setSocialConfig(new SocialConfig(context, item), buttonMode);
+        viewHolder.socialButton.setStyle(authConfigs.get(i), buttonMode);
     }
 
     @Override
     public int getItemCount() {
-        return strategyList.size();
+        return authConfigs.size();
     }
 
     /**
@@ -108,8 +106,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         @Override
         public void onClick(View view) {
             if (callback != null) {
-                Strategy strategy = strategyList.get(getAdapterPosition());
-                callback.onConnectionClicked(strategy.getDefaultConnectionName());
+                callback.onConnectionClicked(authConfigs.get(getAdapterPosition()).getConnectionName());
             } else {
                 Log.w(TAG, "No callback was configured");
             }

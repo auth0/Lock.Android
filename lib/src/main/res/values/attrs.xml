@@ -30,6 +30,7 @@
         <attr name="Auth0.HeaderTitleColor" format="color|reference" />
         <attr name="Auth0.PrimaryColor" format="color|reference" />
         <attr name="Auth0.DarkPrimaryColor" format="color|reference" />
+        <attr name="Auth0.DefaultSocialStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Lock.ValidatedInput">
@@ -41,5 +42,11 @@
             <enum name="phone_number" value="4" />
             <enum name="password" value="5" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Lock.SocialConfig">
+        <attr name="Auth0.BackgroundColor" format="color|reference" />
+        <attr name="Auth0.Name" format="string|reference" />
+        <attr name="Auth0.Logo" format="reference" />
     </declare-styleable>
 </resources>

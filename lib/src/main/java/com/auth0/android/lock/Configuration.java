@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.util.Log;
 
 import com.auth0.android.lock.enums.InitialScreen;
@@ -37,10 +38,12 @@ import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.json.Strategy;
+import com.auth0.android.lock.views.AuthConfig;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Configuration {
@@ -87,6 +90,7 @@ public class Configuration {
     private int initialScreen;
     private String termsURL;
     private String privacyURL;
+    private Map<String, Integer> authStyles;
 
     public Configuration(Application application, Options options) {
         List<String> connections = options.getConnections();
@@ -261,6 +265,7 @@ public class Configuration {
         }
         //let user disable signUp only if connection have enabled it.
         allowSignUp = options.allowSignUp() && (socialAvailable || dbAvailable && getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY));
+        authStyles = options.getAuthStyles();
 
         if (dbAvailable) {
             //let user disable password reset only if connection have enabled it.
@@ -320,6 +325,14 @@ public class Configuration {
 
         this.termsURL = options.getTermsURL() == null ? "https://auth0.com/terms" : options.getTermsURL();
         this.privacyURL = options.getPrivacyURL() == null ? "https://auth0.com/privacy" : options.getPrivacyURL();
+    }
+
+    @StyleRes
+    public int authStyleForConnection(String strategy, String connection) {
+        if (authStyles.containsKey(connection)) {
+            return authStyles.get(connection);
+        }
+        return AuthConfig.styleForStrategy(strategy);
     }
 
     @PasswordStrength

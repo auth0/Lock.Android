@@ -36,6 +36,7 @@ import static com.auth0.android.lock.utils.Strategies.Type.SOCIAL;
 
 /**
  * An enum with all strategies available in Auth0
+ * Disclaimer: This class may change in future releases. Don't use it directly.
  */
 public enum Strategies {
     Auth0("auth0", DATABASE),

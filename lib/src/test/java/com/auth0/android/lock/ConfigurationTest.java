@@ -119,6 +119,20 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
+    public void shouldGetValidStyleForNotOverriddenStrategy() throws Exception {
+        configuration = new Configuration(application, options);
+        assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), is(R.style.Lock_Theme_AuthStyle_Facebook));
+    }
+
+    @Test
+    public void shouldGetStyleForOverriddenStrategy() throws Exception {
+        //noinspection ResourceType
+        options.withAuthStyle("facebook-prod", 123456);
+        configuration = new Configuration(application, options);
+        assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), is(123456));
+    }
+
+    @Test
     public void shouldMergeApplicationWithOptionsIfDefaultDatabaseExists() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
         options.setAllowLogIn(false);
@@ -393,7 +407,7 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldReturnSpecifiedDBConnectionIfAvailable() throws Exception{
+    public void shouldReturnSpecifiedDBConnectionIfAvailable() throws Exception {
         options.setConnections(null);
 
         options.useDatabaseConnection(CUSTOM_DATABASE);
@@ -402,7 +416,7 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldIgnoreSpecifiedDBConnectionIfNotAvailable() throws Exception{
+    public void shouldIgnoreSpecifiedDBConnectionIfNotAvailable() throws Exception {
         options.setConnections(null);
 
         options.useDatabaseConnection("non-existing-db-connection");
@@ -411,7 +425,7 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldIgnoreSpecifiedDBConnectionIfFiltered() throws Exception{
+    public void shouldIgnoreSpecifiedDBConnectionIfFiltered() throws Exception {
         options.setConnections(Collections.singletonList(USERNAME_PASSWORD_AUTHENTICATION));
 
         options.useDatabaseConnection("non-existing-db-connection");

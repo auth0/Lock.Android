@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -281,6 +282,18 @@ public class PasswordlessLock {
          */
         public Builder withSocialButtonStyle(@SocialButtonStyle int style) {
             options.setSocialButtonStyle(style);
+            return this;
+        }
+
+        /**
+         * Authentication Style to use with the given strategy or connection name. It will override any lock defaults.
+         *
+         * @param connectionName to use this style with
+         * @param style          a valid Style with the Auth0.BackgroundColor, Auth0.Logo and Auth0.Name values defined.
+         * @return the current builder instance
+         */
+        public Builder withAuthStyle(@NonNull String connectionName, @StyleRes int style) {
+            options.withAuthStyle(connectionName, style);
             return this;
         }
 
