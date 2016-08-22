@@ -57,6 +57,7 @@ import java.lang.annotation.RetentionPolicy;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MFA_CODE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType.NON_EMPTY_USERNAME;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.NUMBER;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.PASSWORD;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.PHONE_NUMBER;
@@ -81,7 +82,7 @@ public class ValidatedInputView extends LinearLayout {
     private int inputIcon;
     private boolean hasValidInput;
 
-    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, TEXT_NAME, NUMBER})
+    @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, TEXT_NAME, NUMBER, NON_EMPTY_USERNAME})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DataType {
         int USERNAME = 0;
@@ -93,6 +94,7 @@ public class ValidatedInputView extends LinearLayout {
         int MOBILE_PHONE = 6;
         int TEXT_NAME = 7;
         int NUMBER = 8;
+        int NON_EMPTY_USERNAME = 9;
     }
 
     @DataType
@@ -217,6 +219,12 @@ public class ValidatedInputView extends LinearLayout {
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
                 error = getResources().getString(R.string.com_auth0_lock_input_error_empty);
                 break;
+            case NON_EMPTY_USERNAME:
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                inputIcon = R.drawable.com_auth0_lock_ic_username;
+                hint = getResources().getString(R.string.com_auth0_lock_hint_username);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_empty);
+                break;
             case USERNAME:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
@@ -333,6 +341,7 @@ public class ValidatedInputView extends LinearLayout {
             case TEXT_NAME:
             case NUMBER:
             case PASSWORD:
+            case NON_EMPTY_USERNAME:
                 isValid = !value.isEmpty();
                 break;
             case EMAIL:
