@@ -25,6 +25,8 @@
 package com.auth0.android.lock.utils.json;
 
 
+import android.support.annotation.Nullable;
+
 import com.auth0.android.lock.utils.Strategies;
 
 import java.util.ArrayList;
@@ -70,5 +72,19 @@ public class Strategy {
         return Strategies.ActiveDirectory.getName().equals(name)
                 || Strategies.ADFS.getName().equals(name)
                 || Strategies.Waad.getName().equals(name);
+    }
+
+    /**
+     * Returns the name of the first connection found in this strategy. When no connections are available,
+     * it will return the strategy name if this is a social connection or return null in any other case.
+     *
+     * @return the first connection found or null if no connections available.
+     */
+    @Nullable
+    public String getDefaultConnectionName() {
+        if (!connections.isEmpty()) {
+            return connections.get(0).getName();
+        }
+        return strategyMetadata.getType() == Strategies.Type.SOCIAL ? this.name : null;
     }
 }
