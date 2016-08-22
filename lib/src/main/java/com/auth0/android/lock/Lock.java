@@ -43,6 +43,7 @@ import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.util.Telemetry;
 
 import java.util.ArrayList;
@@ -146,7 +147,11 @@ public class Lock {
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                callback.onEvent(LockEvent.AUTHENTICATION, data);
+                if (data.getExtras().containsKey(Constants.ERROR_EXTRA)) {
+                    callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
+                } else {
+                    callback.onEvent(LockEvent.AUTHENTICATION, data);
+                }
                 break;
             case Constants.SIGN_UP_ACTION:
                 Log.v(TAG, "SIGN_UP action received in our BroadcastReceiver");

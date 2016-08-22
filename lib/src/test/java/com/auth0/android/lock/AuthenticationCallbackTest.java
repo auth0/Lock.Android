@@ -41,6 +41,7 @@ import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasErro
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasNoError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.isCanceled;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
@@ -57,7 +58,7 @@ public class AuthenticationCallbackTest {
 
     @Test
     public void shouldCallOnAuthentication() {
-        Intent data = getValidAuthenticationData();
+        Intent data = getAuthenticationData();
         callback.onEvent(LockEvent.AUTHENTICATION, data);
 
         assertThat(callback, hasAuthentication());
@@ -65,8 +66,8 @@ public class AuthenticationCallbackTest {
     }
 
     @Test
-    public void shouldReturnValidAuthentication() {
-        Intent data = getValidAuthenticationData();
+    public void shouldReturnAuthentication() {
+        Intent data = getAuthenticationData();
         callback.onEvent(LockEvent.AUTHENTICATION, data);
         Credentials credentials = credentialsFromData(data);
 
@@ -75,15 +76,6 @@ public class AuthenticationCallbackTest {
         assertThat(callback.getCredentials().getRefreshToken(), equalTo(credentials.getRefreshToken()));
         assertThat(callback.getCredentials().getType(), equalTo(credentials.getType()));
         assertThat(callback, hasNoError());
-    }
-
-    @Test
-    public void shouldCallOnErrorIfDataIsInvalid() {
-        Intent data = getInvalidAuthenticationData();
-        callback.onEvent(LockEvent.AUTHENTICATION, data);
-
-        assertThat(callback, hasError());
-        assertThat(callback, not(hasAuthentication()));
     }
 
     @Test
@@ -115,17 +107,10 @@ public class AuthenticationCallbackTest {
         assertThat(callback, hasNoError());
     }
 
-    public Intent getValidAuthenticationData() {
+    public Intent getAuthenticationData() {
         Intent i = new Intent(Constants.AUTHENTICATION_ACTION);
         i.putExtra(Constants.ID_TOKEN_EXTRA, "");
         i.putExtra(Constants.ACCESS_TOKEN_EXTRA, "");
-        i.putExtra(Constants.TOKEN_TYPE_EXTRA, "");
-        i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "");
-        return i;
-    }
-
-    public Intent getInvalidAuthenticationData() {
-        Intent i = new Intent(Constants.AUTHENTICATION_ACTION);
         i.putExtra(Constants.TOKEN_TYPE_EXTRA, "");
         i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "");
         return i;

@@ -41,6 +41,7 @@ import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.util.Telemetry;
 
 import java.util.HashMap;
@@ -140,7 +141,11 @@ public class PasswordlessLock {
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                callback.onEvent(LockEvent.AUTHENTICATION, data);
+                if (data.getExtras().containsKey(Constants.ERROR_EXTRA)) {
+                    callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
+                } else {
+                    callback.onEvent(LockEvent.AUTHENTICATION, data);
+                }
                 break;
             case Constants.CANCELED_ACTION:
                 Log.v(TAG, "CANCELED action received in our BroadcastReceiver");

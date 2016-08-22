@@ -24,25 +24,12 @@
 
 package com.auth0.android.lock.utils;
 
-import android.content.Context;
-import android.support.annotation.StringRes;
+import android.support.annotation.NonNull;
 
 
 public class LockException extends Exception {
-    private int message;
 
-    public LockException(@StringRes int message) {
-        super();
-        this.message = message;
-    }
-
-    /**
-     * Gets the error message or description for this LockException
-     *
-     * @param context a valid context
-     * @return the localized error message
-     */
-    public String getErrorMessage(Context context) {
-        return context.getResources().getString(message);
+    public LockException(@NonNull String message) {
+        super(message);
     }
 }

@@ -23,9 +23,6 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/com_auth0_lock_social_*">
-    <!-- Social Authentication -->
-    <string name="com_auth0_lock_social_error_authentication">Error parsing Authentication data</string>
-
     <!-- Social Buttons -->
     <string name="com_auth0_lock_social_log_in">LOG IN WITH %s</string>
     <string name="com_auth0_lock_social_sign_up">SIGN UP WITH %s</string>
