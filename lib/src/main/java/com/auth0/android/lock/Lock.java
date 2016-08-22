@@ -257,7 +257,7 @@ public class Lock {
          * @param theme to use.
          * @return the current Builder instance
          */
-        public Builder withTheme(@NonNull Theme theme) {
+        private Builder withTheme(@NonNull Theme theme) {
             options.withTheme(theme);
             return this;
         }
