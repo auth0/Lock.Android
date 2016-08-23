@@ -45,6 +45,7 @@ import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.util.Telemetry;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -328,8 +329,8 @@ public class PasswordlessLock {
          * @param handlers that Lock will query for AuthProviders.
          * @return the current builder instance
          */
-        public Builder withAuthHandlers(@NonNull List<AuthHandler> handlers) {
-            AuthResolver.setAuthHandlers(handlers);
+        public Builder withAuthHandlers(@NonNull AuthHandler... handlers) {
+            AuthResolver.setAuthHandlers(Arrays.asList(handlers));
             return this;
         }
     }
