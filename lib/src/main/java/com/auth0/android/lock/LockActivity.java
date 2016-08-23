@@ -364,7 +364,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         } else if (event.useRO()) {
             boolean missingADConfiguration = event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null;
-            boolean missingEnterpriseConfiguration = configuration.getEnterpriseStrategies().isEmpty();
+            boolean missingEnterpriseConfiguration = configuration.getEnterpriseConnections().isEmpty();
             if (missingADConfiguration || missingEnterpriseConfiguration) {
                 Log.w(TAG, "There is no matching enterprise connection to authenticate with");
                 return;

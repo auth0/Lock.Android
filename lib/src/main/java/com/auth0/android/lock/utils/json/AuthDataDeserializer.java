@@ -1,5 +1,5 @@
 /*
- * ConnectionDeserializer.java
+ * StrategyDeserializer.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.utils.json;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,19 +32,31 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class ConnectionDeserializer extends GsonDeserializer<Connection> {
+public class AuthDataDeserializer extends GsonDeserializer<List<AuthData>> {
     @Override
-    public Connection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<AuthData> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         assertJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
 
-        requiredValue("name", String.class, object, context);
-        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-        Map<String, Object> values = context.deserialize(object, mapType);
+        String strategyName = requiredValue("name", String.class, object, context);
 
-        return new Connection(values);
+        requiredValue("connections", Object.class, object, context);
+        JsonArray connectionsArray = object.getAsJsonArray("connections");
+        List<AuthData> authDataList = new ArrayList<>();
+        for (int i = 0; i < connectionsArray.size(); i++) {
+            final JsonObject connectionJson = connectionsArray.get(i).getAsJsonObject();
+            requiredValue("name", String.class, connectionJson, context);
+            Type mapType = new TypeToken<Map<String, Object>>() {
+            }.getType();
+            Map<String, Object> values = context.deserialize(object, mapType);
+            authDataList.add(new AuthData(strategyName, values));
+        }
+
+        return authDataList;
     }
 }

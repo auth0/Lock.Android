@@ -67,8 +67,8 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     private void init() {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
-        boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
-        boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessStrategy() != null;
+        boolean showSocial = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
+        boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessConnection() != null;
 
         if (showSocial) {
             addSocialLayout(showPasswordless);
@@ -85,7 +85,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     private void addSocialLayout(boolean passwordlessAvailable) {
         int style = lockWidget.getConfiguration().getSocialButtonStyle();
-        boolean fewConnections = lockWidget.getConfiguration().getSocialStrategies().size() <= MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS;
+        boolean fewConnections = lockWidget.getConfiguration().getSocialConnections().size() <= MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS;
 
         if (style == SocialButtonStyle.UNSPECIFIED) {
             socialLayout = new SocialView(lockWidget, passwordlessAvailable && !fewConnections);

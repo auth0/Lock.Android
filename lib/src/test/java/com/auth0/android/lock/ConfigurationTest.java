@@ -29,11 +29,11 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.json.Application;
-import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.utils.json.AuthData;
 import com.auth0.android.lock.utils.json.GsonBaseTest;
-import com.auth0.android.lock.utils.json.Strategy;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Before;
@@ -49,20 +49,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.auth0.android.lock.utils.Strategies.ActiveDirectory;
 import static com.auth0.android.lock.utils.Strategies.Email;
 import static com.auth0.android.lock.utils.Strategies.Facebook;
-import static com.auth0.android.lock.utils.Strategies.GoogleApps;
-import static com.auth0.android.lock.utils.Strategies.GooglePlus;
 import static com.auth0.android.lock.utils.Strategies.Instagram;
 import static com.auth0.android.lock.utils.Strategies.Linkedin;
 import static com.auth0.android.lock.utils.Strategies.SMS;
-import static com.auth0.android.lock.utils.Strategies.Twitter;
 import static com.auth0.android.lock.utils.Strategies.Yahoo;
 import static com.auth0.android.lock.utils.Strategies.Yammer;
 import static com.auth0.android.lock.utils.Strategies.Yandex;
-import static com.auth0.android.lock.utils.json.ConnectionMatcher.isConnection;
-import static com.auth0.android.lock.utils.json.StrategyMatcher.isStrategy;
+import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasName;
+import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -76,7 +72,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
@@ -377,22 +372,22 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldNotFilterDefaultDBConnection() throws Exception {
         configuration = unfilteredConfig();
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(USERNAME_PASSWORD_AUTHENTICATION));
+        assertThat(configuration.getDefaultDatabaseConnection(), hasName(USERNAME_PASSWORD_AUTHENTICATION));
     }
 
     @Test
     public void shouldHandleNoDBConnections() throws Exception {
+        options.useDatabaseConnection(null);
         application = mock(Application.class);
-        when(application.getDatabaseStrategy()).thenReturn(null);
         configuration = new Configuration(application, options);
-        final Connection connection = configuration.getDefaultDatabaseConnection();
+        final AuthData connection = configuration.getDefaultDatabaseConnection();
         assertThat(connection, nullValue());
     }
 
     @Test
     public void shouldFilterDBConnection() throws Exception {
         configuration = filteredConfigBy(CUSTOM_DATABASE);
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(CUSTOM_DATABASE));
+        assertThat(configuration.getDefaultDatabaseConnection(), hasName(CUSTOM_DATABASE));
     }
 
     @Test
@@ -406,7 +401,7 @@ public class ConfigurationTest extends GsonBaseTest {
         options.setConnections(Arrays.asList(CUSTOM_DATABASE, USERNAME_PASSWORD_AUTHENTICATION, RESTRICTIVE_DATABASE, UNKNOWN_CONNECTION));
         options.useDatabaseConnection(RESTRICTIVE_DATABASE);
         configuration = new Configuration(application, options);
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(RESTRICTIVE_DATABASE));
+        assertThat(configuration.getDefaultDatabaseConnection(), hasName(RESTRICTIVE_DATABASE));
     }
 
     @Test
@@ -415,7 +410,7 @@ public class ConfigurationTest extends GsonBaseTest {
 
         options.useDatabaseConnection(CUSTOM_DATABASE);
         configuration = new Configuration(application, options);
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(CUSTOM_DATABASE));
+        assertThat(configuration.getDefaultDatabaseConnection(), hasName(CUSTOM_DATABASE));
     }
 
     @Test
@@ -424,7 +419,7 @@ public class ConfigurationTest extends GsonBaseTest {
 
         options.useDatabaseConnection("non-existing-db-connection");
         configuration = new Configuration(application, options);
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(USERNAME_PASSWORD_AUTHENTICATION));
+        assertThat(configuration.getDefaultDatabaseConnection(), hasName(USERNAME_PASSWORD_AUTHENTICATION));
     }
 
     @Test
@@ -433,151 +428,143 @@ public class ConfigurationTest extends GsonBaseTest {
 
         options.useDatabaseConnection("non-existing-db-connection");
         configuration = new Configuration(application, options);
-        assertThat(configuration.getDefaultDatabaseConnection(), isConnection(USERNAME_PASSWORD_AUTHENTICATION));
+        assertThat(configuration.getDefaultDatabaseConnection(), hasName(USERNAME_PASSWORD_AUTHENTICATION));
     }
 
-    @Test
-    public void shouldReturnDefaultUnfilteredADConnection() throws Exception {
-        configuration = unfilteredConfig();
-        assertThat(configuration.getActiveDirectoryStrategy(), notNullValue());
-        assertThat(configuration.getDefaultActiveDirectoryConnection(), isConnection(MY_AD));
-    }
+//    @Test
+//    public void shouldReturnDefaultUnfilteredADConnection() throws Exception {
+//        configuration = unfilteredConfig();
+//        assertThat(configuration.getActiveDirectoryConnection(), notNullValue());
+//        assertThat(configuration.getDefaultActiveDirectoryConnection(), hasName(MY_AD));
+//    }
 
-    @Test
-    public void shouldReturnNullADConnectionIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(UNKNOWN_AD);
-        assertThat(configuration.getActiveDirectoryStrategy(), nullValue());
-        assertThat(configuration.getDefaultActiveDirectoryConnection(), nullValue());
-    }
+//    @Test
+//    public void shouldReturnNullADConnectionIfNoneMatch() throws Exception {
+//        configuration = filteredConfigBy(UNKNOWN_AD);
+//        assertThat(configuration.getActiveDirectoryConnection(), nullValue());
+//        assertThat(configuration.getDefaultActiveDirectoryConnection(), nullValue());
+//    }
 
-    @Test
-    public void shouldReturnFilteredADConnections() throws Exception {
-        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
-        final Strategy strategy = configuration.getActiveDirectoryStrategy();
-        assertThat(strategy, notNullValue());
-        assertThat(configuration.getDefaultActiveDirectoryConnection(), isConnection(MY_AD));
-        assertThat(strategy.getConnections(), containsInAnyOrder(isConnection(MY_AD), isConnection(MY_SECOND_AD)));
-    }
+//    @Test
+//    public void shouldReturnFilteredADConnections() throws Exception {
+//        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
+//        final Strategy strategy = configuration.getActiveDirectoryConnection();
+//        assertThat(strategy, notNullValue());
+//        assertThat(configuration.getDefaultActiveDirectoryConnection(), hasName(MY_AD));
+//        assertThat(strategy.getConnections(), containsInAnyOrder(hasName(MY_AD), hasName(MY_SECOND_AD)));
+//    }
 
     @Test
     public void shouldReturnUnfilteredPasswordlessStrategies() throws Exception {
         configuration = unfilteredConfig();
-        List<Strategy> strategies = configuration.getPasswordlessStrategies();
-        assertThat(strategies, is(notNullValue()));
-        assertThat(strategies, containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
+        List<AuthData> connections = configuration.getPasswordlessConnections();
+        assertThat(connections, is(notNullValue()));
+        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS)));
     }
 
     @Test
     public void shouldReturnFilteredPasswordlessStrategies() throws Exception {
         configuration = filteredConfigBy(CUSTOM_PASSWORDLESS_CONNECTION);
-        Strategy strategy = configuration.getDefaultPasswordlessStrategy();
+        AuthData strategy = configuration.getDefaultPasswordlessConnection();
         assertThat(strategy, is(notNullValue()));
-        assertThat(strategy, isStrategy(SMS));
-        assertThat(strategy.getConnections(), hasSize(1));
-        assertThat(strategy.getConnections().get(0), isConnection(CUSTOM_PASSWORDLESS_CONNECTION));
+        assertThat(strategy, hasStrategy(Strategies.SMS));
+        assertThat(strategy, hasName(CUSTOM_PASSWORDLESS_CONNECTION));
     }
 
-    @Test
-    public void shouldReturnFirstConnectionForStrategy() throws Exception {
-        configuration = unfilteredConfig();
-        Strategy smsStrategy = configuration.getPasswordlessStrategies().get(0);
-        String name = configuration.getFirstConnectionOfStrategy(smsStrategy);
-        assertThat(name, is(equalTo(SMS.getName())));
-        assertThat(name, is(not(equalTo(CUSTOM_PASSWORDLESS_CONNECTION))));
-    }
+//    @Test
+//    public void shouldReturnFirstConnectionForStrategy() throws Exception {
+//        configuration = unfilteredConfig();
+//        AuthData smsStrategy = configuration.getPasswordlessConnections().get(0);
+//        String name = configuration.getFirstConnectionOfStrategy(smsStrategy);
+//        assertThat(name, is(equalTo(SMS.getName())));
+//        assertThat(name, is(not(equalTo(CUSTOM_PASSWORDLESS_CONNECTION))));
+//    }
 
     @Test
     public void shouldPreferEmailPasswordlessStrategy() throws Exception {
         configuration = unfilteredConfig();
-        Strategy strategy = configuration.getDefaultPasswordlessStrategy();
-        List<Strategy> strategies = configuration.getPasswordlessStrategies();
-        assertThat(strategy, is(notNullValue()));
-        assertThat(strategy.getName(), equalTo(Email.getName()));
-        assertThat(strategies, containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
-        assertThat(strategies, hasSize(2));
+        AuthData defaultConnection = configuration.getDefaultPasswordlessConnection();
+        List<AuthData> connections = configuration.getPasswordlessConnections();
+        assertThat(defaultConnection, is(notNullValue()));
+        assertThat(defaultConnection.getName(), equalTo(Strategies.Email));
+        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS)));
+        assertThat(connections, hasSize(2));
     }
 
     @Test
     public void shouldReturnEmptyPasswordlessStrategiesIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Facebook.getName());
-        Strategy strategy = configuration.getDefaultPasswordlessStrategy();
-        assertThat(strategy, is(nullValue()));
+        AuthData connection = configuration.getDefaultPasswordlessConnection();
+        assertThat(connection, is(nullValue()));
     }
 
     @Test
-    public void shouldNotReturnDuplicatedSocialStrategies() throws Exception {
+    public void shouldIgnoreStrategyNameAndReturnFilteredConnections() throws Exception {
         configuration = filteredConfigBy("twitter", "twitter-dev");
-        final List<Strategy> strategies = configuration.getSocialStrategies();
-        assertThat(strategies, hasItems(isStrategy(Twitter)));
-        assertThat(strategies, hasSize(1));
-    }
-
-    @Test
-    public void shouldReturnUnfilteredSocialStrategiesWithConnections() throws Exception {
-        configuration = unfilteredConfig();
-        final List<Strategy> strategies = configuration.getSocialStrategies();
-        assertThat(strategies, hasItems(isStrategy(Facebook), isStrategy(Twitter), isStrategy(Instagram), isStrategy(GooglePlus)));
-        assertThat(strategies, not(hasItem(isStrategy(Linkedin))));
+        final List<AuthData> strategies = configuration.getSocialConnections();
+        assertThat(strategies, contains(hasStrategy("twitter"), hasStrategy("twitter")));
+        assertThat(strategies, contains(hasName("twitter"), hasName("twitter-dev")));
+        assertThat(strategies, hasSize(2));
     }
 
     @Test
     public void shouldNotReturnFilteredSocialStrategiesWithoutConnections() throws Exception {
-        configuration = filteredConfigBy(Facebook.getName(), Linkedin.getName());
-        final List<Strategy> strategies = configuration.getSocialStrategies();
-        assertThat(strategies, hasItem(isStrategy(Facebook)));
-        assertThat(strategies, not(hasItem(isStrategy(Linkedin))));
+        configuration = filteredConfigBy(Strategies.Facebook, Strategies.Linkedin);
+        final List<AuthData> connections = configuration.getSocialConnections();
+        assertThat(connections, hasItem(hasStrategy(Strategies.Facebook)));
+        assertThat(connections, not(hasItem(hasStrategy(Strategies.Linkedin))));
     }
 
     @Test
     public void shouldReturnFilteredSocialStrategies() throws Exception {
         configuration = filteredConfigBy(Facebook.getName(), Instagram.getName());
-        assertThat(configuration.getSocialStrategies(), containsInAnyOrder(isStrategy(Facebook), isStrategy(Instagram)));
+        assertThat(configuration.getSocialConnections(), containsInAnyOrder(hasStrategy(Strategies.Facebook), hasStrategy(Strategies.Instagram)));
     }
 
     @Test
     public void shouldReturnEmptySocialStrategiesIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Yammer.getName(), Yahoo.getName());
-        assertThat(configuration.getSocialStrategies(), emptyIterable());
+        assertThat(configuration.getSocialConnections(), emptyIterable());
     }
 
     @Test
     public void shouldReturnUnfilteredEnterpriseConnections() throws Exception {
         configuration = unfilteredConfig();
-        assertThat(configuration.getEnterpriseStrategies(), containsInAnyOrder(isStrategy(ActiveDirectory), isStrategy(GoogleApps)));
+        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasStrategy(Strategies.ActiveDirectory), hasStrategy(Strategies.GoogleApps)));
     }
 
     @Test
     public void shouldReturnFilteredEnterpriseStrategies() throws Exception {
         configuration = filteredConfigBy("auth0.com");
-        assertThat(configuration.getEnterpriseStrategies(), contains(isStrategy(GoogleApps)));
+        assertThat(configuration.getEnterpriseConnections(), contains(hasStrategy(Strategies.GoogleApps)));
     }
 
     @Test
     public void shouldReturnEmptyEnterpriseStrategiesIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Yandex.getName());
-        assertThat(configuration.getEnterpriseStrategies(), emptyIterable());
+        assertThat(configuration.getEnterpriseConnections(), emptyIterable());
     }
 
-    @Test
-    public void shouldUseNativeAuthentication() throws Exception {
-        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
-        final Connection connection = configuration.getDefaultActiveDirectoryConnection();
-        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(true));
-    }
-
-    @Test
-    public void shouldNotUseNativeAuthenticationBecauseOverrided() throws Exception {
-        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
-        final Connection connection = configuration.getDefaultActiveDirectoryConnection();
-        assertThat(configuration.shouldUseNativeAuthentication(connection, Arrays.asList(MY_AD, MY_SECOND_AD)), is(false));
-    }
-
-    @Test
-    public void shouldNotUseNativeAuthenticationBecauseIsSocial() throws Exception {
-        configuration = unfilteredConfig();
-        final Connection connection = getConnectionByName("twitter");
-        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(false));
-    }
+//    @Test
+//    public void shouldUseNativeAuthentication() throws Exception {
+//        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
+//        final AuthData connection = configuration.getDefaultActiveDirectoryConnection();
+//        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(true));
+//    }
+//
+//    @Test
+//    public void shouldNotUseNativeAuthenticationBecauseOverrided() throws Exception {
+//        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
+//        final AuthData connection = configuration.getDefaultActiveDirectoryConnection();
+//        assertThat(configuration.shouldUseNativeAuthentication(connection, Arrays.asList(MY_AD, MY_SECOND_AD)), is(false));
+//    }
+//
+//    @Test
+//    public void shouldNotUseNativeAuthenticationBecauseIsSocial() throws Exception {
+//        configuration = unfilteredConfig();
+//        final AuthData connection = getConnectionByName("twitter");
+//        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(false));
+//    }
 
     @Test
     public void shouldHaveDefaultPrivacyPolicyURL() throws Exception {
@@ -625,12 +612,10 @@ public class ConfigurationTest extends GsonBaseTest {
         return new Configuration(application, options);
     }
 
-    private Connection getConnectionByName(String name) {
-        for (Strategy strategy : application.getStrategies()) {
-            for (Connection connection : strategy.getConnections()) {
-                if (connection.getName().equals(name)) {
-                    return connection;
-                }
+    private AuthData getConnectionByName(String name) {
+        for (AuthData connection : application.getConnections()) {
+            if (connection.getName().equals(name)) {
+                return connection;
             }
         }
         return null;

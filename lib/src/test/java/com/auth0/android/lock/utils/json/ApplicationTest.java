@@ -33,25 +33,14 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-import static com.auth0.android.lock.utils.Strategies.ADFS;
 import static com.auth0.android.lock.utils.Strategies.Auth0;
-import static com.auth0.android.lock.utils.Strategies.Email;
-import static com.auth0.android.lock.utils.Strategies.Facebook;
-import static com.auth0.android.lock.utils.Strategies.Office365;
-import static com.auth0.android.lock.utils.Strategies.SAMLP;
-import static com.auth0.android.lock.utils.Strategies.SMS;
-import static com.auth0.android.lock.utils.Strategies.Twitter;
-import static com.auth0.android.lock.utils.json.StrategyMatcher.isStrategy;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
@@ -81,46 +70,12 @@ public class ApplicationTest {
         assertThat(application.hasAllowedOrigins(), equalTo(HAS_ALLOWED_ORIGINS));
     }
 
-    @Test
-    public void shouldReturnDatabaseStrategy() throws Exception {
-        Application application = newApplicationWithStrategies(Auth0);
-        assertThat(application.getDatabaseStrategy(), is(notNullValue()));
-        assertThat(application.getDatabaseStrategy().getName(), equalTo(Auth0.getName()));
-    }
-
-    @Test
-    public void shouldReturnNoDatabaseStrategy() throws Exception {
-        Application application = newApplicationWithStrategies(Facebook);
-        assertThat(application.getDatabaseStrategy(), is(nullValue()));
-    }
-
-    @Test
-    public void shouldReturnSocialStrategies() throws Exception {
-        Application application = newApplicationWithStrategies(Facebook, Twitter, Auth0);
-        assertThat(application.getSocialStrategies().size(), equalTo(2));
-        assertThat(application.getSocialStrategies(), containsInAnyOrder(isStrategy(Facebook), isStrategy(Twitter)));
-    }
-
-    @Test
-    public void shouldReturnEnterpriseStrategies() throws Exception {
-        Application application = newApplicationWithStrategies(Auth0, ADFS, SAMLP, Office365);
-        assertThat(application.getEnterpriseStrategies().size(), equalTo(3));
-        assertThat(application.getEnterpriseStrategies(), containsInAnyOrder(isStrategy(ADFS), isStrategy(SAMLP), isStrategy(Office365)));
-    }
-
-    @Test
-    public void shouldReturnPasswordlessStrategies() throws Exception {
-        Application application = newApplicationWithStrategies(Email, SMS, Facebook, Auth0, SAMLP);
-        assertThat(application.getPasswordlessStrategies().size(), equalTo(2));
-        assertThat(application.getPasswordlessStrategies(), containsInAnyOrder(isStrategy(Email), isStrategy(SMS)));
-    }
-
-    private static Strategy newStrategyFor(Strategies strategyMetadata) {
-        return new Strategy(strategyMetadata.getName(), Arrays.asList(mock(Connection.class)));
+    private static AuthData newStrategyFor(Strategies strategyMetadata) {
+        return new AuthData(strategyMetadata.getName(), new HashMap<String, Object>());
     }
 
     private static Application newApplicationWithStrategies(Strategies... list) {
-        List<Strategy> strategies = new ArrayList<>();
+        List<AuthData> strategies = new ArrayList<>();
         for (Strategies str : list) {
             strategies.add(newStrategyFor(str));
         }

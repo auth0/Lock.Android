@@ -24,15 +24,8 @@
 
 package com.auth0.android.lock.utils.json;
 
-import com.auth0.android.lock.utils.Strategies;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.auth0.android.lock.utils.Strategies.Type.DATABASE;
-import static com.auth0.android.lock.utils.Strategies.Type.ENTERPRISE;
-import static com.auth0.android.lock.utils.Strategies.Type.PASSWORDLESS;
-import static com.auth0.android.lock.utils.Strategies.Type.SOCIAL;
 
 /**
  * Class with your Auth0's application information and the list of enabled connections (DB, Social, Enterprise, Passwordless).
@@ -46,17 +39,10 @@ public class Application {
     private String callbackURL;
     private String subscription;
     private boolean hasAllowedOrigins;
-    private List<Strategy> strategies;
-    private List<Strategy> socialStrategies;
-    private List<Strategy> enterpriseStrategies;
-    private List<Strategy> passwordlessStrategies;
-    private Strategy databaseStrategy;
+    private List<AuthData> connections;
 
     public Application() {
-        strategies = new ArrayList<>();
-        socialStrategies = new ArrayList<>();
-        enterpriseStrategies = new ArrayList<>();
-        passwordlessStrategies = new ArrayList<>();
+        connections = new ArrayList<>();
     }
 
     public Application(Application application) {
@@ -66,11 +52,7 @@ public class Application {
         callbackURL = application.callbackURL;
         subscription = application.subscription;
         hasAllowedOrigins = application.hasAllowedOrigins;
-        strategies = application.strategies;
-        socialStrategies = application.socialStrategies;
-        enterpriseStrategies = application.enterpriseStrategies;
-        passwordlessStrategies = application.passwordlessStrategies;
-        databaseStrategy = application.databaseStrategy;
+        connections = application.connections;
     }
 
     /**
@@ -82,37 +64,16 @@ public class Application {
      * @param callbackURL       url used after a oauth flow.
      * @param subscription      type of subscription.
      * @param hasAllowedOrigins if the app allows other origins
-     * @param strategies        list of the strategies enabled for the app (Social, DB, etc).
+     * @param connections       list of the connections enabled for the app (Social, DB, etc).
      */
-    public Application(String id, String tenant, String authorizeURL, String callbackURL, String subscription, boolean hasAllowedOrigins, List<Strategy> strategies) {
+    public Application(String id, String tenant, String authorizeURL, String callbackURL, String subscription, boolean hasAllowedOrigins, List<AuthData> connections) {
         this.id = id;
         this.tenant = tenant;
         this.authorizeURL = authorizeURL;
         this.callbackURL = callbackURL;
         this.subscription = subscription;
         this.hasAllowedOrigins = hasAllowedOrigins;
-        this.strategies = strategies;
-        this.socialStrategies = new ArrayList<>();
-        this.enterpriseStrategies = new ArrayList<>();
-        this.passwordlessStrategies = new ArrayList<>();
-        for (Strategy strategy : strategies) {
-            if (Strategies.Auth0.getName().equals(strategy.getName())) {
-                this.databaseStrategy = strategy;
-            } else {
-                switch (strategy.getType()) {
-                    case SOCIAL:
-                        this.socialStrategies.add(strategy);
-                        break;
-                    case ENTERPRISE:
-                        this.enterpriseStrategies.add(strategy);
-                        break;
-                    case PASSWORDLESS:
-                        this.passwordlessStrategies.add(strategy);
-                    case DATABASE:
-                        break;
-                }
-            }
-        }
+        this.connections = connections;
     }
 
     /**
@@ -170,79 +131,12 @@ public class Application {
     }
 
     /**
-     * Returns all available auth strategies for the app.
+     * Returns all available auth connections for the app.
      *
-     * @return
+     * @return the list of available connections
      */
-    public List<Strategy> getStrategies() {
-        return new ArrayList<>(strategies);
+    public List<AuthData> getConnections() {
+        return new ArrayList<>(connections);
     }
 
-    /**
-     * Returns the Database strategy of the app.
-     *
-     * @return DB strategy
-     */
-    public Strategy getDatabaseStrategy() {
-        return databaseStrategy;
-    }
-
-    /**
-     * Returns the social strategies of the app.
-     *
-     * @return list of social strategies
-     */
-    public List<Strategy> getSocialStrategies() {
-        return new ArrayList<>(socialStrategies);
-    }
-
-    /**
-     * Returns the social enterprise of the app.
-     *
-     * @return list of enterprise strategies
-     */
-    public List<Strategy> getEnterpriseStrategies() {
-        return new ArrayList<>(enterpriseStrategies);
-    }
-
-    /**
-     * Returns the passwordless strategies of the app.
-     *
-     * @return list of passwordless strategies
-     */
-    public List<Strategy> getPasswordlessStrategies() {
-        return new ArrayList<>(passwordlessStrategies);
-    }
-
-    /**
-     * Returns a {@link Strategy} by its name
-     *
-     * @param name strategy name
-     * @return a {@link Strategy}
-     */
-    public Strategy strategyForName(String name) {
-        for (Strategy strategy : this.strategies) {
-            if (strategy.getName().equals(name)) {
-                return strategy;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the strategy by one of its connections
-     *
-     * @param connection a connection
-     * @return a {@link Strategy}
-     */
-    public Strategy strategyForConnection(Connection connection) {
-        for (Strategy strategy : this.strategies) {
-            for (Connection conn : strategy.getConnections()) {
-                if (conn.getName().equals(connection.getName())) {
-                    return strategy;
-                }
-            }
-        }
-        return null;
-    }
 }

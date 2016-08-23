@@ -400,14 +400,14 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        if (configuration.getDefaultPasswordlessStrategy() == null) {
+        if (configuration.getDefaultPasswordlessConnection() == null) {
             Log.w(TAG, "There is no default Passwordless strategy to authenticate with");
             return;
         }
 
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        String connectionName = configuration.getFirstConnectionOfStrategy(configuration.getDefaultPasswordlessStrategy());
+        String connectionName = configuration.getDefaultPasswordlessConnection().getName();
         if (event.getCode() != null) {
             event.getLoginRequest(apiClient, lastPasswordlessEmailOrNumber)
                     .addAuthenticationParameters(options.getAuthenticationParameters())
@@ -533,7 +533,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onFailure(final AuthenticationException exception) {
             final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
-            final String message = authError.getMessage(PasswordlessLockActivity.this);;
+            final String message = authError.getMessage(PasswordlessLockActivity.this);
+            ;
             Log.e(TAG, "Failed to authenticate the user: " + message, exception);
             handler.post(new Runnable() {
                 @Override

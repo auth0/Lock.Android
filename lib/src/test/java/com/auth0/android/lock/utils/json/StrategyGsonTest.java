@@ -26,7 +26,7 @@ package com.auth0.android.lock.utils.json;
 
 import com.google.gson.JsonParseException;
 
-import org.hamcrest.collection.IsCollectionWithSize;
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,14 +35,18 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class StrategyGsonTest extends GsonBaseTest {
     private static final String STRATEGY = "src/test/resources/strategy.json";
+    private static final String ENTERPRISE_CONNECTION = "src/test/resources/enterprise_connection.json";
+    private static final String DATABASE_CONNECTION = "src/test/resources/db_connection.json";
+    private static final String SOCIAL_CONNECTION = "src/test/resources/social_connection.json";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -55,40 +59,71 @@ public class StrategyGsonTest extends GsonBaseTest {
     @Test
     public void shouldFailWithEmptyJson() throws Exception {
         expectedException.expect(JsonParseException.class);
-        buildStrategyFrom(json(EMPTY_OBJECT));
+        buildConnectionFrom(json(EMPTY_OBJECT));
     }
 
     @Test
     public void shouldFailWithInvalidJson() throws Exception {
         expectedException.expect(JsonParseException.class);
-        buildStrategyFrom(json(INVALID));
+        buildConnectionFrom(json(INVALID));
     }
 
     @Test
     public void shouldRequireName() throws Exception {
         expectedException.expect(JsonParseException.class);
-        buildStrategyFrom(new StringReader("{\"connections\": \"[]\"}"));
+        buildConnectionFrom(new StringReader("{\"connections\": \"[]\"}"));
     }
 
     @Test
     public void shouldRequireConnections() throws Exception {
         expectedException.expect(JsonParseException.class);
-        buildStrategyFrom(new StringReader("{\"name\": \"auth0\"}"));
+        buildConnectionFrom(new StringReader("{\"name\": \"auth0\"}"));
     }
 
     @Test
     public void shouldReturnStrategy() throws Exception {
-        final Strategy strategy = buildStrategyFrom(json(STRATEGY));
-        assertThat(strategy, is(notNullValue()));
-        assertThat(strategy.getName(), is("twitter"));
-        assertThat(strategy.getConnections(), is(notNullValue()));
-        assertThat(strategy.getConnections(), IsCollectionWithSize.hasSize(1));
-        assertThat(strategy.getConnections().get(0), instanceOf(Connection.class));
+        final AuthData connection = buildConnectionFrom(json(STRATEGY));
+        assertThat(connection, is(notNullValue()));
+        assertThat(connection.getName(), is("twitter"));
+        assertThat(connection.getStrategy(), is("twitter"));
+    }
+
+    @Test
+    public void shouldReturnEnterprise() throws Exception {
+        final AuthData connection = buildConnectionFrom(json(ENTERPRISE_CONNECTION));
+        assertThat(connection, is(notNullValue()));
+        assertThat(connection.getName(), is("ad"));
+        assertThat(connection.getDomainSet(), contains("auth10.com"));
+        assertThat((String)connection.getValueForKey("domain"), is("auth10.com"));
+        assertThat((List<String>) connection.getValueForKey("domain_aliases"), IsCollectionContaining.hasItem("auth10.com"));
+    }
+
+    @Test
+    public void shouldReturnSocial() throws Exception {
+        final AuthData connection = buildConnectionFrom(json(SOCIAL_CONNECTION));
+        assertThat(connection, is(notNullValue()));
+        assertThat(connection.getName(), is("twitter"));
+        assertThat(connection.getStrategy(), is("twitter"));
+        assertThat((String) connection.getValueForKey("scope"), is("public_profile"));
+    }
+
+    @Test
+    public void shouldReturnDatabase() throws Exception {
+        final AuthData connection = buildConnectionFrom(json(DATABASE_CONNECTION));
+        assertThat(connection, is(notNullValue()));
+        assertThat(connection.getName(), is("Username-Password-Authentication"));
+        assertThat(connection.getStrategy(), is("auth0"));
+        assertThat((String) connection.getValueForKey("forgot_password_url"), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat((String) connection.getValueForKey("signup_url"), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat(connection.booleanForKey("showSignup"), is(true));
+        assertThat(connection.booleanForKey("showForgot"), is(true));
+        assertThat(connection.booleanForKey("requires_username"), is(false));
+        assertThat((String) connection.getValueForKey("passwordPolicy"), is("good"));
     }
 
 
-    private Strategy buildStrategyFrom(Reader json) throws IOException {
-        return pojoFrom(json, Strategy.class);
+    private AuthData buildConnectionFrom(Reader json) throws IOException {
+        return pojoFrom(json, AuthData.class);
     }
 
 }

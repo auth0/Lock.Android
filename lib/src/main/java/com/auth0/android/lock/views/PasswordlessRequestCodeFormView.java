@@ -63,7 +63,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         this.lockWidget = lockWidget;
         this.listener = listener;
         passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
-        boolean showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
+        boolean showTitle = lockWidget.getConfiguration().getSocialConnections().isEmpty();
         Log.v(TAG, "New instance with mode " + passwordlessMode);
         init(showTitle);
     }

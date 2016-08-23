@@ -80,9 +80,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void init() {
-        boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
+        boolean showSocial = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
         showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
-        showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
+        showEnterprise = !lockWidget.getConfiguration().getEnterpriseConnections().isEmpty();
         boolean showModeSelection = showDatabase && lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 
         int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
@@ -131,7 +131,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private void addSocialLayout() {
         int style = lockWidget.getConfiguration().getSocialButtonStyle();
         boolean formContainsFields = showDatabase || showEnterprise;
-        boolean singleConnection = lockWidget.getConfiguration().getSocialStrategies().size() == 1;
+        boolean singleConnection = lockWidget.getConfiguration().getSocialConnections().size() == 1;
 
         if (style == SocialButtonStyle.UNSPECIFIED) {
             socialLayout = new SocialView(lockWidget, formContainsFields && !singleConnection);

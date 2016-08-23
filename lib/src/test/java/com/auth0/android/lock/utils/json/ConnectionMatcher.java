@@ -28,29 +28,46 @@ package com.auth0.android.lock.utils.json;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-public class ConnectionMatcher extends BaseMatcher<Connection> {
+public class ConnectionMatcher extends BaseMatcher<AuthData> {
 
+    private final String strategy;
     private final String name;
 
-    public ConnectionMatcher(String name) {
+    public ConnectionMatcher(String strategy, String name) {
+        this.strategy = strategy;
         this.name = name;
     }
 
     @Override
     public boolean matches(Object o) {
-        if (!(o instanceof Connection)) {
+        if (!(o instanceof AuthData)) {
             return false;
         }
-        Connection connection = (Connection) o;
-        return name.equals(connection.getName());
+        AuthData connection = (AuthData) o;
+        if (name != null) {
+            return name.equals(connection.getName());
+        }
+        if (strategy != null) {
+            return strategy.equals(connection.getStrategy());
+        }
+        return false;
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("connection with name ").appendValue(this.name);
+        if (strategy != null) {
+            description.appendText("connection with strategy ").appendValue(this.strategy);
+        }
+        if (name != null) {
+            description.appendText("connection with name ").appendValue(this.name);
+        }
     }
 
-    public static ConnectionMatcher isConnection(String name) {
-        return new ConnectionMatcher(name);
+    public static ConnectionMatcher hasName(String name) {
+        return new ConnectionMatcher(null, name);
+    }
+
+    public static ConnectionMatcher hasStrategy(String name) {
+        return new ConnectionMatcher(name, null);
     }
 }

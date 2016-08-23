@@ -31,6 +31,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationDeserializer extends GsonDeserializer<Application> {
@@ -49,9 +50,14 @@ public class ApplicationDeserializer extends GsonDeserializer<Application> {
         String subscription = context.deserialize(object.remove("subscription"), String.class);
         boolean hasAllowedOrigins = context.deserialize(object.remove("hasAllowedOrigins"), Boolean.class);
 
-        Type strategyType = new TypeToken<List<Strategy>>() {}.getType();
-        List<Strategy> strategies = context.deserialize(object.remove("strategies"), strategyType);
+        Type strategyType = new TypeToken<List<List<AuthData>>>() {}.getType();
+        requiredValue("strategies", strategyType, object, context);
+        List<List<AuthData>> strategies = context.deserialize(object.remove("strategies"), strategyType);
+        List<AuthData> authDataList = new ArrayList<>();
+        for (List<AuthData> data : strategies) {
+            authDataList.addAll(data);
+        }
 
-        return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, strategies);
+        return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, authDataList);
     }
 }

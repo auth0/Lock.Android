@@ -94,7 +94,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         formLayout.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formLayout, formLayoutParams);
 
-        boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
+        boolean showPasswordless = configuration.getDefaultPasswordlessConnection() != null;
         if (showPasswordless) {
             actionButton = new ActionButton(getContext(), lockTheme);
             actionButton.setOnClickListener(this);

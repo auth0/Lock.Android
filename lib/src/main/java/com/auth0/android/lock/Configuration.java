@@ -29,6 +29,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
+import com.auth0.android.lock.enums.AuthType;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
@@ -36,8 +37,7 @@ import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
-import com.auth0.android.lock.utils.json.Connection;
-import com.auth0.android.lock.utils.json.Strategy;
+import com.auth0.android.lock.utils.json.AuthData;
 import com.auth0.android.lock.views.AuthConfig;
 
 import java.util.ArrayList;
@@ -56,17 +56,17 @@ public class Configuration {
     private static final String PASSWORD_POLICY_KEY = "passwordPolicy";
     private final List<CustomField> extraSignUpFields;
 
-    private Connection defaultDatabaseConnection;
+    private AuthData defaultDatabaseConnection;
 
-    private Connection defaultActiveDirectoryConnection;
+    private AuthData defaultActiveDirectoryConnection;
 
-    private List<Strategy> passwordlessStrategies;
+    private List<AuthData> passwordlessConnections;
 
-    private Strategy activeDirectoryStrategy;
+//    private AuthData activeDirectoryConnection;
 
-    private List<Strategy> socialStrategies;
+    private List<AuthData> socialConnections;
 
-    private List<Strategy> enterpriseStrategies;
+    private List<AuthData> enterpriseConnections;
 
     private Application application;
 
@@ -97,19 +97,19 @@ public class Configuration {
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
         this.extraSignUpFields = options.getCustomFields();
-        this.defaultDatabaseConnection = filterDatabaseConnections(application.getDatabaseStrategy(), connectionSet, defaultDatabaseName);
-        this.enterpriseStrategies = filterStrategiesByConnections(application.getEnterpriseStrategies(), connectionSet);
-        this.passwordlessStrategies = filterStrategiesByConnections(application.getPasswordlessStrategies(), connectionSet);
-        this.activeDirectoryStrategy = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
-        this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryStrategy);
-        this.socialStrategies = filterSocialStrategies(application.getSocialStrategies(), connectionSet);
+        this.defaultDatabaseConnection = filterDatabaseConnections(application.getConnections(), connectionSet, defaultDatabaseName);
+        this.enterpriseConnections = filterConnections(application.getConnections(), connectionSet, AuthType.ENTERPRISE);
+        this.passwordlessConnections = filterConnections(application.getConnections(), connectionSet, AuthType.PASSWORDLESS);
+        this.socialConnections = filterConnections(application.getConnections(), connectionSet, AuthType.SOCIAL);
+//        this.activeDirectoryConnection = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
+//        this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryConnection);
         this.application = application;
         parseLocalOptions(options);
         boolean atLeastOneSocialModeEnabled = allowLogIn || allowSignUp;
         boolean atLeastOneDatabaseModeEnabled = atLeastOneSocialModeEnabled || allowForgotPassword;
-        this.classicLockAvailable = (!socialStrategies.isEmpty() && atLeastOneSocialModeEnabled) || (!enterpriseStrategies.isEmpty() && allowLogIn)
+        this.classicLockAvailable = (!socialConnections.isEmpty() && atLeastOneSocialModeEnabled) || (!enterpriseConnections.isEmpty() && allowLogIn)
                 || (defaultDatabaseConnection != null && atLeastOneDatabaseModeEnabled);
-        this.passwordlessLockAvailable = !socialStrategies.isEmpty() || !passwordlessStrategies.isEmpty();
+        this.passwordlessLockAvailable = !socialConnections.isEmpty() || !passwordlessConnections.isEmpty();
     }
 
     @NonNull
@@ -117,141 +117,88 @@ public class Configuration {
         return extraSignUpFields;
     }
 
-    public Connection getDefaultDatabaseConnection() {
+    public AuthData getDefaultDatabaseConnection() {
         return defaultDatabaseConnection;
     }
 
-    public Connection getDefaultActiveDirectoryConnection() {
+    public AuthData getDefaultActiveDirectoryConnection() {
         return defaultActiveDirectoryConnection;
     }
 
-    public Strategy getActiveDirectoryStrategy() {
-        return activeDirectoryStrategy;
-    }
+//    public AuthData getActiveDirectoryConnection() {
+//        return activeDirectoryConnection;
+//    }
 
     @Nullable
-    public Strategy getDefaultPasswordlessStrategy() {
-        if (passwordlessStrategies.isEmpty()) {
+    public AuthData getDefaultPasswordlessConnection() {
+        if (passwordlessConnections.isEmpty()) {
             return null;
         }
 
-        if (passwordlessStrategies.size() == 1) {
-            return passwordlessStrategies.get(0);
+        if (passwordlessConnections.size() == 1) {
+            return passwordlessConnections.get(0);
         }
 
-        Strategy strategy = null;
-        for (Strategy s : passwordlessStrategies) {
+        AuthData strategy = null;
+        for (AuthData s : passwordlessConnections) {
             if (s.getName().equals(Strategies.Email.getName())) {
                 strategy = s;
                 break;
             }
         }
 
-        return strategy != null ? strategy : passwordlessStrategies.get(0);
+        return strategy != null ? strategy : passwordlessConnections.get(0);
     }
 
-    public List<Strategy> getSocialStrategies() {
-        return socialStrategies;
+    public List<AuthData> getSocialConnections() {
+        return socialConnections;
     }
 
-    public List<Strategy> getEnterpriseStrategies() {
-        return enterpriseStrategies;
+    public List<AuthData> getEnterpriseConnections() {
+        return enterpriseConnections;
     }
 
-    public List<Strategy> getPasswordlessStrategies() {
-        return passwordlessStrategies;
-    }
-
-    public String getFirstConnectionOfStrategy(@NonNull Strategy strategy) {
-        return strategy.getConnections().get(0).getName();
+    public List<AuthData> getPasswordlessConnections() {
+        return passwordlessConnections;
     }
 
     public Application getApplication() {
         return application;
     }
 
-    public boolean shouldUseNativeAuthentication(Connection connection, @NonNull List<String> enterpriseConnectionsUsingWebForm) {
-        final Strategy strategy = getApplication().strategyForConnection(connection);
-        return strategy.isActiveFlowEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
-    }
+//    public boolean shouldUseNativeAuthentication(Connection connection, @NonNull List<String> enterpriseConnectionsUsingWebForm) {
+//        final AuthData strategy = getApplication().strategyForConnection(connection);
+//        return strategy.isActiveFlowEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
+//    }
 
-    private Connection filterDatabaseConnections(Strategy databaseStrategy, Set<String> connections, String defaultDatabaseName) {
-        List<Connection> dbs = databaseStrategy != null ? databaseStrategy.getConnections() : null;
-        if (dbs == null) {
+    private AuthData filterDatabaseConnections(@NonNull List<AuthData> connections, Set<String> allowedConnections, String defaultDatabaseName) {
+        if (connections.isEmpty()) {
             return null;
         }
-
-        Connection defaultDb = getConnectionForName(dbs, defaultDatabaseName);
-        if (defaultDb != null && shouldSelect(defaultDb, connections)) {
-            return defaultDb;
-        }
-
-        if (defaultDatabaseName != null) {
-            Log.w(TAG, String.format("You've chosen '%s' as your default database name, but it wasn't found in your Auth0 connections configuration.", defaultDatabaseName));
-        }
-
-        for (Connection db : dbs) {
-            if (shouldSelect(db, connections)) {
-                return db;
+        final List<AuthData> filteredConnections = filterConnections(connections, allowedConnections, AuthType.DATABASE);
+        for (AuthData connection : filteredConnections) {
+            if (connection.getName().equals(defaultDatabaseName)) {
+                return connection;
             }
         }
-        return null;
+        Log.w(TAG, String.format("You've chosen '%s' as your default database name, but it wasn't found in your Auth0 connections configuration.", defaultDatabaseName));
+
+        return filteredConnections.isEmpty() ? null : filteredConnections.get(0);
     }
 
-    private Connection getConnectionForName(List<Connection> connections, String name) {
-        for (Connection c : connections) {
-            if (c.getName().equals(name)) {
-                return c;
-            }
+    private List<AuthData> filterConnections(@NonNull List<AuthData> connections, Set<String> allowedConnections, @AuthType int type) {
+        if (connections.isEmpty()) {
+            return connections;
         }
-        return null;
-    }
-
-    private Strategy filterStrategy(Strategy strategy, Set<String> connections) {
-        if (strategy == null || connections.isEmpty()) {
-            return strategy;
-        }
-        List<Connection> filtered = new ArrayList<>(strategy.getConnections().size());
-        for (Connection connection : strategy.getConnections()) {
-            if (connections.contains(connection.getName())) {
+        List<AuthData> filtered = new ArrayList<>(connections.size());
+        for (AuthData connection : connections) {
+            if (allowedConnections.contains(connection.getName())) {
                 filtered.add(connection);
             }
         }
-        if (filtered.isEmpty()) {
-            return null;
-        }
-        return new Strategy(strategy.getName(), filtered);
-    }
-
-    private List<Strategy> filterSocialStrategies(List<Strategy> strategies, Set<String> connections) {
-        if (strategies == null) {
-            return null;
-        }
-        List<Strategy> filtered = new ArrayList<>(strategies.size());
-        for (Strategy strategy : strategies) {
-            for (Connection connection : strategy.getConnections()) {
-                if (connections.isEmpty() || connections.contains(connection.getName())) {
-                    filtered.add(strategy);
-                    break;
-                }
-            }
-        }
         return filtered;
     }
 
-    private List<Strategy> filterStrategiesByConnections(List<Strategy> strategies, Set<String> connections) {
-        if (strategies == null || connections.isEmpty()) {
-            return strategies;
-        }
-        List<Strategy> filtered = new ArrayList<>(strategies.size());
-        for (Strategy strategy : strategies) {
-            Strategy str = filterStrategy(strategy, connections);
-            if (str != null) {
-                filtered.add(str);
-            }
-        }
-        return filtered;
-    }
 
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();
@@ -259,9 +206,9 @@ public class Configuration {
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
 
-        final boolean socialAvailable = !getSocialStrategies().isEmpty();
+        final boolean socialAvailable = !getSocialConnections().isEmpty();
         final boolean dbAvailable = getDefaultDatabaseConnection() != null;
-        final boolean enterpriseAvailable = !getEnterpriseStrategies().isEmpty();
+        final boolean enterpriseAvailable = !getEnterpriseConnections().isEmpty();
         if (dbAvailable || enterpriseAvailable || socialAvailable) {
             //let user disable logIn only if connection have enabled it.
             allowLogIn = options.allowLogIn();
@@ -315,11 +262,11 @@ public class Configuration {
             }
         }
 
-        Strategy passwordlessStrategy = getDefaultPasswordlessStrategy();
-        if (passwordlessStrategy != null) {
-            if (passwordlessStrategy.getName().equals(Strategies.Email.getName())) {
+        AuthData passwordlessConnection = getDefaultPasswordlessConnection();
+        if (passwordlessConnection != null) {
+            if (passwordlessConnection.getName().equals(Strategies.Email.getName())) {
                 passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
-            } else if (passwordlessStrategy.getName().equals(Strategies.SMS.getName())) {
+            } else if (passwordlessConnection.getName().equals(Strategies.SMS.getName())) {
                 passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
             }
         } else {
@@ -352,18 +299,14 @@ public class Configuration {
             return PasswordStrength.NONE;
         }
     }
-
-    private boolean shouldSelect(Connection connection, Set<String> connections) {
-        return connections.isEmpty() || connections.contains(connection.getName());
-    }
-
-    private Connection filteredDefaultADConnection(Strategy activeDirectoryStrategy) {
-        if (activeDirectoryStrategy == null) {
-            return null;
-        }
-        final List<Connection> connections = activeDirectoryStrategy.getConnections();
-        return !connections.isEmpty() ? connections.get(0) : null;
-    }
+    
+//    private Connection filteredDefaultADConnection(AuthData activeDirectoryStrategy) {
+//        if (activeDirectoryStrategy == null) {
+//            return null;
+//        }
+//        final List<Connection> connections = activeDirectoryStrategy.getConnections();
+//        return !connections.isEmpty() ? connections.get(0) : null;
+//    }
 
     public boolean allowLogIn() {
         return allowLogIn;
