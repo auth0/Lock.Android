@@ -1,5 +1,66 @@
 # Change Log
 
+## [2.0.0-beta.4](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.4) (2016-08-24)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.3...2.0.0-beta.4)
+
+**Closed issues**
+- Lock SSO Username Fails Validation [\#332](https://github.com/auth0/Lock.Android/issues/332)
+
+**Fixed**
+- Change username validation for SSO connections [\#334](https://github.com/auth0/Lock.Android/pull/334) ([lbalmaceda](https://github.com/lbalmaceda))
+- Check that requested tokens are present on the result. [\#330](https://github.com/auth0/Lock.Android/pull/330) ([lbalmaceda](https://github.com/lbalmaceda))
+- Use first available connection name when authenticating with OAuth [\#320](https://github.com/auth0/Lock.Android/pull/320) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Added**
+- Custom Style for Social Buttons [\#325](https://github.com/auth0/Lock.Android/pull/325) ([lbalmaceda](https://github.com/lbalmaceda))
+- Request the user to accept Terms&Policy before Sign Up [\#319](https://github.com/auth0/Lock.Android/pull/319) ([lbalmaceda](https://github.com/lbalmaceda))
+- Handle too_many_attempts API error [\#308](https://github.com/auth0/Lock.Android/pull/308) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add Service Terms and Privacy Policy dialog [\#307](https://github.com/auth0/Lock.Android/pull/307) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Force init lock [Breaking Change] [\#329](https://github.com/auth0/Lock.Android/pull/329) ([lbalmaceda](https://github.com/lbalmaceda))
+- Update Auth0 lib version to latest [\#327](https://github.com/auth0/Lock.Android/pull/327) ([lbalmaceda](https://github.com/lbalmaceda))
+- Hide Theme configuration on the Builder  [Breaking Change] [\#326](https://github.com/auth0/Lock.Android/pull/326) ([lbalmaceda](https://github.com/lbalmaceda))
+- Use AuthMode constants when notifying tab change [\#323](https://github.com/auth0/Lock.Android/pull/323) ([lbalmaceda](https://github.com/lbalmaceda))
+- Handle wrong Client Type error [\#321](https://github.com/auth0/Lock.Android/pull/321) ([lbalmaceda](https://github.com/lbalmaceda))
+- Change SocialButton title when changing the Form mode [\#317](https://github.com/auth0/Lock.Android/pull/317) ([lbalmaceda](https://github.com/lbalmaceda))
+- UI Improvements: Bigger buttons/fields  [\#314](https://github.com/auth0/Lock.Android/pull/314) ([lbalmaceda](https://github.com/lbalmaceda))
+- New Tab design. [\#313](https://github.com/auth0/Lock.Android/pull/313) ([lbalmaceda](https://github.com/lbalmaceda))
+- Use pngs instead of vectorial xml files [\#311](https://github.com/auth0/Lock.Android/pull/311) ([lbalmaceda](https://github.com/lbalmaceda))
+- Make PKCE enabled by default [\#310](https://github.com/auth0/Lock.Android/pull/310) ([lbalmaceda](https://github.com/lbalmaceda))
+- Always pick defaultDbConnection if available [\#309](https://github.com/auth0/Lock.Android/pull/309) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Breaking changes**
+
+`Lock` & `PassworlessLock` no longer has the method `onCreate(Activity)` and  it's logic is now part of the method `Lock.Builder.build(Activity)`. So to create a Lock instance you will have
+
+```java
+Lock lock = Lock.newBuilder(auth0, callback)
+      //Customize Lock
+      .build(this);
+```
+
+Also now you can create `Lock` by reading your Auth0 account credentials from a strings file
+
+```java
+Lock lock = Lock.newBuilder(callback)
+      //Customize Lock
+      .build(this);
+```
+
+and he string file should have
+
+```xml
+ <resources>
+    <string name="com_auth0_client_id">{CLIENT_ID}</string>
+    <string name="com_auth0_domain">{DOMAIN}</string>
+</resources>
+```
+
+`Lock.Builder` no longers allow to customize Lock's theme using the method `withTheme(Theme)` since using Android themes is preferable.
+
+Also for all non-database authentication will use **Proof Key for Code Exchange** by default so your client type in Auth0 dashboard **must** be `Native`.
+
 ## [2.0.0-beta.3](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.3) (2016-07-22)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.2...2.0.0-beta.3)
 
