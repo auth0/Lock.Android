@@ -110,7 +110,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
      *
      * @param permissions the required Android Manifest.permissions that were declined.
      */
-    public abstract void onPermissionsRequireExplanation(List<String> permissions);
+    public abstract void onPermissionsRequireExplanation(Activity activity, List<String> permissions);
 
     /**
      * Retries the last Android Manifest Permissions request issued to the user.
@@ -140,7 +140,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
         if (declinedPermissions.isEmpty()) {
             identityProvider.start(activity, connectionName);
         } else {
-            onPermissionsRequireExplanation(declinedPermissions);
+            onPermissionsRequireExplanation(activity, declinedPermissions);
         }
     }
 
@@ -153,7 +153,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
             this.connectionName = connectionName;
             List<String> permissionsToExplain = handler.requestPermissions(activity, permissions, shouldExplainIfNeeded);
             if (!permissionsToExplain.isEmpty()) {
-                onPermissionsRequireExplanation(permissionsToExplain);
+                onPermissionsRequireExplanation(activity, permissionsToExplain);
             }
         }
     }
