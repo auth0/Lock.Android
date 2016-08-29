@@ -56,9 +56,5 @@ dependencies {
         exclude module: 'core'
         exclude module: 'identity-core'
     }
-    compile('com.auth0.android:lock-googleplus:2.+') {
-        exclude module: 'core'
-        exclude module: 'identity-core'
-    }
     compile libraries.app_compat
 }

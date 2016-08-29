@@ -81,10 +81,6 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <!--Facebook Native End-->
 
-        <!--G+ Native-->
-        <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version" />
-        <!--G+ Native End-->
     </application>
 
 </manifest>

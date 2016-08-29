@@ -28,8 +28,6 @@ import android.app.Application;
 
 import com.auth0.core.Strategies;
 import com.auth0.facebook.FacebookIdentityProvider;
-import com.auth0.google.GoogleIdentityProvider;
-import com.auth0.googleplus.GooglePlusIdentityProvider;
 import com.auth0.lock.Lock;
 import com.auth0.lock.LockContext;
 
@@ -48,7 +46,6 @@ public class LockApplication extends Application {
                         .fullscreen(false)
                         .useWebView(true)
                         .withIdentityProvider(Strategies.Facebook, new FacebookIdentityProvider(this))
-                        .withIdentityProvider(Strategies.GooglePlus, new GoogleIdentityProvider(this))
         );
     }
 

@@ -52,6 +52,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
     private Activity activity;
     private String connectionName;
     private PermissionHandler handler;
+    private IdentityProviderCallback callback;
 
     public AuthorizedIdentityProvider(@NonNull IdentityProvider provider) {
         this(provider, new PermissionHandler());
@@ -64,6 +65,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
 
     @Override
     public void setCallback(IdentityProviderCallback callback) {
+        this.callback = callback;
         identityProvider.setCallback(callback);
     }
 
@@ -108,9 +110,11 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
      * why you need the permissions and how you are going to use them, and offer an option to
      * retry the recent request by calling retryLastPermissionRequest()
      *
+     * @param activity that started the auth request.
      * @param permissions the required Android Manifest.permissions that were declined.
+     * @param callback to report permission error to the calling activity.
      */
-    public abstract void onPermissionsRequireExplanation(Activity activity, List<String> permissions);
+    public abstract void onPermissionsRequireExplanation(Activity activity, List<String> permissions, IdentityProviderCallback callback);
 
     /**
      * Retries the last Android Manifest Permissions request issued to the user.
@@ -140,7 +144,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
         if (declinedPermissions.isEmpty()) {
             identityProvider.start(activity, connectionName);
         } else {
-            onPermissionsRequireExplanation(activity, declinedPermissions);
+            onPermissionsRequireExplanation(activity, declinedPermissions, callback);
         }
     }
 
@@ -153,7 +157,7 @@ public abstract class AuthorizedIdentityProvider implements IdentityProvider {
             this.connectionName = connectionName;
             List<String> permissionsToExplain = handler.requestPermissions(activity, permissions, shouldExplainIfNeeded);
             if (!permissionsToExplain.isEmpty()) {
-                onPermissionsRequireExplanation(activity, permissionsToExplain);
+                onPermissionsRequireExplanation(activity, permissionsToExplain, callback);
             }
         }
     }

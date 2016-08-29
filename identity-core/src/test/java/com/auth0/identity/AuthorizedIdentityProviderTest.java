@@ -71,7 +71,7 @@ public class AuthorizedIdentityProviderTest {
             }
 
             @Override
-            public void onPermissionsRequireExplanation(Activity activity, List<String> permissions) {
+            public void onPermissionsRequireExplanation(Activity activity, List<String> permissions, IdentityProviderCallback callback) {
                 //Do nothing
             }
         };
