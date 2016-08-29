@@ -15,6 +15,7 @@ allprojects {
     group = GROUP
 
     repositories {
+        mavenLocal()
         jcenter()
     }
 }
