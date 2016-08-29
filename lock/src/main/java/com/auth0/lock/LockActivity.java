@@ -291,13 +291,13 @@ public class LockActivity extends FragmentActivity {
     @Subscribe
     public void onIdentityProviderAuthentication(IdentityProviderAuthenticationRequestEvent event) {
         Log.v(TAG, "About to authenticate with service " + event.getServiceName());
-        identity = lock.providerForName(event.getServiceName());
-        identity.setCallback(callback);
-        identity.start(this, event, lock.getConfiguration().getApplication());
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+        identity = lock.providerForName(event.getServiceName());
+        identity.setCallback(callback);
+        identity.start(this, event, lock.getConfiguration().getApplication());
     }
 
     @SuppressWarnings("unused")
