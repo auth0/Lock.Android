@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.17.1](https://github.com/auth0/Lock.Android/tree/1.17.1) (2016-08-29)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.17.0...1.17.1)
+
+**Issues fixed:**
+
+- IllegalStateException in GoogleIdentityProvider.onPermissionsRequireExplanation [\#331](https://github.com/auth0/Lock.Android/issues/331)
+
+**Changed:**
+
+- Scale down bitbucket icon [\#338](https://github.com/auth0/Lock.Android/pull/338) ([hzalaz](https://github.com/hzalaz))
+- Fix crash after permissions are denied in Android 23 [\#337](https://github.com/auth0/Lock.Android/pull/337) ([hzalaz](https://github.com/hzalaz))
+
+
 ## [1.17.0](https://github.com/auth0/Lock.Android/tree/1.17.0) (2016-08-18)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.16.1...1.17.0)
 
