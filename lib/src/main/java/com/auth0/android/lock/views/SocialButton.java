@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,10 +18,15 @@ import com.auth0.android.lock.internal.AuthMode;
 
 class SocialButton extends RelativeLayout {
 
-    private final boolean smallSize;
+    private boolean smallSize;
     private ImageView icon;
     private View touchArea;
     private TextView title;
+
+    public SocialButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
 
     public SocialButton(Context context, boolean smallSize) {
         super(context);

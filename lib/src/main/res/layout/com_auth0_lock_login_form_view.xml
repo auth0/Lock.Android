@@ -58,6 +58,14 @@
         android:visibility="gone"
         lock:Auth0.InputDataType="password" />
 
+    <com.auth0.android.lock.views.SocialButton
+        android:id="@+id/com_auth0_lock_enterprise_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/com_auth0_lock_input_password"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/com_auth0_lock_change_password_btn"
         style="@style/Lock.Theme.Text.Link"

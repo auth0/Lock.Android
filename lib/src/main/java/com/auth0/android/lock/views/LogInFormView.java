@@ -38,8 +38,10 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
-import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
+import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.internal.AuthMode;
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -50,6 +52,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private ValidatedUsernameInputView emailInput;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
+    private SocialButton enterpriseBtn;
     private View changePasswordBtn;
     private TextView topMessage;
     private Connection currentConnection;
@@ -74,6 +77,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
+        enterpriseBtn = (SocialButton) findViewById(R.id.com_auth0_lock_enterprise_button);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseConnections());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
@@ -141,15 +145,21 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         });
     }
 
-    private void setupSingleConnectionUI(Connection connection) {
-        usernameInput.setVisibility(VISIBLE);
-        passwordInput.setVisibility(connection.isActiveFlowEnabled() ? View.VISIBLE : GONE);
-        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));
+    private void setupSingleConnectionUI(final Connection connection) {
+        final int strategyStyle = AuthConfig.styleForStrategy(connection.getStrategy());
+        final AuthConfig authConfig = new AuthConfig(connection.getStrategy(), connection.getName(), strategyStyle);
+        enterpriseBtn.setStyle(authConfig, AuthMode.LOG_IN);
+        enterpriseBtn.setVisibility(View.VISIBLE);
+        enterpriseBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lockWidget.onSocialLogin(new SocialConnectionEvent(connection.getName()));
+            }
+        });
+        String loginWithCorporate = getResources().getString(R.string.com_auth0_lock_action_single_login_with_corporate);
         topMessage.setText(loginWithCorporate);
-        showSSOMessage(true);
         emailInput.setVisibility(GONE);
         topMessage.setVisibility(View.VISIBLE);
-        currentConnection = connection;
     }
 
     private void resetDomain() {

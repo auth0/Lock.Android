@@ -41,8 +41,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.auth0.android.lock.R;
 import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -145,7 +145,8 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
         boolean showDatabase = configuration.getDatabaseConnection() != null;
         boolean showEnterprise = !configuration.getEnterpriseConnections().isEmpty();
-        if (!showDatabase && !showEnterprise) {
+        boolean singleEnterprise = configuration.getEnterpriseConnections().size() == 1;
+        if (!showDatabase && (singleEnterprise || !showEnterprise)) {
             actionButton.setVisibility(GONE);
         }
 
