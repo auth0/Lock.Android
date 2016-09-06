@@ -67,9 +67,9 @@ public class StrategyTest {
     }
 
     @Test
-    public void shouldReturnStrategyNameWhenNoConnectionsAndTypeSocial() throws Exception {
+    public void shouldReturnNullStrategyNameWhenNoConnectionsAndTypeSocial() throws Exception {
         Strategy strategy = new Strategy("facebook", Collections.<Connection>emptyList());
-        assertThat(strategy.getDefaultConnectionName(), is("facebook"));
+        assertThat(strategy.getDefaultConnectionName(), is(nullValue()));
         assertThat(strategy.getConnections().isEmpty(), is(true));
     }
 
