@@ -145,7 +145,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
         boolean showDatabase = configuration.getDatabaseConnection() != null;
         boolean showEnterprise = !configuration.getEnterpriseConnections().isEmpty();
-        boolean singleEnterprise = configuration.getEnterpriseConnections().size() == 1;
+        boolean singleEnterprise = configuration.getEnterpriseConnections().size() == 1 && configuration.getSocialConnections().isEmpty();
         if (!showDatabase && (singleEnterprise || !showEnterprise)) {
             actionButton.setVisibility(GONE);
         }

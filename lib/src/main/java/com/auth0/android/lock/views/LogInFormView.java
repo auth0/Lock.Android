@@ -58,7 +58,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
-    private boolean singleConnection;
     private boolean fallbackToDatabase;
     private boolean corporateSSO;
     private boolean changePasswordEnabled;
@@ -99,8 +98,9 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
                 lockWidget.showChangePasswordForm(true);
             }
         });
-        if (!fallbackToDatabase && lockWidget.getConfiguration().getEnterpriseConnections().size() == 1) {
-            singleConnection = true;
+        boolean socialAvailable = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
+        boolean singleEnterprise = lockWidget.getConfiguration().getEnterpriseConnections().size() == 1;
+        if (!fallbackToDatabase && !socialAvailable && singleEnterprise) {
             Log.v(TAG, "Only one enterprise connection was found.");
             setupSingleConnectionUI(lockWidget.getConfiguration().getEnterpriseConnections().get(0));
         } else {
@@ -158,8 +158,8 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         });
         String loginWithCorporate = getResources().getString(R.string.com_auth0_lock_action_single_login_with_corporate);
         topMessage.setText(loginWithCorporate);
-        emailInput.setVisibility(GONE);
         topMessage.setVisibility(View.VISIBLE);
+        emailInput.setVisibility(GONE);
     }
 
     private void resetDomain() {
@@ -190,7 +190,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
             return null;
         }
 
-        if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE || singleConnection)) {
+        if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE)) {
             Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using active flow", currentConnection));
             return getActionEvent();
         } else if (currentConnection == null) {
@@ -249,7 +249,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
      * @return true if it was handled, false otherwise
      */
     public boolean onBackPressed() {
-        if (!singleConnection && corporateSSO) {
+        if (corporateSSO) {
             Log.d(TAG, "Removing the SSO Login Form, going back to the Username/Password Form.");
             resetDomain();
             showSSOMessage(true);
