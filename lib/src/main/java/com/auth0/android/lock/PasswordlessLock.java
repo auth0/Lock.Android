@@ -199,8 +199,8 @@ public class PasswordlessLock {
             Log.v(TAG, "PasswordlessLock instance created");
 
             if (options.getAccount().getTelemetry() != null) {
-                Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
-                options.getAccount().setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
+                Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME));
+                options.getAccount().setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME));
             }
 
             final PasswordlessLock lock = new PasswordlessLock(options, callback);
