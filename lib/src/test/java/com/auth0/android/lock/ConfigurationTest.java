@@ -505,6 +505,14 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
+    public void shouldNotReturnDuplicatedSocialStrategies() throws Exception {
+        configuration = filteredConfigBy("twitter", "twitter-dev");
+        final List<Strategy> strategies = configuration.getSocialStrategies();
+        assertThat(strategies, hasItems(isStrategy(Twitter)));
+        assertThat(strategies, hasSize(1));
+    }
+
+    @Test
     public void shouldReturnUnfilteredSocialStrategiesWithConnections() throws Exception {
         configuration = unfilteredConfig();
         final List<Strategy> strategies = configuration.getSocialStrategies();

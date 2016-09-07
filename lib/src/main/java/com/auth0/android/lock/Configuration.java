@@ -229,9 +229,11 @@ public class Configuration {
         }
         List<Strategy> filtered = new ArrayList<>(strategies.size());
         for (Strategy strategy : strategies) {
-            final boolean allowed = connections.isEmpty() || connections.contains(strategy.getDefaultConnectionName());
-            if (allowed && strategy.getDefaultConnectionName() != null) {
-                filtered.add(strategy);
+            for (Connection connection : strategy.getConnections()) {
+                if (connections.isEmpty() || connections.contains(connection.getName())) {
+                    filtered.add(strategy);
+                    break;
+                }
             }
         }
         return filtered;

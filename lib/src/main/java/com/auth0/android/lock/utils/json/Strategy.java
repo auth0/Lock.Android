@@ -83,9 +83,6 @@ public class Strategy {
      */
     @Nullable
     public String getDefaultConnectionName() {
-        if (!connections.isEmpty()) {
-            return connections.get(0).getName();
-        }
-        return null;
+        return !connections.isEmpty() ? connections.get(0).getName() : null;
     }
 }

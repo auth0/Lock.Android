@@ -99,6 +99,9 @@
                    "name": "twitter",
                    "connections": [{
                                    "name": "twitter"
+                                   },
+                                   {
+                                     "name": "twitter-dev"
                                    }]
                    }, {
                    "name": "linkedin",
