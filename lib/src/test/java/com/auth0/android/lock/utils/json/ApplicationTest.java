@@ -71,7 +71,9 @@ public class ApplicationTest {
     }
 
     private static AuthData newStrategyFor(Strategies strategyMetadata) {
-        return new AuthData(strategyMetadata.getName(), new HashMap<String, Object>());
+        final HashMap<String, Object> values = new HashMap<>();
+        values.put("name", strategyMetadata.getName());
+        return new AuthData(strategyMetadata.getName(), values);
     }
 
     private static Application newApplicationWithStrategies(Strategies... list) {

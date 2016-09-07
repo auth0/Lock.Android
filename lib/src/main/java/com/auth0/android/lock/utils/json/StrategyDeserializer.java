@@ -36,14 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AuthDataDeserializer extends GsonDeserializer<List<AuthData>> {
+public class StrategyDeserializer extends GsonDeserializer<Strategy> {
     @Override
-    public List<AuthData> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         assertJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
 
-        String strategyName = requiredValue("name", String.class, object, context);
+        String name = requiredValue("name", String.class, object, context);
 
         requiredValue("connections", Object.class, object, context);
         JsonArray connectionsArray = object.getAsJsonArray("connections");
@@ -53,10 +53,10 @@ public class AuthDataDeserializer extends GsonDeserializer<List<AuthData>> {
             requiredValue("name", String.class, connectionJson, context);
             Type mapType = new TypeToken<Map<String, Object>>() {
             }.getType();
-            Map<String, Object> values = context.deserialize(object, mapType);
-            authDataList.add(new AuthData(strategyName, values));
+            Map<String, Object> values = context.deserialize(connectionJson, mapType);
+            authDataList.add(new AuthData(name, values));
         }
 
-        return authDataList;
+        return new Strategy(name, authDataList);
     }
 }

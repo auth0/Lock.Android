@@ -87,8 +87,18 @@ public class AuthData {
         return (T) this.values.get(key);
     }
 
+    /**
+     * Returns a boolean value using its key
+     *
+     * @param key a key
+     * @return the value of the flag
+     */
     public boolean booleanForKey(String key) {
-        return getValueForKey(key);
+        Boolean value = getValueForKey(key);
+        if (value == null) {
+            return false;
+        }
+        return value;
     }
 
     /**

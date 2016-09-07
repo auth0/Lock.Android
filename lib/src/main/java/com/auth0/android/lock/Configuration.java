@@ -192,7 +192,8 @@ public class Configuration {
         }
         List<AuthData> filtered = new ArrayList<>(connections.size());
         for (AuthData connection : connections) {
-            if (allowedConnections.contains(connection.getName())) {
+            boolean allowed = allowedConnections.isEmpty()||allowedConnections.contains(connection.getName());
+            if (connection.getType() == type && allowed) {
                 filtered.add(connection);
             }
         }
@@ -299,7 +300,7 @@ public class Configuration {
             return PasswordStrength.NONE;
         }
     }
-    
+
 //    private Connection filteredDefaultADConnection(AuthData activeDirectoryStrategy) {
 //        if (activeDirectoryStrategy == null) {
 //            return null;

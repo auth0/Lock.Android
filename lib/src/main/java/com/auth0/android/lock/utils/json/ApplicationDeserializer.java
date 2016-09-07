@@ -50,12 +50,13 @@ public class ApplicationDeserializer extends GsonDeserializer<Application> {
         String subscription = context.deserialize(object.remove("subscription"), String.class);
         boolean hasAllowedOrigins = context.deserialize(object.remove("hasAllowedOrigins"), Boolean.class);
 
-        Type strategyType = new TypeToken<List<List<AuthData>>>() {}.getType();
+        Type strategyType = new TypeToken<List<Strategy>>() {
+        }.getType();
         requiredValue("strategies", strategyType, object, context);
-        List<List<AuthData>> strategies = context.deserialize(object.remove("strategies"), strategyType);
+        List<Strategy> strategies = context.deserialize(object.remove("strategies"), strategyType);
         List<AuthData> authDataList = new ArrayList<>();
-        for (List<AuthData> data : strategies) {
-            authDataList.addAll(data);
+        for (Strategy data : strategies) {
+            authDataList.addAll(data.getConnections());
         }
 
         return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, authDataList);

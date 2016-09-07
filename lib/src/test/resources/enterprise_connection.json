@@ -1,7 +1,8 @@
 {
   "name": "ad",
-  "domain": "auth10.com",
-  "domain_aliases": [
-    "auth10.com"
-  ]
+  "connections": [{
+    "name": "ad",
+    "domain": "auth10.com",
+    "domain_aliases": ["auth10.com"]
+  }]
 }

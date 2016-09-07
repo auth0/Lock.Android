@@ -25,6 +25,7 @@
 package com.auth0.android.lock.utils.json;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -40,6 +41,10 @@ public abstract class GsonBaseTest {
 
     <T> T pojoFrom(Reader json, Class<T> clazz) throws IOException {
         return gson.getAdapter(clazz).fromJson(json);
+    }
+
+    <T> T pojoFrom(Reader json, TypeToken<T> type) throws IOException {
+        return gson.getAdapter(type).fromJson(json);
     }
 
     FileReader json(String name) throws FileNotFoundException {

@@ -1,10 +1,13 @@
 {
-  "name": "Username-Password-Authentication",
-  "domain": null,
-  "forgot_password_url": "https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication",
-  "signup_url": "https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication",
-  "passwordPolicy": "good",
-  "showSignup": true,
-  "showForgot": true,
-  "requires_username": false
+  "name": "auth0",
+  "connections": [{
+      "name": "Username-Password-Authentication",
+      "domain": null,
+      "forgot_password_url": "https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication",
+      "signup_url": "https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication",
+      "passwordPolicy": "good",
+      "showSignup": true,
+      "showForgot": true,
+      "requires_username": false
+    }]
 }

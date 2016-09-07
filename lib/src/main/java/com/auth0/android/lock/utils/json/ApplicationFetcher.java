@@ -133,11 +133,11 @@ public class ApplicationFetcher {
 
     static Gson createGson() {
         Type applicationType = TypeToken.get(Application.class).getType();
-        Type connectionType = TypeToken.get(AuthData.class).getType();
+        Type strategyType = new TypeToken<Strategy>(){}.getType();
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(applicationType, new ApplicationDeserializer())
-                .registerTypeAdapter(connectionType, new AuthDataDeserializer())
+                .registerTypeAdapter(strategyType, new StrategyDeserializer())
                 .create();
     }
 }

@@ -1,4 +1,7 @@
 {
   "name": "twitter",
-  "scope": "public_profile"
+  "connections": [{
+    "name": "twitter",
+    "scope": "public_profile"
+  }]
 }

@@ -67,7 +67,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -459,7 +458,7 @@ public class ConfigurationTest extends GsonBaseTest {
         configuration = unfilteredConfig();
         List<AuthData> connections = configuration.getPasswordlessConnections();
         assertThat(connections, is(notNullValue()));
-        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS)));
+        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS), hasStrategy(Strategies.SMS)));
     }
 
     @Test
@@ -487,8 +486,8 @@ public class ConfigurationTest extends GsonBaseTest {
         List<AuthData> connections = configuration.getPasswordlessConnections();
         assertThat(defaultConnection, is(notNullValue()));
         assertThat(defaultConnection.getName(), equalTo(Strategies.Email));
-        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS)));
-        assertThat(connections, hasSize(2));
+        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS), hasStrategy(Strategies.SMS)));
+        assertThat(connections, hasSize(3));
     }
 
     @Test
@@ -530,7 +529,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredEnterpriseConnections() throws Exception {
         configuration = unfilteredConfig();
-        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasStrategy(Strategies.ActiveDirectory), hasStrategy(Strategies.GoogleApps)));
+        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasStrategy(Strategies.ActiveDirectory), hasStrategy(Strategies.ActiveDirectory), hasStrategy(Strategies.GoogleApps)));
     }
 
     @Test
