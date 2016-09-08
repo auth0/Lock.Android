@@ -9,14 +9,14 @@ import static com.auth0.android.util.CheckHelper.checkArgument;
 class Strategy {
 
     private final String name;
-    private final List<AuthData> connections;
+    private final List<Connection> connections;
 
     /**
      * Creates a new strategy instance
      *
-     * @param connections Connections for this strategy
+     * @param connections connections for this strategy
      */
-    public Strategy(@NonNull String name, List<AuthData> connections) {
+    public Strategy(@NonNull String name, List<Connection> connections) {
         checkArgument(name != null, "Must have a non-null name");
         this.name = name;
         this.connections = connections;
@@ -26,7 +26,7 @@ class Strategy {
         return name;
     }
 
-    public List<AuthData> getConnections() {
+    public List<Connection> getConnections() {
         return connections;
     }
 

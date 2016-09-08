@@ -34,7 +34,7 @@ import android.widget.LinearLayout;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.AuthMode;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.utils.json.AuthData;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         RecyclerView recycler = new RecyclerView(getContext());
-        List<AuthData> connections = lockWidget.getConfiguration().getSocialConnections();
+        List<Connection> connections = lockWidget.getConfiguration().getSocialConnections();
         adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(connections));
         adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
@@ -76,9 +76,9 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    private List<AuthConfig> generateAuthConfigs(List<AuthData> connections) {
+    private List<AuthConfig> generateAuthConfigs(List<Connection> connections) {
         List<AuthConfig> configs = new ArrayList<>();
-        for (AuthData c : connections) {
+        for (Connection c : connections) {
             int style = lockWidget.getConfiguration().authStyleForConnection(c.getStrategy(), c.getName());
             configs.add(new AuthConfig(c.getStrategy(), c.getName(), style));
         }

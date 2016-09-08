@@ -69,14 +69,14 @@ public class ApplicationTest {
         assertThat(application.hasAllowedOrigins(), equalTo(HAS_ALLOWED_ORIGINS));
     }
 
-    private static AuthData newConnectionFor(@Strategies String strategy) {
+    private static Connection newConnectionFor(@Strategies String strategy) {
         final HashMap<String, Object> values = new HashMap<>();
         values.put("name", strategy);
-        return new AuthData(strategy, values);
+        return new Connection(strategy, values);
     }
 
     private static Application newApplicationWithStrategies(@Strategies String... list) {
-        List<AuthData> connections = new ArrayList<>();
+        List<Connection> connections = new ArrayList<>();
         for (String str : list) {
             connections.add(newConnectionFor(str));
         }

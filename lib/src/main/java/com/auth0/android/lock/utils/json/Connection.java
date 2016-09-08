@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static com.auth0.android.util.CheckHelper.checkArgument;
 
-public class AuthData {
+public class Connection {
 
     private final String strategy;
     private final String name;
@@ -22,7 +22,7 @@ public class AuthData {
      *
      * @param values Connection values
      */
-    public AuthData(@NonNull String strategy, Map<String, Object> values) {
+    public Connection(@NonNull String strategy, Map<String, Object> values) {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
         final String name = (String) values.remove("name");
         checkArgument(name != null, "Must have a non-null name");

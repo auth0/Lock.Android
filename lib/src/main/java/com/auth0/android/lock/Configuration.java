@@ -37,7 +37,7 @@ import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.json.Application;
-import com.auth0.android.lock.utils.json.AuthData;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.views.AuthConfig;
 
 import java.util.ArrayList;
@@ -56,10 +56,10 @@ public class Configuration {
     private static final String PASSWORD_POLICY_KEY = "passwordPolicy";
     private final List<CustomField> extraSignUpFields;
 
-    private AuthData defaultDatabaseConnection;
-    private List<AuthData> passwordlessConnections;
-    private List<AuthData> socialConnections;
-    private List<AuthData> enterpriseConnections;
+    private Connection defaultDatabaseConnection;
+    private List<Connection> passwordlessConnections;
+    private List<Connection> socialConnections;
+    private List<Connection> enterpriseConnections;
 
     private Application application;
 
@@ -108,12 +108,12 @@ public class Configuration {
         return extraSignUpFields;
     }
 
-    public AuthData getDefaultDatabaseConnection() {
+    public Connection getDefaultDatabaseConnection() {
         return defaultDatabaseConnection;
     }
 
     @Nullable
-    public AuthData getDefaultPasswordlessConnection() {
+    public Connection getDefaultPasswordlessConnection() {
         if (passwordlessConnections.isEmpty()) {
             return null;
         }
@@ -122,26 +122,26 @@ public class Configuration {
             return passwordlessConnections.get(0);
         }
 
-        AuthData strategy = null;
-        for (AuthData s : passwordlessConnections) {
-            if (s.getName().equals(Strategies.Email)) {
-                strategy = s;
+        Connection connection = null;
+        for (Connection c : passwordlessConnections) {
+            if (c.getName().equals(Strategies.Email)) {
+                connection = c;
                 break;
             }
         }
 
-        return strategy != null ? strategy : passwordlessConnections.get(0);
+        return connection != null ? connection : passwordlessConnections.get(0);
     }
 
-    public List<AuthData> getSocialConnections() {
+    public List<Connection> getSocialConnections() {
         return socialConnections;
     }
 
-    public List<AuthData> getEnterpriseConnections() {
+    public List<Connection> getEnterpriseConnections() {
         return enterpriseConnections;
     }
 
-    public List<AuthData> getPasswordlessConnections() {
+    public List<Connection> getPasswordlessConnections() {
         return passwordlessConnections;
     }
 
@@ -149,12 +149,12 @@ public class Configuration {
         return application;
     }
 
-    private AuthData filterDatabaseConnections(@NonNull List<AuthData> connections, Set<String> allowedConnections, String defaultDatabaseName) {
+    private Connection filterDatabaseConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, String defaultDatabaseName) {
         if (connections.isEmpty()) {
             return null;
         }
-        final List<AuthData> filteredConnections = filterConnections(connections, allowedConnections, AuthType.DATABASE);
-        for (AuthData connection : filteredConnections) {
+        final List<Connection> filteredConnections = filterConnections(connections, allowedConnections, AuthType.DATABASE);
+        for (Connection connection : filteredConnections) {
             if (connection.getName().equals(defaultDatabaseName)) {
                 return connection;
             }
@@ -164,12 +164,12 @@ public class Configuration {
         return filteredConnections.isEmpty() ? null : filteredConnections.get(0);
     }
 
-    private List<AuthData> filterConnections(@NonNull List<AuthData> connections, Set<String> allowedConnections, @AuthType int type) {
+    private List<Connection> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
         if (connections.isEmpty()) {
             return connections;
         }
-        List<AuthData> filtered = new ArrayList<>(connections.size());
-        for (AuthData connection : connections) {
+        List<Connection> filtered = new ArrayList<>(connections.size());
+        for (Connection connection : connections) {
             boolean allowed = allowedConnections.isEmpty() || allowedConnections.contains(connection.getName());
             if (connection.getType() == type && allowed) {
                 filtered.add(connection);
@@ -241,7 +241,7 @@ public class Configuration {
             }
         }
 
-        AuthData passwordlessConnection = getDefaultPasswordlessConnection();
+        Connection passwordlessConnection = getDefaultPasswordlessConnection();
         if (passwordlessConnection != null) {
             if (passwordlessConnection.getName().equals(Strategies.Email)) {
                 passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;

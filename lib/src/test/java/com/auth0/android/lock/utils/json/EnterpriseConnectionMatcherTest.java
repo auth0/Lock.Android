@@ -40,7 +40,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
@@ -63,9 +63,9 @@ public class EnterpriseConnectionMatcherTest {
 
     @Before
     public void setUp() throws Exception {
-        List<AuthData> connections = new ArrayList<>();
-        AuthData authData = createConnection();
-        connections.add(authData);
+        List<Connection> connections = new ArrayList<>();
+        Connection connection = createConnection();
+        connections.add(connection);
         parser = new EnterpriseConnectionMatcher(connections);
     }
 
@@ -77,8 +77,8 @@ public class EnterpriseConnectionMatcherTest {
 
     @Test
     public void shouldParseTheConnection() throws Exception {
-        AuthData connection = parser.parse(SAMPLE_VALID_EMAIL);
-        assertThat(connection, is(not(nullValue())));
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        assertThat(connection, is(notNullValue()));
         assertThat(connection.getName(), is(equalTo(NAME_VALUE)));
         assertThat((String) connection.getValueForKey(DOMAIN_KEY), is(equalTo(DOMAIN_VALUE)));
         assertThat((List<String>) connection.getValueForKey(DOMAIN_ALIASES_KEY),
@@ -87,42 +87,42 @@ public class EnterpriseConnectionMatcherTest {
 
     @Test
     public void shouldNotFindAnUnknownDomain() throws Exception {
-        AuthData connection = parser.parse(SAMPLE_UNKNOWN_EMAIL);
+        Connection connection = parser.parse(SAMPLE_UNKNOWN_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldReturnTheMainDomain() throws Exception {
-        AuthData connection = parser.parse(SAMPLE_VALID_EMAIL);
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(parser.domainForConnection(connection), is(equalTo(DOMAIN_VALUE)));
     }
 
     @Test
     public void shouldFailToGetConnectionIfNotValidDomain() throws Exception {
-        AuthData connection = parser.parse(SAMPLE_INVALID_EMAIL);
+        Connection connection = parser.parse(SAMPLE_INVALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldFailToGetConnectionIfInstantiatedWithNullStrategies() throws Exception {
         EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(null);
-        AuthData connection = parser.parse(SAMPLE_VALID_EMAIL);
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() throws Exception {
-        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<AuthData>());
-        AuthData connection = parser.parse(SAMPLE_VALID_EMAIL);
+        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<Connection>());
+        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
-    private AuthData createConnection() {
+    private Connection createConnection() {
         Map<String, Object> map = new HashMap<>();
         map.put(NAME_KEY, NAME_VALUE);
         map.put(DOMAIN_KEY, DOMAIN_VALUE);
         map.put(DOMAIN_ALIASES_KEY, DOMAIN_ALIASES_VALUE);
 
-        return new AuthData(ENTERPRISE_STRATEGY, map);
+        return new Connection(ENTERPRISE_STRATEGY, map);
     }
 }

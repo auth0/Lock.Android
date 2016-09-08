@@ -97,7 +97,7 @@ public class ApplicationGsonTest extends GsonBaseTest {
         assertThat(application.getAuthorizeURL(), is("https://samples.auth0.com/authorize"));
         assertThat(application.getConnections(), is(notNullValue()));
         assertThat(application.getConnections(), IsCollectionWithSize.hasSize(1));
-        assertThat(application.getConnections().get(0), instanceOf(AuthData.class));
+        assertThat(application.getConnections().get(0), instanceOf(Connection.class));
         assertThat(application.getSubscription(), is("dev"));
         assertThat(application.getCallbackURL(), is("http://localhost:3000/"));
         assertThat(application.hasAllowedOrigins(), is(true));

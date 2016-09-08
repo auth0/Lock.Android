@@ -32,7 +32,7 @@ import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.utils.json.Application;
-import com.auth0.android.lock.utils.json.AuthData;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.utils.json.GsonBaseTest;
 import com.google.gson.stream.JsonReader;
 
@@ -49,6 +49,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasConnection;
 import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasName;
 import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasStrategy;
 import static org.hamcrest.Matchers.contains;
@@ -369,7 +370,7 @@ public class ConfigurationTest extends GsonBaseTest {
         options.useDatabaseConnection(null);
         application = mock(Application.class);
         configuration = new Configuration(application, options);
-        final AuthData connection = configuration.getDefaultDatabaseConnection();
+        final Connection connection = configuration.getDefaultDatabaseConnection();
         assertThat(connection, nullValue());
     }
 
@@ -421,65 +422,71 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldReturnUnfilteredPasswordlessStrategies() throws Exception {
+    public void shouldReturnUnfilteredPasswordlessConnections() throws Exception {
         configuration = unfilteredConfig();
-        List<AuthData> connections = configuration.getPasswordlessConnections();
+        List<Connection> connections = configuration.getPasswordlessConnections();
         assertThat(connections, is(notNullValue()));
-        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS), hasStrategy(Strategies.SMS)));
+        assertThat(connections, containsInAnyOrder(hasConnection(Strategies.Email, "email"),
+                hasConnection(Strategies.SMS, "sms"), hasConnection(Strategies.SMS, CUSTOM_PASSWORDLESS_CONNECTION)));
     }
 
     @Test
-    public void shouldReturnFilteredPasswordlessStrategies() throws Exception {
+    public void shouldReturnFilteredPasswordlessConnections() throws Exception {
         configuration = filteredConfigBy(CUSTOM_PASSWORDLESS_CONNECTION);
-        AuthData strategy = configuration.getDefaultPasswordlessConnection();
-        assertThat(strategy, is(notNullValue()));
-        assertThat(strategy, hasStrategy(Strategies.SMS));
-        assertThat(strategy, hasName(CUSTOM_PASSWORDLESS_CONNECTION));
+        Connection connection = configuration.getDefaultPasswordlessConnection();
+        assertThat(connection, is(notNullValue()));
+        assertThat(connection, hasConnection(Strategies.SMS, CUSTOM_PASSWORDLESS_CONNECTION));
     }
 
     @Test
-    public void shouldPreferEmailPasswordlessStrategy() throws Exception {
+    public void shouldPreferEmailPasswordlessConnection() throws Exception {
         configuration = unfilteredConfig();
-        AuthData defaultConnection = configuration.getDefaultPasswordlessConnection();
-        List<AuthData> connections = configuration.getPasswordlessConnections();
+        Connection defaultConnection = configuration.getDefaultPasswordlessConnection();
         assertThat(defaultConnection, is(notNullValue()));
         assertThat(defaultConnection.getName(), equalTo(Strategies.Email));
-        assertThat(connections, containsInAnyOrder(hasStrategy(Strategies.Email), hasStrategy(Strategies.SMS), hasStrategy(Strategies.SMS)));
-        assertThat(connections, hasSize(3));
     }
 
     @Test
-    public void shouldReturnEmptyPasswordlessStrategiesIfNoneMatch() throws Exception {
+    public void shouldReturnEmptyPasswordlessConnectionIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Strategies.Facebook);
-        AuthData connection = configuration.getDefaultPasswordlessConnection();
+        Connection connection = configuration.getDefaultPasswordlessConnection();
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldIgnoreStrategyNameAndReturnFilteredConnections() throws Exception {
-        configuration = filteredConfigBy("twitter", "twitter-dev");
-        final List<AuthData> strategies = configuration.getSocialConnections();
-        assertThat(strategies, contains(hasStrategy("twitter"), hasStrategy("twitter")));
-        assertThat(strategies, contains(hasName("twitter"), hasName("twitter-dev")));
+        configuration = filteredConfigBy(Strategies.Twitter, "twitter-dev");
+        final List<Connection> strategies = configuration.getSocialConnections();
+        assertThat(strategies, containsInAnyOrder(hasConnection(Strategies.Twitter, "twitter"), hasConnection(Strategies.Twitter, "twitter-dev") ));
         assertThat(strategies, hasSize(2));
     }
 
     @Test
     public void shouldNotReturnFilteredSocialStrategiesWithoutConnections() throws Exception {
         configuration = filteredConfigBy(Strategies.Facebook, Strategies.Linkedin);
-        final List<AuthData> connections = configuration.getSocialConnections();
+        final List<Connection> connections = configuration.getSocialConnections();
         assertThat(connections, hasItem(hasStrategy(Strategies.Facebook)));
         assertThat(connections, not(hasItem(hasStrategy(Strategies.Linkedin))));
     }
 
     @Test
-    public void shouldReturnFilteredSocialStrategies() throws Exception {
-        configuration = filteredConfigBy(Strategies.Facebook, Strategies.Instagram);
-        assertThat(configuration.getSocialConnections(), containsInAnyOrder(hasStrategy(Strategies.Facebook), hasStrategy(Strategies.Instagram)));
+    public void shouldReturnUnfilteredSocialConnections() throws Exception {
+        configuration = unfilteredConfig();
+        final List<Connection> connections = configuration.getSocialConnections();
+        assertThat(connections, containsInAnyOrder(hasConnection(Strategies.Facebook, "facebook"),
+                hasConnection(Strategies.Twitter, "twitter"), hasConnection(Strategies.Twitter, "twitter-dev"), hasConnection(Strategies.Instagram, "instagram"),
+                hasConnection(Strategies.GooglePlus, "google-oauth2")));
     }
 
     @Test
-    public void shouldReturnEmptySocialStrategiesIfNoneMatch() throws Exception {
+    public void shouldReturnFilteredSocialConnections() throws Exception {
+        configuration = filteredConfigBy(Strategies.Facebook, Strategies.Instagram);
+        assertThat(configuration.getSocialConnections(), containsInAnyOrder(hasConnection(Strategies.Facebook, "facebook"),
+                hasConnection(Strategies.Instagram, "instagram")));
+    }
+
+    @Test
+    public void shouldReturnEmptySocialConnectionsIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Strategies.Yammer, Strategies.Yahoo);
         assertThat(configuration.getSocialConnections(), emptyIterable());
     }
@@ -487,17 +494,18 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredEnterpriseConnections() throws Exception {
         configuration = unfilteredConfig();
-        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasStrategy(Strategies.ActiveDirectory), hasStrategy(Strategies.ActiveDirectory), hasStrategy(Strategies.GoogleApps)));
+        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasConnection(Strategies.ActiveDirectory, "MyAD"),
+                hasConnection(Strategies.ActiveDirectory, "mySecondAD"), hasConnection(Strategies.GoogleApps, "auth0.com")));
     }
 
     @Test
-    public void shouldReturnFilteredEnterpriseStrategies() throws Exception {
+    public void shouldReturnFilteredEnterpriseConnections() throws Exception {
         configuration = filteredConfigBy("auth0.com");
-        assertThat(configuration.getEnterpriseConnections(), contains(hasStrategy(Strategies.GoogleApps)));
+        assertThat(configuration.getEnterpriseConnections(), contains(hasConnection(Strategies.GoogleApps, "auth0.com")));
     }
 
     @Test
-    public void shouldReturnEmptyEnterpriseStrategiesIfNoneMatch() throws Exception {
+    public void shouldReturnEmptyEnterpriseConnectionsIfNoneMatch() throws Exception {
         configuration = filteredConfigBy(Strategies.Yandex);
         assertThat(configuration.getEnterpriseConnections(), emptyIterable());
     }

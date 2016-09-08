@@ -39,7 +39,7 @@ public class Application {
     private String callbackURL;
     private String subscription;
     private boolean hasAllowedOrigins;
-    private List<AuthData> connections;
+    private List<Connection> connections;
 
     public Application() {
         connections = new ArrayList<>();
@@ -66,7 +66,7 @@ public class Application {
      * @param hasAllowedOrigins if the app allows other origins
      * @param connections       list of the connections enabled for the app (Social, DB, etc).
      */
-    public Application(String id, String tenant, String authorizeURL, String callbackURL, String subscription, boolean hasAllowedOrigins, List<AuthData> connections) {
+    public Application(String id, String tenant, String authorizeURL, String callbackURL, String subscription, boolean hasAllowedOrigins, List<Connection> connections) {
         this.id = id;
         this.tenant = tenant;
         this.authorizeURL = authorizeURL;
@@ -135,7 +135,7 @@ public class Application {
      *
      * @return the list of available connections
      */
-    public List<AuthData> getConnections() {
+    public List<Connection> getConnections() {
         return new ArrayList<>(connections);
     }
 

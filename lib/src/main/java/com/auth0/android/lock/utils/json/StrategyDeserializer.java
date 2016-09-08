@@ -47,16 +47,15 @@ class StrategyDeserializer extends GsonDeserializer<Strategy> {
 
         requiredValue("connections", Object.class, object, context);
         JsonArray connectionsArray = object.getAsJsonArray("connections");
-        List<AuthData> authDataList = new ArrayList<>();
+        List<Connection> connections = new ArrayList<>();
         for (int i = 0; i < connectionsArray.size(); i++) {
             final JsonObject connectionJson = connectionsArray.get(i).getAsJsonObject();
             requiredValue("name", String.class, connectionJson, context);
-            Type mapType = new TypeToken<Map<String, Object>>() {
-            }.getType();
+            Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
             Map<String, Object> values = context.deserialize(connectionJson, mapType);
-            authDataList.add(new AuthData(name, values));
+            connections.add(new Connection(name, values));
         }
 
-        return new Strategy(name, authDataList);
+        return new Strategy(name, connections);
     }
 }

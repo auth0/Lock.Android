@@ -39,7 +39,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.utils.json.AuthData;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -52,7 +52,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private ValidatedInputView passwordInput;
     private View changePasswordBtn;
     private TextView topMessage;
-    private AuthData currentConnection;
+    private Connection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
     private boolean singleConnection;
@@ -141,7 +141,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         });
     }
 
-    private void setupSingleConnectionUI(AuthData connection) {
+    private void setupSingleConnectionUI(Connection connection) {
         usernameInput.setVisibility(VISIBLE);
         passwordInput.setVisibility(connection.isActiveFlowEnabled() ? View.VISIBLE : GONE);
         String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(connection));

@@ -29,7 +29,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.android.lock.enums.AuthType;
-import com.auth0.android.lock.utils.json.AuthData;
+import com.auth0.android.lock.utils.json.Connection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +44,15 @@ public class EnterpriseConnectionMatcher {
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
     private static final String AT_SYMBOL = "@";
 
-    private List<AuthData> connections;
+    private List<Connection> connections;
 
-    public EnterpriseConnectionMatcher(List<AuthData> connections) {
+    public EnterpriseConnectionMatcher(List<Connection> connections) {
         this.connections = new ArrayList<>();
         if (connections == null) {
             return;
         }
 
-        for (AuthData s : connections) {
+        for (Connection s : connections) {
             if (s.getType() == AuthType.ENTERPRISE) {
                 this.connections.add(s);
             }
@@ -67,14 +67,14 @@ public class EnterpriseConnectionMatcher {
      * @return a Connection if found, null otherwise.
      */
     @Nullable
-    public AuthData parse(String email) {
+    public Connection parse(String email) {
         String domain = extractDomain(email);
         if (domain == null) {
             return null;
         }
 
         domain = domain.toLowerCase();
-        for (AuthData c : connections) {
+        for (Connection c : connections) {
             String mainDomain = domainForConnection(c);
             if (domain.equalsIgnoreCase(mainDomain)) {
                 return c;
@@ -132,7 +132,7 @@ public class EnterpriseConnectionMatcher {
      * @param connection to extract the domain from
      * @return the main domain.
      */
-    public String domainForConnection(@NonNull AuthData connection) {
+    public String domainForConnection(@NonNull Connection connection) {
         return connection.getValueForKey(DOMAIN_KEY);
     }
 }

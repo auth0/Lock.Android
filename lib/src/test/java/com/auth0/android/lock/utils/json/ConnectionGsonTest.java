@@ -45,7 +45,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class AuthDataGsonTest extends GsonBaseTest {
+public class ConnectionGsonTest extends GsonBaseTest {
     private static final String STRATEGY = "src/test/resources/strategy.json";
     private static final String ENTERPRISE_CONNECTION = "src/test/resources/enterprise_connection.json";
     private static final String DATABASE_CONNECTION = "src/test/resources/db_connection.json";
@@ -85,7 +85,7 @@ public class AuthDataGsonTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnStrategy() throws Exception {
-        final List<AuthData> connections = buildConnectionsFrom(json(STRATEGY));
+        final List<Connection> connections = buildConnectionsFrom(json(STRATEGY));
         assertThat(connections, is(notNullValue()));
         assertThat(connections, hasSize(1));
         assertThat(connections.get(0).getName(), is("twitter"));
@@ -94,7 +94,7 @@ public class AuthDataGsonTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnConnectionName() throws Exception {
-        final List<AuthData> connections = buildConnectionsFrom(json(STRATEGY));
+        final List<Connection> connections = buildConnectionsFrom(json(STRATEGY));
         assertThat(connections, hasSize(1));
         assertThat(connections.get(0), is(notNullValue()));
         assertThat(connections.get(0).getName(), is("twitter"));
@@ -102,7 +102,7 @@ public class AuthDataGsonTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnEnterpriseConnections() throws Exception {
-        final List<AuthData> connections = buildConnectionsFrom(json(ENTERPRISE_CONNECTION));
+        final List<Connection> connections = buildConnectionsFrom(json(ENTERPRISE_CONNECTION));
         assertThat(connections, hasSize(1));
         assertThat(connections.get(0), is(notNullValue()));
         assertThat(connections.get(0).getType(), is(AuthType.ENTERPRISE));
@@ -114,7 +114,7 @@ public class AuthDataGsonTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnSocial() throws Exception {
-        final List<AuthData> connections = buildConnectionsFrom(json(SOCIAL_CONNECTION));
+        final List<Connection> connections = buildConnectionsFrom(json(SOCIAL_CONNECTION));
         assertThat(connections, hasSize(1));
         assertThat(connections.get(0), is(notNullValue()));
         assertThat(connections.get(0).getType(), is(AuthType.SOCIAL));
@@ -125,7 +125,7 @@ public class AuthDataGsonTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnDatabase() throws Exception {
-        final List<AuthData> connections = buildConnectionsFrom(json(DATABASE_CONNECTION));
+        final List<Connection> connections = buildConnectionsFrom(json(DATABASE_CONNECTION));
         assertThat(connections.get(0), is(notNullValue()));
         assertThat(connections.get(0).getType(), is(AuthType.DATABASE));
         assertThat(connections.get(0).getName(), is("Username-Password-Authentication"));
@@ -139,7 +139,7 @@ public class AuthDataGsonTest extends GsonBaseTest {
     }
 
 
-    private List<AuthData> buildConnectionsFrom(Reader json) throws IOException {
+    private List<Connection> buildConnectionsFrom(Reader json) throws IOException {
         final TypeToken<Strategy> strategyType = new TypeToken<Strategy>() {};
         final Strategy strategy = pojoFrom(json, strategyType);
         return strategy.getConnections();
