@@ -6,7 +6,7 @@ import java.util.List;
 
 import static com.auth0.android.util.CheckHelper.checkArgument;
 
-public class Strategy {
+class Strategy {
 
     private final String name;
     private final List<AuthData> connections;

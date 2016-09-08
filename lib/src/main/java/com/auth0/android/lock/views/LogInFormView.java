@@ -262,15 +262,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         return false;
     }
 
-    /**
-     * Getter for the current state of enterprise matched domain.
-     *
-     * @return whether there is currently a domain match or not.
-     */
-    public boolean isEnterpriseDomainMatch() {
-        return currentConnection != null && !singleConnection;
-    }
-
     public void setLastEmail(String email) {
         emailInput.setText(email);
         passwordInput.clearInput();

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class StrategyDeserializer extends GsonDeserializer<Strategy> {
+class StrategyDeserializer extends GsonDeserializer<Strategy> {
     @Override
     public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         assertJsonObject(json);

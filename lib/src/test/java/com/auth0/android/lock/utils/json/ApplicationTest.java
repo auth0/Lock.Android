@@ -25,7 +25,7 @@
 package com.auth0.android.lock.utils.json;
 
 import com.auth0.android.lock.BuildConfig;
-import com.auth0.android.lock.utils.Strategies;
+import com.auth0.android.lock.enums.Strategies;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.auth0.android.lock.utils.Strategies.Auth0;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -55,13 +54,13 @@ public class ApplicationTest {
 
     @Test
     public void shouldInstantiateApplication() throws Exception {
-        Application application = newApplicationWithStrategies(Auth0);
+        Application application = newApplicationWithStrategies(Strategies.Auth0);
         assertThat(application, is(notNullValue()));
     }
 
     @Test
     public void shouldHaveApplicationInfo() throws Exception {
-        Application application = newApplicationWithStrategies(Auth0);
+        Application application = newApplicationWithStrategies(Strategies.Auth0);
         assertThat(application.getId(), equalTo(ID));
         assertThat(application.getTenant(), equalTo(TENANT));
         assertThat(application.getAuthorizeURL(), equalTo(AUTHORIZE_URL));
@@ -70,18 +69,17 @@ public class ApplicationTest {
         assertThat(application.hasAllowedOrigins(), equalTo(HAS_ALLOWED_ORIGINS));
     }
 
-    private static AuthData newStrategyFor(Strategies strategyMetadata) {
+    private static AuthData newConnectionFor(@Strategies String strategy) {
         final HashMap<String, Object> values = new HashMap<>();
-        values.put("name", strategyMetadata.getName());
-        return new AuthData(strategyMetadata.getName(), values);
+        values.put("name", strategy);
+        return new AuthData(strategy, values);
     }
 
-    private static Application newApplicationWithStrategies(Strategies... list) {
-        List<AuthData> strategies = new ArrayList<>();
-        for (Strategies str : list) {
-            strategies.add(newStrategyFor(str));
+    private static Application newApplicationWithStrategies(@Strategies String... list) {
+        List<AuthData> connections = new ArrayList<>();
+        for (String str : list) {
+            connections.add(newConnectionFor(str));
         }
-        Application application = new Application(ID, TENANT, AUTHORIZE_URL, CALLBACK_URL, SUBSCRIPTION, HAS_ALLOWED_ORIGINS, strategies);
-        return application;
+        return new Application(ID, TENANT, AUTHORIZE_URL, CALLBACK_URL, SUBSCRIPTION, HAS_ALLOWED_ORIGINS, connections);
     }
 }

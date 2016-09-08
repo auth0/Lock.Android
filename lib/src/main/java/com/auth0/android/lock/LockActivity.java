@@ -57,7 +57,6 @@ import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
 import com.auth0.android.lock.views.ClassicLockView;
@@ -363,9 +362,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             });
             return;
         } else if (event.useRO()) {
-            boolean missingADConfiguration = event.getConnectionName().equals(Strategies.ActiveDirectory.getName()) && configuration.getDefaultActiveDirectoryConnection() == null;
-            boolean missingEnterpriseConfiguration = configuration.getEnterpriseConnections().isEmpty();
-            if (missingADConfiguration || missingEnterpriseConfiguration) {
+            if (configuration.getEnterpriseConnections().isEmpty()) {
                 Log.w(TAG, "There is no matching enterprise connection to authenticate with");
                 return;
             }

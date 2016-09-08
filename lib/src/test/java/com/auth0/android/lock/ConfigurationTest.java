@@ -49,14 +49,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.auth0.android.lock.utils.Strategies.Email;
-import static com.auth0.android.lock.utils.Strategies.Facebook;
-import static com.auth0.android.lock.utils.Strategies.Instagram;
-import static com.auth0.android.lock.utils.Strategies.Linkedin;
-import static com.auth0.android.lock.utils.Strategies.SMS;
-import static com.auth0.android.lock.utils.Strategies.Yahoo;
-import static com.auth0.android.lock.utils.Strategies.Yammer;
-import static com.auth0.android.lock.utils.Strategies.Yandex;
 import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasName;
 import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasStrategy;
 import static org.hamcrest.Matchers.contains;
@@ -64,9 +56,9 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -82,8 +74,6 @@ public class ConfigurationTest extends GsonBaseTest {
     private static final String TWITTER = "twitter";
     private static final String EMAIL = "email";
     private static final String MY_AD = "MyAD";
-    private static final String MY_SECOND_AD = "mySecondAD";
-    private static final String UNKNOWN_AD = "UnknownAD";
     private static final String UNKNOWN_CONNECTION = "UnknownConnection";
     private static final String CUSTOM_PASSWORDLESS_CONNECTION = "my-sms-connection";
 
@@ -308,13 +298,13 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldPreferPasswordlessEmailOverSMSWhenBothAvailable() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Arrays.asList(SMS.getName(), Email.getName()));
+        options.setConnections(Arrays.asList(Strategies.SMS, Strategies.Email));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
 
         options.setUseCodePasswordless(false);
-        options.setConnections(Arrays.asList(SMS.getName(), Email.getName()));
+        options.setConnections(Arrays.asList(Strategies.SMS, Strategies.Email));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_LINK));
@@ -323,13 +313,13 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldSetCorrectPasswordlessTypeWhenUsingEmail() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Arrays.asList(Email.getName()));
+        options.setConnections(Arrays.asList(Strategies.Email));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
 
         options.setUseCodePasswordless(false);
-        options.setConnections(Arrays.asList(Email.getName()));
+        options.setConnections(Arrays.asList(Strategies.Email));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_LINK));
@@ -339,13 +329,13 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldSetCorrectPasswordlessTypeWhenUsingSMS() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Arrays.asList(SMS.getName()));
+        options.setConnections(Arrays.asList(Strategies.SMS));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
 
         options.setUseCodePasswordless(false);
-        options.setConnections(Arrays.asList(SMS.getName()));
+        options.setConnections(Arrays.asList(Strategies.SMS));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_LINK));
@@ -354,7 +344,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldNotHavePasswordlessModeOnNoConnections() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Collections.singletonList(Facebook.getName()));
+        options.setConnections(Collections.singletonList(Strategies.Facebook));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.DISABLED));
@@ -362,7 +352,7 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldDefaultToCodePasswordlessWhenTypeMissingFromOptions() throws Exception {
-        options.setConnections(Collections.singletonList(SMS.getName()));
+        options.setConnections(Collections.singletonList(Strategies.SMS));
         configuration = new Configuration(application, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
@@ -430,29 +420,6 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.getDefaultDatabaseConnection(), hasName(USERNAME_PASSWORD_AUTHENTICATION));
     }
 
-//    @Test
-//    public void shouldReturnDefaultUnfilteredADConnection() throws Exception {
-//        configuration = unfilteredConfig();
-//        assertThat(configuration.getActiveDirectoryConnection(), notNullValue());
-//        assertThat(configuration.getDefaultActiveDirectoryConnection(), hasName(MY_AD));
-//    }
-
-//    @Test
-//    public void shouldReturnNullADConnectionIfNoneMatch() throws Exception {
-//        configuration = filteredConfigBy(UNKNOWN_AD);
-//        assertThat(configuration.getActiveDirectoryConnection(), nullValue());
-//        assertThat(configuration.getDefaultActiveDirectoryConnection(), nullValue());
-//    }
-
-//    @Test
-//    public void shouldReturnFilteredADConnections() throws Exception {
-//        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
-//        final Strategy strategy = configuration.getActiveDirectoryConnection();
-//        assertThat(strategy, notNullValue());
-//        assertThat(configuration.getDefaultActiveDirectoryConnection(), hasName(MY_AD));
-//        assertThat(strategy.getConnections(), containsInAnyOrder(hasName(MY_AD), hasName(MY_SECOND_AD)));
-//    }
-
     @Test
     public void shouldReturnUnfilteredPasswordlessStrategies() throws Exception {
         configuration = unfilteredConfig();
@@ -470,15 +437,6 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(strategy, hasName(CUSTOM_PASSWORDLESS_CONNECTION));
     }
 
-//    @Test
-//    public void shouldReturnFirstConnectionForStrategy() throws Exception {
-//        configuration = unfilteredConfig();
-//        AuthData smsStrategy = configuration.getPasswordlessConnections().get(0);
-//        String name = configuration.getFirstConnectionOfStrategy(smsStrategy);
-//        assertThat(name, is(equalTo(SMS.getName())));
-//        assertThat(name, is(not(equalTo(CUSTOM_PASSWORDLESS_CONNECTION))));
-//    }
-
     @Test
     public void shouldPreferEmailPasswordlessStrategy() throws Exception {
         configuration = unfilteredConfig();
@@ -492,7 +450,7 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnEmptyPasswordlessStrategiesIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(Facebook.getName());
+        configuration = filteredConfigBy(Strategies.Facebook);
         AuthData connection = configuration.getDefaultPasswordlessConnection();
         assertThat(connection, is(nullValue()));
     }
@@ -516,13 +474,13 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnFilteredSocialStrategies() throws Exception {
-        configuration = filteredConfigBy(Facebook.getName(), Instagram.getName());
+        configuration = filteredConfigBy(Strategies.Facebook, Strategies.Instagram);
         assertThat(configuration.getSocialConnections(), containsInAnyOrder(hasStrategy(Strategies.Facebook), hasStrategy(Strategies.Instagram)));
     }
 
     @Test
     public void shouldReturnEmptySocialStrategiesIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(Yammer.getName(), Yahoo.getName());
+        configuration = filteredConfigBy(Strategies.Yammer, Strategies.Yahoo);
         assertThat(configuration.getSocialConnections(), emptyIterable());
     }
 
@@ -540,30 +498,9 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnEmptyEnterpriseStrategiesIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(Yandex.getName());
+        configuration = filteredConfigBy(Strategies.Yandex);
         assertThat(configuration.getEnterpriseConnections(), emptyIterable());
     }
-
-//    @Test
-//    public void shouldUseNativeAuthentication() throws Exception {
-//        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
-//        final AuthData connection = configuration.getDefaultActiveDirectoryConnection();
-//        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(true));
-//    }
-//
-//    @Test
-//    public void shouldNotUseNativeAuthenticationBecauseOverrided() throws Exception {
-//        configuration = filteredConfigBy(MY_AD, MY_SECOND_AD);
-//        final AuthData connection = configuration.getDefaultActiveDirectoryConnection();
-//        assertThat(configuration.shouldUseNativeAuthentication(connection, Arrays.asList(MY_AD, MY_SECOND_AD)), is(false));
-//    }
-//
-//    @Test
-//    public void shouldNotUseNativeAuthenticationBecauseIsSocial() throws Exception {
-//        configuration = unfilteredConfig();
-//        final AuthData connection = getConnectionByName("twitter");
-//        assertThat(configuration.shouldUseNativeAuthentication(connection, new ArrayList<String>()), is(false));
-//    }
 
     @Test
     public void shouldHaveDefaultPrivacyPolicyURL() throws Exception {
@@ -609,15 +546,6 @@ public class ConfigurationTest extends GsonBaseTest {
     private Configuration filteredConfigBy(String... names) {
         options.setConnections(Arrays.asList(names));
         return new Configuration(application, options);
-    }
-
-    private AuthData getConnectionByName(String name) {
-        for (AuthData connection : application.getConnections()) {
-            if (connection.getName().equals(name)) {
-                return connection;
-            }
-        }
-        return null;
     }
 
     private List<CustomField> createCustomFields() {

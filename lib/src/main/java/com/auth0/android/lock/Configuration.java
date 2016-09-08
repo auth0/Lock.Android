@@ -34,8 +34,8 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.utils.Strategies;
 import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.AuthData;
 import com.auth0.android.lock.views.AuthConfig;
@@ -57,15 +57,8 @@ public class Configuration {
     private final List<CustomField> extraSignUpFields;
 
     private AuthData defaultDatabaseConnection;
-
-    private AuthData defaultActiveDirectoryConnection;
-
     private List<AuthData> passwordlessConnections;
-
-//    private AuthData activeDirectoryConnection;
-
     private List<AuthData> socialConnections;
-
     private List<AuthData> enterpriseConnections;
 
     private Application application;
@@ -101,8 +94,6 @@ public class Configuration {
         this.enterpriseConnections = filterConnections(application.getConnections(), connectionSet, AuthType.ENTERPRISE);
         this.passwordlessConnections = filterConnections(application.getConnections(), connectionSet, AuthType.PASSWORDLESS);
         this.socialConnections = filterConnections(application.getConnections(), connectionSet, AuthType.SOCIAL);
-//        this.activeDirectoryConnection = filterStrategy(application.strategyForName(Strategies.ActiveDirectory.getName()), connectionSet);
-//        this.defaultActiveDirectoryConnection = filteredDefaultADConnection(this.activeDirectoryConnection);
         this.application = application;
         parseLocalOptions(options);
         boolean atLeastOneSocialModeEnabled = allowLogIn || allowSignUp;
@@ -121,14 +112,6 @@ public class Configuration {
         return defaultDatabaseConnection;
     }
 
-    public AuthData getDefaultActiveDirectoryConnection() {
-        return defaultActiveDirectoryConnection;
-    }
-
-//    public AuthData getActiveDirectoryConnection() {
-//        return activeDirectoryConnection;
-//    }
-
     @Nullable
     public AuthData getDefaultPasswordlessConnection() {
         if (passwordlessConnections.isEmpty()) {
@@ -141,7 +124,7 @@ public class Configuration {
 
         AuthData strategy = null;
         for (AuthData s : passwordlessConnections) {
-            if (s.getName().equals(Strategies.Email.getName())) {
+            if (s.getName().equals(Strategies.Email)) {
                 strategy = s;
                 break;
             }
@@ -166,11 +149,6 @@ public class Configuration {
         return application;
     }
 
-//    public boolean shouldUseNativeAuthentication(Connection connection, @NonNull List<String> enterpriseConnectionsUsingWebForm) {
-//        final AuthData strategy = getApplication().strategyForConnection(connection);
-//        return strategy.isActiveFlowEnabled() && !enterpriseConnectionsUsingWebForm.contains(connection.getName());
-//    }
-
     private AuthData filterDatabaseConnections(@NonNull List<AuthData> connections, Set<String> allowedConnections, String defaultDatabaseName) {
         if (connections.isEmpty()) {
             return null;
@@ -192,7 +170,7 @@ public class Configuration {
         }
         List<AuthData> filtered = new ArrayList<>(connections.size());
         for (AuthData connection : connections) {
-            boolean allowed = allowedConnections.isEmpty()||allowedConnections.contains(connection.getName());
+            boolean allowed = allowedConnections.isEmpty() || allowedConnections.contains(connection.getName());
             if (connection.getType() == type && allowed) {
                 filtered.add(connection);
             }
@@ -265,9 +243,9 @@ public class Configuration {
 
         AuthData passwordlessConnection = getDefaultPasswordlessConnection();
         if (passwordlessConnection != null) {
-            if (passwordlessConnection.getName().equals(Strategies.Email.getName())) {
+            if (passwordlessConnection.getName().equals(Strategies.Email)) {
                 passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
-            } else if (passwordlessConnection.getName().equals(Strategies.SMS.getName())) {
+            } else if (passwordlessConnection.getName().equals(Strategies.SMS)) {
                 passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
             }
         } else {
@@ -300,14 +278,6 @@ public class Configuration {
             return PasswordStrength.NONE;
         }
     }
-
-//    private Connection filteredDefaultADConnection(AuthData activeDirectoryStrategy) {
-//        if (activeDirectoryStrategy == null) {
-//            return null;
-//        }
-//        final List<Connection> connections = activeDirectoryStrategy.getConnections();
-//        return !connections.isEmpty() ? connections.get(0) : null;
-//    }
 
     public boolean allowLogIn() {
         return allowLogIn;
