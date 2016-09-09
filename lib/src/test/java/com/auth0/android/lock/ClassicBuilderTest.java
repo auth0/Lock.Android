@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.util.Telemetry;
 
 import org.junit.Before;
@@ -100,6 +101,39 @@ public class ClassicBuilderTest {
         builder.allowSignUp(false);
         builder.allowLogIn(false);
         builder.allowForgotPassword(false);
+        builder.build(new Activity());
+    }
+
+    @Test
+    public void shouldThrowIfInitialScreenIsLogInButIsDisabled() throws Exception {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("You chose LOG_IN as the initial screen but you have also disabled that screen.");
+
+        Lock.Builder builder = Lock.newBuilder(account, callback);
+        builder.allowLogIn(false);
+        builder.initialScreen(InitialScreen.LOG_IN);
+        builder.build(new Activity());
+    }
+
+    @Test
+    public void shouldThrowIfInitialScreenIsSignUpButIsDisabled() throws Exception {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("You chose SIGN_UP as the initial screen but you have also disabled that screen.");
+
+        Lock.Builder builder = Lock.newBuilder(account, callback);
+        builder.allowSignUp(false);
+        builder.initialScreen(InitialScreen.SIGN_UP);
+        builder.build(new Activity());
+    }
+
+    @Test
+    public void shouldThrowIfInitialScreenIsForgotPasswordButIsDisabled() throws Exception {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("You chose FORGOT_PASSWORD as the initial screen but you have also disabled that screen.");
+
+        Lock.Builder builder = Lock.newBuilder(account, callback);
+        builder.allowForgotPassword(false);
+        builder.initialScreen(InitialScreen.FORGOT_PASSWORD);
         builder.build(new Activity());
     }
 }
