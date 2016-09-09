@@ -22,11 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.utils;
 
 import android.os.Bundle;
 
-import com.auth0.android.lock.CustomField.FieldType;
+import com.auth0.android.lock.R;
+import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.views.ValidatedInputView;
 import com.auth0.android.lock.views.ValidatedInputView.DataType;
 

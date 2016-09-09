@@ -34,7 +34,7 @@ import android.widget.LinearLayout;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.AuthMode;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 import java.util.ArrayList;

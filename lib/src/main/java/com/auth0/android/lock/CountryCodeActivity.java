@@ -63,7 +63,7 @@ import android.widget.ListView;
 
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.adapters.CountryAdapter;
-import com.auth0.android.lock.utils.json.LoadCountriesTask;
+import com.auth0.android.lock.utils.LoadCountriesTask;
 
 import java.util.ArrayList;
 import java.util.Collections;

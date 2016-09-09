@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils.json;
+package com.auth0.android.lock.internal.json;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

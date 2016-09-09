@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.internal;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -34,16 +34,23 @@ import android.util.Patterns;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
+import com.auth0.android.lock.Auth0Parcelable;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.utils.CustomField;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Options implements Parcelable {
+/**
+ * Helper class to resolve Local settings for configuring the Lock Widget.
+ * <p>
+ * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
+ */
+public class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";

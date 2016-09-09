@@ -1,5 +1,5 @@
 /*
- * StrategyDeserializer.java
+ * JsonUtils.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,40 +22,29 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.utils.json;
+package com.auth0.android.lock.internal.json;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-class StrategyDeserializer extends GsonDeserializer<Strategy> {
-    @Override
-    public Strategy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        assertJsonObject(json);
+abstract class GsonDeserializer<T> implements JsonDeserializer<T> {
 
-        final JsonObject object = json.getAsJsonObject();
-
-        String name = requiredValue("name", String.class, object, context);
-
-        requiredValue("connections", Object.class, object, context);
-        JsonArray connectionsArray = object.getAsJsonArray("connections");
-        List<Connection> connections = new ArrayList<>();
-        for (int i = 0; i < connectionsArray.size(); i++) {
-            final JsonObject connectionJson = connectionsArray.get(i).getAsJsonObject();
-            requiredValue("name", String.class, connectionJson, context);
-            Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-            Map<String, Object> values = context.deserialize(connectionJson, mapType);
-            connections.add(new Connection(name, values));
+    <U> U requiredValue(String name, Type type, JsonObject object, JsonDeserializationContext context) throws JsonParseException {
+        U value = context.deserialize(object.get(name), type);
+        if (value == null) {
+            throw new JsonParseException(String.format("Missing required attribute %s", name));
         }
+        return value;
+    }
 
-        return new Strategy(name, connections);
+    void assertJsonObject(JsonElement jsonObject) throws JsonParseException {
+        if (jsonObject.isJsonNull() || !jsonObject.isJsonObject()) {
+            throw new JsonParseException("Received json is not a valid json object.");
+        }
     }
 }

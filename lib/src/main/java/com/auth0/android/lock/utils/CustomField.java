@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -40,10 +40,10 @@ import com.auth0.android.lock.views.ValidatedInputView.DataType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_EMAIL;
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_NAME;
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_NUMBER;
-import static com.auth0.android.lock.CustomField.FieldType.TYPE_PHONE_NUMBER;
+import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_EMAIL;
+import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_NAME;
+import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_NUMBER;
+import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_PHONE_NUMBER;
 
 public class CustomField implements Parcelable {
 

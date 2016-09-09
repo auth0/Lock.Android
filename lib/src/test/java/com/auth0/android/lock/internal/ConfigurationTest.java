@@ -22,20 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.internal;
 
-import com.auth0.android.lock.CustomField.FieldType;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.utils.json.Connection;
-import com.auth0.android.lock.utils.json.GsonBaseTest;
+import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.json.GsonBaseTest;
+import com.auth0.android.lock.utils.CustomField;
+import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,9 +53,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasConnection;
-import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasName;
-import static com.auth0.android.lock.utils.json.ConnectionMatcher.hasStrategy;
+import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasConnection;
+import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasName;
+import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -64,7 +67,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
@@ -112,7 +114,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldGetValidStyleForNotOverriddenStrategy() throws Exception {
         configuration = new Configuration(connections, options);
-        assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), is(R.style.Lock_Theme_AuthStyle_Facebook));
+        assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), Matchers.is(R.style.Lock_Theme_AuthStyle_Facebook));
     }
 
     @Test
@@ -412,7 +414,7 @@ public class ConfigurationTest extends GsonBaseTest {
     public void shouldIgnoreStrategyNameAndReturnFilteredConnections() throws Exception {
         configuration = filteredConfigBy(Strategies.Twitter, "twitter-dev");
         final List<Connection> strategies = configuration.getSocialConnections();
-        assertThat(strategies, containsInAnyOrder(hasConnection(Strategies.Twitter, "twitter"), hasConnection(Strategies.Twitter, "twitter-dev") ));
+        assertThat(strategies, containsInAnyOrder(hasConnection(Strategies.Twitter, "twitter"), hasConnection(Strategies.Twitter, "twitter-dev")));
         assertThat(strategies, hasSize(2));
     }
 

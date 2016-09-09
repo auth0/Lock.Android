@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.internal;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -36,6 +36,13 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 
+import com.auth0.android.lock.R;
+
+/**
+ * Helper class to resolve Lock.Theme values.
+ * <p>
+ * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
+ */
 public class Theme implements Parcelable {
 
     private final int headerTitle;

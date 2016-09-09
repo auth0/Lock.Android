@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock;
+package com.auth0.android.lock.internal;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +36,8 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.AuthConfig;
 
 import java.util.ArrayList;
@@ -45,6 +46,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Configuration class to resolve which connections are available after parsing the local options.
+ * <p>
+ * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
+ */
 public class Configuration {
 
     private static final String TAG = Configuration.class.getSimpleName();

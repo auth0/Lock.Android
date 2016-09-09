@@ -1,11 +1,13 @@
-package com.auth0.android.lock;
+package com.auth0.android.lock.internal;
 
 import android.os.Build;
 import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.android.Auth0;
-import com.auth0.android.lock.CustomField.FieldType;
+import com.auth0.android.lock.R;
+import com.auth0.android.lock.utils.CustomField;
+import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
