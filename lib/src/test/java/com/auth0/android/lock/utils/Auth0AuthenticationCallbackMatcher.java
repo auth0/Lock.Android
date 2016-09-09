@@ -26,6 +26,7 @@ package com.auth0.android.lock.utils;
 
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.callback.AuthenticationCallback;
+import com.google.gson.reflect.TypeToken;
 import com.jayway.awaitility.core.ConditionTimeoutException;
 
 import org.hamcrest.BaseMatcher;
@@ -33,9 +34,11 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import static com.jayway.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -67,6 +70,10 @@ public class Auth0AuthenticationCallbackMatcher<T> extends BaseMatcher<Authentic
                 .appendText("successful method be called");
     }
 
+    public static <T> Matcher<AuthenticationCallback<T>> hasPayloadOfType(TypeToken<T> tType) {
+        return new Auth0AuthenticationCallbackMatcher<>(TypeTokenMatcher.isA(tType), is(nullValue(AuthenticationException.class)));
+    }
+
     public static <T> Matcher<AuthenticationCallback<T>> hasPayloadOfType(Class<T> tClazz) {
         return new Auth0AuthenticationCallbackMatcher<>(isA(tClazz), is(nullValue(AuthenticationException.class)));
     }
@@ -77,6 +84,10 @@ public class Auth0AuthenticationCallbackMatcher<T> extends BaseMatcher<Authentic
 
     public static <T> Matcher<AuthenticationCallback<T>> hasNoPayloadOfType(Class<T> tClazz) {
         return new Auth0AuthenticationCallbackMatcher<>(is(nullValue(tClazz)), is(notNullValue(AuthenticationException.class)));
+    }
+
+    public static <T> Matcher<AuthenticationCallback<T>> hasNoPayloadOfType(TypeToken<T> tType) {
+        return new Auth0AuthenticationCallbackMatcher<>(allOf(nullValue(), not(TypeTokenMatcher.isA(tType))), is(notNullValue(AuthenticationException.class)));
     }
 
     public static Matcher<AuthenticationCallback<Void>> hasNoError() {

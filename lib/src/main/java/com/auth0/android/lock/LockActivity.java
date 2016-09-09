@@ -57,8 +57,8 @@ import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -70,6 +70,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -292,7 +293,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseLoginEvent event) {
-        if (configuration.getDefaultDatabaseConnection() == null) {
+        if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
         }
@@ -304,7 +305,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.getVerificationCode() != null) {
             parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
         }
-        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        final String connection = configuration.getDatabaseConnection().getName();
         apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
                 .addAuthenticationParameters(parameters)
                 .start(authCallback);
@@ -313,13 +314,13 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseSignUpEvent event) {
-        if (configuration.getDefaultDatabaseConnection() == null) {
+        if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
         }
 
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        final String connection = configuration.getDatabaseConnection().getName();
         lockView.showProgress(true);
 
         if (configuration.loginAfterSignUp()) {
@@ -336,14 +337,14 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
-        if (configuration.getDefaultDatabaseConnection() == null) {
+        if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
         }
 
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        final String connection = configuration.getDefaultDatabaseConnection().getName();
+        final String connection = configuration.getDatabaseConnection().getName();
         apiClient.resetPassword(event.getEmail(), connection)
                 .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
@@ -383,10 +384,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new AuthenticationCallback<Application>() {
+    private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(Application app) {
-            configuration = new Configuration(app, options);
+        public void onSuccess(List<Connection> connections) {
+            configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {

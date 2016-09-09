@@ -25,6 +25,7 @@
 package com.auth0.android.lock.utils.json;
 
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Before;
@@ -35,6 +36,7 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -90,21 +92,16 @@ public class ApplicationGsonTest extends GsonBaseTest {
 
     @Test
     public void shouldReturnApplication() throws Exception {
-        final Application application = buildApplicationFrom(json(APPLICATION));
-        assertThat(application, is(notNullValue()));
-        assertThat(application.getId(), is("CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA"));
-        assertThat(application.getTenant(), is("samples"));
-        assertThat(application.getAuthorizeURL(), is("https://samples.auth0.com/authorize"));
-        assertThat(application.getConnections(), is(notNullValue()));
-        assertThat(application.getConnections(), IsCollectionWithSize.hasSize(1));
-        assertThat(application.getConnections().get(0), instanceOf(Connection.class));
-        assertThat(application.getSubscription(), is("dev"));
-        assertThat(application.getCallbackURL(), is("http://localhost:3000/"));
-        assertThat(application.hasAllowedOrigins(), is(true));
+        final List<Connection> connections = buildApplicationFrom(json(APPLICATION));
+        assertThat(connections, is(notNullValue()));
+        assertThat(connections, is(notNullValue()));
+        assertThat(connections, IsCollectionWithSize.hasSize(1));
+        assertThat(connections.get(0), instanceOf(Connection.class));
     }
 
-    private Application buildApplicationFrom(Reader json) throws IOException {
-        return pojoFrom(json, Application.class);
+    private List<Connection> buildApplicationFrom(Reader json) throws IOException {
+        TypeToken<List<Connection>> applicationType = new TypeToken<List<Connection>>() {};
+        return pojoFrom(json, applicationType);
     }
 
 }

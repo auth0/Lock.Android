@@ -46,18 +46,9 @@ public class EnterpriseConnectionMatcher {
 
     private List<Connection> connections;
 
-    public EnterpriseConnectionMatcher(List<Connection> connections) {
-        this.connections = new ArrayList<>();
-        if (connections == null) {
-            return;
-        }
-
-        for (Connection s : connections) {
-            if (s.getType() == AuthType.ENTERPRISE) {
-                this.connections.add(s);
-            }
-        }
-        Log.v(TAG, String.format("Creating a new instance to match %d Enterprise Strategies", this.connections.size()));
+    public EnterpriseConnectionMatcher(@NonNull List<Connection> connections) {
+        this.connections = new ArrayList<>(connections);
+        Log.v(TAG, String.format("Creating a new instance to match %d Enterprise Connections", this.connections.size()));
     }
 
     /**

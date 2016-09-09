@@ -206,6 +206,16 @@ public class Lock {
                 Log.e(TAG, "You need to specify the callback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing callback.");
             }
+            if (options.getDefaultDatabaseConnection() != null && !options.allowForgotPassword() && !options.allowLogIn() && !options.allowSignUp()) {
+                throw new IllegalStateException("You chose a default database but disabled all the screens.");
+            } else if (options.initialScreen() == InitialScreen.FORGOT_PASSWORD && !options.allowForgotPassword()) {
+                throw new IllegalStateException("You chose 'FORGOT_PASSWORD' as the initial screen but your configuration doesn't have 'allowForgotPassword' enabled.");
+            } else if (options.initialScreen() == InitialScreen.LOG_IN && !options.allowLogIn()) {
+                throw new IllegalStateException("You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled.");
+            } else if (options.initialScreen() == InitialScreen.SIGN_UP && !options.allowSignUp()) {
+                throw new IllegalStateException("You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled.");
+            }
+
             Log.v(TAG, "Lock instance created");
 
             if (options.getAccount().getTelemetry() != null) {

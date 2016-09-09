@@ -81,7 +81,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     private void init() {
         boolean showSocial = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
-        showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
+        showDatabase = lockWidget.getConfiguration().getDatabaseConnection() != null;
         showEnterprise = !lockWidget.getConfiguration().getEnterpriseConnections().isEmpty();
         boolean showModeSelection = showDatabase && lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 

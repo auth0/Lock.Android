@@ -29,6 +29,7 @@ import com.auth0.android.Auth0Exception;
 import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.Auth0AuthenticationCallbackMatcher;
 import com.auth0.android.lock.utils.MockAuthenticationCallback;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.hamcrest.CoreMatchers;
@@ -39,14 +40,13 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.List;
+
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class ApplicationFetcherTest {
-
-    private static final String CLIENT_ID = "client_id";
-    private static final String DOMAIN = "domain";
 
     private ApplicationFetcher appFetcher;
     private ApplicationAPI mockAPI;
@@ -55,7 +55,7 @@ public class ApplicationFetcherTest {
     public void setUp() throws Exception {
         mockAPI = new ApplicationAPI();
 
-        Auth0 account = new Auth0(CLIENT_ID, mockAPI.getDomain());
+        Auth0 account = new Auth0("client_id", mockAPI.getDomain());
         OkHttpClient client = new OkHttpClient();
         appFetcher = new ApplicationFetcher(account, client);
     }
@@ -68,21 +68,23 @@ public class ApplicationFetcherTest {
     @Test
     public void shouldReturnApplicationOnValidJSONPResponse() throws Exception {
         mockAPI.willReturnValidJSONPResponse();
-        final MockAuthenticationCallback<Application> callback = new MockAuthenticationCallback<>();
+        final MockAuthenticationCallback<List<Connection>> callback = new MockAuthenticationCallback<>();
         appFetcher.fetch(callback);
         mockAPI.takeRequest();
 
-        assertThat(callback, Auth0AuthenticationCallbackMatcher.hasPayloadOfType(Application.class));
+        TypeToken<List<Connection>> applicationType = new TypeToken<List<Connection>>(){};
+        assertThat(callback, Auth0AuthenticationCallbackMatcher.hasPayloadOfType(applicationType));
     }
 
     @Test
     public void shouldReturnExceptionOnInvalidJSONPResponse() throws Exception {
         mockAPI.willReturnInvalidJSONPLengthResponse();
-        final MockAuthenticationCallback<Application> callback = new MockAuthenticationCallback<>();
+        final MockAuthenticationCallback<List<Connection>> callback = new MockAuthenticationCallback<>();
         appFetcher.fetch(callback);
         mockAPI.takeRequest();
 
-        assertThat(callback, Auth0AuthenticationCallbackMatcher.hasNoPayloadOfType(Application.class));
+        TypeToken<List<Connection>> applicationType = new TypeToken<List<Connection>>(){};
+        assertThat(callback, Auth0AuthenticationCallbackMatcher.hasNoPayloadOfType(applicationType));
         assertThat(callback.getError(), CoreMatchers.instanceOf(Auth0Exception.class));
         assertThat(callback.getError().getCause().getCause().getMessage(), CoreMatchers.containsString("Invalid App Info JSONP"));
     }

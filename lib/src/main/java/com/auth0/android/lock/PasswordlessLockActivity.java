@@ -58,8 +58,8 @@ import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.provider.ProviderResolverManager;
-import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.ApplicationFetcher;
+import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -68,6 +68,8 @@ import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import java.util.List;
 
 public class PasswordlessLockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -400,14 +402,14 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(PasswordlessLoginEvent event) {
-        if (configuration.getDefaultPasswordlessConnection() == null) {
+        if (configuration.getPasswordlessConnection() == null) {
             Log.w(TAG, "There is no default Passwordless strategy to authenticate with");
             return;
         }
 
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
-        String connectionName = configuration.getDefaultPasswordlessConnection().getName();
+        String connectionName = configuration.getPasswordlessConnection().getName();
         if (event.getCode() != null) {
             event.getLoginRequest(apiClient, lastPasswordlessEmailOrNumber)
                     .addAuthenticationParameters(options.getAuthenticationParameters())
@@ -443,10 +445,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<Application> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<Application>() {
+    private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(Application app) {
-            configuration = new Configuration(app, options);
+        public void onSuccess(List<Connection> connections) {
+            configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {

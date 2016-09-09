@@ -68,7 +68,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         boolean showSocial = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
-        boolean showPasswordless = lockWidget.getConfiguration().getDefaultPasswordlessConnection() != null;
+        boolean showPasswordless = lockWidget.getConfiguration().getPasswordlessConnection() != null;
 
         if (showSocial) {
             addSocialLayout(showPasswordless);

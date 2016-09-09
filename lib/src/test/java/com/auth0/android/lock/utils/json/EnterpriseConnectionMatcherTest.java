@@ -104,13 +104,6 @@ public class EnterpriseConnectionMatcherTest {
     }
 
     @Test
-    public void shouldFailToGetConnectionIfInstantiatedWithNullStrategies() throws Exception {
-        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(null);
-        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
-        assertThat(connection, is(nullValue()));
-    }
-
-    @Test
     public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() throws Exception {
         EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<Connection>());
         Connection connection = parser.parse(SAMPLE_VALID_EMAIL);

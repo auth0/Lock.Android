@@ -94,7 +94,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         formLayout.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formLayout, formLayoutParams);
 
-        boolean showPasswordless = configuration.getDefaultPasswordlessConnection() != null;
+        boolean showPasswordless = configuration.getPasswordlessConnection() != null;
         if (showPasswordless) {
             actionButton = new ActionButton(getContext(), lockTheme);
             actionButton.setOnClickListener(this);
@@ -106,13 +106,13 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
-        if (configuration != null && configuration.isPasswordlessLockAvailable()) {
+        if (configuration != null && configuration.hasPasswordlessConnections()) {
             init();
         } else {
             int errorRes = 0;
             if (configuration == null) {
                 errorRes = R.string.com_auth0_lock_configuration_retrieving_error;
-            } else if (!configuration.isPasswordlessLockAvailable()) {
+            } else if (!configuration.hasPasswordlessConnections()) {
                 errorRes = R.string.com_auth0_lock_missing_connections_message;
             }
             showConfigurationMissingLayout(errorRes);

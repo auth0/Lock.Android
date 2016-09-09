@@ -36,7 +36,6 @@ import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.utils.json.Application;
 import com.auth0.android.lock.utils.json.Connection;
 import com.auth0.android.lock.views.AuthConfig;
 
@@ -54,14 +53,11 @@ public class Configuration {
     private static final String SHOW_FORGOT_KEY = "showForgot";
     private static final String REQUIRES_USERNAME_KEY = "requires_username";
     private static final String PASSWORD_POLICY_KEY = "passwordPolicy";
-    private final List<CustomField> extraSignUpFields;
 
     private Connection defaultDatabaseConnection;
     private List<Connection> passwordlessConnections;
     private List<Connection> socialConnections;
     private List<Connection> enterpriseConnections;
-
-    private Application application;
 
     private boolean allowLogIn;
     private boolean allowSignUp;
@@ -70,8 +66,6 @@ public class Configuration {
     private boolean mustAcceptTerms;
     @PasswordStrength
     private int passwordPolicy;
-    private final boolean classicLockAvailable;
-    private final boolean passwordlessLockAvailable;
     @UsernameStyle
     private int usernameStyle;
     @SocialButtonStyle
@@ -83,24 +77,18 @@ public class Configuration {
     private int initialScreen;
     private String termsURL;
     private String privacyURL;
+    private List<CustomField> extraSignUpFields;
     private Map<String, Integer> authStyles;
 
-    public Configuration(Application application, Options options) {
-        List<String> connections = options.getConnections();
+    public Configuration(List<Connection> connections, Options options) {
+        List<String> allowedConnections = options.getConnections();
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
-        Set<String> connectionSet = connections != null ? new HashSet<>(connections) : new HashSet<String>();
-        this.extraSignUpFields = options.getCustomFields();
-        this.defaultDatabaseConnection = filterDatabaseConnections(application.getConnections(), connectionSet, defaultDatabaseName);
-        this.enterpriseConnections = filterConnections(application.getConnections(), connectionSet, AuthType.ENTERPRISE);
-        this.passwordlessConnections = filterConnections(application.getConnections(), connectionSet, AuthType.PASSWORDLESS);
-        this.socialConnections = filterConnections(application.getConnections(), connectionSet, AuthType.SOCIAL);
-        this.application = application;
+        Set<String> connectionSet = allowedConnections != null ? new HashSet<>(allowedConnections) : new HashSet<String>();
+        this.defaultDatabaseConnection = filterDatabaseConnections(connections, connectionSet, defaultDatabaseName);
+        this.enterpriseConnections = filterConnections(connections, connectionSet, AuthType.ENTERPRISE);
+        this.passwordlessConnections = filterConnections(connections, connectionSet, AuthType.PASSWORDLESS);
+        this.socialConnections = filterConnections(connections, connectionSet, AuthType.SOCIAL);
         parseLocalOptions(options);
-        boolean atLeastOneSocialModeEnabled = allowLogIn || allowSignUp;
-        boolean atLeastOneDatabaseModeEnabled = atLeastOneSocialModeEnabled || allowForgotPassword;
-        this.classicLockAvailable = (!socialConnections.isEmpty() && atLeastOneSocialModeEnabled) || (!enterpriseConnections.isEmpty() && allowLogIn)
-                || (defaultDatabaseConnection != null && atLeastOneDatabaseModeEnabled);
-        this.passwordlessLockAvailable = !socialConnections.isEmpty() || !passwordlessConnections.isEmpty();
     }
 
     @NonNull
@@ -108,12 +96,13 @@ public class Configuration {
         return extraSignUpFields;
     }
 
-    public Connection getDefaultDatabaseConnection() {
+    @Nullable
+    public Connection getDatabaseConnection() {
         return defaultDatabaseConnection;
     }
 
     @Nullable
-    public Connection getDefaultPasswordlessConnection() {
+    public Connection getPasswordlessConnection() {
         if (passwordlessConnections.isEmpty()) {
             return null;
         }
@@ -133,22 +122,22 @@ public class Configuration {
         return connection != null ? connection : passwordlessConnections.get(0);
     }
 
+    @NonNull
     public List<Connection> getSocialConnections() {
         return socialConnections;
     }
 
+    @NonNull
     public List<Connection> getEnterpriseConnections() {
         return enterpriseConnections;
     }
 
+    @NonNull
     public List<Connection> getPasswordlessConnections() {
         return passwordlessConnections;
     }
 
-    public Application getApplication() {
-        return application;
-    }
-
+    @Nullable
     private Connection filterDatabaseConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, String defaultDatabaseName) {
         if (connections.isEmpty()) {
             return null;
@@ -164,6 +153,7 @@ public class Configuration {
         return filteredConnections.isEmpty() ? null : filteredConnections.get(0);
     }
 
+    @NonNull
     private List<Connection> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
         if (connections.isEmpty()) {
             return connections;
@@ -185,72 +175,21 @@ public class Configuration {
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
 
-        final boolean socialAvailable = !getSocialConnections().isEmpty();
-        final boolean dbAvailable = getDefaultDatabaseConnection() != null;
-        final boolean enterpriseAvailable = !getEnterpriseConnections().isEmpty();
-        if (dbAvailable || enterpriseAvailable || socialAvailable) {
-            //let user disable logIn only if connection have enabled it.
-            allowLogIn = options.allowLogIn();
-        }
-        //let user disable signUp only if connection have enabled it.
-        allowSignUp = options.allowSignUp() && (socialAvailable || dbAvailable && getDefaultDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY));
         authStyles = options.getAuthStyles();
+        extraSignUpFields = options.getCustomFields();
 
-        if (dbAvailable) {
+        if (getDatabaseConnection() != null) {
+            allowLogIn = options.allowLogIn();
+            allowSignUp = options.allowSignUp() && getDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
             //let user disable password reset only if connection have enabled it.
-            allowForgotPassword = getDefaultDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY) && options.allowForgotPassword();
-
-            usernameRequired = getDefaultDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
-            passwordPolicy = parsePasswordPolicy((String) getDefaultDatabaseConnection().getValueForKey(PASSWORD_POLICY_KEY));
+            allowForgotPassword = getDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY) && options.allowForgotPassword();
+            usernameRequired = getDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
+            passwordPolicy = parsePasswordPolicy((String) getDatabaseConnection().getValueForKey(PASSWORD_POLICY_KEY));
 
             initialScreen = options.initialScreen();
-            switch (initialScreen) {
-                case InitialScreen.FORGOT_PASSWORD:
-                    if (!allowForgotPassword) {
-                        //Continue to the LOG_IN case to try to default to another option.
-                        Log.w(TAG, "You chose 'FORGOT_PASSWORD' as the initial screen but your configuration doesn't have 'allowForgotPassword' enabled. Trying to default to 'LOG_IN'.");
-                    } else {
-                        break;
-                    }
-                case InitialScreen.LOG_IN:
-                    if (allowLogIn) {
-                        initialScreen = InitialScreen.LOG_IN;
-                    } else if (allowSignUp) {
-                        Log.w(TAG, "You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled. Defaulting to 'SIGN_UP'.");
-                        initialScreen = InitialScreen.SIGN_UP;
-                    } else if (allowForgotPassword) {
-                        initialScreen = InitialScreen.FORGOT_PASSWORD;
-                        Log.w(TAG, "You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled. Defaulting to 'FORGOT_PASSWORD'");
-                    } else {
-                        Log.w(TAG, "You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled.");
-                    }
-                    break;
-                case InitialScreen.SIGN_UP:
-                    if (allowSignUp) {
-                        initialScreen = InitialScreen.SIGN_UP;
-                    } else if (allowLogIn) {
-                        Log.w(TAG, "You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled. Defaulting to 'LOG_IN'.");
-                        initialScreen = InitialScreen.LOG_IN;
-                    } else if (allowForgotPassword) {
-                        initialScreen = InitialScreen.FORGOT_PASSWORD;
-                        Log.w(TAG, "You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled. Defaulting to 'FORGOT_PASSWORD'");
-                    } else {
-                        Log.w(TAG, "You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled.");
-                    }
-                    break;
-            }
         }
 
-        Connection passwordlessConnection = getDefaultPasswordlessConnection();
-        if (passwordlessConnection != null) {
-            if (passwordlessConnection.getName().equals(Strategies.Email)) {
-                passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
-            } else if (passwordlessConnection.getName().equals(Strategies.SMS)) {
-                passwordlessMode = options.useCodePasswordless() ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
-            }
-        } else {
-            passwordlessMode = PasswordlessMode.DISABLED;
-        }
+        passwordlessMode = parsePasswordlessMode(options.useCodePasswordless());
 
         this.termsURL = options.getTermsURL() == null ? "https://auth0.com/terms" : options.getTermsURL();
         this.privacyURL = options.getPrivacyURL() == null ? "https://auth0.com/privacy" : options.getPrivacyURL();
@@ -262,6 +201,20 @@ public class Configuration {
             return authStyles.get(connection);
         }
         return AuthConfig.styleForStrategy(strategy);
+    }
+
+    @PasswordlessMode
+    private int parsePasswordlessMode(boolean requestCode) {
+        int mode = PasswordlessMode.DISABLED;
+        Connection connection = getPasswordlessConnection();
+        if (connection != null) {
+            if (connection.getName().equals(Strategies.Email)) {
+                mode = requestCode ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
+            } else if (connection.getName().equals(Strategies.SMS)) {
+                mode = requestCode ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
+            }
+        }
+        return mode;
     }
 
     @PasswordStrength
@@ -328,12 +281,12 @@ public class Configuration {
         return !extraSignUpFields.isEmpty();
     }
 
-    public boolean isClassicLockAvailable() {
-        return classicLockAvailable;
+    public boolean hasClassicConnections() {
+        return !socialConnections.isEmpty() || !enterpriseConnections.isEmpty() || defaultDatabaseConnection != null;
     }
 
-    public boolean isPasswordlessLockAvailable() {
-        return passwordlessLockAvailable;
+    public boolean hasPasswordlessConnections() {
+        return !socialConnections.isEmpty() || !passwordlessConnections.isEmpty();
     }
 
     @NonNull

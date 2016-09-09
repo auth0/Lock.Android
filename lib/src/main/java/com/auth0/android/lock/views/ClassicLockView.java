@@ -143,7 +143,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         });
         addView(actionButton, wrapHeightParams);
 
-        boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
+        boolean showDatabase = configuration.getDatabaseConnection() != null;
         boolean showEnterprise = !configuration.getEnterpriseConnections().isEmpty();
         if (!showDatabase && !showEnterprise) {
             actionButton.setVisibility(GONE);
@@ -165,13 +165,13 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
-        if (configuration != null && configuration.isClassicLockAvailable()) {
+        if (configuration != null && configuration.hasClassicConnections()) {
             init();
         } else {
             int errorRes = 0;
             if (configuration == null) {
                 errorRes = R.string.com_auth0_lock_configuration_retrieving_error;
-            } else if (!configuration.isClassicLockAvailable()) {
+            } else if (!configuration.hasClassicConnections()) {
                 errorRes = R.string.com_auth0_lock_missing_connections_message;
             }
             showConfigurationMissingLayout(errorRes);

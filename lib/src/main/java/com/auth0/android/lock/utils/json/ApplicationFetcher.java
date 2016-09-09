@@ -46,6 +46,7 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.List;
 
 public class ApplicationFetcher {
 
@@ -70,11 +71,11 @@ public class ApplicationFetcher {
      *
      * @param callback to notify on success/error
      */
-    public void fetch(@NonNull AuthenticationCallback<Application> callback) {
+    public void fetch(@NonNull AuthenticationCallback<List<Connection>> callback) {
         makeApplicationRequest(callback);
     }
 
-    private void makeApplicationRequest(final AuthenticationCallback<Application> callback) {
+    private void makeApplicationRequest(final AuthenticationCallback<List<Connection>> callback) {
         Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
                 .appendPath(account.getClientId() + ".js").build();
 
@@ -92,9 +93,9 @@ public class ApplicationFetcher {
 
             @Override
             public void onResponse(Response response) {
-                Application application;
+                List<Connection> connections;
                 try {
-                    application = parseJSONP(response);
+                    connections= parseJSONP(response);
                 } catch (Auth0Exception e) {
                     Log.e(TAG, "Could not parse Application JSONP: " + e.getMessage());
                     callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
@@ -102,12 +103,12 @@ public class ApplicationFetcher {
                 }
 
                 Log.i(TAG, "Application received!");
-                callback.onSuccess(application);
+                callback.onSuccess(connections);
             }
         });
     }
 
-    private Application parseJSONP(Response response) throws Auth0Exception {
+    private List<Connection> parseJSONP(Response response) throws Auth0Exception {
         try {
             String json = response.body().string();
             final int length = JSONP_PREFIX.length();
@@ -125,14 +126,15 @@ public class ApplicationFetcher {
                 throw tokenizer.syntaxError("Invalid JSON value of App Info");
             }
             JSONObject jsonObject = (JSONObject) nextValue;
-            return createGson().fromJson(jsonObject.toString(), Application.class);
+            Type applicationType = new TypeToken<List<Connection>>() {}.getType();
+            return createGson().fromJson(jsonObject.toString(), applicationType);
         } catch (IOException | JSONException e) {
             throw new Auth0Exception("Failed to parse response to request", e);
         }
     }
 
     static Gson createGson() {
-        Type applicationType = TypeToken.get(Application.class).getType();
+        Type applicationType = new TypeToken<List<Connection>>() {}.getType();
         Type strategyType = new TypeToken<Strategy>(){}.getType();
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()

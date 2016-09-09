@@ -34,21 +34,18 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-class ApplicationDeserializer extends GsonDeserializer<Application> {
+class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
 
     @Override
-    public Application deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<Connection> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         assertJsonObject(json);
 
         final JsonObject object = json.getAsJsonObject();
 
-        String id = requiredValue("id", String.class, object, context);
-        String tenant = requiredValue("tenant", String.class, object, context);
-        String authorizeURL = requiredValue("authorize", String.class, object, context);
-        String callbackURL = requiredValue("callback", String.class, object, context);
-
-        String subscription = context.deserialize(object.remove("subscription"), String.class);
-        boolean hasAllowedOrigins = context.deserialize(object.remove("hasAllowedOrigins"), Boolean.class);
+        requiredValue("id", String.class, object, context);
+        requiredValue("tenant", String.class, object, context);
+        requiredValue("authorize", String.class, object, context);
+        requiredValue("callback", String.class, object, context);
 
         Type strategyType = new TypeToken<List<Strategy>>() {}.getType();
         requiredValue("strategies", strategyType, object, context);
@@ -58,6 +55,6 @@ class ApplicationDeserializer extends GsonDeserializer<Application> {
             connections.addAll(data.getConnections());
         }
 
-        return new Application(id, tenant, authorizeURL, callbackURL, subscription, hasAllowedOrigins, connections);
+        return connections;
     }
 }
