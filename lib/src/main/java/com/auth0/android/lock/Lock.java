@@ -41,11 +41,11 @@ import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.enums.UsernameStyle;
-import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.Theme;
 import com.auth0.android.lock.provider.AuthProviderResolver;
 import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.util.Telemetry;
 
@@ -209,14 +209,8 @@ public class Lock {
                 Log.e(TAG, "You need to specify the callback object to receive the Authentication result.");
                 throw new IllegalStateException("Missing callback.");
             }
-            if (options.getDefaultDatabaseConnection() != null && !options.allowForgotPassword() && !options.allowLogIn() && !options.allowSignUp()) {
-                throw new IllegalStateException("You chose a default database but disabled all the screens.");
-            } else if (options.initialScreen() == InitialScreen.FORGOT_PASSWORD && !options.allowForgotPassword()) {
-                throw new IllegalStateException("You chose 'FORGOT_PASSWORD' as the initial screen but your configuration doesn't have 'allowForgotPassword' enabled.");
-            } else if (options.initialScreen() == InitialScreen.LOG_IN && !options.allowLogIn()) {
-                throw new IllegalStateException("You chose 'LOG_IN' as the initial screen but your configuration doesn't have 'allowLogIn' enabled.");
-            } else if (options.initialScreen() == InitialScreen.SIGN_UP && !options.allowSignUp()) {
-                throw new IllegalStateException("You chose 'SIGN_UP' as the initial screen but your configuration doesn't have 'allowSignUp' enabled.");
+            if (!options.allowForgotPassword() && !options.allowLogIn() && !options.allowSignUp()) {
+                throw new IllegalStateException("You disabled all the Lock screens (LogIn/SignUp/ForgotPassword). Please enable at least one.");
             }
 
             Log.v(TAG, "Lock instance created");
