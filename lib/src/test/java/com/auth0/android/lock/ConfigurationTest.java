@@ -55,6 +55,7 @@ import static com.auth0.android.lock.utils.Strategies.Facebook;
 import static com.auth0.android.lock.utils.Strategies.GoogleApps;
 import static com.auth0.android.lock.utils.Strategies.GooglePlus;
 import static com.auth0.android.lock.utils.Strategies.Instagram;
+import static com.auth0.android.lock.utils.Strategies.Linkedin;
 import static com.auth0.android.lock.utils.Strategies.SMS;
 import static com.auth0.android.lock.utils.Strategies.Twitter;
 import static com.auth0.android.lock.utils.Strategies.Yahoo;
@@ -66,6 +67,8 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -502,10 +505,27 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
-    public void shouldReturnUnfilteredSocialStrategies() throws Exception {
+    public void shouldNotReturnDuplicatedSocialStrategies() throws Exception {
+        configuration = filteredConfigBy("twitter", "twitter-dev");
+        final List<Strategy> strategies = configuration.getSocialStrategies();
+        assertThat(strategies, hasItems(isStrategy(Twitter)));
+        assertThat(strategies, hasSize(1));
+    }
+
+    @Test
+    public void shouldReturnUnfilteredSocialStrategiesWithConnections() throws Exception {
         configuration = unfilteredConfig();
         final List<Strategy> strategies = configuration.getSocialStrategies();
-        assertThat(strategies, containsInAnyOrder(isStrategy(Facebook), isStrategy(Twitter), isStrategy(Instagram), isStrategy(GooglePlus)));
+        assertThat(strategies, hasItems(isStrategy(Facebook), isStrategy(Twitter), isStrategy(Instagram), isStrategy(GooglePlus)));
+        assertThat(strategies, not(hasItem(isStrategy(Linkedin))));
+    }
+
+    @Test
+    public void shouldNotReturnFilteredSocialStrategiesWithoutConnections() throws Exception {
+        configuration = filteredConfigBy(Facebook.getName(), Linkedin.getName());
+        final List<Strategy> strategies = configuration.getSocialStrategies();
+        assertThat(strategies, hasItem(isStrategy(Facebook)));
+        assertThat(strategies, not(hasItem(isStrategy(Linkedin))));
     }
 
     @Test

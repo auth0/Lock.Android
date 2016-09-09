@@ -224,13 +224,16 @@ public class Configuration {
     }
 
     private List<Strategy> filterSocialStrategies(List<Strategy> strategies, Set<String> connections) {
-        if (strategies == null || connections.isEmpty()) {
-            return strategies;
+        if (strategies == null) {
+            return null;
         }
         List<Strategy> filtered = new ArrayList<>(strategies.size());
         for (Strategy strategy : strategies) {
-            if (connections.contains(strategy.getName())) {
-                filtered.add(strategy);
+            for (Connection connection : strategy.getConnections()) {
+                if (connections.isEmpty() || connections.contains(connection.getName())) {
+                    filtered.add(strategy);
+                    break;
+                }
             }
         }
         return filtered;

@@ -76,16 +76,13 @@ public class Strategy {
     }
 
     /**
-     * Returns the name of the first connection found in this strategy. When no connections are available,
-     * it will return the strategy name if this is a social connection or return null in any other case.
+     * Returns the name of the first connection found in this strategy. When no connections
+     * are available it will return null.
      *
      * @return the first connection found or null if no connections available.
      */
     @Nullable
     public String getDefaultConnectionName() {
-        if (!connections.isEmpty()) {
-            return connections.get(0).getName();
-        }
-        return strategyMetadata.getType() == Strategies.Type.SOCIAL ? this.name : null;
+        return !connections.isEmpty() ? connections.get(0).getName() : null;
     }
 }
