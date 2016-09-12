@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.internal.json;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -33,6 +34,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
 
@@ -47,14 +49,35 @@ class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
         requiredValue("authorize", String.class, object, context);
         requiredValue("callback", String.class, object, context);
 
-        Type strategyType = new TypeToken<List<Strategy>>() {}.getType();
-        requiredValue("strategies", strategyType, object, context);
-        List<Strategy> strategies = context.deserialize(object.remove("strategies"), strategyType);
-        List<Connection> connections = new ArrayList<>();
-        for (Strategy data : strategies) {
-            connections.addAll(data.getConnections());
-        }
+        requiredValue("strategies", JsonArray.class, object, context);
+        final JsonArray strategies = object.getAsJsonArray("strategies");
+        return mergeConnections(strategies, context);
+    }
 
+    private List<Connection> mergeConnections(JsonArray list, JsonDeserializationContext context) {
+        List<Connection> connections = new ArrayList<>();
+        for (JsonElement strategy : list) {
+            final List<Connection> c = parseStrategy(strategy, context);
+            connections.addAll(c);
+        }
+        return connections;
+    }
+
+    private List<Connection> parseStrategy(JsonElement json, JsonDeserializationContext context) {
+        final JsonObject strategy = json.getAsJsonObject();
+        String name = requiredValue("name", String.class, strategy, context);
+        requiredValue("connections", Object.class, strategy, context);
+
+        JsonArray connectionsArray = strategy.getAsJsonArray("connections");
+        List<Connection> connections = new ArrayList<>();
+        for (int i = 0; i < connectionsArray.size(); i++) {
+            final JsonObject connectionJson = connectionsArray.get(i).getAsJsonObject();
+            requiredValue("name", String.class, connectionJson, context);
+            Type mapType = new TypeToken<Map<String, Object>>() {
+            }.getType();
+            Map<String, Object> values = context.deserialize(connectionJson, mapType);
+            connections.add(new Connection(name, values));
+        }
         return connections;
     }
 }

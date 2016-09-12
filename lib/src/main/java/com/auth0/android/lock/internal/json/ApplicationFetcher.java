@@ -95,7 +95,7 @@ public class ApplicationFetcher {
             public void onResponse(Response response) {
                 List<Connection> connections;
                 try {
-                    connections= parseJSONP(response);
+                    connections = parseJSONP(response);
                 } catch (Auth0Exception e) {
                     Log.e(TAG, "Could not parse Application JSONP: " + e.getMessage());
                     callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
@@ -135,11 +135,9 @@ public class ApplicationFetcher {
 
     static Gson createGson() {
         Type applicationType = new TypeToken<List<Connection>>() {}.getType();
-        Type strategyType = new TypeToken<Strategy>(){}.getType();
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(applicationType, new ApplicationDeserializer())
-                .registerTypeAdapter(strategyType, new StrategyDeserializer())
                 .create();
     }
 }

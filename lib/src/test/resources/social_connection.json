@@ -1,7 +1,13 @@
 {
-  "name": "twitter",
-  "connections": [{
-    "name": "twitter",
-    "scope": "public_profile"
+  "id": "CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA",
+  "tenant": "samples",
+  "authorize": "https://samples.auth0.com/authorize",
+  "callback": "http://localhost:3000/",
+  "strategies": [{
+      "name": "twitter",
+      "connections": [{
+          "name": "twitter",
+          "scope": "public_profile"
+      }]
   }]
 }

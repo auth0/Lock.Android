@@ -140,9 +140,8 @@ public class ConnectionGsonTest extends GsonBaseTest {
 
 
     private List<Connection> buildConnectionsFrom(Reader json) throws IOException {
-        final TypeToken<Strategy> strategyType = new TypeToken<Strategy>() {};
-        final Strategy strategy = pojoFrom(json, strategyType);
-        return strategy.getConnections();
+        final TypeToken<List<Connection>> strategyType = new TypeToken<List<Connection>>() {};
+        return pojoFrom(json, strategyType);
     }
 
 }
