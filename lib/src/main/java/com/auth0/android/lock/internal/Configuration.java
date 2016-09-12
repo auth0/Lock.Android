@@ -34,7 +34,6 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.utils.CustomField;
@@ -119,7 +118,7 @@ public class Configuration {
 
         Connection connection = null;
         for (Connection c : passwordlessConnections) {
-            if (c.getName().equals(Strategies.Email)) {
+            if (c.getName().equals("email")) {
                 connection = c;
                 break;
             }
@@ -214,9 +213,9 @@ public class Configuration {
         int mode = PasswordlessMode.DISABLED;
         Connection connection = getPasswordlessConnection();
         if (connection != null) {
-            if (connection.getName().equals(Strategies.Email)) {
+            if (connection.getName().equals("email")) {
                 mode = requestCode ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
-            } else if (connection.getName().equals(Strategies.SMS)) {
+            } else if (connection.getName().equals("sms")) {
                 mode = requestCode ? PasswordlessMode.SMS_CODE : PasswordlessMode.SMS_LINK;
             }
         }

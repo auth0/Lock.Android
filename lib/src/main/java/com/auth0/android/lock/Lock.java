@@ -211,11 +211,14 @@ public class Lock {
             }
             if (!options.allowForgotPassword() && !options.allowLogIn() && !options.allowSignUp()) {
                 throw new IllegalStateException("You disabled all the Lock screens (LogIn/SignUp/ForgotPassword). Please enable at least one.");
-            } else if (options.initialScreen() == InitialScreen.LOG_IN && !options.allowLogIn()) {
+            }
+            if (options.initialScreen() == InitialScreen.LOG_IN && !options.allowLogIn()) {
                 throw new IllegalStateException("You chose LOG_IN as the initial screen but you have also disabled that screen.");
-            } else if (options.initialScreen() == InitialScreen.SIGN_UP && !options.allowSignUp()) {
+            }
+            if (options.initialScreen() == InitialScreen.SIGN_UP && !options.allowSignUp()) {
                 throw new IllegalStateException("You chose SIGN_UP as the initial screen but you have also disabled that screen.");
-            } else if (options.initialScreen() == InitialScreen.FORGOT_PASSWORD && !options.allowForgotPassword()) {
+            }
+            if (options.initialScreen() == InitialScreen.FORGOT_PASSWORD && !options.allowForgotPassword()) {
                 throw new IllegalStateException("You chose FORGOT_PASSWORD as the initial screen but you have also disabled that screen.");
             }
 

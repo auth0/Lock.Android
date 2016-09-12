@@ -29,7 +29,6 @@ import com.auth0.android.lock.enums.InitialScreen;
 import com.auth0.android.lock.enums.PasswordStrength;
 import com.auth0.android.lock.enums.PasswordlessMode;
 import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.enums.Strategies;
 import com.auth0.android.lock.enums.UsernameStyle;
 import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.internal.json.GsonBaseTest;
@@ -258,13 +257,13 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldPreferPasswordlessEmailOverSMSWhenBothAvailable() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Arrays.asList(Strategies.SMS, Strategies.Email));
+        options.setConnections(Arrays.asList("sms", "email"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
 
         options.setUseCodePasswordless(false);
-        options.setConnections(Arrays.asList(Strategies.SMS, Strategies.Email));
+        options.setConnections(Arrays.asList("sms", "email"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_LINK));
@@ -273,13 +272,13 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldSetCorrectPasswordlessTypeWhenUsingEmail() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Arrays.asList(Strategies.Email));
+        options.setConnections(Arrays.asList("email"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_CODE));
 
         options.setUseCodePasswordless(false);
-        options.setConnections(Arrays.asList(Strategies.Email));
+        options.setConnections(Arrays.asList("email"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.EMAIL_LINK));
@@ -288,13 +287,13 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldSetCorrectPasswordlessTypeWhenUsingSMS() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Arrays.asList(Strategies.SMS));
+        options.setConnections(Arrays.asList("sms"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
 
         options.setUseCodePasswordless(false);
-        options.setConnections(Arrays.asList(Strategies.SMS));
+        options.setConnections(Arrays.asList("sms"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_LINK));
@@ -303,7 +302,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldNotHavePasswordlessModeWithoutConnections() throws Exception {
         options.setUseCodePasswordless(true);
-        options.setConnections(Collections.singletonList(Strategies.Facebook));
+        options.setConnections(Collections.singletonList("facebook"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.DISABLED));
@@ -311,7 +310,7 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldDefaultToCodePasswordlessWhenTypeMissingFromOptions() throws Exception {
-        options.setConnections(Collections.singletonList(Strategies.SMS));
+        options.setConnections(Collections.singletonList("sms"));
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.getPasswordlessMode(), is(PasswordlessMode.SMS_CODE));
@@ -383,8 +382,8 @@ public class ConfigurationTest extends GsonBaseTest {
         configuration = unfilteredConfig();
         List<Connection> connections = configuration.getPasswordlessConnections();
         assertThat(connections, is(notNullValue()));
-        assertThat(connections, containsInAnyOrder(hasConnection(Strategies.Email, "email"),
-                hasConnection(Strategies.SMS, "sms"), hasConnection(Strategies.SMS, CUSTOM_PASSWORDLESS_CONNECTION)));
+        assertThat(connections, containsInAnyOrder(hasConnection("email", "email"),
+                hasConnection("sms", "sms"), hasConnection("sms", CUSTOM_PASSWORDLESS_CONNECTION)));
     }
 
     @Test
@@ -392,7 +391,7 @@ public class ConfigurationTest extends GsonBaseTest {
         configuration = filteredConfigBy(CUSTOM_PASSWORDLESS_CONNECTION);
         Connection connection = configuration.getPasswordlessConnection();
         assertThat(connection, is(notNullValue()));
-        assertThat(connection, hasConnection(Strategies.SMS, CUSTOM_PASSWORDLESS_CONNECTION));
+        assertThat(connection, hasConnection("sms", CUSTOM_PASSWORDLESS_CONNECTION));
     }
 
     @Test
@@ -400,70 +399,70 @@ public class ConfigurationTest extends GsonBaseTest {
         configuration = unfilteredConfig();
         Connection defaultConnection = configuration.getPasswordlessConnection();
         assertThat(defaultConnection, is(notNullValue()));
-        assertThat(defaultConnection.getName(), equalTo(Strategies.Email));
+        assertThat(defaultConnection.getName(), equalTo("email"));
     }
 
     @Test
     public void shouldReturnEmptyPasswordlessConnectionIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(Strategies.Facebook);
+        configuration = filteredConfigBy("facebook");
         Connection connection = configuration.getPasswordlessConnection();
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldIgnoreStrategyNameAndReturnFilteredConnections() throws Exception {
-        configuration = filteredConfigBy(Strategies.Twitter, "twitter-dev");
+        configuration = filteredConfigBy("twitter", "twitter-dev");
         final List<Connection> strategies = configuration.getSocialConnections();
-        assertThat(strategies, containsInAnyOrder(hasConnection(Strategies.Twitter, "twitter"), hasConnection(Strategies.Twitter, "twitter-dev")));
+        assertThat(strategies, containsInAnyOrder(hasConnection("twitter", "twitter"), hasConnection("twitter", "twitter-dev")));
         assertThat(strategies, hasSize(2));
     }
 
     @Test
     public void shouldNotReturnFilteredSocialStrategiesWithoutConnections() throws Exception {
-        configuration = filteredConfigBy(Strategies.Facebook, Strategies.Linkedin);
+        configuration = filteredConfigBy("facebook", "linkedin");
         final List<Connection> connections = configuration.getSocialConnections();
-        assertThat(connections, hasItem(hasStrategy(Strategies.Facebook)));
-        assertThat(connections, not(hasItem(hasStrategy(Strategies.Linkedin))));
+        assertThat(connections, hasItem(hasStrategy("facebook")));
+        assertThat(connections, not(hasItem(hasStrategy("linkedin"))));
     }
 
     @Test
     public void shouldReturnUnfilteredSocialConnections() throws Exception {
         configuration = unfilteredConfig();
         final List<Connection> connections = configuration.getSocialConnections();
-        assertThat(connections, containsInAnyOrder(hasConnection(Strategies.Facebook, "facebook"),
-                hasConnection(Strategies.Twitter, "twitter"), hasConnection(Strategies.Twitter, "twitter-dev"), hasConnection(Strategies.Instagram, "instagram"),
-                hasConnection(Strategies.GooglePlus, "google-oauth2")));
+        assertThat(connections, containsInAnyOrder(hasConnection("facebook", "facebook"),
+                hasConnection("twitter", "twitter"), hasConnection("twitter", "twitter-dev"), hasConnection("instagram", "instagram"),
+                hasConnection("google-oauth2", "google-oauth2")));
     }
 
     @Test
     public void shouldReturnFilteredSocialConnections() throws Exception {
-        configuration = filteredConfigBy(Strategies.Facebook, Strategies.Instagram);
-        assertThat(configuration.getSocialConnections(), containsInAnyOrder(hasConnection(Strategies.Facebook, "facebook"),
-                hasConnection(Strategies.Instagram, "instagram")));
+        configuration = filteredConfigBy("facebook", "instagram");
+        assertThat(configuration.getSocialConnections(), containsInAnyOrder(hasConnection("facebook", "facebook"),
+                hasConnection("instagram", "instagram")));
     }
 
     @Test
     public void shouldReturnEmptySocialConnectionsIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(Strategies.Yammer, Strategies.Yahoo);
+        configuration = filteredConfigBy("yammer", "yahoo");
         assertThat(configuration.getSocialConnections(), emptyIterable());
     }
 
     @Test
     public void shouldReturnUnfilteredEnterpriseConnections() throws Exception {
         configuration = unfilteredConfig();
-        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasConnection(Strategies.ActiveDirectory, "MyAD"),
-                hasConnection(Strategies.ActiveDirectory, "mySecondAD"), hasConnection(Strategies.GoogleApps, "auth0.com")));
+        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasConnection("ad", "MyAD"),
+                hasConnection("ad", "mySecondAD"), hasConnection("google-apps", "auth0.com")));
     }
 
     @Test
     public void shouldReturnFilteredEnterpriseConnections() throws Exception {
         configuration = filteredConfigBy("auth0.com");
-        assertThat(configuration.getEnterpriseConnections(), contains(hasConnection(Strategies.GoogleApps, "auth0.com")));
+        assertThat(configuration.getEnterpriseConnections(), contains(hasConnection("google-apps", "auth0.com")));
     }
 
     @Test
     public void shouldReturnEmptyEnterpriseConnectionsIfNoneMatch() throws Exception {
-        configuration = filteredConfigBy(Strategies.Yandex);
+        configuration = filteredConfigBy("yandex");
         assertThat(configuration.getEnterpriseConnections(), emptyIterable());
     }
 
