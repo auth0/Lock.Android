@@ -40,9 +40,9 @@ import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.Theme;
-import com.auth0.android.lock.provider.AuthHandler;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.utils.LockException;
+import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.util.Telemetry;
 
 import java.util.Arrays;

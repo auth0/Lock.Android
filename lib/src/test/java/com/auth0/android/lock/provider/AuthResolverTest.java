@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.provider;
 
+import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
 
 import org.junit.Test;

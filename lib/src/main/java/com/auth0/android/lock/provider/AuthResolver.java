@@ -3,6 +3,7 @@ package com.auth0.android.lock.provider;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
 
 import java.util.List;
