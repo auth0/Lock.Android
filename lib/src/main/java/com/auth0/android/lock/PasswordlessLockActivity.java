@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -59,9 +60,9 @@ import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.internal.json.ApplicationFetcher;
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -109,6 +110,18 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private AuthProvider currentProvider;
 
     private LoginErrorMessageBuilder loginErrorBuilder;
+
+    @SuppressWarnings("unused")
+    public PasswordlessLockActivity() {
+    }
+
+    @VisibleForTesting
+    PasswordlessLockActivity(Configuration configuration, Options options, PasswordlessLockView lockView, String lastEmailOrNumber) {
+        this.configuration = configuration;
+        this.options = options;
+        this.lockView = lockView;
+        this.lastPasswordlessEmailOrNumber = lastEmailOrNumber;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
