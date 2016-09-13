@@ -35,9 +35,9 @@ import android.util.Patterns;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.Auth0Parcelable;
-import com.auth0.android.lock.enums.InitialScreen;
-import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.SocialButtonStyle;
+import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 
 import java.util.ArrayList;

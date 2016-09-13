@@ -38,7 +38,6 @@ import android.util.Log;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
-import com.auth0.android.lock.enums.SocialButtonStyle;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.Theme;
 import com.auth0.android.lock.provider.AuthProviderResolver;

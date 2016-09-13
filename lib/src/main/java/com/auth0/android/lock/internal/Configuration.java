@@ -29,12 +29,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
-import com.auth0.android.lock.enums.AuthType;
-import com.auth0.android.lock.enums.InitialScreen;
-import com.auth0.android.lock.enums.PasswordStrength;
-import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.SocialButtonStyle;
+import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.AuthConfig;

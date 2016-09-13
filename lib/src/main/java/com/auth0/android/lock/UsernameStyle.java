@@ -1,5 +1,5 @@
 /*
- * InitialScreen.java
+ * UsernameStyle.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,21 +22,21 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.enums;
+package com.auth0.android.lock;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.enums.InitialScreen.FORGOT_PASSWORD;
-import static com.auth0.android.lock.enums.InitialScreen.LOG_IN;
-import static com.auth0.android.lock.enums.InitialScreen.SIGN_UP;
+import static com.auth0.android.lock.UsernameStyle.DEFAULT;
+import static com.auth0.android.lock.UsernameStyle.EMAIL;
+import static com.auth0.android.lock.UsernameStyle.USERNAME;
 
-@IntDef({LOG_IN, SIGN_UP, FORGOT_PASSWORD})
+@IntDef({DEFAULT, USERNAME, EMAIL})
 @Retention(RetentionPolicy.SOURCE)
-public @interface InitialScreen {
-    int LOG_IN = 0;
-    int SIGN_UP = 1;
-    int FORGOT_PASSWORD = 2;
+public @interface UsernameStyle {
+    int DEFAULT = 0;
+    int USERNAME = 1;
+    int EMAIL = 2;
 }

@@ -25,11 +25,9 @@
 package com.auth0.android.lock.internal;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.InitialScreen;
-import com.auth0.android.lock.enums.PasswordStrength;
-import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.SocialButtonStyle;
+import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.internal.json.GsonBaseTest;
 import com.auth0.android.lock.utils.CustomField;

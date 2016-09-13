@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.internal.json;
 
-import com.auth0.android.lock.enums.AuthType;
+import com.auth0.android.lock.internal.AuthType;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 

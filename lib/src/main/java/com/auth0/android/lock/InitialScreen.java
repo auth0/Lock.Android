@@ -1,5 +1,5 @@
 /*
- * PasswordlessMode.java
+ * InitialScreen.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,25 +22,21 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.enums;
+package com.auth0.android.lock;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.enums.PasswordlessMode.DISABLED;
-import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_CODE;
-import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_LINK;
-import static com.auth0.android.lock.enums.PasswordlessMode.SMS_CODE;
-import static com.auth0.android.lock.enums.PasswordlessMode.SMS_LINK;
+import static com.auth0.android.lock.InitialScreen.FORGOT_PASSWORD;
+import static com.auth0.android.lock.InitialScreen.LOG_IN;
+import static com.auth0.android.lock.InitialScreen.SIGN_UP;
 
-@IntDef({DISABLED, SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE})
+@IntDef({LOG_IN, SIGN_UP, FORGOT_PASSWORD})
 @Retention(RetentionPolicy.SOURCE)
-public @interface PasswordlessMode {
-    int DISABLED = 0;
-    int SMS_LINK = 1;
-    int SMS_CODE = 2;
-    int EMAIL_LINK = 3;
-    int EMAIL_CODE = 4;
+public @interface InitialScreen {
+    int LOG_IN = 0;
+    int SIGN_UP = 1;
+    int FORGOT_PASSWORD = 2;
 }

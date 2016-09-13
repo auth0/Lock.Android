@@ -1,5 +1,5 @@
 /*
- * SocialButtonStyle.java
+ * PasswordlessMode.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,21 +22,25 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.enums;
+package com.auth0.android.lock.internal;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.enums.SocialButtonStyle.BIG;
-import static com.auth0.android.lock.enums.SocialButtonStyle.SMALL;
-import static com.auth0.android.lock.enums.SocialButtonStyle.UNSPECIFIED;
+import static com.auth0.android.lock.internal.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.internal.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.internal.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.internal.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.internal.PasswordlessMode.SMS_LINK;
 
-@IntDef({UNSPECIFIED, BIG, SMALL})
+@IntDef({DISABLED, SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE})
 @Retention(RetentionPolicy.SOURCE)
-public @interface SocialButtonStyle {
-    int UNSPECIFIED = 0;
-    int BIG = 1;
-    int SMALL = 2;
+public @interface PasswordlessMode {
+    int DISABLED = 0;
+    int SMS_LINK = 1;
+    int SMS_CODE = 2;
+    int EMAIL_LINK = 3;
+    int EMAIL_CODE = 4;
 }

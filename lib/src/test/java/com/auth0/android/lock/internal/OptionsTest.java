@@ -8,9 +8,9 @@ import com.auth0.android.Auth0;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
-import com.auth0.android.lock.enums.InitialScreen;
-import com.auth0.android.lock.enums.SocialButtonStyle;
-import com.auth0.android.lock.enums.UsernameStyle;
+import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.SocialButtonStyle;
+import com.auth0.android.lock.UsernameStyle;
 
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.Before;

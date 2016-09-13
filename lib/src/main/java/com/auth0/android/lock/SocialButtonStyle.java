@@ -1,5 +1,5 @@
 /*
- * UsernameStyle.java
+ * SocialButtonStyle.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,21 +22,21 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.enums;
+package com.auth0.android.lock;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.enums.UsernameStyle.DEFAULT;
-import static com.auth0.android.lock.enums.UsernameStyle.EMAIL;
-import static com.auth0.android.lock.enums.UsernameStyle.USERNAME;
+import static com.auth0.android.lock.SocialButtonStyle.BIG;
+import static com.auth0.android.lock.SocialButtonStyle.SMALL;
+import static com.auth0.android.lock.SocialButtonStyle.UNSPECIFIED;
 
-@IntDef({DEFAULT, USERNAME, EMAIL})
+@IntDef({UNSPECIFIED, BIG, SMALL})
 @Retention(RetentionPolicy.SOURCE)
-public @interface UsernameStyle {
-    int DEFAULT = 0;
-    int USERNAME = 1;
-    int EMAIL = 2;
+public @interface SocialButtonStyle {
+    int UNSPECIFIED = 0;
+    int BIG = 1;
+    int SMALL = 2;
 }

@@ -2,7 +2,7 @@ package com.auth0.android.lock.internal.json;
 
 import android.support.annotation.NonNull;
 
-import com.auth0.android.lock.enums.AuthType;
+import com.auth0.android.lock.internal.AuthType;
 
 import java.util.HashSet;
 import java.util.List;

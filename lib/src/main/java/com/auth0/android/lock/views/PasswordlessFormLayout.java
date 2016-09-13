@@ -37,8 +37,8 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
-import com.auth0.android.lock.enums.PasswordlessMode;
-import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.internal.PasswordlessMode;
+import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
 public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener, PasswordlessRequestCodeFormView.OnAlreadyGotCodeListener {
