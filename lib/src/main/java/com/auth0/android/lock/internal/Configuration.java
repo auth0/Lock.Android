@@ -54,11 +54,6 @@ public class Configuration {
 
     private static final String TAG = Configuration.class.getSimpleName();
 
-    private static final String SHOW_SIGNUP_KEY = "showSignup";
-    private static final String SHOW_FORGOT_KEY = "showForgot";
-    private static final String REQUIRES_USERNAME_KEY = "requires_username";
-    private static final String PASSWORD_POLICY_KEY = "passwordPolicy";
-
     private DatabaseConnection defaultDatabaseConnection;
     private List<PasswordlessConnection> passwordlessConnections;
     private List<OAuthConnection> socialConnections;
@@ -69,8 +64,6 @@ public class Configuration {
     private boolean allowForgotPassword;
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
-    @PasswordStrength
-    private int passwordPolicy;
     @UsernameStyle
     private int usernameStyle;
     @SocialButtonStyle
@@ -102,7 +95,7 @@ public class Configuration {
     }
 
     @Nullable
-    public Connection getDatabaseConnection() {
+    public DatabaseConnection getDatabaseConnection() {
         return defaultDatabaseConnection;
     }
 
@@ -185,11 +178,10 @@ public class Configuration {
 
         if (getDatabaseConnection() != null) {
             allowLogIn = options.allowLogIn();
-            allowSignUp = options.allowSignUp() && getDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
+            allowSignUp = options.allowSignUp() && getDatabaseConnection().showSignup();
             //let user disable password reset only if connection have enabled it.
-            allowForgotPassword = getDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY) && options.allowForgotPassword();
-            usernameRequired = getDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
-            passwordPolicy = parsePasswordPolicy((String) getDatabaseConnection().getValueForKey(PASSWORD_POLICY_KEY));
+            allowForgotPassword = getDatabaseConnection().showForgot() && options.allowForgotPassword();
+            usernameRequired = getDatabaseConnection().requiresUsername();
 
             initialScreen = options.initialScreen();
         }
@@ -220,21 +212,6 @@ public class Configuration {
             }
         }
         return mode;
-    }
-
-    @PasswordStrength
-    private int parsePasswordPolicy(String policyName) {
-        if ("excellent".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.EXCELLENT;
-        } else if ("good".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.GOOD;
-        } else if ("fair".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.FAIR;
-        } else if ("low".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.LOW;
-        } else {
-            return PasswordStrength.NONE;
-        }
     }
 
     public boolean allowLogIn() {
@@ -275,7 +252,7 @@ public class Configuration {
 
     @PasswordStrength
     public int getPasswordPolicy() {
-        return passwordPolicy;
+        return defaultDatabaseConnection == null ? PasswordStrength.NONE : defaultDatabaseConnection.getPasswordPolicy();
     }
 
     public boolean loginAfterSignUp() {

@@ -29,6 +29,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -75,8 +76,7 @@ class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
         for (int i = 0; i < connectionsArray.size(); i++) {
             final JsonObject connectionJson = connectionsArray.get(i).getAsJsonObject();
             requiredValue("name", String.class, connectionJson, context);
-            Type mapType = new TypeToken<Map<String, Object>>() {
-            }.getType();
+            Type mapType = new TypeToken<LinkedTreeMap<String, Object>>() {}.getType();
             Map<String, Object> values = context.deserialize(connectionJson, mapType);
             connections.add(connectionFor(name, values));
         }
