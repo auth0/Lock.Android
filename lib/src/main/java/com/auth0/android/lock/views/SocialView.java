@@ -36,6 +36,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.AuthMode;
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.json.OAuthConnection;
 import com.auth0.android.lock.views.interfaces.LockWidgetOAuth;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         RecyclerView recycler = new RecyclerView(getContext());
-        List<Connection> connections = lockWidget.getConfiguration().getSocialConnections();
+        List<OAuthConnection> connections = lockWidget.getConfiguration().getSocialConnections();
         adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(connections));
         adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
@@ -77,9 +78,9 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    private List<AuthConfig> generateAuthConfigs(List<Connection> connections) {
+    private List<AuthConfig> generateAuthConfigs(List<OAuthConnection> connections) {
         List<AuthConfig> configs = new ArrayList<>();
-        for (Connection c : connections) {
+        for (OAuthConnection c : connections) {
             int style = lockWidget.getConfiguration().authStyleForConnection(c.getStrategy(), c.getName());
             configs.add(new AuthConfig(c, style));
         }

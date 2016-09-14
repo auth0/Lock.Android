@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.auth0.android.lock.internal.json.Connection.connectionFor;
+
 class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
 
     @Override
@@ -76,7 +78,7 @@ class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
             Type mapType = new TypeToken<Map<String, Object>>() {
             }.getType();
             Map<String, Object> values = context.deserialize(connectionJson, mapType);
-            connections.add(new Connection(name, values));
+            connections.add(connectionFor(name, values));
         }
         return connections;
     }

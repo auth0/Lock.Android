@@ -29,6 +29,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.json.OAuthConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,9 @@ public class EnterpriseConnectionMatcher {
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
     private static final String AT_SYMBOL = "@";
 
-    private List<Connection> connections;
+    private List<OAuthConnection> connections;
 
-    public EnterpriseConnectionMatcher(@NonNull List<Connection> connections) {
+    public EnterpriseConnectionMatcher(@NonNull List<OAuthConnection> connections) {
         this.connections = new ArrayList<>(connections);
         Log.v(TAG, String.format("Creating a new instance to match %d Enterprise Connections", this.connections.size()));
     }
@@ -57,14 +58,14 @@ public class EnterpriseConnectionMatcher {
      * @return a Connection if found, null otherwise.
      */
     @Nullable
-    public Connection parse(String email) {
+    public OAuthConnection parse(String email) {
         String domain = extractDomain(email);
         if (domain == null) {
             return null;
         }
 
         domain = domain.toLowerCase();
-        for (Connection c : connections) {
+        for (OAuthConnection c : connections) {
             String mainDomain = domainForConnection(c);
             if (domain.equalsIgnoreCase(mainDomain)) {
                 return c;

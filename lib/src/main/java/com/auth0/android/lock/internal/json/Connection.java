@@ -4,25 +4,17 @@ import android.support.annotation.NonNull;
 
 import com.auth0.android.lock.internal.AuthType;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.auth0.android.util.CheckHelper.checkArgument;
 
-public class Connection {
+public abstract class Connection {
 
-    private final String strategy;
-    private final String name;
-    private final Map<String, Object> values;
+    private String strategy;
+    private String name;
+    private Map<String, Object> values;
 
-    /**
-     * Creates a new connection instance
-     *
-     * @param values Connection values
-     */
-    public Connection(@NonNull String strategy, Map<String, Object> values) {
+    protected Connection(@NonNull String strategy, Map<String, Object> values) {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
         final String name = (String) values.remove("name");
         checkArgument(name != null, "Must have a non-null name");
@@ -40,40 +32,7 @@ public class Connection {
     }
 
     @AuthType
-    public int getType() {
-        switch (strategy) {
-            case "auth0":
-                return AuthType.DATABASE;
-            case "ad":
-            case "adfs":
-            case "auth0-adldap":
-            case "custom":
-            case "google-apps":
-            case "google-openid":
-            case "ip":
-            case "mscrm":
-            case "office365":
-            case "pingfederate":
-            case "samlp":
-            case "sharepoint":
-            case "waad":
-                return AuthType.ENTERPRISE;
-            case "sms":
-            case "email":
-                return AuthType.PASSWORDLESS;
-            default:
-                return AuthType.SOCIAL;
-        }
-    }
-
-    /**
-     * Returns if this Connection can use Resource Owner to authenticate
-     *
-     * @return if the Active Flow (Resource Owner) is enabled.
-     */
-    public boolean isActiveFlowEnabled() {
-        return "ad".equals(strategy) || "adfs".equals(strategy) || "waad".equals(strategy);
-    }
+    public abstract int getType();
 
     /**
      * Returns a value using its key
@@ -102,22 +61,21 @@ public class Connection {
     }
 
     /**
-     * If this connection is of type Enterprise it will return the configured Domains.
+     * Creates a new Connection given a Strategy name and the map of values.
      *
-     * @return a set with all domains configured
+     * @param strategy strategy name for this connection
+     * @param values   additional values associated to this connection
+     * @return a new instance of Connection. Can be either DatabaseConnection, PasswordlessConnection or OAuthConnection.
      */
-    public Set<String> getDomainSet() {
-        Set<String> domains = new HashSet<>();
-        String domain = getValueForKey("domain");
-        if (domain != null) {
-            domains.add(domain.toLowerCase());
-            List<String> aliases = getValueForKey("domain_aliases");
-            if (aliases != null) {
-                for (String alias : aliases) {
-                    domains.add(alias.toLowerCase());
-                }
-            }
+    public static Connection connectionFor(@NonNull String strategy, Map<String, Object> values) {
+        switch (strategy) {
+            case "auth0":
+                return new DatabaseConnection(values);
+            case "sms":
+            case "email":
+                return new PasswordlessConnection(strategy, values);
+            default:
+                return new OAuthConnection(strategy, values);
         }
-        return domains;
     }
 }

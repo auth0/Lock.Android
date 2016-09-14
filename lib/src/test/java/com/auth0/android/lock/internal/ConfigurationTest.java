@@ -24,12 +24,14 @@
 
 package com.auth0.android.lock.internal;
 
-import com.auth0.android.lock.R;
 import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.internal.json.GsonBaseTest;
+import com.auth0.android.lock.internal.json.OAuthConnection;
+import com.auth0.android.lock.internal.json.PasswordlessConnection;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.google.gson.reflect.TypeToken;
@@ -378,7 +380,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredPasswordlessConnections() throws Exception {
         configuration = unfilteredConfig();
-        List<Connection> connections = configuration.getPasswordlessConnections();
+        List<PasswordlessConnection> connections = configuration.getPasswordlessConnections();
         assertThat(connections, is(notNullValue()));
         assertThat(connections, containsInAnyOrder(hasConnection("email", "email"),
                 hasConnection("sms", "sms"), hasConnection("sms", CUSTOM_PASSWORDLESS_CONNECTION)));
@@ -410,7 +412,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldIgnoreStrategyNameAndReturnFilteredConnections() throws Exception {
         configuration = filteredConfigBy("twitter", "twitter-dev");
-        final List<Connection> strategies = configuration.getSocialConnections();
+        final List<OAuthConnection> strategies = configuration.getSocialConnections();
         assertThat(strategies, containsInAnyOrder(hasConnection("twitter", "twitter"), hasConnection("twitter", "twitter-dev")));
         assertThat(strategies, hasSize(2));
     }
@@ -418,7 +420,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldNotReturnFilteredSocialStrategiesWithoutConnections() throws Exception {
         configuration = filteredConfigBy("facebook", "linkedin");
-        final List<Connection> connections = configuration.getSocialConnections();
+        final List<OAuthConnection> connections = configuration.getSocialConnections();
         assertThat(connections, hasItem(hasStrategy("facebook")));
         assertThat(connections, not(hasItem(hasStrategy("linkedin"))));
     }
@@ -426,7 +428,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredSocialConnections() throws Exception {
         configuration = unfilteredConfig();
-        final List<Connection> connections = configuration.getSocialConnections();
+        final List<OAuthConnection> connections = configuration.getSocialConnections();
         assertThat(connections, containsInAnyOrder(hasConnection("facebook", "facebook"),
                 hasConnection("twitter", "twitter"), hasConnection("twitter", "twitter-dev"), hasConnection("instagram", "instagram"),
                 hasConnection("google-oauth2", "google-oauth2")));

@@ -41,6 +41,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -105,9 +106,10 @@ public class ConnectionGsonTest extends GsonBaseTest {
         final List<Connection> connections = buildConnectionsFrom(json(ENTERPRISE_CONNECTION));
         assertThat(connections, hasSize(1));
         assertThat(connections.get(0), is(notNullValue()));
+        assertThat(connections.get(0), is(instanceOf(OAuthConnection.class)));
         assertThat(connections.get(0).getType(), is(AuthType.ENTERPRISE));
         assertThat(connections.get(0).getName(), is("ad"));
-        assertThat(connections.get(0).getDomainSet(), contains("auth10.com"));
+        assertThat(((OAuthConnection) connections.get(0)).getDomainSet(), contains("auth10.com"));
         assertThat((String) connections.get(0).getValueForKey("domain"), is("auth10.com"));
         assertThat((List<String>) connections.get(0).getValueForKey("domain_aliases"), hasItem("auth10.com"));
     }
@@ -117,6 +119,7 @@ public class ConnectionGsonTest extends GsonBaseTest {
         final List<Connection> connections = buildConnectionsFrom(json(SOCIAL_CONNECTION));
         assertThat(connections, hasSize(1));
         assertThat(connections.get(0), is(notNullValue()));
+        assertThat(connections.get(0), is(instanceOf(OAuthConnection.class)));
         assertThat(connections.get(0).getType(), is(AuthType.SOCIAL));
         assertThat(connections.get(0).getName(), is("twitter"));
         assertThat(connections.get(0).getStrategy(), is("twitter"));
@@ -127,6 +130,7 @@ public class ConnectionGsonTest extends GsonBaseTest {
     public void shouldReturnDatabase() throws Exception {
         final List<Connection> connections = buildConnectionsFrom(json(DATABASE_CONNECTION));
         assertThat(connections.get(0), is(notNullValue()));
+        assertThat(connections.get(0), is(instanceOf(DatabaseConnection.class)));
         assertThat(connections.get(0).getType(), is(AuthType.DATABASE));
         assertThat(connections.get(0).getName(), is("Username-Password-Authentication"));
         assertThat(connections.get(0).getStrategy(), is("auth0"));
@@ -140,7 +144,8 @@ public class ConnectionGsonTest extends GsonBaseTest {
 
 
     private List<Connection> buildConnectionsFrom(Reader json) throws IOException {
-        final TypeToken<List<Connection>> strategyType = new TypeToken<List<Connection>>() {};
+        final TypeToken<List<Connection>> strategyType = new TypeToken<List<Connection>>() {
+        };
         return pojoFrom(json, strategyType);
     }
 

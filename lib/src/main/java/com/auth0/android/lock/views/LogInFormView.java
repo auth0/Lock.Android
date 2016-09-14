@@ -41,6 +41,7 @@ import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.AuthMode;
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.json.OAuthConnection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -55,7 +56,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private SocialButton enterpriseBtn;
     private View changePasswordBtn;
     private TextView topMessage;
-    private Connection currentConnection;
+    private OAuthConnection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
     private boolean fallbackToDatabase;
@@ -156,8 +157,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
                 lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection));
             }
         });
-        String loginWithCorporate = getResources().getString(R.string.com_auth0_lock_action_single_login_with_corporate);
-        topMessage.setText(loginWithCorporate);
+        topMessage.setText(R.string.com_auth0_lock_action_single_login_with_corporate);
         topMessage.setVisibility(View.VISIBLE);
         emailInput.setVisibility(GONE);
     }

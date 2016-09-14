@@ -28,7 +28,7 @@ package com.auth0.android.lock.internal.json;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-public class ConnectionMatcher extends BaseMatcher<Connection> {
+public class ConnectionMatcher<T extends Connection> extends BaseMatcher<T> {
 
     private final String strategy;
     private final String name;

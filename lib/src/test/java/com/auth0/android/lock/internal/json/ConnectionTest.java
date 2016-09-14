@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.android.lock.internal.json.Connection.connectionFor;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
@@ -60,7 +61,7 @@ public class ConnectionTest {
     public void shouldBuildConnectionWithName() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         assertNotNull(connection);
         assertThat(connection.getStrategy(), equalTo("strategy"));
         assertThat(connection.getName(), equalTo(CONNECTION_NAME));
@@ -71,7 +72,7 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, VALUE);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         assertThat(connection.getValueForKey(KEY), is(VALUE));
     }
 
@@ -79,7 +80,7 @@ public class ConnectionTest {
     public void shouldNotStoreNameInValues() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         assertThat(connection.getValueForKey("name"), is(nullValue()));
     }
 
@@ -87,14 +88,14 @@ public class ConnectionTest {
     public void shouldRaiseExceptionWhenNameIsNull() {
         expectedException.expect(IllegalArgumentException.class);
         Map<String, Object> values = null;
-        new Connection("strategy", values);
+        connectionFor("strategy", values);
     }
 
     @Test
     public void shouldNotHaveResourceOwnerEnabledByDefault() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = new Connection("strategy", values);
+        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
         assertThat(connection.isActiveFlowEnabled(), is(false));
     }
 
@@ -103,7 +104,7 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, VALUE);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         String value = connection.getValueForKey(KEY);
         assertThat(value, equalTo(VALUE));
     }
@@ -113,7 +114,7 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, true);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         boolean value = connection.booleanForKey(KEY);
         assertThat(value, is(true));
     }
@@ -122,7 +123,7 @@ public class ConnectionTest {
     public void shouldReturnDefaultBooleanValueFromKey() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         boolean value = connection.booleanForKey(KEY);
         assertThat(value, is(false));
     }
@@ -133,7 +134,7 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, VALUE);
-        Connection connection = new Connection("strategy", values);
+        Connection connection = connectionFor("strategy", values);
         connection.booleanForKey(KEY);
     }
 
@@ -142,7 +143,7 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put("domain", "domain.com");
-        Connection connection = new Connection("strategy", values);
+        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
         assertThat(connection.getDomainSet(), hasItem("domain.com"));
     }
 
@@ -152,7 +153,7 @@ public class ConnectionTest {
         values.put("name", CONNECTION_NAME);
         values.put("domain", "domain.com");
         values.put("domain_aliases", Arrays.asList("domain2.com", "domain3.com"));
-        Connection connection = new Connection("strategy", values);
+        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
         assertThat(connection.getDomainSet(), hasItems("domain.com", "domain2.com", "domain3.com"));
     }
 
@@ -160,39 +161,39 @@ public class ConnectionTest {
     public void shouldReturnEmptySetWithNoDomainName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = new Connection("strategy", values);
+        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
         assertThat(connection.getDomainSet().isEmpty(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfADFS() throws Exception {
-        Connection connection = connectionForStrategy("adfs");
+        OAuthConnection connection = (OAuthConnection) connectionForStrategy("adfs");
         assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfWaad() throws Exception {
-        Connection connection = connectionForStrategy("waad");
+        OAuthConnection connection = (OAuthConnection) connectionForStrategy("waad");
         assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldHaveResourceOwnerEnabledIfActiveDirectory() throws Exception {
-        Connection connection = connectionForStrategy("ad");
+        OAuthConnection connection = (OAuthConnection) connectionForStrategy("ad");
         assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
     public void shouldNotHaveResourceOwnerEnabledIfNotADFSWaadOrActiveDirectory() throws Exception {
-        Connection connectionAuth0LDAP = connectionForStrategy("auth0-adldap");
-        Connection connectionCustom = connectionForStrategy("custom");
-        Connection connectionGoogleApps = connectionForStrategy("google-apps");
-        Connection connectionGoogleOpenId = connectionForStrategy("google-openid");
-        Connection connectionIp = connectionForStrategy("ip");
-        Connection connectionOffice365 = connectionForStrategy("mscrm");
-        Connection connectionPingFederate = connectionForStrategy("pingfederate");
-        Connection connectionSAMLP = connectionForStrategy("samlp");
-        Connection connectionSharepoint = connectionForStrategy("sharepoint");
+        OAuthConnection connectionAuth0LDAP = (OAuthConnection) connectionForStrategy("auth0-adldap");
+        OAuthConnection connectionCustom = (OAuthConnection) connectionForStrategy("custom");
+        OAuthConnection connectionGoogleApps = (OAuthConnection) connectionForStrategy("google-apps");
+        OAuthConnection connectionGoogleOpenId = (OAuthConnection) connectionForStrategy("google-openid");
+        OAuthConnection connectionIp = (OAuthConnection) connectionForStrategy("ip");
+        OAuthConnection connectionOffice365 = (OAuthConnection) connectionForStrategy("mscrm");
+        OAuthConnection connectionPingFederate = (OAuthConnection) connectionForStrategy("pingfederate");
+        OAuthConnection connectionSAMLP = (OAuthConnection) connectionForStrategy("samlp");
+        OAuthConnection connectionSharepoint = (OAuthConnection) connectionForStrategy("sharepoint");
 
         assertThat(connectionAuth0LDAP.isActiveFlowEnabled(), is(false));
         assertThat(connectionCustom.isActiveFlowEnabled(), is(false));
@@ -338,7 +339,7 @@ public class ConnectionTest {
     private Connection connectionForStrategy(String connectionName) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "my-connection");
-        return new Connection(connectionName, map);
+        return connectionFor(connectionName, map);
     }
 
 }

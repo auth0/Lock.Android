@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.auth0.android.lock.internal.json.Connection.connectionFor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -63,8 +64,8 @@ public class EnterpriseConnectionMatcherTest {
 
     @Before
     public void setUp() throws Exception {
-        List<Connection> connections = new ArrayList<>();
-        Connection connection = createConnection();
+        List<OAuthConnection> connections = new ArrayList<>();
+        OAuthConnection connection = (OAuthConnection) createConnection();
         connections.add(connection);
         parser = new EnterpriseConnectionMatcher(connections);
     }
@@ -105,7 +106,7 @@ public class EnterpriseConnectionMatcherTest {
 
     @Test
     public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() throws Exception {
-        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<Connection>());
+        EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<OAuthConnection>());
         Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
@@ -116,6 +117,6 @@ public class EnterpriseConnectionMatcherTest {
         map.put(DOMAIN_KEY, DOMAIN_VALUE);
         map.put(DOMAIN_ALIASES_KEY, DOMAIN_ALIASES_VALUE);
 
-        return new Connection(ENTERPRISE_STRATEGY, map);
+        return connectionFor(ENTERPRISE_STRATEGY, map);
     }
 }
