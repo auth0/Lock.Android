@@ -28,12 +28,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.auth0.android.lock.internal.Configuration;
+import com.auth0.android.lock.internal.json.DatabaseConnection;
 
 import static com.auth0.android.lock.UsernameStyle.DEFAULT;
 import static com.auth0.android.lock.UsernameStyle.EMAIL;
 import static com.auth0.android.lock.UsernameStyle.USERNAME;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
+
+    private int minUsernameLength;
+    private int maxUsernameLength;
 
     public ValidatedUsernameInputView(Context context) {
         super(context);
@@ -66,6 +70,25 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
                 type = configuration.isUsernameRequired() ? DataType.USERNAME_OR_EMAIL : DataType.EMAIL;
                 break;
         }
+        final DatabaseConnection dbConnection = configuration.getDatabaseConnection();
+        if (dbConnection != null) {
+            minUsernameLength = dbConnection.getMinUsernameLength();
+            maxUsernameLength = dbConnection.getMaxUsernameLength();
+        }
         setDataType(type);
+    }
+
+    @Override
+    protected boolean validate(boolean validateEmptyFields) {
+        final String value = getText().trim();
+        final boolean validUsername = value.matches(USERNAME_REGEX) && value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
+        if (getDataType() == DataType.USERNAME) {
+            return validUsername;
+        }
+        if (getDataType() == DataType.USERNAME_OR_EMAIL) {
+            final boolean validEmail = value.matches(EMAIL_REGEX);
+            return validEmail || validUsername;
+        }
+        return super.validate(validateEmptyFields);
     }
 }

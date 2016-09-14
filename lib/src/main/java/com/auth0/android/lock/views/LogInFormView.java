@@ -46,6 +46,8 @@ import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
+import static com.auth0.android.lock.views.ValidatedInputView.*;
+
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
     private static final String TAG = LogInFormView.class.getSimpleName();
@@ -82,13 +84,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseConnections());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordInput.setDataType(DataType.PASSWORD);
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
         emailInput.setIdentityListener(this);
-        usernameInput.setDataType(ValidatedInputView.DataType.NON_EMPTY_USERNAME);
+        usernameInput.setDataType(DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();

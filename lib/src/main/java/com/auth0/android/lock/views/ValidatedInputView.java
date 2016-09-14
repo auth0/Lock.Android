@@ -67,7 +67,7 @@ import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_
 
 public class ValidatedInputView extends LinearLayout {
 
-    public static final String USERNAME_REGEX = "^[a-zA-Z0-9_]{1,15}$";
+    public static final String USERNAME_REGEX = "^[a-zA-Z0-9_]$";
     public static final String PHONE_NUMBER_REGEX = "^[0-9]{6,14}$";
     public static final String CODE_REGEX = "^[0-9]{4,12}$";
     public static final String EMAIL_REGEX = Patterns.EMAIL_ADDRESS.pattern();
@@ -313,6 +313,16 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
+     * Getter for the DataType associated to this field.
+     *
+     * @return the DataType associated to this view.
+     */
+    @DataType
+    protected int getDataType() {
+        return dataType;
+    }
+
+    /**
      * Validates the input data and updates the icon. DataType must be set.
      * Empty fields are considered valid.
      *
@@ -348,11 +358,11 @@ public class ValidatedInputView extends LinearLayout {
                 isValid = value.matches(EMAIL_REGEX);
                 break;
             case USERNAME:
-                isValid = value.matches(USERNAME_REGEX);
+                isValid = value.matches(USERNAME_REGEX) && value.length() >= 1 && value.length() <= 15;
                 break;
             case USERNAME_OR_EMAIL:
                 final boolean validEmail = value.matches(EMAIL_REGEX);
-                final boolean validUsername = value.matches(USERNAME_REGEX);
+                final boolean validUsername = value.matches(USERNAME_REGEX) && value.length() >= 1 && value.length() <= 15;
                 isValid = validEmail || validUsername;
                 break;
             case MOBILE_PHONE:
