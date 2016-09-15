@@ -31,7 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.auth0.android.lock.enums.AuthMode;
+import com.auth0.android.lock.internal.AuthMode;
 
 import java.util.List;
 

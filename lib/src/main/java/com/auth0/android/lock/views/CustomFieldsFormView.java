@@ -35,7 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auth0.android.lock.CustomField;
+import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;

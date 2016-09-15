@@ -36,13 +36,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.Theme;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.internal.Configuration;
+import com.auth0.android.lock.internal.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.squareup.otto.Bus;
 
@@ -94,7 +94,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         formLayout.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         addView(formLayout, formLayoutParams);
 
-        boolean showPasswordless = configuration.getDefaultPasswordlessStrategy() != null;
+        boolean showPasswordless = configuration.getPasswordlessConnection() != null;
         if (showPasswordless) {
             actionButton = new ActionButton(getContext(), lockTheme);
             actionButton.setOnClickListener(this);
@@ -106,13 +106,13 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
-        if (configuration != null && configuration.isPasswordlessLockAvailable()) {
+        if (configuration != null && configuration.hasPasswordlessConnections()) {
             init();
         } else {
             int errorRes = 0;
             if (configuration == null) {
                 errorRes = R.string.com_auth0_lock_configuration_retrieving_error;
-            } else if (!configuration.isPasswordlessLockAvailable()) {
+            } else if (!configuration.hasPasswordlessConnections()) {
                 errorRes = R.string.com_auth0_lock_missing_connections_message;
             }
             showConfigurationMissingLayout(errorRes);

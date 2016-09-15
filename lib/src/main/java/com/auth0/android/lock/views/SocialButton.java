@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.AuthMode;
+import com.auth0.android.lock.internal.AuthMode;
 
 class SocialButton extends RelativeLayout {
 

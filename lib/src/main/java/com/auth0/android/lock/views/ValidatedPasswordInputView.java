@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.auth0.android.lock.enums.PasswordStrength;
+import com.auth0.android.lock.internal.PasswordStrength;
 
 
 public class ValidatedPasswordInputView extends ValidatedInputView {

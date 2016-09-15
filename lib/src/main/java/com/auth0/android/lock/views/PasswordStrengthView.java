@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.PasswordStrength;
+import com.auth0.android.lock.internal.PasswordStrength;
 
 import java.util.regex.Pattern;
 

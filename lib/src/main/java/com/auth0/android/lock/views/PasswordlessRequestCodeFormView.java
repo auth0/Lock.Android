@@ -34,15 +34,15 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
-import com.auth0.android.lock.enums.PasswordlessMode;
+import com.auth0.android.lock.internal.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
-import static com.auth0.android.lock.enums.PasswordlessMode.DISABLED;
-import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_CODE;
-import static com.auth0.android.lock.enums.PasswordlessMode.EMAIL_LINK;
-import static com.auth0.android.lock.enums.PasswordlessMode.SMS_CODE;
-import static com.auth0.android.lock.enums.PasswordlessMode.SMS_LINK;
+import static com.auth0.android.lock.internal.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.internal.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.internal.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.internal.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.internal.PasswordlessMode.SMS_LINK;
 
 public class PasswordlessRequestCodeFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
@@ -63,7 +63,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         this.lockWidget = lockWidget;
         this.listener = listener;
         passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
-        boolean showTitle = lockWidget.getConfiguration().getSocialStrategies().isEmpty();
+        boolean showTitle = lockWidget.getConfiguration().getSocialConnections().isEmpty();
         Log.v(TAG, "New instance with mode " + passwordlessMode);
         init(showTitle);
     }

@@ -38,9 +38,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.AuthMode;
-import com.auth0.android.lock.enums.InitialScreen;
-import com.auth0.android.lock.enums.SocialButtonStyle;
+import com.auth0.android.lock.internal.AuthMode;
+import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -80,9 +80,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void init() {
-        boolean showSocial = !lockWidget.getConfiguration().getSocialStrategies().isEmpty();
-        showDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
-        showEnterprise = !lockWidget.getConfiguration().getEnterpriseStrategies().isEmpty();
+        boolean showSocial = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
+        showDatabase = lockWidget.getConfiguration().getDatabaseConnection() != null;
+        showEnterprise = !lockWidget.getConfiguration().getEnterpriseConnections().isEmpty();
         boolean showModeSelection = showDatabase && lockWidget.getConfiguration().allowLogIn() && lockWidget.getConfiguration().allowSignUp();
 
         int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
@@ -131,7 +131,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     private void addSocialLayout() {
         int style = lockWidget.getConfiguration().getSocialButtonStyle();
         boolean formContainsFields = showDatabase || showEnterprise;
-        boolean singleConnection = lockWidget.getConfiguration().getSocialStrategies().size() == 1;
+        boolean singleConnection = lockWidget.getConfiguration().getSocialConnections().size() == 1;
 
         if (style == SocialButtonStyle.UNSPECIFIED) {
             socialLayout = new SocialView(lockWidget, formContainsFields && !singleConnection);

@@ -39,7 +39,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
-import com.auth0.android.lock.utils.json.Connection;
+import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -75,7 +75,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
-        domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseStrategies());
+        domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseConnections());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
@@ -86,7 +86,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         emailInput.setIdentityListener(this);
         usernameInput.setDataType(ValidatedInputView.DataType.NON_EMPTY_USERNAME);
 
-        fallbackToDatabase = lockWidget.getConfiguration().getDefaultDatabaseConnection() != null;
+        fallbackToDatabase = lockWidget.getConfiguration().getDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
         changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
@@ -95,10 +95,10 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
                 lockWidget.showChangePasswordForm(true);
             }
         });
-        if (!fallbackToDatabase && lockWidget.getConfiguration().getEnterpriseStrategies().size() == 1 && lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().size() == 1) {
+        if (!fallbackToDatabase && lockWidget.getConfiguration().getEnterpriseConnections().size() == 1) {
             singleConnection = true;
             Log.v(TAG, "Only one enterprise connection was found.");
-            setupSingleConnectionUI(lockWidget.getConfiguration().getEnterpriseStrategies().get(0).getConnections().get(0));
+            setupSingleConnectionUI(lockWidget.getConfiguration().getEnterpriseConnections().get(0));
         } else {
             Log.v(TAG, "Multiple enterprise/database connections found.");
             setupMultipleConnectionUI();
@@ -260,15 +260,6 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    /**
-     * Getter for the current state of enterprise matched domain.
-     *
-     * @return whether there is currently a domain match or not.
-     */
-    public boolean isEnterpriseDomainMatch() {
-        return currentConnection != null && !singleConnection;
     }
 
     public void setLastEmail(String email) {

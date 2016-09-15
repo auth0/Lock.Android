@@ -26,7 +26,7 @@ package com.auth0.android.lock.views.interfaces;
 
 import android.content.Context;
 
-import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.internal.Configuration;
 
 public interface LockWidget {
 
@@ -35,5 +35,4 @@ public interface LockWidget {
     Configuration getConfiguration();
 
     void onFormSubmit();
-
 }

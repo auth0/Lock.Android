@@ -139,7 +139,6 @@ public class DatabaseSignUpEventTest {
     public void shouldGetCreateUserRequestWithUserMetadata() throws Exception {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         final Map<String, String> metadata = createMetadata();
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         DatabaseConnectionRequest<DatabaseUser, AuthenticationException> requestMock = mock(DatabaseConnectionRequest.class);
         Mockito.when(client.createUser(EMAIL, PASSWORD, CONNECTION)).thenReturn(requestMock);

@@ -27,11 +27,11 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.auth0.android.lock.Configuration;
+import com.auth0.android.lock.internal.Configuration;
 
-import static com.auth0.android.lock.enums.UsernameStyle.DEFAULT;
-import static com.auth0.android.lock.enums.UsernameStyle.EMAIL;
-import static com.auth0.android.lock.enums.UsernameStyle.USERNAME;
+import static com.auth0.android.lock.UsernameStyle.DEFAULT;
+import static com.auth0.android.lock.UsernameStyle.EMAIL;
+import static com.auth0.android.lock.UsernameStyle.USERNAME;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
 

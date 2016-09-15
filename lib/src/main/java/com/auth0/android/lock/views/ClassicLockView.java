@@ -41,14 +41,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.auth0.android.lock.Configuration;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.Theme;
-import com.auth0.android.lock.enums.InitialScreen;
+import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.internal.Configuration;
+import com.auth0.android.lock.internal.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
@@ -143,8 +143,8 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         });
         addView(actionButton, wrapHeightParams);
 
-        boolean showDatabase = configuration.getDefaultDatabaseConnection() != null;
-        boolean showEnterprise = !configuration.getEnterpriseStrategies().isEmpty();
+        boolean showDatabase = configuration.getDatabaseConnection() != null;
+        boolean showEnterprise = !configuration.getEnterpriseConnections().isEmpty();
         if (!showDatabase && !showEnterprise) {
             actionButton.setVisibility(GONE);
         }
@@ -165,13 +165,13 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         removeView(loadingProgressBar);
         loadingProgressBar = null;
         this.configuration = configuration;
-        if (configuration != null && configuration.isClassicLockAvailable()) {
+        if (configuration != null && configuration.hasClassicConnections()) {
             init();
         } else {
             int errorRes = 0;
             if (configuration == null) {
                 errorRes = R.string.com_auth0_lock_configuration_retrieving_error;
-            } else if (!configuration.isClassicLockAvailable()) {
+            } else if (!configuration.hasClassicConnections()) {
                 errorRes = R.string.com_auth0_lock_missing_connections_message;
             }
             showConfigurationMissingLayout(errorRes);

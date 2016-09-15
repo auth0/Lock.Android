@@ -5,14 +5,10 @@
   "subscription": "dev",
   "callback": "http://localhost:3000/",
   "hasAllowedOrigins": true,
-  "strategies": [
-    {
+  "strategies": [{
       "name": "twitter",
-      "connections": [
-        {
+      "connections": [{
           "name": "twitter"
-        }
-      ]
-    }
-  ]
+      }]
+  }]
 }

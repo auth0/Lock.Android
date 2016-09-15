@@ -1,7 +1,14 @@
 {
-  "name": "ad",
-  "domain": "auth10.com",
-  "domain_aliases": [
-    "auth10.com"
-  ]
+  "id": "CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA",
+  "tenant": "samples",
+  "authorize": "https://samples.auth0.com/authorize",
+  "callback": "http://localhost:3000/",
+  "strategies": [{
+      "name": "ad",
+      "connections": [{
+          "name": "ad",
+          "domain": "auth10.com",
+          "domain_aliases": ["auth10.com"]
+      }]
+  }]
 }

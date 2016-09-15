@@ -32,10 +32,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.enums.AuthMode;
+import com.auth0.android.lock.internal.AuthMode;
 import com.auth0.android.lock.events.SocialConnectionEvent;
-import com.auth0.android.lock.utils.json.Connection;
-import com.auth0.android.lock.utils.json.Strategy;
+import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
 
 import java.util.ArrayList;
@@ -60,8 +59,8 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         RecyclerView recycler = new RecyclerView(getContext());
-        List<Strategy> socialStrategies = lockWidget.getConfiguration().getSocialStrategies();
-        adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(socialStrategies));
+        List<Connection> connections = lockWidget.getConfiguration().getSocialConnections();
+        adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(connections));
         adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
         final int orientation = smallButtons ? HORIZONTAL : VERTICAL;
@@ -77,13 +76,11 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.Connec
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    private List<AuthConfig> generateAuthConfigs(List<Strategy> socialStrategies) {
+    private List<AuthConfig> generateAuthConfigs(List<Connection> connections) {
         List<AuthConfig> configs = new ArrayList<>();
-        for (Strategy s : socialStrategies) {
-            for (Connection c : s.getConnections()) {
-                int style = lockWidget.getConfiguration().authStyleForConnection(s.getName(), c.getName());
-                configs.add(new AuthConfig(s.getName(), c.getName(), style));
-            }
+        for (Connection c : connections) {
+            int style = lockWidget.getConfiguration().authStyleForConnection(c.getStrategy(), c.getName());
+            configs.add(new AuthConfig(c.getStrategy(), c.getName(), style));
         }
         return configs;
     }

@@ -28,8 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.auth0.android.lock.utils.json.Connection;
-import com.auth0.android.lock.utils.json.Strategy;
+import com.auth0.android.lock.internal.json.Connection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,20 +43,11 @@ public class EnterpriseConnectionMatcher {
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
     private static final String AT_SYMBOL = "@";
 
-    private List<Strategy> strategies;
+    private List<Connection> connections;
 
-    public EnterpriseConnectionMatcher(List<Strategy> strategies) {
-        this.strategies = new ArrayList<>();
-        if (strategies == null) {
-            return;
-        }
-
-        for (Strategy s : strategies) {
-            if (s.getType() == Strategies.Type.ENTERPRISE) {
-                this.strategies.add(s);
-            }
-        }
-        Log.v(TAG, String.format("Creating a new instance to match %d Enterprise Strategies", this.strategies.size()));
+    public EnterpriseConnectionMatcher(@NonNull List<Connection> connections) {
+        this.connections = new ArrayList<>(connections);
+        Log.v(TAG, String.format("Creating a new instance to match %d Enterprise Connections", this.connections.size()));
     }
 
     /**
@@ -74,19 +64,17 @@ public class EnterpriseConnectionMatcher {
         }
 
         domain = domain.toLowerCase();
-        for (Strategy s : strategies) {
-            for (Connection c : s.getConnections()) {
-                String mainDomain = domainForConnection(c);
-                if (mainDomain != null && mainDomain.equalsIgnoreCase(domain)) {
-                    return c;
-                }
+        for (Connection c : connections) {
+            String mainDomain = domainForConnection(c);
+            if (domain.equalsIgnoreCase(mainDomain)) {
+                return c;
+            }
 
-                List<String> aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
-                if (aliases != null) {
-                    for (String d : aliases) {
-                        if (d.equalsIgnoreCase(domain)) {
-                            return c;
-                        }
+            List<String> aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
+            if (aliases != null) {
+                for (String d : aliases) {
+                    if (d.equalsIgnoreCase(domain)) {
+                        return c;
                     }
                 }
             }
