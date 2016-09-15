@@ -81,6 +81,9 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
     @Override
     protected boolean validate(boolean validateEmptyFields) {
         final String value = getText().trim();
+        if (!validateEmptyFields && value.isEmpty()) {
+            return true;
+        }
         final boolean validUsername = value.matches(USERNAME_REGEX) && value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
         if (getDataType() == DataType.USERNAME) {
             return validUsername;

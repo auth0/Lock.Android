@@ -1,5 +1,7 @@
 package com.auth0.android.lock.internal.json;
 
+import android.support.annotation.Nullable;
+
 import com.auth0.android.lock.internal.AuthType;
 import com.auth0.android.lock.internal.PasswordStrength;
 
@@ -17,7 +19,7 @@ public class DatabaseConnection extends Connection {
      *
      * @param values Connection values
      */
-    public DatabaseConnection(Map<String, Object> values) {
+    DatabaseConnection(Map<String, Object> values) {
         super("auth0", values);
         parseUsernameLength();
     }
@@ -30,14 +32,21 @@ public class DatabaseConnection extends Connection {
             return;
         }
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
-        final double min = (double) usernameValidation.get("min");
-        final double max = (double) usernameValidation.get("max");
-        minUsernameLength = (int) min;
-        maxUsernameLength = (int) max;
+        minUsernameLength = intValue(usernameValidation.get("min"));
+        maxUsernameLength = intValue(usernameValidation.get("max"));
         if (minUsernameLength < MIN_USERNAME_LENGTH || minUsernameLength > maxUsernameLength) {
             minUsernameLength = MIN_USERNAME_LENGTH;
             maxUsernameLength = MAX_USERNAME_LENGTH;
         }
+    }
+
+    private int intValue(@Nullable Object object) {
+        int value = 0;
+        try {
+            value = object == null ? 0 : (int) Double.parseDouble(String.valueOf(object));
+        } catch (Exception ignored) {
+        }
+        return value;
     }
 
     @PasswordStrength

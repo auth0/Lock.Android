@@ -67,7 +67,7 @@ import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_
 
 public class ValidatedInputView extends LinearLayout {
 
-    public static final String USERNAME_REGEX = "^[a-zA-Z0-9_]$";
+    public static final String USERNAME_REGEX = "^[a-zA-Z0-9_]+$";
     public static final String PHONE_NUMBER_REGEX = "^[0-9]{6,14}$";
     public static final String CODE_REGEX = "^[0-9]{4,12}$";
     public static final String EMAIL_REGEX = Patterns.EMAIL_ADDRESS.pattern();

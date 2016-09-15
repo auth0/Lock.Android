@@ -33,14 +33,12 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.auth0.android.lock.internal.json.Connection.connectionFor;
+import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
@@ -92,14 +90,6 @@ public class ConnectionTest {
     }
 
     @Test
-    public void shouldNotHaveResourceOwnerEnabledByDefault() throws Exception {
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", CONNECTION_NAME);
-        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
-        assertThat(connection.isActiveFlowEnabled(), is(false));
-    }
-
-    @Test
     public void shouldReturnValueFromKey() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
@@ -139,77 +129,9 @@ public class ConnectionTest {
     }
 
     @Test
-    public void shouldReturnDomainNameInSet() throws Exception {
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", CONNECTION_NAME);
-        values.put("domain", "domain.com");
-        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
-        assertThat(connection.getDomainSet(), hasItem("domain.com"));
-    }
-
-    @Test
-    public void shouldReturnAllDomainNamesAsSet() throws Exception {
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", CONNECTION_NAME);
-        values.put("domain", "domain.com");
-        values.put("domain_aliases", Arrays.asList("domain2.com", "domain3.com"));
-        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
-        assertThat(connection.getDomainSet(), hasItems("domain.com", "domain2.com", "domain3.com"));
-    }
-
-    @Test
-    public void shouldReturnEmptySetWithNoDomainName() throws Exception {
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", CONNECTION_NAME);
-        OAuthConnection connection = (OAuthConnection) connectionFor("strategy", values);
-        assertThat(connection.getDomainSet().isEmpty(), is(true));
-    }
-
-    @Test
-    public void shouldHaveResourceOwnerEnabledIfADFS() throws Exception {
-        OAuthConnection connection = (OAuthConnection) connectionForStrategy("adfs");
-        assertThat(connection.isActiveFlowEnabled(), is(true));
-    }
-
-    @Test
-    public void shouldHaveResourceOwnerEnabledIfWaad() throws Exception {
-        OAuthConnection connection = (OAuthConnection) connectionForStrategy("waad");
-        assertThat(connection.isActiveFlowEnabled(), is(true));
-    }
-
-    @Test
-    public void shouldHaveResourceOwnerEnabledIfActiveDirectory() throws Exception {
-        OAuthConnection connection = (OAuthConnection) connectionForStrategy("ad");
-        assertThat(connection.isActiveFlowEnabled(), is(true));
-    }
-
-    @Test
-    public void shouldNotHaveResourceOwnerEnabledIfNotADFSWaadOrActiveDirectory() throws Exception {
-        OAuthConnection connectionAuth0LDAP = (OAuthConnection) connectionForStrategy("auth0-adldap");
-        OAuthConnection connectionCustom = (OAuthConnection) connectionForStrategy("custom");
-        OAuthConnection connectionGoogleApps = (OAuthConnection) connectionForStrategy("google-apps");
-        OAuthConnection connectionGoogleOpenId = (OAuthConnection) connectionForStrategy("google-openid");
-        OAuthConnection connectionIp = (OAuthConnection) connectionForStrategy("ip");
-        OAuthConnection connectionOffice365 = (OAuthConnection) connectionForStrategy("mscrm");
-        OAuthConnection connectionPingFederate = (OAuthConnection) connectionForStrategy("pingfederate");
-        OAuthConnection connectionSAMLP = (OAuthConnection) connectionForStrategy("samlp");
-        OAuthConnection connectionSharepoint = (OAuthConnection) connectionForStrategy("sharepoint");
-
-        assertThat(connectionAuth0LDAP.isActiveFlowEnabled(), is(false));
-        assertThat(connectionCustom.isActiveFlowEnabled(), is(false));
-        assertThat(connectionGoogleApps.isActiveFlowEnabled(), is(false));
-        assertThat(connectionGoogleOpenId.isActiveFlowEnabled(), is(false));
-        assertThat(connectionIp.isActiveFlowEnabled(), is(false));
-        assertThat(connectionOffice365.isActiveFlowEnabled(), is(false));
-        assertThat(connectionPingFederate.isActiveFlowEnabled(), is(false));
-        assertThat(connectionSAMLP.isActiveFlowEnabled(), is(false));
-        assertThat(connectionSharepoint.isActiveFlowEnabled(), is(false));
-    }
-
-    @Test
     public void shouldReturnUnknownSocial() {
         final Connection unknownSocial = connectionForStrategy("this-strategy-does-not-exist");
-        assertThat(unknownSocial.getType(), is(AuthType.SOCIAL));
+        assertThat(unknownSocial, hasType(AuthType.SOCIAL));
     }
 
     @Test
@@ -251,42 +173,42 @@ public class ConnectionTest {
         final Connection yammer = connectionForStrategy("yammer");
         final Connection yandex = connectionForStrategy("yandex");
 
-        assertThat(amazon.getType(), is(AuthType.SOCIAL));
-        assertThat(aol.getType(), is(AuthType.SOCIAL));
-        assertThat(baidu.getType(), is(AuthType.SOCIAL));
-        assertThat(bitbucket.getType(), is(AuthType.SOCIAL));
-        assertThat(box.getType(), is(AuthType.SOCIAL));
-        assertThat(dropbox.getType(), is(AuthType.SOCIAL));
-        assertThat(dwolla.getType(), is(AuthType.SOCIAL));
-        assertThat(ebay.getType(), is(AuthType.SOCIAL));
-        assertThat(evernote.getType(), is(AuthType.SOCIAL));
-        assertThat(evernoteSandbox.getType(), is(AuthType.SOCIAL));
-        assertThat(exact.getType(), is(AuthType.SOCIAL));
-        assertThat(facebook.getType(), is(AuthType.SOCIAL));
-        assertThat(fitbit.getType(), is(AuthType.SOCIAL));
-        assertThat(github.getType(), is(AuthType.SOCIAL));
-        assertThat(googleOauth2.getType(), is(AuthType.SOCIAL));
-        assertThat(instagram.getType(), is(AuthType.SOCIAL));
-        assertThat(linkedin.getType(), is(AuthType.SOCIAL));
-        assertThat(miicard.getType(), is(AuthType.SOCIAL));
-        assertThat(paypal.getType(), is(AuthType.SOCIAL));
-        assertThat(planningcenter.getType(), is(AuthType.SOCIAL));
-        assertThat(renren.getType(), is(AuthType.SOCIAL));
-        assertThat(salesforce.getType(), is(AuthType.SOCIAL));
-        assertThat(salesforceSandbox.getType(), is(AuthType.SOCIAL));
-        assertThat(shopify.getType(), is(AuthType.SOCIAL));
-        assertThat(soundcloud.getType(), is(AuthType.SOCIAL));
-        assertThat(thecity.getType(), is(AuthType.SOCIAL));
-        assertThat(thecitySandbox.getType(), is(AuthType.SOCIAL));
-        assertThat(thirtysevensignals.getType(), is(AuthType.SOCIAL));
-        assertThat(twitter.getType(), is(AuthType.SOCIAL));
-        assertThat(vkontakte.getType(), is(AuthType.SOCIAL));
-        assertThat(weibo.getType(), is(AuthType.SOCIAL));
-        assertThat(windowslive.getType(), is(AuthType.SOCIAL));
-        assertThat(wordpress.getType(), is(AuthType.SOCIAL));
-        assertThat(yahoo.getType(), is(AuthType.SOCIAL));
-        assertThat(yammer.getType(), is(AuthType.SOCIAL));
-        assertThat(yandex.getType(), is(AuthType.SOCIAL));
+        assertThat(amazon, hasType(AuthType.SOCIAL));
+        assertThat(aol, hasType(AuthType.SOCIAL));
+        assertThat(baidu, hasType(AuthType.SOCIAL));
+        assertThat(bitbucket, hasType(AuthType.SOCIAL));
+        assertThat(box, hasType(AuthType.SOCIAL));
+        assertThat(dropbox, hasType(AuthType.SOCIAL));
+        assertThat(dwolla, hasType(AuthType.SOCIAL));
+        assertThat(ebay, hasType(AuthType.SOCIAL));
+        assertThat(evernote, hasType(AuthType.SOCIAL));
+        assertThat(evernoteSandbox, hasType(AuthType.SOCIAL));
+        assertThat(exact, hasType(AuthType.SOCIAL));
+        assertThat(facebook, hasType(AuthType.SOCIAL));
+        assertThat(fitbit, hasType(AuthType.SOCIAL));
+        assertThat(github, hasType(AuthType.SOCIAL));
+        assertThat(googleOauth2, hasType(AuthType.SOCIAL));
+        assertThat(instagram, hasType(AuthType.SOCIAL));
+        assertThat(linkedin, hasType(AuthType.SOCIAL));
+        assertThat(miicard, hasType(AuthType.SOCIAL));
+        assertThat(paypal, hasType(AuthType.SOCIAL));
+        assertThat(planningcenter, hasType(AuthType.SOCIAL));
+        assertThat(renren, hasType(AuthType.SOCIAL));
+        assertThat(salesforce, hasType(AuthType.SOCIAL));
+        assertThat(salesforceSandbox, hasType(AuthType.SOCIAL));
+        assertThat(shopify, hasType(AuthType.SOCIAL));
+        assertThat(soundcloud, hasType(AuthType.SOCIAL));
+        assertThat(thecity, hasType(AuthType.SOCIAL));
+        assertThat(thecitySandbox, hasType(AuthType.SOCIAL));
+        assertThat(thirtysevensignals, hasType(AuthType.SOCIAL));
+        assertThat(twitter, hasType(AuthType.SOCIAL));
+        assertThat(vkontakte, hasType(AuthType.SOCIAL));
+        assertThat(weibo, hasType(AuthType.SOCIAL));
+        assertThat(windowslive, hasType(AuthType.SOCIAL));
+        assertThat(wordpress, hasType(AuthType.SOCIAL));
+        assertThat(yahoo, hasType(AuthType.SOCIAL));
+        assertThat(yammer, hasType(AuthType.SOCIAL));
+        assertThat(yandex, hasType(AuthType.SOCIAL));
     }
 
     @Test
@@ -301,8 +223,8 @@ public class ConnectionTest {
         final Connection sms = connectionForStrategy("sms");
         final Connection email = connectionForStrategy("email");
 
-        assertThat(sms.getType(), is(AuthType.PASSWORDLESS));
-        assertThat(email.getType(), is(AuthType.PASSWORDLESS));
+        assertThat(sms, hasType(AuthType.PASSWORDLESS));
+        assertThat(email, hasType(AuthType.PASSWORDLESS));
     }
 
     @Test
@@ -321,19 +243,19 @@ public class ConnectionTest {
         final Connection sharepoint = connectionForStrategy("sharepoint");
         final Connection waad = connectionForStrategy("waad");
 
-        assertThat(ad.getType(), is(AuthType.ENTERPRISE));
-        assertThat(adfs.getType(), is(AuthType.ENTERPRISE));
-        assertThat(auth0Adldap.getType(), is(AuthType.ENTERPRISE));
-        assertThat(custom.getType(), is(AuthType.ENTERPRISE));
-        assertThat(googleApps.getType(), is(AuthType.ENTERPRISE));
-        assertThat(googleOpenid.getType(), is(AuthType.ENTERPRISE));
-        assertThat(ip.getType(), is(AuthType.ENTERPRISE));
-        assertThat(mscrm.getType(), is(AuthType.ENTERPRISE));
-        assertThat(office365.getType(), is(AuthType.ENTERPRISE));
-        assertThat(pingfederate.getType(), is(AuthType.ENTERPRISE));
-        assertThat(samlp.getType(), is(AuthType.ENTERPRISE));
-        assertThat(sharepoint.getType(), is(AuthType.ENTERPRISE));
-        assertThat(waad.getType(), is(AuthType.ENTERPRISE));
+        assertThat(ad, hasType(AuthType.ENTERPRISE));
+        assertThat(adfs, hasType(AuthType.ENTERPRISE));
+        assertThat(auth0Adldap, hasType(AuthType.ENTERPRISE));
+        assertThat(custom, hasType(AuthType.ENTERPRISE));
+        assertThat(googleApps, hasType(AuthType.ENTERPRISE));
+        assertThat(googleOpenid, hasType(AuthType.ENTERPRISE));
+        assertThat(ip, hasType(AuthType.ENTERPRISE));
+        assertThat(mscrm, hasType(AuthType.ENTERPRISE));
+        assertThat(office365, hasType(AuthType.ENTERPRISE));
+        assertThat(pingfederate, hasType(AuthType.ENTERPRISE));
+        assertThat(samlp, hasType(AuthType.ENTERPRISE));
+        assertThat(sharepoint, hasType(AuthType.ENTERPRISE));
+        assertThat(waad, hasType(AuthType.ENTERPRISE));
     }
 
     private Connection connectionForStrategy(String connectionName) {

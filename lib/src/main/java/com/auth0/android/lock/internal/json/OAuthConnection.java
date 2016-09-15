@@ -17,7 +17,7 @@ public class OAuthConnection extends Connection {
      * @param strategy the OAuth strategy to use.
      * @param values   Connection values
      */
-    public OAuthConnection(@NonNull String strategy, Map<String, Object> values) {
+    OAuthConnection(@NonNull String strategy, Map<String, Object> values) {
         super(strategy, values);
     }
 

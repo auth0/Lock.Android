@@ -25,6 +25,8 @@
 package com.auth0.android.lock.internal.json;
 
 
+import com.auth0.android.lock.internal.AuthType;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -32,10 +34,13 @@ public class ConnectionMatcher<T extends Connection> extends BaseMatcher<T> {
 
     private final String strategy;
     private final String name;
+    @AuthType
+    private final Integer type;
 
-    public ConnectionMatcher(String strategy, String name) {
+    public ConnectionMatcher(String strategy, String name, @AuthType Integer type) {
         this.strategy = strategy;
         this.name = name;
+        this.type = type;
     }
 
     @Override
@@ -44,6 +49,17 @@ public class ConnectionMatcher<T extends Connection> extends BaseMatcher<T> {
             return false;
         }
         Connection connection = (Connection) o;
+        if (type != null) {
+            switch (type) {
+                case AuthType.DATABASE:
+                    return connection.getType() == type && connection instanceof DatabaseConnection;
+                case AuthType.PASSWORDLESS:
+                    return connection.getType() == type && connection instanceof PasswordlessConnection;
+                case AuthType.SOCIAL:
+                case AuthType.ENTERPRISE:
+                    return connection.getType() == type && connection instanceof OAuthConnection;
+            }
+        }
         if (name != null && strategy != null) {
             return strategy.equals(connection.getStrategy()) && name.equals(connection.getName());
         }
@@ -79,14 +95,18 @@ public class ConnectionMatcher<T extends Connection> extends BaseMatcher<T> {
     }
 
     public static ConnectionMatcher hasConnection(String strategy, String name) {
-        return new ConnectionMatcher(strategy, name);
+        return new ConnectionMatcher(strategy, name, null);
     }
 
     public static ConnectionMatcher hasName(String name) {
-        return new ConnectionMatcher(null, name);
+        return new ConnectionMatcher(null, name, null);
     }
 
     public static ConnectionMatcher hasStrategy(String name) {
-        return new ConnectionMatcher(name, null);
+        return new ConnectionMatcher(name, null, null);
+    }
+
+    public static ConnectionMatcher hasType(@AuthType int type) {
+        return new ConnectionMatcher(null, null, type);
     }
 }
