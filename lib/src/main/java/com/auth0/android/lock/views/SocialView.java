@@ -87,8 +87,8 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
     }
 
     @Override
-    public void onAuthenticationRequest(@NonNull String connection) {
-        lockWidget.onSocialLogin(new SocialConnectionEvent(connection));
+    public void onAuthenticationRequest(@NonNull String strategy,@NonNull String connection) {
+        lockWidget.onSocialLogin(new SocialConnectionEvent(strategy, connection));
     }
 
     /**

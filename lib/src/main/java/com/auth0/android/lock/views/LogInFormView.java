@@ -209,11 +209,12 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     @Override
     public Object getActionEvent() {
         if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
-            return new EnterpriseLoginEvent(currentConnection.getName(), getUsername(), getPassword());
+            return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName(), getUsername(), getPassword());
         } else if (currentConnection != null) {
-            return new EnterpriseLoginEvent(currentConnection.getName());
+            return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName());
         } else {
-            return fallbackToDatabase ? new DatabaseLoginEvent(getUsername(), getPassword()) : new EnterpriseLoginEvent(null);
+            //noinspection ConstantConditions
+            return fallbackToDatabase ? new DatabaseLoginEvent(getUsername(), getPassword()) : new EnterpriseLoginEvent(null, null);
         }
     }
 

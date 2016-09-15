@@ -106,7 +106,8 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         @Override
         public void onClick(View view) {
             if (callback != null) {
-                callback.onAuthenticationRequest(authConfigs.get(getAdapterPosition()).getConnectionName());
+                final AuthConfig item = authConfigs.get(getAdapterPosition());
+                callback.onAuthenticationRequest(item.getStrategyName(), item.getConnectionName());
             } else {
                 Log.w(TAG, "No callback was configured");
             }
@@ -118,8 +119,9 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         /**
          * Called when a SocialButton is clicked.
          *
+         * @param strategy   the strategy associated to the button.
          * @param connection the connection associated to the button.
          */
-        void onAuthenticationRequest(@NonNull String connection);
+        void onAuthenticationRequest(@NonNull String strategy, @NonNull String connection);
     }
 }

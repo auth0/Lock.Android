@@ -25,6 +25,11 @@ public class AuthConfig {
     }
 
     @NonNull
+    public String getStrategyName() {
+        return strategyName;
+    }
+
+    @NonNull
     public String getConnectionName() {
         return connectionName;
     }

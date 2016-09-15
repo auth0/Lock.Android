@@ -10,10 +10,9 @@ import java.util.List;
 
 
 /**
- * Holds an instance of AuthProviderResolver that can be used to query for IdentityProviders given
- * a connection name.
- * If a new instance is not set before calling get, it provides a default safe implementation of the
- * AuthProviderResolver that always returns a null AuthProvider.
+ * Holds instances of AuthHandlers that can be used to query for AuthProviders given
+ * a strategy and connection name.
+ * When no AuthProvider is matched, it will return null
  */
 public abstract class AuthResolver {
     private static List<AuthHandler> authHandlers;
