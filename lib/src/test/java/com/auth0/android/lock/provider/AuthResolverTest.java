@@ -33,7 +33,9 @@ import org.mockito.Mockito;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -45,18 +47,60 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class AuthResolverTest {
 
     @Test
-    public void shouldHaveDefaultProviderResolver() {
+    public void shouldHaveReturnNullWhenNoAuthHandlers() {
         assertThat(AuthResolver.providerFor("", ""), nullValue());
     }
 
     @Test
-    public void shouldSetProviderResolver() {
-        AuthProvider provider = Mockito.mock(AuthProvider.class);
-        AuthHandler handler = Mockito.mock(AuthHandler.class);
-        Mockito.when(handler.providerFor("a", "a")).thenReturn(provider);
-        AuthResolver.setAuthHandlers(Arrays.asList(handler));
+    public void shouldKeepACopyOfTheList() {
+        AuthProvider aProvider = Mockito.mock(AuthProvider.class);
+        AuthProvider bProvider = Mockito.mock(AuthProvider.class);
+        AuthHandler aHandler = Mockito.mock(AuthHandler.class);
+        AuthHandler bHandler = Mockito.mock(AuthHandler.class);
+        Mockito.when(aHandler.providerFor("aStrategy", "aConnection")).thenReturn(aProvider);
+        Mockito.when(bHandler.providerFor("bStrategy", "bConnection")).thenReturn(bProvider);
 
-        assertThat(AuthResolver.providerFor("", ""), nullValue());
-        assertThat(AuthResolver.providerFor("a", "a"), is(equalTo(provider)));
+        List<AuthHandler> list = new ArrayList<>();
+        list.add(aHandler);
+        list.add(bHandler);
+        AuthResolver.setAuthHandlers(list);
+        list.clear();
+
+        assertThat(AuthResolver.providerFor("aStrategy", "aConnection"), is(equalTo(aProvider)));
+        assertThat(AuthResolver.providerFor("bStrategy", "bConnection"), is(equalTo(bProvider)));
+    }
+
+    @Test
+    public void shouldSetAuthHandlers() {
+        AuthProvider aProvider = Mockito.mock(AuthProvider.class);
+        AuthProvider bProvider = Mockito.mock(AuthProvider.class);
+        AuthProvider cProvider = Mockito.mock(AuthProvider.class);
+        AuthHandler abHandler = Mockito.mock(AuthHandler.class);
+        AuthHandler cHandler = Mockito.mock(AuthHandler.class);
+        Mockito.when(abHandler.providerFor("aStrategy", "aConnection")).thenReturn(aProvider);
+        Mockito.when(abHandler.providerFor("bStrategy", "bConnection")).thenReturn(bProvider);
+        Mockito.when(cHandler.providerFor("cStrategy", "cConnection")).thenReturn(cProvider);
+        AuthResolver.setAuthHandlers(Arrays.asList(abHandler, cHandler));
+
+        assertThat(AuthResolver.providerFor("aStrategy", "aConnection"), is(equalTo(aProvider)));
+        assertThat(AuthResolver.providerFor("bStrategy", "bConnection"), is(equalTo(bProvider)));
+        assertThat(AuthResolver.providerFor("cStrategy", "cConnection"), is(equalTo(cProvider)));
+    }
+
+    @Test
+    public void shouldRespectAuthHandlersOrder() {
+        AuthProvider aProvider = Mockito.mock(AuthProvider.class);
+        AuthProvider bProvider = Mockito.mock(AuthProvider.class);
+
+        AuthProvider cProvider = Mockito.mock(AuthProvider.class);
+        AuthHandler firstHandler = Mockito.mock(AuthHandler.class);
+        AuthHandler secondHandler = Mockito.mock(AuthHandler.class);
+        Mockito.when(firstHandler.providerFor("sameStrategy", "sameConnection")).thenReturn(aProvider);
+        Mockito.when(firstHandler.providerFor("differentStrategy", "differentConnection")).thenReturn(bProvider);
+        Mockito.when(secondHandler.providerFor("sameStrategy", "sameConnection")).thenReturn(cProvider);
+        AuthResolver.setAuthHandlers(Arrays.asList(secondHandler, firstHandler));
+
+        assertThat(AuthResolver.providerFor("sameStrategy", "sameConnection"), is(equalTo(cProvider)));
+        assertThat(AuthResolver.providerFor("differentStrategy", "differentConnection"), is(equalTo(bProvider)));
     }
 }
