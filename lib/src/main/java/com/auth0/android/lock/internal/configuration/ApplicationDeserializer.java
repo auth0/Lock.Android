@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -36,8 +36,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static com.auth0.android.lock.internal.json.Connection.connectionFor;
 
 class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
 
@@ -78,7 +76,7 @@ class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
             requiredValue("name", String.class, connectionJson, context);
             Type mapType = new TypeToken<LinkedTreeMap<String, Object>>() {}.getType();
             Map<String, Object> values = context.deserialize(connectionJson, mapType);
-            connections.add(connectionFor(name, values));
+            connections.add(Connection.connectionFor(name, values));
         }
         return connections;
     }

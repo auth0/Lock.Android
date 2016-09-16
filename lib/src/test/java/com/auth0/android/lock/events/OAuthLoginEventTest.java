@@ -1,6 +1,6 @@
 package com.auth0.android.lock.events;
 
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,11 +20,11 @@ import static org.mockito.Mockito.when;
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class OAuthLoginEventTest {
 
-    private Connection connection;
+    private OAuthConnection connection;
 
     @Before
     public void setUp() throws Exception {
-        connection = mock(Connection.class);
+        connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("connectionName");
         when(connection.getStrategy()).thenReturn("strategyName");
     }

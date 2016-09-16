@@ -5,7 +5,7 @@ import android.os.Build;
 
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,11 +26,11 @@ import static org.mockito.Mockito.when;
 public class AuthConfigTest {
 
     private AuthConfig authConfig;
-    private Connection connection;
+    private OAuthConnection connection;
 
     @Before
     public void setUp() throws Exception {
-        connection = mock(Connection.class);
+        connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("facebook-prod");
         when(connection.getStrategy()).thenReturn("facebook");
         authConfig = new AuthConfig(connection, R.style.Lock_Theme_AuthStyle_Facebook);

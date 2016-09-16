@@ -1,13 +1,11 @@
-package com.auth0.android.lock.internal.json;
-
-import com.auth0.android.lock.internal.AuthType;
-import com.auth0.android.lock.internal.PasswordStrength;
+package com.auth0.android.lock.internal.configuration;
 
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -20,7 +18,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("requires_username", true);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        final DatabaseConnection connection = connectionFor(values);
 
         assertTrue(connection.requiresUsername());
     }
@@ -30,7 +28,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("requires_username", false);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertFalse(connection.requiresUsername());
     }
@@ -40,9 +38,9 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("showSignup", true);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
-        assertTrue(connection.showSignup());
+        assertTrue(connection.showSignUp());
     }
 
     @Test
@@ -50,9 +48,9 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("showSignup", false);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
-        assertFalse(connection.showSignup());
+        assertFalse(connection.showSignUp());
     }
 
     @Test
@@ -60,7 +58,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("showForgot", true);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertTrue(connection.showForgot());
     }
@@ -70,7 +68,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("showForgot", false);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertFalse(connection.showForgot());
     }
@@ -80,7 +78,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("passwordPolicy", "excellent");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
     }
@@ -90,7 +88,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("passwordPolicy", "fair");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getPasswordPolicy(), is(PasswordStrength.FAIR));
     }
@@ -100,7 +98,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("passwordPolicy", "good");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getPasswordPolicy(), is(PasswordStrength.GOOD));
     }
@@ -110,7 +108,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         values.put("passwordPolicy", "low");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getPasswordPolicy(), is(PasswordStrength.LOW));
     }
@@ -119,7 +117,7 @@ public class DatabaseConnectionTest {
     public void shouldGetNonePasswordPolicy() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getPasswordPolicy(), is(PasswordStrength.NONE));
     }
@@ -134,7 +132,7 @@ public class DatabaseConnectionTest {
         usernameValidation.put("min", "10");
         usernameValidation.put("max", "60");
         validation.put("username", usernameValidation);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(10));
         assertThat(connection.getMaxUsernameLength(), is(60));
@@ -148,7 +146,7 @@ public class DatabaseConnectionTest {
         values.put("validation", validation);
         Map<String, Object> usernameValidation = new HashMap<>();
         usernameValidation.put("username", usernameValidation);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
@@ -160,7 +158,7 @@ public class DatabaseConnectionTest {
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
         values.put("validation", validation);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
@@ -171,7 +169,7 @@ public class DatabaseConnectionTest {
     public void shouldGetDefaultMinMaxUsernameLengthIfMissingValidation() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
@@ -187,7 +185,7 @@ public class DatabaseConnectionTest {
         usernameValidation.put("min", 60);
         usernameValidation.put("max", 10);
         values.put("username", usernameValidation);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
@@ -202,7 +200,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> usernameValidation = new HashMap<>();
         usernameValidation.put("min", 10);
         values.put("username", usernameValidation);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
@@ -217,7 +215,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> usernameValidation = new HashMap<>();
         usernameValidation.put("max", 60);
         values.put("username", usernameValidation);
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
@@ -227,7 +225,7 @@ public class DatabaseConnectionTest {
     public void shouldHaveName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
         assertThat(connection.getName(), is("name"));
     }
 
@@ -235,7 +233,7 @@ public class DatabaseConnectionTest {
     public void shouldHaveStrategy() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        DatabaseConnection connection = new DatabaseConnection(values);
+        DatabaseConnection connection = connectionFor(values);
         assertThat(connection.getStrategy(), is("auth0"));
     }
 
@@ -243,7 +241,11 @@ public class DatabaseConnectionTest {
     public void shouldBeDatabaseType() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
-        DatabaseConnection connection = new DatabaseConnection(values);
-        assertThat(connection.getType(), is(AuthType.DATABASE));
+        DatabaseConnection connection = connectionFor(values);
+        assertThat(connection, hasType(AuthType.DATABASE));
+    }
+
+    private DatabaseConnection connectionFor(Map<String, Object> values) {
+        return Connection.connectionFor("auth0", values);
     }
 }

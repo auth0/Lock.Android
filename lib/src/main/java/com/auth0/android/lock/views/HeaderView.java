@@ -35,7 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.Theme;
+import com.auth0.android.lock.internal.configuration.Theme;
 
 public class HeaderView extends RelativeLayout {
     private View header;

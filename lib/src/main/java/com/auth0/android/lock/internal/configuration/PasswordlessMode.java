@@ -1,5 +1,5 @@
 /*
- * JsonUtils.java
+ * PasswordlessMode.java
  *
  * Copyright (c) 2016 Auth0 (http://auth0.com)
  *
@@ -22,29 +22,25 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import android.support.annotation.IntDef;
 
-import java.lang.reflect.Type;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-abstract class GsonDeserializer<T> implements JsonDeserializer<T> {
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_LINK;
 
-    <U> U requiredValue(String name, Type type, JsonObject object, JsonDeserializationContext context) throws JsonParseException {
-        U value = context.deserialize(object.get(name), type);
-        if (value == null) {
-            throw new JsonParseException(String.format("Missing required attribute %s", name));
-        }
-        return value;
-    }
-
-    void assertJsonObject(JsonElement jsonObject) throws JsonParseException {
-        if (jsonObject.isJsonNull() || !jsonObject.isJsonObject()) {
-            throw new JsonParseException("Received json is not a valid json object.");
-        }
-    }
+@IntDef({DISABLED, SMS_LINK, SMS_CODE, EMAIL_LINK, EMAIL_CODE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface PasswordlessMode {
+    int DISABLED = 0;
+    int SMS_LINK = 1;
+    int SMS_CODE = 2;
+    int EMAIL_LINK = 3;
+    int EMAIL_CODE = 4;
 }

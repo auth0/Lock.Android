@@ -34,10 +34,9 @@ import android.widget.LinearLayout;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.AuthMode;
-import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.internal.json.OAuthConnection;
 import com.auth0.android.lock.views.interfaces.LockWidgetOAuth;
+import com.auth0.android.lock.internal.configuration.AuthMode;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +87,7 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
     }
 
     @Override
-    public void onAuthenticationRequest(@NonNull Connection connection) {
+    public void onAuthenticationRequest(@NonNull OAuthConnection connection) {
         lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection));
     }
 

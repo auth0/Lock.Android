@@ -27,8 +27,8 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.json.DatabaseConnection;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.DatabaseConnection;
 
 import static com.auth0.android.lock.UsernameStyle.DEFAULT;
 import static com.auth0.android.lock.UsernameStyle.EMAIL;

@@ -41,8 +41,8 @@ import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Theme;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.squareup.otto.Bus;
 

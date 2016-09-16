@@ -22,9 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
-
-import com.auth0.android.lock.internal.AuthType;
+package com.auth0.android.lock.internal.configuration;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,8 +34,8 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.android.lock.internal.json.Connection.connectionFor;
-import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasType;
+import static com.auth0.android.lock.internal.configuration.Connection.connectionFor;
+import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -214,8 +212,7 @@ public class ConnectionTest {
     @Test
     public void shouldReturnValidDatabaseStrategy() {
         final Connection unknownSocial = connectionForStrategy("auth0");
-
-        assertThat(unknownSocial.getType(), is(AuthType.DATABASE));
+        assertThat(unknownSocial, hasType(AuthType.DATABASE));
     }
 
     @Test

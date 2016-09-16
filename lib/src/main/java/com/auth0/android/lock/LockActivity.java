@@ -56,10 +56,9 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.internal.json.ApplicationFetcher;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.ApplicationFetcher;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
@@ -72,7 +71,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -265,7 +263,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
         if (applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
+            applicationFetcher = new ApplicationFetcher(options, new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
     }
@@ -372,10 +370,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
+    private com.auth0.android.callback.AuthenticationCallback<Configuration> applicationCallback = new AuthenticationCallback<Configuration>() {
         @Override
-        public void onSuccess(List<Connection> connections) {
-            configuration = new Configuration(connections, options);
+        public void onSuccess(final Configuration configuration) {
+            LockActivity.this.configuration = configuration;
             handler.post(new Runnable() {
                 @Override
                 public void run() {

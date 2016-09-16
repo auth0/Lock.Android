@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal;
+package com.auth0.android.lock.internal.configuration;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,10 +32,6 @@ import android.util.Log;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
-import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.internal.json.DatabaseConnection;
-import com.auth0.android.lock.internal.json.OAuthConnection;
-import com.auth0.android.lock.internal.json.PasswordlessConnection;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.AuthConfig;
 
@@ -152,7 +148,7 @@ public class Configuration {
     }
 
     @NonNull
-    private <T extends Connection> List<T> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
+    private <T extends BaseConnection> List<T> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
         if (connections.isEmpty()) {
             return (List<T>) connections;
         }
@@ -178,7 +174,7 @@ public class Configuration {
 
         if (getDatabaseConnection() != null) {
             allowLogIn = options.allowLogIn();
-            allowSignUp = options.allowSignUp() && getDatabaseConnection().showSignup();
+            allowSignUp = options.allowSignUp() && getDatabaseConnection().showSignUp();
             //let user disable password reset only if connection have enabled it.
             allowForgotPassword = getDatabaseConnection().showForgot() && options.allowForgotPassword();
             usernameRequired = getDatabaseConnection().requiresUsername();
@@ -203,7 +199,7 @@ public class Configuration {
     @PasswordlessMode
     private int parsePasswordlessMode(boolean requestCode) {
         int mode = PasswordlessMode.DISABLED;
-        Connection connection = getPasswordlessConnection();
+        PasswordlessConnection connection = getPasswordlessConnection();
         if (connection != null) {
             if (connection.getName().equals("email")) {
                 mode = requestCode ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;

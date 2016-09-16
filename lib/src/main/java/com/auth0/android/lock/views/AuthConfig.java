@@ -10,21 +10,21 @@ import android.support.annotation.StyleableRes;
 import android.support.v4.content.ContextCompat;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 public class AuthConfig {
 
-    private final Connection connection;
+    private final OAuthConnection connection;
     @StyleRes
     private final int styleRes;
 
-    public AuthConfig(@NonNull Connection connection, @StyleRes int styleRes) {
+    public AuthConfig(@NonNull OAuthConnection connection, @StyleRes int styleRes) {
         this.connection = connection;
         this.styleRes = styleRes;
     }
 
     @NonNull
-    public Connection getConnection() {
+    public OAuthConnection getConnection() {
         return connection;
     }
 

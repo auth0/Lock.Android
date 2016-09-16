@@ -31,8 +31,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.auth0.android.lock.internal.AuthMode;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.AuthMode;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 import java.util.List;
 
@@ -122,6 +122,6 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
          *
          * @param connection the connection associated to the button.
          */
-        void onAuthenticationRequest(@NonNull Connection connection);
+        void onAuthenticationRequest(@NonNull OAuthConnection connection);
     }
 }

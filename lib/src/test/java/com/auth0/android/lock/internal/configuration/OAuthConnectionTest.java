@@ -1,6 +1,4 @@
-package com.auth0.android.lock.internal.json;
-
-import com.auth0.android.lock.internal.AuthType;
+package com.auth0.android.lock.internal.configuration;
 
 import org.junit.Test;
 
@@ -8,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.android.lock.internal.json.Connection.connectionFor;
+import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
@@ -20,7 +18,7 @@ public class OAuthConnectionTest {
     public void shouldHaveName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        OAuthConnection connection = new OAuthConnection("strategy", values);
+        OAuthConnection connection = Connection.connectionFor("strategy", values);
         assertThat(connection.getName(), is("name"));
     }
 
@@ -28,20 +26,20 @@ public class OAuthConnectionTest {
     public void shouldHaveStrategy() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        OAuthConnection connection = new OAuthConnection("strategy", values);
+        OAuthConnection connection = Connection.connectionFor("strategy", values);
         assertThat(connection.getStrategy(), is("strategy"));
     }
 
     @Test
     public void shouldBeSocialType() throws Exception {
         OAuthConnection connection = connectionForStrategy("facebook");
-        assertThat(connection.getType(), is(AuthType.SOCIAL));
+        assertThat(connection, hasType(AuthType.SOCIAL));
     }
 
     @Test
     public void shouldBeEnterpriseType() throws Exception {
         OAuthConnection connection = connectionForStrategy("ad");
-        assertThat(connection.getType(), is(AuthType.ENTERPRISE));
+        assertThat(connection, hasType(AuthType.ENTERPRISE));
     }
 
     @Test
@@ -49,7 +47,7 @@ public class OAuthConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
         values.put("domain", "domain.com");
-        OAuthConnection connection = new OAuthConnection("ad", values);
+        OAuthConnection connection = Connection.connectionFor("ad", values);
         assertThat(connection.getDomainSet(), hasItem("domain.com"));
     }
 
@@ -59,7 +57,7 @@ public class OAuthConnectionTest {
         values.put("name", "ad");
         values.put("domain", "domain.com");
         values.put("domain_aliases", Arrays.asList("domain2.com", "domain3.com"));
-        OAuthConnection connection = new OAuthConnection("ad", values);
+        OAuthConnection connection = Connection.connectionFor("ad", values);
         assertThat(connection.getDomainSet(), hasItems("domain.com", "domain2.com", "domain3.com"));
     }
 
@@ -67,7 +65,7 @@ public class OAuthConnectionTest {
     public void shouldReturnEmptySetWithNoDomainName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
-        OAuthConnection connection = new OAuthConnection("ad", values);
+        OAuthConnection connection = Connection.connectionFor("ad", values);
         assertThat(connection.getDomainSet().isEmpty(), is(true));
     }
 
@@ -121,6 +119,6 @@ public class OAuthConnectionTest {
     private OAuthConnection connectionForStrategy(String name) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", name);
-        return new OAuthConnection(name, values);
+        return Connection.connectionFor(name, values);
     }
 }

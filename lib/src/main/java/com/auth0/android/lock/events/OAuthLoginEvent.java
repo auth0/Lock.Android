@@ -3,11 +3,11 @@ package com.auth0.android.lock.events;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 public class OAuthLoginEvent {
 
-    private final Connection connection;
+    private final OAuthConnection connection;
     private String username;
     private String password;
 
@@ -18,7 +18,7 @@ public class OAuthLoginEvent {
      * @param username   the username to use.
      * @param password   the password to use.
      */
-    public OAuthLoginEvent(@NonNull Connection connection, @NonNull String username, @NonNull String password) {
+    public OAuthLoginEvent(@NonNull OAuthConnection connection, @NonNull String username, @NonNull String password) {
         this(connection);
         this.username = username;
         this.password = password;
@@ -29,7 +29,7 @@ public class OAuthLoginEvent {
      *
      * @param connection the connection instance.
      */
-    public OAuthLoginEvent(@NonNull Connection connection) {
+    public OAuthLoginEvent(@NonNull OAuthConnection connection) {
         this.connection = connection;
     }
 

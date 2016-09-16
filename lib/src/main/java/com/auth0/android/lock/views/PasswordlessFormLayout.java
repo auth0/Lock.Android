@@ -37,7 +37,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
-import com.auth0.android.lock.internal.PasswordlessMode;
+import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 

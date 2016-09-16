@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 
@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.auth0.android.lock.internal.json.Connection.connectionFor;
+import static com.auth0.android.lock.internal.configuration.Connection.connectionFor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -65,7 +65,7 @@ public class EnterpriseConnectionMatcherTest {
     @Before
     public void setUp() throws Exception {
         List<OAuthConnection> connections = new ArrayList<>();
-        OAuthConnection connection = (OAuthConnection) createConnection();
+        OAuthConnection connection = createConnection();
         connections.add(connection);
         parser = new EnterpriseConnectionMatcher(connections);
     }
@@ -78,7 +78,7 @@ public class EnterpriseConnectionMatcherTest {
 
     @Test
     public void shouldParseTheConnection() throws Exception {
-        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        OAuthConnection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(notNullValue()));
         assertThat(connection.getName(), is(equalTo(NAME_VALUE)));
         assertThat((String) connection.getValueForKey(DOMAIN_KEY), is(equalTo(DOMAIN_VALUE)));
@@ -88,26 +88,26 @@ public class EnterpriseConnectionMatcherTest {
 
     @Test
     public void shouldNotFindAnUnknownDomain() throws Exception {
-        Connection connection = parser.parse(SAMPLE_UNKNOWN_EMAIL);
+        OAuthConnection connection = parser.parse(SAMPLE_UNKNOWN_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldReturnTheMainDomain() throws Exception {
-        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        OAuthConnection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(parser.domainForConnection(connection), is(equalTo(DOMAIN_VALUE)));
     }
 
     @Test
     public void shouldFailToGetConnectionIfNotValidDomain() throws Exception {
-        Connection connection = parser.parse(SAMPLE_INVALID_EMAIL);
+        OAuthConnection connection = parser.parse(SAMPLE_INVALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() throws Exception {
         EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<OAuthConnection>());
-        Connection connection = parser.parse(SAMPLE_VALID_EMAIL);
+        OAuthConnection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 

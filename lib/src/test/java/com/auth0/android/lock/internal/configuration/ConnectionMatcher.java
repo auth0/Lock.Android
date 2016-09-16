@@ -22,15 +22,13 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
-
-import com.auth0.android.lock.internal.AuthType;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-public class ConnectionMatcher<T extends Connection> extends BaseMatcher<T> {
+public class ConnectionMatcher<T extends BaseConnection> extends BaseMatcher<T> {
 
     private final String strategy;
     private final String name;
@@ -50,15 +48,7 @@ public class ConnectionMatcher<T extends Connection> extends BaseMatcher<T> {
         }
         Connection connection = (Connection) o;
         if (type != null) {
-            switch (type) {
-                case AuthType.DATABASE:
-                    return connection.getType() == type && connection instanceof DatabaseConnection;
-                case AuthType.PASSWORDLESS:
-                    return connection.getType() == type && connection instanceof PasswordlessConnection;
-                case AuthType.SOCIAL:
-                case AuthType.ENTERPRISE:
-                    return connection.getType() == type && connection instanceof OAuthConnection;
-            }
+            return connection.getType() == type;
         }
         if (name != null && strategy != null) {
             return strategy.equals(connection.getStrategy()) && name.equals(connection.getName());

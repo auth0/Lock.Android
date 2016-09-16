@@ -28,7 +28,7 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.lock.adapters.Country;
-import com.auth0.android.lock.internal.PasswordlessMode;
+import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.request.ParameterizableRequest;
 

@@ -32,7 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.AuthMode;
+import com.auth0.android.lock.internal.configuration.AuthMode;
 
 public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSelectedListener {
 

@@ -28,8 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.internal.json.OAuthConnection;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +122,7 @@ public class EnterpriseConnectionMatcher {
      * @param connection to extract the domain from
      * @return the main domain.
      */
-    public String domainForConnection(@NonNull Connection connection) {
+    public String domainForConnection(@NonNull OAuthConnection connection) {
         return connection.getValueForKey(DOMAIN_KEY);
     }
 }

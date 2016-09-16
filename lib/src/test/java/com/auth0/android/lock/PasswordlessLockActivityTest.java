@@ -3,9 +3,9 @@ package com.auth0.android.lock;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.internal.json.PasswordlessConnection;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Options;
+import com.auth0.android.lock.internal.configuration.PasswordlessConnection;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.request.ParameterizableRequest;
 

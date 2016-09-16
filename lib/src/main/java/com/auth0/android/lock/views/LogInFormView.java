@@ -39,14 +39,13 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.AuthMode;
-import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.internal.json.OAuthConnection;
+import com.auth0.android.lock.internal.configuration.AuthMode;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-import static com.auth0.android.lock.views.ValidatedInputView.*;
+import static com.auth0.android.lock.views.ValidatedInputView.DataType;
 
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
@@ -148,7 +147,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         });
     }
 
-    private void setupSingleConnectionUI(final Connection connection) {
+    private void setupSingleConnectionUI(final OAuthConnection connection) {
         final int strategyStyle = AuthConfig.styleForStrategy(connection.getStrategy());
         final AuthConfig authConfig = new AuthConfig(connection, strategyStyle);
         enterpriseBtn.setStyle(authConfig, AuthMode.LOG_IN);
