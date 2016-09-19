@@ -153,7 +153,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         enterpriseBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockWidget.onSocialLogin(new SocialConnectionEvent(connection.getName()));
+                lockWidget.onSocialLoginRequest(new SocialConnectionEvent(connection.getStrategy(), connection.getName()));
             }
         });
         String loginWithCorporate = getResources().getString(R.string.com_auth0_lock_action_single_login_with_corporate);
