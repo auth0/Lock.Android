@@ -55,8 +55,8 @@ import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
-import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.PasswordlessMode;
@@ -441,11 +441,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
+    public void onOAuthAuthenticationRequest(OAuthLoginEvent event) {
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
-        Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
-        currentProvider = AuthResolver.providerFor(event.getStrategyName(), event.getConnectionName());
+        Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnection());
+        currentProvider = AuthResolver.providerFor(event.getStrategy(), event.getConnection());
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
@@ -455,7 +455,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
                 .withParameters(options.getAuthenticationParameters())
-                .withConnection(event.getConnectionName())
+                .withConnection(event.getConnection())
                 .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 

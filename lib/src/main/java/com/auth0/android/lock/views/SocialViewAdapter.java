@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.auth0.android.lock.internal.AuthMode;
+import com.auth0.android.lock.internal.json.Connection;
 
 import java.util.List;
 
@@ -107,7 +108,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         public void onClick(View view) {
             if (callback != null) {
                 final AuthConfig item = authConfigs.get(getAdapterPosition());
-                callback.onAuthenticationRequest(item.getStrategyName(), item.getConnectionName());
+                callback.onAuthenticationRequest(item.getConnection());
             } else {
                 Log.w(TAG, "No callback was configured");
             }
@@ -119,9 +120,8 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
         /**
          * Called when a SocialButton is clicked.
          *
-         * @param strategy   the strategy associated to the button.
          * @param connection the connection associated to the button.
          */
-        void onAuthenticationRequest(@NonNull String strategy, @NonNull String connection);
+        void onAuthenticationRequest(@NonNull Connection connection);
     }
 }

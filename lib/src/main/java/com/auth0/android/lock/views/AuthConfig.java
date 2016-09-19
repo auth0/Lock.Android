@@ -10,35 +10,29 @@ import android.support.annotation.StyleableRes;
 import android.support.v4.content.ContextCompat;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.internal.json.Connection;
 
 public class AuthConfig {
 
-    private String strategyName;
-    private String connectionName;
+    private final Connection connection;
     @StyleRes
-    private int styleRes;
+    private final int styleRes;
 
-    public AuthConfig(@NonNull String strategyName, @NonNull String connectionName, @StyleRes int styleRes) {
-        this.strategyName = strategyName;
-        this.connectionName = connectionName;
+    public AuthConfig(@NonNull Connection connection, @StyleRes int styleRes) {
+        this.connection = connection;
         this.styleRes = styleRes;
     }
 
     @NonNull
-    public String getStrategyName() {
-        return strategyName;
-    }
-
-    @NonNull
-    public String getConnectionName() {
-        return connectionName;
+    public Connection getConnection() {
+        return connection;
     }
 
     @NonNull
     public String getName(@NonNull Context context) {
         //noinspection ResourceType
         int id = getIdForResource(context, R.attr.Auth0_Name);
-        return id != -1 ? context.getString(id) : strategyName;
+        return id != -1 ? context.getString(id) : connection.getStrategy();
     }
 
     @NonNull

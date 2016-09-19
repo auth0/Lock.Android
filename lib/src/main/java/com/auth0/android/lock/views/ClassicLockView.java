@@ -46,7 +46,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -320,8 +320,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     @Override
-    public void onSocialLoginRequest(SocialConnectionEvent event) {
-        Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
+    public void onOAuthLoginRequest(OAuthLoginEvent event) {
         bus.post(event);
     }
 

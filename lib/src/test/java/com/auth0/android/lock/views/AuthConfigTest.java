@@ -5,6 +5,7 @@ import android.os.Build;
 
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.internal.json.Connection;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,26 +18,27 @@ import org.robolectric.util.ReflectionHelpers;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class AuthConfigTest {
 
     private AuthConfig authConfig;
+    private Connection connection;
 
     @Before
     public void setUp() throws Exception {
-        authConfig = new AuthConfig("facebook", "facebook-prod", R.style.Lock_Theme_AuthStyle_Facebook);
+        connection = mock(Connection.class);
+        when(connection.getName()).thenReturn("facebook");
+        when(connection.getStrategy()).thenReturn("facebook-prod");
+        authConfig = new AuthConfig(connection, R.style.Lock_Theme_AuthStyle_Facebook);
     }
 
     @Test
-    public void shouldGetStrategyName() throws Exception {
-        Assert.assertThat(authConfig.getStrategyName(), is("facebook"));
-    }
-
-    @Test
-    public void shouldGetConnectionName() throws Exception {
-        Assert.assertThat(authConfig.getConnectionName(), is("facebook-prod"));
+    public void shouldGetConnection() throws Exception {
+        Assert.assertThat(authConfig.getConnection(), is(connection));
     }
 
     @Test
@@ -63,14 +65,14 @@ public class AuthConfigTest {
     @Test
     public void shouldHaveValidDefaultName() throws Exception {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
-        AuthConfig defaultConfig = new AuthConfig("strategy", "connection", R.style.Lock_Theme);
-        Assert.assertThat(defaultConfig.getName(RuntimeEnvironment.application), is(equalTo("strategy")));
+        AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
+        Assert.assertThat(defaultConfig.getName(RuntimeEnvironment.application), is(equalTo("facebook")));
     }
 
     @Test
     public void shouldHaveValidDefaultLogo() throws Exception {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
-        AuthConfig defaultConfig = new AuthConfig("strategy", "connection", R.style.Lock_Theme);
+        AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
         final Drawable drawable = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_facebook);
         Assert.assertThat(defaultConfig.getLogo(RuntimeEnvironment.application), is(equalTo(drawable)));
     }
@@ -78,7 +80,7 @@ public class AuthConfigTest {
     @Test
     public void shouldHaveValidDefaultColor() throws Exception {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
-        AuthConfig defaultConfig = new AuthConfig("strategy", "connection", R.style.Lock_Theme);
+        AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
         final int color = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_unknown);
         Assert.assertThat(defaultConfig.getBackgroundColor(RuntimeEnvironment.application), is(equalTo(color)));
     }
