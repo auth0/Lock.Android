@@ -189,7 +189,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     }
 
     @Override
-    public void onSocialLogin(SocialConnectionEvent event) {
+    public void onSocialLoginRequest(SocialConnectionEvent event) {
         Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
         bus.post(event);
     }

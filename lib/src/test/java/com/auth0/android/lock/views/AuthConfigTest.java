@@ -30,6 +30,11 @@ public class AuthConfigTest {
     }
 
     @Test
+    public void shouldGetStrategyName() throws Exception {
+        Assert.assertThat(authConfig.getStrategyName(), is("facebook"));
+    }
+
+    @Test
     public void shouldGetConnectionName() throws Exception {
         Assert.assertThat(authConfig.getConnectionName(), is("facebook-prod"));
     }

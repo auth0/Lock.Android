@@ -319,7 +319,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     @Override
-    public void onSocialLogin(SocialConnectionEvent event) {
+    public void onSocialLoginRequest(SocialConnectionEvent event) {
         Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
         bus.post(event);
     }

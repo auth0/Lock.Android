@@ -51,7 +51,6 @@ import android.widget.TextView;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.adapters.Country;
-import com.auth0.android.lock.internal.PasswordlessMode;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
@@ -60,9 +59,10 @@ import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
+import com.auth0.android.lock.internal.PasswordlessMode;
 import com.auth0.android.lock.internal.json.ApplicationFetcher;
 import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.provider.ProviderResolverManager;
+import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -445,7 +445,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lastPasswordlessEmailOrNumber = null;
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnectionName());
-        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, event.getConnectionName());
+        currentProvider = AuthResolver.providerFor(event.getStrategyName(), event.getConnectionName());
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;

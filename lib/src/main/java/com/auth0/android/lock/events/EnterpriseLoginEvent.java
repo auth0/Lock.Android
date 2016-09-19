@@ -24,23 +24,27 @@
 
 package com.auth0.android.lock.events;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class EnterpriseLoginEvent {
 
+    private final String strategyName;
     private final String connectionName;
     private final String username;
     private final String password;
     private final boolean useRO;
 
-    public EnterpriseLoginEvent(@Nullable String connectionName, String username, String password) {
+    public EnterpriseLoginEvent(@Nullable String strategyName, @NonNull String connectionName, String username, String password) {
+        this.strategyName = strategyName;
         this.connectionName = connectionName;
         this.username = username;
         this.password = password;
         this.useRO = true;
     }
 
-    public EnterpriseLoginEvent(@Nullable String connectionName) {
+    public EnterpriseLoginEvent(@Nullable String strategyName, @NonNull String connectionName) {
+        this.strategyName = strategyName;
         this.connectionName = connectionName;
         this.username = "";
         this.password = "";
@@ -48,6 +52,11 @@ public class EnterpriseLoginEvent {
     }
 
     @Nullable
+    public String getStrategyName() {
+        return strategyName;
+    }
+
+    @NonNull
     public String getConnectionName() {
         return connectionName;
     }

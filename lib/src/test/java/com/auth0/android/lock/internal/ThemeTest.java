@@ -53,7 +53,7 @@ import static org.junit.Assert.assertThat;
 public class ThemeTest {
 
     @StringRes
-    static final int STRING_RES = R.string.com_auth0_lock_permission_missing_title;
+    static final int STRING_RES = R.string.com_auth0_lock_header_title;
     @DrawableRes
     static final int DRAWABLE_RES = R.drawable.com_auth0_lock_ic_social_auth0;
     @ColorRes

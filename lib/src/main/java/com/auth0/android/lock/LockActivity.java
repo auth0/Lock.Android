@@ -58,9 +58,9 @@ import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.provider.ProviderResolverManager;
 import com.auth0.android.lock.internal.json.ApplicationFetcher;
 import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
@@ -220,9 +220,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private void fetchProviderAndBeginAuthentication(String connectionName) {
+    private void fetchProviderAndBeginAuthentication(@Nullable String strategyName, @NonNull String connectionName) {
         Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
-        currentProvider = ProviderResolverManager.get().onAuthProviderRequest(this, authProviderCallback, connectionName);
+        currentProvider = AuthResolver.providerFor(strategyName, connectionName);
         if (currentProvider != null) {
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
@@ -289,7 +289,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        fetchProviderAndBeginAuthentication(event.getConnectionName());
+        fetchProviderAndBeginAuthentication(event.getStrategyName(), event.getConnectionName());
     }
 
     @SuppressWarnings("unused")
@@ -355,6 +355,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
+        //noinspection ConstantConditions
         if (event.getConnectionName() == null) {
             Log.w(TAG, "There is no matching enterprise connection to authenticate with");
             handler.post(new Runnable() {
@@ -382,7 +383,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.d(TAG, "Using the /authorize endpoint for this Enterprise Login Request");
-        fetchProviderAndBeginAuthentication(event.getConnectionName());
+        fetchProviderAndBeginAuthentication(event.getStrategyName(), event.getConnectionName());
     }
 
     //Callbacks
