@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
+import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.AuthMode;
 import com.auth0.android.lock.internal.json.Connection;
@@ -225,8 +226,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
             Log.d(TAG, "Logging in with database connection using active flow");
             return new DatabaseLoginEvent(getUsername(), getPassword());
         }
-        //noinspection ConstantConditions
-        return new OAuthLoginEvent(null); //No domain for connection
+        return new LockMessageEvent(R.string.com_auth0_lock_enterprise_no_connection_message);
     }
 
     @Override

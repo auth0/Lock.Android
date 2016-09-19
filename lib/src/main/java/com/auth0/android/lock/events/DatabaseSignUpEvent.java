@@ -55,11 +55,6 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return password;
     }
 
-    @Nullable
-    public Map<String, String> extraFields() {
-        return extraFields;
-    }
-
     public void setExtraFields(@NonNull Map<String, String> customFields) {
         this.extraFields = customFields;
     }

@@ -54,6 +54,7 @@ import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
+import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
@@ -267,6 +268,17 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onLockMessage(final LockMessageEvent event) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                showErrorMessage(getString(event.getMessageRes()));
+            }
+        });
     }
 
     @SuppressWarnings("unused")

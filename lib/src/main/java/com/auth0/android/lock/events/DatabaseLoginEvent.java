@@ -25,6 +25,7 @@
 package com.auth0.android.lock.events;
 
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class DatabaseLoginEvent extends DatabaseEvent {
@@ -32,20 +33,22 @@ public class DatabaseLoginEvent extends DatabaseEvent {
     private String password;
     private String verificationCode;
 
-    public DatabaseLoginEvent(String usernameOrEmail, String password) {
+    public DatabaseLoginEvent(@NonNull String usernameOrEmail, @NonNull String password) {
         super(usernameOrEmail);
         this.password = password;
     }
 
+    @NonNull
     public String getUsernameOrEmail() {
         return getEmail() != null ? getEmail() : getUsername();
     }
 
+    @NonNull
     public String getPassword() {
         return password;
     }
 
-    public void setVerificationCode(String code) {
+    public void setVerificationCode(@NonNull String code) {
         this.verificationCode = code;
     }
 

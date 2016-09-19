@@ -31,8 +31,8 @@ public class AuthConfigTest {
     @Before
     public void setUp() throws Exception {
         connection = mock(Connection.class);
-        when(connection.getName()).thenReturn("facebook");
-        when(connection.getStrategy()).thenReturn("facebook-prod");
+        when(connection.getName()).thenReturn("facebook-prod");
+        when(connection.getStrategy()).thenReturn("facebook");
         authConfig = new AuthConfig(connection, R.style.Lock_Theme_AuthStyle_Facebook);
     }
 
