@@ -76,7 +76,7 @@ class ApplicationDeserializer extends GsonDeserializer<List<Connection>> {
             requiredValue("name", String.class, connectionJson, context);
             Type mapType = new TypeToken<LinkedTreeMap<String, Object>>() {}.getType();
             Map<String, Object> values = context.deserialize(connectionJson, mapType);
-            connections.add(Connection.connectionFor(name, values));
+            connections.add(Connection.newConnectionFor(name, values));
         }
         return connections;
     }

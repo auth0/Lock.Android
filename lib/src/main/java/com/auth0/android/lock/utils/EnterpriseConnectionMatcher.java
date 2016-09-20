@@ -70,7 +70,7 @@ public class EnterpriseConnectionMatcher {
                 return c;
             }
 
-            List<String> aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
+            List<String> aliases = c.valueForKey(DOMAIN_ALIASES_KEY, List.class);
             if (aliases != null) {
                 for (String d : aliases) {
                     if (d.equalsIgnoreCase(domain)) {
@@ -123,6 +123,6 @@ public class EnterpriseConnectionMatcher {
      * @return the main domain.
      */
     public String domainForConnection(@NonNull OAuthConnection connection) {
-        return connection.getValueForKey(DOMAIN_KEY);
+        return connection.valueForKey(DOMAIN_KEY, String.class);
     }
 }

@@ -15,7 +15,7 @@ public class PasswordlessConnectionTest {
     public void shouldHaveName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        PasswordlessConnection connection = Connection.connectionFor("sms", values);
+        PasswordlessConnection connection = Connection.newConnectionFor("sms", values);
         assertThat(connection.getName(), is("name"));
     }
 
@@ -23,7 +23,7 @@ public class PasswordlessConnectionTest {
     public void shouldHaveStrategy() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        PasswordlessConnection connection = Connection.connectionFor("sms", values);
+        PasswordlessConnection connection = Connection.newConnectionFor("sms", values);
         assertThat(connection.getStrategy(), is("sms"));
     }
 
@@ -31,7 +31,7 @@ public class PasswordlessConnectionTest {
     public void shouldBePasswordlessType() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "sms");
-        PasswordlessConnection connection = Connection.connectionFor("sms", values);
+        PasswordlessConnection connection = Connection.newConnectionFor("sms", values);
         assertThat(connection, hasType(AuthType.PASSWORDLESS));
     }
 }

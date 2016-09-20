@@ -18,7 +18,7 @@ public class OAuthConnectionTest {
     public void shouldHaveName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        OAuthConnection connection = Connection.connectionFor("strategy", values);
+        OAuthConnection connection = Connection.newConnectionFor("strategy", values);
         assertThat(connection.getName(), is("name"));
     }
 
@@ -26,7 +26,7 @@ public class OAuthConnectionTest {
     public void shouldHaveStrategy() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
-        OAuthConnection connection = Connection.connectionFor("strategy", values);
+        OAuthConnection connection = Connection.newConnectionFor("strategy", values);
         assertThat(connection.getStrategy(), is("strategy"));
     }
 
@@ -47,7 +47,7 @@ public class OAuthConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
         values.put("domain", "domain.com");
-        OAuthConnection connection = Connection.connectionFor("ad", values);
+        OAuthConnection connection = Connection.newConnectionFor("ad", values);
         assertThat(connection.getDomainSet(), hasItem("domain.com"));
     }
 
@@ -57,7 +57,7 @@ public class OAuthConnectionTest {
         values.put("name", "ad");
         values.put("domain", "domain.com");
         values.put("domain_aliases", Arrays.asList("domain2.com", "domain3.com"));
-        OAuthConnection connection = Connection.connectionFor("ad", values);
+        OAuthConnection connection = Connection.newConnectionFor("ad", values);
         assertThat(connection.getDomainSet(), hasItems("domain.com", "domain2.com", "domain3.com"));
     }
 
@@ -65,7 +65,7 @@ public class OAuthConnectionTest {
     public void shouldReturnEmptySetWithNoDomainName() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
-        OAuthConnection connection = Connection.connectionFor("ad", values);
+        OAuthConnection connection = Connection.newConnectionFor("ad", values);
         assertThat(connection.getDomainSet().isEmpty(), is(true));
     }
 
@@ -119,6 +119,6 @@ public class OAuthConnectionTest {
     private OAuthConnection connectionForStrategy(String name) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", name);
-        return Connection.connectionFor(name, values);
+        return Connection.newConnectionFor(name, values);
     }
 }

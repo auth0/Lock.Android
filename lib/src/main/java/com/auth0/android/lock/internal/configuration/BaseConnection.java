@@ -19,11 +19,12 @@ interface BaseConnection {
     /**
      * Returns a value using its key
      *
-     * @param key a key
-     * @param <T> type of value to return
+     * @param key    a key
+     * @param tClazz type of value to retrieve from the map
+     * @param <T>    type of value to return
      * @return a value
      */
-    <T> T getValueForKey(String key);
+    <T> T valueForKey(String key, Class<T> tClazz);
 
     /**
      * Returns a boolean value for the given key

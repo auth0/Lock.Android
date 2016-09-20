@@ -34,7 +34,7 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth0.android.lock.internal.configuration.Connection.connectionFor;
+import static com.auth0.android.lock.internal.configuration.Connection.newConnectionFor;
 import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -46,9 +46,9 @@ import static org.junit.Assert.assertThat;
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class ConnectionTest {
 
-    public static final String CONNECTION_NAME = "Username-Password";
-    public static final Object VALUE = "value";
-    public static final String KEY = "key";
+    private static final String CONNECTION_NAME = "Username-Password";
+    private static final Object VALUE = "value";
+    private static final String KEY = "key";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -57,7 +57,7 @@ public class ConnectionTest {
     public void shouldBuildConnectionWithName() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = connectionFor("strategy", values);
+        Connection connection = newConnectionFor("strategy", values);
         assertNotNull(connection);
         assertThat(connection.getStrategy(), equalTo("strategy"));
         assertThat(connection.getName(), equalTo(CONNECTION_NAME));
@@ -68,23 +68,23 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, VALUE);
-        Connection connection = connectionFor("strategy", values);
-        assertThat(connection.getValueForKey(KEY), is(VALUE));
+        Connection connection = newConnectionFor("strategy", values);
+        assertThat(connection.valueForKey(KEY, String.class), is(VALUE));
     }
 
     @Test
     public void shouldNotStoreNameInValues() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = connectionFor("strategy", values);
-        assertThat(connection.getValueForKey("name"), is(nullValue()));
+        Connection connection = newConnectionFor("strategy", values);
+        assertThat(connection.valueForKey("name", String.class), is(nullValue()));
     }
 
     @Test
     public void shouldRaiseExceptionWhenNameIsNull() {
         expectedException.expect(IllegalArgumentException.class);
         Map<String, Object> values = null;
-        connectionFor("strategy", values);
+        newConnectionFor("strategy", values);
     }
 
     @Test
@@ -92,38 +92,57 @@ public class ConnectionTest {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, VALUE);
-        Connection connection = connectionFor("strategy", values);
-        String value = connection.getValueForKey(KEY);
+        Connection connection = newConnectionFor("strategy", values);
+        String value = connection.valueForKey(KEY, String.class);
         assertThat(value, equalTo(VALUE));
     }
 
     @Test
-    public void shouldReturnBooleanValueFromKey() {
+    public void shouldReturnNullValueFromMissingKey() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", CONNECTION_NAME);
+        Connection connection = newConnectionFor("strategy", values);
+        String value = connection.valueForKey(KEY, String.class);
+        assertThat(value, is(nullValue()));
+    }
+
+    @Test
+    public void shouldReturnNullValueOnWrongClassType() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", CONNECTION_NAME);
+        values.put(KEY, "3");
+        Connection connection = newConnectionFor("strategy", values);
+        Integer value = connection.valueForKey(KEY, Integer.class);
+        assertThat(value, is(nullValue()));
+    }
+
+    @Test
+    public void shouldReturnBooleanFromKey() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         values.put(KEY, true);
-        Connection connection = connectionFor("strategy", values);
+        Connection connection = newConnectionFor("strategy", values);
         boolean value = connection.booleanForKey(KEY);
         assertThat(value, is(true));
     }
 
     @Test
-    public void shouldReturnDefaultBooleanValueFromKey() {
+    public void shouldReturnBooleanFromMissingKey() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        Connection connection = connectionFor("strategy", values);
+        Connection connection = newConnectionFor("strategy", values);
         boolean value = connection.booleanForKey(KEY);
         assertThat(value, is(false));
     }
 
     @Test
-    public void shouldRaiseExceptionWhenValueIsNotBoolean() {
-        expectedException.expect(ClassCastException.class);
+    public void shouldReturnBooleanFromNullValue() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
-        values.put(KEY, VALUE);
-        Connection connection = connectionFor("strategy", values);
-        connection.booleanForKey(KEY);
+        values.put(KEY, null);
+        Connection connection = newConnectionFor("strategy", values);
+        boolean value = connection.booleanForKey(KEY);
+        assertThat(value, is(false));
     }
 
     @Test
@@ -258,7 +277,7 @@ public class ConnectionTest {
     private Connection connectionForStrategy(String connectionName) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "my-connection");
-        return connectionFor(connectionName, map);
+        return newConnectionFor(connectionName, map);
     }
 
 }

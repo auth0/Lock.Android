@@ -246,6 +246,6 @@ public class DatabaseConnectionTest {
     }
 
     private DatabaseConnection connectionFor(Map<String, Object> values) {
-        return Connection.connectionFor("auth0", values);
+        return Connection.newConnectionFor("auth0", values);
     }
 }

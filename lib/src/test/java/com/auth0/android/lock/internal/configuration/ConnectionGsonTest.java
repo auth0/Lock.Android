@@ -108,8 +108,8 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connections.get(0), hasType(AuthType.ENTERPRISE));
         assertThat(connections.get(0).getName(), is("ad"));
         assertThat(connections.get(0).getDomainSet(), contains("auth10.com"));
-        assertThat((String) connections.get(0).getValueForKey("domain"), is("auth10.com"));
-        assertThat((List<String>) connections.get(0).getValueForKey("domain_aliases"), hasItem("auth10.com"));
+        assertThat(connections.get(0).valueForKey("domain", String.class), is("auth10.com"));
+        assertThat((List<String>) connections.get(0).valueForKey("domain_aliases", List.class), hasItem("auth10.com"));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connections.get(0), hasType(AuthType.SOCIAL));
         assertThat(connections.get(0).getName(), is("twitter"));
         assertThat(connections.get(0).getStrategy(), is("twitter"));
-        assertThat((String) connections.get(0).getValueForKey("scope"), is("public_profile"));
+        assertThat(connections.get(0).valueForKey("scope", String.class), is("public_profile"));
     }
 
     @Test
@@ -130,8 +130,8 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connections.get(0), hasType(AuthType.DATABASE));
         assertThat(connections.get(0).getName(), is("Username-Password-Authentication"));
         assertThat(connections.get(0).getStrategy(), is("auth0"));
-        assertThat((String) connections.get(0).getValueForKey("forgot_password_url"), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
-        assertThat((String) connections.get(0).getValueForKey("signup_url"), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat(connections.get(0).valueForKey("forgot_password_url", String.class), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat(connections.get(0).valueForKey("signup_url", String.class), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
         assertThat(connections.get(0).showSignUp(), is(true));
         assertThat(connections.get(0).showForgot(), is(true));
         assertThat(connections.get(0).requiresUsername(), is(false));

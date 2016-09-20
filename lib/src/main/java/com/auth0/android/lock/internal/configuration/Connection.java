@@ -69,23 +69,21 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T getValueForKey(String key) {
-        return (T) this.values.get(key);
+    @Nullable
+    public <T> T valueForKey(@NonNull String key, @NonNull Class<T> tClazz) {
+        final Object value = this.values.get(key);
+        return tClazz.isInstance(value) ? tClazz.cast(value) : null;
     }
 
     @Override
-    public boolean booleanForKey(String key) {
-        Boolean value = getValueForKey(key);
-        if (value == null) {
-            return false;
-        }
-        return value;
+    public boolean booleanForKey(@NonNull String key) {
+        final Boolean value = valueForKey(key, Boolean.class);
+        return value != null && value;
     }
 
     @PasswordStrength
     public int getPasswordPolicy() {
-        String value = getValueForKey("passwordPolicy");
+        String value = valueForKey("passwordPolicy", String.class);
         if ("excellent".equals(value)) {
             return PasswordStrength.EXCELLENT;
         }
@@ -134,10 +132,10 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     @Override
     public Set<String> getDomainSet() {
         Set<String> domains = new HashSet<>();
-        String domain = getValueForKey("domain");
+        String domain = valueForKey("domain", String.class);
         if (domain != null) {
             domains.add(domain.toLowerCase());
-            List<String> aliases = getValueForKey("domain_aliases");
+            List<String> aliases = valueForKey("domain_aliases", List.class);
             if (aliases != null) {
                 for (String alias : aliases) {
                     domains.add(alias.toLowerCase());
@@ -154,12 +152,12 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
      * @param values   additional values associated to this connection
      * @return a new instance of Connection. Can be either DatabaseConnection, PasswordlessConnection or OAuthConnection.
      */
-    public static Connection connectionFor(@NonNull String strategy, Map<String, Object> values) {
+    static Connection newConnectionFor(@NonNull String strategy, Map<String, Object> values) {
         return new Connection(strategy, values);
     }
 
     private void parseUsernameLength() {
-        Map<String, Object> validations = getValueForKey("validation");
+        Map<String, Object> validations = valueForKey("validation", Map.class);
         if (validations == null || !validations.containsKey("username")) {
             minUsernameLength = MIN_USERNAME_LENGTH;
             maxUsernameLength = MAX_USERNAME_LENGTH;
