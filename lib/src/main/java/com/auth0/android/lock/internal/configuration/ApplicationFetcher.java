@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.callback.AuthenticationCallback;
@@ -52,16 +53,17 @@ public class ApplicationFetcher {
     private static final String JSONP_PREFIX = "Auth0.setClient(";
     private static final String TAG = ApplicationFetcher.class.getSimpleName();
 
-    private final Options options;
+    private final Auth0 account;
     private final OkHttpClient client;
 
     /**
      * Helper class to fetch the Application from Auth0 Dashboard.
      *
-     * @param options Lock local Options to merge with the client info.
+     * @param account the client information to build the request uri.
+     * @param client  the OKHttpClient instance to use for the CDN request.
      */
-    public ApplicationFetcher(@NonNull Options options, @NonNull OkHttpClient client) {
-        this.options = options;
+    public ApplicationFetcher(@NonNull Auth0 account, @NonNull OkHttpClient client) {
+        this.account = account;
         this.client = client;
     }
 
@@ -70,13 +72,13 @@ public class ApplicationFetcher {
      *
      * @param callback to notify on success/error
      */
-    public void fetch(@NonNull AuthenticationCallback<Configuration> callback) {
+    public void fetch(@NonNull AuthenticationCallback<List<Connection>> callback) {
         makeApplicationRequest(callback);
     }
 
-    private void makeApplicationRequest(final AuthenticationCallback<Configuration> callback) {
-        Uri uri = Uri.parse(options.getAccount().getConfigurationUrl()).buildUpon().appendPath("client")
-                .appendPath(options.getAccount().getClientId() + ".js").build();
+    private void makeApplicationRequest(final AuthenticationCallback<List<Connection>> callback) {
+        Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
+                .appendPath(account.getClientId() + ".js").build();
 
         Request req = new Request.Builder()
                 .url(uri.toString())
@@ -102,7 +104,7 @@ public class ApplicationFetcher {
                 }
 
                 Log.i(TAG, "Application received!");
-                callback.onSuccess(new Configuration(connections, options));
+                callback.onSuccess(connections);
             }
         });
     }

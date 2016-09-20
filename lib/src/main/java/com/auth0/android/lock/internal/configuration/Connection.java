@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.auth0.android.util.CheckHelper.checkArgument;
 
-class Connection implements BaseConnection, DatabaseConnection, OAuthConnection, PasswordlessConnection {
+public class Connection implements BaseConnection, DatabaseConnection, OAuthConnection, PasswordlessConnection {
 
     private String strategy;
     private String name;

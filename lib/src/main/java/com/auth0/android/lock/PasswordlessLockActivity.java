@@ -59,6 +59,7 @@ import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
 import com.auth0.android.lock.internal.configuration.ApplicationFetcher;
 import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Connection;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.provider.AuthResolver;
@@ -70,6 +71,8 @@ import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import java.util.List;
 
 public class PasswordlessLockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -399,7 +402,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
         if (applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options, new OkHttpClient());
+            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
             applicationFetcher.fetch(applicationCallback);
         }
     }
@@ -457,10 +460,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<Configuration> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<Configuration>() {
+    private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(final Configuration configuration) {
-            PasswordlessLockActivity.this.configuration = configuration;
+        public void onSuccess(final List<Connection> connections) {
+            configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
