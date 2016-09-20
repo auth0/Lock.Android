@@ -164,21 +164,29 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
             return;
         }
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
-        minUsernameLength = intValue(usernameValidation.get("min"));
-        maxUsernameLength = intValue(usernameValidation.get("max"));
+        minUsernameLength = intValue(usernameValidation.get("min"), MIN_USERNAME_LENGTH);
+        maxUsernameLength = intValue(usernameValidation.get("max"), MAX_USERNAME_LENGTH);
         if (minUsernameLength < MIN_USERNAME_LENGTH || minUsernameLength > maxUsernameLength) {
             minUsernameLength = MIN_USERNAME_LENGTH;
             maxUsernameLength = MAX_USERNAME_LENGTH;
         }
     }
 
-    private int intValue(@Nullable Object object) {
-        int value = 0;
-        try {
-            value = object == null ? 0 : (int) Double.parseDouble(String.valueOf(object));
-        } catch (Exception ignored) {
+    /**
+     * Will try to get the int value of a given object. If the value cannot be obtained, it will return the default value.
+     *
+     * @param object       to get an int from.
+     * @param defaultValue to return if the int value cannot be obtained.
+     * @return the int value of the object or the default value if it cannot be obtained.
+     */
+    private int intValue(@Nullable Object object, int defaultValue) {
+        if (object instanceof Number) {
+            return ((Number) object).intValue();
         }
-        return value;
+        if (object instanceof String) {
+            return Integer.parseInt((String) object, 10);
+        }
+        return defaultValue;
     }
 
 }
