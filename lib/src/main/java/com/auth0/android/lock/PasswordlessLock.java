@@ -187,7 +187,7 @@ public class PasswordlessLock {
          */
         public PasswordlessLock build(@NonNull Activity activity) {
             if (options.getAccount() == null) {
-                Log.w(TAG, "com.auth0.Auth0 account details not defined. Trying to create it from the String resources.");
+                Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {
                     options.setAccount(new Auth0(activity));
                 } catch (IllegalArgumentException e) {
@@ -242,7 +242,7 @@ public class PasswordlessLock {
         }
 
         /**
-         * Whether to use implicit grant or code grant when performing calls to /authenticate.
+         * Whether to use implicit grant or code grant when performing calls to /authorize.
          * Default is {@code false}
          *
          * @param useImplicitGrant if Lock will use implicit grant instead of code grant.

@@ -2,14 +2,11 @@ Lock for Android
 ============
 [![CI Status](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
-[![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#artifactdetails%7Ccom.auth0.android%7Clock%7C1.8.0%7Caar)
+[![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0.android%22%20AND%20a%3A%22lock%22)
 [![Bintray](https://api.bintray.com/packages/auth0/lock-android/lock/images/download.svg)](https://bintray.com/auth0/lock-android/lock/_latestVersion)
 [![Methods](https://img.shields.io/badge/Methods%20count-latest-e91e63.svg)](http://www.methodscount.com/?lib=com.auth0.android%3Alock%3A%2B)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
-
-## Lock for Android v2 is currently in Beta 
-You can find stable version [here](https://github.com/auth0/Lock.Android/tree/v1)
 
 ## Key features
 
@@ -27,7 +24,7 @@ Android API Level 15+ is required in order to use Lock's UI.
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:2.0.0-beta.4'
+compile 'com.auth0.android:lock:2.0.0'
 ```
 
 ## Usage
@@ -41,7 +38,7 @@ https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
 
 ### Email/Password, Enterprise & Social authentication
 
-You'll need to configure LockActivity in your `AndroidManifest.xml`, inside the `application` tag:
+You'll need to configure `LockActivity` in your `AndroidManifest.xml`, inside the `application` tag:
 
 ```xml
 <activity
@@ -64,7 +61,7 @@ You'll need to configure LockActivity in your `AndroidManifest.xml`, inside the 
 </activity>
 ```
 
-Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the WebAuthActivity inside the `application` tag:
+Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the `WebAuthActivity` inside the `application` tag:
 
 ```xml
 <activity
@@ -81,7 +78,7 @@ Also, you'll need to add *Internet* permission to your application:
 
 > The `android.permission.ACCESS_NETWORK_STATE` permission is only used if you chose WebView over Browser for OAuth authentication.
 
-Then in any of your Activities you need to initialize **Lock**
+Then in any of your Activities you need to initialize **Lock**:
 
 ```java
 // This activity will show Lock
@@ -93,7 +90,7 @@ public class HomeActivity extends Activity {
     super.onCreate(savedInstanceState);
     // Your own Activity code
     Auth0 auth0 = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
-    this.lock = Lock.newBuilder(auth0, callback)
+    lock = Lock.newBuilder(auth0, callback)
       //Customize Lock
       .build(this);
   }
@@ -125,15 +122,15 @@ public class HomeActivity extends Activity {
 }
 ```
 
-Then just start `LockActivity` from inside your `Activity`
+Then just start `LockActivity` from inside your `Activity`.
 
 ```java
-startActivity(this.lock.newIntent(this));
+startActivity(lock.newIntent(this));
 ```
 
 ### Passwordless & Social authentication
 
-`LockPasswordlessActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
+`PasswordlessLockActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
 You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`, inside the `application` tag:
 
@@ -158,7 +155,7 @@ You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`,
 </activity>
 ```
 
-Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the WebAuthActivity inside the `application` tag:
+Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider you need to declare the `WebAuthActivity` inside the `application` tag:
 
 ```xml
 <activity
@@ -186,7 +183,7 @@ public class HomeActivity extends Activity {
     super.onCreate(savedInstanceState);
     // Your own Activity code
     Auth0 auth0 = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
-    this.lock = PasswordlessLock.newBuilder(auth0, callback)
+    lock = PasswordlessLock.newBuilder(auth0, callback)
       //Customize Lock
       .build(this);
   }
@@ -221,7 +218,7 @@ public class HomeActivity extends Activity {
 Then just start `PasswordlessLockActivity` from inside your `Activity`
 
 ```java
-startActivity(this.lock.newIntent(this));
+startActivity(lock.newIntent(this));
 ```
 
 ##Proguard
@@ -232,13 +229,13 @@ By default you should at least use the following files:
 * `proguard-otto.pro`
 * `proguard-lock-2.pro`
 
-As this library depends on `Auth0.Android`, you should keep the files up to date with the rules defined in the [repository](https://github.com/auth0/Auth0.Android).
+As this library depends on `Auth0.Android`, you should keep the files up to date with the proguard rules defined in the [repository](https://github.com/auth0/Auth0.Android).
 
 ## What is Auth0?
 
 Auth0 helps you to:
 
-* Add authentication with [multiple authentication sources](https://docs.auth0.com/identityproviders), either social like **Google, Facebook, Microsoft Account, LinkedIn, GitHub, Twitter, Box, Salesforce, amont others**, or enterprise identity systems like **Windows Azure AD, Google Apps, Active Directory, ADFS or any SAML Identity Provider**.
+* Add authentication with [multiple authentication sources](https://docs.auth0.com/identityproviders), either social like **Google, Facebook, Microsoft Account, LinkedIn, GitHub, Twitter, Box, Salesforce, among others**, or enterprise identity systems like **Windows Azure AD, Google Apps, Active Directory, ADFS or any SAML Identity Provider**.
 * Add authentication through more traditional **[username/password databases](https://docs.auth0.com/mysql-connection-tutorial)**.
 * Add support for **[linking different user accounts](https://docs.auth0.com/link-accounts)** with the same user.
 * Support for generating signed [Json Web Tokens](https://docs.auth0.com/jwt) to call your APIs and **flow the user identity** securely.
