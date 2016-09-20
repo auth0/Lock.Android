@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.views.interfaces;
 
-public interface LockWidgetPasswordless extends LockWidgetSocial {
+public interface LockWidgetPasswordless extends LockWidgetOAuth {
 
     void onCountryCodeChangeRequest();
 

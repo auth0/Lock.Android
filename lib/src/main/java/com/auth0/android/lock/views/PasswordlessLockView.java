@@ -40,7 +40,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
@@ -87,7 +87,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         HeaderView headerView = new HeaderView(getContext(), lockTheme);
         addView(headerView, wrapHeightParams);
 
-        int verticalMargin =  getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
         formLayout = new PasswordlessFormLayout(this);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
@@ -189,8 +189,8 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     }
 
     @Override
-    public void onSocialLoginRequest(SocialConnectionEvent event) {
-        Log.d(TAG, "Social login triggered for connection " + event.getConnectionName());
+    public void onOAuthLoginRequest(OAuthLoginEvent event) {
+        Log.d(TAG, "Social login triggered for connection " + event.getConnection());
         bus.post(event);
     }
 

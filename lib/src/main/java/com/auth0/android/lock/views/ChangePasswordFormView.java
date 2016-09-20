@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -65,6 +66,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         return new DatabaseChangePasswordEvent(getUsernameOrEmail());
     }
 
+    @NonNull
     private String getUsernameOrEmail() {
         return emailInput.getText();
     }

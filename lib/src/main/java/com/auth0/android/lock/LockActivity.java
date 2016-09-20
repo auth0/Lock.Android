@@ -53,9 +53,9 @@ import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.events.EnterpriseLoginEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
-import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.events.LockMessageEvent;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.Configuration;
 import com.auth0.android.lock.internal.Options;
 import com.auth0.android.lock.internal.json.ApplicationFetcher;
@@ -220,22 +220,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private void fetchProviderAndBeginAuthentication(@Nullable String strategyName, @NonNull String connectionName) {
-        Log.v(TAG, "Looking for a provider to use with the connection " + connectionName);
-        currentProvider = AuthResolver.providerFor(strategyName, connectionName);
-        if (currentProvider != null) {
-            currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
-            return;
-        }
-
-        Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        WebAuthProvider.init(options.getAccount())
-                .useBrowser(options.useBrowser())
-                .withParameters(options.getAuthenticationParameters())
-                .withConnection(connectionName)
-                .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -288,8 +272,43 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onSocialAuthenticationRequest(SocialConnectionEvent event) {
-        fetchProviderAndBeginAuthentication(event.getStrategyName(), event.getConnectionName());
+    public void onLockMessage(final LockMessageEvent event) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                showErrorMessage(getString(event.getMessageRes()));
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onOAuthAuthenticationRequest(OAuthLoginEvent event) {
+        lockView.showProgress(true);
+        final String connection = event.getConnection();
+
+        if (event.useActiveFlow()) {
+            Log.d(TAG, "Using the /ro endpoint for this OAuth Login Request");
+            options.getAuthenticationAPIClient()
+                    .login(event.getUsername(), event.getPassword(), connection)
+                    .addAuthenticationParameters(options.getAuthenticationParameters())
+                    .start(authCallback);
+            return;
+        }
+
+        Log.v(TAG, "Looking for a provider to use /authorize with the connection " + connection);
+        currentProvider = AuthResolver.providerFor(event.getStrategy(), connection);
+        if (currentProvider != null) {
+            currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
+            return;
+        }
+
+        Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
+        WebAuthProvider.init(options.getAccount())
+                .useBrowser(options.useBrowser())
+                .withParameters(options.getAuthenticationParameters())
+                .withConnection(connection)
+                .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")
@@ -350,40 +369,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         apiClient.resetPassword(event.getEmail(), connection)
                 .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onEnterpriseAuthenticationRequest(EnterpriseLoginEvent event) {
-        //noinspection ConstantConditions
-        if (event.getConnectionName() == null) {
-            Log.w(TAG, "There is no matching enterprise connection to authenticate with");
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    showErrorMessage(getString(R.string.com_auth0_lock_enterprise_no_connection_message));
-                }
-            });
-            return;
-        } else if (event.useRO()) {
-            if (configuration.getEnterpriseConnections().isEmpty()) {
-                Log.w(TAG, "There is no matching enterprise connection to authenticate with");
-                return;
-            }
-        }
-
-        lockView.showProgress(true);
-        if (event.useRO()) {
-            Log.d(TAG, "Using the /ro endpoint for this Enterprise Login Request");
-            AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-            apiClient.login(event.getUsername(), event.getPassword(), event.getConnectionName())
-                    .addAuthenticationParameters(options.getAuthenticationParameters())
-                    .start(authCallback);
-            return;
-        }
-
-        Log.d(TAG, "Using the /authorize endpoint for this Enterprise Login Request");
-        fetchProviderAndBeginAuthentication(event.getStrategyName(), event.getConnectionName());
     }
 
     //Callbacks

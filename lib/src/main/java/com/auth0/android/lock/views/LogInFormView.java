@@ -37,8 +37,8 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
-import com.auth0.android.lock.events.EnterpriseLoginEvent;
-import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.events.LockMessageEvent;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.AuthMode;
 import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
@@ -147,13 +147,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
     private void setupSingleConnectionUI(final Connection connection) {
         final int strategyStyle = AuthConfig.styleForStrategy(connection.getStrategy());
-        final AuthConfig authConfig = new AuthConfig(connection.getStrategy(), connection.getName(), strategyStyle);
+        final AuthConfig authConfig = new AuthConfig(connection, strategyStyle);
         enterpriseBtn.setStyle(authConfig, AuthMode.LOG_IN);
         enterpriseBtn.setVisibility(View.VISIBLE);
         enterpriseBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockWidget.onSocialLoginRequest(new SocialConnectionEvent(connection.getStrategy(), connection.getName()));
+                lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection));
             }
         });
         String loginWithCorporate = getResources().getString(R.string.com_auth0_lock_action_single_login_with_corporate);
@@ -216,18 +216,17 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     public Object getActionEvent() {
         if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
             Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using active flow", currentConnection.getName()));
-            return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName(), getUsername(), getPassword());
+            return new OAuthLoginEvent(currentConnection, getUsername(), getPassword());
         }
         if (currentConnection != null) {
             Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using authorize screen", currentConnection.getName()));
-            return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName());
+            return new OAuthLoginEvent(currentConnection);
         }
         if (fallbackToDatabase) {
             Log.d(TAG, "Logging in with database connection using active flow");
             return new DatabaseLoginEvent(getUsername(), getPassword());
         }
-        //No domain for connection
-        return new EnterpriseLoginEvent(null, null);
+        return new LockMessageEvent(R.string.com_auth0_lock_enterprise_no_connection_message);
     }
 
     @Override

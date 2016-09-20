@@ -24,9 +24,9 @@
 
 package com.auth0.android.lock.views.interfaces;
 
-import com.auth0.android.lock.events.SocialConnectionEvent;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 
-public interface LockWidgetSocial extends LockWidget {
+public interface LockWidgetOAuth extends LockWidget {
 
-    void onSocialLoginRequest(SocialConnectionEvent event);
+    void onOAuthLoginRequest(OAuthLoginEvent event);
 }

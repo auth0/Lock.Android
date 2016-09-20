@@ -25,9 +25,16 @@
 package com.auth0.android.lock.events;
 
 
+import android.support.annotation.NonNull;
+
 public class DatabaseChangePasswordEvent extends DatabaseEvent {
 
-    public DatabaseChangePasswordEvent(String email) {
+    /**
+     * Creates a new Database Change Password event with the given email.
+     *
+     * @param email a valid email to request a password change.
+     */
+    public DatabaseChangePasswordEvent(@NonNull String email) {
         super(email);
     }
 }

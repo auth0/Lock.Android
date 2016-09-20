@@ -33,10 +33,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.AuthMode;
-import com.auth0.android.lock.events.SocialConnectionEvent;
 import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.views.interfaces.LockWidgetSocial;
+import com.auth0.android.lock.views.interfaces.LockWidgetOAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +46,10 @@ import static android.support.v7.widget.RecyclerView.LayoutManager;
 public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthListener {
 
     private static final String TAG = SocialView.class.getSimpleName();
-    private LockWidgetSocial lockWidget;
+    private LockWidgetOAuth lockWidget;
     private SocialViewAdapter adapter;
 
-    public SocialView(LockWidgetSocial lockWidget, boolean smallButtons) {
+    public SocialView(LockWidgetOAuth lockWidget, boolean smallButtons) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         Log.v(TAG, "New instance created. Using small buttons: " + smallButtons);
@@ -81,14 +81,14 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
         List<AuthConfig> configs = new ArrayList<>();
         for (Connection c : connections) {
             int style = lockWidget.getConfiguration().authStyleForConnection(c.getStrategy(), c.getName());
-            configs.add(new AuthConfig(c.getStrategy(), c.getName(), style));
+            configs.add(new AuthConfig(c, style));
         }
         return configs;
     }
 
     @Override
-    public void onAuthenticationRequest(@NonNull String strategy,@NonNull String connection) {
-        lockWidget.onSocialLoginRequest(new SocialConnectionEvent(strategy, connection));
+    public void onAuthenticationRequest(@NonNull Connection connection) {
+        lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection));
     }
 
     /**
