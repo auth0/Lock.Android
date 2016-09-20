@@ -190,42 +190,44 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
             return null;
         }
 
-        if (currentConnection != null && currentConnection.isActiveFlowEnabled() && (passwordInput.getVisibility() == VISIBLE)) {
-            Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using active flow", currentConnection));
+        if (currentConnection == null || !currentConnection.isActiveFlowEnabled() || passwordInput.getVisibility() == VISIBLE) {
             return getActionEvent();
-        } else if (currentConnection == null) {
-            Log.d(TAG, "Form submitted. Logging in with database connection using active flow");
-            return getActionEvent();
-        } else {
-            Log.d(TAG, "Now showing SSO Login Form for connection " + currentConnection);
-            String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
-            topMessage.setText(loginWithCorporate);
-            topMessage.setVisibility(View.VISIBLE);
-            emailInput.setVisibility(GONE);
-            passwordInput.setVisibility(View.VISIBLE);
-            usernameInput.setVisibility(VISIBLE);
-            if (currentUsername != null && !currentUsername.isEmpty()) {
-                usernameInput.setText(currentUsername);
-            }
-            changePasswordBtn.setVisibility(GONE);
-            corporateSSO = true;
-            usernameInput.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
         }
+
+        Log.d(TAG, "Now showing SSO Login Form for connection " + currentConnection);
+        String loginWithCorporate = String.format(getResources().getString(R.string.com_auth0_lock_action_login_with_corporate), domainParser.domainForConnection(currentConnection));
+        topMessage.setText(loginWithCorporate);
+        topMessage.setVisibility(View.VISIBLE);
+        emailInput.setVisibility(GONE);
+        passwordInput.setVisibility(View.VISIBLE);
+        usernameInput.setVisibility(VISIBLE);
+        if (currentUsername != null && !currentUsername.isEmpty()) {
+            usernameInput.setText(currentUsername);
+        }
+        changePasswordBtn.setVisibility(GONE);
+        corporateSSO = true;
+        usernameInput.clearFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
         return null;
     }
 
     @Override
     public Object getActionEvent() {
         if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
+            Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using active flow", currentConnection.getName()));
             return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName(), getUsername(), getPassword());
-        } else if (currentConnection != null) {
-            return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName());
-        } else {
-            //noinspection ConstantConditions
-            return fallbackToDatabase ? new DatabaseLoginEvent(getUsername(), getPassword()) : new EnterpriseLoginEvent(null, null);
         }
+        if (currentConnection != null) {
+            Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using authorize screen", currentConnection.getName()));
+            return new EnterpriseLoginEvent(currentConnection.getStrategy(), currentConnection.getName());
+        }
+        if (fallbackToDatabase) {
+            Log.d(TAG, "Logging in with database connection using active flow");
+            return new DatabaseLoginEvent(getUsername(), getPassword());
+        }
+        //No domain for connection
+        return new EnterpriseLoginEvent(null, null);
     }
 
     @Override
