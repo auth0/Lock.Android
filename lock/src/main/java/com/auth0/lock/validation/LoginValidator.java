@@ -59,8 +59,8 @@ public class LoginValidator implements Validator {
     }
 
     public static Validator validatorThatUseEmail(boolean useEmail, boolean requiresUsername, UsernameLengthParser lengthParser) {
-        if (useEmail && !requiresUsername) {
-            return new EmailValidator(R.id.com_auth0_db_login_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message);
+        if (useEmail) {
+            return requiresUsername ? new UsernameOrEmailValidator(lengthParser) : new EmailValidator(R.id.com_auth0_db_login_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message);
         }
         return new UsernameValidator(R.id.com_auth0_db_login_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_username_message, lengthParser);
     }
