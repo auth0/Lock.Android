@@ -40,6 +40,6 @@ ext.libraries = [
 
 ext.compile = [
         minSdk: 15,
-        maxSdk: 23,
-        buildToolsVersion: "23.0.1"
+        maxSdk: 24,
+        buildToolsVersion: "24.0.2"
 ]
