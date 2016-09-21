@@ -38,6 +38,7 @@
     <string name="com_auth0_invalid_credentials_message">The email and password you entered are invalid. Please try again.</string>
     <string name="com_auth0_invalid_username_credentials_message">The username and password you entered are invalid. Please try again.</string>
     <string name="com_auth0_invalid_email_message">The email you entered is invalid. Please try again.</string>
+    <string name="com_auth0_invalid_username_or_email_message">The username or email you entered is invalid. Please try again.</string>
     <string name="com_auth0_invalid_username_message">The username you entered is invalid. Please try again.</string>
     <string name="com_auth0_invalid_password_message">The password you entered is invalid. Please try again.</string>
     <string name="com_auth0_invalid_code_message">You must enter a valid code.</string>

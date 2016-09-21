@@ -24,14 +24,20 @@
 
 package com.auth0.lock.validation;
 
+import com.auth0.lock.util.UsernameLengthParser;
+
 public class UsernameValidator extends BaseFragmentValidator {
 
-    public UsernameValidator(int fieldResource, int errorTitleResource, int errorMessageResource) {
+    private final UsernameLengthParser parser;
+
+    public UsernameValidator(int fieldResource, int errorTitleResource, int errorMessageResource, UsernameLengthParser parser) {
         super(fieldResource, errorTitleResource, errorMessageResource);
+        this.parser = parser;
     }
 
     @Override
     protected boolean doValidate(String value) {
-        return value.trim().length() > 0;
+        int length = value.trim().length();
+        return length >= parser.getMinLength() && length <= parser.getMaxLength();
     }
 }

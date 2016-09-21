@@ -24,20 +24,17 @@
 
 package com.auth0.lock.validation;
 
-import com.auth0.android.BuildConfig;
-import com.auth0.lock.validation.PasscodeValidator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = com.auth0.lock.BuildConfig.class, sdk = 23, manifest = "src/test/AndroidManifest.xml", resourceDir = "src/main/res")
 public class PasscodeValidatorTest {
 
     private static final int FIELD_RESOURCE = 0;

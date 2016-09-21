@@ -63,6 +63,10 @@ public class AuthenticationError extends AlertDialogEvent {
         this(title, message, UNKNOWN, null);
     }
 
+    public AuthenticationError(int title, String message) {
+        this(title, message, UNKNOWN, null);
+    }
+
     public AuthenticationError(int title, int message, @ErrorType int type, Throwable throwable) {
         super(title, message);
         this.errorType = type;

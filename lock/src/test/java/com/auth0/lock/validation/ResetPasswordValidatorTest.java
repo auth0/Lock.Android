@@ -26,7 +26,6 @@ package com.auth0.lock.validation;
 
 import android.support.v4.app.Fragment;
 
-import com.auth0.android.BuildConfig;
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 
@@ -42,10 +41,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
+@Config(constants = com.auth0.lock.BuildConfig.class, sdk = 23, manifest = "src/test/AndroidManifest.xml", resourceDir = "src/main/res")
 public class ResetPasswordValidatorTest {
 
     private Validator validator;

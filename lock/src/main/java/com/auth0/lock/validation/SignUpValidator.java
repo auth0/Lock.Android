@@ -28,6 +28,7 @@ import android.support.v4.app.Fragment;
 
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.util.UsernameLengthParser;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,10 +48,10 @@ public class SignUpValidator implements Validator {
         this.compositeErrorMessage = compositeErrorMessage;
     }
 
-    public SignUpValidator(boolean useEmail, boolean requiresUsername) {
+    public SignUpValidator(boolean useEmail, boolean requiresUsername, UsernameLengthParser lengthParser) {
         this(
                 emailValidator(useEmail, requiresUsername),
-                usernameValidator(useEmail, requiresUsername),
+                usernameValidator(useEmail, requiresUsername, lengthParser),
                 new PasswordValidator(R.id.com_auth0_db_signup_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message),
                 useEmail ? R.string.com_auth0_invalid_credentials_message : R.string.com_auth0_invalid_username_credentials_message
         );
@@ -79,9 +80,9 @@ public class SignUpValidator implements Validator {
         return new NullValidator();
     }
 
-    public static Validator usernameValidator(boolean useEmail, boolean requiresUsername) {
+    public static Validator usernameValidator(boolean useEmail, boolean requiresUsername, UsernameLengthParser lengthParser) {
         if (!useEmail || requiresUsername) {
-            return new UsernameValidator(R.id.com_auth0_db_signup_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_username_message);
+            return new UsernameValidator(R.id.com_auth0_db_signup_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_username_message, lengthParser);
         }
         return new NullValidator();
     }

@@ -1,14 +1,16 @@
 language: android
 sudo: false
+jdk:
+  - oraclejdk8
 android:
   components:
-  - build-tools-23.0.1
-  - android-22
-  - android-23
+  - tools
+  - build-tools-24.0.2
+  - android-24
   - extra-google-google_play_services
   - extra-google-m2repository
   - extra-android-m2repository
-  - addon-google_apis-google-23
+  - addon-google_apis-google-24
 install:
   - ./gradlew --version # show version and download Gradle Wrapper when is not present in cache
   - ./gradlew clean # clean project and download Android dependencies when are not present in cache

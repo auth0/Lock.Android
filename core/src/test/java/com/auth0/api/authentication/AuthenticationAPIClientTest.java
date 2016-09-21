@@ -47,7 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
@@ -77,8 +77,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 23, manifest = Config.NONE)
 public class AuthenticationAPIClientTest {
 
     private static final String CLIENT_ID = "CLIENTID";
@@ -627,8 +627,7 @@ public class AuthenticationAPIClientTest {
 
     @Test
     public void shouldGetOAuthToken() throws Exception {
-        mockAPI
-                .willReturnAuthorizationCodeInfo()
+        mockAPI.willReturnAuthorizationCodeInfo()
                 .willReturnTokenInfo();
 
         final MockAuthenticationCallback callback = new MockAuthenticationCallback();

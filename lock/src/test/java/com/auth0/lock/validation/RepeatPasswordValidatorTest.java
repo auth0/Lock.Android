@@ -28,7 +28,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.View;
 
-import com.auth0.android.BuildConfig;
 import com.auth0.lock.R;
 import com.auth0.lock.widget.CredentialField;
 
@@ -43,10 +42,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = "src/test/AndroidManifest.xml", resourceDir = "../../src/main/res")
+@Config(constants = com.auth0.lock.BuildConfig.class, sdk = 23, manifest = "src/test/AndroidManifest.xml", resourceDir = "src/main/res")
 public class RepeatPasswordValidatorTest {
     private static final String PASSWORD = "a very long long long password";
     private Validator validator;
