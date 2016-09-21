@@ -37,10 +37,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.AuthMode;
 import com.auth0.android.lock.InitialScreen;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -133,10 +133,10 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         boolean formContainsFields = showDatabase || showEnterprise;
         boolean singleConnection = lockWidget.getConfiguration().getSocialConnections().size() == 1;
 
-        if (style == SocialButtonStyle.UNSPECIFIED) {
+        if (style == AuthButtonSize.UNSPECIFIED) {
             socialLayout = new SocialView(lockWidget, formContainsFields && !singleConnection);
         } else {
-            socialLayout = new SocialView(lockWidget, style == SocialButtonStyle.SMALL);
+            socialLayout = new SocialView(lockWidget, style == AuthButtonSize.SMALL);
         }
 
         formsHolder.addView(socialLayout);

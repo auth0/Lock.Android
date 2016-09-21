@@ -36,12 +36,12 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.AuthenticationCallback;
+import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
-import com.auth0.android.lock.InitialScreen;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.result.Credentials;
@@ -137,9 +137,9 @@ public class DemoActivity extends AppCompatActivity {
         builder.loginAfterSignUp(checkboxLoginAfterSignUp.isChecked());
 
         if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
-            builder.withSocialButtonStyle(SocialButtonStyle.BIG);
+            builder.withAuthButtonSize(AuthButtonSize.BIG);
         } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
-            builder.withSocialButtonStyle(SocialButtonStyle.SMALL);
+            builder.withAuthButtonSize(AuthButtonSize.SMALL);
         }
 
         if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_email) {
@@ -160,7 +160,7 @@ public class DemoActivity extends AppCompatActivity {
             builder.initialScreen(InitialScreen.LOG_IN);
         }
 
-        builder.onlyUseConnections(generateConnections());
+        builder.allowedConnections(generateConnections());
         if (checkboxConnectionsDB.isChecked()) {
             if (groupDefaultDB.getCheckedRadioButtonId() == R.id.radio_default_db_policy) {
                 builder.setDefaultDatabaseConnection("with-strength");
@@ -182,9 +182,9 @@ public class DemoActivity extends AppCompatActivity {
         builder.useBrowser(groupWebMode.getCheckedRadioButtonId() == R.id.radio_use_browser);
 
         if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
-            builder.withSocialButtonStyle(SocialButtonStyle.BIG);
+            builder.withAuthButtonSize(AuthButtonSize.BIG);
         } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
-            builder.withSocialButtonStyle(SocialButtonStyle.SMALL);
+            builder.withAuthButtonSize(AuthButtonSize.SMALL);
         }
 
         if (groupPasswordlessMode.getCheckedRadioButtonId() == R.id.radio_use_link) {
@@ -193,7 +193,7 @@ public class DemoActivity extends AppCompatActivity {
             builder.useCode();
         }
 
-        builder.onlyUseConnections(generateConnections());
+        builder.allowedConnections(generateConnections());
 
         passwordlessLock = builder.build(this);
 

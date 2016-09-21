@@ -29,8 +29,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.AuthConfig;
@@ -62,7 +62,7 @@ public class Configuration {
     private boolean mustAcceptTerms;
     @UsernameStyle
     private int usernameStyle;
-    @SocialButtonStyle
+    @AuthButtonSize
     private int socialButtonStyle;
     private boolean loginAfterSignUp;
     @PasswordlessMode
@@ -165,7 +165,7 @@ public class Configuration {
 
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();
-        socialButtonStyle = options.socialButtonStyle();
+        socialButtonStyle = options.authButtonSize();
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
 
@@ -231,7 +231,7 @@ public class Configuration {
         return initialScreen;
     }
 
-    @SocialButtonStyle
+    @AuthButtonSize
     public int getSocialButtonStyle() {
         return socialButtonStyle;
     }

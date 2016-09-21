@@ -35,8 +35,8 @@ import android.util.Patterns;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.Auth0Parcelable;
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 
@@ -62,7 +62,7 @@ public class Options implements Parcelable {
     private boolean useBrowser;
     private boolean usePKCE;
     private boolean closable;
-    private int socialButtonStyle;
+    private int authButtonSize;
     private int usernameStyle;
     private boolean useCodePasswordless;
     private boolean allowLogIn;
@@ -111,7 +111,7 @@ public class Options implements Parcelable {
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
-        socialButtonStyle = in.readInt();
+        authButtonSize = in.readInt();
         theme = in.readParcelable(Theme.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
@@ -174,7 +174,7 @@ public class Options implements Parcelable {
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
-        dest.writeInt(socialButtonStyle);
+        dest.writeInt(authButtonSize);
         dest.writeParcelable(theme, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
@@ -280,13 +280,13 @@ public class Options implements Parcelable {
         this.allowLogIn = allowLogIn;
     }
 
-    public void setSocialButtonStyle(@SocialButtonStyle int socialButtonStyle) {
-        this.socialButtonStyle = socialButtonStyle;
+    public void setAuthButtonSize(@AuthButtonSize int authButtonSize) {
+        this.authButtonSize = authButtonSize;
     }
 
-    @SocialButtonStyle
-    public int socialButtonStyle() {
-        return socialButtonStyle;
+    @AuthButtonSize
+    public int authButtonSize() {
+        return authButtonSize;
     }
 
     public boolean allowLogIn() {

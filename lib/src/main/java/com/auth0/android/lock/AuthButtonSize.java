@@ -29,13 +29,13 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.SocialButtonStyle.BIG;
-import static com.auth0.android.lock.SocialButtonStyle.SMALL;
-import static com.auth0.android.lock.SocialButtonStyle.UNSPECIFIED;
+import static com.auth0.android.lock.AuthButtonSize.BIG;
+import static com.auth0.android.lock.AuthButtonSize.SMALL;
+import static com.auth0.android.lock.AuthButtonSize.UNSPECIFIED;
 
 @IntDef({UNSPECIFIED, BIG, SMALL})
 @Retention(RetentionPolicy.SOURCE)
-public @interface SocialButtonStyle {
+public @interface AuthButtonSize {
     int UNSPECIFIED = 0;
     int BIG = 1;
     int SMALL = 2;

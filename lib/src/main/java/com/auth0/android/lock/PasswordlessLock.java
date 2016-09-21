@@ -276,16 +276,16 @@ public class PasswordlessLock {
         }
 
         /**
-         * Social Button style to use when Social connections are available. If social
-         * is the only connection type, by default it will use the Big style. If social and db or
-         * enterprise are present and there's only one social connection, the button will use the
-         * Big style. In the rest of the cases, it will use Small style.
+         * Auth Button size to use when Social connections are available. If Social
+         * is the only connection type it will default to the BIG size. If Database or
+         * Enterprise are present and there's only one Social connection, the button will use the
+         * BIG size. In the rest of the cases, it will use SMALL size.
          *
-         * @param style a valid SocialButtonStyle.
+         * @param style a valid AuthButtonSize.
          * @return the current builder instance
          */
-        public Builder withSocialButtonStyle(@SocialButtonStyle int style) {
-            options.setSocialButtonStyle(style);
+        public Builder withAuthButtonSize(@AuthButtonSize int style) {
+            options.setAuthButtonSize(style);
             return this;
         }
 
@@ -318,7 +318,7 @@ public class PasswordlessLock {
          * @param connections a non-null List containing the allowed Auth0 Connections.
          * @return the current builder instance
          */
-        public Builder onlyUseConnections(@NonNull List<String> connections) {
+        public Builder allowedConnections(@NonNull List<String> connections) {
             options.setConnections(connections);
             return this;
         }

@@ -24,9 +24,9 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
@@ -100,7 +100,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
-        assertThat(configuration.getSocialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
+        assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
@@ -128,7 +128,7 @@ public class ConfigurationTest extends GsonBaseTest {
         options.setAllowForgotPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
-        options.setSocialButtonStyle(SocialButtonStyle.BIG);
+        options.setAuthButtonSize(AuthButtonSize.BIG);
         configuration = new Configuration(connections, options);
         assertThat(configuration.isUsernameRequired(), is(false));
         assertThat(configuration.allowLogIn(), is(false));
@@ -136,7 +136,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.allowForgotPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
-        assertThat(configuration.getSocialButtonStyle(), is(equalTo(SocialButtonStyle.BIG)));
+        assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(configuration.hasExtraFields(), is(false));
     }
 
