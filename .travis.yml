@@ -19,6 +19,7 @@ script:
 branches:
   only:
   - master
+  - v1
 notifications:
   slack:
     secure: L10gaOgxp3Dv/Xwpb2GXCE0gmV1IndAnHHAlT4iUL2WZegucY7HlTXJMkKw464cNtHL/oINCyBXAODch1/2np62x3BluZDtge1qDeBXwEL1DKrmmzxXo6AaNs/DLL/Tn7wonLLnoYtQQg2V37RfK4rZeqnwn0eSzxwZyB7N8uWQ=
