@@ -43,6 +43,7 @@ import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.ChangePasswordEvent;
 import com.auth0.lock.event.NavigationEvent;
+import com.auth0.lock.util.UsernameLengthParser;
 import com.auth0.lock.validation.ResetPasswordValidator;
 import com.auth0.lock.validation.Validator;
 import com.auth0.lock.widget.CredentialField;
@@ -97,8 +98,8 @@ public class DatabaseChangePasswordFragment extends BaseTitledFragment {
                 return false;
             }
         });
-        validator = ResetPasswordValidator.validatorThatUseEmail(useEmail);
         Connection connection = LockContext.getLock(getActivity()).getConfiguration().getDefaultDatabaseConnection();
+        validator = ResetPasswordValidator.validatorThatUseEmail(useEmail, new UsernameLengthParser(connection));
         if (connection != null) {
             authenticationParameters = ParameterBuilder.newBuilder()
                     .setConnection(connection.getName())

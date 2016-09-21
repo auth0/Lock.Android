@@ -28,6 +28,7 @@ import android.support.v4.app.Fragment;
 
 import com.auth0.lock.R;
 import com.auth0.lock.event.AuthenticationError;
+import com.auth0.lock.util.UsernameLengthParser;
 
 public class ResetPasswordValidator implements Validator {
 
@@ -43,9 +44,9 @@ public class ResetPasswordValidator implements Validator {
         this.compositeErrorMessage = compositeErrorMessage;
     }
 
-    public ResetPasswordValidator(boolean useEmail) {
+    public ResetPasswordValidator(boolean useEmail, UsernameLengthParser lengthParser) {
         this(
-            validatorThatUseEmail(useEmail),
+            validatorThatUseEmail(useEmail, lengthParser),
             new PasswordValidator(R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message),
             new RepeatPasswordValidator(R.id.com_auth0_db_change_password_repeat_password_field, R.id.com_auth0_db_change_password_password_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_db_reset_password_invalid_repeat_password_message),
             useEmail ? R.string.com_auth0_invalid_credentials_message : R.string.com_auth0_invalid_username_credentials_message
@@ -66,11 +67,11 @@ public class ResetPasswordValidator implements Validator {
         return passwordError != null ? passwordError : emailError;
     }
 
-    public static Validator validatorThatUseEmail(boolean useEmail) {
+    public static Validator validatorThatUseEmail(boolean useEmail, UsernameLengthParser lengthParser) {
         if (useEmail) {
             return new EmailValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_email_message);
         }
-        return new UsernameValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message);
+        return new UsernameValidator(R.id.com_auth0_db_change_password_username_field, R.string.com_auth0_invalid_credentials_title, R.string.com_auth0_invalid_password_message, lengthParser);
     }
 
 }

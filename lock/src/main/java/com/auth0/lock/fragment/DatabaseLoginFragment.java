@@ -56,6 +56,7 @@ import com.auth0.lock.event.EnterpriseAuthenticationRequest;
 import com.auth0.lock.event.IdentityProviderAuthenticationRequestEvent;
 import com.auth0.lock.event.NavigationEvent;
 import com.auth0.lock.util.DomainMatcher;
+import com.auth0.lock.util.UsernameLengthParser;
 import com.auth0.lock.validation.LoginValidator;
 import com.auth0.lock.widget.CredentialField;
 
@@ -122,7 +123,7 @@ public class DatabaseLoginFragment extends BaseTitledFragment {
         showSignUp = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showSignup") && lock.isSignUpEnabled();
         showResetPassword = hasDB && configuration.getDefaultDatabaseConnection().booleanForKey("showForgot") && lock.isChangePasswordEnabled();
         errorBuilder = new LoginAuthenticationErrorBuilder();
-        validator = new LoginValidator(useEmail, requiresUsername);
+        validator = new LoginValidator(useEmail, requiresUsername, new UsernameLengthParser(defaultConnection));
         matcher = new DomainMatcher(configuration.getEnterpriseStrategies());
         matcher.filterConnection(defaultConnection);
     }

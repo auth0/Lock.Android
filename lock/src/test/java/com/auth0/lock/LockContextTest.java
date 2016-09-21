@@ -29,7 +29,8 @@ import android.app.Application;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
@@ -38,8 +39,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 18, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 23, manifest = Config.NONE)
 public class LockContextTest {
 
     @Test
@@ -51,7 +52,7 @@ public class LockContextTest {
     @Test
     public void shouldReturnNullLockFromActivity() throws Exception {
         // application doesn't implement LockProvider, so should also return null
-        Activity activity = new Activity();
+        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         assertNull(LockContext.getLock(activity));
     }
 
@@ -77,7 +78,7 @@ public class LockContextTest {
     public void shouldReturnApplicationConfiguredLock() throws Exception {
         assertNull(LockContext.getLock(null));
 
-        Activity activity = new Activity();
+        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         Lock appLock = LockContext.getLock(activity);
         assertNotNull(appLock);
         assertEquals(appLock, ((LockProvider) activity.getApplication()).getLock());
@@ -88,7 +89,7 @@ public class LockContextTest {
     public void shouldReturnDifferentLocks() throws Exception {
         assertNull(LockContext.getLock(null));
 
-        Activity activity = new Activity();
+        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         Lock appLock = LockContext.getLock(activity);
         assertNotNull(appLock);
 

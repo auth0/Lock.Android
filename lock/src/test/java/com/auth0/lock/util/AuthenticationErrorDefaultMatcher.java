@@ -32,7 +32,6 @@ import com.auth0.lock.event.AuthenticationError;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.hamcrest.Matchers.equalTo;

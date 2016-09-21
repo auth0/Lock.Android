@@ -55,6 +55,7 @@ import com.auth0.lock.event.AuthenticationError;
 import com.auth0.lock.event.AuthenticationEvent;
 import com.auth0.lock.event.SignUpEvent;
 import com.auth0.lock.util.LockCredentialStoreCallback;
+import com.auth0.lock.util.UsernameLengthParser;
 import com.auth0.lock.validation.SignUpValidator;
 import com.auth0.lock.widget.CredentialField;
 import com.squareup.otto.Bus;
@@ -108,7 +109,7 @@ public class SignUpFormFragment extends Fragment {
             Log.d(TAG, "Specified DB connection with name " + connection.getName());
             requiresUsername = connection.booleanForKey("requires_username");
         }
-        validator = new SignUpValidator(useEmail, requiresUsername);
+        validator = new SignUpValidator(useEmail, requiresUsername, new UsernameLengthParser(connection));
     }
 
     @Override
