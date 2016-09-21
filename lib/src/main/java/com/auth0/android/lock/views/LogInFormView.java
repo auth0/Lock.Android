@@ -39,11 +39,13 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.AuthMode;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.AuthMode;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
+
+import static com.auth0.android.lock.views.ValidatedInputView.DataType;
 
 public class LogInFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
@@ -55,7 +57,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private SocialButton enterpriseBtn;
     private View changePasswordBtn;
     private TextView topMessage;
-    private Connection currentConnection;
+    private OAuthConnection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
     private boolean fallbackToDatabase;
@@ -81,13 +83,13 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseConnections());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
-        passwordInput.setDataType(ValidatedInputView.DataType.PASSWORD);
+        passwordInput.setDataType(DataType.PASSWORD);
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.chooseDataType(lockWidget.getConfiguration());
         emailInput.setIdentityListener(this);
-        usernameInput.setDataType(ValidatedInputView.DataType.NON_EMPTY_USERNAME);
+        usernameInput.setDataType(DataType.USERNAME);
 
         fallbackToDatabase = lockWidget.getConfiguration().getDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
@@ -145,7 +147,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         });
     }
 
-    private void setupSingleConnectionUI(final Connection connection) {
+    private void setupSingleConnectionUI(final OAuthConnection connection) {
         final int strategyStyle = AuthConfig.styleForStrategy(connection.getStrategy());
         final AuthConfig authConfig = new AuthConfig(connection, strategyStyle);
         enterpriseBtn.setStyle(authConfig, AuthMode.LOG_IN);
@@ -156,8 +158,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
                 lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection));
             }
         });
-        String loginWithCorporate = getResources().getString(R.string.com_auth0_lock_action_single_login_with_corporate);
-        topMessage.setText(loginWithCorporate);
+        topMessage.setText(R.string.com_auth0_lock_action_single_login_with_corporate);
         topMessage.setVisibility(View.VISIBLE);
         emailInput.setVisibility(GONE);
     }

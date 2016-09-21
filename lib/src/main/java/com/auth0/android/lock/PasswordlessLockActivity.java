@@ -57,11 +57,11 @@ import com.auth0.android.lock.events.CountryCodeChangeEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.internal.PasswordlessMode;
-import com.auth0.android.lock.internal.json.ApplicationFetcher;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.ApplicationFetcher;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Connection;
+import com.auth0.android.lock.internal.configuration.Options;
+import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
@@ -462,7 +462,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     //Callbacks
     private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(List<Connection> connections) {
+        public void onSuccess(final List<Connection> connections) {
             configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override

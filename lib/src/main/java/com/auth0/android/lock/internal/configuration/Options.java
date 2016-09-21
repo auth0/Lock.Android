@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal;
+package com.auth0.android.lock.internal.configuration;
 
 import android.os.Build;
 import android.os.Bundle;

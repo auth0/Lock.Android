@@ -3,9 +3,9 @@ package com.auth0.android.lock;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Options;
+import com.auth0.android.lock.internal.configuration.PasswordlessConnection;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.request.ParameterizableRequest;
 
@@ -62,7 +62,7 @@ public class PasswordlessLockActivityTest {
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
         activity = new PasswordlessLockActivity(configuration, options, lockView, null);
 
-        Connection connection = mock(Connection.class);
+        PasswordlessConnection connection = mock(PasswordlessConnection.class);
         when(connection.getName()).thenReturn("connection");
 
         ParameterizableRequest request = mock(ParameterizableRequest.class);
@@ -87,7 +87,7 @@ public class PasswordlessLockActivityTest {
         when(options.getAuthenticationParameters()).thenReturn(parameters);
         activity = new PasswordlessLockActivity(configuration, options, lockView, "email");
 
-        Connection connection = mock(Connection.class);
+        PasswordlessConnection connection = mock(PasswordlessConnection.class);
         when(connection.getName()).thenReturn("connection");
 
         when(configuration.getPasswordlessConnection()).thenReturn(connection);

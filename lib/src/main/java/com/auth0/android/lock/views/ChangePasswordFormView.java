@@ -40,7 +40,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     private static final String TAG = ChangePasswordFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
-    private ValidatedUsernameInputView emailInput;
+    private ValidatedInputView emailInput;
 
     public ChangePasswordFormView(Context context) {
         super(context);
@@ -55,7 +55,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     private void init(String email) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
-        emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_email);
+        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
         emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);

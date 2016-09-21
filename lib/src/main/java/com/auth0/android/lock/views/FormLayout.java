@@ -38,7 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.AuthMode;
+import com.auth0.android.lock.internal.configuration.AuthMode;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;

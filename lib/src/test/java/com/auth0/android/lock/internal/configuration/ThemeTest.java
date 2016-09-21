@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal;
+package com.auth0.android.lock.internal.configuration;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -35,7 +35,6 @@ import android.support.v4.content.ContextCompat;
 
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.Theme;
 
 import org.junit.Before;
 import org.junit.Test;

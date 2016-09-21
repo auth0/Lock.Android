@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
@@ -37,6 +37,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -55,7 +56,9 @@ public class ApplicationFetcherTest {
     public void setUp() throws Exception {
         mockAPI = new ApplicationAPI();
 
+        final Options options = Mockito.mock(Options.class);
         Auth0 account = new Auth0("client_id", mockAPI.getDomain());
+        Mockito.when(options.getAccount()).thenReturn(account);
         OkHttpClient client = new OkHttpClient();
         appFetcher = new ApplicationFetcher(account, client);
     }

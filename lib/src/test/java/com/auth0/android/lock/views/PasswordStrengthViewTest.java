@@ -3,7 +3,7 @@ package com.auth0.android.lock.views;
 import android.app.Activity;
 
 import com.auth0.android.lock.BuildConfig;
-import com.auth0.android.lock.internal.PasswordStrength;
+import com.auth0.android.lock.internal.configuration.PasswordStrength;
 
 import org.junit.Before;
 import org.junit.Test;

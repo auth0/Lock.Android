@@ -22,20 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-public class ConnectionMatcher extends BaseMatcher<Connection> {
+public class ConnectionMatcher<T extends BaseConnection> extends BaseMatcher<T> {
 
     private final String strategy;
     private final String name;
+    @AuthType
+    private final Integer type;
 
-    public ConnectionMatcher(String strategy, String name) {
+    public ConnectionMatcher(String strategy, String name, @AuthType Integer type) {
         this.strategy = strategy;
         this.name = name;
+        this.type = type;
     }
 
     @Override
@@ -44,6 +47,9 @@ public class ConnectionMatcher extends BaseMatcher<Connection> {
             return false;
         }
         Connection connection = (Connection) o;
+        if (type != null) {
+            return connection.getType() == type;
+        }
         if (name != null && strategy != null) {
             return strategy.equals(connection.getStrategy()) && name.equals(connection.getName());
         }
@@ -79,14 +85,18 @@ public class ConnectionMatcher extends BaseMatcher<Connection> {
     }
 
     public static ConnectionMatcher hasConnection(String strategy, String name) {
-        return new ConnectionMatcher(strategy, name);
+        return new ConnectionMatcher(strategy, name, null);
     }
 
     public static ConnectionMatcher hasName(String name) {
-        return new ConnectionMatcher(null, name);
+        return new ConnectionMatcher(null, name, null);
     }
 
     public static ConnectionMatcher hasStrategy(String name) {
-        return new ConnectionMatcher(name, null);
+        return new ConnectionMatcher(name, null, null);
+    }
+
+    public static ConnectionMatcher hasType(@AuthType int type) {
+        return new ConnectionMatcher(null, null, type);
     }
 }

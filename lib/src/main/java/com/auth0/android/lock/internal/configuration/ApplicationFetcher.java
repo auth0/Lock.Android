@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal.json;
+package com.auth0.android.lock.internal.configuration;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -59,7 +59,8 @@ public class ApplicationFetcher {
     /**
      * Helper class to fetch the Application from Auth0 Dashboard.
      *
-     * @param account credentials to use against the Auth0 API.
+     * @param account the client information to build the request uri.
+     * @param client  the OKHttpClient instance to use for the CDN request.
      */
     public ApplicationFetcher(@NonNull Auth0 account, @NonNull OkHttpClient client) {
         this.account = account;
@@ -126,7 +127,8 @@ public class ApplicationFetcher {
                 throw tokenizer.syntaxError("Invalid JSON value of App Info");
             }
             JSONObject jsonObject = (JSONObject) nextValue;
-            Type applicationType = new TypeToken<List<Connection>>() {}.getType();
+            Type applicationType = new TypeToken<List<Connection>>() {
+            }.getType();
             return createGson().fromJson(jsonObject.toString(), applicationType);
         } catch (IOException | JSONException e) {
             throw new Auth0Exception("Failed to parse response to request", e);
@@ -134,7 +136,8 @@ public class ApplicationFetcher {
     }
 
     static Gson createGson() {
-        Type applicationType = new TypeToken<List<Connection>>() {}.getType();
+        Type applicationType = new TypeToken<List<Connection>>() {
+        }.getType();
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(applicationType, new ApplicationDeserializer())

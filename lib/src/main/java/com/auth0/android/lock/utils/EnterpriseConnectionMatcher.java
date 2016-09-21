@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +43,9 @@ public class EnterpriseConnectionMatcher {
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
     private static final String AT_SYMBOL = "@";
 
-    private List<Connection> connections;
+    private List<OAuthConnection> connections;
 
-    public EnterpriseConnectionMatcher(@NonNull List<Connection> connections) {
+    public EnterpriseConnectionMatcher(@NonNull List<OAuthConnection> connections) {
         this.connections = new ArrayList<>(connections);
         Log.v(TAG, String.format("Creating a new instance to match %d Enterprise Connections", this.connections.size()));
     }
@@ -57,20 +57,20 @@ public class EnterpriseConnectionMatcher {
      * @return a Connection if found, null otherwise.
      */
     @Nullable
-    public Connection parse(String email) {
+    public OAuthConnection parse(String email) {
         String domain = extractDomain(email);
         if (domain == null) {
             return null;
         }
 
         domain = domain.toLowerCase();
-        for (Connection c : connections) {
+        for (OAuthConnection c : connections) {
             String mainDomain = domainForConnection(c);
             if (domain.equalsIgnoreCase(mainDomain)) {
                 return c;
             }
 
-            List<String> aliases = c.getValueForKey(DOMAIN_ALIASES_KEY);
+            List<String> aliases = c.valueForKey(DOMAIN_ALIASES_KEY, List.class);
             if (aliases != null) {
                 for (String d : aliases) {
                     if (d.equalsIgnoreCase(domain)) {
@@ -122,7 +122,7 @@ public class EnterpriseConnectionMatcher {
      * @param connection to extract the domain from
      * @return the main domain.
      */
-    public String domainForConnection(@NonNull Connection connection) {
-        return connection.getValueForKey(DOMAIN_KEY);
+    public String domainForConnection(@NonNull OAuthConnection connection) {
+        return connection.valueForKey(DOMAIN_KEY, String.class);
     }
 }

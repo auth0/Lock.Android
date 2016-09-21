@@ -45,7 +45,7 @@
         android:text="@string/com_auth0_lock_description_change_password"
         android:textSize="@dimen/com_auth0_lock_title_text" />
 
-    <com.auth0.android.lock.views.ValidatedUsernameInputView
+    <com.auth0.android.lock.views.ValidatedInputView
         android:id="@+id/com_auth0_lock_input_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

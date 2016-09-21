@@ -47,8 +47,8 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Theme;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 

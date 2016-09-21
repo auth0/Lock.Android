@@ -56,10 +56,10 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.Configuration;
-import com.auth0.android.lock.internal.Options;
-import com.auth0.android.lock.internal.json.ApplicationFetcher;
-import com.auth0.android.lock.internal.json.Connection;
+import com.auth0.android.lock.internal.configuration.ApplicationFetcher;
+import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.internal.configuration.Connection;
+import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
@@ -374,7 +374,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     //Callbacks
     private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(List<Connection> connections) {
+        public void onSuccess(final List<Connection> connections) {
             configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override

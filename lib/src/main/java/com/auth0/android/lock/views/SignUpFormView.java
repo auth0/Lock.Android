@@ -38,7 +38,7 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
-import com.auth0.android.lock.internal.Configuration;
+import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;

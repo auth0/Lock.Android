@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal;
+package com.auth0.android.lock.internal.configuration;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,7 +32,6 @@ import android.util.Log;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
-import com.auth0.android.lock.internal.json.Connection;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.AuthConfig;
 
@@ -44,30 +43,23 @@ import java.util.Set;
 
 /**
  * Configuration class to resolve which connections are available after parsing the local options.
- * <p>
+ * <p/>
  * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
  */
 public class Configuration {
 
     private static final String TAG = Configuration.class.getSimpleName();
 
-    private static final String SHOW_SIGNUP_KEY = "showSignup";
-    private static final String SHOW_FORGOT_KEY = "showForgot";
-    private static final String REQUIRES_USERNAME_KEY = "requires_username";
-    private static final String PASSWORD_POLICY_KEY = "passwordPolicy";
-
-    private Connection defaultDatabaseConnection;
-    private List<Connection> passwordlessConnections;
-    private List<Connection> socialConnections;
-    private List<Connection> enterpriseConnections;
+    private DatabaseConnection defaultDatabaseConnection;
+    private List<PasswordlessConnection> passwordlessConnections;
+    private List<OAuthConnection> socialConnections;
+    private List<OAuthConnection> enterpriseConnections;
 
     private boolean allowLogIn;
     private boolean allowSignUp;
     private boolean allowForgotPassword;
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
-    @PasswordStrength
-    private int passwordPolicy;
     @UsernameStyle
     private int usernameStyle;
     @SocialButtonStyle
@@ -99,12 +91,12 @@ public class Configuration {
     }
 
     @Nullable
-    public Connection getDatabaseConnection() {
+    public DatabaseConnection getDatabaseConnection() {
         return defaultDatabaseConnection;
     }
 
     @Nullable
-    public Connection getPasswordlessConnection() {
+    public PasswordlessConnection getPasswordlessConnection() {
         if (passwordlessConnections.isEmpty()) {
             return null;
         }
@@ -113,8 +105,8 @@ public class Configuration {
             return passwordlessConnections.get(0);
         }
 
-        Connection connection = null;
-        for (Connection c : passwordlessConnections) {
+        PasswordlessConnection connection = null;
+        for (PasswordlessConnection c : passwordlessConnections) {
             if (c.getName().equals("email")) {
                 connection = c;
                 break;
@@ -125,27 +117,27 @@ public class Configuration {
     }
 
     @NonNull
-    public List<Connection> getSocialConnections() {
+    public List<OAuthConnection> getSocialConnections() {
         return socialConnections;
     }
 
     @NonNull
-    public List<Connection> getEnterpriseConnections() {
+    public List<OAuthConnection> getEnterpriseConnections() {
         return enterpriseConnections;
     }
 
     @NonNull
-    public List<Connection> getPasswordlessConnections() {
+    public List<PasswordlessConnection> getPasswordlessConnections() {
         return passwordlessConnections;
     }
 
     @Nullable
-    private Connection filterDatabaseConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, String defaultDatabaseName) {
+    private DatabaseConnection filterDatabaseConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, String defaultDatabaseName) {
         if (connections.isEmpty()) {
             return null;
         }
-        final List<Connection> filteredConnections = filterConnections(connections, allowedConnections, AuthType.DATABASE);
-        for (Connection connection : filteredConnections) {
+        final List<DatabaseConnection> filteredConnections = filterConnections(connections, allowedConnections, AuthType.DATABASE);
+        for (DatabaseConnection connection : filteredConnections) {
             if (connection.getName().equals(defaultDatabaseName)) {
                 return connection;
             }
@@ -156,15 +148,15 @@ public class Configuration {
     }
 
     @NonNull
-    private List<Connection> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
+    private <T extends BaseConnection> List<T> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
         if (connections.isEmpty()) {
-            return connections;
+            return (List<T>) connections;
         }
-        List<Connection> filtered = new ArrayList<>(connections.size());
+        List<T> filtered = new ArrayList<>(connections.size());
         for (Connection connection : connections) {
             boolean allowed = allowedConnections.isEmpty() || allowedConnections.contains(connection.getName());
             if (connection.getType() == type && allowed) {
-                filtered.add(connection);
+                filtered.add((T) connection);
             }
         }
         return filtered;
@@ -182,11 +174,10 @@ public class Configuration {
 
         if (getDatabaseConnection() != null) {
             allowLogIn = options.allowLogIn();
-            allowSignUp = options.allowSignUp() && getDatabaseConnection().booleanForKey(SHOW_SIGNUP_KEY);
+            allowSignUp = options.allowSignUp() && getDatabaseConnection().showSignUp();
             //let user disable password reset only if connection have enabled it.
-            allowForgotPassword = getDatabaseConnection().booleanForKey(SHOW_FORGOT_KEY) && options.allowForgotPassword();
-            usernameRequired = getDatabaseConnection().booleanForKey(REQUIRES_USERNAME_KEY);
-            passwordPolicy = parsePasswordPolicy((String) getDatabaseConnection().getValueForKey(PASSWORD_POLICY_KEY));
+            allowForgotPassword = getDatabaseConnection().showForgot() && options.allowForgotPassword();
+            usernameRequired = getDatabaseConnection().requiresUsername();
 
             initialScreen = options.initialScreen();
         }
@@ -208,7 +199,7 @@ public class Configuration {
     @PasswordlessMode
     private int parsePasswordlessMode(boolean requestCode) {
         int mode = PasswordlessMode.DISABLED;
-        Connection connection = getPasswordlessConnection();
+        PasswordlessConnection connection = getPasswordlessConnection();
         if (connection != null) {
             if (connection.getName().equals("email")) {
                 mode = requestCode ? PasswordlessMode.EMAIL_CODE : PasswordlessMode.EMAIL_LINK;
@@ -217,21 +208,6 @@ public class Configuration {
             }
         }
         return mode;
-    }
-
-    @PasswordStrength
-    private int parsePasswordPolicy(String policyName) {
-        if ("excellent".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.EXCELLENT;
-        } else if ("good".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.GOOD;
-        } else if ("fair".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.FAIR;
-        } else if ("low".equalsIgnoreCase(policyName)) {
-            return PasswordStrength.LOW;
-        } else {
-            return PasswordStrength.NONE;
-        }
     }
 
     public boolean allowLogIn() {
@@ -272,7 +248,7 @@ public class Configuration {
 
     @PasswordStrength
     public int getPasswordPolicy() {
-        return passwordPolicy;
+        return defaultDatabaseConnection == null ? PasswordStrength.NONE : defaultDatabaseConnection.getPasswordPolicy();
     }
 
     public boolean loginAfterSignUp() {

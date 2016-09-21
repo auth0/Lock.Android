@@ -22,14 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.auth0.android.lock.internal;
+package com.auth0.android.lock.internal.configuration;
 
-import com.auth0.android.lock.R;
 import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
-import com.auth0.android.lock.internal.json.Connection;
-import com.auth0.android.lock.internal.json.GsonBaseTest;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.google.gson.reflect.TypeToken;
@@ -50,9 +48,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasConnection;
-import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasName;
-import static com.auth0.android.lock.internal.json.ConnectionMatcher.hasStrategy;
+import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasConnection;
+import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasName;
+import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasStrategy;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -324,7 +322,7 @@ public class ConfigurationTest extends GsonBaseTest {
     public void shouldHandleNoDBConnections() throws Exception {
         options.useDatabaseConnection(null);
         configuration = new Configuration(new ArrayList<Connection>(), options);
-        final Connection connection = configuration.getDatabaseConnection();
+        final DatabaseConnection connection = configuration.getDatabaseConnection();
         assertThat(connection, nullValue());
     }
 
@@ -378,7 +376,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredPasswordlessConnections() throws Exception {
         configuration = unfilteredConfig();
-        List<Connection> connections = configuration.getPasswordlessConnections();
+        List<PasswordlessConnection> connections = configuration.getPasswordlessConnections();
         assertThat(connections, is(notNullValue()));
         assertThat(connections, containsInAnyOrder(hasConnection("email", "email"),
                 hasConnection("sms", "sms"), hasConnection("sms", CUSTOM_PASSWORDLESS_CONNECTION)));
@@ -387,7 +385,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnFilteredPasswordlessConnections() throws Exception {
         configuration = filteredConfigBy(CUSTOM_PASSWORDLESS_CONNECTION);
-        Connection connection = configuration.getPasswordlessConnection();
+        PasswordlessConnection connection = configuration.getPasswordlessConnection();
         assertThat(connection, is(notNullValue()));
         assertThat(connection, hasConnection("sms", CUSTOM_PASSWORDLESS_CONNECTION));
     }
@@ -395,7 +393,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldPreferEmailPasswordlessConnection() throws Exception {
         configuration = unfilteredConfig();
-        Connection defaultConnection = configuration.getPasswordlessConnection();
+        PasswordlessConnection defaultConnection = configuration.getPasswordlessConnection();
         assertThat(defaultConnection, is(notNullValue()));
         assertThat(defaultConnection.getName(), equalTo("email"));
     }
@@ -403,14 +401,14 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnEmptyPasswordlessConnectionIfNoneMatch() throws Exception {
         configuration = filteredConfigBy("facebook");
-        Connection connection = configuration.getPasswordlessConnection();
+        PasswordlessConnection connection = configuration.getPasswordlessConnection();
         assertThat(connection, is(nullValue()));
     }
 
     @Test
     public void shouldIgnoreStrategyNameAndReturnFilteredConnections() throws Exception {
         configuration = filteredConfigBy("twitter", "twitter-dev");
-        final List<Connection> strategies = configuration.getSocialConnections();
+        final List<OAuthConnection> strategies = configuration.getSocialConnections();
         assertThat(strategies, containsInAnyOrder(hasConnection("twitter", "twitter"), hasConnection("twitter", "twitter-dev")));
         assertThat(strategies, hasSize(2));
     }
@@ -418,7 +416,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldNotReturnFilteredSocialStrategiesWithoutConnections() throws Exception {
         configuration = filteredConfigBy("facebook", "linkedin");
-        final List<Connection> connections = configuration.getSocialConnections();
+        final List<OAuthConnection> connections = configuration.getSocialConnections();
         assertThat(connections, hasItem(hasStrategy("facebook")));
         assertThat(connections, not(hasItem(hasStrategy("linkedin"))));
     }
@@ -426,7 +424,7 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredSocialConnections() throws Exception {
         configuration = unfilteredConfig();
-        final List<Connection> connections = configuration.getSocialConnections();
+        final List<OAuthConnection> connections = configuration.getSocialConnections();
         assertThat(connections, containsInAnyOrder(hasConnection("facebook", "facebook"),
                 hasConnection("twitter", "twitter"), hasConnection("twitter", "twitter-dev"), hasConnection("instagram", "instagram"),
                 hasConnection("google-oauth2", "google-oauth2")));
