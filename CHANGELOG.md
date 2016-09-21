@@ -1,5 +1,23 @@
 # Change Log
 
+## [2.0.0](https://github.com/auth0/Lock.Android/tree/2.0.0) (2016-09-21)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.4...2.0.0)
+
+**Changed**
+- Merge Enterprise and Social login events [\#347](https://github.com/auth0/Lock.Android/pull/347) ([lbalmaceda](https://github.com/lbalmaceda))
+- Show button when only one enterprise connection is available [\#341](https://github.com/auth0/Lock.Android/pull/341) ([lbalmaceda](https://github.com/lbalmaceda))
+- Filter social strategies by connection name [\#340](https://github.com/auth0/Lock.Android/pull/340) ([lbalmaceda](https://github.com/lbalmaceda))
+- Flatten Strategies into Connections [\#335](https://github.com/auth0/Lock.Android/pull/335) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix OAuth connection callback for PasswordlessActivity [\#346](https://github.com/auth0/Lock.Android/pull/346) ([lbalmaceda](https://github.com/lbalmaceda))
+- Fix non ro-enabled enterprise connections flow. [\#344](https://github.com/auth0/Lock.Android/pull/344) ([lbalmaceda](https://github.com/lbalmaceda))
+- Fix wrong telemetry version [\#342](https://github.com/auth0/Lock.Android/pull/342) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Breaking changes**
+- [Breaking Change] Rename builder methods [\#350](https://github.com/auth0/Lock.Android/pull/350) ([lbalmaceda](https://github.com/lbalmaceda))
+- Refactor AuthProviderResolver [Breaking Change] [\#333](https://github.com/auth0/Lock.Android/pull/333) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.0.0-beta.4](https://github.com/auth0/Lock.Android/tree/2.0.0-beta.4) (2016-08-24)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.3...2.0.0-beta.4)
 
