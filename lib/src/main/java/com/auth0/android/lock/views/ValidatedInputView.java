@@ -54,6 +54,8 @@ import com.auth0.android.lock.views.interfaces.IdentityListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MAX_USERNAME_LENGTH;
+import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MIN_USERNAME_LENGTH;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MFA_CODE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
@@ -229,7 +231,7 @@ public class ValidatedInputView extends LinearLayout {
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
-                error = getResources().getString(R.string.com_auth0_lock_input_error_username);
+                error = String.format(getResources().getString(R.string.com_auth0_lock_input_error_username), MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
                 break;
             case NUMBER:
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -420,6 +422,14 @@ public class ValidatedInputView extends LinearLayout {
         input.setHint(hint);
     }
 
+    /**
+     * Updates the validation error description.
+     *
+     * @param error the new error description to set.
+     */
+    public void setErrorDescription(String error) {
+        errorDescription.setText(error);
+    }
 
     /**
      * Updates the input Icon.

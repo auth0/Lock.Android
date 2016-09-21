@@ -71,7 +71,7 @@
     <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
     <string name="com_auth0_lock_input_error_password">Invalid Password</string>
     <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
-    <string name="com_auth0_lock_input_error_username">Invalid Username</string>
+    <string name="com_auth0_lock_input_error_username" formatted="false">Invalid Username. Can only contain between %d to %d alphanumeric characters and \'_\'.</string>
     <string name="com_auth0_lock_input_error_code">Invalid Code</string>
     <string name="com_auth0_lock_input_error_phone_number">Invalid Phone Number</string>
     <string name="com_auth0_lock_input_error_empty">The value cannot be empty</string>

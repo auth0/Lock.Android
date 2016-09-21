@@ -27,17 +27,20 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.internal.configuration.DatabaseConnection;
 
 import static com.auth0.android.lock.UsernameStyle.DEFAULT;
 import static com.auth0.android.lock.UsernameStyle.EMAIL;
 import static com.auth0.android.lock.UsernameStyle.USERNAME;
+import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MAX_USERNAME_LENGTH;
+import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MIN_USERNAME_LENGTH;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
-    private int minUsernameLength;
-    private int maxUsernameLength;
+    private int minUsernameLength = MIN_USERNAME_LENGTH;
+    private int maxUsernameLength = MAX_USERNAME_LENGTH;
 
     public ValidatedUsernameInputView(Context context) {
         super(context);
@@ -57,25 +60,20 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
      * @param configuration of the instance
      */
     public void chooseDataType(Configuration configuration) {
-        @ValidatedInputView.DataType
-        int type = 0;
-        switch (configuration.getUsernameStyle()) {
-            case EMAIL:
-                type = DataType.EMAIL;
-                break;
-            case USERNAME:
-                type = configuration.isUsernameRequired() ? DataType.USERNAME : DataType.EMAIL;
-                break;
-            case DEFAULT:
-                type = configuration.isUsernameRequired() ? DataType.USERNAME_OR_EMAIL : DataType.EMAIL;
-                break;
-        }
         final DatabaseConnection dbConnection = configuration.getDatabaseConnection();
         if (dbConnection != null) {
             minUsernameLength = dbConnection.getMinUsernameLength();
             maxUsernameLength = dbConnection.getMaxUsernameLength();
         }
-        setDataType(type);
+        if (configuration.getUsernameStyle() == EMAIL || !configuration.isUsernameRequired()) {
+            setDataType(DataType.EMAIL);
+        } else if (configuration.getUsernameStyle() == USERNAME) {
+            setDataType(DataType.USERNAME);
+            final String error = String.format(getResources().getString(R.string.com_auth0_lock_input_error_username), minUsernameLength, maxUsernameLength);
+            setErrorDescription(error);
+        } else if (configuration.getUsernameStyle() == DEFAULT) {
+            setDataType(DataType.USERNAME_OR_EMAIL);
+        }
     }
 
     @Override
