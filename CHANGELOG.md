@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.18.0](https://github.com/auth0/Lock.Android/tree/1.18.0) (2016-09-21)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/1.17.1...1.18.0)
+
+**Added**
+- [v1] Add username length validation using client values [\#349](https://github.com/auth0/Lock.Android/pull/349) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [1.17.1](https://github.com/auth0/Lock.Android/tree/1.17.1) (2016-08-29)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/1.17.0...1.17.1)
 
