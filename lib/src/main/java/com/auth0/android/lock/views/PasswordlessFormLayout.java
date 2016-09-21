@@ -35,10 +35,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
 public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener, PasswordlessRequestCodeFormView.OnAlreadyGotCodeListener {
@@ -87,10 +87,10 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         int style = lockWidget.getConfiguration().getSocialButtonStyle();
         boolean fewConnections = lockWidget.getConfiguration().getSocialConnections().size() <= MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS;
 
-        if (style == SocialButtonStyle.UNSPECIFIED) {
+        if (style == AuthButtonSize.UNSPECIFIED) {
             socialLayout = new SocialView(lockWidget, passwordlessAvailable && !fewConnections);
         } else {
-            socialLayout = new SocialView(lockWidget, style == SocialButtonStyle.SMALL);
+            socialLayout = new SocialView(lockWidget, style == AuthButtonSize.SMALL);
         }
 
         addView(socialLayout);

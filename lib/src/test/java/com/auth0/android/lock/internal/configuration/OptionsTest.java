@@ -5,9 +5,9 @@ import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.SocialButtonStyle;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
@@ -142,28 +142,28 @@ public class OptionsTest {
 
     @Test
     public void shouldUseBigSocialButtonStyle() throws Exception {
-        options.setSocialButtonStyle(SocialButtonStyle.BIG);
+        options.setAuthButtonSize(AuthButtonSize.BIG);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.socialButtonStyle(), is(SocialButtonStyle.BIG));
-        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
+        assertThat(options.authButtonSize(), is(AuthButtonSize.BIG));
+        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
     }
 
     @Test
     public void shouldUseSmallSocialButtonStyle() throws Exception {
-        options.setSocialButtonStyle(SocialButtonStyle.SMALL);
+        options.setAuthButtonSize(AuthButtonSize.SMALL);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.SMALL)));
-        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
+        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.SMALL)));
+        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
     }
 
     @Test
@@ -567,7 +567,7 @@ public class OptionsTest {
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
-        assertThat(options.socialButtonStyle(), is(equalTo(SocialButtonStyle.UNSPECIFIED)));
+        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));
         assertThat(options.getAuthenticationParameters(), is(notNullValue()));
         assertThat(options.getAuthStyles(), is(notNullValue()));
@@ -585,7 +585,7 @@ public class OptionsTest {
         options.setAllowForgotPassword(true);
         options.setClosable(true);
         options.setMustAcceptTerms(true);
-        options.setSocialButtonStyle(SocialButtonStyle.BIG);
+        options.setAuthButtonSize(AuthButtonSize.BIG);
         options.setLoginAfterSignUp(true);
 
 
@@ -603,7 +603,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
-        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
+        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
@@ -618,7 +618,7 @@ public class OptionsTest {
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
         options.setMustAcceptTerms(false);
-        options.setSocialButtonStyle(SocialButtonStyle.SMALL);
+        options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
 
 
@@ -636,7 +636,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
-        assertThat(options.socialButtonStyle(), is(equalTo(parceledOptions.socialButtonStyle())));
+        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
     }
 
