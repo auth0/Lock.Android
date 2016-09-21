@@ -16,14 +16,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = android.support.v7.appcompat.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = android.support.v7.appcompat.BuildConfig.class, sdk = 23, manifest = Config.NONE)
 public class ClassicBuilderTest {
 
     @Rule
@@ -43,8 +46,9 @@ public class ClassicBuilderTest {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Missing callback.");
 
+        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         Lock.Builder builder = Lock.newBuilder(account, null);
-        builder.build(new Activity());
+        builder.build(activity);
     }
 
     @Test
@@ -52,8 +56,9 @@ public class ClassicBuilderTest {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Missing Auth0 account information.");
 
+        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         Lock.Builder builder = Lock.newBuilder(null, callback);
-        builder.build(new Activity());
+        builder.build(activity);
     }
 
     @Test
@@ -74,7 +79,7 @@ public class ClassicBuilderTest {
     public void shouldCreateAccountFromResources() throws Exception {
         Activity activity = Mockito.mock(Activity.class);
         Resources resources= Mockito.mock(Resources.class);
-        Mockito.when(activity.getApplicationContext()).thenReturn(new Application());
+        Mockito.when(activity.getApplicationContext()).thenReturn(RuntimeEnvironment.application);
         Mockito.when(activity.registerReceiver(any(BroadcastReceiver.class), any(IntentFilter.class))).thenReturn(null);
         Mockito.when(activity.getResources()).thenReturn(resources);
         Mockito.when(resources.getIdentifier(anyString(), anyString(), anyString())).thenReturn(1);

@@ -56,7 +56,7 @@ abstract class ViewUtils {
      */
     @IntDef({ALL, ONLY_LEFT, ONLY_RIGHT})
     @Retention(RetentionPolicy.SOURCE)
-    @interface Corners {
+    public @interface Corners {
         int ALL = 0;
         int ONLY_LEFT = 1;
         int ONLY_RIGHT = 2;

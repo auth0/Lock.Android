@@ -25,6 +25,7 @@
 package com.auth0.android.lock;
 
 import android.content.Intent;
+import android.support.v7.widget.ViewUtils;
 import android.util.Log;
 
 import com.auth0.android.result.Credentials;

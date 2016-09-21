@@ -196,7 +196,7 @@ public class Lock {
          */
         public Lock build(@NonNull Activity activity) {
             if (options.getAccount() == null) {
-                Log.w(TAG, "com.auth0.Auth0 account details not defined. Trying to create it from the String resources.");
+                Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {
                     options.setAccount(new Auth0(activity));
                 } catch (IllegalArgumentException e) {
@@ -244,7 +244,7 @@ public class Lock {
         }
 
         /**
-         * Whether to use implicit grant or code grant when performing calls to /authenticate.
+         * Whether to use implicit grant or code grant when performing calls to /authorize.
          * Default is {@code false}
          *
          * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
@@ -349,7 +349,7 @@ public class Lock {
         }
 
         /**
-         * Log In can be enabled/disabled locally, regardless the Dashboard configuration.
+         * Whether to show the Log In screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
@@ -359,7 +359,7 @@ public class Lock {
         }
 
         /**
-         * Sign Up can be enabled/disabled locally, regardless the Dashboard configuration.
+         * Whether to show the Sign Up screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
@@ -369,7 +369,7 @@ public class Lock {
         }
 
         /**
-         * Password reset can be enabled/disabled locally, regardless the Dashboard configuration.
+         * Whether to show the Forgot Password screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
          * @return the current builder instance
          */
