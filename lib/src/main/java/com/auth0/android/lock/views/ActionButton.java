@@ -30,12 +30,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.Theme;
@@ -45,6 +48,8 @@ public class ActionButton extends FrameLayout {
     private static final String TAG = ActionButton.class.getSimpleName();
     private ProgressBar progress;
     private ImageView icon;
+    private LinearLayout labeledLayout;
+    private TextView title;
 
     public ActionButton(Context context, Theme lockTheme) {
         super(context);
@@ -56,8 +61,13 @@ public class ActionButton extends FrameLayout {
         progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+        labeledLayout = (LinearLayout) findViewById(R.id.com_auth0_lock_labeled);
+        title = (TextView) findViewById(R.id.com_auth0_lock_title);
 
-        ViewUtils.setBackground(icon, generateStateBackground(lockTheme));
+        final Drawable stateBackground = generateStateBackground(lockTheme);
+        ViewUtils.setBackground(icon, stateBackground);
+        ViewUtils.setBackground(labeledLayout, stateBackground);
+        labeledLayout.setVisibility(GONE);
     }
 
     private Drawable generateStateBackground(Theme lockTheme) {
@@ -66,6 +76,7 @@ public class ActionButton extends FrameLayout {
         int disabledColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_submit_disabled);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+
             return new RippleDrawable(ColorStateList.valueOf(pressedColor), new ColorDrawable(normalColor), null);
         } else {
             StateListDrawable states = new StateListDrawable();
@@ -90,6 +101,25 @@ public class ActionButton extends FrameLayout {
         setEnabled(!show);
         progress.setVisibility(show ? VISIBLE : GONE);
         icon.setVisibility(show ? INVISIBLE : VISIBLE);
+    }
+
+    /**
+     * Label to display in the button.
+     *
+     * @param stringRes the new resource to display as the button label.
+     */
+    public void setLabel(@StringRes int stringRes) {
+        title.setText(stringRes);
+    }
+
+    /**
+     * Whether to show an icon or a label with the current selected mode.
+     *
+     * @param showLabel whether to show an icon or a label.
+     */
+    public void showLabel(boolean showLabel) {
+        labeledLayout.setVisibility(showLabel ? VISIBLE : GONE);
+        icon.setVisibility(!showLabel ? VISIBLE : GONE);
     }
 
 }

@@ -249,6 +249,17 @@
         <item name="android:background">@color/com_auth0_lock_submit_disabled</item>
     </style>
 
+    <style name="Lock.Theme.Text.SubmitButton">
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingRight">@dimen/com_auth0_lock_widget_small_margin
+        </item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_labeled_submit_button_text</item>
+        <item name="android:textColor">@color/com_auth0_lock_social_text</item>
+    </style>
+
     <style name="Lock.Theme.Text.LinkSent">
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:gravity">center_horizontal</item>

@@ -22,24 +22,49 @@
   ~ THE SOFTWARE.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Lock.Theme.Widget.SubmitButton">
-
-    <ImageView
-        android:id="@+id/com_auth0_lock_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="@dimen/com_auth0_lock_action_button_vertical_margin"
-        android:paddingTop="@dimen/com_auth0_lock_action_button_vertical_margin"
-        android:scaleType="center"
-        android:src="@drawable/com_auth0_lock_ic_submit" />
 
     <ProgressBar
         android:id="@+id/com_auth0_lock_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:indeterminate="true" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/com_auth0_lock_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingBottom="@dimen/com_auth0_lock_action_button_vertical_margin"
+        android:paddingTop="@dimen/com_auth0_lock_action_button_vertical_margin"
+        android:scaleType="center"
+        android:src="@drawable/com_auth0_lock_ic_submit" />
+
+    <LinearLayout
+        android:id="@+id/com_auth0_lock_labeled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="@dimen/com_auth0_lock_action_button_labeled_vertical_margin"
+        android:paddingTop="@dimen/com_auth0_lock_action_button_labeled_vertical_margin">
+
+        <TextView
+            android:id="@+id/com_auth0_lock_title"
+            style="@style/Lock.Theme.Text.SubmitButton"
+            android:text="@string/com_auth0_lock_action_log_in" />
+
+        <ImageView
+            android:id="@+id/com_auth0_lock_chevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:src="@drawable/com_auth0_lock_ic_chevron_submit"
+            tools:ignore="MissingPrefix" />
+    </LinearLayout>
+
+</RelativeLayout>
