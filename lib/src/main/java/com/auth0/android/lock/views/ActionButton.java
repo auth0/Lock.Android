@@ -114,6 +114,7 @@ public class ActionButton extends FrameLayout {
 
     /**
      * Whether to show an icon or a label with the current selected mode.
+     * By default, it will show the icon.
      *
      * @param showLabel whether to show an icon or a label.
      */

@@ -173,10 +173,12 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
             case AuthMode.LOG_IN:
                 showLogInForm();
                 lockWidget.showBottomBanner(false);
+                lockWidget.updateButtonLabel(R.string.com_auth0_lock_action_log_in);
                 break;
             case AuthMode.SIGN_UP:
                 showSignUpForm();
                 lockWidget.showBottomBanner(true);
+                lockWidget.updateButtonLabel(R.string.com_auth0_lock_action_sign_up);
                 break;
         }
     }

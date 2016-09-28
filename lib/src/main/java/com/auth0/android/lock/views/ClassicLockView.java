@@ -152,6 +152,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
         if (configuration.getInitialScreen() == InitialScreen.SIGN_UP) {
             showBottomBanner(true);
+            updateButtonLabel(R.string.com_auth0_lock_action_sign_up);
         } else if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
             showChangePasswordForm(true);
         }
@@ -212,6 +213,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     public void showChangePasswordForm(boolean show) {
         if (show) {
             addSubForm(new ChangePasswordFormView(this, lastEmailInput));
+            updateButtonLabel(R.string.com_auth0_lock_action_send_email);
         } else {
             removeSubForm();
         }
@@ -236,6 +238,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         formLayout.refreshIdentityInput();
         addView(formLayout, FORM_INDEX, params);
+        updateButtonLabel(R.string.com_auth0_lock_action_log_in);
     }
 
     /**
@@ -336,6 +339,13 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     public void showBottomBanner(boolean show) {
         if (bottomBanner != null) {
             bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        }
+    }
+
+    @Override
+    public void updateButtonLabel(@StringRes int stringRes) {
+        if (actionButton != null) {
+            actionButton.setLabel(stringRes);
         }
     }
 
