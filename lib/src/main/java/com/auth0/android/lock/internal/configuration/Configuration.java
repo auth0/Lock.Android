@@ -60,6 +60,7 @@ public class Configuration {
     private boolean allowForgotPassword;
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
+    private boolean useLabeledSubmitButton;
     @UsernameStyle
     private int usernameStyle;
     @AuthButtonSize
@@ -168,6 +169,7 @@ public class Configuration {
         socialButtonStyle = options.authButtonSize();
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
+        useLabeledSubmitButton = options.useLabeledSubmitButton();
 
         authStyles = options.getAuthStyles();
         extraSignUpFields = options.getCustomFields();
@@ -279,5 +281,9 @@ public class Configuration {
 
     public boolean mustAcceptTerms() {
         return mustAcceptTerms;
+    }
+
+    public boolean useLabeledSubmitButton() {
+        return useLabeledSubmitButton;
     }
 }

@@ -50,6 +50,7 @@ public class ActionButton extends FrameLayout {
     private ImageView icon;
     private LinearLayout labeledLayout;
     private TextView title;
+    private boolean shouldShowLabel;
 
     public ActionButton(Context context, Theme lockTheme) {
         super(context);
@@ -64,10 +65,9 @@ public class ActionButton extends FrameLayout {
         labeledLayout = (LinearLayout) findViewById(R.id.com_auth0_lock_labeled);
         title = (TextView) findViewById(R.id.com_auth0_lock_title);
 
-        final Drawable stateBackground = generateStateBackground(lockTheme);
-        ViewUtils.setBackground(icon, stateBackground);
-        ViewUtils.setBackground(labeledLayout, stateBackground);
-        labeledLayout.setVisibility(GONE);
+        ViewUtils.setBackground(icon, generateStateBackground(lockTheme));
+        ViewUtils.setBackground(labeledLayout, generateStateBackground(lockTheme));
+        showLabel(false);
     }
 
     private Drawable generateStateBackground(Theme lockTheme) {
@@ -76,7 +76,6 @@ public class ActionButton extends FrameLayout {
         int disabledColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_submit_disabled);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-
             return new RippleDrawable(ColorStateList.valueOf(pressedColor), new ColorDrawable(normalColor), null);
         } else {
             StateListDrawable states = new StateListDrawable();
@@ -93,14 +92,16 @@ public class ActionButton extends FrameLayout {
      * @param show whether to show the progress bar or not.
      */
     public void showProgress(boolean show) {
-        if (show) {
-            Log.v(TAG, "Disabling the button while showing progress");
-        } else {
-            Log.v(TAG, "Enabling the button and hiding progress");
-        }
+        Log.v(TAG, show ? "Disabling the button while showing progress" : "Enabling the button and hiding progress");
         setEnabled(!show);
         progress.setVisibility(show ? VISIBLE : GONE);
-        icon.setVisibility(show ? INVISIBLE : VISIBLE);
+        if (show) {
+            icon.setVisibility(INVISIBLE);
+            labeledLayout.setVisibility(INVISIBLE);
+            return;
+        }
+        icon.setVisibility(shouldShowLabel ? GONE : VISIBLE);
+        labeledLayout.setVisibility(!shouldShowLabel ? GONE : VISIBLE);
     }
 
     /**
@@ -119,8 +120,8 @@ public class ActionButton extends FrameLayout {
      * @param showLabel whether to show an icon or a label.
      */
     public void showLabel(boolean showLabel) {
+        shouldShowLabel = showLabel;
         labeledLayout.setVisibility(showLabel ? VISIBLE : GONE);
         icon.setVisibility(!showLabel ? VISIBLE : GONE);
     }
-
 }

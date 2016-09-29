@@ -26,16 +26,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Lock.Theme.Widget.SubmitButton">
 
-    <ProgressBar
-        android:id="@+id/com_auth0_lock_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true" />
-
     <ImageView
         android:id="@+id/com_auth0_lock_icon"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:paddingBottom="@dimen/com_auth0_lock_action_button_vertical_margin"
@@ -66,5 +59,12 @@
             android:src="@drawable/com_auth0_lock_ic_chevron_submit"
             tools:ignore="MissingPrefix" />
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/com_auth0_lock_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
 
 </RelativeLayout>
