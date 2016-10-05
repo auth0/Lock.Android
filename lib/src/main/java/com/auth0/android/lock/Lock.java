@@ -237,7 +237,9 @@ public class Lock {
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
          * @return the current Builder instance
+         * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
          */
+        @Deprecated
         public Builder useBrowser(boolean useBrowser) {
             options.setUseBrowser(useBrowser);
             return this;

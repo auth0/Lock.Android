@@ -239,10 +239,12 @@ public class Options implements Parcelable {
         this.account = account;
     }
 
+    @Deprecated
     public boolean useBrowser() {
         return useBrowser;
     }
 
+    @Deprecated
     public void setUseBrowser(boolean useBrowser) {
         this.useBrowser = useBrowser;
     }
