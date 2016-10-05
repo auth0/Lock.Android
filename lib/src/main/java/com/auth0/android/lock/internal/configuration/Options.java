@@ -85,6 +85,7 @@ public class Options implements Parcelable {
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
         initialScreen = InitialScreen.LOG_IN;
+        useBrowser = true;
         allowLogIn = true;
         allowSignUp = true;
         allowForgotPassword = true;

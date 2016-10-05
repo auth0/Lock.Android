@@ -60,6 +60,8 @@ You'll need to configure `LockActivity` in your `AndroidManifest.xml`, inside th
 </activity>
 ```
 
+Make sure the Activity's `launchMode` is declared as `"singleTask"` or the result won't come back in the authentication.
+
 Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the `WebAuthActivity` inside the `application` tag:
 
 ```xml
@@ -153,6 +155,8 @@ You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`,
     </intent-filter>
 </activity>
 ```
+
+Make sure the Activity's `launchMode` is declared as `"singleTask"` or the result won't come back after the authentication.
 
 Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider you need to declare the `WebAuthActivity` inside the `application` tag:
 

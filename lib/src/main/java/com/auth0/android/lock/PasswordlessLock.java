@@ -38,9 +38,9 @@ import android.util.Log;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
-import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.Theme;
+import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.util.Telemetry;
@@ -233,7 +233,7 @@ public class PasswordlessLock {
         /**
          * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
          *
-         * @param useBrowser or WebView. By default, the Authentication flow will use the WebView.
+         * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
          * @return the current Builder instance
          */
         public Builder useBrowser(boolean useBrowser) {
