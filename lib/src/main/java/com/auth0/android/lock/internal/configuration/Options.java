@@ -70,6 +70,7 @@ public class Options implements Parcelable {
     private boolean allowForgotPassword;
     private boolean loginAfterSignUp;
     private boolean mustAcceptTerms;
+    private boolean useLabeledSubmitButton;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -108,6 +109,7 @@ public class Options implements Parcelable {
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         mustAcceptTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
+        useLabeledSubmitButton = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
@@ -171,6 +173,7 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (useLabeledSubmitButton ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
@@ -423,5 +426,13 @@ public class Options implements Parcelable {
     @NonNull
     public Map<String, Integer> getAuthStyles() {
         return new HashMap<>(authStyles);
+    }
+
+    public void setUseLabeledSubmitButton(boolean useLabeledSubmitButton) {
+        this.useLabeledSubmitButton = useLabeledSubmitButton;
+    }
+
+    public boolean useLabeledSubmitButton() {
+        return useLabeledSubmitButton;
     }
 }

@@ -85,6 +85,7 @@
     <string name="com_auth0_lock_hint_search_country">Search your country</string>
     <string name="com_auth0_lock_action_sign_up">Sign Up</string>
     <string name="com_auth0_lock_action_log_in">Log In</string>
+    <string name="com_auth0_lock_action_send_email">Send Email</string>
     <string name="com_auth0_lock_action_forgot_password">Don\'t remember your password?</string>
     <string name="com_auth0_lock_action_single_login_with_corporate">Login with your corporate credentials.</string>
     <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
