@@ -141,6 +141,19 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldUseLabeledSubmitButton() throws Exception {
+        options.setUseLabeledSubmitButton(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.useLabeledSubmitButton(), is(true));
+        assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
+    }
+
+    @Test
     public void shouldUseBigSocialButtonStyle() throws Exception {
         options.setAuthButtonSize(AuthButtonSize.BIG);
 
@@ -566,6 +579,7 @@ public class OptionsTest {
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
+        assertThat(options.useLabeledSubmitButton(), is(false));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));
@@ -587,6 +601,7 @@ public class OptionsTest {
         options.setMustAcceptTerms(true);
         options.setAuthButtonSize(AuthButtonSize.BIG);
         options.setLoginAfterSignUp(true);
+        options.setUseLabeledSubmitButton(true);
 
 
         Parcel parcel = Parcel.obtain();
@@ -605,6 +620,7 @@ public class OptionsTest {
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
+        assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
     }
 
     @Test
@@ -620,6 +636,7 @@ public class OptionsTest {
         options.setMustAcceptTerms(false);
         options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
+        options.setUseLabeledSubmitButton(false);
 
 
         Parcel parcel = Parcel.obtain();
@@ -638,6 +655,7 @@ public class OptionsTest {
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
+        assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
     }
 
 

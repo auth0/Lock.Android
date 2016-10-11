@@ -30,12 +30,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.Theme;
@@ -45,6 +48,9 @@ public class ActionButton extends FrameLayout {
     private static final String TAG = ActionButton.class.getSimpleName();
     private ProgressBar progress;
     private ImageView icon;
+    private LinearLayout labeledLayout;
+    private TextView title;
+    private boolean shouldShowLabel;
 
     public ActionButton(Context context, Theme lockTheme) {
         super(context);
@@ -56,8 +62,12 @@ public class ActionButton extends FrameLayout {
         progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
+        labeledLayout = (LinearLayout) findViewById(R.id.com_auth0_lock_labeled);
+        title = (TextView) findViewById(R.id.com_auth0_lock_title);
 
         ViewUtils.setBackground(icon, generateStateBackground(lockTheme));
+        ViewUtils.setBackground(labeledLayout, generateStateBackground(lockTheme));
+        showLabel(false);
     }
 
     private Drawable generateStateBackground(Theme lockTheme) {
@@ -82,14 +92,36 @@ public class ActionButton extends FrameLayout {
      * @param show whether to show the progress bar or not.
      */
     public void showProgress(boolean show) {
-        if (show) {
-            Log.v(TAG, "Disabling the button while showing progress");
-        } else {
-            Log.v(TAG, "Enabling the button and hiding progress");
-        }
+        Log.v(TAG, show ? "Disabling the button while showing progress" : "Enabling the button and hiding progress");
         setEnabled(!show);
         progress.setVisibility(show ? VISIBLE : GONE);
-        icon.setVisibility(show ? INVISIBLE : VISIBLE);
+        if (show) {
+            icon.setVisibility(INVISIBLE);
+            labeledLayout.setVisibility(INVISIBLE);
+            return;
+        }
+        icon.setVisibility(shouldShowLabel ? GONE : VISIBLE);
+        labeledLayout.setVisibility(!shouldShowLabel ? GONE : VISIBLE);
     }
 
+    /**
+     * Label to display in the button.
+     *
+     * @param stringRes the new resource to display as the button label.
+     */
+    public void setLabel(@StringRes int stringRes) {
+        title.setText(stringRes);
+    }
+
+    /**
+     * Whether to show an icon or a label with the current selected mode.
+     * By default, it will show the icon.
+     *
+     * @param showLabel whether to show an icon or a label.
+     */
+    public void showLabel(boolean showLabel) {
+        shouldShowLabel = showLabel;
+        labeledLayout.setVisibility(showLabel ? VISIBLE : GONE);
+        icon.setVisibility(!showLabel ? VISIBLE : GONE);
+    }
 }
