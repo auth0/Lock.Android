@@ -32,6 +32,7 @@ abstract class Constants {
     static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
     static final String SIGN_UP_ACTION = "com.auth0.android.lock.action.SignUp";
     static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
+    static final String INVALID_CONFIGURATION_ACTION = "com.auth0.android.lock.action.InvalidConfiguration";
 
     static final String ERROR_EXTRA = "com.auth0.android.lock.extra.Error";
     static final String ID_TOKEN_EXTRA = "com.auth0.android.lock.extra.IdToken";

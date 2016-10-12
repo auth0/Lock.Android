@@ -127,14 +127,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isLaunchConfigValid()) {
-            Log.d(TAG, "Configuration is not valid and the Activity will finish.");
-            finish();
-            return;
-        }
-        if (!isThemeValid()) {
-            Log.d(TAG, "You need to use a Lock.Theme theme (or descendant) with this Activity.");
-            finish();
+        if (!hasValidLaunchConfig()) {
             return;
         }
 
@@ -160,7 +153,25 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lockBus.post(new FetchApplicationEvent());
     }
 
-    private boolean isThemeValid() {
+    private boolean hasValidLaunchConfig() {
+        String errorDescription = null;
+        if (!hasValidOptions()) {
+            errorDescription = "Configuration is not valid and the Activity will finish.";
+        }
+        if (!hasValidTheme()) {
+            errorDescription = "You need to use a Lock.Theme theme (or descendant) with this Activity.";
+        }
+        if (errorDescription == null) {
+            return true;
+        }
+        Intent intent = new Intent(Constants.INVALID_CONFIGURATION_ACTION);
+        intent.putExtra(Constants.ERROR_EXTRA, errorDescription);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        finish();
+        return false;
+    }
+
+    private boolean hasValidTheme() {
         TypedArray a = getTheme().obtainStyledAttributes(R.styleable.Lock_Theme);
         if (!a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo)) {
             a.recycle();
@@ -169,7 +180,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         return true;
     }
 
-    private boolean isLaunchConfigValid() {
+    private boolean hasValidOptions() {
         options = getIntent().getParcelableExtra(Constants.OPTIONS_EXTRA);
         if (options == null) {
             Log.e(TAG, "Lock Options are missing in the received Intent and PasswordlessLockActivity will not launch. " +
