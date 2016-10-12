@@ -36,6 +36,7 @@ import static com.auth0.android.lock.UsernameStyle.EMAIL;
 import static com.auth0.android.lock.UsernameStyle.USERNAME;
 import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MAX_USERNAME_LENGTH;
 import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MIN_USERNAME_LENGTH;
+import static com.auth0.android.lock.internal.configuration.DatabaseConnection.UNUSED_USERNAME_LENGTH;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
@@ -69,7 +70,10 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
             setDataType(DataType.EMAIL);
         } else if (configuration.getUsernameStyle() == USERNAME) {
             setDataType(DataType.USERNAME);
-            final String error = String.format(getResources().getString(R.string.com_auth0_lock_input_error_username), minUsernameLength, maxUsernameLength);
+            String error = getResources().getString(R.string.com_auth0_lock_input_error_username, minUsernameLength, maxUsernameLength);
+            if (minUsernameLength == UNUSED_USERNAME_LENGTH || maxUsernameLength == UNUSED_USERNAME_LENGTH) {
+                error = getResources().getString(R.string.com_auth0_lock_input_error_username_empty);
+            }
             setErrorDescription(error);
         } else if (configuration.getUsernameStyle() == DEFAULT) {
             setDataType(DataType.USERNAME_OR_EMAIL);
@@ -82,7 +86,13 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
         if (!validateEmptyFields && value.isEmpty()) {
             return true;
         }
-        final boolean validUsername = value.matches(USERNAME_REGEX) && value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
+        boolean validUsername;
+        if (minUsernameLength == UNUSED_USERNAME_LENGTH || maxUsernameLength == UNUSED_USERNAME_LENGTH) {
+            validUsername = !value.isEmpty();
+        } else {
+            validUsername = value.matches(USERNAME_REGEX) && value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
+        }
+
         if (getDataType() == DataType.USERNAME) {
             return validUsername;
         }
