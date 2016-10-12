@@ -27,6 +27,7 @@ package com.auth0.android.lock;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,6 +107,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             finish();
             return;
         }
+        if (!isThemeValid()) {
+            Log.d(TAG, "You need to use a Lock.Theme theme (or descendant) with this Activity.");
+            finish();
+            return;
+        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Bus lockBus = new Bus();
@@ -124,6 +130,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         signUpErrorBuilder = new SignUpErrorMessageBuilder();
 
         lockBus.post(new FetchApplicationEvent());
+    }
+
+    private boolean isThemeValid() {
+        TypedArray a = getTheme().obtainStyledAttributes(R.styleable.Lock_Theme);
+        if (!a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo)) {
+            a.recycle();
+            return false;
+        }
+        return true;
     }
 
     private boolean isLaunchConfigValid() {

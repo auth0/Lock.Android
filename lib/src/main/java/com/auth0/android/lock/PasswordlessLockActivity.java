@@ -29,6 +29,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,6 +132,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             finish();
             return;
         }
+        if (!isThemeValid()) {
+            Log.d(TAG, "You need to use a Lock.Theme theme (or descendant) with this Activity.");
+            finish();
+            return;
+        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         lockBus = new Bus();
@@ -152,6 +158,15 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             loginErrorBuilder = new LoginErrorMessageBuilder(R.string.com_auth0_lock_passwordless_link_request_error_message, R.string.com_auth0_lock_passwordless_login_error_invalid_credentials_message);
         }
         lockBus.post(new FetchApplicationEvent());
+    }
+
+    private boolean isThemeValid() {
+        TypedArray a = getTheme().obtainStyledAttributes(R.styleable.Lock_Theme);
+        if (!a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo)) {
+            a.recycle();
+            return false;
+        }
+        return true;
     }
 
     private boolean isLaunchConfigValid() {
