@@ -32,14 +32,19 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.util.TypedValue;
 
 import com.auth0.android.lock.BuildConfig;
+import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
+import com.thoughtworks.xstream.converters.extended.LookAndFeelConverter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -47,8 +52,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, resourceDir = Config.DEFAULT_RES_FOLDER)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class ThemeTest {
 
     @StringRes
@@ -70,6 +75,7 @@ public class ThemeTest {
     public void shouldResolveDefaultHeaderTitle() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
+        context.setTheme(R.style.Lock_Theme);
 
         final String headerTitle = theme.getHeaderTitle(context);
         assertThat(headerTitle, is(equalTo(context.getString(getLockThemeResourceId(context, R.attr.Auth0_HeaderTitle)))));
@@ -79,6 +85,7 @@ public class ThemeTest {
     public void shouldResolveDefaultHeaderLogo() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
+        context.setTheme(R.style.Lock_Theme);
 
         final Drawable headerLogo = theme.getHeaderLogo(context);
         assertThat(headerLogo, is(equalTo(ContextCompat.getDrawable(context, getLockThemeResourceId(context, R.attr.Auth0_HeaderLogo)))));
@@ -88,6 +95,7 @@ public class ThemeTest {
     public void shouldResolveDefaultHeaderColor() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
+        context.setTheme(R.style.Lock_Theme);
 
         final int headerColor = theme.getHeaderColor(context);
         assertThat(headerColor, is(equalTo(ContextCompat.getColor(context, getLockThemeResourceId(context, R.attr.Auth0_HeaderBackground)))));
@@ -97,6 +105,7 @@ public class ThemeTest {
     public void shouldResolveDefaultHeaderTitleColor() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
+        context.setTheme(R.style.Lock_Theme);
 
         final int titleColor = theme.getHeaderTitleColor(context);
         assertThat(titleColor, is(equalTo(ContextCompat.getColor(context, getLockThemeResourceId(context, R.attr.Auth0_HeaderTitleColor)))));
@@ -106,6 +115,7 @@ public class ThemeTest {
     public void shouldResolveDefaultPrimaryColor() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
+        context.setTheme(R.style.Lock_Theme);
 
         final int primaryColor = theme.getPrimaryColor(context);
         assertThat(primaryColor, is(equalTo(ContextCompat.getColor(context, getLockThemeResourceId(context, R.attr.Auth0_PrimaryColor)))));
@@ -115,6 +125,7 @@ public class ThemeTest {
     public void shouldResolveDefaultDarkPrimaryColor() throws Exception {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
+        context.setTheme(R.style.Lock_Theme);
 
         final int darkPrimaryColor = theme.getDarkPrimaryColor(context);
         assertThat(darkPrimaryColor, is(equalTo(ContextCompat.getColor(context, getLockThemeResourceId(context, R.attr.Auth0_DarkPrimaryColor)))));
@@ -235,10 +246,9 @@ public class ThemeTest {
     }
 
     private int getLockThemeResourceId(Context context, @AttrRes int attrResId) {
-        TypedArray a = context.obtainStyledAttributes(com.auth0.android.lock.R.style.Lock_Theme, new int[]{attrResId});
-        final int index = a.getResourceId(0, 0);
-        a.recycle();
-        return index;
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(attrResId, typedValue, true);
+        return typedValue.resourceId;
     }
 
 }
