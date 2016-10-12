@@ -29,6 +29,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -126,9 +127,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isLaunchConfigValid()) {
-            Log.d(TAG, "Configuration is not valid and the Activity will finish.");
-            finish();
+        if (!hasValidLaunchConfig()) {
             return;
         }
 
@@ -154,7 +153,34 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lockBus.post(new FetchApplicationEvent());
     }
 
-    private boolean isLaunchConfigValid() {
+    private boolean hasValidLaunchConfig() {
+        String errorDescription = null;
+        if (!hasValidOptions()) {
+            errorDescription = "Configuration is not valid and the Activity will finish.";
+        }
+        if (!hasValidTheme()) {
+            errorDescription = "You need to use a Lock.Theme theme (or descendant) with this Activity.";
+        }
+        if (errorDescription == null) {
+            return true;
+        }
+        Intent intent = new Intent(Constants.INVALID_CONFIGURATION_ACTION);
+        intent.putExtra(Constants.ERROR_EXTRA, errorDescription);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        finish();
+        return false;
+    }
+
+    private boolean hasValidTheme() {
+        TypedArray a = getTheme().obtainStyledAttributes(R.styleable.Lock_Theme);
+        if (!a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo)) {
+            a.recycle();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean hasValidOptions() {
         options = getIntent().getParcelableExtra(Constants.OPTIONS_EXTRA);
         if (options == null) {
             Log.e(TAG, "Lock Options are missing in the received Intent and PasswordlessLockActivity will not launch. " +

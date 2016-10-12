@@ -140,6 +140,7 @@ public class Lock {
         filter.addAction(Constants.AUTHENTICATION_ACTION);
         filter.addAction(Constants.SIGN_UP_ACTION);
         filter.addAction(Constants.CANCELED_ACTION);
+        filter.addAction(Constants.INVALID_CONFIGURATION_ACTION);
         LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
     }
 
@@ -161,6 +162,10 @@ public class Lock {
             case Constants.CANCELED_ACTION:
                 Log.v(TAG, "CANCELED action received in our BroadcastReceiver");
                 callback.onEvent(LockEvent.CANCELED, new Intent());
+                break;
+            case Constants.INVALID_CONFIGURATION_ACTION:
+                Log.v(TAG, "INVALID_CONFIGURATION_ACTION action received in our BroadcastReceiver");
+                callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
                 break;
         }
     }
