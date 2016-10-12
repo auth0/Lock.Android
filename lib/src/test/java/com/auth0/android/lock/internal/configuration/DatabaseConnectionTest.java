@@ -153,17 +153,16 @@ public class DatabaseConnectionTest {
     }
 
     @Test
-    public void shouldGetDefaultMinMaxUsernameLengthIfMissingUsernameValidation() throws Exception {
+    public void shouldOnlyGetMinUsernameLengthIfMissingUsernameValidation() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
         values.put("validation", validation);
         DatabaseConnection connection = connectionFor(values);
 
-        assertThat(connection.getMinUsernameLength(), is(1));
-        assertThat(connection.getMaxUsernameLength(), is(15));
+        assertThat(connection.getMinUsernameLength(), is(-1));
+        assertThat(connection.getMaxUsernameLength(), is(-1));
     }
-
 
     @Test
     public void shouldGetDefaultMinMaxUsernameLengthIfMissingValidation() throws Exception {

@@ -2,6 +2,7 @@ package com.auth0.android.lock.internal.configuration;
 
 public interface DatabaseConnection extends BaseConnection {
 
+    int UNUSED_USERNAME_LENGTH = -1;
     int MIN_USERNAME_LENGTH = 1;
     int MAX_USERNAME_LENGTH = 15;
 

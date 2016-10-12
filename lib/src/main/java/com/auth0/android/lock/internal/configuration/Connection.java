@@ -158,9 +158,14 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
 
     private void parseUsernameLength() {
         Map<String, Object> validations = valueForKey("validation", Map.class);
-        if (validations == null || !validations.containsKey("username")) {
+        if (validations == null) {
             minUsernameLength = MIN_USERNAME_LENGTH;
             maxUsernameLength = MAX_USERNAME_LENGTH;
+            return;
+        }
+        if (!validations.containsKey("username")){
+            minUsernameLength = UNUSED_USERNAME_LENGTH;
+            maxUsernameLength = UNUSED_USERNAME_LENGTH;
             return;
         }
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
