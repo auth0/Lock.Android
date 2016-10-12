@@ -169,8 +169,8 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
             return;
         }
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
-        minUsernameLength = intValue(usernameValidation.get("min"), MIN_USERNAME_LENGTH);
-        maxUsernameLength = intValue(usernameValidation.get("max"), MAX_USERNAME_LENGTH);
+        minUsernameLength = intValue(usernameValidation.get("min"), 0);
+        maxUsernameLength = intValue(usernameValidation.get("max"), 0);
         if (minUsernameLength < MIN_USERNAME_LENGTH || minUsernameLength > maxUsernameLength) {
             minUsernameLength = MIN_USERNAME_LENGTH;
             maxUsernameLength = MAX_USERNAME_LENGTH;

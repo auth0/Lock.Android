@@ -145,7 +145,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> validation = new HashMap<>();
         values.put("validation", validation);
         Map<String, Object> usernameValidation = new HashMap<>();
-        usernameValidation.put("username", usernameValidation);
+        validation.put("username", usernameValidation);
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
@@ -183,7 +183,7 @@ public class DatabaseConnectionTest {
         Map<String, Object> usernameValidation = new HashMap<>();
         usernameValidation.put("min", 60);
         usernameValidation.put("max", 10);
-        values.put("username", usernameValidation);
+        validation.put("username", usernameValidation);
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
@@ -198,7 +198,7 @@ public class DatabaseConnectionTest {
         values.put("validation", validation);
         Map<String, Object> usernameValidation = new HashMap<>();
         usernameValidation.put("min", 10);
-        values.put("username", usernameValidation);
+        validation.put("username", usernameValidation);
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
@@ -213,7 +213,7 @@ public class DatabaseConnectionTest {
         values.put("validation", validation);
         Map<String, Object> usernameValidation = new HashMap<>();
         usernameValidation.put("max", 60);
-        values.put("username", usernameValidation);
+        validation.put("username", usernameValidation);
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
