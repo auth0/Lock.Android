@@ -235,9 +235,11 @@ public class Lock {
         /**
          * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
          *
-         * @param useBrowser or WebView. By default, the Authentication flow will use the WebView.
+         * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
          * @return the current Builder instance
+         * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
          */
+        @Deprecated
         public Builder useBrowser(boolean useBrowser) {
             options.setUseBrowser(useBrowser);
             return this;

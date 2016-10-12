@@ -85,6 +85,7 @@ public class Options implements Parcelable {
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
         initialScreen = InitialScreen.LOG_IN;
+        useBrowser = true;
         allowLogIn = true;
         allowSignUp = true;
         allowForgotPassword = true;
@@ -238,10 +239,12 @@ public class Options implements Parcelable {
         this.account = account;
     }
 
+    @Deprecated
     public boolean useBrowser() {
         return useBrowser;
     }
 
+    @Deprecated
     public void setUseBrowser(boolean useBrowser) {
         this.useBrowser = useBrowser;
     }

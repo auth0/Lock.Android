@@ -128,15 +128,15 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseBrowser() throws Exception {
-        options.setUseBrowser(true);
+    public void shouldUseWebview() throws Exception {
+        options.setUseBrowser(false);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.useBrowser(), is(true));
+        assertThat(options.useBrowser(), is(false));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
     }
 
@@ -571,7 +571,7 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertTrue(options != parceledOptions); //assure correct Parcelable object testing
-        assertThat(options.useBrowser(), is(false));
+        assertThat(options.useBrowser(), is(true));
         assertThat(options.usePKCE(), is(true));
         assertThat(options.allowLogIn(), is(true));
         assertThat(options.allowSignUp(), is(true));
