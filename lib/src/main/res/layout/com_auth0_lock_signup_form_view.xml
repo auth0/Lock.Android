@@ -28,7 +28,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.auth0.android.lock.views.ValidatedInputView
+    <com.auth0.android.lock.views.ValidatedUsernameInputView
         android:id="@+id/com_auth0_lock_input_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
