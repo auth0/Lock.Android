@@ -53,8 +53,8 @@ You'll need to configure `LockActivity` in your `AndroidManifest.xml`, inside th
       <category android:name="android.intent.category.BROWSABLE" />
 
       <data
-        android:host="YOUR_AUTH0_DOMAIN"
-        android:pathPrefix="/android/YOUR_APP_PACKAGE_NAME/callback"
+        android:host="{YOUR_AUTH0_DOMAIN}"
+        android:pathPrefix="/android/{YOUR_APP_PACKAGE_NAME}/callback"
         android:scheme="https" />
     </intent-filter>
 </activity>
@@ -62,22 +62,10 @@ You'll need to configure `LockActivity` in your `AndroidManifest.xml`, inside th
 
 Make sure the Activity's `launchMode` is declared as `"singleTask"` or the result won't come back in the authentication.
 
-Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider, you need to declare the `WebAuthActivity` inside the `application` tag:
-
-```xml
-<activity
-    android:name="com.auth0.android.provider.WebAuthActivity"
-    android:theme="@style/MyAppTheme"/>
-```
-
-
 Also, you'll need to add *Internet* permission to your application:
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
-
-> The `android.permission.ACCESS_NETWORK_STATE` permission is only used if you chose WebView over Browser for OAuth authentication.
 
 Then in any of your Activities you need to initialize **Lock**:
 
@@ -149,8 +137,8 @@ You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`,
       <category android:name="android.intent.category.BROWSABLE" />
 
       <data
-        android:host="YOUR_AUTH0_DOMAIN"
-        android:pathPrefix="/android/YOUR_APP_PACKAGE_NAME/callback"
+        android:host="{YOUR_AUTH0_DOMAIN}"
+        android:pathPrefix="/android/{YOUR_APP_PACKAGE_NAME}/callback"
         android:scheme="https" />
     </intent-filter>
 </activity>
@@ -158,21 +146,10 @@ You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`,
 
 Make sure the Activity's `launchMode` is declared as `"singleTask"` or the result won't come back after the authentication.
 
-Additionally, if you're going to use WebView instead of Browser when authenticating with a Social Provider you need to declare the `WebAuthActivity` inside the `application` tag:
-
-```xml
-<activity
-    android:name="com.auth0.android.provider.WebAuthActivity"
-    android:theme="@style/MyAppTheme"/>
-```
-
 Also, you'll need to add *Internet* permission to your application:
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
-
-> The `android.permission.ACCESS_NETWORK_STATE` permission is only used if you chose WebView over Browser for OAuth authentication.
 
 Then in any of your Activities you need to initialize **PasswordlessLock**
 
