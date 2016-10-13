@@ -25,10 +25,11 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.configuration.Configuration;
+import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.internal.configuration.DatabaseConnection;
 
 import static com.auth0.android.lock.UsernameStyle.DEFAULT;
@@ -43,39 +44,59 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
     private int minUsernameLength = MIN_USERNAME_LENGTH;
     private int maxUsernameLength = MAX_USERNAME_LENGTH;
 
+    private String errorDescription;
+    private boolean usernameRequired;
+
     public ValidatedUsernameInputView(Context context) {
         super(context);
+        init();
     }
 
     public ValidatedUsernameInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public ValidatedUsernameInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        errorDescription = getResources().getString(R.string.com_auth0_lock_input_error_username_empty);
+        setUsernameStyle(DEFAULT);
     }
 
     /**
-     * Choose username or email DataType, according to the Configuration
+     * Extract the required values from this Database connection to use later in this widget.
      *
-     * @param configuration of the instance
+     * @param connection used with this widget
      */
-    public void chooseDataType(Configuration configuration) {
-        final DatabaseConnection dbConnection = configuration.getDatabaseConnection();
-        if (dbConnection != null) {
-            minUsernameLength = dbConnection.getMinUsernameLength();
-            maxUsernameLength = dbConnection.getMaxUsernameLength();
+    public void configureFrom(@Nullable DatabaseConnection connection) {
+        if (connection == null) {
+            return;
         }
-        if (configuration.getUsernameStyle() == EMAIL || !configuration.isUsernameRequired()) {
+        minUsernameLength = connection.getMinUsernameLength();
+        maxUsernameLength = connection.getMaxUsernameLength();
+        usernameRequired = connection.requiresUsername();
+        final boolean validLengthValues = minUsernameLength != UNUSED_USERNAME_LENGTH && maxUsernameLength != UNUSED_USERNAME_LENGTH;
+        if (connection.requiresUsername() && validLengthValues) {
+            errorDescription = getResources().getString(R.string.com_auth0_lock_input_error_username, minUsernameLength, maxUsernameLength);
+        }
+    }
+
+    /**
+     * Choose username or email DataType, according to the Username Style.
+     *
+     * @param style to use in this username field
+     */
+    public void setUsernameStyle(@UsernameStyle int style) {
+        if (style == EMAIL || !usernameRequired) {
             setDataType(DataType.EMAIL);
-        } else if (configuration.getUsernameStyle() == USERNAME) {
+        } else if (style == USERNAME) {
             setDataType(DataType.USERNAME);
-            String error = getResources().getString(R.string.com_auth0_lock_input_error_username, minUsernameLength, maxUsernameLength);
-            if (minUsernameLength == UNUSED_USERNAME_LENGTH || maxUsernameLength == UNUSED_USERNAME_LENGTH) {
-                error = getResources().getString(R.string.com_auth0_lock_input_error_username_empty);
-            }
-            setErrorDescription(error);
-        } else if (configuration.getUsernameStyle() == DEFAULT) {
+            setErrorDescription(errorDescription);
+        } else if (style == DEFAULT) {
             setDataType(DataType.USERNAME_OR_EMAIL);
         }
     }

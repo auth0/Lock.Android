@@ -40,6 +40,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.internal.configuration.AuthMode;
+import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
@@ -80,19 +81,21 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         enterpriseBtn = (SocialButton) findViewById(R.id.com_auth0_lock_enterprise_button);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
-        domainParser = new EnterpriseConnectionMatcher(lockWidget.getConfiguration().getEnterpriseConnections());
+        Configuration configuration = lockWidget.getConfiguration();
+        domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseConnections());
         usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(DataType.PASSWORD);
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
-        emailInput.chooseDataType(lockWidget.getConfiguration());
+        emailInput.configureFrom(configuration.getDatabaseConnection());
+        emailInput.setUsernameStyle(configuration.getUsernameStyle());
         emailInput.setIdentityListener(this);
         usernameInput.setDataType(DataType.USERNAME);
 
-        fallbackToDatabase = lockWidget.getConfiguration().getDatabaseConnection() != null;
-        changePasswordEnabled = fallbackToDatabase && lockWidget.getConfiguration().allowForgotPassword();
+        fallbackToDatabase = configuration.getDatabaseConnection() != null;
+        changePasswordEnabled = fallbackToDatabase && configuration.allowForgotPassword();
         changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
         changePasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -100,11 +103,11 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
                 lockWidget.showChangePasswordForm(true);
             }
         });
-        boolean socialAvailable = !lockWidget.getConfiguration().getSocialConnections().isEmpty();
-        boolean singleEnterprise = lockWidget.getConfiguration().getEnterpriseConnections().size() == 1;
+        boolean socialAvailable = !configuration.getSocialConnections().isEmpty();
+        boolean singleEnterprise = configuration.getEnterpriseConnections().size() == 1;
         if (!fallbackToDatabase && !socialAvailable && singleEnterprise) {
             Log.v(TAG, "Only one enterprise connection was found.");
-            setupSingleConnectionUI(lockWidget.getConfiguration().getEnterpriseConnections().get(0));
+            setupSingleConnectionUI(configuration.getEnterpriseConnections().get(0));
         } else {
             Log.v(TAG, "Multiple enterprise/database connections found.");
             setupMultipleConnectionUI();

@@ -37,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.utils.CustomField;
@@ -53,7 +54,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public static final int MAX_FEW_CUSTOM_FIELDS = 2;
 
     private final LockWidgetForm lockWidget;
-    private ValidatedInputView usernameInput;
+    private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedPasswordInputView passwordInput;
     private LinearLayout fieldContainer;
@@ -75,8 +76,9 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
         fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_custom_fields_container);
 
-        usernameInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_username);
-        usernameInput.setDataType(ValidatedInputView.DataType.USERNAME);
+        usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
+        usernameInput.configureFrom(configuration.getDatabaseConnection());
+        usernameInput.setUsernameStyle(UsernameStyle.USERNAME);
         usernameInput.setOnEditorActionListener(this);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
