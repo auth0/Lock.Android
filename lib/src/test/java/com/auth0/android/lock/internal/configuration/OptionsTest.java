@@ -12,6 +12,7 @@ import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 
+import org.hamcrest.collection.IsCollectionWithSize;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,6 +33,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -476,6 +478,25 @@ public class OptionsTest {
         assertThat(options.getAuthenticationParameters(), is(equalTo(parceledOptions.getAuthenticationParameters())));
     }
 
+    @Test
+    public void shouldSetConnectionScope() throws Exception {
+        options.withConnectionScope("some_connection", "scope for some connection");
+        options.withConnectionScope("other_connection", "scope for other connection");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getConnectionsScope(), is(equalTo(parceledOptions.getConnectionsScope())));
+        assertThat(options.getConnectionsScope().size(), is(2));
+        assertThat(options.getConnectionsScope(), hasEntry("some_connection", "scope for some connection"));
+        assertThat(options.getConnectionsScope(), hasEntry("other_connection", "scope for other connection"));
+        assertThat(parceledOptions.getConnectionsScope().size(), is(2));
+        assertThat(parceledOptions.getConnectionsScope(), hasEntry("some_connection", "scope for some connection"));
+        assertThat(parceledOptions.getConnectionsScope(), hasEntry("other_connection", "scope for other connection"));
+    }
+
     @SuppressWarnings("ResourceType")
     @Test
     public void shouldAddAuthStyles() throws Exception {
@@ -489,13 +510,13 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getAuthStyles().size(), is(3));
-        assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("firstConnection", 1)));
-        assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("secondConnection", 2)));
-        assertThat(options.getAuthStyles(), is(IsMapContaining.hasEntry("thirdConnection", 3)));
+        assertThat(options.getAuthStyles(), is(hasEntry("firstConnection", 1)));
+        assertThat(options.getAuthStyles(), is(hasEntry("secondConnection", 2)));
+        assertThat(options.getAuthStyles(), is(hasEntry("thirdConnection", 3)));
         assertThat(parceledOptions.getAuthStyles().size(), is(3));
-        assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("firstConnection", 1)));
-        assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("secondConnection", 2)));
-        assertThat(parceledOptions.getAuthStyles(), is(IsMapContaining.hasEntry("thirdConnection", 3)));
+        assertThat(parceledOptions.getAuthStyles(), is(hasEntry("firstConnection", 1)));
+        assertThat(parceledOptions.getAuthStyles(), is(hasEntry("secondConnection", 2)));
+        assertThat(parceledOptions.getAuthStyles(), is(hasEntry("thirdConnection", 3)));
     }
 
     @Test
