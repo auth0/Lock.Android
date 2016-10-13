@@ -225,7 +225,7 @@ public class ValidatedInputView extends LinearLayout {
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 inputIcon = R.drawable.com_auth0_lock_ic_username;
                 hint = getResources().getString(R.string.com_auth0_lock_hint_username);
-                error = getResources().getString(R.string.com_auth0_lock_input_error_empty);
+                error = getResources().getString(R.string.com_auth0_lock_input_error_username_empty);
                 break;
             case USERNAME:
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);

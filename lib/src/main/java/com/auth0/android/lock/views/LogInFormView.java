@@ -92,7 +92,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         emailInput.configureFrom(configuration.getDatabaseConnection());
         emailInput.setUsernameStyle(configuration.getUsernameStyle());
         emailInput.setIdentityListener(this);
-        usernameInput.setDataType(DataType.USERNAME);
+        usernameInput.setDataType(DataType.NON_EMPTY_USERNAME);
 
         fallbackToDatabase = configuration.getDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && configuration.allowForgotPassword();
