@@ -105,14 +105,14 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
             return true;
         }
         boolean validUsernameLength = value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
-        boolean validUsername = validUsernameLength && !isCustomDatabase ? value.matches(USERNAME_REGEX) : validUsernameLength;
 
         if (getDataType() == DataType.USERNAME) {
-            return validUsername;
+            return validUsernameLength && !isCustomDatabase ? value.matches(USERNAME_REGEX) : validUsernameLength;
         }
         if (getDataType() == DataType.USERNAME_OR_EMAIL) {
+            //This case is only used in the LogInFormView, avoid validating against username regex
             final boolean validEmail = value.matches(EMAIL_REGEX);
-            return validEmail || validUsername;
+            return validEmail || validUsernameLength;
         }
         return super.validate(validateEmptyFields);
     }
