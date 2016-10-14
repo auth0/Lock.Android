@@ -139,7 +139,7 @@ public class DatabaseConnectionTest {
     }
 
     @Test
-    public void shouldGetDefaultMinMaxUsernameLengthIfMissing() throws Exception {
+    public void shouldGetNonEmptyMinMaxUsernameLengthIfMissingMinMaxValues() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
@@ -149,11 +149,11 @@ public class DatabaseConnectionTest {
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
-        assertThat(connection.getMaxUsernameLength(), is(15));
+        assertThat(connection.getMaxUsernameLength(), is(Integer.MAX_VALUE));
     }
 
     @Test
-    public void shouldGetInfiniteMinMaxUsernameLengthIfMissingUsernameValidation() throws Exception {
+    public void shouldGetNonEmptyMinMaxUsernameLengthIfMissingUsernameValidation() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
@@ -165,17 +165,17 @@ public class DatabaseConnectionTest {
     }
 
     @Test
-    public void shouldGetDefaultMinMaxUsernameLengthIfMissingValidation() throws Exception {
+    public void shouldGetNonEmptyMinMaxUsernameLengthIfMissingValidation() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
-        assertThat(connection.getMaxUsernameLength(), is(15));
+        assertThat(connection.getMaxUsernameLength(), is(Integer.MAX_VALUE));
     }
 
     @Test
-    public void shouldGetDefaultMinMaxUsernameLengthIfMaxIsLowerThanMin() throws Exception {
+    public void shouldGetNonEmptyMinMaxUsernameLengthIfMaxIsLowerThanMin() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
@@ -187,11 +187,11 @@ public class DatabaseConnectionTest {
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
-        assertThat(connection.getMaxUsernameLength(), is(15));
+        assertThat(connection.getMaxUsernameLength(), is(Integer.MAX_VALUE));
     }
 
     @Test
-    public void shouldGetDefaultMinMaxUsernameLengthIfMaxIsMissing() throws Exception {
+    public void shouldGetNonEmptyMinMaxUsernameLengthIfMaxIsMissing() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
@@ -202,11 +202,11 @@ public class DatabaseConnectionTest {
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
-        assertThat(connection.getMaxUsernameLength(), is(15));
+        assertThat(connection.getMaxUsernameLength(), is(Integer.MAX_VALUE));
     }
 
     @Test
-    public void shouldGetDefaultMinMaxUsernameLengthIfMinIsMissing() throws Exception {
+    public void shouldGetNonEmptyMinMaxUsernameLengthIfMinIsMissing() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
@@ -217,7 +217,16 @@ public class DatabaseConnectionTest {
         DatabaseConnection connection = connectionFor(values);
 
         assertThat(connection.getMinUsernameLength(), is(1));
-        assertThat(connection.getMaxUsernameLength(), is(15));
+        assertThat(connection.getMaxUsernameLength(), is(Integer.MAX_VALUE));
+    }
+
+    @Test
+    public void shouldBeCustomDatabaseIfMissingValidation() throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "Username-Password-Authentication");
+        DatabaseConnection connection = connectionFor(values);
+
+        assertTrue(connection.isCustomDatabase());
     }
 
     @Test
