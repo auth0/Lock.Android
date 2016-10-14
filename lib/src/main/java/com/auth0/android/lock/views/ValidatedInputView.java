@@ -295,6 +295,7 @@ public class ValidatedInputView extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
+        errorDescription.measure(widthMeasureSpec, heightMeasureSpec);
         int errorDescriptionHeight = ViewUtils.measureViewHeight(errorDescription);
         int inputHeight = ViewUtils.measureViewHeight(input);
         ViewGroup iconHolder = (ViewGroup) icon.getParent();
