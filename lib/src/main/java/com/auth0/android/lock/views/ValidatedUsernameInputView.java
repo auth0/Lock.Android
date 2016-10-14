@@ -37,15 +37,14 @@ import static com.auth0.android.lock.UsernameStyle.EMAIL;
 import static com.auth0.android.lock.UsernameStyle.USERNAME;
 import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MAX_USERNAME_LENGTH;
 import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MIN_USERNAME_LENGTH;
-import static com.auth0.android.lock.internal.configuration.DatabaseConnection.UNUSED_USERNAME_LENGTH;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
     private int minUsernameLength = MIN_USERNAME_LENGTH;
     private int maxUsernameLength = MAX_USERNAME_LENGTH;
 
-    private String errorDescription;
     private boolean usernameRequired;
+    private boolean isCustomDatabase;
 
     public ValidatedUsernameInputView(Context context) {
         super(context);
@@ -63,7 +62,6 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
     }
 
     private void init() {
-        errorDescription = getResources().getString(R.string.com_auth0_lock_input_error_username_empty);
         setUsernameStyle(DEFAULT);
     }
 
@@ -79,10 +77,7 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
         minUsernameLength = connection.getMinUsernameLength();
         maxUsernameLength = connection.getMaxUsernameLength();
         usernameRequired = connection.requiresUsername();
-        final boolean validLengthValues = minUsernameLength != UNUSED_USERNAME_LENGTH && maxUsernameLength != UNUSED_USERNAME_LENGTH;
-        if (connection.requiresUsername() && validLengthValues) {
-            errorDescription = getResources().getString(R.string.com_auth0_lock_input_error_username, minUsernameLength, maxUsernameLength);
-        }
+        isCustomDatabase = connection.isCustomDatabase();
     }
 
     /**
@@ -95,6 +90,8 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
             setDataType(DataType.EMAIL);
         } else if (style == USERNAME) {
             setDataType(DataType.USERNAME);
+            String errorDescription = isCustomDatabase ? getResources().getString(R.string.com_auth0_lock_input_error_username_empty) :
+                    getResources().getString(R.string.com_auth0_lock_input_error_username, minUsernameLength, maxUsernameLength);
             setErrorDescription(errorDescription);
         } else if (style == DEFAULT) {
             setDataType(DataType.USERNAME_OR_EMAIL);
@@ -107,12 +104,8 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
         if (!validateEmptyFields && value.isEmpty()) {
             return true;
         }
-        boolean validUsername;
-        if (minUsernameLength == UNUSED_USERNAME_LENGTH || maxUsernameLength == UNUSED_USERNAME_LENGTH) {
-            validUsername = !value.isEmpty();
-        } else {
-            validUsername = value.matches(USERNAME_REGEX) && value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
-        }
+        boolean validUsernameLength = value.length() >= minUsernameLength && value.length() <= maxUsernameLength;
+        boolean validUsername = validUsernameLength && !isCustomDatabase ? value.matches(USERNAME_REGEX) : validUsernameLength;
 
         if (getDataType() == DataType.USERNAME) {
             return validUsername;

@@ -2,7 +2,6 @@ package com.auth0.android.lock.internal.configuration;
 
 public interface DatabaseConnection extends BaseConnection {
 
-    int UNUSED_USERNAME_LENGTH = -1;
     int MIN_USERNAME_LENGTH = 1;
     int MAX_USERNAME_LENGTH = 15;
 
@@ -48,4 +47,11 @@ public interface DatabaseConnection extends BaseConnection {
      * @return the maximum username length.
      */
     int getMaxUsernameLength();
+
+    /**
+     * Whether this connection is a Custom/Imported Database.
+     *
+     * @return true if this connection is a Custom/Imported Database.
+     */
+    boolean isCustomDatabase();
 }

@@ -17,6 +17,7 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     private Map<String, Object> values;
     private int minUsernameLength;
     private int maxUsernameLength;
+    private boolean isCustomDatabase;
 
     private Connection(@NonNull String strategy, Map<String, Object> values) {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
@@ -125,6 +126,11 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     }
 
     @Override
+    public boolean isCustomDatabase() {
+        return isCustomDatabase;
+    }
+
+    @Override
     public boolean isActiveFlowEnabled() {
         return "ad".equals(getStrategy()) || "adfs".equals(getStrategy()) || "waad".equals(getStrategy());
     }
@@ -163,9 +169,10 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
             maxUsernameLength = MAX_USERNAME_LENGTH;
             return;
         }
-        if (!validations.containsKey("username")){
-            minUsernameLength = UNUSED_USERNAME_LENGTH;
-            maxUsernameLength = UNUSED_USERNAME_LENGTH;
+        if (!validations.containsKey("username")) {
+            isCustomDatabase = true;
+            minUsernameLength = MIN_USERNAME_LENGTH;
+            maxUsernameLength = Integer.MAX_VALUE;
             return;
         }
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
