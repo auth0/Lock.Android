@@ -153,15 +153,15 @@ public class DatabaseConnectionTest {
     }
 
     @Test
-    public void shouldOnlyGetMinUsernameLengthIfMissingUsernameValidation() throws Exception {
+    public void shouldGetInfiniteMinMaxUsernameLengthIfMissingUsernameValidation() throws Exception {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "Username-Password-Authentication");
         Map<String, Object> validation = new HashMap<>();
         values.put("validation", validation);
         DatabaseConnection connection = connectionFor(values);
 
-        assertThat(connection.getMinUsernameLength(), is(-1));
-        assertThat(connection.getMaxUsernameLength(), is(-1));
+        assertThat(connection.getMinUsernameLength(), is(1));
+        assertThat(connection.getMaxUsernameLength(), is(Integer.MAX_VALUE));
     }
 
     @Test
@@ -218,6 +218,30 @@ public class DatabaseConnectionTest {
 
         assertThat(connection.getMinUsernameLength(), is(1));
         assertThat(connection.getMaxUsernameLength(), is(15));
+    }
+
+    @Test
+    public void shouldBeCustomDatabaseIfMissingUsernameValidation() throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "Username-Password-Authentication");
+        Map<String, Object> validation = new HashMap<>();
+        values.put("validation", validation);
+        DatabaseConnection connection = connectionFor(values);
+
+        assertTrue(connection.isCustomDatabase());
+    }
+
+    @Test
+    public void shouldNotBeCustomDatabaseIfContainsUsernameValidation() throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "Username-Password-Authentication");
+        Map<String, Object> validation = new HashMap<>();
+        values.put("validation", validation);
+        Map<String, Object> username = new HashMap<>();
+        validation.put("username", username);
+        DatabaseConnection connection = connectionFor(values);
+
+        assertFalse(connection.isCustomDatabase());
     }
 
     @Test
