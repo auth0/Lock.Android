@@ -34,25 +34,25 @@
         </LinearLayout>
 
         <RadioGroup
-            android:id="@+id/group_webmode"
+            android:id="@+id/group_submitmode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radio_use_browser"
+                android:id="@+id/radio_use_icon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Use Browser" />
+                android:text="Submit with Icon" />
 
             <RadioButton
-                android:id="@+id/radio_use_webview"
+                android:id="@+id/radio_use_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Use WebView" />
+                android:text="Submit with Label" />
         </RadioGroup>
 
         <CheckBox
