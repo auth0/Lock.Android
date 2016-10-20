@@ -211,6 +211,17 @@ By default you should at least use the following files:
 
 As this library depends on `Auth0.Android`, you should keep the files up to date with the proguard rules defined in the [repository](https://github.com/auth0/Auth0.Android).
 
+
+## Demo Project
+If you plan to use the Demo included in this repository you'll need to define in the project's `local.properties` file the 2 values required by Auth0 to generate your credentials and then *build* the project. If this file doesn't exist, try to *Sync the project with Gradle files* first.
+
+```xml
+auth0.domain={YOUR_AUTH0_DOMAIN}
+auth0.clientId={YOUR_AUTH0_CLIENT_ID}
+```
+
+For more information, check the [gradle-credentials](https://github.com/auth0/android-gradle-credentials)'s Readme.
+
 ## What is Auth0?
 
 Auth0 helps you to:
