@@ -479,6 +479,25 @@ public class Lock {
             return this;
         }
 
+        /**
+         * Sets the Connection Scope to request when performing an Authentication with the given Connection.
+         *
+         * @param connectionName to which specify the scopes.
+         * @param scope          recognized by this specific authentication provider.
+         * @return the current builder instance
+         */
+        public Builder withConnectionScope(@NonNull String connectionName, @NonNull String... scope) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : scope) {
+                sb.append(s.trim()).append(",");
+            }
+            if (sb.length() > 0) {
+                sb.deleteCharAt(sb.length() - 1);
+                options.withConnectionScope(connectionName, sb.toString());
+            }
+            return this;
+        }
+
         private List<CustomField> removeDuplicatedKeys(List<CustomField> customFields) {
             int originalSize = customFields.size();
             final List<CustomField> withoutDuplicates = new ArrayList<>();

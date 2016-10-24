@@ -54,6 +54,7 @@ public class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
+    private static final String KEY_CONNECTIONS_SCOPE = "connectionsScope";
     private static final String SCOPE_KEY = "scope";
     private static final String DEVICE_KEY = "device";
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
@@ -76,6 +77,7 @@ public class Options implements Parcelable {
     private List<String> enterpriseConnectionsUsingWebForm;
     private HashMap<String, Integer> authStyles;
     private HashMap<String, Object> authenticationParameters;
+    private HashMap<String, String> connectionsScope;
     private List<CustomField> customFields;
     private int initialScreen;
     private Theme theme;
@@ -94,6 +96,7 @@ public class Options implements Parcelable {
         usePKCE = true;
         authenticationParameters = new HashMap<>();
         authStyles = new HashMap<>();
+        connectionsScope = new HashMap<>();
         customFields = new ArrayList<>();
         theme = Theme.newBuilder().build();
     }
@@ -148,6 +151,13 @@ public class Options implements Parcelable {
             }
         } else {
             authStyles = null;
+        }
+        if (in.readByte() == HAS_DATA) {
+            // FIXME this is something to improve
+            Bundle mapBundle = in.readBundle();
+            connectionsScope = (HashMap<String, String>) mapBundle.getSerializable(KEY_CONNECTIONS_SCOPE);
+        } else {
+            connectionsScope = null;
         }
         if (in.readByte() == HAS_DATA) {
             customFields = new ArrayList<>();
@@ -209,6 +219,15 @@ public class Options implements Parcelable {
             dest.writeByte((byte) (HAS_DATA));
             dest.writeList(new ArrayList<>(authStyles.keySet()));
             dest.writeList(new ArrayList<>(authStyles.values()));
+        }
+        if (connectionsScope == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            // FIXME this is something to improve
+            Bundle mapBundle = new Bundle();
+            mapBundle.putSerializable(KEY_CONNECTIONS_SCOPE, connectionsScope);
+            dest.writeBundle(mapBundle);
         }
         if (customFields == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
@@ -437,5 +456,14 @@ public class Options implements Parcelable {
 
     public boolean useLabeledSubmitButton() {
         return useLabeledSubmitButton;
+    }
+
+    public void withConnectionScope(@NonNull String connectionName, @NonNull String scope) {
+        connectionsScope.put(connectionName, scope);
+    }
+
+    @NonNull
+    public Map<String, String> getConnectionsScope() {
+        return connectionsScope;
     }
 }
