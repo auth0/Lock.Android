@@ -1,5 +1,39 @@
 # Change Log
 
+## [2.1.0](https://github.com/auth0/Lock.Android/tree/2.1.0) (2016-10-24)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0...2.1.0)
+
+**Added**
+- Support connection_scope for OAuth Connections [\#361](https://github.com/auth0/Lock.Android/pull/361) ([lbalmaceda](https://github.com/lbalmaceda))
+- Send LockException if the Theme is invalid [\#358](https://github.com/auth0/Lock.Android/pull/358) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add labeled submit button option [\#352](https://github.com/auth0/Lock.Android/pull/352) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Non-empty username validation for custom/imported connections [\#360](https://github.com/auth0/Lock.Android/pull/360) ([lbalmaceda](https://github.com/lbalmaceda))
+- Fix Theme load from styles.xml [\#357](https://github.com/auth0/Lock.Android/pull/357) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Breaking changes**
+- Use browser by default when using WebAuthProvider. [\#355](https://github.com/auth0/Lock.Android/pull/355) ([lbalmaceda](https://github.com/lbalmaceda))
+
+Since Google will be [blocking webview OAuth request](https://developers.googleblog.com/2016/08/modernizing-oauth-interactions-in-native-apps.html) we switched the default authentication flow for all social connections from WebView to Browser.
+Browser authentication requires a little more configuration in your `AndroidManifest.xml` file. 
+First make sure `LockActivity` has `singleTask` in `android:launchMode` and then add to it an `intent-filter`:
+ 
+```xml
+<intent-filter>
+  <action android:name="android.intent.action.VIEW" />
+
+  <category android:name="android.intent.category.DEFAULT" />
+  <category android:name="android.intent.category.BROWSABLE" />
+
+  <data
+    android:host="{YOUR_AUTH0_DOMAIN}"
+    android:pathPrefix="/android/{YOUR_APP_PACKAGE_NAME}/callback"
+    android:scheme="https" />
+</intent-filter>
+```
+
+
 ## [2.0.0](https://github.com/auth0/Lock.Android/tree/2.0.0) (2016-09-21)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0-beta.4...2.0.0)
 
