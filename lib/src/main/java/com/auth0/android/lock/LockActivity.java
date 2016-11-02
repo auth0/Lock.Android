@@ -330,12 +330,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        WebAuthProvider.init(options.getAccount())
+        final WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
-                .withConnectionScope(options.getConnectionsScope().get(connection))
                 .withParameters(options.getAuthenticationParameters())
-                .withConnection(connection)
-                .start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+                .withConnection(connection);
+        final String connectionScope = options.getConnectionsScope().get(connection);
+        if (connectionScope != null) {
+            builder.withConnectionScope(connectionScope);
+        }
+        builder.start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")
