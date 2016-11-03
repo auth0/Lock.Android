@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.1.1](https://github.com/auth0/Lock.Android/tree/2.1.1) (2016-11-02)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.1.0...2.1.1)
+
+**Fixed**
+- Fix NPE when connection scope is missing [\#365](https://github.com/auth0/Lock.Android/pull/365) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.1.0](https://github.com/auth0/Lock.Android/tree/2.1.0) (2016-10-24)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.0.0...2.1.0)
 
