@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.2.0](https://github.com/auth0/Lock.Android/tree/2.2.0) (2016-11-21)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.1.1...2.2.0)
+
+**Added**
+- Allow to set a custom scope. [\#368](https://github.com/auth0/Lock.Android/pull/368) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Update to auth0.android 1.1.1 [\#369](https://github.com/auth0/Lock.Android/pull/369) ([hzalaz](https://github.com/hzalaz))
+
 ## [2.1.1](https://github.com/auth0/Lock.Android/tree/2.1.1) (2016-11-02)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.1.0...2.1.1)
 
