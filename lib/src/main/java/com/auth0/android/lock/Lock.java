@@ -444,6 +444,17 @@ public class Lock {
         }
 
         /**
+         * Sets the Scope to request when performing the Authentication.
+         *
+         * @param scope to use in the Authentication.
+         * @return the current builder instance
+         */
+        public Builder withScope(@NonNull String scope) {
+            options.withScope(scope);
+            return this;
+        }
+
+        /**
          * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
          * The default value is 'https://auth0.com/privacy'
          *
