@@ -12,8 +12,6 @@ import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 
-import org.hamcrest.collection.IsCollectionWithSize;
-import org.hamcrest.collection.IsMapContaining;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,6 +31,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -497,6 +496,19 @@ public class OptionsTest {
         assertThat(parceledOptions.getConnectionsScope(), hasEntry("other_connection", "scope for other connection"));
     }
 
+    @Test
+    public void shouldSetScope() throws Exception {
+        options.withScope("some connection scope");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getScope(), is(equalTo("some connection scope")));
+        assertThat(parceledOptions.getScope(), is("some connection scope"));
+    }
+
     @SuppressWarnings("ResourceType")
     @Test
     public void shouldAddAuthStyles() throws Exception {
@@ -601,6 +613,7 @@ public class OptionsTest {
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
         assertThat(options.useLabeledSubmitButton(), is(false));
+        assertThat(options.getScope(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));

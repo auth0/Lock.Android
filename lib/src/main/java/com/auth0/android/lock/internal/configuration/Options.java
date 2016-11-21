@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Patterns;
 
@@ -83,6 +84,7 @@ public class Options implements Parcelable {
     private Theme theme;
     private String privacyURL;
     private String termsURL;
+    private String scope;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -121,6 +123,7 @@ public class Options implements Parcelable {
         theme = in.readParcelable(Theme.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
+        scope = in.readString();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -192,6 +195,7 @@ public class Options implements Parcelable {
         dest.writeParcelable(theme, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
+        dest.writeString(scope);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -465,5 +469,14 @@ public class Options implements Parcelable {
     @NonNull
     public Map<String, String> getConnectionsScope() {
         return connectionsScope;
+    }
+
+    public void withScope(@NonNull String scope) {
+        this.scope = scope;
+    }
+
+    @Nullable
+    public String getScope() {
+        return scope;
     }
 }

@@ -342,6 +342,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Sets the Scope to request when performing the Authentication.
+         *
+         * @param scope to use in the Authentication.
+         * @return the current builder instance
+         */
+        public Builder withScope(@NonNull String scope) {
+            options.withScope(scope);
+            return this;
+        }
+
+        /**
          * Sets the Connection Scope to request when performing an Authentication with the given Connection.
          *
          * @param connectionName to which specify the scopes.

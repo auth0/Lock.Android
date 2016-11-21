@@ -338,6 +338,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (connectionScope != null) {
             builder.withConnectionScope(connectionScope);
         }
+        final String scope = options.getScope();
+        if (scope != null) {
+            builder.withScope(scope);
+        }
         builder.start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
