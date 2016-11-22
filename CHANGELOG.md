@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.2.1](https://github.com/auth0/Lock.Android/tree/2.2.1) (2016-11-22)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.2.0...2.2.1)
+
+**Changed**
+- Update auth0.android to fix scope issue [\#370](https://github.com/auth0/Lock.Android/pull/370) ([hzalaz](https://github.com/hzalaz))
+
 ## [2.2.0](https://github.com/auth0/Lock.Android/tree/2.2.0) (2016-11-21)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.1.1...2.2.0)
 
