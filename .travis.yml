@@ -11,11 +11,11 @@ android:
   - extra-google-m2repository
   - extra-android-m2repository
   - addon-google_apis-google-24
-before_install:
+before_script:
   - echo "auth0.domain=domain.auth0.com" > local.properties
   - echo "auth0.clientId=clientId" >> local.properties
 script:
-  - "./gradlew clean lock:testDebug --continue"
+  - "./gradlew clean test --continue"
 branches:
   only:
   - master
