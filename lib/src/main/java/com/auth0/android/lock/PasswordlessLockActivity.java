@@ -109,6 +109,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private TextView resendButton;
 
     private AuthProvider currentProvider;
+    private WebProvider webProvider;
 
     private LoginErrorMessageBuilder loginErrorBuilder;
 
@@ -117,10 +118,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     @VisibleForTesting
-    PasswordlessLockActivity(Configuration configuration, Options options, PasswordlessLockView lockView, String lastEmailOrNumber) {
+    PasswordlessLockActivity(Configuration configuration, Options options, PasswordlessLockView lockView, WebProvider webProvider, String lastEmailOrNumber) {
         this.configuration = configuration;
         this.options = options;
         this.lockView = lockView;
+        this.webProvider = webProvider;
         this.lastPasswordlessEmailOrNumber = lastEmailOrNumber;
     }
 
@@ -351,7 +353,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 break;
             case WEB_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
-                WebAuthProvider.resume(requestCode, resultCode, data);
+                webProvider.resume(requestCode, resultCode, data);
                 break;
             case CUSTOM_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
@@ -368,10 +370,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Override
     protected void onNewIntent(Intent intent) {
         lockView.showProgress(false);
-        if (WebAuthProvider.resume(intent)) {
+        if (webProvider.resume(intent)) {
             return;
         } else if (currentProvider != null) {
-            lockView.showProgress(false);
             currentProvider.authorize(intent);
             currentProvider = null;
             return;
@@ -436,7 +437,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         lockView.showProgress(true);
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         String connectionName = configuration.getPasswordlessConnection().getName();
         if (event.getCode() != null) {
             event.getLoginRequest(apiClient, lastPasswordlessEmailOrNumber)
@@ -465,7 +466,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        final WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
+        final WebAuthProvider.Builder builder = webProvider.init()
                 .useBrowser(options.useBrowser())
                 .withParameters(options.getAuthenticationParameters())
                 .withConnection(event.getConnection());
