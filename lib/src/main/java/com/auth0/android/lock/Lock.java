@@ -251,12 +251,14 @@ public class Lock {
         }
 
         /**
-         * Whether to use implicit grant or code grant when performing calls to /authorize.
+         * Whether to use implicit grant or code grant when performing calls to /authorize. This only affects passive authentication.
          * Default is {@code false}
          *
          * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
          * @return the current Builder instance
+         * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
          */
+        @Deprecated
         public Builder useImplicitGrant(boolean useImplicitGrant) {
             options.setUsePKCE(!useImplicitGrant);
             return this;

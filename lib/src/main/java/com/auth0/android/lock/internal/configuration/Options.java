@@ -280,10 +280,12 @@ public class Options implements Parcelable {
         return theme;
     }
 
+    @Deprecated
     public boolean usePKCE() {
         return usePKCE;
     }
 
+    @Deprecated
     public void setUsePKCE(boolean usePKCE) {
         this.usePKCE = usePKCE;
     }
