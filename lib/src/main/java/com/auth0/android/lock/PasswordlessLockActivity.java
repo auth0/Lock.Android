@@ -461,6 +461,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnection());
         currentProvider = AuthResolver.providerFor(event.getStrategy(), event.getConnection());
         if (currentProvider != null) {
+            currentProvider.setParameters(options.getAuthenticationParameters());
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
         }
