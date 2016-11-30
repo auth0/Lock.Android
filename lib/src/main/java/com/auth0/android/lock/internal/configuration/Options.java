@@ -61,6 +61,7 @@ public class Options implements Parcelable {
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
 
     private Auth0 account;
+    private boolean loggingEnabled;
     private boolean useBrowser;
     private boolean usePKCE;
     private boolean closable;
@@ -106,6 +107,7 @@ public class Options implements Parcelable {
     protected Options(Parcel in) {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         account = auth0Parcelable.getAuth0();
+        loggingEnabled = in.readByte() != WITHOUT_DATA;
         useBrowser = in.readByte() != WITHOUT_DATA;
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
@@ -178,6 +180,7 @@ public class Options implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(new Auth0Parcelable(account));
+        dest.writeByte((byte) (loggingEnabled ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useBrowser ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
@@ -260,6 +263,14 @@ public class Options implements Parcelable {
 
     public void setAccount(Auth0 account) {
         this.account = account;
+    }
+
+    public void setLoggingEnabled(boolean enabled) {
+        loggingEnabled = enabled;
+    }
+
+    public boolean isLoggingEnabled() {
+        return loggingEnabled;
     }
 
     @Deprecated
@@ -388,7 +399,9 @@ public class Options implements Parcelable {
     }
 
     public AuthenticationAPIClient getAuthenticationAPIClient() {
-        return new AuthenticationAPIClient(account);
+        final AuthenticationAPIClient client = new AuthenticationAPIClient(account);
+        client.setLoggingEnabled(loggingEnabled);
+        return client;
     }
 
     public void setUseCodePasswordless(boolean useCode) {

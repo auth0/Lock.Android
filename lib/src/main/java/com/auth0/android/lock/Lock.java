@@ -238,6 +238,16 @@ public class Lock {
         }
 
         /**
+         * Log each HTTP Request & Response made by Lock in the Android's Logcat.
+         *
+         * @return the current Builder instance
+         */
+        public Builder enableLogging() {
+            options.setLoggingEnabled(true);
+            return this;
+        }
+
+        /**
          * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
