@@ -390,7 +390,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final String connection = configuration.getDatabaseConnection().getName();
         apiClient.resetPassword(event.getEmail(), connection)
-                .addParameters(options.getAuthenticationParameters())
                 .start(changePwdCallback);
     }
 
