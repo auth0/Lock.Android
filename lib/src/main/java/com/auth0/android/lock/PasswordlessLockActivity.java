@@ -223,24 +223,11 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     }
 
     private void deliverAuthenticationResult(Credentials credentials) {
-        String requestedScopes = "openid";  //default authentication scope
-        if (options.getAuthenticationParameters().containsKey("scope")) {
-            requestedScopes = (String) options.getAuthenticationParameters().get("scope");
-        }
-
         Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
-        if (credentials.getAccessToken() == null) {
-            intent.putExtra(Constants.ERROR_EXTRA, "The access_token is missing from the response.");
-        } else if (requestedScopes.contains("openid") && credentials.getIdToken() == null) {
-            intent.putExtra(Constants.ERROR_EXTRA, "The id_token is missing from the response.");
-        } else if (requestedScopes.contains("offline_access") && credentials.getRefreshToken() == null) {
-            intent.putExtra(Constants.ERROR_EXTRA, "The refresh_token is missing from the response.");
-        } else {
-            intent.putExtra(Constants.ID_TOKEN_EXTRA, credentials.getIdToken());
-            intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, credentials.getAccessToken());
-            intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, credentials.getRefreshToken());
-            intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
-        }
+        intent.putExtra(Constants.ID_TOKEN_EXTRA, credentials.getIdToken());
+        intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, credentials.getAccessToken());
+        intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, credentials.getRefreshToken());
+        intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
