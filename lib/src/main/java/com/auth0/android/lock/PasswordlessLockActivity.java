@@ -466,20 +466,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        final WebAuthProvider.Builder builder = webProvider.init()
-                .useBrowser(options.useBrowser())
-                .withParameters(options.getAuthenticationParameters())
-                .withConnection(event.getConnection());
-
-        final String connectionScope = options.getConnectionsScope().get(event.getConnection());
-        if (connectionScope != null) {
-            builder.withConnectionScope(connectionScope);
-        }
-        final String scope = options.getScope();
-        if (scope != null) {
-            builder.withScope(scope);
-        }
-        builder.start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, event.getConnection(), authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     //Callbacks

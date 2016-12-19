@@ -124,7 +124,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
-        webProvider = new WebProvider(options.getAccount());
+        webProvider = new WebProvider(options);
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
@@ -331,19 +331,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        final WebAuthProvider.Builder builder = webProvider.init()
-                .useBrowser(options.useBrowser())
-                .withParameters(options.getAuthenticationParameters())
-                .withConnection(connection);
-        final String connectionScope = options.getConnectionsScope().get(connection);
-        if (connectionScope != null) {
-            builder.withConnectionScope(connectionScope);
-        }
-        final String scope = options.getScope();
-        if (scope != null) {
-            builder.withScope(scope);
-        }
-        builder.start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, connection, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")

@@ -21,7 +21,6 @@ import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
-import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
 
 import org.junit.Before;
@@ -43,7 +42,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -67,8 +65,6 @@ public class LockActivityTest {
     @Mock
     WebProvider webProvider;
     @Mock
-    WebAuthProvider.Builder webBuilder;
-    @Mock
     AuthenticationRequest authRequest;
     @Mock
     SignUpRequest signUpRequest;
@@ -87,15 +83,6 @@ public class LockActivityTest {
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
         when(options.getAuthenticationAPIClient()).thenReturn(client);
 
-        when(webProvider.init()).thenReturn(webBuilder);
-        when(webBuilder.useCodeGrant(anyBoolean())).thenReturn(webBuilder);
-        when(webBuilder.withConnection(anyString())).thenReturn(webBuilder);
-        when(webBuilder.withConnectionScope(anyString())).thenReturn(webBuilder);
-        when(webBuilder.withParameters(anyMapOf(String.class, Object.class))).thenReturn(webBuilder);
-        when(webBuilder.withScope(anyString())).thenReturn(webBuilder);
-        when(webBuilder.withState(anyString())).thenReturn(webBuilder);
-        when(webBuilder.useBrowser(anyBoolean())).thenReturn(webBuilder);
-        when(webBuilder.useFullscreen(anyBoolean())).thenReturn(webBuilder);
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.login(anyString(), anyString(), anyString())).thenReturn(authRequest);
         when(client.createUser(anyString(), anyString(), anyString())).thenReturn(dbRequest);
@@ -324,59 +311,8 @@ public class LockActivityTest {
         when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
-
         verify(lockView, never()).showProgress(eq(true));
-        verify(webBuilder).withParameters(mapCaptor.capture());
-        verify(webBuilder).useBrowser(eq(true));
-        verify(webBuilder).withConnection(eq("my-connection"));
-        verify(webBuilder).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
-
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
-    }
-
-    @Test
-    public void shouldCallOAuthAuthenticationWithCustomConnectionScope() throws Exception {
-        OAuthConnection connection = mock(OAuthConnection.class);
-        when(connection.getName()).thenReturn("my-connection");
-        OAuthLoginEvent event = new OAuthLoginEvent(connection);
-        when(options.getConnectionsScope()).thenReturn(Collections.singletonMap("my-connection", "email openid profile photos"));
-        activity.onOAuthAuthenticationRequest(event);
-
-        verify(lockView, never()).showProgress(true);
-        verify(webBuilder).withConnectionScope(eq("email openid profile photos"));
-        verify(webBuilder).withConnection(eq("my-connection"));
-        verify(webBuilder).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
-    }
-
-    @Test
-    public void shouldCallOAuthAuthenticationWithCustomScope() throws Exception {
-        OAuthConnection connection = mock(OAuthConnection.class);
-        when(connection.getName()).thenReturn("my-connection");
-        OAuthLoginEvent event = new OAuthLoginEvent(connection);
-        when(options.getScope()).thenReturn("email openid profile photos");
-        activity.onOAuthAuthenticationRequest(event);
-
-        verify(lockView, never()).showProgress(true);
-        verify(webBuilder).withScope(eq("email openid profile photos"));
-        verify(webBuilder).withConnection(eq("my-connection"));
-        verify(webBuilder).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
-    }
-
-    @Test
-    public void shouldCallOAuthAuthenticationUsingWebView() throws Exception {
-        OAuthConnection connection = mock(OAuthConnection.class);
-        when(connection.getName()).thenReturn("my-connection");
-        OAuthLoginEvent event = new OAuthLoginEvent(connection);
-        when(options.useBrowser()).thenReturn(false);
-        activity.onOAuthAuthenticationRequest(event);
-
-        verify(lockView, never()).showProgress(true);
-        verify(webBuilder).useBrowser(eq(false));
-        verify(webBuilder).withConnection(eq("my-connection"));
-        verify(webBuilder).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("my-connection"), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
     }
 
     @Test

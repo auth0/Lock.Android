@@ -1,9 +1,12 @@
 package com.auth0.android.lock;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.UriMatcher;
 import android.support.annotation.NonNull;
 
-import com.auth0.android.Auth0;
+import com.auth0.android.lock.internal.configuration.Options;
+import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
 
 /**
@@ -12,24 +15,40 @@ import com.auth0.android.provider.WebAuthProvider;
  */
 class WebProvider {
 
-    private final Auth0 account;
+    private final Options options;
 
     /**
      * Creates a new instance with the given account.
      *
-     * @param account to use in the WebAuthProvider.Builder instances.
+     * @param options to use in the WebAuthProvider.Builder instances.
      */
-    WebProvider(@NonNull Auth0 account) {
-        this.account = account;
+    WebProvider(@NonNull Options options) {
+        this.options = options;
     }
 
     /**
-     * Creates a new instance of the WebAuthProvider.Builder with a valid account.
+     * Configures a new instance of the WebAuthProvider.Builder and starts it.
      *
-     * @return a WebAuthProvider.Builder ready to customize.
+     * @param activity    a valid Activity context
+     * @param connection  to use in the authentication
+     * @param callback    to deliver the authentication result to
+     * @param requestCode to use in the startActivityForResult request
      */
-    public WebAuthProvider.Builder init() {
-        return WebAuthProvider.init(account);
+    public void start(Activity activity, String connection, AuthCallback callback, int requestCode) {
+        WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
+                .useBrowser(options.useBrowser())
+                .withParameters(options.getAuthenticationParameters())
+                .withConnection(connection);
+
+        final String connectionScope = options.getConnectionsScope().get(connection);
+        if (connectionScope != null) {
+            builder.withConnectionScope(connectionScope);
+        }
+        final String scope = options.getScope();
+        if (scope != null) {
+            builder.withScope(scope);
+        }
+        builder.start(activity, callback, requestCode);
     }
 
     /**
