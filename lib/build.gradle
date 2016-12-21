@@ -31,7 +31,7 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.squareup:otto:1.3.8'
-    compile 'com.auth0.android:auth0:1.1.2'
+    compile 'com.auth0.android:auth0:1.3.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'org.robolectric:robolectric:3.1.2'

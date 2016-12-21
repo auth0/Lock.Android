@@ -263,6 +263,18 @@ public class PasswordlessLock {
         }
 
         /**
+         * Use OAuth 2.0 Authorization API. You will need to enable this setting in the Dashboard first. Go to Account (top right), Account Settings, click Advanced and check the toggle at the bottom.
+         * Default is {@code false}
+         *
+         * @param use if Lock will use the OAuth 2.0 API or the previous implementation.
+         * @return the current Builder instance
+         */
+        public Builder useOAuth2(boolean use) {
+            options.useOAuth2API(use);
+            return this;
+        }
+
+        /**
          * Whether the PasswordlessLockActivity can be closed when pressing the Back key or not.
          *
          * @param closable or not. By default, the LockActivity is not closable.

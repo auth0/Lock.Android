@@ -142,6 +142,21 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldUseOAuth2API() throws Exception {
+        options.setUseOAuth2API(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAuthenticationAPIClient(), is(notNullValue()));
+        assertThat(options.getAuthenticationAPIClient().isOAuth2Preferred(), is(true));
+        assertThat(parceledOptions.getAuthenticationAPIClient(), is(notNullValue()));
+        assertThat(parceledOptions.getAuthenticationAPIClient().isOAuth2Preferred(), is(true));
+    }
+
+    @Test
     public void shouldUseLabeledSubmitButton() throws Exception {
         options.setUseLabeledSubmitButton(true);
 
