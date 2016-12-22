@@ -142,8 +142,8 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseOAuth2API() throws Exception {
-        options.setUseOAuth2API(true);
+    public void shouldUseLegacyMode() throws Exception {
+        options.setLegacyModeEnabled(true);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
@@ -151,9 +151,9 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.getAuthenticationAPIClient(), is(notNullValue()));
-        assertThat(options.getAuthenticationAPIClient().isOAuth2Preferred(), is(true));
+        assertThat(options.getAuthenticationAPIClient().isLegacyModeEnabled(), is(true));
         assertThat(parceledOptions.getAuthenticationAPIClient(), is(notNullValue()));
-        assertThat(parceledOptions.getAuthenticationAPIClient().isOAuth2Preferred(), is(true));
+        assertThat(parceledOptions.getAuthenticationAPIClient().isLegacyModeEnabled(), is(true));
     }
 
     @Test

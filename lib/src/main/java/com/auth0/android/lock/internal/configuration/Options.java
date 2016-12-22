@@ -73,7 +73,7 @@ public class Options implements Parcelable {
     private boolean loginAfterSignUp;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
-    private boolean useOAuth2API;
+    private boolean useLegacyMode;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -117,7 +117,7 @@ public class Options implements Parcelable {
         mustAcceptTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         useLabeledSubmitButton = in.readByte() != WITHOUT_DATA;
-        useOAuth2API = in.readByte() != WITHOUT_DATA;
+        useLegacyMode = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
@@ -190,7 +190,7 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useLabeledSubmitButton ? HAS_DATA : WITHOUT_DATA));
-        dest.writeByte((byte) (useOAuth2API ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (useLegacyMode ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
@@ -392,7 +392,7 @@ public class Options implements Parcelable {
 
     public AuthenticationAPIClient getAuthenticationAPIClient() {
         AuthenticationAPIClient client = new AuthenticationAPIClient(account);
-        client.setOAuth2Preferred(useOAuth2API);
+        client.setLegacyModeEnabled(useLegacyMode);
         return client;
     }
 
@@ -487,7 +487,7 @@ public class Options implements Parcelable {
         return scope;
     }
 
-    public void setUseOAuth2API(boolean use) {
-        this.useOAuth2API = use;
+    public void setLegacyModeEnabled(boolean enabled) {
+        this.useLegacyMode = enabled;
     }
 }
