@@ -28,6 +28,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -47,16 +48,14 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         lockWidget = null;
     }
 
-    public ChangePasswordFormView(LockWidgetForm lockWidget, String email, boolean showTitle) {
+    public ChangePasswordFormView(LockWidgetForm lockWidget, String email) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        init(email, showTitle);
+        init(email);
     }
 
-    private void init(String email, boolean showTitle) {
+    private void init(String email) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
-        TextView title = (TextView) findViewById(R.id.com_auth0_lock_title);
-        title.setVisibility(showTitle ? VISIBLE : GONE);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
         emailInput.setIdentityListener(this);
@@ -99,5 +98,17 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     @Override
     public void onEmailChanged(String email) {
         lockWidget.onEmailChanged(email);
+    }
+
+    /**
+     * Change the visibility of this form Title.
+     *
+     * @param show whether to show or hide this form title.
+     */
+    public void showTitle(boolean show) {
+        View titleView = findViewById(R.id.com_auth0_lock_title);
+        if (titleView != null) {
+            titleView.setVisibility(show ? VISIBLE : GONE);
+        }
     }
 }
