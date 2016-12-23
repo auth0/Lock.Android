@@ -27,7 +27,6 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -72,8 +71,8 @@ public class HeaderView extends RelativeLayout {
      *
      * @param title the title to use
      */
-    public void setTitle(@StringRes int title) {
-        this.text.setText(getResources().getString(title));
+    public void setTitle(String title) {
+        this.text.setText(title);
     }
 
     public void showTitle(boolean show) {

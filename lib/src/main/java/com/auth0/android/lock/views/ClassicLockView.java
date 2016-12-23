@@ -61,6 +61,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     private final Theme lockTheme;
     private Configuration configuration;
 
+    private HeaderView headerView;
     private FormLayout formLayout;
     private FormView subForm;
 
@@ -102,7 +103,8 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
-        HeaderView headerView = new HeaderView(getContext(), lockTheme);
+        headerView = new HeaderView(getContext(), lockTheme);
+        resetHeaderTitle();
         addView(headerView, wrapHeightParams);
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
@@ -214,11 +216,23 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     @Override
     public void showChangePasswordForm(boolean show) {
         if (show) {
-            addSubForm(new ChangePasswordFormView(this, lastEmailInput));
+            addSubForm(new ChangePasswordFormView(this, lastEmailInput, !configuration.useContextualHeaderTitle()));
             updateButtonLabel(R.string.com_auth0_lock_action_send_email);
+            updateHeaderTitle();
         } else {
             removeSubForm();
+            resetHeaderTitle();
         }
+    }
+
+    private void updateHeaderTitle() {
+        headerView.setTitle(getContext().getString(R.string.com_auth0_lock_title_change_password));
+        headerView.showTitle(configuration.useContextualHeaderTitle());
+    }
+
+    private void resetHeaderTitle() {
+        headerView.setTitle(lockTheme.getHeaderTitle(getContext()));
+        headerView.showTitle(!configuration.useContextualHeaderTitle());
     }
 
     private void addSubForm(@NonNull FormView form) {
@@ -250,6 +264,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
      */
     public boolean onBackPressed() {
         if (subForm != null) {
+            resetHeaderTitle();
             final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
             if (shouldDisplayPreviousForm) {
                 showSignUpTerms(subForm instanceof CustomFieldsFormView);

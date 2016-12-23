@@ -47,14 +47,16 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         lockWidget = null;
     }
 
-    public ChangePasswordFormView(LockWidgetForm lockWidget, String email) {
+    public ChangePasswordFormView(LockWidgetForm lockWidget, String email, boolean showTitle) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        init(email);
+        init(email, showTitle);
     }
 
-    private void init(String email) {
+    private void init(String email, boolean showTitle) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
+        TextView title = (TextView) findViewById(R.id.com_auth0_lock_title);
+        title.setVisibility(showTitle ? VISIBLE : GONE);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
         emailInput.setIdentityListener(this);

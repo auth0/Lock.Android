@@ -170,6 +170,7 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
+        builder.useContextualHeaderTitle(true);
         lock = builder.build(this);
 
         startActivity(lock.newIntent(this));
