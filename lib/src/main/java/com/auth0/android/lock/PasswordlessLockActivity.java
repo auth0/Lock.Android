@@ -258,6 +258,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         gotCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                lockView.setVisibility(View.VISIBLE);
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
@@ -278,6 +279,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
+        lockView.setVisibility(View.GONE);
         passwordlessSuccessCover.setVisibility(View.VISIBLE);
         handler.removeCallbacks(resendTimeoutShower);
         handler.postDelayed(resendTimeoutShower, RESEND_TIMEOUT);
