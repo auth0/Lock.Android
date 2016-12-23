@@ -175,11 +175,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private boolean hasValidTheme() {
         TypedArray a = getTheme().obtainStyledAttributes(R.styleable.Lock_Theme);
-        if (!a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo)) {
-            a.recycle();
-            return false;
-        }
-        return true;
+        boolean validTheme = a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo);
+        a.recycle();
+        return validTheme;
     }
 
     private boolean hasValidOptions() {
