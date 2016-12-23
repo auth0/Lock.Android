@@ -216,6 +216,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Whether the header's title should hide it's content on the first screen but display the current subtitle on the rest of them or it should display always the configured header title.
+         *
+         * @param useContextualHeaderTitle or display always the configured header title. By default it will not use the contextual header.
+         * @return the current builder instance
+         */
+        public Builder useContextualHeaderTitle(boolean useContextualHeaderTitle) {
+            options.setUseContextualHeaderTitle(useContextualHeaderTitle);
+            return this;
+        }
+
+        /**
          * Defines the Passwordless type to use in the Authentication as Code. Default value is to use Code
          *
          * @return the current Builder instance

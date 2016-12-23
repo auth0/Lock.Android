@@ -143,6 +143,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             removeView(passwordlessInputCodeLayout);
             addView(passwordlessRequestCodeLayout);
             passwordlessInputCodeLayout = null;
+            lockWidget.resetHeaderTitle();
             return true;
         }
         return false;
@@ -164,6 +165,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             }
         }
         addPasswordlessInputCodeLayout(emailOrNumber);
+        lockWidget.updateHeaderTitle(R.string.com_auth0_lock_title_passwordless);
     }
 
     /**
@@ -197,6 +199,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         addView(passwordlessRequestCodeLayout);
         passwordlessRequestCodeLayout.showGotCodeButton();
         showGotCodeButton = true;
+        lockWidget.resetHeaderTitle();
     }
 
     @Override

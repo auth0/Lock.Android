@@ -55,6 +55,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private PasswordlessFormLayout formLayout;
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
+    private HeaderView headerView;
 
     public PasswordlessLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
@@ -84,7 +85,8 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private void showContentLayout() {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        HeaderView headerView = new HeaderView(getContext(), lockTheme);
+        headerView = new HeaderView(getContext(), lockTheme);
+        resetHeaderTitle();
         addView(headerView, wrapHeightParams);
 
         int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
@@ -146,6 +148,18 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         errorLayout.addView(errorText, childParams);
         errorLayout.addView(retryButton, childParams);
         addView(errorLayout, params);
+    }
+
+    @Override
+    public void updateHeaderTitle(@StringRes int titleRes) {
+        headerView.setTitle(getContext().getString(titleRes));
+        headerView.showTitle(configuration.useContextualHeaderTitle());
+    }
+
+    @Override
+    public void resetHeaderTitle() {
+        headerView.setTitle(lockTheme.getHeaderTitle(getContext()));
+        headerView.showTitle(!configuration.useContextualHeaderTitle());
     }
 
     /**
