@@ -511,7 +511,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
-                    lockView.showChangePasswordForm(false);
+                    if (options.allowLogIn() || options.allowSignUp()) {
+                        lockView.showChangePasswordForm(false);
+                    }
                 }
             });
 
