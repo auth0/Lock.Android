@@ -366,6 +366,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Sets the Audience or API Identifier to request access to when performing the Authentication.
+         *
+         * @param audience to use in the Authentication.
+         * @return the current builder instance
+         */
+        public Builder withAudience(@NonNull String audience) {
+            options.withAudience(audience);
+            return this;
+        }
+
+        /**
          * Sets the Connection Scope to request when performing an Authentication with the given Connection.
          *
          * @param connectionName to which specify the scopes.

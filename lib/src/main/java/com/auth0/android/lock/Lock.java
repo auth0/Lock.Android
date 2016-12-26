@@ -468,6 +468,17 @@ public class Lock {
         }
 
         /**
+         * Sets the Audience or API Identifier to request access to when performing the Authentication.
+         *
+         * @param audience to use in the Authentication.
+         * @return the current builder instance
+         */
+        public Builder withAudience(@NonNull String audience) {
+            options.withAudience(audience);
+            return this;
+        }
+
+        /**
          * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
          * The default value is 'https://auth0.com/privacy'
          *

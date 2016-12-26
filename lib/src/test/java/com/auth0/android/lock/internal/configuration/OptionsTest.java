@@ -523,6 +523,19 @@ public class OptionsTest {
         assertThat(parceledOptions.getScope(), is("some connection scope"));
     }
 
+    @Test
+    public void shouldSetAudience() throws Exception {
+        options.withAudience("https://domain.auth0.com/users");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAudience(), is(equalTo("https://domain.auth0.com/users")));
+        assertThat(parceledOptions.getAudience(), is("https://domain.auth0.com/users"));
+    }
+
     @SuppressWarnings("ResourceType")
     @Test
     public void shouldAddAuthStyles() throws Exception {
@@ -629,6 +642,7 @@ public class OptionsTest {
         assertThat(options.useLabeledSubmitButton(), is(false));
         assertThat(options.hideMainScreenTitle(), is(false));
         assertThat(options.getScope(), is(nullValue()));
+        assertThat(options.getAudience(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));
