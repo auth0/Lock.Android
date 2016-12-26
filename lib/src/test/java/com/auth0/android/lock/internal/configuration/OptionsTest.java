@@ -536,6 +536,19 @@ public class OptionsTest {
         assertThat(parceledOptions.getAudience(), is("https://domain.auth0.com/users"));
     }
 
+    @Test
+    public void shouldSetScheme() throws Exception {
+        options.withScheme("auth0");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getScheme(), is(equalTo("auth0")));
+        assertThat(parceledOptions.getScheme(), is("auth0"));
+    }
+
     @SuppressWarnings("ResourceType")
     @Test
     public void shouldAddAuthStyles() throws Exception {
@@ -643,6 +656,7 @@ public class OptionsTest {
         assertThat(options.hideMainScreenTitle(), is(false));
         assertThat(options.getScope(), is(nullValue()));
         assertThat(options.getAudience(), is(nullValue()));
+        assertThat(options.getScheme(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));

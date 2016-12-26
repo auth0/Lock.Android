@@ -2,6 +2,7 @@ package com.auth0.android.lock;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.lock.internal.configuration.Options;
@@ -23,6 +24,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAct
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.UriMatchers.hasHost;
 import static android.support.test.espresso.intent.matcher.UriMatchers.hasParamWithValue;
+import static android.support.test.espresso.intent.matcher.UriMatchers.hasScheme;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -67,6 +69,7 @@ public class WebProviderTest {
         options.withConnectionScope("my-connection", "the connection scope");
         options.setUseBrowser(true);
         options.withAudience("https://me.auth0.com/myapi");
+        options.withScheme("auth0");
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
@@ -82,6 +85,9 @@ public class WebProviderTest {
 
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
+        assertThat(intent.getData().getQueryParameter("redirect_uri"), is(notNullValue()));
+        Uri redirectUri = Uri.parse(intent.getData().getQueryParameter("redirect_uri"));
+        assertThat(redirectUri, hasScheme("auth0"));
         assertThat(intent.getData(), hasHost("domain.auth0.com"));
         assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
         assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
@@ -107,6 +113,7 @@ public class WebProviderTest {
         options.withConnectionScope("my-connection", "the connection scope");
         options.setUseBrowser(false);
         options.withAudience("https://me.auth0.com/myapi");
+        options.withScheme("auth0");
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
@@ -122,6 +129,9 @@ public class WebProviderTest {
 
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
+        assertThat(intent.getData().getQueryParameter("redirect_uri"), is(notNullValue()));
+        Uri redirectUri = Uri.parse(intent.getData().getQueryParameter("redirect_uri"));
+        assertThat(redirectUri, hasScheme("auth0"));
         assertThat(intent.getData(), hasHost("domain.auth0.com"));
         assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
         assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));

@@ -51,6 +51,10 @@ class WebProvider {
         if (audience != null) {
             builder.withAudience(audience);
         }
+        final String scheme = options.getScheme();
+        if (scheme != null) {
+            builder.withScheme(scheme);
+        }
         builder.start(activity, callback, requestCode);
     }
 

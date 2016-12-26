@@ -479,6 +479,17 @@ public class Lock {
         }
 
         /**
+         * Specify a custom Scheme to use for Web Authentication. Default scheme is 'https'.
+         *
+         * @param scheme to use in the Web Authentication.
+         * @return the current builder instance
+         */
+        public Builder withScheme(@NonNull String scheme) {
+            options.withScheme(scheme);
+            return this;
+        }
+
+        /**
          * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
          * The default value is 'https://auth0.com/privacy'
          *
