@@ -14,12 +14,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName semver.stringVersion
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+        consumerProguardFiles '../proguard/proguard-gson.pro', '../proguard/proguard-otto.pro', '../proguard/proguard-lock-2.pro'
     }
 }
 

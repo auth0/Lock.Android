@@ -27,10 +27,6 @@ android {
         }
         release {
             minifyEnabled true
-            proguardFile '../proguard/proguard-lock-2.pro'
-            proguardFile '../proguard/proguard-okio.pro'
-            proguardFile '../proguard/proguard-otto.pro'
-            proguardFile '../proguard/proguard-gson.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
