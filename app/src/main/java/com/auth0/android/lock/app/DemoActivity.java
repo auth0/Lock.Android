@@ -43,10 +43,12 @@ import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.UsernameStyle;
+import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.result.Credentials;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
@@ -170,6 +172,14 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
+        List<CustomField> fields = Arrays.asList(
+                new CustomField(R.drawable.com_auth0_lock_header_logo, CustomField.FieldType.TYPE_EMAIL, "k1", R.string.hint_country),
+                new CustomField(R.drawable.com_auth0_lock_header_logo, CustomField.FieldType.TYPE_EMAIL, "k2", R.string.hint_country),
+                new CustomField(R.drawable.com_auth0_lock_header_logo, CustomField.FieldType.TYPE_EMAIL, "k3", R.string.hint_country),
+                new CustomField(R.drawable.com_auth0_lock_header_logo, CustomField.FieldType.TYPE_EMAIL, "k4", R.string.hint_country)
+        );
+        builder.useContextualHeaderTitle(true);
+        builder.withSignUpFields(fields);
         lock = builder.build(this);
 
         startActivity(lock.newIntent(this));

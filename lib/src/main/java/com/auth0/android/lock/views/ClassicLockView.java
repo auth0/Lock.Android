@@ -217,7 +217,6 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     public void showChangePasswordForm(boolean show) {
         if (show) {
             ChangePasswordFormView form = new ChangePasswordFormView(this, lastEmailInput);
-            form.showTitle(!configuration.useContextualHeaderTitle());
             updateHeaderTitle(R.string.com_auth0_lock_title_change_password);
             addSubForm(form);
             updateButtonLabel(R.string.com_auth0_lock_action_send_email);
@@ -227,9 +226,6 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     private void updateHeaderTitle(@StringRes int titleRes) {
-        if (!configuration.useContextualHeaderTitle()) {
-            return;
-        }
         headerView.setTitle(getContext().getString(titleRes));
         headerView.showTitle(true);
     }
@@ -269,11 +265,10 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
      */
     public boolean onBackPressed() {
         if (subForm != null) {
-            resetHeaderTitle();
             final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
             if (shouldDisplayPreviousForm) {
+                resetHeaderTitle();
                 showSignUpTerms(subForm instanceof CustomFieldsFormView);
-
                 removeSubForm();
                 return true;
             }
@@ -338,14 +333,12 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
         CustomFieldsFormView form = new CustomFieldsFormView(this, event.getEmail(), event.getPassword(), event.getUsername());
         addSubForm(form);
-        form.showTitle(!configuration.useContextualHeaderTitle());
         updateHeaderTitle(R.string.com_auth0_lock_action_sign_up);
         showSignUpTerms(false);
     }
 
     public void showMFACodeForm(DatabaseLoginEvent event) {
         MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword());
-        form.showTitle(!configuration.useContextualHeaderTitle());
         updateHeaderTitle(R.string.com_auth0_lock_title_mfa_input_code);
         addSubForm(form);
     }

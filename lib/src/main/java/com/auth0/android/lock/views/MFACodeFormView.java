@@ -36,7 +36,6 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 
 public class MFACodeFormView extends FormView implements TextView.OnEditorActionListener {
 
-    private static final String TAG = MFACodeFormView.class.getSimpleName();
     private final String usernameOrEmail;
     private final String password;
 
@@ -87,17 +86,5 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    /**
-     * Change the visibility of this form Title.
-     *
-     * @param show whether to show or hide this form title.
-     */
-    public void showTitle(boolean show) {
-        View titleView = findViewById(R.id.com_auth0_lock_title);
-        if (titleView != null) {
-            titleView.setVisibility(show ? VISIBLE : GONE);
-        }
     }
 }

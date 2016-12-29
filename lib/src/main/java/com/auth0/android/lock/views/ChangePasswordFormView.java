@@ -100,15 +100,4 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         lockWidget.onEmailChanged(email);
     }
 
-    /**
-     * Change the visibility of this form Title.
-     *
-     * @param show whether to show or hide this form title.
-     */
-    public void showTitle(boolean show) {
-        View titleView = findViewById(R.id.com_auth0_lock_title);
-        if (titleView != null) {
-            titleView.setVisibility(show ? VISIBLE : GONE);
-        }
-    }
 }

@@ -152,9 +152,6 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
     @Override
     public void updateHeaderTitle(@StringRes int titleRes) {
-        if (!configuration.useContextualHeaderTitle()) {
-            return;
-        }
         headerView.setTitle(getContext().getString(titleRes));
         headerView.showTitle(true);
     }

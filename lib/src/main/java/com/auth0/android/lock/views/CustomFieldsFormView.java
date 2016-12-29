@@ -30,7 +30,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
@@ -144,17 +143,5 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
             lockWidget.onFormSubmit();
         }
         return false;
-    }
-
-    /**
-     * Change the visibility of this form Title.
-     *
-     * @param show whether to show or hide this form title.
-     */
-    public void showTitle(boolean show) {
-        View titleView = findViewById(R.id.com_auth0_lock_title);
-        if (titleView != null) {
-            titleView.setVisibility(show ? VISIBLE : GONE);
-        }
     }
 }
