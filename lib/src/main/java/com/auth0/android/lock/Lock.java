@@ -399,13 +399,13 @@ public class Lock {
         }
 
         /**
-         * Whether the header's title should hide it's content on the first screen but display the current subtitle on the rest of them or it should display always the configured header title.
+         * Control the visibility of the header's Title on the main screen, this is for Log In and Sign Up. By default it will show the header's Title on the main screen.
          *
-         * @param useContextualHeaderTitle or display always the configured header title. By default it will not use the contextual header.
+         * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
          * @return the current builder instance
          */
-        public Builder useContextualHeaderTitle(boolean useContextualHeaderTitle) {
-            options.setUseContextualHeaderTitle(useContextualHeaderTitle);
+        public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
+            options.setHideMainScreenTitle(hideMainScreenTitle);
             return this;
         }
 

@@ -61,7 +61,7 @@ public class Configuration {
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
-    private boolean useContextualHeaderTitle;
+    private boolean hideMainScreenTitle;
     @UsernameStyle
     private int usernameStyle;
     @AuthButtonSize
@@ -171,7 +171,7 @@ public class Configuration {
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
         useLabeledSubmitButton = options.useLabeledSubmitButton();
-        useContextualHeaderTitle = options.useContextualHeaderTitle();
+        hideMainScreenTitle = options.hideMainScreenTitle();
 
         authStyles = options.getAuthStyles();
         extraSignUpFields = options.getCustomFields();
@@ -289,7 +289,7 @@ public class Configuration {
         return useLabeledSubmitButton;
     }
 
-    public boolean useContextualHeaderTitle() {
-        return useContextualHeaderTitle;
+    public boolean hideMainScreenTitle() {
+        return hideMainScreenTitle;
     }
 }

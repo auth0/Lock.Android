@@ -232,7 +232,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     private void resetHeaderTitle() {
         headerView.setTitle(lockTheme.getHeaderTitle(getContext()));
-        headerView.showTitle(!configuration.useContextualHeaderTitle());
+        headerView.showTitle(!configuration.hideMainScreenTitle());
     }
 
     private void addSubForm(@NonNull FormView form) {

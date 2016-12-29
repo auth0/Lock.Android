@@ -156,16 +156,16 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseContextualHeaderTitle() throws Exception {
-        options.setUseContextualHeaderTitle(true);
+    public void shouldHideMainScreenTitle() throws Exception {
+        options.setHideMainScreenTitle(true);
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.useContextualHeaderTitle(), is(true));
-        assertThat(options.useContextualHeaderTitle(), is(equalTo(parceledOptions.useContextualHeaderTitle())));
+        assertThat(options.hideMainScreenTitle(), is(true));
+        assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
     }
 
     @Test
@@ -627,7 +627,7 @@ public class OptionsTest {
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
         assertThat(options.useLabeledSubmitButton(), is(false));
-        assertThat(options.useContextualHeaderTitle(), is(false));
+        assertThat(options.hideMainScreenTitle(), is(false));
         assertThat(options.getScope(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
@@ -651,7 +651,7 @@ public class OptionsTest {
         options.setAuthButtonSize(AuthButtonSize.BIG);
         options.setLoginAfterSignUp(true);
         options.setUseLabeledSubmitButton(true);
-        options.setUseContextualHeaderTitle(true);
+        options.setHideMainScreenTitle(true);
 
 
         Parcel parcel = Parcel.obtain();
@@ -671,7 +671,7 @@ public class OptionsTest {
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
-        assertThat(options.useContextualHeaderTitle(), is(equalTo(parceledOptions.useContextualHeaderTitle())));
+        assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
     }
 
     @Test
@@ -688,7 +688,7 @@ public class OptionsTest {
         options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
         options.setUseLabeledSubmitButton(false);
-        options.setUseContextualHeaderTitle(false);
+        options.setHideMainScreenTitle(false);
 
 
         Parcel parcel = Parcel.obtain();
@@ -708,7 +708,7 @@ public class OptionsTest {
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
-        assertThat(options.useContextualHeaderTitle(), is(equalTo(parceledOptions.useContextualHeaderTitle())));
+        assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
     }
 
 
