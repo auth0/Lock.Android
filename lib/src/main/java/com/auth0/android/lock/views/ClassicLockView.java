@@ -144,7 +144,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
                 });
             }
         });
-        actionButton.showLabel(configuration.useLabeledSubmitButton());
+        actionButton.showLabel(configuration.useLabeledSubmitButton() || configuration.hideMainScreenTitle());
         addView(actionButton, wrapHeightParams);
 
         boolean showDatabase = configuration.getDatabaseConnection() != null;
