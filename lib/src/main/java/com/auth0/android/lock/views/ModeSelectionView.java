@@ -87,6 +87,9 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
 
     public interface ModeSelectedListener {
         void onModeSelected(@AuthMode int mode);
+
+        @AuthMode
+        int getSelectedMode();
     }
 
     @AuthMode

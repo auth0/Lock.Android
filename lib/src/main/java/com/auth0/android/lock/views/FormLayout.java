@@ -38,10 +38,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.AuthButtonSize;
-import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.configuration.AuthMode;
 import com.auth0.android.lock.InitialScreen;
+import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.internal.configuration.AuthMode;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -118,8 +118,13 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         if (!showDatabase && !showEnterprise) {
             return;
         }
+        int mode;
         int initialScreen = lockWidget.getConfiguration().getInitialScreen();
-        int mode = initialScreen == InitialScreen.SIGN_UP ? AuthMode.SIGN_UP : AuthMode.LOG_IN;
+        if (initialScreen == InitialScreen.FORGOT_PASSWORD) {
+            mode = lockWidget.getConfiguration().allowLogIn() ? AuthMode.LOG_IN : AuthMode.SIGN_UP;
+        } else {
+            mode = initialScreen == InitialScreen.SIGN_UP ? AuthMode.SIGN_UP : AuthMode.LOG_IN;
+        }
 
         if (modeSelectionView != null) {
             modeSelectionView.setSelectedMode(mode);
@@ -277,6 +282,11 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     public void onModeSelected(@AuthMode int mode) {
         Log.d(TAG, "Mode changed to " + mode);
         changeFormMode(mode);
+    }
+
+    @Override
+    public int getSelectedMode() {
+        return lastFormMode;
     }
 
     @Override

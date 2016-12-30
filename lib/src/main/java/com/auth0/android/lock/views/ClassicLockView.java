@@ -47,6 +47,7 @@ import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
+import com.auth0.android.lock.internal.configuration.AuthMode;
 import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
@@ -239,7 +240,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         formLayout.refreshIdentityInput();
         addView(formLayout, FORM_INDEX, params);
-        updateButtonLabel(R.string.com_auth0_lock_action_log_in);
+        updateButtonLabel(formLayout.getSelectedMode() == AuthMode.SIGN_UP ? R.string.com_auth0_lock_action_sign_up : R.string.com_auth0_lock_action_log_in);
     }
 
     /**
