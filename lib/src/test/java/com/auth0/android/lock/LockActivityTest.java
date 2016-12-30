@@ -299,9 +299,16 @@ public class LockActivityTest {
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
         activity.onOAuthAuthenticationRequest(event);
 
+        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
+
         verify(lockView, never()).showProgress(true);
+        verify(customProvider).setParameters(mapCaptor.capture());
         verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
         AuthResolver.setAuthHandlers(Collections.emptyList());
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
     }
 
     @Test

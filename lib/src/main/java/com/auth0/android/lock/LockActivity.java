@@ -326,6 +326,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         Log.v(TAG, "Looking for a provider to use /authorize with the connection " + connection);
         currentProvider = AuthResolver.providerFor(event.getStrategy(), connection);
         if (currentProvider != null) {
+            currentProvider.setParameters(options.getAuthenticationParameters());
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
         }
