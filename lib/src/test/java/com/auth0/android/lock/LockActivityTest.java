@@ -261,6 +261,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
+        verify(dbRequest, never()).addParameters(any(Map.class));
         verify(dbRequest).start(any(BaseCallback.class));
         verify(client).resetPassword(eq("email@domain.com"), eq("connection"));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
