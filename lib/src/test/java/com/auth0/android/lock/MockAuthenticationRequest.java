@@ -14,6 +14,7 @@ public class MockAuthenticationRequest implements AuthenticationRequest {
     String grantType;
     String connection;
     String scope;
+    String audience;
     String device;
     String accessToken;
     HashMap<String, Object> parameters;
@@ -46,6 +47,12 @@ public class MockAuthenticationRequest implements AuthenticationRequest {
     }
 
     @Override
+    public AuthenticationRequest setAudience(String audience) {
+        this.audience = audience;
+        return this;
+    }
+
+    @Override
     public AuthenticationRequest setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         return this;
@@ -60,7 +67,7 @@ public class MockAuthenticationRequest implements AuthenticationRequest {
     @Override
     public void start(BaseCallback<Credentials, AuthenticationException> callback) {
         this.callback = callback;
-        this.started=true;
+        this.started = true;
     }
 
     @Override

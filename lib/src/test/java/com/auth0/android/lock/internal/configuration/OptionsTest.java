@@ -143,6 +143,21 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldUseLegacyMode() throws Exception {
+        options.setLegacyModeEnabled(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAuthenticationAPIClient(), is(notNullValue()));
+        assertThat(options.getAuthenticationAPIClient().isLegacyModeEnabled(), is(true));
+        assertThat(parceledOptions.getAuthenticationAPIClient(), is(notNullValue()));
+        assertThat(parceledOptions.getAuthenticationAPIClient().isLegacyModeEnabled(), is(true));
+    }
+
+    @Test
     public void shouldUseLabeledSubmitButton() throws Exception {
         options.setUseLabeledSubmitButton(true);
 
