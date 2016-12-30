@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -94,10 +95,23 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private TextView resultMessage;
 
     private AuthProvider currentProvider;
+    private WebProvider webProvider;
 
     private LoginErrorMessageBuilder loginErrorBuilder;
     private SignUpErrorMessageBuilder signUpErrorBuilder;
     private DatabaseLoginEvent lastDatabaseLogin;
+
+    @SuppressWarnings("unused")
+    public LockActivity() {
+    }
+
+    @VisibleForTesting
+    LockActivity(Configuration configuration, Options options, ClassicLockView lockView, WebProvider webProvider) {
+        this.configuration = configuration;
+        this.options = options;
+        this.lockView = lockView;
+        this.webProvider = webProvider;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,6 +124,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         Bus lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
+        webProvider = new WebProvider(options);
 
         setContentView(R.layout.com_auth0_lock_activity_lock);
         resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
@@ -246,7 +261,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         switch (requestCode) {
             case WEB_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
-                WebAuthProvider.resume(requestCode, resultCode, data);
+                webProvider.resume(requestCode, resultCode, data);
                 break;
             case CUSTOM_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
@@ -263,10 +278,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @Override
     protected void onNewIntent(Intent intent) {
         lockView.showProgress(false);
-        if (WebAuthProvider.resume(intent)) {
+        if (webProvider.resume(intent)) {
             return;
         } else if (currentProvider != null) {
-            lockView.showProgress(false);
             currentProvider.authorize(intent);
             currentProvider = null;
             return;
@@ -297,10 +311,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     @SuppressWarnings("unused")
     @Subscribe
     public void onOAuthAuthenticationRequest(OAuthLoginEvent event) {
-        lockView.showProgress(true);
         final String connection = event.getConnection();
 
         if (event.useActiveFlow()) {
+            lockView.showProgress(true);
             Log.d(TAG, "Using the /ro endpoint for this OAuth Login Request");
             options.getAuthenticationAPIClient()
                     .login(event.getUsername(), event.getPassword(), connection)
@@ -317,19 +331,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        final WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
-                .useBrowser(options.useBrowser())
-                .withParameters(options.getAuthenticationParameters())
-                .withConnection(connection);
-        final String connectionScope = options.getConnectionsScope().get(connection);
-        if (connectionScope != null) {
-            builder.withConnectionScope(connectionScope);
-        }
-        final String scope = options.getScope();
-        if (scope != null) {
-            builder.withScope(scope);
-        }
-        builder.start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, connection, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")
@@ -385,7 +387,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         lockView.showProgress(true);
-        AuthenticationAPIClient apiClient = new AuthenticationAPIClient(options.getAccount());
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final String connection = configuration.getDatabaseConnection().getName();
         apiClient.resetPassword(event.getEmail(), connection)
                 .addParameters(options.getAuthenticationParameters())

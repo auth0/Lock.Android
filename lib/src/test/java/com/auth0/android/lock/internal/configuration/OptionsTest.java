@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
@@ -129,7 +130,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseWebview() throws Exception {
+    public void shouldUseWebView() throws Exception {
         options.setUseBrowser(false);
 
         Parcel parcel = Parcel.obtain();
@@ -702,6 +703,13 @@ public class OptionsTest {
         otherParameters.put("key_other_param_int", innerIntParam);
         authenticationParameters.put("key_param_map", otherParameters);
         return authenticationParameters;
+    }
+
+    @Test
+    public void shouldCreateAuthenticationAPIClientInstance() throws Exception {
+        AuthenticationAPIClient client = options.getAuthenticationAPIClient();
+
+        assertThat(client, is(notNullValue()));
     }
 
     private List<CustomField> createCustomFields() {
