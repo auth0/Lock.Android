@@ -216,6 +216,16 @@ public class PasswordlessLock {
         }
 
         /**
+         * Log each HTTP Request & Response made by Lock in the Android's Logcat.
+         *
+         * @return the current Builder instance
+         */
+        public Builder enableLogging() {
+            options.setLoggingEnabled(true);
+            return this;
+        }
+
+        /**
          * Defines the Passwordless type to use in the Authentication as Code. Default value is to use Code
          *
          * @return the current Builder instance

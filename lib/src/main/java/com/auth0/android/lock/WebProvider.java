@@ -2,7 +2,6 @@ package com.auth0.android.lock;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.UriMatcher;
 import android.support.annotation.NonNull;
 
 import com.auth0.android.lock.internal.configuration.Options;
@@ -47,6 +46,9 @@ class WebProvider {
         final String scope = options.getScope();
         if (scope != null) {
             builder.withScope(scope);
+        }
+        if (options.isLoggingEnabled()) {
+            builder.enableLogging();
         }
         builder.start(activity, callback, requestCode);
     }

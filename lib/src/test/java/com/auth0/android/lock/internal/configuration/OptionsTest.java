@@ -130,6 +130,55 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldHaveLoggingDisabledByDefault() throws Exception {
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.isLoggingEnabled(), is(false));
+        assertThat(options.isLoggingEnabled(), is(equalTo(parceledOptions.isLoggingEnabled())));
+
+        AuthenticationAPIClient client = options.getAuthenticationAPIClient();
+        assertThat(client, is(notNullValue()));
+        assertThat(client.isLoggingEnabled(), is(false));
+    }
+
+    @Test
+    public void shouldEnableLogging() throws Exception {
+        options.setLoggingEnabled(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.isLoggingEnabled(), is(true));
+        assertThat(options.isLoggingEnabled(), is(equalTo(parceledOptions.isLoggingEnabled())));
+
+        AuthenticationAPIClient client = options.getAuthenticationAPIClient();
+        assertThat(client, is(notNullValue()));
+        assertThat(client.isLoggingEnabled(), is(true));
+    }
+
+    @Test
+    public void shouldDisableLogging() throws Exception {
+        options.setLoggingEnabled(false);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.isLoggingEnabled(), is(false));
+        assertThat(options.isLoggingEnabled(), is(equalTo(parceledOptions.isLoggingEnabled())));
+
+        AuthenticationAPIClient client = options.getAuthenticationAPIClient();
+        assertThat(client, is(notNullValue()));
+        assertThat(client.isLoggingEnabled(), is(false));
+    }
+
+    @Test
     public void shouldUseWebView() throws Exception {
         options.setUseBrowser(false);
 
