@@ -377,6 +377,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Specify a custom Scheme for the redirect url used to send the Web Auth results. Default redirect url scheme is 'https'.
+         *
+         * @param scheme to use in the Web Auth redirect uri.
+         * @return the current builder instance
+         */
+        public Builder withScheme(@NonNull String scheme) {
+            options.withScheme(scheme);
+            return this;
+        }
+
+        /**
          * Sets the Connection Scope to request when performing an Authentication with the given Connection.
          *
          * @param connectionName to which specify the scopes.

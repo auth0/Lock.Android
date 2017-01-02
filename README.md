@@ -201,6 +201,15 @@ Then just start `PasswordlessLockActivity` from inside your `Activity`
 startActivity(lock.newIntent(this));
 ```
 
+#### Android App Links - Custom Scheme
+Currently the default scheme used for the redirect url used to send the Web Auth results is `https`. This works best for Android API 23 or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html), but in previous Android versions this may show the intent chooser dialog prompting the user to chose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens directly the link with your app.
+
+1. Update the Intent Filter definition in the Android Manifest and change the custom scheme.
+2. Update the allowed callback urls in your [Auth0 Dashboard](https://manage.auth0.com/#/applications) client's settings to match urls that begin with the new scheme.
+3. Call `withScheme()` in the Lock Builder passing the scheme you want to use.
+
+> The scheme value **must** be lowercase. A warning message will be logged if this is not the case, and the lowercase version of the scheme will be used instead.
+
 ##Proguard
 The rules should be applied automatically if your application is using `minifyEnabled = true`. If you want to include them manually check the [proguard directory](proguard).
 By default you should at least use the following files:

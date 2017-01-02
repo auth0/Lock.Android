@@ -479,6 +479,17 @@ public class Lock {
         }
 
         /**
+         * Specify a custom Scheme for the redirect url used to send the Web Auth results. Default redirect url scheme is 'https'.
+         *
+         * @param scheme to use in the Web Auth redirect uri.
+         * @return the current builder instance
+         */
+        public Builder withScheme(@NonNull String scheme) {
+            options.withScheme(scheme);
+            return this;
+        }
+
+        /**
          * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
          * The default value is 'https://auth0.com/privacy'
          *
