@@ -48,7 +48,7 @@ class WebProvider {
             builder.withScope(scope);
         }
         final String audience = options.getAudience();
-        if (audience != null) {
+        if (audience != null && options.getAccount().isOIDCConformant()) {
             builder.withAudience(audience);
         }
         final String scheme = options.getScheme();
