@@ -26,7 +26,7 @@
     <dimen name="com_auth0_lock_widget_corner_radius">3dp</dimen>
     <dimen name="com_auth0_lock_list_item_height">52dp</dimen>
     <dimen name="com_auth0_lock_header_logo_size">72dp</dimen>
-    <dimen name="com_auth0_lock_header_size">116dp</dimen>
+    <dimen name="com_auth0_lock_header_height">116dp</dimen>
 
     <dimen name="com_auth0_lock_input_field_stroke_width">2dp</dimen>
     <dimen name="com_auth0_lock_widget_with_text_horizontal_padding">13dp</dimen>
@@ -53,7 +53,7 @@
     <dimen name="com_auth0_lock_header_vertical_margin">4dp</dimen>
     <dimen name="com_auth0_lock_header_logo_vertical_margin">2dp</dimen>
     <dimen name="com_auth0_lock_action_button_vertical_margin">16dp</dimen>
-    <dimen name="com_auth0_lock_action_button_labeled_vertical_margin">28dp</dimen>
+    <dimen name="com_auth0_lock_action_button_labeled_vertical_margin">31dp</dimen>
     <dimen name="com_auth0_lock_bottom_banner_vertical_margin">7dp</dimen>
     <dimen name="com_auth0_lock_top_banner_vertical_margin">12dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_checkable_option">2.6dp</dimen>

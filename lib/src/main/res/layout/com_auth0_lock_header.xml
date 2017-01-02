@@ -26,10 +26,7 @@
     xmlns:lock="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_header_background"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/com_auth0_lock_header_size"
-    android:background="?attr/Auth0.HeaderBackground"
-    android:gravity="center"
+    style="@style/Lock.Theme.Widget.Header"
     tools:background="#40000000"
     tools:context=".LockActivity">
 

@@ -208,12 +208,11 @@ Currently the default scheme used for the redirect url used to send the Web Auth
 2. Update the allowed callback urls in your [Auth0 Dashboard](https://manage.auth0.com/#/applications) client's settings to match urls that begin with the new scheme.
 3. Call `withScheme()` in the Lock Builder passing the scheme you want to use.
 
-> The scheme value **must** be lowercase. A warning message will be logged if this is not the case, and the lowercase version of the scheme will be used instead.
+> The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
 
 ##Proguard
 The rules should be applied automatically if your application is using `minifyEnabled = true`. If you want to include them manually check the [proguard directory](proguard).
 By default you should at least use the following files:
-* `proguard-okio.pro`
 * `proguard-gson.pro`
 * `proguard-otto.pro`
 * `proguard-lock-2.pro`

@@ -62,6 +62,7 @@ public class DemoActivity extends AppCompatActivity {
     private CheckBox checkboxConnectionsEnterprise;
     private CheckBox checkboxConnectionsSocial;
     private CheckBox checkboxConnectionsPasswordless;
+    private CheckBox checkboxHideMainScreenTitle;
     private RadioGroup groupDefaultDB;
     private RadioGroup groupSocialStyle;
     private RadioGroup groupUsernameStyle;
@@ -83,6 +84,7 @@ public class DemoActivity extends AppCompatActivity {
         //Basic
         groupSubmitMode = (RadioGroup) findViewById(R.id.group_submitmode);
         checkboxClosable = (CheckBox) findViewById(R.id.checkbox_closable);
+        checkboxHideMainScreenTitle = (CheckBox) findViewById(R.id.checkbox_hide_title);
 
         checkboxConnectionsDB = (CheckBox) findViewById(R.id.checkbox_connections_db);
         checkboxConnectionsEnterprise = (CheckBox) findViewById(R.id.checkbox_connections_enterprise);
@@ -170,6 +172,7 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
+        builder.hideMainScreenTitle(checkboxHideMainScreenTitle.isChecked());
         lock = builder.build(this);
 
         startActivity(lock.newIntent(this));
@@ -193,6 +196,7 @@ public class DemoActivity extends AppCompatActivity {
         }
 
         builder.allowedConnections(generateConnections());
+        builder.hideMainScreenTitle(checkboxHideMainScreenTitle.isChecked());
 
         passwordlessLock = builder.build(this);
 
