@@ -216,6 +216,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Control the visibility of the header's Title on the main screen. By default it will show the header's Title on the main screen.
+         *
+         * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
+         * @return the current builder instance
+         */
+        public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
+            options.setHideMainScreenTitle(hideMainScreenTitle);
+            return this;
+        }
+
+        /**
          * Defines the Passwordless type to use in the Authentication as Code. Default value is to use Code
          *
          * @return the current Builder instance

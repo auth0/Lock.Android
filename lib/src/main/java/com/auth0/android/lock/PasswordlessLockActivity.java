@@ -175,11 +175,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private boolean hasValidTheme() {
         TypedArray a = getTheme().obtainStyledAttributes(R.styleable.Lock_Theme);
-        if (!a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo)) {
-            a.recycle();
-            return false;
-        }
-        return true;
+        boolean validTheme = a.hasValue(R.styleable.Lock_Theme_Auth0_HeaderLogo);
+        a.recycle();
+        return validTheme;
     }
 
     private boolean hasValidOptions() {
@@ -258,6 +256,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         gotCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                lockView.setVisibility(View.VISIBLE);
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
@@ -278,6 +277,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
+        lockView.setVisibility(View.GONE);
         passwordlessSuccessCover.setVisibility(View.VISIBLE);
         handler.removeCallbacks(resendTimeoutShower);
         handler.postDelayed(resendTimeoutShower, RESEND_TIMEOUT);

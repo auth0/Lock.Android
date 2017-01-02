@@ -61,6 +61,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     private final Theme lockTheme;
     private Configuration configuration;
 
+    private HeaderView headerView;
     private FormLayout formLayout;
     private FormView subForm;
 
@@ -102,7 +103,8 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
-        HeaderView headerView = new HeaderView(getContext(), lockTheme);
+        headerView = new HeaderView(getContext(), lockTheme);
+        resetHeaderTitle();
         addView(headerView, wrapHeightParams);
 
         topBanner = inflate(getContext(), R.layout.com_auth0_lock_sso_layout, null);
@@ -142,7 +144,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
                 });
             }
         });
-        actionButton.showLabel(configuration.useLabeledSubmitButton());
+        actionButton.showLabel(configuration.useLabeledSubmitButton() || configuration.hideMainScreenTitle());
         addView(actionButton, wrapHeightParams);
 
         boolean showDatabase = configuration.getDatabaseConnection() != null;
@@ -214,11 +216,23 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     @Override
     public void showChangePasswordForm(boolean show) {
         if (show) {
-            addSubForm(new ChangePasswordFormView(this, lastEmailInput));
+            ChangePasswordFormView form = new ChangePasswordFormView(this, lastEmailInput);
+            updateHeaderTitle(R.string.com_auth0_lock_title_change_password);
+            addSubForm(form);
             updateButtonLabel(R.string.com_auth0_lock_action_send_email);
         } else {
             removeSubForm();
         }
+    }
+
+    private void updateHeaderTitle(@StringRes int titleRes) {
+        headerView.setTitle(getContext().getString(titleRes));
+        headerView.showTitle(true);
+    }
+
+    private void resetHeaderTitle() {
+        headerView.setTitle(lockTheme.getHeaderTitle(getContext()));
+        headerView.showTitle(!configuration.hideMainScreenTitle());
     }
 
     private void addSubForm(@NonNull FormView form) {
@@ -241,6 +255,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         formLayout.refreshIdentityInput();
         addView(formLayout, FORM_INDEX, params);
         updateButtonLabel(formLayout.getSelectedMode() == AuthMode.SIGN_UP ? R.string.com_auth0_lock_action_sign_up : R.string.com_auth0_lock_action_log_in);
+        resetHeaderTitle();
     }
 
     /**
@@ -252,8 +267,8 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         if (subForm != null) {
             final boolean shouldDisplayPreviousForm = configuration.allowLogIn() || configuration.allowSignUp();
             if (shouldDisplayPreviousForm) {
+                resetHeaderTitle();
                 showSignUpTerms(subForm instanceof CustomFieldsFormView);
-
                 removeSubForm();
                 return true;
             }
@@ -316,12 +331,16 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     @Override
     public void showCustomFieldsForm(DatabaseSignUpEvent event) {
-        addSubForm(new CustomFieldsFormView(this, event.getEmail(), event.getPassword(), event.getUsername()));
+        CustomFieldsFormView form = new CustomFieldsFormView(this, event.getEmail(), event.getPassword(), event.getUsername());
+        addSubForm(form);
+        updateHeaderTitle(R.string.com_auth0_lock_action_sign_up);
         showSignUpTerms(false);
     }
 
     public void showMFACodeForm(DatabaseLoginEvent event) {
-        addSubForm(new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword()));
+        MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword());
+        updateHeaderTitle(R.string.com_auth0_lock_title_mfa_input_code);
+        addSubForm(form);
     }
 
     @Override

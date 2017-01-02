@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -35,7 +36,6 @@ import com.auth0.android.lock.views.interfaces.LockWidget;
 
 public class MFACodeFormView extends FormView implements TextView.OnEditorActionListener {
 
-    private static final String TAG = MFACodeFormView.class.getSimpleName();
     private final String usernameOrEmail;
     private final String password;
 
@@ -57,7 +57,6 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
         codeInput.setHint(R.string.com_auth0_lock_hint_mfa_code);
         codeInput.setOnEditorActionListener(this);
     }
-
 
     @Override
     public Object getActionEvent() {
@@ -88,5 +87,4 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
         }
         return false;
     }
-
 }

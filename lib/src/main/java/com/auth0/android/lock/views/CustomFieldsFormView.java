@@ -35,9 +35,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
+import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
@@ -82,7 +82,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private LinearLayout.LayoutParams defineFieldParams() {
         int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        int verticalMargin =  getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
+        int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);

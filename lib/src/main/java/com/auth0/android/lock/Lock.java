@@ -399,6 +399,17 @@ public class Lock {
         }
 
         /**
+         * Control the visibility of the header's Title on the main screen, this is for Log In and Sign Up. By default it will show the header's Title on the main screen.
+         *
+         * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
+         * @return the current builder instance
+         */
+        public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
+            options.setHideMainScreenTitle(hideMainScreenTitle);
+            return this;
+        }
+
+        /**
          * Change the connection name to use on the Database authentication flow.
          * Defaults to the first Database connection found.
          *

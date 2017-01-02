@@ -73,6 +73,7 @@ public class Options implements Parcelable {
     private boolean loginAfterSignUp;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
+    private boolean hideMainScreenTitle;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -116,6 +117,7 @@ public class Options implements Parcelable {
         mustAcceptTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         useLabeledSubmitButton = in.readByte() != WITHOUT_DATA;
+        hideMainScreenTitle = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
@@ -188,6 +190,7 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useLabeledSubmitButton ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (hideMainScreenTitle ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
@@ -462,6 +465,14 @@ public class Options implements Parcelable {
 
     public boolean useLabeledSubmitButton() {
         return useLabeledSubmitButton;
+    }
+
+    public void setHideMainScreenTitle(boolean hideMainScreenTitle) {
+        this.hideMainScreenTitle = hideMainScreenTitle;
+    }
+
+    public boolean hideMainScreenTitle() {
+        return hideMainScreenTitle;
     }
 
     public void withConnectionScope(@NonNull String connectionName, @NonNull String scope) {
