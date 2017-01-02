@@ -390,7 +390,7 @@ public class Lock {
         /**
          * Whether if the submit button will display a label or just an icon.
          *
-         * @param useLabeledSubmitButton or icon. By default it will use icon.
+         * @param useLabeledSubmitButton or icon. By default it will use the label.
          * @return the current builder instance
          */
         public Builder useLabeledSubmitButton(boolean useLabeledSubmitButton) {

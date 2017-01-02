@@ -40,19 +40,20 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radio_use_icon"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Submit with Icon" />
-
-            <RadioButton
                 android:id="@+id/radio_use_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:checked="true"
                 android:text="Submit with Label" />
+
+            <RadioButton
+                android:id="@+id/radio_use_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Submit with Icon" />
+
         </RadioGroup>
 
         <CheckBox

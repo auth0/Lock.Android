@@ -99,6 +99,7 @@ public class Options implements Parcelable {
         loginAfterSignUp = true;
         useCodePasswordless = true;
         usePKCE = true;
+        useLabeledSubmitButton = true;
         authenticationParameters = new HashMap<>();
         authStyles = new HashMap<>();
         connectionsScope = new HashMap<>();

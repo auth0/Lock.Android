@@ -104,6 +104,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
+        assertThat(configuration.useLabeledSubmitButton(), is(true));
     }
 
     @Test
