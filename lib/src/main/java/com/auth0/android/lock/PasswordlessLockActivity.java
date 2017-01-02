@@ -137,6 +137,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lockBus = new Bus();
         lockBus.register(this);
         handler = new Handler(getMainLooper());
+        webProvider = new WebProvider(options);
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
         passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);

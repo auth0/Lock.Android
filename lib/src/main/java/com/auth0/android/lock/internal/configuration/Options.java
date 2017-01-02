@@ -86,6 +86,7 @@ public class Options implements Parcelable {
     private String privacyURL;
     private String termsURL;
     private String scope;
+    private String audience;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -126,6 +127,7 @@ public class Options implements Parcelable {
         privacyURL = in.readString();
         termsURL = in.readString();
         scope = in.readString();
+        audience = in.readString();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -199,6 +201,7 @@ public class Options implements Parcelable {
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
         dest.writeString(scope);
+        dest.writeString(audience);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -491,5 +494,14 @@ public class Options implements Parcelable {
     @Nullable
     public String getScope() {
         return scope;
+    }
+
+    public void withAudience(@NonNull String audience) {
+        this.audience = audience;
+    }
+
+    @Nullable
+    public String getAudience() {
+        return audience;
     }
 }

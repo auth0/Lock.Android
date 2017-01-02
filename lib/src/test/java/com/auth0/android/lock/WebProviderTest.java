@@ -66,6 +66,7 @@ public class WebProviderTest {
         options.withScope("email profile photos");
         options.withConnectionScope("my-connection", "the connection scope");
         options.setUseBrowser(true);
+        options.withAudience("https://me.auth0.com/myapi");
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
@@ -88,6 +89,7 @@ public class WebProviderTest {
         assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
         assertThat(intent.getData(), hasParamWithValue("scope", "email profile photos"));
         assertThat(intent.getData(), hasParamWithValue("connection_scope", "the connection scope"));
+        assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
         assertThat(intent, hasAction(Intent.ACTION_VIEW));
     }
 
@@ -104,6 +106,7 @@ public class WebProviderTest {
         options.withScope("email profile photos");
         options.withConnectionScope("my-connection", "the connection scope");
         options.setUseBrowser(false);
+        options.withAudience("https://me.auth0.com/myapi");
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
@@ -126,6 +129,7 @@ public class WebProviderTest {
         assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
         assertThat(intent.getData(), hasParamWithValue("scope", "email profile photos"));
         assertThat(intent.getData(), hasParamWithValue("connection_scope", "the connection scope"));
+        assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
         assertThat(intent, hasComponent(WebAuthActivity.class.getName()));
     }
 
