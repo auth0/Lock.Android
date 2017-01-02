@@ -468,7 +468,7 @@ public class Lock {
         }
 
         /**
-         * Sets the Audience or API Identifier to request access to when performing the Authentication.
+         * Sets the Audience or API Identifier to request access to when performing the Authentication. This only applies if {@link com.auth0.android.Auth0#isOIDCConformant} is true.
          *
          * @param audience to use in the Authentication.
          * @return the current builder instance
