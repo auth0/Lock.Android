@@ -1,5 +1,32 @@
 # Change Log
 
+## [2.3.0](https://github.com/auth0/Lock.Android/tree/2.3.0) (2017-01-02)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.2.1...2.3.0)
+
+**Added**
+- Send custom audience on login/signIn if is OIDC conformant [\#387](https://github.com/auth0/Lock.Android/pull/387) ([lbalmaceda](https://github.com/lbalmaceda))
+- Include updated Proguard rules in the packaged aar [\#385](https://github.com/auth0/Lock.Android/pull/385) ([lbalmaceda](https://github.com/lbalmaceda))
+- Support custom audience for Web Authentication [\#383](https://github.com/auth0/Lock.Android/pull/383) ([lbalmaceda](https://github.com/lbalmaceda))
+- Support custom schemes for Web Authentication [\#382](https://github.com/auth0/Lock.Android/pull/382) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add option to hide Header Title on the Main screen [\#381](https://github.com/auth0/Lock.Android/pull/381) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Update gradle plugins and google dependencies [\#389](https://github.com/auth0/Lock.Android/pull/389) ([hzalaz](https://github.com/hzalaz))
+- Use Header style and fix Submit button height when label is displayed [\#388](https://github.com/auth0/Lock.Android/pull/388) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Deprecated**
+- Deprecate useImplicitGrant method  [\#372](https://github.com/auth0/Lock.Android/pull/372) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix Auth0 parcel that was losing telemetry and OIDC flag [\#384](https://github.com/auth0/Lock.Android/pull/384) ([lbalmaceda](https://github.com/lbalmaceda))
+- Fix wrong label setting if login was disabled and pwd reset was first screen [\#380](https://github.com/auth0/Lock.Android/pull/380) ([lbalmaceda](https://github.com/lbalmaceda))
+- Don't return to login/signup screen after pwd reset if those screens are disabled [\#379](https://github.com/auth0/Lock.Android/pull/379) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add authentication parameters to custom AuthProvider [\#375](https://github.com/auth0/Lock.Android/pull/375) ([lbalmaceda](https://github.com/lbalmaceda))
+- Avoid sending authentication parameters on password-reset [\#373](https://github.com/auth0/Lock.Android/pull/373) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Breaking changes**
+- Use labeled submit button by default and separate signUp/logIn strings [\#386](https://github.com/auth0/Lock.Android/pull/386) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.2.1](https://github.com/auth0/Lock.Android/tree/2.2.1) (2016-11-22)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.2.0...2.2.1)
 
