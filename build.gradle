@@ -8,9 +8,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
-        classpath 'gradle.plugin.com.auth0.gradle:oss-library:0.5.20'
+        classpath 'gradle.plugin.com.auth0.gradle:oss-library:0.5.21'
     }
 }
 

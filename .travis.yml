@@ -4,19 +4,23 @@ jdk:
   - oraclejdk8
 android:
   components:
-  - tools
-  - build-tools-24.0.3
-  - android-24
-  - extra-google-google_play_services
-  - extra-google-m2repository
-  - extra-android-m2repository
-  - addon-google_apis-google-24
+    - tools
+    - build-tools-25.0.2
+    - android-25
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-25
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 script:
   - "./gradlew clean test --continue"
 branches:
   only:
-  - master
-  - v2
+    - master
+    - v2
 notifications:
   slack:
     secure: L10gaOgxp3Dv/Xwpb2GXCE0gmV1IndAnHHAlT4iUL2WZegucY7HlTXJMkKw464cNtHL/oINCyBXAODch1/2np62x3BluZDtge1qDeBXwEL1DKrmmzxXo6AaNs/DLL/Tn7wonLLnoYtQQg2V37RfK4rZeqnwn0eSzxwZyB7N8uWQ=
