@@ -1,3 +1,4 @@
+rootProject.name = 'Lock.Android'
 include ':app'
 
 include ':lock'
