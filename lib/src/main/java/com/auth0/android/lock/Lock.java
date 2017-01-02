@@ -388,9 +388,10 @@ public class Lock {
         }
 
         /**
-         * Whether if the submit button will display a label or just an icon.
+         * Whether if the submit button will display a label or just an icon. By default it will use the label.
+         * If {@link #hideMainScreenTitle(boolean)} is set to true this setting is ignored and the submit button will use label.
          *
-         * @param useLabeledSubmitButton or icon. By default it will use the label.
+         * @param useLabeledSubmitButton or icon.
          * @return the current builder instance
          */
         public Builder useLabeledSubmitButton(boolean useLabeledSubmitButton) {
