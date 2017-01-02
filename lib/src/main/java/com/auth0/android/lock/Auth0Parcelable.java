@@ -28,6 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.util.Telemetry;
 
 
 /**
@@ -35,7 +36,9 @@ import com.auth0.android.Auth0;
  */
 public class Auth0Parcelable implements Parcelable {
 
-    Auth0 auth0;
+    private static final double WITHOUT_DATA = 0x00;
+    private static final double WITH_DATA = 0x01;
+    private Auth0 auth0;
 
     public Auth0Parcelable(Auth0 auth0) {
         this.auth0 = auth0;
@@ -56,6 +59,13 @@ public class Auth0Parcelable implements Parcelable {
         dest.writeString(auth0.getClientId());
         dest.writeString(auth0.getDomainUrl());
         dest.writeString(auth0.getConfigurationUrl());
+        dest.writeByte((byte) (auth0.isOIDCConformant() ? WITH_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (auth0.getTelemetry() != null ? WITH_DATA : WITHOUT_DATA));
+        if (auth0.getTelemetry() != null) {
+            dest.writeString(auth0.getTelemetry().getName());
+            dest.writeString(auth0.getTelemetry().getVersion());
+            dest.writeString(auth0.getTelemetry().getLibraryVersion());
+        }
     }
 
     public static final Parcelable.Creator<Auth0Parcelable> CREATOR
@@ -73,6 +83,17 @@ public class Auth0Parcelable implements Parcelable {
         String clientId = in.readString();
         String domain = in.readString();
         String configurationDomain = in.readString();
-        this.auth0 = new Auth0(clientId, domain, configurationDomain);
+        boolean isOIDCConformant = in.readByte() != WITHOUT_DATA;
+        boolean hasTelemetry = in.readByte() != WITHOUT_DATA;
+        String telemetryName = in.readString();
+        String telemetryVersion = in.readString();
+        String telemetryLibraryVersion = in.readString();
+
+        auth0 = new Auth0(clientId, domain, configurationDomain);
+        auth0.setOIDCConformant(isOIDCConformant);
+        if (hasTelemetry) {
+            Telemetry telemetry = new Telemetry(telemetryName, telemetryVersion, telemetryLibraryVersion);
+            auth0.setTelemetry(telemetry);
+        }
     }
 }

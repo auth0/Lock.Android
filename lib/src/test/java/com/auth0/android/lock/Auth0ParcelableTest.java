@@ -1,22 +1,23 @@
 package com.auth0.android.lock;
 
-import android.os.Bundle;
-
+import android.os.Parcel;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.util.Telemetry;
 import com.squareup.okhttp.HttpUrl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class Auth0ParcelableTest {
 
@@ -24,19 +25,72 @@ public class Auth0ParcelableTest {
     private static final String DOMAIN = "https://my-domain.auth0.com";
     private static final String CONFIG_DOMAIN = "https://my-cdn.auth0.com";
 
-    private static final String AUTH0_KEY = "AUTH0_KEY";
+    @Test
+    public void shouldSaveClientId() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
+        Parcel parcel = Parcel.obtain();
+        auth0Parcelable.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
+        assertThat(auth0.getClientId(), is(equalTo(CLIENT_ID)));
+        assertThat(parceledAuth0.getAuth0().getClientId(), is(equalTo(CLIENT_ID)));
+    }
 
     @Test
-    public void testParcelable() throws Exception {
+    public void shouldSaveDomainUrl() throws Exception {
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AUTH0_KEY, new Auth0Parcelable(auth0));
+        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
+        Parcel parcel = Parcel.obtain();
+        auth0Parcelable.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
 
-        Auth0Parcelable auth0Parcelable = bundle.getParcelable(AUTH0_KEY);
-        Auth0 auth0bundle = auth0Parcelable.getAuth0();
+        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
+        assertThat(HttpUrl.parse(auth0.getDomainUrl()), is(equalTo(HttpUrl.parse(DOMAIN))));
+        assertThat(HttpUrl.parse(parceledAuth0.getAuth0().getDomainUrl()), is(equalTo(HttpUrl.parse(DOMAIN))));
+    }
 
-        assertThat(auth0bundle.getClientId(), is(equalTo(CLIENT_ID)));
-        assertThat(HttpUrl.parse(auth0bundle.getDomainUrl()), is(equalTo(HttpUrl.parse(DOMAIN))));
-        assertThat(HttpUrl.parse(auth0bundle.getConfigurationUrl()), is(equalTo(HttpUrl.parse(CONFIG_DOMAIN))));
+    @Test
+    public void shouldSaveConfigurationUrl() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
+        Parcel parcel = Parcel.obtain();
+        auth0Parcelable.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
+        assertThat(HttpUrl.parse(auth0.getConfigurationUrl()), is(equalTo(HttpUrl.parse(CONFIG_DOMAIN))));
+        assertThat(HttpUrl.parse(parceledAuth0.getAuth0().getConfigurationUrl()), is(equalTo(HttpUrl.parse(CONFIG_DOMAIN))));
+    }
+
+    @Test
+    public void shouldSaveTelemetry() throws Exception {
+        Telemetry telemetry = new Telemetry("name", "version", "libraryVersion");
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        auth0.setTelemetry(telemetry);
+        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
+        Parcel parcel = Parcel.obtain();
+        auth0Parcelable.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
+        assertThat(telemetry.getValue(), is(notNullValue()));
+        assertThat(auth0.getTelemetry().getValue(), is(equalTo(telemetry.getValue())));
+        assertThat(parceledAuth0.getAuth0().getTelemetry().getValue(), is(equalTo(telemetry.getValue())));
+    }
+
+    @Test
+    public void shouldSaveOIDCConformantFlag() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        auth0.setOIDCConformant(true);
+        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
+        Parcel parcel = Parcel.obtain();
+        auth0Parcelable.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
+        assertThat(auth0.isOIDCConformant(), is(equalTo(true)));
+        assertThat(parceledAuth0.getAuth0().isOIDCConformant(), is(equalTo(true)));
     }
 }
