@@ -652,7 +652,7 @@ public class OptionsTest {
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
-        assertThat(options.useLabeledSubmitButton(), is(false));
+        assertThat(options.useLabeledSubmitButton(), is(true));
         assertThat(options.hideMainScreenTitle(), is(false));
         assertThat(options.getScope(), is(nullValue()));
         assertThat(options.getAudience(), is(nullValue()));
