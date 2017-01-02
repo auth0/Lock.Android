@@ -377,9 +377,9 @@ public class PasswordlessLock {
         }
 
         /**
-         * Specify a custom Scheme to use for Web Authentication. Default scheme is 'https'.
+         * Specify a custom Scheme for the redirect url used to send the Web Auth results. Default redirect url scheme is 'https'.
          *
-         * @param scheme to use in the Web Authentication.
+         * @param scheme to use in the Web Auth redirect uri.
          * @return the current builder instance
          */
         public Builder withScheme(@NonNull String scheme) {
