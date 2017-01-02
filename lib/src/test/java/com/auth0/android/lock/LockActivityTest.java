@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -74,14 +75,18 @@ public class LockActivityTest {
     Configuration configuration;
     @Mock
     ClassicLockView lockView;
+    @Captor
+    ArgumentCaptor<Map> mapCaptor;
     LockActivity activity;
+    HashMap basicParameters;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        HashMap<String, Object> basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
+        basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
         when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getAudience()).thenReturn("aud");
 
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.login(anyString(), anyString(), anyString())).thenReturn(authRequest);
@@ -120,13 +125,13 @@ public class LockActivityTest {
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
         activity.onDatabaseAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).login(eq("username"), eq("password"), eq("connection"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest, never()).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -140,19 +145,46 @@ public class LockActivityTest {
         event.setVerificationCode("123456");
         activity.onDatabaseAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).login(eq("username"), eq("password"), eq("connection"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest, never()).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
         assertThat(reqParams, hasEntry("extra", "value"));
         assertThat(reqParams, hasEntry("mfa_code", "123456"));
+    }
+
+    @Test
+    public void shouldCallDatabaseLoginWithCustomAudience() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        account.setOIDCConformant(true);
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+        DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).setAudience("aud");
+        verify(authRequest).start(any(BaseCallback.class));
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
     }
 
 
@@ -199,18 +231,48 @@ public class LockActivityTest {
     }
 
     @Test
+    public void shouldCallDatabaseSignInWithCustomAudience() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        account.setOIDCConformant(true);
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+        when(configuration.loginAfterSignUp()).thenReturn(true);
+
+        DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
+        activity.onDatabaseAuthenticationRequest(event);
+
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).setAudience("aud");
+        verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+    }
+
+    @Test
     public void shouldCallDatabaseSignInWithUsername() throws Exception {
         when(configuration.loginAfterSignUp()).thenReturn(true);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
         activity.onDatabaseAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest, never()).setAudience("aud");
         verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
@@ -226,12 +288,12 @@ public class LockActivityTest {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email", "password", null);
         activity.onDatabaseAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest, never()).setAudience("aud");
         verify(client).signUp(eq("email"), eq("password"), eq("connection"));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
@@ -274,12 +336,12 @@ public class LockActivityTest {
         OAuthLoginEvent event = new OAuthLoginEvent(connection, "email@domain.com", "password");
         activity.onOAuthAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest, never()).setAudience("aud");
         verify(client).login(eq("email@domain.com"), eq("password"), eq("my-connection"));
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -299,7 +361,6 @@ public class LockActivityTest {
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
         activity.onOAuthAuthenticationRequest(event);
 
-        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView, never()).showProgress(true);
         verify(customProvider).setParameters(mapCaptor.capture());

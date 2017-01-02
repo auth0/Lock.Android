@@ -48,6 +48,7 @@ import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.callback.AuthenticationCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
@@ -67,6 +68,7 @@ import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
 import com.squareup.okhttp.OkHttpClient;
@@ -314,10 +316,13 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         if (event.useActiveFlow()) {
             lockView.showProgress(true);
             Log.d(TAG, "Using the /ro endpoint for this OAuth Login Request");
-            options.getAuthenticationAPIClient()
+            AuthenticationRequest request = options.getAuthenticationAPIClient()
                     .login(event.getUsername(), event.getPassword(), connection)
-                    .addAuthenticationParameters(options.getAuthenticationParameters())
-                    .start(authCallback);
+                    .addAuthenticationParameters(options.getAuthenticationParameters());
+            if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
+                request.setAudience(options.getAudience());
+            }
+            request.start(authCallback);
             return;
         }
 
@@ -349,9 +354,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
         }
         final String connection = configuration.getDatabaseConnection().getName();
-        apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
-                .addAuthenticationParameters(parameters)
-                .start(authCallback);
+        AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
+                .addAuthenticationParameters(parameters);
+        if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
+            request.setAudience(options.getAudience());
+        }
+        request.start(authCallback);
     }
 
     @SuppressWarnings("unused")
@@ -368,9 +376,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         if (configuration.loginAfterSignUp()) {
             Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
-            event.getSignUpRequest(apiClient, connection)
-                    .addAuthenticationParameters(authParameters)
-                    .start(authCallback);
+            SignUpRequest request = event.getSignUpRequest(apiClient, connection)
+                    .addAuthenticationParameters(authParameters);
+            if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
+                request.setAudience(options.getAudience());
+            }
+            request.start(authCallback);
         } else {
             event.getCreateUserRequest(apiClient, connection)
                     .start(createCallback);
