@@ -16,7 +16,7 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 script:
-  - "./gradlew clean test --continue"
+  - "./gradlew clean test --continue --stacktrace"
 branches:
   only:
     - master
