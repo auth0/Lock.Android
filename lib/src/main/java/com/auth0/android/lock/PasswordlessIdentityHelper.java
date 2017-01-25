@@ -1,4 +1,4 @@
-package com.auth0.android.lock.internal.configuration;
+package com.auth0.android.lock;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,8 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.auth0.android.lock.adapters.Country;
+import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 
-public class PasswordlessUserHelper {
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.DISABLED;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.EMAIL_CODE;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.EMAIL_LINK;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_CODE;
+import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_LINK;
+
+class PasswordlessIdentityHelper {
     private static final String LAST_PASSWORDLESS_IDENTITY_KEY = "last_passwordless_identity";
     private static final String LAST_PASSWORDLESS_COUNTRY_KEY = "last_passwordless_country";
     private static final String LAST_PASSWORDLESS_MODE_KEY = "last_passwordless_mode";
@@ -16,11 +23,11 @@ public class PasswordlessUserHelper {
 
     private final SharedPreferences sp;
     @PasswordlessMode
-    private final int passwordlessMode;
+    private final int mode;
 
-    public PasswordlessUserHelper(@NonNull Context context, @PasswordlessMode int passwordlessMode) {
+    PasswordlessIdentityHelper(@NonNull Context context, @PasswordlessMode int mode) {
         sp = context.getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        this.passwordlessMode = passwordlessMode;
+        this.mode = mode;
     }
 
     public void saveIdentity(@NonNull String identity, @Nullable Country country) {
@@ -28,7 +35,7 @@ public class PasswordlessUserHelper {
         sp.edit()
                 .putString(LAST_PASSWORDLESS_IDENTITY_KEY, identity)
                 .putString(LAST_PASSWORDLESS_COUNTRY_KEY, countryData)
-                .putInt(LAST_PASSWORDLESS_MODE_KEY, passwordlessMode)
+                .putInt(LAST_PASSWORDLESS_MODE_KEY, mode)
                 .apply();
     }
 
@@ -52,9 +59,18 @@ public class PasswordlessUserHelper {
         return identity;
     }
 
-    public boolean hadLoggedInBefore() {
+    public boolean hasLoggedInBefore() {
         @PasswordlessMode
-        int lastMode = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED);
-        return lastMode != PasswordlessMode.DISABLED && lastMode == passwordlessMode;
+        int lastMode = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, DISABLED);
+        return lastMode != DISABLED && hasSameConnection(lastMode);
+    }
+
+    private boolean hasSameConnection(@PasswordlessMode int lastMode) {
+        if (lastMode == mode) {
+            return true;
+        }
+        boolean sms = (lastMode == SMS_CODE || lastMode == SMS_LINK) && (mode == SMS_CODE || mode == SMS_LINK);
+        boolean email = (lastMode == EMAIL_CODE || lastMode == EMAIL_LINK) && (mode == EMAIL_CODE || mode == EMAIL_LINK);
+        return sms || email;
     }
 }

@@ -61,7 +61,6 @@ import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.internal.configuration.Connection;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
-import com.auth0.android.lock.internal.configuration.PasswordlessUserHelper;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
@@ -103,7 +102,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private WebProvider webProvider;
 
     private LoginErrorMessageBuilder loginErrorBuilder;
-    private PasswordlessUserHelper passwordlessHelper;
+    private PasswordlessIdentityHelper identityHelper;
 
     @SuppressWarnings("unused")
     public PasswordlessLockActivity() {
@@ -286,13 +285,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     };
 
     private void reloadRecentPasswordlessData(boolean submitForm) {
-        if (!passwordlessHelper.hadLoggedInBefore()) {
-            Log.e(TAG, "User has never logged in using passwordless.");
+        if (!identityHelper.hasLoggedInBefore()) {
             return;
         }
 
-        Log.e(TAG, "User has logged in in the past.. Reloading passwordless data");
-        lockView.loadPasswordlessData(passwordlessHelper.getLastIdentity(), passwordlessHelper.getLastCountry());
+        Log.d(TAG, "Reloading passwordless identity from a previous successful log in.");
+        lockView.loadPasswordlessData(identityHelper.getLastIdentity(), identityHelper.getLastCountry());
         if (submitForm) {
             lockView.onFormSubmit();
         }
@@ -432,7 +430,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onSuccess(final List<Connection> connections) {
             configuration = new Configuration(connections, options);
-            passwordlessHelper = new PasswordlessUserHelper(PasswordlessLockActivity.this, configuration.getPasswordlessMode());
+            identityHelper = new PasswordlessIdentityHelper(PasswordlessLockActivity.this, configuration.getPasswordlessMode());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -487,8 +485,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
-            Log.e(TAG, "Saving passwordless data for next auto-login.");
-            passwordlessHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
+            Log.d(TAG, "Saving passwordless identity for a future log in request.");
+            identityHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
             deliverAuthenticationResult(credentials);
         }
 
