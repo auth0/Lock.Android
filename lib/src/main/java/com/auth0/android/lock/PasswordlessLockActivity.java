@@ -285,7 +285,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     };
 
     private void reloadRecentPasswordlessData(boolean submitForm) {
-        if (!identityHelper.hasLoggedInBefore()) {
+        if (!configuration.usePasswordlessAutoSubmit() || !identityHelper.hasLoggedInBefore()) {
             return;
         }
 
@@ -485,8 +485,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
-            Log.d(TAG, "Saving passwordless identity for a future log in request.");
-            identityHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
+            if (configuration.usePasswordlessAutoSubmit()) {
+                Log.d(TAG, "Saving passwordless identity for a future log in request.");
+                identityHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
+            }
             deliverAuthenticationResult(credentials);
         }
 

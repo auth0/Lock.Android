@@ -247,6 +247,16 @@ public class PasswordlessLock {
         }
 
         /**
+         * Whether Lock should remember the last used identity and auto request a passwordless sign in or not. By default, the auto submit is disabled.
+         *
+         * @return the current Builder instance
+         */
+        public Builder usePasswordlessAutoSubmit(boolean autoSubmit) {
+            options.setPasswordlessAutoSubmit(autoSubmit);
+            return this;
+        }
+
+        /**
          * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
