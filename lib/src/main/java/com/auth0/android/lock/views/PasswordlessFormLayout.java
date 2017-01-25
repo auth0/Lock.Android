@@ -41,7 +41,7 @@ import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
-public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener, PasswordlessRequestCodeFormView.OnAlreadyGotCodeListener {
+public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener {
 
     private static final String TAG = PasswordlessFormLayout.class.getSimpleName();
     private static final int MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS = 3;
@@ -51,7 +51,6 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     private TextView orSeparatorMessage;
     private PasswordlessRequestCodeFormView passwordlessRequestCodeLayout;
     private PasswordlessInputCodeFormView passwordlessInputCodeLayout;
-    private boolean showGotCodeButton;
 
     public PasswordlessFormLayout(Context context) {
         super(context);
@@ -116,7 +115,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
 
     private void addPasswordlessRequestCodeLayout() {
         if (passwordlessRequestCodeLayout == null) {
-            passwordlessRequestCodeLayout = new PasswordlessRequestCodeFormView(lockWidget, this);
+            passwordlessRequestCodeLayout = new PasswordlessRequestCodeFormView(lockWidget);
         }
         addView(passwordlessRequestCodeLayout);
     }
@@ -199,19 +198,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
             passwordlessInputCodeLayout = null;
         }
         addView(passwordlessRequestCodeLayout);
-        passwordlessRequestCodeLayout.showGotCodeButton();
-        showGotCodeButton = true;
         lockWidget.resetHeaderTitle();
-    }
-
-    @Override
-    public void onAlreadyGotCode(String emailOrCode) {
-        codeSent(emailOrCode);
-    }
-
-    @Override
-    public boolean shouldShowGotCodeButton() {
-        return showGotCodeButton;
     }
 
     /**
@@ -229,14 +216,10 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     public void loadPasswordlessData(String emailOrNumber, @Nullable Country country) {
         if (passwordlessRequestCodeLayout != null) {
             Log.d(TAG, String.format("Loading recent passwordless data into the form. Identity %s with Country %s", emailOrNumber, country));
-            showGotCodeButton = true;
             passwordlessRequestCodeLayout.setInputText(emailOrNumber);
             if (country != null) {
                 passwordlessRequestCodeLayout.onCountryCodeSelected(country.getIsoCode(), country.getDialCode());
-                emailOrNumber = country.getDialCode() + emailOrNumber;
             }
-            passwordlessRequestCodeLayout.setLastEmailOrNumber(emailOrNumber);
-            passwordlessRequestCodeLayout.showGotCodeButton();
         }
     }
 }

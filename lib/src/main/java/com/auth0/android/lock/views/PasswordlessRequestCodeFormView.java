@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock.views;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,8 +33,8 @@ import android.widget.TextView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
-import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
+import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
 import static com.auth0.android.lock.internal.configuration.PasswordlessMode.DISABLED;
@@ -49,19 +48,15 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
     private static final String TAG = PasswordlessRequestCodeFormView.class.getSimpleName();
 
     private final LockWidgetPasswordless lockWidget;
-    private final OnAlreadyGotCodeListener listener;
     private ValidatedInputView passwordlessInput;
     @PasswordlessMode
     private int passwordlessMode;
     private TextView topMessage;
     private CountryCodeSelectorView countryCodeSelector;
-    private TextView gotCodeButton;
-    private String submittedEmailOrCode;
 
-    public PasswordlessRequestCodeFormView(LockWidgetPasswordless lockWidget, @NonNull OnAlreadyGotCodeListener listener) {
+    public PasswordlessRequestCodeFormView(LockWidgetPasswordless lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
-        this.listener = listener;
         passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
         boolean showTitle = lockWidget.getConfiguration().getSocialConnections().isEmpty();
         Log.v(TAG, "New instance with mode " + passwordlessMode);
@@ -75,8 +70,6 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         passwordlessInput.setOnEditorActionListener(this);
         countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
-        gotCodeButton = (TextView) findViewById(R.id.com_auth0_lock_got_code);
-        gotCodeButton.setOnClickListener(this);
 
         selectPasswordlessMode(showTitle);
     }
@@ -111,21 +104,15 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         passwordlessInput.clearInput();
         topMessage.setVisibility(showTitle ? VISIBLE : GONE);
         topMessage.setText(showTitle ? getResources().getString(titleMessage) : null);
-
-        if (listener.shouldShowGotCodeButton()) {
-            gotCodeButton.setVisibility(VISIBLE);
-        }
     }
 
     @Override
     public Object getActionEvent() {
         String emailOrNumber = getInputText();
         if (passwordlessMode == SMS_CODE || passwordlessMode == SMS_LINK) {
-            setLastEmailOrNumber(countryCodeSelector.getSelectedCountry().getDialCode() + emailOrNumber);
             Log.d(TAG, "Starting a SMS Passwordless flow");
             return PasswordlessLoginEvent.requestCode(passwordlessMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
         } else {
-            setLastEmailOrNumber(emailOrNumber);
             Log.d(TAG, "Starting an Email Passwordless flow");
             return PasswordlessLoginEvent.requestCode(passwordlessMode, emailOrNumber);
         }
@@ -161,9 +148,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.com_auth0_lock_got_code) {
-            listener.onAlreadyGotCode(submittedEmailOrCode);
-        } else if (id == R.id.com_auth0_lock_country_code_selector) {
+        if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
         }
     }
@@ -180,17 +165,4 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         passwordlessInput.setText(text);
     }
 
-    public void showGotCodeButton() {
-        gotCodeButton.setVisibility(VISIBLE);
-    }
-
-    public void setLastEmailOrNumber(String emailOrNumber) {
-        submittedEmailOrCode = emailOrNumber;
-    }
-
-    public interface OnAlreadyGotCodeListener {
-        void onAlreadyGotCode(String emailOrNumber);
-
-        boolean shouldShowGotCodeButton();
-    }
 }
