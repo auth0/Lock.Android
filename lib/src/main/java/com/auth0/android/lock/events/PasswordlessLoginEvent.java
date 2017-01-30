@@ -89,7 +89,8 @@ public class PasswordlessLoginEvent {
     /**
      * Creates the ParameterizableRequest that will initiate the Passwordless Authentication flow.
      *
-     * @param apiClient the API Client instance
+     * @param apiClient      the API Client instance
+     * @param connectionName the name of the passwordless connection to request the login with. Only 'sms' and 'email' connections are allowed here.
      * @return the Passwordless code request request.
      */
     public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {

@@ -33,8 +33,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
+import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 
 import static com.auth0.android.lock.internal.configuration.PasswordlessMode.DISABLED;
@@ -57,7 +57,9 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     private TextView resendButton;
 
     /**
-     * @param lockWidget
+     * Creates a new FormView to request input of the received code.
+     *
+     * @param lockWidget the base passwordless widget
      * @param listener   a listener to notify when the user clicks "Resend code" button.
      * @param identity   the email or number used to send the passwordless code.
      */

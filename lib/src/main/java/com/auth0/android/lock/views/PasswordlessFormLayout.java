@@ -152,6 +152,8 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     /**
      * Notifies the form that the code was correctly sent and it should now wait
      * for the user to input the valid code.
+     *
+     * @param emailOrNumber the email or phone number to which the code was sent.
      */
     public void codeSent(String emailOrNumber) {
         Log.d(TAG, "Now showing the Code Input Form");
