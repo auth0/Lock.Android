@@ -172,7 +172,7 @@ public class Configuration {
         mustAcceptTerms = options.mustAcceptTerms();
         useLabeledSubmitButton = options.useLabeledSubmitButton();
         hideMainScreenTitle = options.hideMainScreenTitle();
-        passwordlessAutoSubmit = options.usePasswordlessAutoSubmit();
+        passwordlessAutoSubmit = options.rememberLastPasswordlessAccount();
 
         authStyles = options.getAuthStyles();
         extraSignUpFields = options.getCustomFields();

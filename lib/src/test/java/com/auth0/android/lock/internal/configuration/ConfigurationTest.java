@@ -525,7 +525,7 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldUsePasswordlessAutoSubmit() throws Exception {
-        options.setPasswordlessAutoSubmit(true);
+        options.setRememberLastPasswordlessLogin(true);
         configuration = new Configuration(connections, options);
         assertThat(configuration.usePasswordlessAutoSubmit(), is(true));
     }
