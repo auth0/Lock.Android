@@ -43,7 +43,6 @@ import java.util.Set;
 
 /**
  * Configuration class to resolve which connections are available after parsing the local options.
- * <p/>
  * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
  */
 public class Configuration {

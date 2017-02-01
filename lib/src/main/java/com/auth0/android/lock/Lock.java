@@ -360,6 +360,7 @@ public class Lock {
         /**
          * Whether to show the Log In screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+         * @param allow whether to allow or not the login screen.
          * @return the current builder instance
          */
         public Builder allowLogIn(boolean allow) {
@@ -370,6 +371,7 @@ public class Lock {
         /**
          * Whether to show the Sign Up screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+         * @param allow whether to allow or not the sign up screen.
          * @return the current builder instance
          */
         public Builder allowSignUp(boolean allow) {
@@ -380,6 +382,7 @@ public class Lock {
         /**
          * Whether to show the Forgot Password screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+         * @param allow whether to allow or not the forgot password screen.
          * @return the current builder instance
          */
         public Builder allowForgotPassword(boolean allow) {

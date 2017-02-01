@@ -44,6 +44,7 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
      *
      * @return the connection Type.
      */
+    @AuthType
     int getType() {
         switch (strategy) {
             case "auth0":

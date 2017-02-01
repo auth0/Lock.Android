@@ -34,6 +34,8 @@ public interface LockWidgetPasswordless extends LockWidgetOAuth {
 
     /**
      * Change the Header Title to the given value and update the visibility depending on the Contextual Header Title flag.
+     *
+     * @param titleRes the string resource to use as title.
      */
     void updateHeaderTitle(@StringRes int titleRes);
 
