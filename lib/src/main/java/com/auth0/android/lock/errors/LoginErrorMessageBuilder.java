@@ -25,6 +25,7 @@
 package com.auth0.android.lock.errors;
 
 import android.support.annotation.StringRes;
+import android.util.Log;
 
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.R;
@@ -42,7 +43,6 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
     private static final int unauthorizedResource = R.string.com_auth0_lock_db_login_error_unauthorized_message;
     private static final int invalidMFACodeResource = R.string.com_auth0_lock_db_login_error_invalid_mfa_code_message;
     private static final int tooManyAttemptsResource = R.string.com_auth0_lock_db_too_many_attempts_error_message;
-    private static final int wrongClientTypeResource = R.string.com_auth0_lock_db_login_error_wrong_client_type_message;
 
     private int invalidCredentialsResource;
     private int defaultMessage;
@@ -73,7 +73,8 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
                 description = exception.getDescription();
             }
         } else if (WRONG_CLIENT_TYPE_ERROR.equals(exception.getDescription())) {
-            messageRes = wrongClientTypeResource;
+            Log.w("Lock", "The Client Type must be set to 'native' in order to authenticate using Code Grant (PKCE). Please change the type in your Auth0 client's dashboard: https://manage.auth0.com/#/clients");
+            messageRes = defaultMessage;
         } else if (TOO_MANY_ATTEMPTS_ERROR.equals(exception.getCode())) {
             messageRes = tooManyAttemptsResource;
         } else {
