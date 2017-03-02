@@ -93,4 +93,18 @@ public class Auth0ParcelableTest {
         assertThat(auth0.isOIDCConformant(), is(equalTo(true)));
         assertThat(parceledAuth0.getAuth0().isOIDCConformant(), is(equalTo(true)));
     }
+
+    @Test
+    public void shouldSaveLoggingEnabledFlag() throws Exception {
+        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
+        auth0.setLoggingEnabled(true);
+        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
+        Parcel parcel = Parcel.obtain();
+        auth0Parcelable.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
+        assertThat(auth0.isLoggingEnabled(), is(equalTo(true)));
+        assertThat(parceledAuth0.getAuth0().isLoggingEnabled(), is(equalTo(true)));
+    }
 }

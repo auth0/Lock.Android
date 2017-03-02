@@ -60,6 +60,7 @@ public class Auth0Parcelable implements Parcelable {
         dest.writeString(auth0.getDomainUrl());
         dest.writeString(auth0.getConfigurationUrl());
         dest.writeByte((byte) (auth0.isOIDCConformant() ? WITH_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (auth0.isLoggingEnabled() ? WITH_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (auth0.getTelemetry() != null ? WITH_DATA : WITHOUT_DATA));
         if (auth0.getTelemetry() != null) {
             dest.writeString(auth0.getTelemetry().getName());
@@ -84,6 +85,7 @@ public class Auth0Parcelable implements Parcelable {
         String domain = in.readString();
         String configurationDomain = in.readString();
         boolean isOIDCConformant = in.readByte() != WITHOUT_DATA;
+        boolean isLoggingEnabled = in.readByte() != WITHOUT_DATA;
         boolean hasTelemetry = in.readByte() != WITHOUT_DATA;
         String telemetryName = in.readString();
         String telemetryVersion = in.readString();
@@ -91,6 +93,7 @@ public class Auth0Parcelable implements Parcelable {
 
         auth0 = new Auth0(clientId, domain, configurationDomain);
         auth0.setOIDCConformant(isOIDCConformant);
+        auth0.setLoggingEnabled(isLoggingEnabled);
         if (hasTelemetry) {
             Telemetry telemetry = new Telemetry(telemetryName, telemetryVersion, telemetryLibraryVersion);
             auth0.setTelemetry(telemetry);
