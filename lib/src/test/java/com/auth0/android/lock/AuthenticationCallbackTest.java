@@ -37,11 +37,9 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasAuthentication;
-import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasNoError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.isCanceled;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
@@ -75,6 +73,7 @@ public class AuthenticationCallbackTest {
         assertThat(callback.getCredentials().getIdToken(), equalTo(credentials.getIdToken()));
         assertThat(callback.getCredentials().getRefreshToken(), equalTo(credentials.getRefreshToken()));
         assertThat(callback.getCredentials().getType(), equalTo(credentials.getType()));
+        assertThat(callback.getCredentials().getExpiresIn(), equalTo(credentials.getExpiresIn()));
         assertThat(callback, hasNoError());
     }
 
@@ -109,10 +108,11 @@ public class AuthenticationCallbackTest {
 
     public Intent getAuthenticationData() {
         Intent i = new Intent(Constants.AUTHENTICATION_ACTION);
-        i.putExtra(Constants.ID_TOKEN_EXTRA, "");
-        i.putExtra(Constants.ACCESS_TOKEN_EXTRA, "");
-        i.putExtra(Constants.TOKEN_TYPE_EXTRA, "");
-        i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "");
+        i.putExtra(Constants.ID_TOKEN_EXTRA, "idToken");
+        i.putExtra(Constants.ACCESS_TOKEN_EXTRA, "accessToken");
+        i.putExtra(Constants.TOKEN_TYPE_EXTRA, "tokenType");
+        i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "refreshToken");
+        i.putExtra(Constants.EXPIRES_IN_EXTRA, 86000);
         return i;
     }
 
@@ -121,8 +121,9 @@ public class AuthenticationCallbackTest {
         String accessToken = data.getStringExtra(Constants.ACCESS_TOKEN_EXTRA);
         String tokenType = data.getStringExtra(Constants.TOKEN_TYPE_EXTRA);
         String refreshToken = data.getStringExtra(Constants.REFRESH_TOKEN_EXTRA);
+        long expiresIn = data.getLongExtra(Constants.EXPIRES_IN_EXTRA, 0);
 
-        return new Credentials(idToken, accessToken, tokenType, refreshToken);
+        return new Credentials(idToken, accessToken, tokenType, refreshToken, expiresIn);
     }
 
 }
