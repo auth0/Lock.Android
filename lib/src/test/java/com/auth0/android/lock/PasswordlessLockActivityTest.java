@@ -82,6 +82,7 @@ public class PasswordlessLockActivityTest {
         HashMap<String, Object> basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
         when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getScope()).thenReturn("openid user photos");
 
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.passwordlessWithEmail(anyString(), any(PasswordlessType.class))).thenReturn(codeRequest);
@@ -144,6 +145,7 @@ public class PasswordlessLockActivityTest {
         verify(client).loginWithEmail(eq("user@domain.com"), eq("1234"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).setConnection(eq("connection"));
+        verify(authRequest).setScope("openid user photos");
         verify(authRequest).start(any(BaseCallback.class));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
 
@@ -195,6 +197,7 @@ public class PasswordlessLockActivityTest {
         verify(client).loginWithPhoneNumber(eq("+541234567890"), eq("1234"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).setConnection(eq("connection"));
+        verify(authRequest).setScope("openid user photos");
         verify(authRequest).start(any(BaseCallback.class));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
 

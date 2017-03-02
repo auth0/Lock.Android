@@ -320,6 +320,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             AuthenticationRequest request = options.getAuthenticationAPIClient()
                     .login(event.getUsername(), event.getPassword(), connection)
                     .addAuthenticationParameters(options.getAuthenticationParameters());
+            if (options.getScope() != null) {
+                request.setScope(options.getScope());
+            }
             if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
                 request.setAudience(options.getAudience());
             }
@@ -357,6 +360,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         final String connection = configuration.getDatabaseConnection().getName();
         AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
                 .addAuthenticationParameters(parameters);
+        if (options.getScope() != null) {
+            request.setScope(options.getScope());
+        }
         if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
             request.setAudience(options.getAudience());
         }
@@ -379,6 +385,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
             SignUpRequest request = event.getSignUpRequest(apiClient, connection)
                     .addAuthenticationParameters(authParameters);
+            if (options.getScope() != null) {
+                request.setScope(options.getScope());
+            }
             if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
                 request.setAudience(options.getAudience());
             }
