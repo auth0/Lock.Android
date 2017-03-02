@@ -168,6 +168,20 @@ public class OptionsTest {
         assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
     }
 
+
+    @Test
+    public void shouldSetPasswordlessAutoSubmit() throws Exception {
+        options.setRememberLastPasswordlessLogin(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.rememberLastPasswordlessAccount(), is(true));
+        assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
+    }
+
     @Test
     public void shouldUseBigSocialButtonStyle() throws Exception {
         options.setAuthButtonSize(AuthButtonSize.BIG);
@@ -654,6 +668,7 @@ public class OptionsTest {
         assertThat(options.mustAcceptTerms(), is(false));
         assertThat(options.useLabeledSubmitButton(), is(true));
         assertThat(options.hideMainScreenTitle(), is(false));
+        assertThat(options.rememberLastPasswordlessAccount(), is(false));
         assertThat(options.getScope(), is(nullValue()));
         assertThat(options.getAudience(), is(nullValue()));
         assertThat(options.getScheme(), is(nullValue()));
@@ -680,6 +695,7 @@ public class OptionsTest {
         options.setLoginAfterSignUp(true);
         options.setUseLabeledSubmitButton(true);
         options.setHideMainScreenTitle(true);
+        options.setRememberLastPasswordlessLogin(true);
 
 
         Parcel parcel = Parcel.obtain();
@@ -700,6 +716,7 @@ public class OptionsTest {
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
         assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
+        assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
     }
 
     @Test
@@ -717,6 +734,7 @@ public class OptionsTest {
         options.setLoginAfterSignUp(false);
         options.setUseLabeledSubmitButton(false);
         options.setHideMainScreenTitle(false);
+        options.setRememberLastPasswordlessLogin(false);
 
 
         Parcel parcel = Parcel.obtain();
@@ -737,6 +755,7 @@ public class OptionsTest {
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
         assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
+        assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
     }
 
 

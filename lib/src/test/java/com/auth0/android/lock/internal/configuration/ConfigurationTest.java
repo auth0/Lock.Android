@@ -105,6 +105,8 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
         assertThat(configuration.useLabeledSubmitButton(), is(true));
+        assertThat(configuration.hideMainScreenTitle(), is(false));
+        assertThat(configuration.usePasswordlessAutoSubmit(), is(false));
     }
 
     @Test
@@ -498,6 +500,34 @@ public class ConfigurationTest extends GsonBaseTest {
         options.setMustAcceptTerms(true);
         configuration = new Configuration(connections, options);
         assertThat(configuration.mustAcceptTerms(), is(true));
+    }
+
+    @Test
+    public void shouldNotUseLabeledSubmitButton() throws Exception {
+        options.setUseLabeledSubmitButton(false);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.useLabeledSubmitButton(), is(false));
+    }
+
+    @Test
+    public void shouldGetPasswordPolicy() throws Exception {
+        options.useDatabaseConnection("with-strength");
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
+    }
+
+    @Test
+    public void shouldHideMainScreenTitle() throws Exception {
+        options.setHideMainScreenTitle(true);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.hideMainScreenTitle(), is(true));
+    }
+
+    @Test
+    public void shouldUsePasswordlessAutoSubmit() throws Exception {
+        options.setRememberLastPasswordlessLogin(true);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.usePasswordlessAutoSubmit(), is(true));
     }
 
     private Configuration unfilteredConfig() {

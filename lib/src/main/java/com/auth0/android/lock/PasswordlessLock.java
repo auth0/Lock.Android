@@ -247,6 +247,16 @@ public class PasswordlessLock {
         }
 
         /**
+         * Whether Lock should remember the last used passwordless identity and auto request a sign or not. By default, lock will not remember the last login.
+         *
+         * @return the current Builder instance
+         */
+        public Builder rememberLastLogin(boolean remember) {
+            options.setRememberLastPasswordlessLogin(remember);
+            return this;
+        }
+
+        /**
          * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.

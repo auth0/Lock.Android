@@ -26,9 +26,7 @@ package com.auth0.android.lock;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
@@ -84,14 +82,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private static final int COUNTRY_CODE_REQUEST_CODE = 120;
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final long RESEND_TIMEOUT = 20 * 1000;
-    private static final long CODE_TTL = 2 * 60 * 1000;
-
-    private static final String LAST_PASSWORDLESS_TIME_KEY = "last_passwordless_time";
-    private static final String LAST_PASSWORDLESS_EMAIL_NUMBER_KEY = "last_passwordless_email_number";
-    private static final String LAST_PASSWORDLESS_COUNTRY_KEY = "last_passwordless_country";
-    private static final String LAST_PASSWORDLESS_MODE_KEY = "last_passwordless_mode";
-    private static final String LOCK_PREFERENCES_NAME = "Lock";
-    private static final String COUNTRY_DATA_DIV = "@";
 
     private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
@@ -102,7 +92,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private LinearLayout passwordlessSuccessCover;
     private TextView resultMessage;
 
-    private String lastPasswordlessEmailOrNumber;
+    private String lastPasswordlessIdentity;
     private Country lastPasswordlessCountry;
     private Bus lockBus;
     private ScrollView rootView;
@@ -112,6 +102,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private WebProvider webProvider;
 
     private LoginErrorMessageBuilder loginErrorBuilder;
+    private PasswordlessIdentityHelper identityHelper;
 
     @SuppressWarnings("unused")
     public PasswordlessLockActivity() {
@@ -123,7 +114,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         this.options = options;
         this.lockView = lockView;
         this.webProvider = webProvider;
-        this.lastPasswordlessEmailOrNumber = lastEmailOrNumber;
+        this.lastPasswordlessIdentity = lastEmailOrNumber;
     }
 
     @Override
@@ -210,7 +201,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     public void onBackPressed() {
         boolean showingSuccessLayout = passwordlessSuccessCover.getVisibility() == View.VISIBLE;
         if (!showingSuccessLayout && lockView.onBackPressed()) {
-            reloadRecentPasswordlessData();
+            reloadRecentPasswordlessData(false);
             return;
         }
         if (!options.isClosable()) {
@@ -252,7 +243,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private void showLinkSentLayout() {
         TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
-        successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessEmailOrNumber));
+        successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessIdentity));
         TextView gotCodeButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_got_code);
         gotCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,7 +261,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 lockView = new PasswordlessLockView(PasswordlessLockActivity.this, lockBus, options.getTheme());
                 if (configuration != null) {
                     lockView.configure(configuration);
-                    reloadRecentPasswordlessData();
+                    reloadRecentPasswordlessData(false);
                 } else {
                     lockBus.post(new FetchApplicationEvent());
                 }
@@ -293,53 +284,16 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     };
 
-    private void reloadRecentPasswordlessData() {
-        int choosenMode = configuration.getPasswordlessMode();
-        if (choosenMode == PasswordlessMode.DISABLED) {
-            return;
-        }
-        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        int savedMode = sp.getInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED);
-        if (sp.getLong(LAST_PASSWORDLESS_TIME_KEY, 0) + CODE_TTL < System.currentTimeMillis() || choosenMode != savedMode) {
-            Log.d(TAG, "Previous Passwordless data is too old to reload.");
+    private void reloadRecentPasswordlessData(boolean submitForm) {
+        if (!configuration.usePasswordlessAutoSubmit() || !identityHelper.hasLoggedInBefore()) {
             return;
         }
 
-        String text = sp.getString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "");
-        lastPasswordlessEmailOrNumber = text;
-        String countryInfo = sp.getString(LAST_PASSWORDLESS_COUNTRY_KEY, null);
-        if (countryInfo != null) {
-            String isoCode = countryInfo.split(COUNTRY_DATA_DIV)[0];
-            String dialCode = countryInfo.split(COUNTRY_DATA_DIV)[1];
-            if (text.startsWith(dialCode)) {
-                text = text.substring(dialCode.length());
-            }
-            lastPasswordlessCountry = new Country(isoCode, dialCode);
+        Log.d(TAG, "Reloading passwordless identity from a previous successful log in.");
+        lockView.loadPasswordlessData(identityHelper.getLastIdentity(), identityHelper.getLastCountry());
+        if (submitForm) {
+            lockView.onFormSubmit();
         }
-        lockView.loadPasswordlessData(text, lastPasswordlessCountry);
-    }
-
-    private void persistRecentPasswordlessData(@NonNull String emailOrNumber, @Nullable Country country) {
-        Log.v(TAG, "Saving recently used Passwordless data for the next time.");
-        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String countryData = country != null ? country.getIsoCode() + COUNTRY_DATA_DIV + country.getDialCode() : null;
-        sp.edit()
-                .putLong(LAST_PASSWORDLESS_TIME_KEY, System.currentTimeMillis())
-                .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, emailOrNumber)
-                .putString(LAST_PASSWORDLESS_COUNTRY_KEY, countryData)
-                .putInt(LAST_PASSWORDLESS_MODE_KEY, configuration.getPasswordlessMode())
-                .apply();
-    }
-
-    public void clearRecentPasswordlessData() {
-        Log.v(TAG, "Deleting recent Passwordless data.");
-        SharedPreferences sp = getSharedPreferences(LOCK_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        sp.edit()
-                .putLong(LAST_PASSWORDLESS_TIME_KEY, 0)
-                .putString(LAST_PASSWORDLESS_EMAIL_NUMBER_KEY, "")
-                .putString(LAST_PASSWORDLESS_COUNTRY_KEY, null)
-                .putInt(LAST_PASSWORDLESS_MODE_KEY, PasswordlessMode.DISABLED)
-                .apply();
     }
 
     @Override
@@ -389,7 +343,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         boolean useMagicLink = configuration.getPasswordlessMode() == PasswordlessMode.EMAIL_LINK || configuration.getPasswordlessMode() == PasswordlessMode.SMS_LINK;
-        if (lastPasswordlessEmailOrNumber != null && useMagicLink) {
+        if (lastPasswordlessIdentity != null && useMagicLink) {
             String code = intent.getData().getQueryParameter("code");
             if (code == null || code.isEmpty()) {
                 Log.w(TAG, "Passwordless Code is missing or could not be parsed");
@@ -441,14 +395,14 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         String connectionName = configuration.getPasswordlessConnection().getName();
         if (event.getCode() != null) {
-            event.getLoginRequest(apiClient, lastPasswordlessEmailOrNumber)
+            event.getLoginRequest(apiClient, lastPasswordlessIdentity)
                     .addAuthenticationParameters(options.getAuthenticationParameters())
                     .setConnection(connectionName)
                     .start(authCallback);
             return;
         }
 
-        lastPasswordlessEmailOrNumber = event.getEmailOrNumber();
+        lastPasswordlessIdentity = event.getEmailOrNumber();
         lastPasswordlessCountry = event.getCountry();
         event.getCodeRequest(apiClient, connectionName)
                 .start(passwordlessCodeCallback);
@@ -457,7 +411,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @SuppressWarnings("unused")
     @Subscribe
     public void onOAuthAuthenticationRequest(OAuthLoginEvent event) {
-        lastPasswordlessEmailOrNumber = null;
+        lastPasswordlessIdentity = null;
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnection());
         currentProvider = AuthResolver.providerFor(event.getStrategy(), event.getConnection());
@@ -476,11 +430,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onSuccess(final List<Connection> connections) {
             configuration = new Configuration(connections, options);
+            identityHelper = new PasswordlessIdentityHelper(PasswordlessLockActivity.this, configuration.getPasswordlessMode());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     lockView.configure(configuration);
-                    reloadRecentPasswordlessData();
+                    reloadRecentPasswordlessData(true);
                 }
             });
             applicationFetcher = null;
@@ -506,11 +461,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 @Override
                 public void run() {
                     lockView.showProgress(false);
-                    lockView.onPasswordlessCodeSent(lastPasswordlessEmailOrNumber);
+                    lockView.onPasswordlessCodeSent(lastPasswordlessIdentity);
                     if (!options.useCodePasswordless()) {
                         showLinkSentLayout();
                     }
-                    persistRecentPasswordlessData(lastPasswordlessEmailOrNumber, lastPasswordlessCountry);
                 }
             });
         }
@@ -531,7 +485,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(Credentials credentials) {
-            clearRecentPasswordlessData();
+            if (configuration.usePasswordlessAutoSubmit()) {
+                Log.d(TAG, "Saving passwordless identity for a future log in request.");
+                identityHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
+            }
             deliverAuthenticationResult(credentials);
         }
 

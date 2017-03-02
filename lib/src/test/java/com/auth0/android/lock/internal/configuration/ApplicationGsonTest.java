@@ -69,25 +69,46 @@ public class ApplicationGsonTest extends GsonBaseTest {
     @Test
     public void shouldRequireId() throws Exception {
         expectedException.expect(JsonParseException.class);
+        expectedException.expectMessage("Missing required attribute id");
         buildApplicationFrom(new StringReader("{\"tenant\":\"samples\",\"authorize\":\"https://samples.auth0.com/authorize\",\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]}"));
     }
 
     @Test
     public void shouldRequireTenant() throws Exception {
         expectedException.expect(JsonParseException.class);
+        expectedException.expectMessage("Missing required attribute tenant");
         buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"authorize\":\"https://samples.auth0.com/authorize\",\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]}"));
     }
 
     @Test
     public void shouldRequireAuthorize() throws Exception {
         expectedException.expect(JsonParseException.class);
+        expectedException.expectMessage("Missing required attribute authorize");
         buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"tenant\":\"samples\",\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]}"));
+    }
+
+    @Test
+    public void shouldAllowEmptyAuthorize() throws Exception {
+        buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"callback\":\"https://samples.auth0.com/callback\",\"tenant\":\"samples\",\"authorize\":\"\",\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]}"));
+    }
+
+    @Test
+    public void shouldRequireCallback() throws Exception {
+        expectedException.expect(JsonParseException.class);
+        expectedException.expectMessage("Missing required attribute callback");
+        buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"authorize\":\"https://samples.auth0.com/authorize\",\"tenant\":\"samples\",\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]}"));
+    }
+
+    @Test
+    public void shouldAllowEmptyCallback() throws Exception {
+        buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"tenant\":\"samples\",\"authorize\":\"https://samples.auth0.com/authorize\",\"callback\":\"\",\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]}"));
     }
 
     @Test
     public void shouldRequireStrategies() throws Exception {
         expectedException.expect(JsonParseException.class);
-        buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"tenant\":\"samples\",\"authorize\":\"https://samples.auth0.com/authorize\"}"));
+        expectedException.expectMessage("Missing required attribute strategies");
+        buildApplicationFrom(new StringReader("{\"id\":\"CBBlULbbyQHSVWj5EqZSTMhUrJAS3UFA\",\"tenant\":\"samples\",\"authorize\":\"https://samples.auth0.com/authorize\",\"callback\":\"https://samples.auth0.com/callback\"}"));
     }
 
     @Test
