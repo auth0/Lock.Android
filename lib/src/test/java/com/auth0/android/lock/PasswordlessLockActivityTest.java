@@ -41,6 +41,8 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
@@ -74,15 +76,18 @@ public class PasswordlessLockActivityTest {
     Configuration configuration;
     @Mock
     PasswordlessLockView lockView;
+    Map<String, String> connectionScope;
     PasswordlessLockActivity activity;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        HashMap<String, Object> basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
+        HashMap basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
+        connectionScope = new HashMap<>(Collections.singletonMap("my-connection", "the connection scope"));
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
         when(options.getAuthenticationAPIClient()).thenReturn(client);
         when(options.getScope()).thenReturn("openid user photos");
+        when(options.getConnectionsScope()).thenReturn(connectionScope);
 
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.passwordlessWithEmail(anyString(), any(PasswordlessType.class))).thenReturn(codeRequest);
@@ -228,6 +233,49 @@ public class PasswordlessLockActivityTest {
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
         assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, hasEntry("scope", "openid user photos"));
+        assertThat(reqParams, hasEntry("connection_scope", "the connection scope"));
+        assertThat(reqParams, not(hasKey("audience")));
+    }
+
+    @Test
+    public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        account.setOIDCConformant(true);
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getConnectionsScope()).thenReturn(connectionScope);
+        HashMap basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        PasswordlessLockActivity activity = new PasswordlessLockActivity(configuration, options, lockView, webProvider, null);
+
+
+        AuthProvider customProvider = mock(AuthProvider.class);
+        AuthHandler handler = mock(AuthHandler.class);
+        when(handler.providerFor(anyString(), eq("my-connection"))).thenReturn(customProvider);
+        AuthResolver.setAuthHandlers(Collections.singletonList(handler));
+
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("my-connection");
+        OAuthLoginEvent event = new OAuthLoginEvent(connection);
+        activity.onOAuthAuthenticationRequest(event);
+
+        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
+
+        verify(lockView, never()).showProgress(true);
+        verify(customProvider).setParameters(mapCaptor.capture());
+        verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
+        AuthResolver.setAuthHandlers(Collections.emptyList());
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, hasEntry("scope", "openid user photos"));
+        assertThat(reqParams, hasEntry("connection_scope", "the connection scope"));
+        assertThat(reqParams, hasEntry("audience", "aud"));
     }
 
     @Test

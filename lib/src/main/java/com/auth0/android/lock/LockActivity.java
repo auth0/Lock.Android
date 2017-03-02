@@ -48,6 +48,7 @@ import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.callback.AuthenticationCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
@@ -333,7 +334,20 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         Log.v(TAG, "Looking for a provider to use /authorize with the connection " + connection);
         currentProvider = AuthResolver.providerFor(event.getStrategy(), connection);
         if (currentProvider != null) {
-            currentProvider.setParameters(options.getAuthenticationParameters());
+            HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
+            final String connectionScope = options.getConnectionsScope().get(connection);
+            if (connectionScope != null) {
+                authParameters.put(Constants.CONNECTION_SCOPE_KEY, connectionScope);
+            }
+            final String scope = options.getScope();
+            if (scope != null) {
+                authParameters.put(ParameterBuilder.SCOPE_KEY, scope);
+            }
+            final String audience = options.getAudience();
+            if (audience != null && options.getAccount().isOIDCConformant()) {
+                authParameters.put(ParameterBuilder.AUDIENCE_KEY, audience);
+            }
+            currentProvider.setParameters(authParameters);
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
         }
