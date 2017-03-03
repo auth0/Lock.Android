@@ -41,6 +41,8 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
@@ -79,14 +81,18 @@ public class LockActivityTest {
     ArgumentCaptor<Map> mapCaptor;
     LockActivity activity;
     HashMap basicParameters;
+    HashMap connectionScope;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
+        connectionScope = new HashMap<>(Collections.singletonMap("custom-connection", "the connection scope"));
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
         when(options.getAuthenticationAPIClient()).thenReturn(client);
         when(options.getAudience()).thenReturn("aud");
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getConnectionsScope()).thenReturn(connectionScope);
 
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.login(anyString(), anyString(), anyString())).thenReturn(authRequest);
@@ -121,7 +127,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseLogin() throws Exception {
+    public void shouldCallLegacyDatabaseLogin() throws Exception {
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
         activity.onDatabaseAuthenticationRequest(event);
 
@@ -131,6 +137,7 @@ public class LockActivityTest {
         verify(client).login(eq("username"), eq("password"), eq("connection"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
@@ -140,7 +147,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseLoginWithVerificationCode() throws Exception {
+    public void shouldCallLegacyDatabaseLoginWithVerificationCode() throws Exception {
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
         event.setVerificationCode("123456");
         activity.onDatabaseAuthenticationRequest(event);
@@ -151,6 +158,7 @@ public class LockActivityTest {
         verify(client).login(eq("username"), eq("password"), eq("connection"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
@@ -161,12 +169,13 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseLoginWithCustomAudience() throws Exception {
+    public void shouldCallOIDCDatabaseLoginWithCustomAudience() throws Exception {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getScope()).thenReturn("openid user photos");
         when(options.getAudience()).thenReturn("aud");
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
@@ -178,6 +187,7 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(client).login(eq("username"), eq("password"), eq("connection"));
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).setScope("openid user photos");
         verify(authRequest).setAudience("aud");
         verify(authRequest).start(any(BaseCallback.class));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -231,13 +241,14 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseSignInWithCustomAudience() throws Exception {
+    public void shouldCallOIDCDatabaseSignInWithCustomAudience() throws Exception {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
         when(options.getAudience()).thenReturn("aud");
+        when(options.getScope()).thenReturn("openid user photos");
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
 
@@ -251,6 +262,7 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
         verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -261,7 +273,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseSignInWithUsername() throws Exception {
+    public void shouldCallLegacyDatabaseSignInWithUsername() throws Exception {
         when(configuration.loginAfterSignUp()).thenReturn(true);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
@@ -272,6 +284,7 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
         verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -282,7 +295,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseSignIn() throws Exception {
+    public void shouldCallLegacyDatabaseSignIn() throws Exception {
         when(configuration.loginAfterSignUp()).thenReturn(true);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email", "password", null);
@@ -293,6 +306,7 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
         verify(client).signUp(eq("email"), eq("password"), eq("connection"));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -341,6 +355,7 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
         verify(client).login(eq("email@domain.com"), eq("password"), eq("my-connection"));
 
@@ -370,6 +385,47 @@ public class LockActivityTest {
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
         assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, hasEntry("scope", "openid user photos"));
+        assertThat(reqParams, hasEntry("connection_scope", "the connection scope"));
+        assertThat(reqParams, not(hasKey("audience")));
+    }
+
+    @Test
+    public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        account.setOIDCConformant(true);
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getConnectionsScope()).thenReturn(connectionScope);
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+
+        AuthProvider customProvider = mock(AuthProvider.class);
+        AuthHandler handler = mock(AuthHandler.class);
+        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        AuthResolver.setAuthHandlers(Collections.singletonList(handler));
+
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("custom-connection");
+        OAuthLoginEvent event = new OAuthLoginEvent(connection);
+        activity.onOAuthAuthenticationRequest(event);
+
+
+        verify(lockView, never()).showProgress(true);
+        verify(customProvider).setParameters(mapCaptor.capture());
+        verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
+        AuthResolver.setAuthHandlers(Collections.emptyList());
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, hasEntry("scope", "openid user photos"));
+        assertThat(reqParams, hasEntry("connection_scope", "the connection scope"));
+        assertThat(reqParams, hasEntry("audience", "aud"));
     }
 
     @Test

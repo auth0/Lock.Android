@@ -49,6 +49,7 @@ import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
@@ -66,11 +67,13 @@ import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class PasswordlessLockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -396,10 +399,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         String connectionName = configuration.getPasswordlessConnection().getName();
         if (event.getCode() != null) {
-            event.getLoginRequest(apiClient, lastPasswordlessIdentity)
+            AuthenticationRequest request = event.getLoginRequest(apiClient, lastPasswordlessIdentity)
                     .addAuthenticationParameters(options.getAuthenticationParameters())
-                    .setConnection(connectionName)
-                    .start(authCallback);
+                    .setConnection(connectionName);
+            if (options.getScope() != null) {
+                request.setScope(options.getScope());
+            }
+            request.start(authCallback);
             return;
         }
 
@@ -417,7 +423,20 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnection());
         currentProvider = AuthResolver.providerFor(event.getStrategy(), event.getConnection());
         if (currentProvider != null) {
-            currentProvider.setParameters(options.getAuthenticationParameters());
+            HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
+            final String connectionScope = options.getConnectionsScope().get(event.getConnection());
+            if (connectionScope != null) {
+                authParameters.put(Constants.CONNECTION_SCOPE_KEY, connectionScope);
+            }
+            final String scope = options.getScope();
+            if (scope != null) {
+                authParameters.put(ParameterBuilder.SCOPE_KEY, scope);
+            }
+            final String audience = options.getAudience();
+            if (audience != null && options.getAccount().isOIDCConformant()) {
+                authParameters.put(ParameterBuilder.AUDIENCE_KEY, audience);
+            }
+            currentProvider.setParameters(authParameters);
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
         }

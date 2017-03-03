@@ -29,6 +29,8 @@ abstract class Constants {
 
     static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
 
+    static final String CONNECTION_SCOPE_KEY = "connection_scope";
+
     static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
     static final String SIGN_UP_ACTION = "com.auth0.android.lock.action.SignUp";
     static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
