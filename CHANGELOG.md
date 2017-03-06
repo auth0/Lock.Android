@@ -1,5 +1,21 @@
 # Change Log
 
+## [2.4.0](https://github.com/auth0/Lock.Android/tree/2.4.0) (2017-03-06)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.3.0...2.4.0)
+**Closed issues**
+- LockBuilder withScope method not working. [\#397](https://github.com/auth0/Lock.Android/issues/397)
+
+**Added**
+- Add Passwordless auto login [\#392](https://github.com/auth0/Lock.Android/pull/392) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Update auth0.android library to version 1.6.0 [\#400](https://github.com/auth0/Lock.Android/pull/400) ([lbalmaceda](https://github.com/lbalmaceda))
+- Remove "invalid client type" user message [\#391](https://github.com/auth0/Lock.Android/pull/391) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix setScope to properly send the scope attribute on Auth [\#399](https://github.com/auth0/Lock.Android/pull/399) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add loggingEnabled flag to the Auth0 parcel [\#398](https://github.com/auth0/Lock.Android/pull/398) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.3.0](https://github.com/auth0/Lock.Android/tree/2.3.0) (2017-01-02)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.2.1...2.3.0)
 
