@@ -68,6 +68,12 @@
     <string name="com_auth0_lock_default_country_name_fallback">US</string>
     <string name="com_auth0_lock_default_country_code_fallback">+1</string>
     <string name="com_auth0_lock_header_title">Auth0</string>
+    <string name="com_auth0_lock_error_support_website">https://auth0.com/docs/</string>
+    <string name="com_auth0_lock_title_error">We encountered an error</string>
+    <string name="com_auth0_lock_recoverable_error">"Please "</string>
+    <string name="com_auth0_lock_recoverable_error_resolution">retry.</string>
+    <string name="com_auth0_lock_unrecoverable_error">"Please contact "</string>
+    <string name="com_auth0_lock_unrecoverable_error_resolution">support.</string>
     <string name="com_auth0_lock_network_error">Network error</string>
     <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
     <string name="com_auth0_lock_input_error_password">Invalid Password</string>

@@ -128,6 +128,28 @@
         </item>
     </style>
 
+    <style name="Lock.Theme.Text.Title.Error" parent="Lock.Theme.Text.LinkSent">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_title_text_spacing</item>
+        <item name="android:textColor">@color/com_auth0_lock_passwordless_link_sent_text</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_title_error_text</item>
+        <item name="android:text">@string/com_auth0_lock_title_error</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Subtitle.Error" parent="Lock.Theme.Text.LinkSent">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/com_auth0_lock_hint_text</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_subtitle_error_text</item>
+    </style>
+
+    <style name="Lock.Theme.Text.Subtitle.Error.Resolution">
+        <item name="android:textColor">@color/com_auth0_lock_error_resolution_text</item>
+    </style>
+
     <style name="Lock.Theme.Text.SocialButton">
         <item name="android:gravity">center|left</item>
         <item name="android:layout_height">match_parent</item>
