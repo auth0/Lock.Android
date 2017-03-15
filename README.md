@@ -1,7 +1,6 @@
 Lock for Android
 ============
 [![CircleCI](https://img.shields.io/circleci/project/github/auth0/Lock.Android.svg?style=flat-square)](https://circleci.com/gh/auth0/Lock.Android/tree/master)
-[![TravisCI](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0.android%22%20AND%20a%3A%22lock%22)
 [ ![Download](https://api.bintray.com/packages/auth0/android/lock/images/download.svg) ](https://bintray.com/auth0/android/lock/_latestVersion)
