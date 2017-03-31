@@ -87,7 +87,7 @@
     <color name="com_auth0_lock_disabled_text">#4d000000</color>
     <color name="com_auth0_lock_passwordless_link_sent_text">#c8000000</color>
     <color name="com_auth0_lock_hint_text">#999999</color>
-    <color name="com_auth0_lock_error_resolution_text">#0A86B1</color>
+    <color name="com_auth0_lock_error_link">#0A86B1</color>
 
     <color name="com_auth0_lock_checkable_option_success">#518C11</color>
     <color name="com_auth0_lock_checkable_option_unset">#E2000000</color>

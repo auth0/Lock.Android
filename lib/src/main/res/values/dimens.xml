@@ -42,6 +42,7 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless_sent">26dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_link">25dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_mode_selection">15dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_error_title">32dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field">7dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field_with_error">3dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_password_strength">10dp</dimen>
@@ -77,7 +78,7 @@
     <dimen name="com_auth0_lock_result_message_text">15sp</dimen>
     <dimen name="com_auth0_lock_labeled_submit_button_text">19sp</dimen>
     <dimen name="com_auth0_lock_title_error_text">21sp</dimen>
-    <dimen name="com_auth0_lock_subtitle_error_text">13sp</dimen>
+    <dimen name="com_auth0_lock_subtitle_error_text">15sp</dimen>
 
     <dimen name="com_auth0_lock_title_text_spacing">10dp</dimen>
     <dimen name="com_auth0_lock_subtitle_text_spacing">8dp</dimen>

@@ -68,7 +68,6 @@
     <string name="com_auth0_lock_default_country_name_fallback">US</string>
     <string name="com_auth0_lock_default_country_code_fallback">+1</string>
     <string name="com_auth0_lock_header_title">Auth0</string>
-    <string name="com_auth0_lock_error_support_website">https://auth0.com/docs/</string>
     <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
     <string name="com_auth0_lock_input_error_password">Invalid Password</string>
     <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
@@ -120,11 +119,13 @@
     ]]></string>
 
     <!-- Custom Error Messages -->
-    <string name="com_auth0_lock_title_error">We encountered an error</string>
-    <string name="com_auth0_lock_recoverable_error">"Please "</string>
-    <string name="com_auth0_lock_recoverable_error_resolution">retry.</string>
-    <string name="com_auth0_lock_unrecoverable_error">"Please contact "</string>
-    <string name="com_auth0_lock_unrecoverable_error_resolution">support.</string>
+    <string name="com_auth0_lock_recoverable_error_title">Can\'t load the login box</string>
+    <string name="com_auth0_lock_recoverable_error_subtitle">Please check your internet\n connection.</string>
+    <string name="com_auth0_lock_recoverable_error_action">Retry</string>
+    <string name="com_auth0_lock_unrecoverable_error_title">Can\'t resolve your request</string>
+    <string name="com_auth0_lock_unrecoverable_error_subtitle">There was an unexpected error while resolving the login box configuration.</string>
+    <string name="com_auth0_lock_unrecoverable_error_subtitle_without_action">There was an unexpected error while resolving the login box configuration, please contact support.</string>
+    <string name="com_auth0_lock_unrecoverable_error_action">Contact support</string>
     <string name="com_auth0_lock_missing_connections_message">There isn\'t any connection configured for this Application. Check your dashboard configuration on http://auth0.com</string>
     <string name="com_auth0_lock_configuration_retrieving_error">Error retrieving the Dashboard configuration</string>
     <string name="com_auth0_lock_enterprise_no_connection_message">THERE WAS NO CONNECTION CONFIGURED FOR THE DOMAIN</string>

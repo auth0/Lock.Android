@@ -118,26 +118,38 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     }
 
     private void showConfigurationMissingLayout(final boolean showRetry) {
-        int errorRes = showRetry ? R.string.com_auth0_lock_recoverable_error : R.string.com_auth0_lock_unrecoverable_error;
-        int resolutionRes = showRetry ? R.string.com_auth0_lock_recoverable_error_resolution : R.string.com_auth0_lock_unrecoverable_error_resolution;
         final View errorLayout = LayoutInflater.from(getContext()).inflate(R.layout.com_auth0_lock_error_layout, this, false);
-        TextView tvError = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error);
-        TextView tvResolution = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_resolution);
-        tvError.setText(errorRes);
-        tvResolution.setText(resolutionRes);
-        tvResolution.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (showRetry) {
+        TextView tvTitle = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_title);
+        TextView tvError = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_subtitle);
+        TextView tvAction = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_action);
+
+        if (showRetry) {
+            tvTitle.setText(R.string.com_auth0_lock_recoverable_error_title);
+            tvError.setText(R.string.com_auth0_lock_recoverable_error_subtitle);
+            tvAction.setText(R.string.com_auth0_lock_recoverable_error_action);
+            tvAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     bus.post(new FetchApplicationEvent());
                     removeView(errorLayout);
                     showWaitForConfigurationLayout();
-                } else {
-                    //Open support website in browser
-                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getContext().getString(R.string.com_auth0_lock_error_support_website))));
                 }
-            }
-        });
+            });
+        } else if (configuration.getSupportURL() == null) {
+            tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
+            tvError.setText(R.string.com_auth0_lock_unrecoverable_error_subtitle_without_action);
+            tvAction.setVisibility(GONE);
+        } else {
+            tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
+            tvError.setText(R.string.com_auth0_lock_unrecoverable_error_subtitle);
+            tvAction.setText(R.string.com_auth0_lock_unrecoverable_error_action);
+            tvAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(configuration.getSupportURL())));
+                }
+            });
+        }
         addView(errorLayout);
     }
 
