@@ -73,6 +73,7 @@ public class Configuration {
     private int initialScreen;
     private String termsURL;
     private String privacyURL;
+    private String supportURL;
     private List<CustomField> extraSignUpFields;
     private Map<String, Integer> authStyles;
 
@@ -191,6 +192,7 @@ public class Configuration {
 
         this.termsURL = options.getTermsURL() == null ? "https://auth0.com/terms" : options.getTermsURL();
         this.privacyURL = options.getPrivacyURL() == null ? "https://auth0.com/privacy" : options.getPrivacyURL();
+        this.supportURL = options.getSupportURL();
     }
 
     @StyleRes
@@ -280,6 +282,11 @@ public class Configuration {
     @NonNull
     public String getPrivacyURL() {
         return privacyURL;
+    }
+
+    @Nullable
+    public String getSupportURL() {
+        return supportURL;
     }
 
     public boolean mustAcceptTerms() {

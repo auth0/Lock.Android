@@ -518,6 +518,18 @@ public class Lock {
         }
 
         /**
+         * Set the Support URL to link when there's a configuration error either in Lock or the Auth0 Dashboard.
+         * Leaving this value unchanged will make the error screen not to show a link but rather a information message.
+         *
+         * @param url a valid url to use.
+         * @return the current builder instance
+         */
+        public Builder setSupportURL(@NonNull String url) {
+            options.setSupportURL(url);
+            return this;
+        }
+
+        /**
          * Prompts the user to accept the Privacy Policy and Terms of Service before signing up.
          * The default value is false.
          *

@@ -398,6 +398,18 @@ public class PasswordlessLock {
         }
 
         /**
+         * Set the Support URL to link when there's a configuration error either in Lock or the Auth0 Dashboard.
+         * Leaving this value unchanged will make the error screen not to show a link but rather a information message.
+         *
+         * @param url a valid url to use.
+         * @return the current builder instance
+         */
+        public Builder setSupportURL(@NonNull String url) {
+            options.setSupportURL(url);
+            return this;
+        }
+
+        /**
          * Sets the Connection Scope to request when performing an Authentication with the given Connection.
          *
          * @param connectionName to which specify the scopes.
