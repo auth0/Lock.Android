@@ -415,5 +415,40 @@ public class PasswordlessLock {
             }
             return this;
         }
+
+        /**
+         * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
+         * The default value is 'https://auth0.com/privacy'
+         *
+         * @param url a valid url to use.
+         * @return the current builder instance
+         */
+        public Builder setPrivacyURL(@NonNull String url) {
+            options.setPrivacyURL(url);
+            return this;
+        }
+
+        /**
+         * Choose a custom Terms of Service URL to access when the user clicks the link on the Sign Up form.
+         * The default value is 'https://auth0.com/terms'
+         *
+         * @param url a valid url to use.
+         * @return the current builder instance
+         */
+        public Builder setTermsURL(@NonNull String url) {
+            options.setTermsURL(url);
+            return this;
+        }
+
+        /**
+         * Whether the PasswordlessLockActivity display or not Terms of Service and Privacy Policy banner.
+         *
+         * @param showTermsOfUse or not. By default, the LockActivity is not closable.
+         * @return the current builder instance
+         */
+        public Builder setShowTermsOfUse(boolean showTermsOfUse) {
+            options.setShowTermsOfUse(showTermsOfUse);
+            return this;
+        }
     }
 }

@@ -75,6 +75,7 @@ public class Options implements Parcelable {
     private boolean useLabeledSubmitButton;
     private boolean hideMainScreenTitle;
     private boolean rememberLastPasswordlessLogin;
+    private boolean showTermsOfUse;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -101,6 +102,7 @@ public class Options implements Parcelable {
         useCodePasswordless = true;
         usePKCE = true;
         useLabeledSubmitButton = true;
+        showTermsOfUse = true;
         authenticationParameters = new HashMap<>();
         authStyles = new HashMap<>();
         connectionsScope = new HashMap<>();
@@ -123,6 +125,7 @@ public class Options implements Parcelable {
         useLabeledSubmitButton = in.readByte() != WITHOUT_DATA;
         hideMainScreenTitle = in.readByte() != WITHOUT_DATA;
         rememberLastPasswordlessLogin = in.readByte() != WITHOUT_DATA;
+        showTermsOfUse = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
@@ -199,6 +202,7 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (useLabeledSubmitButton ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (hideMainScreenTitle ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (rememberLastPasswordlessLogin ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (showTermsOfUse ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
@@ -491,6 +495,14 @@ public class Options implements Parcelable {
 
     public boolean rememberLastPasswordlessAccount() {
         return rememberLastPasswordlessLogin;
+    }
+
+    public void setShowTermsOfUse(boolean showTermsOfUse) {
+        this.showTermsOfUse = showTermsOfUse;
+    }
+
+    public boolean showTermsOfUse() {
+        return showTermsOfUse;
     }
 
     public void withConnectionScope(@NonNull String connectionName, @NonNull String scope) {

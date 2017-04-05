@@ -62,6 +62,7 @@ public class Configuration {
     private boolean useLabeledSubmitButton;
     private boolean hideMainScreenTitle;
     private boolean passwordlessAutoSubmit;
+    private boolean showTermsOfUse;
     @UsernameStyle
     private int usernameStyle;
     @AuthButtonSize
@@ -173,6 +174,7 @@ public class Configuration {
         useLabeledSubmitButton = options.useLabeledSubmitButton();
         hideMainScreenTitle = options.hideMainScreenTitle();
         passwordlessAutoSubmit = options.rememberLastPasswordlessAccount();
+        showTermsOfUse = options.showTermsOfUse();
 
         authStyles = options.getAuthStyles();
         extraSignUpFields = options.getCustomFields();
@@ -296,5 +298,9 @@ public class Configuration {
 
     public boolean usePasswordlessAutoSubmit() {
         return passwordlessAutoSubmit;
+    }
+
+    public boolean showTermsOfUse() {
+        return showTermsOfUse;
     }
 }

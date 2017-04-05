@@ -56,6 +56,7 @@ public class DemoActivity extends AppCompatActivity {
     private View rootLayout;
     private RadioGroup groupSubmitMode;
     private CheckBox checkboxClosable;
+    private CheckBox checkboxHasTermsOfUse;
     private RadioGroup groupPasswordlessChannel;
     private RadioGroup groupPasswordlessMode;
     private CheckBox checkboxConnectionsDB;
@@ -85,6 +86,7 @@ public class DemoActivity extends AppCompatActivity {
         groupSubmitMode = (RadioGroup) findViewById(R.id.group_submitmode);
         checkboxClosable = (CheckBox) findViewById(R.id.checkbox_closable);
         checkboxHideMainScreenTitle = (CheckBox) findViewById(R.id.checkbox_hide_title);
+        checkboxClosable = (CheckBox) findViewById(R.id.checkbox_has_terms_or_use);
 
         checkboxConnectionsDB = (CheckBox) findViewById(R.id.checkbox_connections_db);
         checkboxConnectionsEnterprise = (CheckBox) findViewById(R.id.checkbox_connections_enterprise);
@@ -172,6 +174,7 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
+
         builder.hideMainScreenTitle(checkboxHideMainScreenTitle.isChecked());
         lock = builder.build(this);
 
@@ -197,8 +200,11 @@ public class DemoActivity extends AppCompatActivity {
 
         builder.allowedConnections(generateConnections());
         builder.hideMainScreenTitle(checkboxHideMainScreenTitle.isChecked());
+        builder.setShowTermsOfUse(checkboxClosable.isChecked());
+
 
         passwordlessLock = builder.build(this);
+
 
         startActivity(passwordlessLock.newIntent(this));
     }

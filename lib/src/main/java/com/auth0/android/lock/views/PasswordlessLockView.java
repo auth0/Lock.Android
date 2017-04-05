@@ -25,8 +25,12 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -56,6 +60,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private ActionButton actionButton;
     private ProgressBar loadingProgressBar;
     private HeaderView headerView;
+    private View bottomBanner;
 
     public PasswordlessLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
@@ -98,9 +103,48 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
         boolean showPasswordless = configuration.getPasswordlessConnection() != null;
         if (showPasswordless) {
+            // add terms of use bottom banner if url's are present
+            if (configuration.showTermsOfUse()) {
+                bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+                bottomBanner.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showSignUpTermsDialog(null);
+                    }
+                });
+                bottomBanner.setVisibility(VISIBLE);
+                addView(bottomBanner, wrapHeightParams);
+            }
+
             actionButton = new ActionButton(getContext(), lockTheme);
             actionButton.setOnClickListener(this);
             addView(actionButton, wrapHeightParams);
+
+        }
+    }
+
+    /**
+     * Create a dialog to show the Privacy Policy and Terms of Service text.
+     * If the provided callback it's not null, it will ask for acceptance.
+     *
+     * @param acceptCallback the callback to receive the acceptance. Can be null.
+     */
+    private void showSignUpTermsDialog(@Nullable DialogInterface.OnClickListener acceptCallback) {
+        final String content = String.format(getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_message), configuration.getTermsURL(), configuration.getPrivacyURL());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle(getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_title))
+                .setPositiveButton(R.string.com_auth0_lock_action_ok, null)
+                .setMessage(Html.fromHtml(content));
+        if (acceptCallback != null) {
+            builder.setNegativeButton(R.string.com_auth0_lock_action_cancel, null)
+                    .setPositiveButton(R.string.com_auth0_lock_action_accept, acceptCallback)
+                    .setCancelable(false);
+        }
+
+        //the dialog needs to be shown before we can get it's view.
+        final TextView message = (TextView) builder.show().findViewById(android.R.id.message);
+        if (message != null) {
+            message.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 
