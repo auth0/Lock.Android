@@ -398,10 +398,9 @@ public class PasswordlessLock {
         }
 
         /**
-         * Set the Support URL to link when there's a configuration error either in Lock or the Auth0 Dashboard.
-         * Leaving this value unchanged will make the error screen not to show a link but rather a information message.
+         * Sets the url of your support page for your application that will be used when an error occurs and Lock is unable to handle it. In this case it will show an error screen and if there is a support url will also show a button to open that page in the browser.
          *
-         * @param url a valid url to use.
+         * @param url to your support page or where your customers can request assistance. By default no page is set.
          * @return the current builder instance
          */
         public Builder setSupportURL(@NonNull String url) {
