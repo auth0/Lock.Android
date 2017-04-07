@@ -73,6 +73,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -422,8 +423,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         lastPasswordlessCountry = null;
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnection());
         currentProvider = AuthResolver.providerFor(event.getStrategy(), event.getConnection());
-        HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
         if (currentProvider != null) {
+            HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
             final String connectionScope = options.getConnectionsScope().get(event.getConnection());
             if (connectionScope != null) {
                 authParameters.put(Constants.CONNECTION_SCOPE_KEY, connectionScope);
@@ -442,7 +443,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        webProvider.start(this, event.getConnection(), authParameters, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, event.getConnection(), null, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     //Callbacks

@@ -40,6 +40,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
@@ -134,7 +135,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(client).login("username", "password", "connection");
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
@@ -155,7 +156,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(client).login("username", "password", "connection");
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
@@ -185,7 +186,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(client).login("username", "password", "connection");
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).setAudience("aud");
@@ -222,7 +223,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest).start(any(BaseCallback.class));
-        verify(client).createUser(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(client).createUser("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -236,7 +237,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest).start(any(BaseCallback.class));
-        verify(client).createUser(eq("email@domain.com"), eq("password"), eq("connection"));
+        verify(client).createUser("email@domain.com", "password", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -264,7 +265,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(BaseCallback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
-        verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(client).signUp("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -286,7 +287,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(BaseCallback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
-        verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(client).signUp("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -308,7 +309,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(BaseCallback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
-        verify(client).signUp(eq("email"), eq("password"), eq("connection"));
+        verify(client).signUp("email", "password", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -339,7 +340,7 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest, never()).addParameters(any(Map.class));
         verify(dbRequest).start(any(BaseCallback.class));
-        verify(client).resetPassword(eq("email@domain.com"), eq("connection"));
+        verify(client).resetPassword("email@domain.com", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -358,7 +359,7 @@ public class LockActivityTest {
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
-        verify(client).login(eq("email@domain.com"), eq("password"), eq("my-connection"));
+        verify(client).login("email@domain.com", "password", "my-connection");
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
@@ -475,13 +476,13 @@ public class LockActivityTest {
         when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
-        verify(lockView, never()).showProgress(eq(true));
+        verify(lockView, never()).showProgress(true);
         verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
 
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
-        assertThat(reqParams, hasEntry("login_hint", "user@domain.com"));
+        Map<String, String> extraParams = mapCaptor.getValue();
+        assertThat(extraParams, is(notNullValue()));
+        assertThat(extraParams.size(), is(1));
+        assertThat(extraParams, hasEntry("login_hint", "user@domain.com"));
     }
 
     @Test
@@ -496,7 +497,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(REQ_CODE_WEB_PROVIDER), eq(Activity.RESULT_OK), eq(intent));
+        verify(webProvider).resume(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
     }
 
     @Test
@@ -507,12 +508,11 @@ public class LockActivityTest {
         when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
-        verify(lockView, never()).showProgress(eq(true));
+        verify(lockView, never()).showProgress(true);
         verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
 
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
+        Map<String, String> extraParams = mapCaptor.getValue();
+        assertThat(extraParams, is(nullValue()));
     }
 
     @Test
@@ -526,7 +526,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(REQ_CODE_WEB_PROVIDER), eq(Activity.RESULT_OK), eq(intent));
+        verify(webProvider).resume(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
     }
 
     @Test
@@ -545,7 +545,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_CUSTOM_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(customProvider).authorize(eq(REQ_CODE_CUSTOM_PROVIDER), eq(Activity.RESULT_OK), eq(intent));
+        verify(customProvider).authorize(REQ_CODE_CUSTOM_PROVIDER, Activity.RESULT_OK, intent);
         AuthResolver.setAuthHandlers(Collections.emptyList());
     }
 
@@ -560,7 +560,7 @@ public class LockActivityTest {
         activity.onNewIntent(intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(intent));
+        verify(webProvider).resume(intent);
     }
 
     @Test
@@ -579,7 +579,7 @@ public class LockActivityTest {
         activity.onNewIntent(intent);
 
         verify(lockView).showProgress(false);
-        verify(customProvider).authorize(eq(intent));
+        verify(customProvider).authorize(intent);
         AuthResolver.setAuthHandlers(Collections.emptyList());
     }
 
@@ -594,6 +594,6 @@ public class LockActivityTest {
         activity.onNewIntent(intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(intent));
+        verify(webProvider).resume(intent);
     }
 }

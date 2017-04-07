@@ -32,19 +32,24 @@ class WebProvider {
     /**
      * Configures a new instance of the WebAuthProvider.Builder and starts it.
      *
-     * @param activity       a valid Activity context
-     * @param connection     to use in the authentication
-     * @param authParameters extra authentication parameters to use. If null, it will use the ones defined by Options#getAuthenticationParameters
-     * @param callback       to deliver the authentication result to
-     * @param requestCode    to use in the startActivityForResult request
+     * @param activity            a valid Activity context
+     * @param connection          to use in the authentication
+     * @param extraAuthParameters extra authentication parameters to use along with the provided in the Options instance
+     * @param callback            to deliver the authentication result to
+     * @param requestCode         to use in the startActivityForResult request
      */
-    public void start(@NonNull Activity activity, @NonNull String connection, @Nullable Map<String, Object> authParameters, @NonNull AuthCallback callback, int requestCode) {
-        if (authParameters == null) {
-            authParameters = new HashMap<>(options.getAuthenticationParameters());
+    public void start(@NonNull Activity activity, @NonNull String connection, @Nullable Map<String, Object> extraAuthParameters, @NonNull AuthCallback callback, int requestCode) {
+        HashMap<String, Object> parameters;
+        if (extraAuthParameters == null) {
+            parameters = options.getAuthenticationParameters();
+        } else {
+            parameters = new HashMap<>(options.getAuthenticationParameters());
+            parameters.putAll(extraAuthParameters);
         }
+
         WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
-                .withParameters(authParameters)
+                .withParameters(parameters)
                 .withConnection(connection);
 
         final String connectionScope = options.getConnectionsScope().get(connection);

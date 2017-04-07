@@ -3,13 +3,13 @@ package com.auth0.android.lock;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.test.espresso.core.deps.guava.collect.ObjectArrays;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthActivity;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -43,8 +43,16 @@ public class WebProviderTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    @Mock
-    public Map<String, Object> map;
+    private Activity activity;
+
+    @Before
+    public void setUp() throws Exception {
+        activity = spy(Robolectric.buildActivity(Activity.class)
+                .create()
+                .start()
+                .resume()
+                .get());
+    }
 
     @Test
     public void shouldStart() throws Exception {
@@ -52,13 +60,8 @@ public class WebProviderTest {
         options.setAccount(new Auth0("clientId", "domain.auth0.com"));
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get();
 
-        webProvider.start(activity, "my-connection", map, callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
     }
 
     @Test
@@ -73,11 +76,6 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("custom-param-1", "value-1");
@@ -90,6 +88,8 @@ public class WebProviderTest {
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
         assertThat(intent.getData(), hasHost("domain.auth0.com"));
+        assertThat(intent.getData(), hasParamWithValue("custom-param-1", "value-1"));
+        assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
         assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
         assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
         assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
@@ -108,11 +108,6 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
         webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
@@ -144,11 +139,6 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
         webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
@@ -186,11 +176,6 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
         webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
