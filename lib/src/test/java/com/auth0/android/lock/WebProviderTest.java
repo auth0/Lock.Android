@@ -3,6 +3,7 @@ package com.auth0.android.lock;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.test.espresso.core.deps.guava.collect.ObjectArrays;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.lock.internal.configuration.Options;
@@ -14,11 +15,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -40,6 +43,9 @@ public class WebProviderTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
+    @Mock
+    public Map<String, Object> map;
+
     @Test
     public void shouldStart() throws Exception {
         Options options = new Options();
@@ -52,7 +58,42 @@ public class WebProviderTest {
                 .resume()
                 .get();
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", map, callback, 123);
+    }
+
+    @Test
+    public void shouldStartWithCustomAuthenticationParameters() throws Exception {
+        Auth0 account = new Auth0("clientId", "domain.auth0.com");
+        account.setOIDCConformant(true);
+        Options options = new Options();
+        options.setAccount(account);
+
+        options.setUseBrowser(true);
+        options.withAudience("https://me.auth0.com/myapi");
+
+        AuthCallback callback = mock(AuthCallback.class);
+        WebProvider webProvider = new WebProvider(options);
+        Activity activity = spy(Robolectric.buildActivity(Activity.class)
+                .create()
+                .start()
+                .resume()
+                .get());
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("custom-param-1", "value-1");
+        parameters.put("custom-param-2", "value-2");
+
+        webProvider.start(activity, "my-connection", parameters, callback, 123);
+        ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivity(intentCaptor.capture());
+
+        Intent intent = intentCaptor.getValue();
+        assertThat(intent, is(notNullValue()));
+        assertThat(intent.getData(), hasHost("domain.auth0.com"));
+        assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
+        assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
+        assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
+        assertThat(intent, hasAction(Intent.ACTION_VIEW));
     }
 
     @Test
@@ -73,7 +114,7 @@ public class WebProviderTest {
                 .resume()
                 .get());
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
 
@@ -109,7 +150,7 @@ public class WebProviderTest {
                 .resume()
                 .get());
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
 
@@ -151,7 +192,7 @@ public class WebProviderTest {
                 .resume()
                 .get());
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivityForResult(intentCaptor.capture(), eq(123));
 

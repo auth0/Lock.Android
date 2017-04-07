@@ -3,13 +3,17 @@ package com.auth0.android.lock;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * The WebProvider class is a wrapper for calls to the WebAuthProvider static methods.
+ * The WebProvider class is an internal wrapper for calls to the WebAuthProvider static methods.
  * This is only for testing purposes.
  */
 class WebProvider {
@@ -28,15 +32,19 @@ class WebProvider {
     /**
      * Configures a new instance of the WebAuthProvider.Builder and starts it.
      *
-     * @param activity    a valid Activity context
-     * @param connection  to use in the authentication
-     * @param callback    to deliver the authentication result to
-     * @param requestCode to use in the startActivityForResult request
+     * @param activity       a valid Activity context
+     * @param connection     to use in the authentication
+     * @param authParameters extra authentication parameters to use. If null, it will use the ones defined by Options#getAuthenticationParameters
+     * @param callback       to deliver the authentication result to
+     * @param requestCode    to use in the startActivityForResult request
      */
-    public void start(Activity activity, String connection, AuthCallback callback, int requestCode) {
+    public void start(@NonNull Activity activity, @NonNull String connection, @Nullable Map<String, Object> authParameters, @NonNull AuthCallback callback, int requestCode) {
+        if (authParameters == null) {
+            authParameters = new HashMap<>(options.getAuthenticationParameters());
+        }
         WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
-                .withParameters(options.getAuthenticationParameters())
+                .withParameters(authParameters)
                 .withConnection(connection);
 
         final String connectionScope = options.getConnectionsScope().get(connection);

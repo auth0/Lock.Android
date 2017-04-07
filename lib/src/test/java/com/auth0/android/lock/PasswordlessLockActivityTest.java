@@ -287,7 +287,13 @@ public class PasswordlessLockActivityTest {
         activity.onOAuthAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(eq(true));
-        verify(webProvider).start(eq(activity), eq("my-connection"), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+
+        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
     }
 
     @Test

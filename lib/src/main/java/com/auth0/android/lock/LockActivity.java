@@ -38,6 +38,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
+    private static final String KEY_LOGIN_HINT = "login_hint";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final int WEB_AUTH_REQUEST_CODE = 200;
     private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
@@ -332,9 +334,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.v(TAG, "Looking for a provider to use /authorize with the connection " + connection);
+        HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
+        if (!TextUtils.isEmpty(event.getUsername())) {
+            authParameters.put(KEY_LOGIN_HINT, event.getUsername());
+        }
         currentProvider = AuthResolver.providerFor(event.getStrategy(), connection);
         if (currentProvider != null) {
-            HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
             final String connectionScope = options.getConnectionsScope().get(connection);
             if (connectionScope != null) {
                 authParameters.put(Constants.CONNECTION_SCOPE_KEY, connectionScope);
@@ -353,7 +358,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        webProvider.start(this, connection, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, connection, authParameters, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")
