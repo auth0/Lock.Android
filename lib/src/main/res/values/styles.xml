@@ -78,7 +78,6 @@
         <item name="android:layout_marginLeft">
             @dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/com_auth0_lock_sso_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_sso_text</item>
     </style>
@@ -139,7 +138,6 @@
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
         <item name="android:singleLine">true</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
         <item name="android:textColor">@color/com_auth0_lock_social_text</item>
     </style>
@@ -149,7 +147,6 @@
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:maxLines">2</item>
         <item name="android:singleLine">false</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_result_message_text_spacing
         </item>
         <item name="android:textStyle">bold</item>
@@ -255,7 +252,6 @@
         <item name="android:paddingRight">@dimen/com_auth0_lock_widget_small_margin
         </item>
         <item name="android:singleLine">true</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/com_auth0_lock_labeled_submit_button_text</item>
         <item name="android:textColor">@color/com_auth0_lock_social_text</item>
     </style>
