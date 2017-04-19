@@ -222,6 +222,7 @@ public class DemoActivity extends AppCompatActivity {
             connections.add("google-oauth2");
             connections.add("twitter");
             connections.add("facebook");
+            connections.add("paypal-sandbox");
         }
         if (checkboxConnectionsPasswordless.isChecked()) {
             connections.add(groupPasswordlessChannel.getCheckedRadioButtonId() == R.id.radio_use_sms ? "sms" : "email");

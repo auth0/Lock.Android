@@ -172,6 +172,7 @@ public class ConnectionTest {
         final Connection linkedin = connectionForStrategy("linkedin");
         final Connection miicard = connectionForStrategy("miicard");
         final Connection paypal = connectionForStrategy("paypal");
+        final Connection paypalSandbox = connectionForStrategy("paypal-sandbox");
         final Connection planningcenter = connectionForStrategy("planningcenter");
         final Connection renren = connectionForStrategy("renren");
         final Connection salesforce = connectionForStrategy("salesforce");
@@ -209,6 +210,7 @@ public class ConnectionTest {
         assertThat(linkedin, hasType(AuthType.SOCIAL));
         assertThat(miicard, hasType(AuthType.SOCIAL));
         assertThat(paypal, hasType(AuthType.SOCIAL));
+        assertThat(paypalSandbox, hasType(AuthType.SOCIAL));
         assertThat(planningcenter, hasType(AuthType.SOCIAL));
         assertThat(renren, hasType(AuthType.SOCIAL));
         assertThat(salesforce, hasType(AuthType.SOCIAL));
