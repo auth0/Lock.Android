@@ -9,16 +9,19 @@ import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthActivity;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -40,19 +43,57 @@ public class WebProviderTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
+    private Activity activity;
+
+    @Before
+    public void setUp() throws Exception {
+        activity = spy(Robolectric.buildActivity(Activity.class)
+                .create()
+                .start()
+                .resume()
+                .get());
+    }
+
     @Test
     public void shouldStart() throws Exception {
         Options options = new Options();
         options.setAccount(new Auth0("clientId", "domain.auth0.com"));
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get();
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
+    }
+
+    @Test
+    public void shouldStartWithCustomAuthenticationParameters() throws Exception {
+        Auth0 account = new Auth0("clientId", "domain.auth0.com");
+        account.setOIDCConformant(true);
+        Options options = new Options();
+        options.setAccount(account);
+
+        options.setUseBrowser(true);
+        options.withAudience("https://me.auth0.com/myapi");
+
+        AuthCallback callback = mock(AuthCallback.class);
+        WebProvider webProvider = new WebProvider(options);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("custom-param-1", "value-1");
+        parameters.put("custom-param-2", "value-2");
+
+        webProvider.start(activity, "my-connection", parameters, callback, 123);
+        ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivity(intentCaptor.capture());
+
+        Intent intent = intentCaptor.getValue();
+        assertThat(intent, is(notNullValue()));
+        assertThat(intent.getData(), hasHost("domain.auth0.com"));
+        assertThat(intent.getData(), hasParamWithValue("custom-param-1", "value-1"));
+        assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
+        assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
+        assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
+        assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
+        assertThat(intent, hasAction(Intent.ACTION_VIEW));
     }
 
     @Test
@@ -67,13 +108,8 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
 
@@ -103,13 +139,8 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
 
@@ -145,13 +176,8 @@ public class WebProviderTest {
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
-        Activity activity = spy(Robolectric.buildActivity(Activity.class)
-                .create()
-                .start()
-                .resume()
-                .get());
 
-        webProvider.start(activity, "my-connection", callback, 123);
+        webProvider.start(activity, "my-connection", null, callback, 123);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivityForResult(intentCaptor.capture(), eq(123));
 

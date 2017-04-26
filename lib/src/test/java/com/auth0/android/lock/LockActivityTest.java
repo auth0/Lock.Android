@@ -40,6 +40,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
@@ -134,7 +135,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(client).login("username", "password", "connection");
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
@@ -155,7 +156,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(client).login("username", "password", "connection");
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
@@ -185,7 +186,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).login(eq("username"), eq("password"), eq("connection"));
+        verify(client).login("username", "password", "connection");
         verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).setAudience("aud");
@@ -222,7 +223,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest).start(any(BaseCallback.class));
-        verify(client).createUser(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(client).createUser("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -236,7 +237,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest).start(any(BaseCallback.class));
-        verify(client).createUser(eq("email@domain.com"), eq("password"), eq("connection"));
+        verify(client).createUser("email@domain.com", "password", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -264,7 +265,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(BaseCallback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
-        verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(client).signUp("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -286,7 +287,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(BaseCallback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
-        verify(client).signUp(eq("email@domain.com"), eq("password"), eq("username"), eq("connection"));
+        verify(client).signUp("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -308,7 +309,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(BaseCallback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
-        verify(client).signUp(eq("email"), eq("password"), eq("connection"));
+        verify(client).signUp("email", "password", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -339,14 +340,15 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest, never()).addParameters(any(Map.class));
         verify(dbRequest).start(any(BaseCallback.class));
-        verify(client).resetPassword(eq("email@domain.com"), eq("connection"));
+        verify(client).resetPassword("email@domain.com", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithActiveFlow() throws Exception {
+    public void shouldCallEnterpriseOAuthAuthenticationWithActiveFlow() throws Exception {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
+        when(connection.isActiveFlowEnabled()).thenReturn(true);
         OAuthLoginEvent event = new OAuthLoginEvent(connection, "email@domain.com", "password");
         activity.onOAuthAuthenticationRequest(event);
 
@@ -357,7 +359,7 @@ public class LockActivityTest {
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
-        verify(client).login(eq("email@domain.com"), eq("password"), eq("my-connection"));
+        verify(client).login("email@domain.com", "password", "my-connection");
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
@@ -429,6 +431,76 @@ public class LockActivityTest {
     }
 
     @Test
+    public void shouldCallEnterpriseOAuthAuthenticationWithCustomProvider() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getConnectionsScope()).thenReturn(connectionScope);
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+
+        AuthProvider customProvider = mock(AuthProvider.class);
+        AuthHandler handler = mock(AuthHandler.class);
+        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        AuthResolver.setAuthHandlers(Collections.singletonList(handler));
+
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("custom-connection");
+        when(connection.isActiveFlowEnabled()).thenReturn(false);
+        OAuthLoginEvent event = new OAuthLoginEvent(connection, "user@domain.com", null);
+        activity.onOAuthAuthenticationRequest(event);
+
+
+        verify(lockView, never()).showProgress(true);
+        verify(customProvider).setParameters(mapCaptor.capture());
+        verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
+        AuthResolver.setAuthHandlers(Collections.emptyList());
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, hasEntry("scope", "openid user photos"));
+        assertThat(reqParams, hasEntry("connection_scope", "the connection scope"));
+        assertThat(reqParams, hasEntry("login_hint", "user@domain.com"));
+    }
+
+    @Test
+    public void shouldCallEnterpriseOAuthAuthenticationWithWebProvider() throws Exception {
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("my-connection");
+        when(connection.isActiveFlowEnabled()).thenReturn(false);
+        OAuthLoginEvent event = new OAuthLoginEvent(connection, "user@domain.com", null);
+        when(options.useBrowser()).thenReturn(true);
+        activity.onOAuthAuthenticationRequest(event);
+
+        verify(lockView, never()).showProgress(true);
+        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+
+        Map<String, String> extraParams = mapCaptor.getValue();
+        assertThat(extraParams, is(notNullValue()));
+        assertThat(extraParams.size(), is(1));
+        assertThat(extraParams, hasEntry("login_hint", "user@domain.com"));
+    }
+
+    @Test
+    public void shouldResumeEnterpriseOAuthAuthenticationWithWebProviderOnActivityResult() throws Exception {
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("my-connection");
+        when(connection.isActiveFlowEnabled()).thenReturn(false);
+        OAuthLoginEvent event = new OAuthLoginEvent(connection, "user@domain.com", null);
+        activity.onOAuthAuthenticationRequest(event);
+
+        Intent intent = mock(Intent.class);
+        activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
+
+        verify(lockView).showProgress(false);
+        verify(webProvider).resume(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
+    }
+
+    @Test
     public void shouldCallOAuthAuthenticationWithWebProvider() throws Exception {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
@@ -436,8 +508,11 @@ public class LockActivityTest {
         when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
-        verify(lockView, never()).showProgress(eq(true));
-        verify(webProvider).start(eq(activity), eq("my-connection"), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(lockView, never()).showProgress(true);
+        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+
+        Map<String, String> extraParams = mapCaptor.getValue();
+        assertThat(extraParams, is(nullValue()));
     }
 
     @Test
@@ -451,7 +526,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(REQ_CODE_WEB_PROVIDER), eq(Activity.RESULT_OK), eq(intent));
+        verify(webProvider).resume(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
     }
 
     @Test
@@ -470,7 +545,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_CUSTOM_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(customProvider).authorize(eq(REQ_CODE_CUSTOM_PROVIDER), eq(Activity.RESULT_OK), eq(intent));
+        verify(customProvider).authorize(REQ_CODE_CUSTOM_PROVIDER, Activity.RESULT_OK, intent);
         AuthResolver.setAuthHandlers(Collections.emptyList());
     }
 
@@ -485,7 +560,7 @@ public class LockActivityTest {
         activity.onNewIntent(intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(intent));
+        verify(webProvider).resume(intent);
     }
 
     @Test
@@ -504,7 +579,21 @@ public class LockActivityTest {
         activity.onNewIntent(intent);
 
         verify(lockView).showProgress(false);
-        verify(customProvider).authorize(eq(intent));
+        verify(customProvider).authorize(intent);
         AuthResolver.setAuthHandlers(Collections.emptyList());
+    }
+
+    @Test
+    public void shouldResumeEnterpriseOAuthAuthenticationWithWebProviderOnNewIntent() throws Exception {
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("my-connection");
+        OAuthLoginEvent event = new OAuthLoginEvent(connection, "user@domain.com", null);
+        activity.onOAuthAuthenticationRequest(event);
+
+        Intent intent = mock(Intent.class);
+        activity.onNewIntent(intent);
+
+        verify(lockView).showProgress(false);
+        verify(webProvider).resume(intent);
     }
 }
