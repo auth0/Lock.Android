@@ -104,6 +104,7 @@ public class AuthConfigTest {
         Assert.assertThat(AuthConfig.styleForStrategy("instagram"), is(R.style.Lock_Theme_AuthStyle_Instagram));
         Assert.assertThat(AuthConfig.styleForStrategy("miicard"), is(R.style.Lock_Theme_AuthStyle_MiiCard));
         Assert.assertThat(AuthConfig.styleForStrategy("paypal"), is(R.style.Lock_Theme_AuthStyle_Paypal));
+        Assert.assertThat(AuthConfig.styleForStrategy("paypal-sandbox"), is(R.style.Lock_Theme_AuthStyle_PaypalSandbox));
         Assert.assertThat(AuthConfig.styleForStrategy("salesforce"), is(R.style.Lock_Theme_AuthStyle_Salesforce));
         Assert.assertThat(AuthConfig.styleForStrategy("salesforce-community"), is(R.style.Lock_Theme_AuthStyle_SalesforceCommunity));
         Assert.assertThat(AuthConfig.styleForStrategy("salesforce-sandbox"), is(R.style.Lock_Theme_AuthStyle_SalesforceSandbox));

@@ -43,6 +43,7 @@
     <string name="com_auth0_lock_social_instagram">INSTAGRAM</string>
     <string name="com_auth0_lock_social_miicard">MIICARD</string>
     <string name="com_auth0_lock_social_paypal">PAYPAL</string>
+    <string name="com_auth0_lock_social_paypal_sandbox">PAYPAL (SANDBOX)</string>
     <string name="com_auth0_lock_social_salesforce">SALESFORCE</string>
     <string name="com_auth0_lock_social_salesforce_community">SALESFORCE (COMMUNITY)</string>
     <string name="com_auth0_lock_social_salesforce_sandbox">SALESFORCE (SANDBOX)</string>

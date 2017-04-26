@@ -131,6 +131,9 @@ public class AuthConfig {
             case "paypal":
                 style = R.style.Lock_Theme_AuthStyle_Paypal;
                 break;
+            case "paypal-sandbox":
+                style = R.style.Lock_Theme_AuthStyle_PaypalSandbox;
+                break;
             case "salesforce":
                 style = R.style.Lock_Theme_AuthStyle_Salesforce;
                 break;
