@@ -217,6 +217,8 @@ public class DemoActivity extends AppCompatActivity {
         if (checkboxConnectionsEnterprise.isChecked()) {
             connections.add("ad");
             connections.add("another");
+            connections.add("fake-saml");
+            connections.add("contoso-ad");
         }
         if (checkboxConnectionsSocial.isChecked()) {
             connections.add("google-oauth2");

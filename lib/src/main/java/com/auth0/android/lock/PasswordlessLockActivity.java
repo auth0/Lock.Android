@@ -73,6 +73,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -442,7 +443,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        webProvider.start(this, event.getConnection(), authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, event.getConnection(), null, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     //Callbacks

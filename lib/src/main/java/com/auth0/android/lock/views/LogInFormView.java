@@ -179,7 +179,14 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     }
 
     private String getUsername() {
-        return currentConnection == null && fallbackToDatabase ? emailInput.getText() : usernameInput.getText();
+        boolean usingDatabase = currentConnection == null && fallbackToDatabase;
+        boolean usingOAuthEnterprise = currentConnection != null && !currentConnection.isActiveFlowEnabled();
+        if (usingDatabase || usingOAuthEnterprise) {
+            return emailInput.getText();
+        } else {
+            //Using RO: we get the Username from the "second screen".
+            return usernameInput.getText();
+        }
     }
 
     private String getPassword() {
@@ -224,7 +231,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         }
         if (currentConnection != null) {
             Log.d(TAG, String.format("Form submitted. Logging in with enterprise connection %s using authorize screen", currentConnection.getName()));
-            return new OAuthLoginEvent(currentConnection);
+            return new OAuthLoginEvent(currentConnection, getUsername(), null);
         }
         if (fallbackToDatabase) {
             Log.d(TAG, "Logging in with database connection using active flow");
