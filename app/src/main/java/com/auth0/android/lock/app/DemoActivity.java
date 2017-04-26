@@ -217,11 +217,14 @@ public class DemoActivity extends AppCompatActivity {
         if (checkboxConnectionsEnterprise.isChecked()) {
             connections.add("ad");
             connections.add("another");
+            connections.add("fake-saml");
+            connections.add("contoso-ad");
         }
         if (checkboxConnectionsSocial.isChecked()) {
             connections.add("google-oauth2");
             connections.add("twitter");
             connections.add("facebook");
+            connections.add("paypal-sandbox");
         }
         if (checkboxConnectionsPasswordless.isChecked()) {
             connections.add(groupPasswordlessChannel.getCheckedRadioButtonId() == R.id.radio_use_sms ? "sms" : "email");

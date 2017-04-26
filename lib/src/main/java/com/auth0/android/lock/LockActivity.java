@@ -38,6 +38,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +86,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
+    private static final String KEY_LOGIN_HINT = "login_hint";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final int WEB_AUTH_REQUEST_CODE = 200;
     private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
@@ -347,13 +350,20 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (audience != null && options.getAccount().isOIDCConformant()) {
                 authParameters.put(ParameterBuilder.AUDIENCE_KEY, audience);
             }
+            if (!TextUtils.isEmpty(event.getUsername())) {
+                authParameters.put(KEY_LOGIN_HINT, event.getUsername());
+            }
             currentProvider.setParameters(authParameters);
             currentProvider.start(this, authProviderCallback, PERMISSION_REQUEST_CODE, CUSTOM_AUTH_REQUEST_CODE);
             return;
         }
 
+        Map<String, Object> extraAuthParameters = null;
+        if (!TextUtils.isEmpty(event.getUsername())) {
+            extraAuthParameters = Collections.singletonMap(KEY_LOGIN_HINT, (Object) event.getUsername());
+        }
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        webProvider.start(this, connection, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, connection, extraAuthParameters, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
     @SuppressWarnings("unused")

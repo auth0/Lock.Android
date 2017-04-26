@@ -18,7 +18,7 @@ public class OAuthLoginEvent {
      * @param username   the username to use.
      * @param password   the password to use.
      */
-    public OAuthLoginEvent(@NonNull OAuthConnection connection, @NonNull String username, @NonNull String password) {
+    public OAuthLoginEvent(@NonNull OAuthConnection connection, @NonNull String username, @Nullable String password) {
         this(connection);
         this.username = username;
         this.password = password;

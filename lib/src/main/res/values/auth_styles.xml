@@ -103,6 +103,12 @@
         <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_paypal</item>
     </style>
 
+    <style name="Lock.Theme.AuthStyle.PaypalSandbox" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_paypal</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_paypal_sandbox</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_paypal</item>
+    </style>
+
     <style name="Lock.Theme.AuthStyle.Salesforce" parent="Lock.Theme.AuthStyle">
         <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_salesforce</item>
         <item name="Auth0.Name">@string/com_auth0_lock_social_salesforce</item>
