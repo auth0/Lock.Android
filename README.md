@@ -18,7 +18,7 @@ Lock for Android
 
 Android API Level 15+ is required in order to use Lock's UI.
 
-##Install
+## Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
@@ -212,7 +212,7 @@ Currently the default scheme used for the redirect url used to send the Web Auth
 
 > The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
 
-##Proguard
+## Proguard
 The rules should be applied automatically if your application is using `minifyEnabled = true`. If you want to include them manually check the [proguard directory](proguard).
 By default you should at least use the following files:
 * `proguard-gson.pro`
