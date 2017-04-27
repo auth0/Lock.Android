@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.5.0](https://github.com/auth0/Lock.Android/tree/2.5.0) (2017-04-27)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.4.0...2.5.0)
+
+**Added**
+- Add paypal-sandbox support [\#412](https://github.com/auth0/Lock.Android/pull/412) ([ziluvatar](https://github.com/ziluvatar))
+- Send login_hint on enterprise web auth when username/email is available [\#410](https://github.com/auth0/Lock.Android/pull/410) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add screens for Lock loading errors [\#407](https://github.com/auth0/Lock.Android/pull/407) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Allow to customize the capitalization of messages [\#408](https://github.com/auth0/Lock.Android/pull/408) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.4.0](https://github.com/auth0/Lock.Android/tree/2.4.0) (2017-03-06)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.3.0...2.4.0)
 **Closed issues**
