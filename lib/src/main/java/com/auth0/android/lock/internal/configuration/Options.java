@@ -86,6 +86,7 @@ public class Options implements Parcelable {
     private Theme theme;
     private String privacyURL;
     private String termsURL;
+    private String supportURL;
     private String scope;
     private String audience;
     private String scheme;
@@ -130,6 +131,7 @@ public class Options implements Parcelable {
         theme = in.readParcelable(Theme.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
+        supportURL = in.readString();
         scope = in.readString();
         audience = in.readString();
         scheme = in.readString();
@@ -206,6 +208,7 @@ public class Options implements Parcelable {
         dest.writeParcelable(theme, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
+        dest.writeString(supportURL);
         dest.writeString(scope);
         dest.writeString(audience);
         dest.writeString(scheme);
@@ -450,6 +453,17 @@ public class Options implements Parcelable {
 
     public String getTermsURL() {
         return termsURL;
+    }
+
+    public void setSupportURL(String url) {
+        if (!Patterns.WEB_URL.matcher(url).matches()) {
+            throw new IllegalArgumentException("The given Support URL doesn't have a valid URL format: " + url);
+        }
+        this.supportURL = url;
+    }
+
+    public String getSupportURL() {
+        return supportURL;
     }
 
     public void setMustAcceptTerms(boolean mustAcceptTerms) {

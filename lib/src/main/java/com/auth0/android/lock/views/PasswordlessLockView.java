@@ -25,13 +25,15 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -68,7 +70,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         setOrientation(VERTICAL);
         if (configuration == null) {
             Log.w(TAG, "Configuration is missing, the view won't init.");
-            showConfigurationMissingLayout(R.string.com_auth0_lock_configuration_retrieving_error);
+            showConfigurationMissingLayout(true);
         } else {
             showContentLayout();
         }
@@ -111,43 +113,44 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         if (configuration != null && configuration.hasPasswordlessConnections()) {
             init();
         } else {
-            int errorRes = 0;
-            if (configuration == null) {
-                errorRes = R.string.com_auth0_lock_configuration_retrieving_error;
-            } else if (!configuration.hasPasswordlessConnections()) {
-                errorRes = R.string.com_auth0_lock_missing_connections_message;
-            }
-            showConfigurationMissingLayout(errorRes);
+            showConfigurationMissingLayout(configuration == null);
         }
     }
 
-    private void showConfigurationMissingLayout(@StringRes int errorMessage) {
-        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_horizontal_margin);
-        final LinearLayout errorLayout = new LinearLayout(getContext());
-        errorLayout.setOrientation(LinearLayout.VERTICAL);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(horizontalMargin, 0, horizontalMargin, 0);
-        params.gravity = Gravity.CENTER;
+    private void showConfigurationMissingLayout(final boolean showRetry) {
+        final View errorLayout = LayoutInflater.from(getContext()).inflate(R.layout.com_auth0_lock_error_layout, this, false);
+        TextView tvTitle = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_title);
+        TextView tvError = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_subtitle);
+        TextView tvAction = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_action);
 
-        TextView errorText = new TextView(getContext());
-        errorText.setText(errorMessage);
-        errorText.setGravity(Gravity.CENTER);
-
-        Button retryButton = new Button(getContext());
-        retryButton.setText(R.string.com_auth0_lock_action_retry);
-        retryButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bus.post(new FetchApplicationEvent());
-                removeView(errorLayout);
-                showWaitForConfigurationLayout();
-            }
-        });
-        LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        childParams.gravity = Gravity.CENTER;
-        errorLayout.addView(errorText, childParams);
-        errorLayout.addView(retryButton, childParams);
-        addView(errorLayout, params);
+        if (showRetry) {
+            tvTitle.setText(R.string.com_auth0_lock_recoverable_error_title);
+            tvError.setText(R.string.com_auth0_lock_recoverable_error_subtitle);
+            tvAction.setText(R.string.com_auth0_lock_recoverable_error_action);
+            tvAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bus.post(new FetchApplicationEvent());
+                    removeView(errorLayout);
+                    showWaitForConfigurationLayout();
+                }
+            });
+        } else if (configuration.getSupportURL() == null) {
+            tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
+            tvError.setText(R.string.com_auth0_lock_unrecoverable_error_subtitle_without_action);
+            tvAction.setVisibility(GONE);
+        } else {
+            tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
+            tvError.setText(R.string.com_auth0_lock_unrecoverable_error_subtitle);
+            tvAction.setText(R.string.com_auth0_lock_unrecoverable_error_action);
+            tvAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(configuration.getSupportURL())));
+                }
+            });
+        }
+        addView(errorLayout);
     }
 
     @Override

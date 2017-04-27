@@ -101,6 +101,15 @@
         <item name="android:textSize">@dimen/com_auth0_lock_small_clickable_text</item>
     </style>
 
+    <style name="Lock.Theme.Text.ErrorLink" parent="Lock.Theme.Text.Link">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:textColor">@color/com_auth0_lock_error_link</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_subtitle_error_text</item>
+        <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+    </style>
+
     <style name="Lock.Theme.Text.Title">
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
@@ -123,6 +132,23 @@
     <style name="Lock.Theme.Text.Subtitle.ResetPassword" parent="Lock.Theme.Text.Title">
         <item name="android:textSize">@dimen/com_auth0_lock_title_text</item>
         <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
+        <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+    </style>
+
+    <style name="Lock.Theme.Text.Title.Error">
+        <item name="android:textSize">@dimen/com_auth0_lock_title_error_text</item>
+        <item name="android:textColor">@color/com_auth0_lock_passwordless_link_sent_text</item>
+        <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+    </style>
+
+    <style name="Lock.Theme.Text.Subtitle.Error" parent="Lock.Theme.Text.Title">
+        <item name="android:lineSpacingExtra">@dimen/com_auth0_lock_subtitle_text_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/com_auth0_lock_widget_vertical_margin_passwordless</item>
+        <item name="android:textSize">@dimen/com_auth0_lock_subtitle_error_text</item>
         <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
         </item>
@@ -228,7 +254,6 @@
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
     </style>
-
 
     <style name="Lock.Theme.Widget.SocialButton">
         <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>

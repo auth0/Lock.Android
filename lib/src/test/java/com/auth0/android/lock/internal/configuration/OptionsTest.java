@@ -130,6 +130,26 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetSupportURL() throws Exception {
+        options.setSupportURL("https://valid.url/support");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getSupportURL(), is("https://valid.url/support"));
+        assertThat(options.getSupportURL(), is(equalTo(parceledOptions.getSupportURL())));
+    }
+
+    @Test
+    public void shouldThrowWhenSettingSupportURLWithInvalidURL() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The given Support URL doesn't have a valid URL format: an-invalid/url");
+        options.setSupportURL("an-invalid/url");
+    }
+
+    @Test
     public void shouldUseWebView() throws Exception {
         options.setUseBrowser(false);
 

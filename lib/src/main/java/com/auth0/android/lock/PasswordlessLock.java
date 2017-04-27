@@ -398,6 +398,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Sets the url of your support page for your application that will be used when an error occurs and Lock is unable to handle it. In this case it will show an error screen and if there is a support url will also show a button to open that page in the browser.
+         *
+         * @param url to your support page or where your customers can request assistance. By default no page is set.
+         * @return the current builder instance
+         */
+        public Builder setSupportURL(@NonNull String url) {
+            options.setSupportURL(url);
+            return this;
+        }
+
+        /**
          * Sets the Connection Scope to request when performing an Authentication with the given Connection.
          *
          * @param connectionName to which specify the scopes.

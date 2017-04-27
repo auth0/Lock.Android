@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.Space
+        android:id="@+id/com_auth0_lock_space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:id="@+id/com_auth0_lock_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/com_auth0_lock_space"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_error_title"
+        android:src="@drawable/com_auth0_lock_load_error" />
+
+    <com.auth0.android.lock.views.LineSpacingTextView
+        android:id="@+id/com_auth0_lock_error_title"
+        style="@style/Lock.Theme.Text.Title.Error"
+        android:layout_below="@+id/com_auth0_lock_space"
+        tools:text="@string/com_auth0_lock_unrecoverable_error_title" />
+
+
+    <com.auth0.android.lock.views.LineSpacingTextView
+        android:id="@+id/com_auth0_lock_error_subtitle"
+        style="@style/Lock.Theme.Text.Subtitle.Error"
+        android:layout_below="@+id/com_auth0_lock_error_title"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_password_strength"
+        tools:text="@string/com_auth0_lock_unrecoverable_error_subtitle_without_action" />
+
+    <TextView
+        android:id="@+id/com_auth0_lock_error_action"
+        style="@style/Lock.Theme.Text.ErrorLink"
+        android:layout_below="@+id/com_auth0_lock_error_subtitle"
+        tools:text="@string/com_auth0_lock_unrecoverable_error_action" />
+
+</RelativeLayout>

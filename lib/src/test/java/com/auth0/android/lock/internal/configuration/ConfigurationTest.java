@@ -496,6 +496,20 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
+    public void shouldNotHaveDefaultSupportURL() throws Exception {
+        configuration = unfilteredConfig();
+        assertThat(configuration.getSupportURL(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldHaveCustomSupportURL() throws Exception {
+        options.setSupportURL("https://google.com/support");
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.getSupportURL(), is(notNullValue()));
+        assertThat(configuration.getSupportURL(), is(equalTo("https://google.com/support")));
+    }
+
+    @Test
     public void shouldHaveMustAcceptTermsEnabled() throws Exception {
         options.setMustAcceptTerms(true);
         configuration = new Configuration(connections, options);
