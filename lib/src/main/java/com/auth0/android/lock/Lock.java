@@ -113,7 +113,7 @@ public class Lock {
     /**
      * Builds a new intent to launch LockActivity with the previously configured options
      *
-     * @param context a valid Activity context
+     * @param context a valid Context
      * @return the intent to which the user has to call startActivity or startActivityForResult
      */
     @SuppressWarnings("unused")
@@ -128,7 +128,7 @@ public class Lock {
      * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
      * ensures the correct Lock lifecycle handling.
      *
-     * @param context a valid Activity context
+     * @param context a valid Context
      */
     @SuppressWarnings("unused")
     public void onDestroy(Context context) {

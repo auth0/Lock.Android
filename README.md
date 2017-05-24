@@ -67,7 +67,7 @@ Also, you'll need to add *Internet* permission to your application:
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-Then in any of your Activities you need to initialize **Lock**:
+Then in any of your Activities or place with access to Context you need to initialize **Lock**:
 
 ```java
 // This activity will show Lock
@@ -112,10 +112,14 @@ public class HomeActivity extends Activity {
 }
 ```
 
-Then just start `LockActivity` from inside your `Activity`.
+Then just start `LockActivity` from inside your `Activity`
 
 ```java
 startActivity(lock.newIntent(this));
+```
+or using Context
+```java
+context.startActivity(lock.newIntent(context));
 ```
 
 ### Passwordless & Social authentication
@@ -152,7 +156,7 @@ Also, you'll need to add *Internet* permission to your application:
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-Then in any of your Activities you need to initialize **PasswordlessLock**
+Then in any of your Activities or place with access to Context you need to initialize **PasswordlessLock**
 
 ```java
 // This activity will show Lock
@@ -198,9 +202,12 @@ public class HomeActivity extends Activity {
 ```
 
 Then just start `PasswordlessLockActivity` from inside your `Activity`
-
 ```java
 startActivity(lock.newIntent(this));
+```
+or using Context
+```java
+context.startActivity(lock.newIntent(context));
 ```
 
 #### Android App Links - Custom Scheme
