@@ -121,10 +121,10 @@ public class PasswordlessLock {
     }
 
     /**
-     * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
-     * ensures the correct Lock lifecycle handling.
+     * This method ensures proper Lock's lifecycle handling. Must be called from the class
+     * holding the Lock instance whenever you're done using it. i.e. in the Activity's onDestroy method.
      *
-     * @param context a valid Activity context
+     * @param context a valid Context
      */
     @SuppressWarnings("unused")
     public void onDestroy(Context context) {
@@ -187,7 +187,7 @@ public class PasswordlessLock {
          * Finishes the construction of the Lock.Options and generates a new Lock instance
          * with those Lock.Options.
          *
-         * @param context a valid Activity context
+         * @param context a valid Context
          * @return a new Lock instance configured as in the Builder.
          */
         public PasswordlessLock build(@NonNull Context context) {
