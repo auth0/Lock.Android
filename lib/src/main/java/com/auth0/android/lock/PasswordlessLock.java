@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -110,33 +109,34 @@ public class PasswordlessLock {
     /**
      * Builds a new intent to launch LockActivity with the previously configured options
      *
-     * @param activity a valid Activity context
+     * @param context a valid Context
      * @return the intent to which the user has to call startActivity or startActivityForResult
      */
     @SuppressWarnings("unused")
-    public Intent newIntent(Activity activity) {
-        Intent lockIntent = new Intent(activity, PasswordlessLockActivity.class);
+    public Intent newIntent(Context context) {
+        Intent lockIntent = new Intent(context, PasswordlessLockActivity.class);
         lockIntent.putExtra(Constants.OPTIONS_EXTRA, options);
+        lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return lockIntent;
     }
 
     /**
-     * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
-     * ensures the correct Lock lifecycle handling.
+     * This method ensures proper Lock's lifecycle handling. Must be called from the class
+     * holding the Lock instance whenever you're done using it. i.e. in the Activity's onDestroy method.
      *
-     * @param activity a valid Activity context
+     * @param context a valid Context
      */
     @SuppressWarnings("unused")
-    public void onDestroy(Activity activity) {
-        LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
+    public void onDestroy(Context context) {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
     }
 
-    private void initialize(Activity activity) {
+    private void initialize(Context context) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.AUTHENTICATION_ACTION);
         filter.addAction(Constants.CANCELED_ACTION);
         filter.addAction(Constants.INVALID_CONFIGURATION_ACTION);
-        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
+        LocalBroadcastManager.getInstance(context).registerReceiver(this.receiver, filter);
     }
 
     private void processEvent(Intent data) {
@@ -187,14 +187,14 @@ public class PasswordlessLock {
          * Finishes the construction of the Lock.Options and generates a new Lock instance
          * with those Lock.Options.
          *
-         * @param activity a valid Activity context
+         * @param context a valid Context
          * @return a new Lock instance configured as in the Builder.
          */
-        public PasswordlessLock build(@NonNull Activity activity) {
+        public PasswordlessLock build(@NonNull Context context) {
             if (options.getAccount() == null) {
                 Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {
-                    options.setAccount(new Auth0(activity));
+                    options.setAccount(new Auth0(context));
                 } catch (IllegalArgumentException e) {
                     throw new IllegalStateException("Missing Auth0 account information.", e);
                 }
@@ -211,7 +211,7 @@ public class PasswordlessLock {
             }
 
             final PasswordlessLock lock = new PasswordlessLock(options, callback);
-            lock.initialize(activity);
+            lock.initialize(context);
             return lock;
         }
 
