@@ -23,6 +23,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_container"
     android:layout_width="match_parent"
@@ -45,18 +46,39 @@
                 style="@style/Lock.Theme.Widget.Icon"
                 android:src="@drawable/com_auth0_lock_ic_email"
                 tools:ignore="MissingPrefix" />
-
         </FrameLayout>
 
-        <EditText
-            android:id="@+id/com_auth0_lock_input"
-            style="@style/Lock.Theme.Widget.Field"
+        <RelativeLayout
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
             android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
-            android:layout_weight="1"
-            android:background="@null"
-            tools:text="email@domain.com" />
+            android:layout_weight="1">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/com_auth0_lock_show_password_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/com_auth0_lock_widget_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/com_auth0_lock_ic_password_hidden"
+                android:checked="true"
+                android:paddingEnd="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
+                android:paddingRight="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
+                app:buttonTint="@color/com_auth0_lock_hint_text"
+                tools:ignore="MissingPrefix" />
+
+            <EditText
+                android:id="@+id/com_auth0_lock_input"
+                style="@style/Lock.Theme.Widget.Field"
+                android:layout_width="match_parent"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_toLeftOf="@id/com_auth0_lock_show_password_toggle"
+                android:background="@null"
+                tools:text="email@domain.com" />
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 
