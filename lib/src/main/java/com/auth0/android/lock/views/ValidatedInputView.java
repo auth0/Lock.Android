@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
@@ -128,7 +129,6 @@ public class ValidatedInputView extends LinearLayout {
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
         showPasswordToggle = (AppCompatCheckBox) findViewById(R.id.com_auth0_lock_show_password_toggle);
 
-        createBackground();
         if (attrs == null || isInEditMode()) {
             return;
         }
@@ -137,6 +137,7 @@ public class ValidatedInputView extends LinearLayout {
         //noinspection WrongConstant
         dataType = a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0);
         a.recycle();
+        createBackground();
 
         setupInputValidation();
         updateBorder(true);
@@ -310,11 +311,13 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     private void createBackground() {
+        int inputBackgroundColor = ContextCompat.getColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled);
         Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
-        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled), ViewUtils.Corners.ONLY_RIGHT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), inputBackgroundColor, ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
-        ViewUtils.setBackground(input, rightBackground);
+        ViewUtils.setBackground(input, dataType == PASSWORD ? new ColorDrawable(inputBackgroundColor) : rightBackground);
         ViewUtils.setBackground(showPasswordToggle, rightBackground);
+
     }
 
     @Override
@@ -433,6 +436,7 @@ public class ValidatedInputView extends LinearLayout {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         input.setEnabled(enabled);
+        showPasswordToggle.setEnabled(enabled);
         createBackground();
     }
 
