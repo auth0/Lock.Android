@@ -475,6 +475,7 @@ public class ValidatedInputView extends LinearLayout {
         Log.v(TAG, "Input cleared and validation errors removed");
         input.setText("");
         updateBorder(true);
+        showPasswordToggle.setChecked(false);
     }
 
     /**
