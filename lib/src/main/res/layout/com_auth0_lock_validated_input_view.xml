@@ -23,6 +23,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_container"
     android:layout_width="match_parent"
@@ -32,6 +33,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <FrameLayout
@@ -45,18 +47,35 @@
                 style="@style/Lock.Theme.Widget.Icon"
                 android:src="@drawable/com_auth0_lock_ic_email"
                 tools:ignore="MissingPrefix" />
-
         </FrameLayout>
 
-        <EditText
-            android:id="@+id/com_auth0_lock_input"
-            style="@style/Lock.Theme.Widget.Field"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/com_auth0_lock_input_field_stroke_width"
             android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
-            android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
-            android:layout_weight="1"
-            android:background="@null"
-            tools:text="email@domain.com" />
+            android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/com_auth0_lock_show_password_toggle"
+                style="@style/Lock.Theme.Widget.Icon.PasswordVisibilityToggle"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/com_auth0_lock_ic_password_hidden"
+                android:checked="true"
+                app:buttonTint="@color/com_auth0_lock_hint_text"
+                tools:ignore="MissingPrefix,RtlHardcoded" />
+
+            <EditText
+                android:id="@+id/com_auth0_lock_input"
+                style="@style/Lock.Theme.Widget.Field"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_toLeftOf="@id/com_auth0_lock_show_password_toggle"
+                android:background="@null"
+                tools:ignore="RtlHardcoded,TextFields"
+                tools:text="email@domain.com" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -65,8 +84,7 @@
         style="@style/Lock.Theme.Text.ValidationError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/com_auth0_lock_input"
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field_with_error"
-        android:text="Invalid Email Address " />
+        tools:text="Invalid Email Address " />
 
 </LinearLayout>
