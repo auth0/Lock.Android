@@ -120,6 +120,8 @@ startActivity(lock.newIntent(this));
 
 ### Passwordless & Social authentication
 
+The Passwordless feature requires your client to have the *Resource Owner* Legacy Grant Type enabled. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it.
+
 `PasswordlessLockActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
 You'll need to configure PasswordlessLockActivity in your `AndroidManifest.xml`, inside the `application` tag:
