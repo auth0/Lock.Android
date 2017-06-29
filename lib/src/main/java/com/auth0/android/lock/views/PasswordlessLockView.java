@@ -184,6 +184,9 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         if (actionButton != null) {
             actionButton.showProgress(show);
         }
+        if (formLayout != null) {
+            formLayout.setEnabled(!show);
+        }
     }
 
     /**

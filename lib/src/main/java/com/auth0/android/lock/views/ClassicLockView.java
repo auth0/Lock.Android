@@ -290,7 +290,9 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         if (actionButton != null) {
             actionButton.showProgress(show);
         }
-        formLayout.setEnabled(!show);
+        if (formLayout != null) {
+            formLayout.setEnabled(!show);
+        }
     }
 
     private void showSignUpTerms(boolean show) {
