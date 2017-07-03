@@ -18,6 +18,7 @@ allprojects {
     group = 'com.auth0.android'
     
     repositories {
+        mavenLocal()
         jcenter()
     }
 }

@@ -24,7 +24,9 @@
 
 package com.auth0.android.lock.app;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.InitialScreen;
@@ -44,6 +47,8 @@ import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 
 import java.util.ArrayList;
@@ -130,6 +135,20 @@ public class DemoActivity extends AppCompatActivity {
                 showPasswordlessLock();
             }
         });
+
+        Button btnShowHostedLoginPage = (Button) findViewById(R.id.btn_show_hosted_login_age);
+        btnShowHostedLoginPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showWebAuth();
+            }
+        });
+    }
+
+    private void showWebAuth() {
+        WebAuthProvider.init(getAccount())
+                .withAudience(String.format("https://%s/userinfo", getString(R.string.com_auth0_domain)))
+                .start(this, webCallback);
     }
 
     private void showClassicLock() {
@@ -262,7 +281,7 @@ public class DemoActivity extends AppCompatActivity {
     private LockCallback callback = new AuthenticationCallback() {
         @Override
         public void onAuthentication(Credentials credentials) {
-            showResult("OK > " + credentials.getIdToken());
+            showResult("OK > " + credentials.getAccessToken());
         }
 
         @Override
@@ -273,6 +292,23 @@ public class DemoActivity extends AppCompatActivity {
         @Override
         public void onError(LockException error) {
             showResult(error.getMessage());
+        }
+    };
+
+    private AuthCallback webCallback = new AuthCallback() {
+        @Override
+        public void onFailure(@NonNull Dialog dialog) {
+            dialog.show();
+        }
+
+        @Override
+        public void onFailure(AuthenticationException exception) {
+            showResult("Failed > " + exception.getDescription());
+        }
+
+        @Override
+        public void onSuccess(@NonNull Credentials credentials) {
+            showResult("OK > " + credentials.getAccessToken());
         }
     };
 }
