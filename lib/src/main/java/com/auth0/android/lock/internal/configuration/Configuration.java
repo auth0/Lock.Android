@@ -57,6 +57,7 @@ public class Configuration {
     private boolean allowLogIn;
     private boolean allowSignUp;
     private boolean allowForgotPassword;
+    private boolean allowShowPassword;
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
@@ -188,6 +189,7 @@ public class Configuration {
             initialScreen = options.initialScreen();
         }
 
+        allowShowPassword = options.allowShowPassword();
         passwordlessMode = parsePasswordlessMode(options.useCodePasswordless());
 
         this.termsURL = options.getTermsURL() == null ? "https://auth0.com/terms" : options.getTermsURL();
@@ -227,6 +229,10 @@ public class Configuration {
 
     public boolean allowForgotPassword() {
         return allowForgotPassword;
+    }
+
+    public boolean allowShowPassword() {
+        return allowShowPassword;
     }
 
     public boolean isUsernameRequired() {

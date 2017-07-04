@@ -412,6 +412,19 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldAllowShowPassword() throws Exception {
+        options.setAllowShowPassword(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.allowShowPassword(), is(equalTo(parceledOptions.allowShowPassword())));
+        assertThat(options.allowShowPassword(), is(true));
+    }
+
+    @Test
     public void shouldUsePasswordlessCode() throws Exception {
         options.setUseCodePasswordless(false);
 
@@ -683,6 +696,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(true));
         assertThat(options.allowSignUp(), is(true));
         assertThat(options.allowForgotPassword(), is(true));
+        assertThat(options.allowShowPassword(), is(true));
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
@@ -709,6 +723,7 @@ public class OptionsTest {
         options.setAllowLogIn(true);
         options.setAllowSignUp(true);
         options.setAllowForgotPassword(true);
+        options.setAllowShowPassword(true);
         options.setClosable(true);
         options.setMustAcceptTerms(true);
         options.setAuthButtonSize(AuthButtonSize.BIG);
@@ -732,6 +747,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
+        assertThat(options.allowShowPassword(), is(equalTo(parceledOptions.allowShowPassword())));
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
@@ -749,6 +765,7 @@ public class OptionsTest {
         options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
+        options.setAllowShowPassword(false);
         options.setMustAcceptTerms(false);
         options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
@@ -771,6 +788,7 @@ public class OptionsTest {
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
+        assertThat(options.allowShowPassword(), is(equalTo(parceledOptions.allowShowPassword())));
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));

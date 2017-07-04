@@ -87,6 +87,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         usernameInput.setDataType(DataType.NON_EMPTY_USERNAME);
         passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(DataType.PASSWORD);
+        passwordInput.setAllowShowPassword(configuration.allowShowPassword());
         passwordInput.setOnEditorActionListener(this);
 
         emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);

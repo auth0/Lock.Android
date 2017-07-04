@@ -87,6 +87,7 @@ public class ValidatedInputView extends LinearLayout {
     private IdentityListener identityListener;
     private int inputIcon;
     private boolean hasValidInput;
+    private boolean allowShowPassword = true;
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, TEXT_NAME, NUMBER, NON_EMPTY_USERNAME})
     @Retention(RetentionPolicy.SOURCE)
@@ -283,7 +284,7 @@ public class ValidatedInputView extends LinearLayout {
                 error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
         }
-        showPasswordToggle.setVisibility(dataType == PASSWORD ? ViewGroup.VISIBLE : ViewGroup.GONE);
+        showPasswordToggle.setVisibility(dataType == PASSWORD && allowShowPassword ? ViewGroup.VISIBLE : ViewGroup.GONE);
         showPasswordToggle.setChecked(false);
         input.setHint(hint);
         errorDescription.setText(error);
@@ -443,6 +444,17 @@ public class ValidatedInputView extends LinearLayout {
     @Override
     public boolean isEnabled() {
         return input.isEnabled();
+    }
+
+    /**
+     * Whether to display the Show Password toggle or not.
+     * Only available for Password data type. Defaults to true.
+     *
+     * @param allow whether to display a button to toggle between showing or hiding the password or not.
+     */
+    public void setAllowShowPassword(boolean allow) {
+        this.allowShowPassword = allow;
+        setupInputValidation();
     }
 
     /**
