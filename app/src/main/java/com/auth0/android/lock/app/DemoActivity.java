@@ -204,7 +204,9 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private Auth0 getAccount() {
-        return new Auth0(getString(R.string.com_auth0_client_id), getString(R.string.com_auth0_domain));
+        Auth0 account = new Auth0(getString(R.string.com_auth0_client_id), getString(R.string.com_auth0_domain));
+        account.setOIDCConformant(true);
+        return account;
     }
 
     private List<String> generateConnections() {
