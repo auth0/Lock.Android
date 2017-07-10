@@ -24,6 +24,8 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+import android.util.Log;
+
 import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
@@ -38,7 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.FileReader;
@@ -63,7 +65,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class ConfigurationTest extends GsonBaseTest {
 
@@ -97,6 +99,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.allowLogIn(), is(true));
         assertThat(configuration.allowSignUp(), is(true));
         assertThat(configuration.allowForgotPassword(), is(true));
+        assertThat(configuration.allowShowPassword(), is(true));
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
@@ -129,6 +132,7 @@ public class ConfigurationTest extends GsonBaseTest {
         options.setAllowLogIn(false);
         options.setAllowSignUp(false);
         options.setAllowForgotPassword(false);
+        options.setAllowShowPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setAuthButtonSize(AuthButtonSize.BIG);
@@ -137,6 +141,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.allowLogIn(), is(false));
         assertThat(configuration.allowSignUp(), is(false));
         assertThat(configuration.allowForgotPassword(), is(false));
+        assertThat(configuration.allowShowPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
         assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.BIG)));

@@ -391,6 +391,17 @@ public class Lock {
         }
 
         /**
+         * Whether to show the password visibility toggle or not. Defaults to true
+         *
+         * @param allow whether to allow the user to toggle between showing or hiding the password or not.
+         * @return the current builder instance
+         */
+        public Builder allowShowPassword(boolean allow) {
+            options.setAllowShowPassword(allow);
+            return this;
+        }
+
+        /**
          * Whether if the submit button will display a label or just an icon. By default it will use the label.
          * If {@link #hideMainScreenTitle(boolean)} is set to true this setting is ignored and the submit button will use label.
          *

@@ -86,6 +86,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         emailInput.setOnEditorActionListener(this);
         passwordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setPasswordPolicy(configuration.getPasswordPolicy());
+        passwordInput.setAllowShowPassword(configuration.allowShowPassword());
         passwordInput.setOnEditorActionListener(this);
 
         usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);

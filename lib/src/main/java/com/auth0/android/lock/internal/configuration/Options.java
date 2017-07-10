@@ -70,6 +70,7 @@ public class Options implements Parcelable {
     private boolean allowLogIn;
     private boolean allowSignUp;
     private boolean allowForgotPassword;
+    private boolean allowShowPassword;
     private boolean loginAfterSignUp;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
@@ -98,6 +99,7 @@ public class Options implements Parcelable {
         allowLogIn = true;
         allowSignUp = true;
         allowForgotPassword = true;
+        allowShowPassword = true;
         loginAfterSignUp = true;
         useCodePasswordless = true;
         usePKCE = true;
@@ -118,6 +120,7 @@ public class Options implements Parcelable {
         allowLogIn = in.readByte() != WITHOUT_DATA;
         allowSignUp = in.readByte() != WITHOUT_DATA;
         allowForgotPassword = in.readByte() != WITHOUT_DATA;
+        allowShowPassword = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         mustAcceptTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
@@ -195,6 +198,7 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (allowLogIn ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowForgotPassword ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (allowShowPassword ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
@@ -354,6 +358,14 @@ public class Options implements Parcelable {
 
     public boolean allowForgotPassword() {
         return allowForgotPassword;
+    }
+
+    public boolean allowShowPassword() {
+        return allowShowPassword;
+    }
+
+    public void setAllowShowPassword(boolean allow) {
+        allowShowPassword = allow;
     }
 
     public String getDefaultDatabaseConnection() {
