@@ -3,7 +3,7 @@ Lock for Android
 [![CircleCI](https://img.shields.io/circleci/project/github/auth0/Lock.Android.svg?style=flat-square)](https://circleci.com/gh/auth0/Lock.Android/tree/master)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0.android%22%20AND%20a%3A%22lock%22)
-[ ![Download](https://api.bintray.com/packages/auth0/android/lock/images/download.svg) ](https://bintray.com/auth0/android/lock/_latestVersion)
+[![Download](https://api.bintray.com/packages/auth0/android/lock/images/download.svg)](https://bintray.com/auth0/android/lock/_latestVersion)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
@@ -28,11 +28,48 @@ compile 'com.auth0.android:lock:2.5.0'
 
 ## Usage
 
-First go to [Auth0 Dashboard](https://manage.auth0.com/#/applications) and go to your application's settings. Make sure you have in *Allowed Callback URLs* a URL with the following format:
+If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free! Then create a new [Client](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
 
 ```
 https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
 ```
+
+The *package name* value required in the Callback URL can be found in your app's `build.gradle` file in the `applicationId` property. Both the *domain* and *client id* values can be found at the top of your client's settings.
+
+The next step is to create an instance of `Auth0` with your client information:
+
+```java
+Auth0 account = new Auth0("{YOUR_CLIENT_ID}", "{YOUR_DOMAIN}");
+```
+
+Alternatively, you can save your client information in the `strings.xml` file using the following names:
+
+```xml
+<resources>
+    <string name="com_auth0_client_id">YOUR_CLIENT_ID</string>
+    <string name="com_auth0_domain">YOUR_DOMAIN</string>
+</resources>
+
+```
+
+And then create a new Auth0 instance by passing an Android Context:
+
+```java
+Auth0 account = new Auth0(context);
+```
+
+## OIDC Conformant Mode
+
+It is strongly encouraged that Lock be used in OIDC Conformant mode. When this mode is enabled, it will force Lock to use Auth0's current authentication pipeline and will prevent it from reaching legacy endpoints. By default is `false`.
+
+```java
+Auth0 account = new Auth0("{YOUR_CLIENT_ID}", "{YOUR_DOMAIN}");
+//Configure the account in OIDC conformant mode
+account.setOIDCConformant(true);
+//Use the account to launch Lock
+```
+
+Passwordless Lock *cannot be used* with this flag set to `true`. For more information, please see the [OIDC adoption guide](https://auth0.com/docs/api-auth/tutorials/adoption).
 
 
 ### Email/Password, Enterprise & Social authentication
@@ -79,8 +116,9 @@ public class HomeActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Your own Activity code
-    Auth0 auth0 = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
-    lock = Lock.newBuilder(auth0, callback)
+    Auth0 account = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
+    account.setOIDCConformant(true);
+    lock = Lock.newBuilder(account, callback)
       //Customize Lock
       .build(this);
   }
@@ -120,7 +158,7 @@ startActivity(lock.newIntent(this));
 
 ### Passwordless & Social authentication
 
-The Passwordless feature requires your client to have the *Resource Owner* Legacy Grant Type enabled. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it.
+The Passwordless feature requires your client to have the *Resource Owner* Legacy Grant Type enabled. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it. Note that Passwordless authentication *cannot be used* with the [OIDC Conformant Mode](#oidc-conformant-mode) enabled.
 
 `PasswordlessLockActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
@@ -166,8 +204,9 @@ public class HomeActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Your own Activity code
-    Auth0 auth0 = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
-    lock = PasswordlessLock.newBuilder(auth0, callback)
+    Auth0 account = new Auth0("YOUR_AUTH0_CLIENT_ID", "YOUR_AUTH0_DOMAIN");
+    account.setOIDCConformant(true);
+    lock = PasswordlessLock.newBuilder(account, callback)
       //Customize Lock
       .build(this);
   }
