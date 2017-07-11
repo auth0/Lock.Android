@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.auth0.android.Auth0;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.AuthenticationActivity;
 import com.auth0.android.provider.WebAuthActivity;
 
 import org.junit.Before;
@@ -93,7 +94,7 @@ public class WebProviderTest {
         assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
         assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
         assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
-        assertThat(intent, hasAction(Intent.ACTION_VIEW));
+        assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
     @Test
@@ -119,7 +120,7 @@ public class WebProviderTest {
         assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
         assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
         assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
-        assertThat(intent, hasAction(Intent.ACTION_VIEW));
+        assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
     @Test
@@ -156,7 +157,9 @@ public class WebProviderTest {
         assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
         assertThat(intent.getData(), hasParamWithValue("scope", "email profile photos"));
         assertThat(intent.getData(), hasParamWithValue("connection_scope", "the connection scope"));
-        assertThat(intent, hasAction(Intent.ACTION_VIEW));
+        assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
+        assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", false), is(true));
+        assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
     @Test
@@ -193,7 +196,9 @@ public class WebProviderTest {
         assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
         assertThat(intent.getData(), hasParamWithValue("scope", "email profile photos"));
         assertThat(intent.getData(), hasParamWithValue("connection_scope", "the connection scope"));
-        assertThat(intent, hasComponent(WebAuthActivity.class.getName()));
+        assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
+        assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", true), is(false));
+        assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
     @Test
