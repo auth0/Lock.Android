@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
-                android:text="Configuration"
+                android:text="Embedded Login"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -203,7 +203,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
                 android:text="Advanced"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -423,7 +423,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
-            android:text="Hosted Login Page: Above settings don't apply" />
+            android:text="Hosted Login"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Above settings don't apply" />
 
         <Button
             android:id="@+id/btn_show_hosted_login_age"
