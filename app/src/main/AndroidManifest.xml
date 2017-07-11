@@ -28,19 +28,7 @@
             android:label="Classic Lock"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/MyLock.Theme">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/${applicationId}/callback"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock End-->
 
         <!--Auth0 PasswordlessLock-->
@@ -55,11 +43,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/${applicationId}/callback"
-                    android:scheme="https" />
 
                 <data
                     android:host="@string/com_auth0_domain"
