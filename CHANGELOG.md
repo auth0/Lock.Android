@@ -1,5 +1,21 @@
 # Change Log
 
+## [2.6.0](https://github.com/auth0/Lock.Android/tree/2.6.0) (2017-07-12)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.5.0...2.6.0)
+**Closed issues**
+- NullPointerException in onResume for certain devices [\#415](https://github.com/auth0/Lock.Android/issues/415)
+
+**Added**
+- Add Password Toggle enabler/disabler [\#423](https://github.com/auth0/Lock.Android/pull/423) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add Hosted Login Page button to the demo. [\#422](https://github.com/auth0/Lock.Android/pull/422) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add "show password" button for Password fields. [\#421](https://github.com/auth0/Lock.Android/pull/421) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Change activity to context in Lock initialization [\#416](https://github.com/auth0/Lock.Android/pull/416) ([skrabacz-michal](https://github.com/skrabacz-michal))
+
+**Fixed**
+- Fix NPE when enabling or disabling Lock interaction [\#420](https://github.com/auth0/Lock.Android/pull/420) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.5.0](https://github.com/auth0/Lock.Android/tree/2.5.0) (2017-04-27)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.4.0...2.5.0)
 
