@@ -1,5 +1,6 @@
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.AuthMode;
 
+@SuppressLint("Instantiatable")
 class SocialButton extends RelativeLayout {
 
     private boolean smallSize;
