@@ -70,7 +70,7 @@ The next step is to create an instance of `Auth0` with your client information:
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
 ```
 
-Another way to create it is using the values defined previously in the `string.xml` file, by passing just an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
+Another way to create it is using the values defined previously in the `string.xml` file, by passing an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
 
 ```java
 Auth0 account = new Auth0(context);
@@ -184,7 +184,7 @@ public class HomeActivity extends Activity {
 }
 ```
 
-And start `LockActivity` from inside your `Activity`.
+Start `LockActivity` from inside your `Activity`.
 
 ```java
 startActivity(lock.newIntent(this));
@@ -315,7 +315,7 @@ public class HomeActivity extends Activity {
 }
 ```
 
-And start `PasswordlessLockActivity` from inside your `Activity`.
+Start `PasswordlessLockActivity` from inside your `Activity`.
 
 ```java
 startActivity(lock.newIntent(this));
