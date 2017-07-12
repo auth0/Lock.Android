@@ -14,8 +14,8 @@
 
         <activity
             android:name=".DemoActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,19 +28,7 @@
             android:label="Classic Lock"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/MyLock.Theme">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/com.auth0.android.lock.app/callback"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/MyLock.Theme"/>
         <!--Auth0 Lock End-->
 
         <!--Auth0 PasswordlessLock-->
@@ -58,22 +46,11 @@
 
                 <data
                     android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/com.auth0.android.lock.app/callback"
-                    android:scheme="https" />
-
-                <data
-                    android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/com.auth0.android.lock.app/email"
+                    android:pathPrefix="/android/${applicationId}/email"
                     android:scheme="https" />
             </intent-filter>
         </activity>
         <!--Auth0 PasswordlessLock End-->
-
-        <!--Auth0 Lock Embedded WebView-->
-        <activity
-            android:name="com.auth0.android.provider.WebAuthActivity"
-            android:theme="@style/MyLock.Theme" />
-        <!--Auth0 Lock Embedded WebView End-->
 
         <!--Auth0 Lock Passwordless SMS Country Code Selection-->
         <activity
