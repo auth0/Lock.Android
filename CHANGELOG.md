@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.7.0](https://github.com/auth0/Lock.Android/tree/2.7.0) (2017-07-19)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.6.0...2.7.0)
+
+**Changed**
+- Update lib version to use auth0Scheme placeholder [\#431](https://github.com/auth0/Lock.Android/pull/431) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.6.0](https://github.com/auth0/Lock.Android/tree/2.6.0) (2017-07-12)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.5.0...2.6.0)
 **Closed issues**
