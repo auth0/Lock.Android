@@ -147,12 +147,14 @@ public class DemoActivity extends AppCompatActivity {
 
     private void showWebAuth() {
         WebAuthProvider.init(getAccount())
+                .withScheme("demo")
                 .withAudience(String.format("https://%s/userinfo", getString(R.string.com_auth0_domain)))
                 .start(this, webCallback);
     }
 
     private void showClassicLock() {
         final Lock.Builder builder = Lock.newBuilder(getAccount(), callback);
+        builder.withScheme("demo");
         builder.closable(checkboxClosable.isChecked());
         builder.useLabeledSubmitButton(groupSubmitMode.getCheckedRadioButtonId() == R.id.radio_use_label);
         builder.loginAfterSignUp(checkboxLoginAfterSignUp.isChecked());
@@ -200,6 +202,7 @@ public class DemoActivity extends AppCompatActivity {
 
     private void showPasswordlessLock() {
         final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(getAccount(), callback);
+        builder.withScheme("demo");
         builder.closable(checkboxClosable.isChecked());
 
         if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
