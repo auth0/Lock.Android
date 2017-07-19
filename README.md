@@ -43,7 +43,7 @@ The *package name* value required in the Callback URL can be found in your app's
 </resources>
 ```
 
-In your app/build.gradle file add a **Manifest Placeholder** for the Auth0 Domain property which is going to be used internally by the library to register an **intent-filter**. You can also add the intent-filter manually to the corresponding Lock activity in the Android Manifest as described later.
+In your app/build.gradle file add the **Manifest Placeholders** for the Auth0 Domain and Auth0 Scheme properties which are going to be used internally by the library to register an **intent-filter**. You can also add the intent-filter manually to the corresponding Lock activity in the Android Manifest as described later.
 
 ```groovy
 apply plugin: 'com.android.application'
@@ -57,7 +57,7 @@ android {
         //...
 
         //---> Add the next line
-        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain"]
+        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "https"]
         //<---
     }
     //...
@@ -109,9 +109,9 @@ Next, add the `LockActivity` inside the `application` tag:
   android:theme="@style/Lock.Theme"/>
 ```
 
-> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make possible to the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0 unless you need to use a custom scheme, as it's now done internally by the library for you.
+> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make possible to the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
-In case you are using an older version of Lock or require to use a custom scheme for Social Authentication, the **intent-filter** must be added to the `LockActivity` by you. i.e. with a scheme value of `demo`.
+In case you are using an older version of Lock for **Social** Authentication, the **intent-filter** must be added to the `LockActivity` by you.
 
 ```xml
 <activity
@@ -129,7 +129,7 @@ In case you are using an older version of Lock or require to use a custom scheme
       <data
         android:host="@string/com_auth0_domain"
         android:pathPrefix="/android/${applicationId}/callback"
-        android:scheme="demo" />
+        android:scheme="https" />
     </intent-filter>
 </activity>
 ```
@@ -228,9 +228,9 @@ Next, add the `PasswordlessLockActivity` inside the `application` tag:
 
 The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`. 
 
-> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make possible to the library to capture a Social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0 unless you need to use a custom scheme, as it's now done internally by the library for you.
+> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make possible to the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
-In case you are using an older version of Lock or require to use a custom scheme for Social Authentication, the **data** attribute inside the intent-filter must be added to the `PasswordlessLockActivity` by you. i.e. with a scheme value of `demo`.
+In case you are using an older version of Lock for **Social** Authentication, the **data** attribute inside the intent-filter must be added to the `PasswordlessLockActivity` by you.
 
 ```xml
 <activity
@@ -253,7 +253,7 @@ In case you are using an older version of Lock or require to use a custom scheme
       <data
         android:host="@string/com_auth0_domain"
         android:pathPrefix="/android/${applicationId}/callback"
-        android:scheme="demo" />
+        android:scheme="https" />
     </intent-filter>
 </activity>
 ```
@@ -324,7 +324,7 @@ startActivity(lock.newIntent(this));
 #### Android App Links - Custom Scheme
 Currently the default scheme used for the redirect url used to send the Web Auth results is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html), but in previous Android versions this may show the intent chooser dialog prompting the user to chose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
 
-1. Update the Intent Filter definition in the `AndroidManifest.xml` file and change the current scheme to the new one.
+1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file and change the current scheme to the new one.
 2. Update the allowed callback urls in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) client's settings to match urls that begin with the new scheme.
 3. Call `withScheme()` in the Lock.Builder passing the scheme you want to use.
 
