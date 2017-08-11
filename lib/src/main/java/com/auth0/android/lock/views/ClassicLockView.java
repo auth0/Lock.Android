@@ -160,7 +160,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
             showBottomBanner(true);
             updateButtonLabel(R.string.com_auth0_lock_action_sign_up);
         } else if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
-            showChangePasswordForm(true);
+            showResetPasswordForm(true);
         }
     }
 
@@ -217,9 +217,9 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     @Override
-    public void showChangePasswordForm(boolean show) {
+    public void showResetPasswordForm(boolean show) {
         if (show) {
-            ChangePasswordFormView form = new ChangePasswordFormView(this, lastEmailInput);
+            ResetPasswordFormView form = new ResetPasswordFormView(this, lastEmailInput);
             updateHeaderTitle(R.string.com_auth0_lock_title_change_password);
             addSubForm(form);
             updateButtonLabel(R.string.com_auth0_lock_action_send_email);

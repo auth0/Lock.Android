@@ -55,7 +55,7 @@ import com.auth0.android.callback.AuthenticationCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
-import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
+import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
@@ -424,7 +424,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
+    public void onDatabaseAuthenticationRequest(DatabaseResetPasswordEvent event) {
         if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
@@ -516,6 +516,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                         lockView.showMFACodeForm(lastDatabaseLogin);
                         return;
                     }
+                    if (error.isPasswordExpired()) {
+                        lockView.showMFACodeForm(lastDatabaseLogin);
+                        return;
+                    }
                     String message = authError.getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
@@ -555,7 +559,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 public void run() {
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
                     if (options.allowLogIn() || options.allowSignUp()) {
-                        lockView.showChangePasswordForm(false);
+                        lockView.showResetPasswordForm(false);
                     }
                 }
             });

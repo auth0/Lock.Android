@@ -56,14 +56,14 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView passwordInput;
     private SocialButton enterpriseBtn;
-    private View changePasswordBtn;
+    private View resetPasswordBtn;
     private TextView topMessage;
     private OAuthConnection currentConnection;
     private String currentUsername;
     private EnterpriseConnectionMatcher domainParser;
     private boolean fallbackToDatabase;
     private boolean corporateSSO;
-    private boolean changePasswordEnabled;
+    private boolean resetPasswordEnabled;
 
     public LogInFormView(Context context) {
         super(context);
@@ -78,7 +78,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
-        changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
+        resetPasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
         enterpriseBtn = (SocialButton) findViewById(R.id.com_auth0_lock_enterprise_button);
         topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
         Configuration configuration = lockWidget.getConfiguration();
@@ -96,12 +96,12 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         emailInput.setIdentityListener(this);
 
         fallbackToDatabase = configuration.getDatabaseConnection() != null;
-        changePasswordEnabled = fallbackToDatabase && configuration.allowForgotPassword();
-        changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
-        changePasswordBtn.setOnClickListener(new OnClickListener() {
+        resetPasswordEnabled = fallbackToDatabase && configuration.allowForgotPassword();
+        resetPasswordBtn.setVisibility(resetPasswordEnabled ? VISIBLE : GONE);
+        resetPasswordBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockWidget.showChangePasswordForm(true);
+                lockWidget.showResetPasswordForm(true);
             }
         });
         boolean socialAvailable = !configuration.getSocialConnections().isEmpty();
@@ -216,7 +216,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         if (currentUsername != null && !currentUsername.isEmpty()) {
             usernameInput.setText(currentUsername);
         }
-        changePasswordBtn.setVisibility(GONE);
+        resetPasswordBtn.setVisibility(GONE);
         corporateSSO = true;
         usernameInput.clearFocus();
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -273,8 +273,8 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
 
     private void showSSOMessage(boolean show) {
         lockWidget.showTopBanner(show);
-        if (changePasswordEnabled) {
-            changePasswordBtn.setVisibility(show ? GONE : VISIBLE);
+        if (resetPasswordEnabled) {
+            resetPasswordBtn.setVisibility(show ? GONE : VISIBLE);
         }
     }
 

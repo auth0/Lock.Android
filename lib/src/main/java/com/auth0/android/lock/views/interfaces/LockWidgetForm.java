@@ -30,7 +30,7 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 
 public interface LockWidgetForm extends LockWidgetOAuth, IdentityListener {
 
-    void showChangePasswordForm(boolean show);
+    void showResetPasswordForm(boolean show);
 
     void showCustomFieldsForm(DatabaseSignUpEvent event);
 

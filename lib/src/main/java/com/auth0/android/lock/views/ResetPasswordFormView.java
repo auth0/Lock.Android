@@ -28,34 +28,33 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
-import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
+import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-public class ChangePasswordFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
+public class ResetPasswordFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
-    private static final String TAG = ChangePasswordFormView.class.getSimpleName();
+    private static final String TAG = ResetPasswordFormView.class.getSimpleName();
     private final LockWidgetForm lockWidget;
     private ValidatedInputView emailInput;
 
-    public ChangePasswordFormView(Context context) {
+    public ResetPasswordFormView(Context context) {
         super(context);
         lockWidget = null;
     }
 
-    public ChangePasswordFormView(LockWidgetForm lockWidget, String email) {
+    public ResetPasswordFormView(LockWidgetForm lockWidget, String email) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init(email);
     }
 
     private void init(String email) {
-        inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
+        inflate(getContext(), R.layout.com_auth0_lock_resetpwd_form_view, this);
         emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
         emailInput.setIdentityListener(this);
@@ -64,7 +63,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     @Override
     public Object getActionEvent() {
-        return new DatabaseChangePasswordEvent(getUsernameOrEmail());
+        return new DatabaseResetPasswordEvent(getUsernameOrEmail());
     }
 
     @NonNull

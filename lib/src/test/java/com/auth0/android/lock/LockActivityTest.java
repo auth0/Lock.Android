@@ -8,7 +8,7 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.request.DatabaseConnectionRequest;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.callback.BaseCallback;
-import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
+import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
@@ -320,7 +320,7 @@ public class LockActivityTest {
     @Test
     public void shouldFailDatabasePasswordResetOnNullConnection() throws Exception {
         when(configuration.getDatabaseConnection()).thenReturn(null);
-        DatabaseChangePasswordEvent event = new DatabaseChangePasswordEvent("email@domain.com");
+        DatabaseResetPasswordEvent event = new DatabaseResetPasswordEvent("email@domain.com");
         activity.onDatabaseAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(true);
@@ -333,7 +333,7 @@ public class LockActivityTest {
 
     @Test
     public void shouldCallDatabasePasswordReset() throws Exception {
-        DatabaseChangePasswordEvent event = new DatabaseChangePasswordEvent("email@domain.com");
+        DatabaseResetPasswordEvent event = new DatabaseResetPasswordEvent("email@domain.com");
         activity.onDatabaseAuthenticationRequest(event);
 
         verify(lockView).showProgress(true);
