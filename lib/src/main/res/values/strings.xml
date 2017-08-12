@@ -78,6 +78,7 @@
     <string name="com_auth0_lock_input_error_empty">The value cannot be empty</string>
     <string name="com_auth0_lock_hint_email">Email</string>
     <string name="com_auth0_lock_hint_password">Password</string>
+    <string name="com_auth0_lock_hint_confirm_password">Confirm password</string>
     <string name="com_auth0_lock_hint_username">Username</string>
     <string name="com_auth0_lock_hint_username_or_email">Username/Email</string>
     <string name="com_auth0_lock_hint_code">Code</string>
@@ -89,6 +90,7 @@
     <string name="com_auth0_lock_mode_sign_up">Sign Up</string>
     <string name="com_auth0_lock_mode_log_in">Log In</string>
     <string name="com_auth0_lock_action_send_email">SEND EMAIL</string>
+    <string name="com_auth0_lock_action_change_password">CHANGE PASSWORD</string>
     <string name="com_auth0_lock_action_forgot_password">Don\'t remember your password?</string>
     <string name="com_auth0_lock_action_single_login_with_corporate">Login with your corporate credentials.</string>
     <string name="com_auth0_lock_action_login_with_corporate">Please enter your corporate credentials at %s</string>
@@ -135,6 +137,7 @@
     <string name="com_auth0_lock_db_sign_up_error_message">THERE WAS AN ERROR PROCESSING THE SIGN UP</string>
     <string name="com_auth0_lock_db_change_password_message_success">WE\'VE JUST SENT YOU AN EMAIL TO RESET YOUR PASSWORD</string>
     <string name="com_auth0_lock_db_message_change_password_error">COULDN\'T RESET YOUR PASSWORD</string>
+    <string name="com_auth0_lock_db_password_changed_message">YOUR PASSWORD HAS BEEN CHANGED. LOGGING IN…</string>
     <string name="com_auth0_lock_db_signup_user_already_exists_error_message">THE USER ALREADY EXISTS</string>
     <string name="com_auth0_lock_db_signup_password_already_used_error_message">THE PASSWORD WAS USED PREVIOUSLY</string>
     <string name="com_auth0_lock_db_signup_password_not_strong_error_message">THE PASSWORD IS NOT STRONG ENOUGH</string>
@@ -145,6 +148,8 @@
     <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">THE CODE IS INVALID OR HAS EXPIRED</string>
     <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
+    <string name="com_auth0_lock_title_password_expired">Change Password</string>
+    <string name="com_auth0_lock_description_password_expired">Your password has expired. Please change your password to continue logging in.</string>
 
     <!-- Password Strength/Policies -->
     <string name="com_auth0_lock_password_strength_identical_chars">No more than 2 identical characters in a row (e.g., "111" not allowed)</string>

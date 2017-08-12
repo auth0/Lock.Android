@@ -348,6 +348,13 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         addSubForm(form);
     }
 
+    public void showPasswordExpiredForm(DatabaseLoginEvent event) {
+        PasswordExpiredFormView form = new PasswordExpiredFormView(this, event.getUsernameOrEmail(), event.getPassword());
+        updateHeaderTitle(R.string.com_auth0_lock_title_password_expired);
+        updateButtonLabel(R.string.com_auth0_lock_action_change_password);
+        addSubForm(form);
+    }
+
     @Override
     public void onOAuthLoginRequest(OAuthLoginEvent event) {
         bus.post(event);

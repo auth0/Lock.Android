@@ -80,6 +80,7 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
         } else {
             messageRes = defaultMessage;
         }
+        //TODO: Catch specific errors for the SelfChangePassword endpoint
         return new AuthenticationError(messageRes, description);
     }
 }

@@ -52,9 +52,11 @@ import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.callback.AuthenticationCallback;
+import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
+import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -434,6 +436,21 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final String connection = configuration.getDatabaseConnection().getName();
         apiClient.resetPassword(event.getEmail(), connection)
+                .start(resetPwdCallback);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
+        if (configuration.getDatabaseConnection() == null) {
+            Log.w(TAG, "There is no default Database connection to authenticate with");
+            return;
+        }
+
+        lockView.showProgress(true);
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
+        final String connection = configuration.getDatabaseConnection().getName();
+        event.getChangePasswordRequest(apiClient, connection)
                 .start(changePwdCallback);
     }
 
@@ -517,7 +534,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                         return;
                     }
                     if (error.isPasswordExpired()) {
-                        lockView.showMFACodeForm(lastDatabaseLogin);
+                        lockView.showPasswordExpiredForm(lastDatabaseLogin);
                         return;
                     }
                     String message = authError.getMessage(LockActivity.this);
@@ -551,7 +568,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private AuthenticationCallback<Void> changePwdCallback = new AuthenticationCallback<Void>() {
+    private AuthenticationCallback<Void> resetPwdCallback = new AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
@@ -573,6 +590,34 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 @Override
                 public void run() {
                     String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error).getMessage(LockActivity.this);
+                    showErrorMessage(message);
+                }
+            });
+        }
+    };
+
+    private BaseCallback<Void, AuthenticationException> changePwdCallback= new BaseCallback<Void, AuthenticationException>() {
+        @Override
+        public void onSuccess(Void payload) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showSuccessMessage(getString(R.string.com_auth0_lock_db_password_changed_message));
+                    //TODO: perform auto login with same identity + newPassword
+//                    lastDatabaseLogin.lockView.showPasswordExpiredForm(lastDatabaseLogin);
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(final AuthenticationException error) {
+            Log.e(TAG, "Failed to change the user password: " + error.getMessage(), error);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    final AuthenticationError changePasswordError = loginErrorBuilder.buildFrom(error);
+                    //TODO: Catch specific SelfChangePassword endpoint errors
+                    String message = changePasswordError.getMessage(LockActivity.this);
                     showErrorMessage(message);
                 }
             });
