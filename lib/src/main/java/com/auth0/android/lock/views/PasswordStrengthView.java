@@ -90,9 +90,11 @@ public class PasswordStrengthView extends LinearLayout {
      */
     private void refreshPolicyUI() {
         if (strength == PasswordStrength.NONE) {
+            setEnabled(false);
             setVisibility(GONE);
             return;
         }
+        setEnabled(true);
         setVisibility(VISIBLE);
 
         optionLowercase.setMandatory(strength == PasswordStrength.FAIR);

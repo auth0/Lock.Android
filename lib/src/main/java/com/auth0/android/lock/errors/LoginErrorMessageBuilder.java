@@ -38,11 +38,16 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
     private static final String USER_IS_BLOCKED_DESCRIPTION = "user is blocked";
     private static final String TOO_MANY_ATTEMPTS_ERROR = "too_many_attempts";
     private static final String WRONG_CLIENT_TYPE_ERROR = "Unauthorized";
+    private static final String INVALID_REQUEST = "invalid_request";
+    private static final String NEW_OLD_PASSWORD_DESCRIPTION = "new_password and old_password cannot be equal";
 
     private static final int userExistsResource = R.string.com_auth0_lock_db_signup_user_already_exists_error_message;
     private static final int unauthorizedResource = R.string.com_auth0_lock_db_login_error_unauthorized_message;
     private static final int invalidMFACodeResource = R.string.com_auth0_lock_db_login_error_invalid_mfa_code_message;
     private static final int tooManyAttemptsResource = R.string.com_auth0_lock_db_too_many_attempts_error_message;
+    private static final int passwordAlreadyUsedResource = R.string.com_auth0_lock_db_signup_password_already_used_error_message;
+    private static final int passwordNotStrongResource = R.string.com_auth0_lock_db_signup_password_not_strong_error_message;
+    private static final int passwordSameAsPreviousResource = R.string.com_auth0_lock_db_change_password_same_password_error_message;
 
     private int invalidCredentialsResource;
     private int defaultMessage;
@@ -65,6 +70,12 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
             messageRes = invalidCredentialsResource;
         } else if (exception.isMultifactorCodeInvalid()) {
             messageRes = invalidMFACodeResource;
+        } else if (exception.isPasswordAlreadyUsed()) {
+            messageRes = passwordAlreadyUsedResource;
+        } else if (exception.isPasswordNotStrongEnough()) {
+            messageRes = passwordNotStrongResource;
+        } else if (INVALID_REQUEST.equals(exception.getCode()) && NEW_OLD_PASSWORD_DESCRIPTION.equals(exception.getDescription())) {
+            messageRes = passwordSameAsPreviousResource;
         } else if (USER_EXISTS_ERROR.equals(exception.getCode()) || USERNAME_EXISTS_ERROR.equals(exception.getCode())) {
             messageRes = userExistsResource;
         } else if (exception.isRuleError()) {
@@ -80,7 +91,6 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
         } else {
             messageRes = defaultMessage;
         }
-        //TODO: Catch specific errors for the SelfChangePassword endpoint
         return new AuthenticationError(messageRes, description);
     }
 }
