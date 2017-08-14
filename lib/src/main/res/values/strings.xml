@@ -150,8 +150,8 @@
     <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">THE CODE IS INVALID OR HAS EXPIRED</string>
     <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
-    <string name="com_auth0_lock_title_password_expired">Change Password</string>
-    <string name="com_auth0_lock_description_password_expired">Your password has expired. Please change your password to continue logging in.</string>
+    <string name="com_auth0_lock_title_password_expired">Password Expired</string>
+    <string name="com_auth0_lock_description_password_expired">Please change your password</string>
 
     <!-- Password Strength/Policies -->
     <string name="com_auth0_lock_password_strength_identical_chars">No more than 2 identical characters in a row (e.g., "111" not allowed)</string>
