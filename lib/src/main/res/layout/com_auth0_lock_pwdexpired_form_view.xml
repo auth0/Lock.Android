@@ -35,7 +35,9 @@
     android:paddingRight="@dimen/com_auth0_lock_widget_horizontal_margin"
     android:paddingTop="@dimen/com_auth0_lock_widget_vertical_margin_field">
 
-    <com.auth0.android.lock.views.LineSpacingTextView
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/com_auth0_lock_text"
         style="@style/Lock.Theme.Text.Subtitle.ResetPassword"
         android:text="@string/com_auth0_lock_description_password_expired"
@@ -48,13 +50,13 @@
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
         lock:Auth0.InputDataType="password" />
 
-    <com.auth0.android.lock.views.ValidatedPasswordInputView
+    <com.auth0.android.lock.views.ValidatedConfirmationInputView
         android:id="@+id/com_auth0_lock_input_confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_passwordless"
-        android:visibility="visible"
+        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field"
+        android:visibility="gone"
         lock:Auth0.InputDataType="password"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </LinearLayout>

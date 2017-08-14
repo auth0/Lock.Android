@@ -342,14 +342,14 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         showSignUpTerms(false);
     }
 
-    public void showMFACodeForm(DatabaseLoginEvent event) {
-        MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword());
+    public void showMFACodeForm(String usernameOrEmail, String password) {
+        MFACodeFormView form = new MFACodeFormView(this, usernameOrEmail, password);
         updateHeaderTitle(R.string.com_auth0_lock_title_mfa_input_code);
         addSubForm(form);
     }
 
-    public void showPasswordExpiredForm(DatabaseLoginEvent event) {
-        PasswordExpiredFormView form = new PasswordExpiredFormView(this, event.getUsernameOrEmail(), event.getPassword());
+    public void showPasswordExpiredForm(String usernameOrEmail, String password) {
+        PasswordExpiredFormView form = new PasswordExpiredFormView(this, usernameOrEmail, password);
         updateHeaderTitle(R.string.com_auth0_lock_title_password_expired);
         updateButtonLabel(R.string.com_auth0_lock_action_change_password);
         addSubForm(form);

@@ -88,13 +88,11 @@ public class PasswordStrengthView extends LinearLayout {
     /**
      * @see "https://auth0.com/docs/connections/database/password-strength"
      */
-    private void showPolicy() {
+    private void refreshPolicyUI() {
         if (strength == PasswordStrength.NONE) {
-            setEnabled(false);
             setVisibility(GONE);
             return;
         }
-        setEnabled(true);
         setVisibility(VISIBLE);
 
         optionLowercase.setMandatory(strength == PasswordStrength.FAIR);
@@ -179,12 +177,14 @@ public class PasswordStrengthView extends LinearLayout {
 
     /**
      * Sets the current level of Strength that this widget is going to validate.
+     * Updating the strength will hide the widget until {@link #isValid(String)} is called.
      *
      * @param strength the required strength level.
      */
     public void setStrength(@PasswordStrength int strength) {
         this.strength = strength;
-        showPolicy();
+        refreshPolicyUI();
+        setVisibility(GONE);
     }
 
     /**

@@ -76,6 +76,7 @@
     <string name="com_auth0_lock_input_error_code">Invalid Code</string>
     <string name="com_auth0_lock_input_error_phone_number">Invalid Phone Number</string>
     <string name="com_auth0_lock_input_error_empty">The value cannot be empty</string>
+    <string name="com_auth0_lock_input_error_password_do_not_match">Passwords do not match</string>
     <string name="com_auth0_lock_hint_email">Email</string>
     <string name="com_auth0_lock_hint_password">Password</string>
     <string name="com_auth0_lock_hint_confirm_password">Confirm password</string>

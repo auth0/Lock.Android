@@ -27,11 +27,6 @@ package com.auth0.android.lock.events;
 
 import android.support.annotation.NonNull;
 
-import com.auth0.android.authentication.AuthenticationAPIClient;
-import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.authentication.request.DatabaseConnectionRequest;
-import com.auth0.android.request.AuthenticationRequest;
-
 public class DatabaseChangePasswordEvent {
 
     private final String usernameOrEmail;
@@ -49,12 +44,16 @@ public class DatabaseChangePasswordEvent {
         this.newPassword = newPassword;
     }
 
-    public DatabaseConnectionRequest<Void, AuthenticationException> getChangePasswordRequest(AuthenticationAPIClient apiClient, String connection) {
-        return apiClient.changePassword(usernameOrEmail, oldPassword, newPassword, connection);
+    public String getUsernameOrEmail() {
+        return usernameOrEmail;
     }
 
-    public AuthenticationRequest getLogInRequest(AuthenticationAPIClient apiClient, String connection) {
-        return apiClient.login(usernameOrEmail, newPassword, connection);
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
     }
 
 }

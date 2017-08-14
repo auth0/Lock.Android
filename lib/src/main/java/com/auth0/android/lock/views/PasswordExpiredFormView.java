@@ -40,7 +40,7 @@ public class PasswordExpiredFormView extends FormView implements TextView.OnEdit
     private final LockWidget lockWidget;
 
     private ValidatedPasswordInputView passwordInput;
-    private ValidatedPasswordInputView confirmPasswordInput;
+    private ValidatedConfirmationInputView confirmPasswordInput;
 
 
     public PasswordExpiredFormView(LockWidget lockWidget, String usernameOrEmail, String oldPassword) {
@@ -54,17 +54,20 @@ public class PasswordExpiredFormView extends FormView implements TextView.OnEdit
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_pwdexpired_form_view, this);
         passwordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_password);
-        confirmPasswordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_confirm_password);
 
         passwordInput.setPasswordPolicy(lockWidget.getConfiguration().getPasswordPolicy());
         if (lockWidget.getConfiguration().allowShowPassword()) {
             passwordInput.setOnEditorActionListener(this);
             return;
         }
-
+        passwordInput.setAllowShowPassword(false);
+        confirmPasswordInput = (ValidatedConfirmationInputView) findViewById(R.id.com_auth0_lock_input_confirm_password);
+        confirmPasswordInput.attachToInput(passwordInput);
+        confirmPasswordInput.setAllowShowPassword(false);
         confirmPasswordInput.setVisibility(VISIBLE);
         confirmPasswordInput.setOnEditorActionListener(this);
         confirmPasswordInput.setHint(R.string.com_auth0_lock_hint_confirm_password);
+        confirmPasswordInput.setErrorDescription(getResources().getString(R.string.com_auth0_lock_input_error_password_do_not_match));
     }
 
     @Override
@@ -78,16 +81,14 @@ public class PasswordExpiredFormView extends FormView implements TextView.OnEdit
 
     @Override
     public boolean validateForm() {
-        //Password must:
-        //Be the same as confirmPassword if allowShowPassword==false
-        //Be different from the oldPassword
-        //Comply with the password policy set for this connection
-//        boolean equalsToLast = oldPassword.equals(passwordInput.getText());
-        if (lockWidget.getConfiguration().allowShowPassword()) {
+        //New password must:
+        //- Be the same as confirmPassword
+        //- Be different from the oldPassword
+        //- Comply with the password policy set for this connection
+        if (confirmPasswordInput.getVisibility() != VISIBLE) {
             return passwordInput.validate();
-        } else {
-            return passwordInput.validate() && confirmPasswordInput.validate() && passwordInput.getText().equals(confirmPasswordInput.getText());
         }
+        return passwordInput.validate() && confirmPasswordInput.validate();
     }
 
     @Nullable

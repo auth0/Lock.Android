@@ -57,8 +57,8 @@ import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
-import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
+import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
@@ -107,7 +107,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private LoginErrorMessageBuilder loginErrorBuilder;
     private SignUpErrorMessageBuilder signUpErrorBuilder;
-    private DatabaseLoginEvent lastDatabaseLogin;
+    private String lastDatabaseUsernameOrEmail;
+    private String lastDatabasePassword;
 
     @SuppressWarnings("unused")
     public LockActivity() {
@@ -377,7 +378,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         lockView.showProgress(true);
-        lastDatabaseLogin = event;
+        lastDatabaseUsernameOrEmail = event.getUsernameOrEmail();
+        lastDatabasePassword = event.getPassword();
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
         if (event.getVerificationCode() != null) {
@@ -417,6 +419,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
                 request.setAudience(options.getAudience());
             }
+            lastDatabaseUsernameOrEmail = event.getEmail();
+            lastDatabasePassword = event.getPassword();
             request.start(authCallback);
         } else {
             event.getCreateUserRequest(apiClient, connection)
@@ -448,9 +452,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         lockView.showProgress(true);
+        lastDatabaseUsernameOrEmail = event.getUsernameOrEmail();
+        lastDatabasePassword = event.getNewPassword();
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        final String connection = configuration.getDatabaseConnection().getName();
-        event.getChangePasswordRequest(apiClient, connection)
+        String connection = configuration.getDatabaseConnection().getName();
+        apiClient.changePassword(event.getUsernameOrEmail(), event.getOldPassword(), event.getNewPassword(), connection)
                 .start(changePwdCallback);
     }
 
@@ -485,7 +491,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onFailure(@NonNull final Dialog dialog) {
             Log.e(TAG, "Failed to authenticate the user. A dialog is going to be shown with more information.");
-            dialog.show();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -517,7 +522,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onSuccess(Credentials credentials) {
             deliverAuthenticationResult(credentials);
-            lastDatabaseLogin = null;
+            lastDatabaseUsernameOrEmail = null;
+            lastDatabasePassword = null;
         }
 
         @Override
@@ -530,11 +536,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
                     if (error.isMultifactorRequired() || error.isMultifactorEnrollRequired()) {
-                        lockView.showMFACodeForm(lastDatabaseLogin);
+                        lockView.showMFACodeForm(lastDatabaseUsernameOrEmail, lastDatabasePassword);
                         return;
                     }
                     if (error.isPasswordExpired()) {
-                        lockView.showPasswordExpiredForm(lastDatabaseLogin);
+                        lockView.showPasswordExpiredForm(lastDatabaseUsernameOrEmail, lastDatabasePassword);
                         return;
                     }
                     String message = authError.getMessage(LockActivity.this);
@@ -596,15 +602,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private BaseCallback<Void, AuthenticationException> changePwdCallback= new BaseCallback<Void, AuthenticationException>() {
+    private BaseCallback<Void, AuthenticationException> changePwdCallback = new BaseCallback<Void, AuthenticationException>() {
         @Override
         public void onSuccess(Void payload) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    lockView.onBackPressed();
                     showSuccessMessage(getString(R.string.com_auth0_lock_db_password_changed_message));
-                    //TODO: perform auto login with same identity + newPassword
-//                    lastDatabaseLogin.lockView.showPasswordExpiredForm(lastDatabaseLogin);
+                    onDatabaseAuthenticationRequest(new DatabaseLoginEvent(lastDatabaseUsernameOrEmail, lastDatabasePassword));
                 }
             });
         }
@@ -623,6 +629,4 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             });
         }
     };
-
-
 }
