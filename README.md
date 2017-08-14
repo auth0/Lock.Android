@@ -138,7 +138,7 @@ In case you are using an older version of Lock for **Social** Authentication, th
 Make sure the Activity's `launchMode` is declared as `singleTask` or the result won't come back in the authentication.
 
 
-Then in any of your Activities you need to initialize **Lock**:
+Then in any of your Activities you need to initialize **Lock**. If your `auth0Scheme` value is not `https` you need to use `withScheme()` as shown below.
 
 ```java
 // This activity will show Lock
@@ -154,6 +154,7 @@ public class HomeActivity extends Activity {
     account.setOIDCConformant(true);
     lock = Lock.newBuilder(account, callback)
       //Customize Lock
+      //.withScheme("myapp")
       .build(this);
   }
 
@@ -269,7 +270,7 @@ When the Passwordless connection is SMS you must also add the `CountryCodeActivi
 ```
 
 
-Then in any of your Activities you need to initialize **PasswordlessLock**
+Then in any of your Activities you need to initialize **PasswordlessLock**. If your `auth0Scheme` value is not `https` you need to use `withScheme()` as shown below.
 
 ```java
 // This activity will show Lock
@@ -285,6 +286,7 @@ public class HomeActivity extends Activity {
     account.setOIDCConformant(true);
     lock = PasswordlessLock.newBuilder(account, callback)
       //Customize Lock
+      //.withScheme("myapp")
       .build(this);
   }
 
@@ -322,11 +324,11 @@ startActivity(lock.newIntent(this));
 ```
 
 #### Android App Links - Custom Scheme
-Currently the default scheme used for the redirect url used to send the Web Auth results is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html), but in previous Android versions this may show the intent chooser dialog prompting the user to chose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
+The current default scheme used by the library to generate the Redirect URL for Web Authentication is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html). However, in previous Android versions this may show the intent chooser dialog prompting the user to choose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
 
-1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file and change the current scheme to the new one.
-2. Update the allowed callback urls in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) client's settings to match urls that begin with the new scheme.
-3. Call `withScheme()` in the Lock.Builder passing the scheme you want to use.
+1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file by changing the existing scheme to the new one.
+2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) client's settings to match URLs that begin with the new scheme.
+3. Call `withScheme()` in the Lock.Builder/PasswordlessLock.Builder passing the scheme you want to use.
 
 > The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
 
