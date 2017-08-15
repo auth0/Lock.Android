@@ -8,6 +8,7 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.request.DatabaseConnectionRequest;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseResetPasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -102,6 +103,7 @@ public class LockActivityTest {
         when(client.signUp(anyString(), anyString(), anyString())).thenReturn(signUpRequest);
         when(client.signUp(anyString(), anyString(), anyString(), anyString())).thenReturn(signUpRequest);
         when(client.resetPassword(anyString(), anyString())).thenReturn(dbRequest);
+        when(client.changePassword(anyString(),anyString(), anyString(), anyString())).thenReturn(dbRequest);
         when(authRequest.addAuthenticationParameters(anyMapOf(String.class, Object.class))).thenReturn(authRequest);
         when(signUpRequest.addAuthenticationParameters(anyMapOf(String.class, Object.class))).thenReturn(signUpRequest);
         when(dbRequest.addParameters(anyMapOf(String.class, Object.class))).thenReturn(dbRequest);
@@ -345,6 +347,33 @@ public class LockActivityTest {
     }
 
     @Test
+    public void shouldFailDatabaseChangePasswordOnNullConnection() throws Exception {
+        when(configuration.getDatabaseConnection()).thenReturn(null);
+        DatabaseChangePasswordEvent event = new DatabaseChangePasswordEvent("email@domain.com", "oldPassword", "newPassword");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView, never()).showProgress(true);
+        verify(options, never()).getAuthenticationAPIClient();
+        verify(authRequest, never()).addAuthenticationParameters(anyMapOf(String.class, Object.class));
+        verify(authRequest, never()).start(any(BaseCallback.class));
+        verify(client, never()).login(anyString(), anyString(), anyString());
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+    }
+
+    @Test
+    public void shouldCallDatabaseChangePassword() throws Exception {
+        DatabaseChangePasswordEvent event = new DatabaseChangePasswordEvent("email@domain.com", "oldPassword", "newPassword");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(dbRequest, never()).addParameters(any(Map.class));
+        verify(dbRequest).start(any(BaseCallback.class));
+        verify(client).changePassword("email@domain.com", "oldPassword", "newPassword", "connection");
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+    }
+
+    @Test
     public void shouldCallEnterpriseOAuthAuthenticationWithActiveFlow() throws Exception {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
@@ -359,6 +388,39 @@ public class LockActivityTest {
         verify(authRequest).start(any(BaseCallback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
+        verify(client).login("email@domain.com", "password", "my-connection");
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+    }
+
+    @Test
+    public void shouldCallEnterpriseOAuthAuthenticationWithActiveFlowAndAudienceIfOIDCConformant() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        account.setOIDCConformant(true);
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getConnectionsScope()).thenReturn(connectionScope);
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("my-connection");
+        when(connection.isActiveFlowEnabled()).thenReturn(true);
+        OAuthLoginEvent event = new OAuthLoginEvent(connection, "email@domain.com", "password");
+        activity.onOAuthAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).setScope("openid user photos");
+        verify(authRequest).setAudience("aud");
         verify(client).login("email@domain.com", "password", "my-connection");
 
         Map<String, String> reqParams = mapCaptor.getValue();
