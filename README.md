@@ -14,6 +14,12 @@ Lock for Android
 * Provides support for **Social Providers** (Facebook, Twitter, etc.), **Enterprise Providers** (AD, LDAP, etc.) and **Username & Password**.
 * Passwordless authentication using **SMS** and **Email**.
 
+
+## Notes On Embedded Authentication
+
+Since June 2017 new Clients no longer have the **Password Grant Type*** enabled by default. This means that Database Authentication from *untrusted clients* like a mobile app, is not possible until the Grant Type is enabled again. The reasons of this change are listed in this [embedded vs native mobile article](https://github.com/auth0/Lock.Android/issues/440#issuecomment-331541307). If you choose to use this library anyway, follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property) to learn how to enable the Password Grant Type.
+
+
 ## Requirements
 
 Android API Level 15+ is required in order to use Lock's UI.
@@ -62,7 +68,7 @@ android {
     }
     //...
 }
-``` 
+```
 
 The next step is to create an instance of `Auth0` with your client information:
 
@@ -227,7 +233,7 @@ Next, add the `PasswordlessLockActivity` inside the `application` tag:
 </activity>
 ```
 
-The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`. 
+The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`.
 
 > In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make possible to the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
@@ -250,7 +256,7 @@ In case you are using an older version of Lock for **Social** Authentication, th
         android:host="@string/com_auth0_domain"
         android:pathPrefix="/android/${applicationId}/email"
         android:scheme="https" />
-        
+
       <data
         android:host="@string/com_auth0_domain"
         android:pathPrefix="/android/${applicationId}/callback"
