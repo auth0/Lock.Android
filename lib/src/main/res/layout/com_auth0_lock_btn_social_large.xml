@@ -30,6 +30,8 @@
         android:id="@+id/com_auth0_lock_touch_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
         android:orientation="horizontal">
 
         <ImageView
