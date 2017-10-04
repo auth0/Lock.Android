@@ -143,6 +143,7 @@ public class ValidatedInputView extends LinearLayout {
         setupInputValidation();
         updateBorder(true);
 
+        setNextFocusRightId(R.id.com_auth0_lock_show_password_toggle);
         showPasswordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -63,7 +63,7 @@
                 android:layout_centerVertical="true"
                 android:button="@drawable/com_auth0_lock_ic_password_hidden"
                 android:checked="true"
-                app:buttonTint="@color/com_auth0_lock_hint_text"
+                app:buttonTint="@color/com_auth0_lock_checkbox"
                 tools:ignore="MissingPrefix,RtlHardcoded" />
 
             <EditText
