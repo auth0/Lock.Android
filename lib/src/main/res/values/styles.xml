@@ -96,6 +96,7 @@
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_link
         </item>
+        <item name="android:textColor">@color/com_auth0_lock_link_text</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:padding">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
         <item name="android:textSize">@dimen/com_auth0_lock_small_clickable_text</item>

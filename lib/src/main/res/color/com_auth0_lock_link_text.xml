@@ -24,5 +24,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="@color/com_auth0_lock_disabled_text" android:state_enabled="false" />
+    <item android:color="@color/com_auth0_lock_hint_text" android:state_focused="true" />
     <item android:color="@color/com_auth0_lock_normal_text" />
 </selector>
