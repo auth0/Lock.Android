@@ -70,6 +70,8 @@
         android:id="@+id/com_auth0_lock_change_password_btn"
         style="@style/Lock.Theme.Text.Link"
         android:layout_below="@id/com_auth0_lock_input_password"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
         android:text="@string/com_auth0_lock_action_forgot_password" />
 
 </RelativeLayout>
