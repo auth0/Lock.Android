@@ -247,6 +247,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     };
 
     private void showLinkSentLayout() {
+        //Next 2 lines required to avoid focus on the form behind
+        rootView.setFocusable(false);
+        rootView.setFocusableInTouchMode(false);
         TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
         successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessIdentity));
         TextView gotCodeButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_got_code);
