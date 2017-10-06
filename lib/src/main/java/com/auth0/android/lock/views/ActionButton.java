@@ -33,6 +33,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -78,11 +79,13 @@ public class ActionButton extends FrameLayout {
     private Drawable generateStateBackground(Theme lockTheme) {
         int normalColor = lockTheme.getPrimaryColor(getContext());
         int pressedColor = lockTheme.getDarkPrimaryColor(getContext());
+        //164 -> 64% alpha
+        int focusedColor = ColorUtils.setAlphaComponent(normalColor, 164);
         int disabledColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_submit_disabled);
 
         final StateListDrawable buttonDrawable = new StateListDrawable();
         buttonDrawable.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, new ColorDrawable(pressedColor));
-        buttonDrawable.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_focused}, new ColorDrawable(pressedColor));
+        buttonDrawable.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_focused}, new ColorDrawable(focusedColor));
         buttonDrawable.addState(new int[]{android.R.attr.state_enabled}, new ColorDrawable(normalColor));
         buttonDrawable.addState(new int[]{}, new ColorDrawable(disabledColor));
 
