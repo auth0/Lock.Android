@@ -27,7 +27,6 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
@@ -36,7 +35,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -46,8 +44,8 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -84,7 +82,7 @@ public class ValidatedInputView extends LinearLayout {
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
-    private AppCompatCheckBox showPasswordToggle;
+    private ImageCheckbox showPasswordToggle;
     private IdentityListener identityListener;
     private int inputIcon;
     private boolean hasValidInput;
@@ -129,7 +127,7 @@ public class ValidatedInputView extends LinearLayout {
         errorDescription = (TextView) findViewById(R.id.errorDescription);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
-        showPasswordToggle = (AppCompatCheckBox) findViewById(R.id.com_auth0_lock_show_password_toggle);
+        showPasswordToggle = (ImageCheckbox) findViewById(R.id.com_auth0_lock_show_password_toggle);
 
         if (attrs == null || isInEditMode()) {
             return;
@@ -145,20 +143,20 @@ public class ValidatedInputView extends LinearLayout {
         updateBorder(true);
 
         setNextFocusRightId(R.id.com_auth0_lock_show_password_toggle);
-        showPasswordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        showPasswordToggle.setOnCheckedChangeListener(new ImageCheckbox.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(ImageButton view, boolean isChecked) {
                 if (dataType != PASSWORD) {
                     return;
                 }
                 String passwordValue = input.getText().toString();
                 if (isChecked) {
                     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    buttonView.setButtonDrawable(R.drawable.com_auth0_lock_ic_password_visible);
+                    view.setImageResource(R.drawable.com_auth0_lock_ic_password_visible);
                 } else {
                     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     input.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    buttonView.setButtonDrawable(R.drawable.com_auth0_lock_ic_password_hidden);
+                    view.setImageResource(R.drawable.com_auth0_lock_ic_password_hidden);
                 }
                 setText(passwordValue);
                 input.setTypeface(Typeface.DEFAULT);
@@ -331,9 +329,7 @@ public class ValidatedInputView extends LinearLayout {
         Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), inputBackgroundColor, ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
-        ViewUtils.setBackground(input, dataType == PASSWORD ? new ColorDrawable(inputBackgroundColor) : rightBackground);
-        ViewUtils.setBackground(showPasswordToggle, rightBackground);
-
+        ViewUtils.setBackground((ViewGroup) input.getParent(), rightBackground);
     }
 
     @Override

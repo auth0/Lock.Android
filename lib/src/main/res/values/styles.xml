@@ -87,7 +87,6 @@
             @dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
         <item name="android:layout_height">@dimen/com_auth0_lock_list_item_height</item>
-        <item name="android:textColor">@color/com_auth0_lock_normal_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_list_item_text</item>
     </style>
 
@@ -96,7 +95,6 @@
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginTop">@dimen/com_auth0_lock_widget_vertical_margin_link
         </item>
-        <item name="android:textColor">@color/com_auth0_lock_text_link</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:padding">@dimen/com_auth0_lock_widget_vertical_margin_field</item>
         <item name="android:textSize">@dimen/com_auth0_lock_small_clickable_text</item>
@@ -210,12 +208,15 @@
 
     <style name="Lock.Theme.Widget.Icon.PasswordVisibilityToggle">
         <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:paddingRight">@dimen/com_auth0_lock_widget_horizontal_margin_small
+        <item name="android:padding">@dimen/com_auth0_lock_input_field_stroke_width</item>
+        <item name="android:tint">@color/com_auth0_lock_hint_text</item>
+        <item name="android:src">@drawable/com_auth0_lock_ic_password_hidden</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
     </style>
 
     <style name="Lock.Theme.Widget.Field" parent="Lock.Theme.Text">

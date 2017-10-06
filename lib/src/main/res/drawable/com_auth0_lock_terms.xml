@@ -23,6 +23,6 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/com_auth0_lock_tab_underline" android:state_focused="true"/>
+    <item android:drawable="@color/com_auth0_lock_terms_background_focused" android:state_focused="true"/>
     <item android:drawable="@color/com_auth0_lock_terms_background" />
 </selector>

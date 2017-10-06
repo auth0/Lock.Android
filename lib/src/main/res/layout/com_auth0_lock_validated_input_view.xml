@@ -23,7 +23,6 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_container"
     android:layout_width="match_parent"
@@ -56,15 +55,15 @@
             android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
             android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width">
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <com.auth0.android.lock.views.ImageCheckbox
                 android:id="@+id/com_auth0_lock_show_password_toggle"
                 style="@style/Lock.Theme.Widget.Icon.PasswordVisibilityToggle"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:button="@drawable/com_auth0_lock_ic_password_hidden"
-                android:checked="true"
-                app:buttonTint="@color/com_auth0_lock_checkbox"
-                tools:ignore="MissingPrefix,RtlHardcoded" />
+                android:layout_marginEnd="9dp"
+                android:layout_marginRight="9dp"
+                android:checked="true" />
 
             <EditText
                 android:id="@+id/com_auth0_lock_input"

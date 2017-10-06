@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_password_strength"
         tools:text="@string/com_auth0_lock_unrecoverable_error_subtitle_without_action" />
 
-    <TextView
+    <com.auth0.android.lock.views.LinkTextView
         android:id="@+id/com_auth0_lock_error_action"
         style="@style/Lock.Theme.Text.ErrorLink"
         android:layout_below="@+id/com_auth0_lock_error_subtitle"
