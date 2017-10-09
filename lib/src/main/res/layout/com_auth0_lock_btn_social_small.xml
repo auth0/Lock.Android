@@ -24,13 +24,13 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Lock.Theme.Widget.SocialButton.Small"
-    android:focusable="true"
-    android:focusableInTouchMode="false">
+    android:id="@+id/com_auth0_lock_container"
+    style="@style/Lock.Theme.Widget.SocialButton.Small">
 
     <ImageView
         android:id="@+id/com_auth0_lock_icon"
         style="@style/Lock.Theme.Widget.Icon.Social"
+        android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
         tools:background="#FF3333"
         tools:src="@drawable/com_auth0_lock_ic_social_auth0" />
 

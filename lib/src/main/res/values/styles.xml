@@ -160,6 +160,7 @@
     <style name="Lock.Theme.Text.SocialButton">
         <item name="android:gravity">center|left</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:maxLines">1</item>
         <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
@@ -275,13 +276,17 @@
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton">
-        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
         <item name="android:layout_centerInParent">true</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
     </style>
 
     <style name="Lock.Theme.Widget.SubmitButton">

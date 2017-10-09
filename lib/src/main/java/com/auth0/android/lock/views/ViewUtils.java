@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -97,6 +98,21 @@ abstract class ViewUtils {
         }
 
         RoundRectShape rr = new RoundRectShape(outerR, null, null);
+        ShapeDrawable drawable = new ShapeDrawable(rr);
+        drawable.getPaint().setColor(color);
+        return drawable;
+    }
+
+    /**
+     * Generates a rounded outline drawable with the given background color.
+     *
+     * @param resources the context's current resources.
+     * @param color     the color to use as background.
+     * @return the rounded drawable.
+     */
+    static ShapeDrawable getRoundedOutlineBackground(Resources resources, @ColorInt int color) {
+        int r = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
+        RoundRectShape rr = new RoundRectShape(new float[]{r, r, r, r, r, r, r, r}, new RectF(r, r, r, r), null);
         ShapeDrawable drawable = new ShapeDrawable(rr);
         drawable.getPaint().setColor(color);
         return drawable;

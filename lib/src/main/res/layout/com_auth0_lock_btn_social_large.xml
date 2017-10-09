@@ -24,14 +24,13 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/com_auth0_lock_container"
     style="@style/Lock.Theme.Widget.SocialButton">
 
     <LinearLayout
-        android:id="@+id/com_auth0_lock_touch_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="false"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
         android:orientation="horizontal">
 
         <ImageView
@@ -43,8 +42,6 @@
         <TextView
             android:id="@+id/com_auth0_lock_text"
             style="@style/Lock.Theme.Text.SocialButton"
-            android:layout_width="0dp"
-            android:layout_weight="1"
             tools:background="#90FF3333"
             tools:text="Login with facebook" />
 
