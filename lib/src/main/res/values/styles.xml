@@ -203,8 +203,7 @@
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">
-        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
         <item name="android:padding">@dimen/com_auth0_lock_widget_field_icon_padding</item>
     </style>
 

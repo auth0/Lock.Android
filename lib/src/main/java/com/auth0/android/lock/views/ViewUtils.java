@@ -112,7 +112,8 @@ abstract class ViewUtils {
      */
     static ShapeDrawable getRoundedOutlineBackground(Resources resources, @ColorInt int color) {
         int r = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
-        RoundRectShape rr = new RoundRectShape(new float[]{r, r, r, r, r, r, r, r}, new RectF(r, r, r, r), null);
+        int t = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_input_field_stroke_width);
+        RoundRectShape rr = new RoundRectShape(new float[]{r, r, r, r, r, r, r, r}, new RectF(t, t, t, t), new float[]{r, r, r, r, r, r, r, r});
         ShapeDrawable drawable = new ShapeDrawable(rr);
         drawable.getPaint().setColor(color);
         return drawable;
