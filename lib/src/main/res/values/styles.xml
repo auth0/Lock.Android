@@ -27,6 +27,7 @@
     <style name="Lock.Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">?attr/Auth0.PrimaryColor</item>
         <item name="colorPrimaryDark">?attr/Auth0.HeaderBackground</item>
+        <item name="android:textColorHighlight">@color/com_auth0_lock_link_focused</item>
         <item name="android:windowBackground">@color/com_auth0_lock_form_background</item>
         <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
         <item name="Auth0.HeaderTitle">@string/com_auth0_lock_header_title</item>
