@@ -19,10 +19,10 @@ import com.auth0.android.lock.internal.configuration.AuthMode;
 class SocialButton extends RelativeLayout {
 
     private static final int NORMAL_STATE_ALPHA = 230;
+    private static final float FOCUSED_STATE_ALPHA = 0.64f;
 
     private boolean smallSize;
     private ImageView icon;
-    private View focusArea;
     private TextView title;
 
     public SocialButton(Context context, AttributeSet attrs) {
@@ -40,14 +40,14 @@ class SocialButton extends RelativeLayout {
         inflate(getContext(), smallSize ? R.layout.com_auth0_lock_btn_social_small : R.layout.com_auth0_lock_btn_social_large, this);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         title = smallSize ? null : (TextView) findViewById(R.id.com_auth0_lock_text);
-        focusArea = findViewById(R.id.com_auth0_lock_container);
-        focusArea.setOnFocusChangeListener(new OnFocusChangeListener() {
+        setFocusableInTouchMode(false);
+        setFocusable(true);
+        setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                v.setAlpha(hasFocus ? 0.64f : 1f);
+                v.setAlpha(hasFocus ? FOCUSED_STATE_ALPHA : 1f);
             }
         });
-        setClickable(false);
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor, @ViewUtils.Corners int corners) {
@@ -85,8 +85,4 @@ class SocialButton extends RelativeLayout {
         }
     }
 
-    @Override
-    public void setOnClickListener(OnClickListener l) {
-        focusArea.setOnClickListener(l);
-    }
 }

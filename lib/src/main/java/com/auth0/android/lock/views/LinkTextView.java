@@ -32,6 +32,8 @@ public class LinkTextView extends android.support.v7.widget.AppCompatTextView {
 
     private void init() {
         focusedBackground = ContextCompat.getDrawable(getContext(), R.drawable.com_auth0_lock_link_background);
+        setFocusableInTouchMode(false);
+        setFocusable(true);
     }
 
     @Override

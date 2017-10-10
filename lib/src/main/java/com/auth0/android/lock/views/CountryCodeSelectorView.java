@@ -32,7 +32,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -85,7 +84,6 @@ public class CountryCodeSelectorView extends LinearLayout {
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(chevron, rightBackground);
-        ViewGroup parent = ((ViewGroup) countryNameTextView.getParent());
 
         ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ALL);
         Drawable focusedBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
@@ -94,7 +92,9 @@ public class CountryCodeSelectorView extends LinearLayout {
         states.addState(new int[]{android.R.attr.state_focused}, focusedBackground);
         states.addState(new int[]{}, normalBackground);
 
-        ViewUtils.setBackground(parent, states);
+        setFocusableInTouchMode(false);
+        setFocusable(true);
+        ViewUtils.setBackground(this, states);
     }
 
     private void prepareTask() {
