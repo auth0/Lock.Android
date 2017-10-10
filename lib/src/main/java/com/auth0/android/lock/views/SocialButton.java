@@ -2,13 +2,10 @@ package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,6 +41,12 @@ class SocialButton extends RelativeLayout {
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         title = smallSize ? null : (TextView) findViewById(R.id.com_auth0_lock_text);
         focusArea = findViewById(R.id.com_auth0_lock_container);
+        focusArea.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                v.setAlpha(hasFocus ? 0.64f : 1f);
+            }
+        });
         setClickable(false);
     }
 
@@ -58,16 +61,6 @@ class SocialButton extends RelativeLayout {
         return states;
     }
 
-    private StateListDrawable getFocusFeedbackBackground() {
-        int focusedColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_social_button_focused);
-        Drawable outline = ViewUtils.getRoundedOutlineBackground(getResources(), focusedColor);
-
-        StateListDrawable states = new StateListDrawable();
-        states.addState(new int[]{android.R.attr.state_focused}, outline);
-        states.addState(new int[]{}, new ColorDrawable(Color.TRANSPARENT));
-        return states;
-    }
-
     /**
      * Configures the button with the given connection information.
      *
@@ -78,9 +71,7 @@ class SocialButton extends RelativeLayout {
         final Drawable logo = config.getLogo(getContext());
         final int backgroundColor = config.getBackgroundColor(getContext());
         Drawable touchBackground = getTouchFeedbackBackground(backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_RIGHT);
-        Drawable focusBackground = getFocusFeedbackBackground();
 
-        ViewUtils.setBackground(focusArea, focusBackground);
         icon.setImageDrawable(logo);
         if (smallSize) {
             ViewUtils.setBackground(icon, touchBackground);

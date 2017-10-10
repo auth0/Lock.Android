@@ -95,8 +95,7 @@
 
 
     <!-- Focus State Colors -->
-    <color name="com_auth0_lock_social_button_focused">#44C7F4</color>
-    <color name="com_auth0_lock_terms_background_focused">#a4EEEEEE</color>
+    <color name="com_auth0_lock_terms_background_focused">#d7d7d7</color>
     <color name="com_auth0_lock_input_field_border_focused">#a4000000</color>
     <color name="com_auth0_lock_link_focused">#D8D8D8</color>
     <color name="com_auth0_lock_tab_focused">#F9F9F9</color>
