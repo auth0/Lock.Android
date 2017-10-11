@@ -64,8 +64,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="9dp"
-                android:layout_marginRight="9dp"
+                android:layout_marginEnd="@dimen/com_auth0_lock_widget_horizontal_margin_small"
+                android:layout_marginRight="@dimen/com_auth0_lock_widget_horizontal_margin_small"
                 android:checked="true" />
 
             <EditText
@@ -73,8 +73,8 @@
                 style="@style/Lock.Theme.Widget.Field"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_toLeftOf="@id/com_auth0_lock_show_password_toggle"
+                android:layout_toStartOf="@id/com_auth0_lock_show_password_toggle"
                 android:background="@null"
-                tools:ignore="RtlHardcoded,TextFields"
                 tools:text="email@domain.com" />
 
         </RelativeLayout>

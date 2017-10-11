@@ -8,6 +8,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -51,9 +52,9 @@ class SocialButton extends RelativeLayout {
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor, @ViewUtils.Corners int corners) {
-        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(getResources(), pressedColor, corners);
+        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
         normalBackground.getPaint().setAlpha(NORMAL_STATE_ALPHA);
-        Drawable pressedBackground = ViewUtils.getRoundedBackground(getResources(), pressedColor, corners);
+        Drawable pressedBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
 
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, pressedBackground);
@@ -77,7 +78,7 @@ class SocialButton extends RelativeLayout {
             ViewUtils.setBackground(icon, touchBackground);
         } else {
             final String name = config.getName(getContext());
-            ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_LEFT);
+            ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(this, backgroundColor, ViewUtils.Corners.ONLY_LEFT);
             final String prefixFormat = getResources().getString(mode == AuthMode.LOG_IN ? R.string.com_auth0_lock_social_log_in : R.string.com_auth0_lock_social_sign_up);
             title.setText(String.format(prefixFormat, name));
             ViewUtils.setBackground(icon, leftBackground);

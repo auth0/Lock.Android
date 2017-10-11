@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
@@ -96,6 +97,9 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
         formLayout = new PasswordlessFormLayout(this);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         formLayout.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            formLayout.setPaddingRelative(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+        }
         addView(formLayout, formLayoutParams);
 
         boolean showPasswordless = configuration.getPasswordlessConnection() != null;

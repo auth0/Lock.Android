@@ -80,12 +80,12 @@ public class CountryCodeSelectorView extends LinearLayout {
     }
 
     private void setupBackground() {
-        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
-        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
+        Drawable leftBackground = ViewUtils.getRoundedBackground(this, ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(this, ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(chevron, rightBackground);
 
-        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ALL);
+        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(this, ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ALL);
         Drawable focusedBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
 
         StateListDrawable states = new StateListDrawable();

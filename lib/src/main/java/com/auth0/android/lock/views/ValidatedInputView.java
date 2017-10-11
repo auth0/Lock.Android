@@ -323,8 +323,8 @@ public class ValidatedInputView extends LinearLayout {
 
     private void createBackground() {
         int inputBackgroundColor = ContextCompat.getColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled);
-        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
-        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), inputBackgroundColor, ViewUtils.Corners.ONLY_RIGHT);
+        Drawable leftBackground = ViewUtils.getRoundedBackground(this, ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(this, inputBackgroundColor, ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground((ViewGroup) input.getParent(), rightBackground);
     }

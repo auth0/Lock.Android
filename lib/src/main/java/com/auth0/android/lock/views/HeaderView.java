@@ -88,7 +88,4 @@ public class HeaderView extends RelativeLayout {
         this.logo.setImageResource(logo);
     }
 
-    public void setPaddingTop(int padding) {
-        header.setPadding(0, padding, 0, 0);
-    }
 }
