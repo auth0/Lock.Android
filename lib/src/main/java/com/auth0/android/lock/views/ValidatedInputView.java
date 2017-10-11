@@ -165,7 +165,9 @@ public class ValidatedInputView extends LinearLayout {
         input.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                updateBorder(true);
+                if (!isInTouchMode()) {
+                    updateBorder(true);
+                }
             }
         });
     }
@@ -297,12 +299,6 @@ public class ValidatedInputView extends LinearLayout {
         icon.setImageResource(inputIcon);
     }
 
-    @Override
-    public boolean hasFocus() {
-        //Focus on this View is given by the actual EditText view.
-        return input != null && input.hasFocus();
-    }
-
     /**
      * Updates the view knowing if the input is valid or not.
      *
@@ -315,7 +311,8 @@ public class ValidatedInputView extends LinearLayout {
         GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
         gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
 
-        int strokeColor = isValid ? (hasFocus() ? R.color.com_auth0_lock_input_field_border_focused : R.color.com_auth0_lock_input_field_border_normal) : R.color.com_auth0_lock_input_field_border_error;
+        boolean isFocused = input.hasFocus() && !isInTouchMode();
+        int strokeColor = isValid ? (isFocused ? R.color.com_auth0_lock_input_field_border_focused : R.color.com_auth0_lock_input_field_border_normal) : R.color.com_auth0_lock_input_field_border_error;
         gd.setStroke(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), strokeColor));
         gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
