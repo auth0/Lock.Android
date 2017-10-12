@@ -273,6 +273,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
                 resetHeaderTitle();
                 showSignUpTerms(subForm instanceof CustomFieldsFormView);
                 removeSubForm();
+                clearFocus();
                 return true;
             }
         }

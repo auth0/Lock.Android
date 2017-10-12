@@ -25,11 +25,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/com_auth0_lock_terms_background"
+    android:background="@drawable/com_auth0_lock_terms"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
     android:gravity="center"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/com_auth0_lock_bottom_banner_vertical_margin"
-    android:paddingTop="@dimen/com_auth0_lock_bottom_banner_vertical_margin"
-    android:orientation="vertical">
+    android:paddingTop="@dimen/com_auth0_lock_bottom_banner_vertical_margin">
 
     <com.auth0.android.lock.views.LineSpacingTextView
         style="@style/Lock.Theme.Text.Terms"

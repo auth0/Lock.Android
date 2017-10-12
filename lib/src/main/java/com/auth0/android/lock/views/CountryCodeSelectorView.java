@@ -26,12 +26,12 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -84,13 +84,17 @@ public class CountryCodeSelectorView extends LinearLayout {
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(chevron, rightBackground);
-        ViewGroup parent = ((ViewGroup) countryNameTextView.getParent());
-        Drawable bg = parent.getBackground();
-        GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
-        gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
-        gd.setStroke(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
-        gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
-        ViewUtils.setBackground(parent, gd);
+
+        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ALL);
+        Drawable focusedBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
+
+        StateListDrawable states = new StateListDrawable();
+        states.addState(new int[]{android.R.attr.state_focused}, focusedBackground);
+        states.addState(new int[]{}, normalBackground);
+
+        setFocusableInTouchMode(false);
+        setFocusable(true);
+        ViewUtils.setBackground(this, states);
     }
 
     private void prepareTask() {

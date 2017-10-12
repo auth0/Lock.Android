@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ com_auth0_btn_social_large.xml
+  ~ com_auth0_lock_normal_text.xml
   ~
   ~ Copyright (c) 2016 Auth0 (http://auth0.com)
   ~
@@ -22,29 +22,7 @@
   ~ THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/com_auth0_lock_container"
-    style="@style/Lock.Theme.Widget.SocialButton">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/com_auth0_lock_icon"
-            style="@style/Lock.Theme.Widget.Icon.Social"
-            tools:background="#FF3333"
-            tools:src="@drawable/com_auth0_lock_ic_social_auth0" />
-
-        <TextView
-            android:id="@+id/com_auth0_lock_text"
-            style="@style/Lock.Theme.Text.SocialButton"
-            tools:background="#90FF3333"
-            tools:text="Login with facebook" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/com_auth0_lock_terms_background_focused" android:state_focused="true"/>
+    <item android:drawable="@color/com_auth0_lock_terms_background" />
+</selector>

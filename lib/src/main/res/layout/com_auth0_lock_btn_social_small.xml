@@ -24,6 +24,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/com_auth0_lock_container"
     style="@style/Lock.Theme.Widget.SocialButton.Small">
 
     <ImageView

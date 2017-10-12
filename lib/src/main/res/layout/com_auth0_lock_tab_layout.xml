@@ -7,6 +7,7 @@
         android:id="@+id/com_auth0_lock_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabBackground="@drawable/com_auth0_lock_tab"
         app:tabMode="fixed"
         app:tabIndicatorColor="@color/com_auth0_lock_text"
         app:tabIndicatorHeight="@dimen/com_auth0_lock_widget_tab_strip_height"

@@ -60,6 +60,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         emailInput.setText(email);
         emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);
+        requestFocus();
     }
 
     @Override

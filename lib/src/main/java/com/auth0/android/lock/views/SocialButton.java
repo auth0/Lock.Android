@@ -2,8 +2,6 @@ package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -20,9 +18,11 @@ import com.auth0.android.lock.internal.configuration.AuthMode;
 @SuppressLint("Instantiatable")
 class SocialButton extends RelativeLayout {
 
+    private static final int NORMAL_STATE_ALPHA = 230;
+    private static final float FOCUSED_STATE_ALPHA = 0.64f;
+
     private boolean smallSize;
     private ImageView icon;
-    private View touchArea;
     private TextView title;
 
     public SocialButton(Context context, AttributeSet attrs) {
@@ -40,20 +40,24 @@ class SocialButton extends RelativeLayout {
         inflate(getContext(), smallSize ? R.layout.com_auth0_lock_btn_social_small : R.layout.com_auth0_lock_btn_social_large, this);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         title = smallSize ? null : (TextView) findViewById(R.id.com_auth0_lock_text);
-        touchArea = smallSize ? (View) icon.getParent() : findViewById(R.id.com_auth0_lock_touch_area);
-        setClickable(false);
+        setFocusableInTouchMode(false);
+        setFocusable(true);
+        setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                v.setAlpha(hasFocus ? FOCUSED_STATE_ALPHA : 1f);
+            }
+        });
     }
 
-    private StateListDrawable getTouchFeedbackBackground(@ColorInt int color) {
-        Drawable background = ViewUtils.getRoundedBackground(getResources(), color, ViewUtils.Corners.ALL);
+    private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor, @ViewUtils.Corners int corners) {
+        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(getResources(), pressedColor, corners);
+        normalBackground.getPaint().setAlpha(NORMAL_STATE_ALPHA);
+        Drawable pressedBackground = ViewUtils.getRoundedBackground(getResources(), pressedColor, corners);
 
         StateListDrawable states = new StateListDrawable();
-        states.addState(new int[]{android.R.attr.state_pressed},
-                background);
-        states.addState(new int[]{android.R.attr.state_focused},
-                background);
-        states.addState(new int[]{},
-                new ColorDrawable(Color.TRANSPARENT));
+        states.addState(new int[]{android.R.attr.state_pressed}, pressedBackground);
+        states.addState(new int[]{}, normalBackground);
         return states;
     }
 
@@ -64,29 +68,21 @@ class SocialButton extends RelativeLayout {
      * @param mode   the current button mode. Used to prefix the title with "Log In" or "Sign Up".
      */
     public void setStyle(AuthConfig config, @AuthMode int mode) {
-        final String name = config.getName(getContext());
         final Drawable logo = config.getLogo(getContext());
         final int backgroundColor = config.getBackgroundColor(getContext());
+        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_RIGHT);
 
-        ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_LEFT);
-        if (!smallSize) {
+        icon.setImageDrawable(logo);
+        if (smallSize) {
+            ViewUtils.setBackground(icon, touchBackground);
+        } else {
+            final String name = config.getName(getContext());
+            ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_LEFT);
             final String prefixFormat = getResources().getString(mode == AuthMode.LOG_IN ? R.string.com_auth0_lock_social_log_in : R.string.com_auth0_lock_social_sign_up);
             title.setText(String.format(prefixFormat, name));
-            ShapeDrawable rightBackground = ViewUtils.getRoundedBackground(getResources(), backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
-            rightBackground.getPaint().setAlpha(230);
-            ViewUtils.setBackground(title, rightBackground);
-        } else {
-            leftBackground.getPaint().setAlpha(230);
+            ViewUtils.setBackground(icon, leftBackground);
+            ViewUtils.setBackground(title, touchBackground);
         }
-
-        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
-        ViewUtils.setBackground(touchArea, touchBackground);
-        ViewUtils.setBackground(icon, leftBackground);
-        icon.setImageDrawable(logo);
     }
 
-    @Override
-    public void setOnClickListener(OnClickListener l) {
-        touchArea.setOnClickListener(l);
-    }
 }

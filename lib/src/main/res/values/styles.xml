@@ -27,6 +27,7 @@
     <style name="Lock.Theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">?attr/Auth0.PrimaryColor</item>
         <item name="colorPrimaryDark">?attr/Auth0.HeaderBackground</item>
+        <item name="android:textColorHighlight">@color/com_auth0_lock_link_focused</item>
         <item name="android:windowBackground">@color/com_auth0_lock_form_background</item>
         <item name="Auth0.HeaderLogo">@drawable/com_auth0_lock_header_logo</item>
         <item name="Auth0.HeaderTitle">@string/com_auth0_lock_header_title</item>
@@ -87,7 +88,6 @@
             @dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
         <item name="android:layout_height">@dimen/com_auth0_lock_list_item_height</item>
-        <item name="android:textColor">@color/com_auth0_lock_normal_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_list_item_text</item>
     </style>
 
@@ -159,6 +159,7 @@
     <style name="Lock.Theme.Text.SocialButton">
         <item name="android:gravity">center|left</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:maxLines">1</item>
         <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
@@ -200,19 +201,21 @@
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">
-        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
         <item name="android:padding">@dimen/com_auth0_lock_widget_field_icon_padding</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.PasswordVisibilityToggle">
         <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:paddingRight">@dimen/com_auth0_lock_widget_horizontal_margin_small
+        <item name="android:padding">@dimen/com_auth0_lock_input_field_stroke_width</item>
+        <item name="android:tint">@color/com_auth0_lock_hint_text</item>
+        <item name="android:src">@drawable/com_auth0_lock_ic_password_hidden</item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin_small
         </item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
     </style>
 
     <style name="Lock.Theme.Widget.Field" parent="Lock.Theme.Text">
@@ -271,13 +274,13 @@
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton">
-        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
         <item name="android:layout_centerInParent">true</item>
-        <item name="android:layout_height">@dimen/com_auth0_lock_social_button_height</item>
-        <item name="android:layout_width">@dimen/com_auth0_lock_social_button_height</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
     </style>
 
     <style name="Lock.Theme.Widget.SubmitButton">

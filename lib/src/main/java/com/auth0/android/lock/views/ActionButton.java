@@ -30,8 +30,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -68,22 +70,35 @@ public class ActionButton extends FrameLayout {
         ViewUtils.setBackground(icon, generateStateBackground(lockTheme));
         ViewUtils.setBackground(labeledLayout, generateStateBackground(lockTheme));
         showLabel(false);
+        icon.setFocusable(true);
+        icon.setFocusableInTouchMode(false);
+        labeledLayout.setFocusable(true);
+        labeledLayout.setFocusableInTouchMode(false);
     }
 
     private Drawable generateStateBackground(Theme lockTheme) {
         int normalColor = lockTheme.getPrimaryColor(getContext());
         int pressedColor = lockTheme.getDarkPrimaryColor(getContext());
+        //164 -> 64% alpha
+        int focusedColor = ColorUtils.setAlphaComponent(normalColor, 164);
         int disabledColor = ContextCompat.getColor(getContext(), R.color.com_auth0_lock_submit_disabled);
 
+        final StateListDrawable buttonDrawable = new StateListDrawable();
+        buttonDrawable.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, new ColorDrawable(pressedColor));
+        buttonDrawable.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_focused}, new ColorDrawable(focusedColor));
+        buttonDrawable.addState(new int[]{android.R.attr.state_enabled}, new ColorDrawable(normalColor));
+        buttonDrawable.addState(new int[]{}, new ColorDrawable(disabledColor));
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            return new RippleDrawable(ColorStateList.valueOf(pressedColor), new ColorDrawable(normalColor), null);
-        } else {
-            StateListDrawable states = new StateListDrawable();
-            states.addState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, new ColorDrawable(pressedColor));
-            states.addState(new int[]{android.R.attr.state_enabled}, new ColorDrawable(normalColor));
-            states.addState(new int[]{}, new ColorDrawable(disabledColor));
-            return states;
+            return new RippleDrawable(ColorStateList.valueOf(pressedColor), buttonDrawable, null);
         }
+        return buttonDrawable;
+    }
+
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        icon.setOnClickListener(l);
+        labeledLayout.setOnClickListener(l);
     }
 
     /**
