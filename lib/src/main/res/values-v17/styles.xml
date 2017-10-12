@@ -117,6 +117,9 @@
         <item name="android:paddingEnd">
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_input_field_stroke_width
+        </item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_input_field_stroke_width</item>
         <item name="android:layout_gravity">start</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_text</item>
