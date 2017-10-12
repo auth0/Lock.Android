@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
@@ -78,7 +78,6 @@ public class ValidatedInputView extends LinearLayout {
     private static final String TAG = ValidatedInputView.class.getSimpleName();
     private static final int VALIDATION_DELAY = 500;
 
-    protected LinearLayout rootView;
     private TextView errorDescription;
     private EditText input;
     private ImageView icon;
@@ -87,6 +86,10 @@ public class ValidatedInputView extends LinearLayout {
     private int inputIcon;
     private boolean hasValidInput;
     private boolean allowShowPassword = true;
+    private View outline;
+    private ShapeDrawable focusedOutlineBackground;
+    private ShapeDrawable normalOutlineBackground;
+    private ShapeDrawable errorOutlineBackground;
 
     @IntDef({USERNAME, EMAIL, USERNAME_OR_EMAIL, MFA_CODE, PHONE_NUMBER, PASSWORD, MOBILE_PHONE, TEXT_NAME, NUMBER, NON_EMPTY_USERNAME})
     @Retention(RetentionPolicy.SOURCE)
@@ -123,11 +126,13 @@ public class ValidatedInputView extends LinearLayout {
 
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
-        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
+
+        outline = findViewById(R.id.com_auth0_lock_outline);
         errorDescription = (TextView) findViewById(R.id.errorDescription);
         icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
         input = (EditText) findViewById(R.id.com_auth0_lock_input);
         showPasswordToggle = (ImageCheckbox) findViewById(R.id.com_auth0_lock_show_password_toggle);
+        setOrientation(VERTICAL);
 
         if (attrs == null || isInEditMode()) {
             return;
@@ -140,6 +145,9 @@ public class ValidatedInputView extends LinearLayout {
         createBackground();
 
         setupInputValidation();
+        focusedOutlineBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
+        normalOutlineBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
+        errorOutlineBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_error));
         updateBorder(true);
 
         setNextFocusRightId(R.id.com_auth0_lock_show_password_toggle);
@@ -165,9 +173,7 @@ public class ValidatedInputView extends LinearLayout {
         input.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!isInTouchMode()) {
-                    updateBorder(true);
-                }
+                updateBorder(true);
             }
         });
     }
@@ -306,18 +312,9 @@ public class ValidatedInputView extends LinearLayout {
      */
     @CallSuper
     protected void updateBorder(boolean isValid) {
-        ViewGroup parent = ((ViewGroup) input.getParent().getParent());
-        Drawable bg = parent.getBackground();
-        GradientDrawable gd = bg == null ? new GradientDrawable() : (GradientDrawable) bg;
-        gd.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius));
-
-        boolean isFocused = input.hasFocus() && !isInTouchMode();
-        int strokeColor = isValid ? (isFocused ? R.color.com_auth0_lock_input_field_border_focused : R.color.com_auth0_lock_input_field_border_normal) : R.color.com_auth0_lock_input_field_border_error;
-        gd.setStroke(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_input_field_stroke_width), ContextCompat.getColor(getContext(), strokeColor));
-        gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
-        ViewUtils.setBackground(parent, gd);
-
-        errorDescription.setVisibility(isValid ? INVISIBLE : VISIBLE);
+        boolean isFocused = input.hasFocus() && !input.isInTouchMode();
+        ViewUtils.setBackground(outline, isValid ? (isFocused ? focusedOutlineBackground : normalOutlineBackground) : errorOutlineBackground);
+        errorDescription.setVisibility(isValid ? GONE : VISIBLE);
         requestLayout();
     }
 
@@ -327,20 +324,6 @@ public class ValidatedInputView extends LinearLayout {
         Drawable rightBackground = ViewUtils.getRoundedBackground(this, inputBackgroundColor, ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground((ViewGroup) input.getParent(), rightBackground);
-    }
-
-    @Override
-    @CallSuper
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        errorDescription.measure(widthMeasureSpec, heightMeasureSpec);
-        int errorDescriptionHeight = ViewUtils.measureViewHeight(errorDescription);
-        int inputHeight = ViewUtils.measureViewHeight(input);
-        ViewGroup iconHolder = (ViewGroup) icon.getParent();
-        int iconHeight = ViewUtils.measureViewHeight(iconHolder);
-        int sumHeight = Math.max(inputHeight, iconHeight) + errorDescriptionHeight;
-        setMeasuredDimension(getMeasuredWidth(), sumHeight);
     }
 
     /**

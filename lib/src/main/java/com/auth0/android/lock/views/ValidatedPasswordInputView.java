@@ -28,14 +28,7 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
 
     public void init() {
         strengthView = new PasswordStrengthView(getContext());
-        rootView.addView(strengthView, 0);  //Add it above the field
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int strengthHeight = ViewUtils.measureViewHeight(strengthView);
-        setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight() + strengthHeight);
+        addView(strengthView, 0);  //Add it above the field
     }
 
     @Override
