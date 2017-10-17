@@ -60,12 +60,18 @@
 
     <style name="Lock.Theme.Text.PasswordPolicy">
         <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
+        <item name="android:layout_gravity">start</item>
     </style>
 
     <style name="Lock.Theme.Text.ValidationError">
         <item name="android:textColor">@color/com_auth0_lock_validation_error_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
         <item name="android:maxLines">2</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">
+            @dimen/com_auth0_lock_widget_vertical_margin_field_with_error
+        </item>
     </style>
 
     <style name="Lock.Theme.Text.Terms">
@@ -157,7 +163,7 @@
     </style>
 
     <style name="Lock.Theme.Text.SocialButton">
-        <item name="android:gravity">center|left</item>
+        <item name="android:gravity">center|start</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:maxLines">1</item>
@@ -169,6 +175,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
         <item name="android:textColor">@color/com_auth0_lock_social_text</item>
+        <item name="android:layout_gravity">start</item>
     </style>
 
     <style name="Lock.Theme.Text.ResultMessage">
@@ -194,15 +201,12 @@
     <style name="Lock.Theme.Widget.Icon">
         <item name="android:layout_gravity">center</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:paddingRight">@dimen/com_auth0_lock_widget_field_icon_padding</item>
-        <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_field_icon_padding</item>
-        <item name="android:paddingTop">@dimen/com_auth0_lock_widget_field_icon_padding</item>
-        <item name="android:paddingBottom">@dimen/com_auth0_lock_widget_field_icon_padding</item>
+        <item name="android:padding">@dimen/com_auth0_lock_widget_field_icon_padding</item>
+        <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.Social">
         <item name="android:layout_width">@dimen/com_auth0_lock_widget_height</item>
-        <item name="android:padding">@dimen/com_auth0_lock_widget_field_icon_padding</item>
     </style>
 
     <style name="Lock.Theme.Widget.Icon.PasswordVisibilityToggle">
@@ -229,6 +233,9 @@
         <item name="android:paddingRight">
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
+        <item name="android:layout_marginRight">@dimen/com_auth0_lock_input_field_stroke_width
+        </item>
+        <item name="android:layout_gravity">start</item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_text</item>
     </style>
 
@@ -246,13 +253,13 @@
     <style name="Lock.Theme.Widget.CountryCodeSelector" parent="Lock.Theme.Widget.Field">
         <item name="android:background">@color/com_auth0_lock_input_country_code_background</item>
         <item name="android:textColor">@color/com_auth0_lock_hint_text</item>
+        <item name="android:layout_marginRight">0dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
     </style>
 
     <style name="Lock.Theme.Widget.CountryCodeSelector.CountryName">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
@@ -278,7 +285,6 @@
     </style>
 
     <style name="Lock.Theme.Widget.SocialButton.Small" parent="Lock.Theme.Widget">
-        <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
     </style>

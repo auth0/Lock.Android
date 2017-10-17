@@ -35,6 +35,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import com.auth0.android.lock.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Locale;
 
 import static com.auth0.android.lock.views.ViewUtils.Corners.ALL;
 import static com.auth0.android.lock.views.ViewUtils.Corners.ONLY_LEFT;
@@ -59,8 +61,8 @@ abstract class ViewUtils {
     @Retention(RetentionPolicy.SOURCE)
     public @interface Corners {
         int ALL = 0;
-        int ONLY_LEFT = 1;
-        int ONLY_RIGHT = 2;
+        int ONLY_LEFT = -1;
+        int ONLY_RIGHT = 1;
     }
 
     /**
@@ -77,14 +79,21 @@ abstract class ViewUtils {
     /**
      * Generates a rounded drawable with the given background color and the specified corners.
      *
-     * @param resources the context's current resources.
-     * @param color     the color to use as background.
-     * @param corners   the rounded corners this drawable will have. Can be one of ONLY_LEFT, ONLY_RIGHT, ALL
+     * @param view    a valid View context
+     * @param color   the color to use as background.
+     * @param corners the rounded corners this drawable will have. Can be one of ONLY_LEFT, ONLY_RIGHT, ALL
      * @return the rounded drawable.
      */
-    static ShapeDrawable getRoundedBackground(Resources resources, @ColorInt int color, @Corners int corners) {
-        int r = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
+    static ShapeDrawable getRoundedBackground(@NonNull View view, @ColorInt int color, @Corners int corners) {
+        int r = view.getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
         float[] outerR = new float[0];
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            boolean languageRTL = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL;
+            if (languageRTL) {
+                //noinspection WrongConstant
+                corners = -corners;
+            }
+        }
         switch (corners) {
             case ONLY_LEFT:
                 outerR = new float[]{r, r, 0, 0, 0, 0, r, r};

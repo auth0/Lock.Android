@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -80,6 +81,9 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
         final int verticalPadding = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         setPadding(0, verticalPadding, 0, verticalPadding);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            setPaddingRelative(0, verticalPadding, 0, verticalPadding);
+        }
     }
 
     private void addSocialLayout(boolean passwordlessAvailable) {
@@ -110,6 +114,10 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         int verticalPadding = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, verticalPadding, 0, verticalPadding);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginStart(0);
+            params.setMarginEnd(0);
+        }
         addView(orSeparatorMessage, params);
     }
 

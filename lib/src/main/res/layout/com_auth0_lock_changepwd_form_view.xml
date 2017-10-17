@@ -45,6 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/com_auth0_lock_widget_horizontal_margin"
         android:layout_marginRight="@dimen/com_auth0_lock_widget_horizontal_margin"
+        android:layout_marginStart="@dimen/com_auth0_lock_widget_horizontal_margin"
+        android:layout_marginEnd="@dimen/com_auth0_lock_widget_horizontal_margin"
         lock:Auth0.InputDataType="email" />
 
 </LinearLayout>

@@ -27,11 +27,11 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +53,9 @@ public class CountryCodeSelectorView extends LinearLayout {
     private TextView countryNameTextView;
     private TextView countryCodeTextView;
     private ImageView chevron;
+    private View outline;
+    private ShapeDrawable focusedBackground;
+    private ShapeDrawable normalBackground;
 
     public CountryCodeSelectorView(Context context) {
         super(context);
@@ -75,26 +78,26 @@ public class CountryCodeSelectorView extends LinearLayout {
         chevron = (ImageView) findViewById(R.id.com_auth0_lock_chevron);
         countryNameTextView = (TextView) findViewById(R.id.com_auth0_lock_country_name);
         countryCodeTextView = (TextView) findViewById(R.id.com_auth0_lock_country_code);
+        outline = findViewById(R.id.com_auth0_lock_outline);
         prepareTask();
         setupBackground();
+        setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                ViewUtils.setBackground(outline, hasFocus ? focusedBackground : normalBackground);
+            }
+        });
     }
 
     private void setupBackground() {
-        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
-        Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
+        Drawable leftBackground = ViewUtils.getRoundedBackground(this, ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
+        Drawable rightBackground = ViewUtils.getRoundedBackground(this, ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_country_code_background), ViewUtils.Corners.ONLY_RIGHT);
         ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(chevron, rightBackground);
 
-        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ALL);
-        Drawable focusedBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
-
-        StateListDrawable states = new StateListDrawable();
-        states.addState(new int[]{android.R.attr.state_focused}, focusedBackground);
-        states.addState(new int[]{}, normalBackground);
-
-        setFocusableInTouchMode(false);
-        setFocusable(true);
-        ViewUtils.setBackground(this, states);
+        focusedBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
+        normalBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
+        ViewUtils.setBackground(outline, normalBackground);
     }
 
     private void prepareTask() {

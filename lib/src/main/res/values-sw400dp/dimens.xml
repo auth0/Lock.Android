@@ -28,7 +28,7 @@
     <dimen name="com_auth0_lock_header_logo_size">80dp</dimen>
     <dimen name="com_auth0_lock_header_height">138dp</dimen>
 
-    <dimen name="com_auth0_lock_input_field_stroke_width">3dp</dimen>
+    <dimen name="com_auth0_lock_input_field_stroke_width">2dp</dimen>
     <dimen name="com_auth0_lock_widget_with_text_horizontal_padding">15dp</dimen>
 
     <dimen name="com_auth0_lock_widget_tab_strip_height">2dp</dimen>
