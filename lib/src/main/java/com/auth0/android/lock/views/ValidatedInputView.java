@@ -84,7 +84,7 @@ public class ValidatedInputView extends LinearLayout {
     private ImageCheckbox showPasswordToggle;
     private IdentityListener identityListener;
     private int inputIcon;
-    private boolean hasValidInput;
+    private boolean hasValidInput = true;
     private boolean allowShowPassword = true;
     private View outline;
     private ShapeDrawable focusedOutlineBackground;
@@ -148,7 +148,7 @@ public class ValidatedInputView extends LinearLayout {
         focusedOutlineBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_focused));
         normalOutlineBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         errorOutlineBackground = ViewUtils.getRoundedOutlineBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_error));
-        updateBorder(true);
+        updateBorder();
 
         setNextFocusRightId(R.id.com_auth0_lock_show_password_toggle);
         showPasswordToggle.setOnCheckedChangeListener(new ImageCheckbox.OnCheckedChangeListener() {
@@ -173,7 +173,7 @@ public class ValidatedInputView extends LinearLayout {
         input.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                updateBorder(true);
+                updateBorder();
             }
         });
     }
@@ -225,7 +225,7 @@ public class ValidatedInputView extends LinearLayout {
     private Runnable uiUpdater = new Runnable() {
         @Override
         public void run() {
-            updateBorder(hasValidInput);
+            updateBorder();
         }
     };
 
@@ -307,14 +307,12 @@ public class ValidatedInputView extends LinearLayout {
 
     /**
      * Updates the view knowing if the input is valid or not.
-     *
-     * @param isValid if the input is valid or not for this kind of DataType.
      */
     @CallSuper
-    protected void updateBorder(boolean isValid) {
+    protected void updateBorder() {
         boolean isFocused = input.hasFocus() && !input.isInTouchMode();
-        ViewUtils.setBackground(outline, isValid ? (isFocused ? focusedOutlineBackground : normalOutlineBackground) : errorOutlineBackground);
-        errorDescription.setVisibility(isValid ? GONE : VISIBLE);
+        ViewUtils.setBackground(outline, hasValidInput ? (isFocused ? focusedOutlineBackground : normalOutlineBackground) : errorOutlineBackground);
+        errorDescription.setVisibility(hasValidInput ? GONE : VISIBLE);
         requestLayout();
     }
 
@@ -333,7 +331,8 @@ public class ValidatedInputView extends LinearLayout {
      */
     public void setDataType(@DataType int type) {
         dataType = type;
-        updateBorder(true);
+        hasValidInput = true;
+        updateBorder();
         setupInputValidation();
     }
 
@@ -348,15 +347,15 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
-     * Validates the input data and updates the icon. DataType must be set.
+     * Validates the input data and updates the border. DataType must be set.
      * Empty fields are considered valid.
      *
      * @return whether the data is valid or not.
      */
     public boolean validate() {
-        boolean isValid = validate(true);
-        updateBorder(isValid);
-        return isValid;
+        hasValidInput = validate(true);
+        updateBorder();
+        return hasValidInput;
     }
 
     /**
@@ -481,7 +480,8 @@ public class ValidatedInputView extends LinearLayout {
     public void clearInput() {
         Log.v(TAG, "Input cleared and validation errors removed");
         input.setText("");
-        updateBorder(true);
+        hasValidInput = true;
+        updateBorder();
         showPasswordToggle.setChecked(false);
     }
 

@@ -10,6 +10,7 @@ import com.auth0.android.lock.internal.configuration.PasswordStrength;
 public class ValidatedPasswordInputView extends ValidatedInputView {
     private static final String TAG = ValidatedPasswordInputView.class.getSimpleName();
     private PasswordStrengthView strengthView;
+    private boolean hasValidInput = true;
 
     public ValidatedPasswordInputView(Context context) {
         super(context);
@@ -35,20 +36,16 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
     protected boolean validate(boolean validateEmptyFields) {
         String value = getText();
         //Run strength validation to update ui
-        final boolean valid = strengthView.isValid(value);
-        if (!validateEmptyFields && value.isEmpty()) {
-            return true;
-        }
-
-        Log.v(TAG, "Field validation results: Is valid? " + valid);
-        return valid;
+        hasValidInput = strengthView.isValid(value) || !validateEmptyFields && value.isEmpty();
+        Log.v(TAG, "Field validation results: Is valid? " + hasValidInput);
+        return hasValidInput;
     }
 
     @Override
-    protected void updateBorder(boolean isValid) {
-        super.updateBorder(isValid);
+    protected void updateBorder() {
+        super.updateBorder();
         if (strengthView != null && strengthView.isEnabled()) {
-            strengthView.setVisibility(!isValid || !getText().isEmpty() ? VISIBLE : GONE);
+            strengthView.setVisibility(!hasValidInput || !getText().isEmpty() ? VISIBLE : GONE);
         }
     }
 
