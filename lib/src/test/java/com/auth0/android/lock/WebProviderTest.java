@@ -8,7 +8,6 @@ import com.auth0.android.Auth0;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthenticationActivity;
-import com.auth0.android.provider.WebAuthActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,7 +15,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -24,7 +22,6 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.UriMatchers.hasHost;
 import static android.support.test.espresso.intent.matcher.UriMatchers.hasParamWithValue;
@@ -88,12 +85,15 @@ public class WebProviderTest {
 
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
-        assertThat(intent.getData(), hasHost("domain.auth0.com"));
-        assertThat(intent.getData(), hasParamWithValue("custom-param-1", "value-1"));
-        assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
-        assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
-        assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
-        assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
+
+        assertThat(intent.hasExtra("com.auth0.android.EXTRA_AUTHORIZE_URI"), is(true));
+        Uri authorizeUri = intent.getParcelableExtra("com.auth0.android.EXTRA_AUTHORIZE_URI");
+        assertThat(authorizeUri, hasHost("domain.auth0.com"));
+        assertThat(authorizeUri, hasParamWithValue("custom-param-1", "value-1"));
+        assertThat(authorizeUri, hasParamWithValue("custom-param-2", "value-2"));
+        assertThat(authorizeUri, hasParamWithValue("client_id", "clientId"));
+        assertThat(authorizeUri, hasParamWithValue("connection", "my-connection"));
+        assertThat(authorizeUri, hasParamWithValue("audience", "https://me.auth0.com/myapi"));
         assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
@@ -116,10 +116,13 @@ public class WebProviderTest {
 
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
-        assertThat(intent.getData(), hasHost("domain.auth0.com"));
-        assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
-        assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
-        assertThat(intent.getData(), hasParamWithValue("audience", "https://me.auth0.com/myapi"));
+
+        assertThat(intent.hasExtra("com.auth0.android.EXTRA_AUTHORIZE_URI"), is(true));
+        Uri authorizeUri = intent.getParcelableExtra("com.auth0.android.EXTRA_AUTHORIZE_URI");
+        assertThat(authorizeUri, hasHost("domain.auth0.com"));
+        assertThat(authorizeUri, hasParamWithValue("client_id", "clientId"));
+        assertThat(authorizeUri, hasParamWithValue("connection", "my-connection"));
+        assertThat(authorizeUri, hasParamWithValue("audience", "https://me.auth0.com/myapi"));
         assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
@@ -147,16 +150,20 @@ public class WebProviderTest {
 
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
-        assertThat(intent.getData().getQueryParameter("redirect_uri"), is(notNullValue()));
-        Uri redirectUri = Uri.parse(intent.getData().getQueryParameter("redirect_uri"));
+        assertThat(intent.hasExtra("com.auth0.android.EXTRA_AUTHORIZE_URI"), is(true));
+        Uri authorizeUri = intent.getParcelableExtra("com.auth0.android.EXTRA_AUTHORIZE_URI");
+
+        assertThat(authorizeUri.getQueryParameter("redirect_uri"), is(notNullValue()));
+        Uri redirectUri = Uri.parse(authorizeUri.getQueryParameter("redirect_uri"));
         assertThat(redirectUri, hasScheme("auth0"));
-        assertThat(intent.getData(), hasHost("domain.auth0.com"));
-        assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
-        assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
-        assertThat(intent.getData(), hasParamWithValue("custom-param-1", "value-1"));
-        assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
-        assertThat(intent.getData(), hasParamWithValue("scope", "email profile photos"));
-        assertThat(intent.getData(), hasParamWithValue("connection_scope", "the connection scope"));
+
+        assertThat(authorizeUri, hasHost("domain.auth0.com"));
+        assertThat(authorizeUri, hasParamWithValue("client_id", "clientId"));
+        assertThat(authorizeUri, hasParamWithValue("connection", "my-connection"));
+        assertThat(authorizeUri, hasParamWithValue("custom-param-1", "value-1"));
+        assertThat(authorizeUri, hasParamWithValue("custom-param-2", "value-2"));
+        assertThat(authorizeUri, hasParamWithValue("scope", "email profile photos"));
+        assertThat(authorizeUri, hasParamWithValue("connection_scope", "the connection scope"));
         assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
         assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", false), is(true));
         assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
@@ -186,16 +193,20 @@ public class WebProviderTest {
 
         Intent intent = intentCaptor.getValue();
         assertThat(intent, is(notNullValue()));
-        assertThat(intent.getData().getQueryParameter("redirect_uri"), is(notNullValue()));
-        Uri redirectUri = Uri.parse(intent.getData().getQueryParameter("redirect_uri"));
+        assertThat(intent.hasExtra("com.auth0.android.EXTRA_AUTHORIZE_URI"), is(true));
+        Uri authorizeUri = intent.getParcelableExtra("com.auth0.android.EXTRA_AUTHORIZE_URI");
+
+        assertThat(authorizeUri.getQueryParameter("redirect_uri"), is(notNullValue()));
+        Uri redirectUri = Uri.parse(authorizeUri.getQueryParameter("redirect_uri"));
         assertThat(redirectUri, hasScheme("auth0"));
-        assertThat(intent.getData(), hasHost("domain.auth0.com"));
-        assertThat(intent.getData(), hasParamWithValue("client_id", "clientId"));
-        assertThat(intent.getData(), hasParamWithValue("connection", "my-connection"));
-        assertThat(intent.getData(), hasParamWithValue("custom-param-1", "value-1"));
-        assertThat(intent.getData(), hasParamWithValue("custom-param-2", "value-2"));
-        assertThat(intent.getData(), hasParamWithValue("scope", "email profile photos"));
-        assertThat(intent.getData(), hasParamWithValue("connection_scope", "the connection scope"));
+
+        assertThat(authorizeUri, hasHost("domain.auth0.com"));
+        assertThat(authorizeUri, hasParamWithValue("client_id", "clientId"));
+        assertThat(authorizeUri, hasParamWithValue("connection", "my-connection"));
+        assertThat(authorizeUri, hasParamWithValue("custom-param-1", "value-1"));
+        assertThat(authorizeUri, hasParamWithValue("custom-param-2", "value-2"));
+        assertThat(authorizeUri, hasParamWithValue("scope", "email profile photos"));
+        assertThat(authorizeUri, hasParamWithValue("connection_scope", "the connection scope"));
         assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
         assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", true), is(false));
         assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
