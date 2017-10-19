@@ -1,5 +1,17 @@
 # Change Log
 
+## [2.8.0](https://github.com/auth0/Lock.Android/tree/2.8.0) (2017-10-19)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.7.0...2.8.0)
+**Closed issues**
+- Cannot navigate social login buttons using gamepad on Android TV [\#443](https://github.com/auth0/Lock.Android/issues/443)
+
+**Added**
+- Add RTL support [\#445](https://github.com/auth0/Lock.Android/pull/445) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix ValidatedInputView border color on focus change [\#446](https://github.com/auth0/Lock.Android/pull/446) ([lbalmaceda](https://github.com/lbalmaceda))
+- Fix non touchscreen navigation [\#444](https://github.com/auth0/Lock.Android/pull/444) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.7.0](https://github.com/auth0/Lock.Android/tree/2.7.0) (2017-07-19)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.6.0...2.7.0)
 
