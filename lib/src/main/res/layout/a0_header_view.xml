@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <ImageView
+        android:id="@+id/a0_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/a0_size_80"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_logo" />
+
+    <TextView
+        android:id="@+id/a0_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/a0_size_24"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:text="Log In to Auth0\nto get started using My App"
+        android:textColor="@color/a0Night"
+        android:textSize="@dimen/a0_font_16" />
+
+</merge>

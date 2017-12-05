@@ -18,7 +18,7 @@ public class AuthConfig {
     @StyleRes
     private final int styleRes;
 
-    public AuthConfig(@NonNull OAuthConnection connection, @StyleRes int styleRes) {
+    public AuthConfig(@NonNull com.auth0.android.lock.internal.configuration.OAuthConnection connection, @StyleRes int styleRes) {
         this.connection = connection;
         this.styleRes = styleRes;
     }

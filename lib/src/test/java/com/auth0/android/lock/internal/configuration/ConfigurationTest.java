@@ -24,14 +24,25 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+<<<<<<< Updated upstream
 import android.util.Log;
 
+=======
+>>>>>>> Stashed changes
 import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Configuration;
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+import com.auth0.android.lock.views.next.configuration.internal.DatabaseConnection;
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+import com.auth0.android.lock.views.next.configuration.internal.PasswordlessConnection;
+>>>>>>> Stashed changes
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 

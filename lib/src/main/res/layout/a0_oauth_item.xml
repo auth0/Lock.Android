@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/a0_size_56">
+
+    <ImageView
+        android:id="@+id/a0_icon"
+        android:layout_width="@dimen/a0_size_32"
+        android:layout_height="@dimen/a0_size_32"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/a0_size_16"
+        android:layout_marginRight="@dimen/a0_size_24"
+        android:background="@drawable/bg_oauth_button"
+        android:padding="@dimen/a0_size_8"
+        tools:src="@drawable/com_auth0_lock_ic_social_github" />
+
+    <TextView
+        android:id="@+id/a0_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/a0_size_32"
+        android:fontFamily="sans-serif-medium"
+        android:lines="1"
+        android:maxLines="1"
+        android:textColor="@color/a0Night"
+        android:textSize="14sp"
+        tools:text="Log in with Github" />
+
+</LinearLayout>

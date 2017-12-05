@@ -24,6 +24,10 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+>>>>>>> Stashed changes
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 

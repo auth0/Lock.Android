@@ -10,10 +10,17 @@ import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
+<<<<<<< Updated upstream
 import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.PasswordlessConnection;
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Configuration;
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+import com.auth0.android.lock.internal.configuration.Options;
+import com.auth0.android.lock.views.next.configuration.internal.PasswordlessConnection;
+>>>>>>> Stashed changes
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.PasswordlessLockView;
@@ -23,8 +30,11 @@ import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.request.ParameterizableRequest;
 
+<<<<<<< Updated upstream
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsMapContaining;
+=======
+>>>>>>> Stashed changes
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

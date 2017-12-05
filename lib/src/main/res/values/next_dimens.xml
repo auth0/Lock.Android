@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="a0_corner_radius">3dp</dimen>
+    <dimen name="a0_stroke_width">1dp</dimen>
+
+    <dimen name="a0_size_8">8dp</dimen>
+    <dimen name="a0_size_16">16dp</dimen>
+    <dimen name="a0_size_24">24dp</dimen>
+    <dimen name="a0_size_32">32dp</dimen>
+    <dimen name="a0_size_40">40dp</dimen>
+    <dimen name="a0_size_48">48dp</dimen>
+    <dimen name="a0_size_56">56dp</dimen>
+    <dimen name="a0_size_64">64dp</dimen>
+    <dimen name="a0_size_72">72dp</dimen>
+    <dimen name="a0_size_80">80dp</dimen>
+
+    <dimen name="a0_font_14">14sp</dimen>
+    <dimen name="a0_font_16">16sp</dimen>
+</resources>

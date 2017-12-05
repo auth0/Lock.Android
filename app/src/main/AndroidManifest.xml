@@ -12,51 +12,51 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".DemoActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!--<activity-->
+        <!--android:name=".DemoActivity"-->
+        <!--android:label="@string/app_name"-->
+        <!--android:screenOrientation="portrait">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
 
-        <!--Auth0 Lock-->
-        <activity
-            android:name="com.auth0.android.lock.LockActivity"
-            android:label="Classic Lock"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyLock.Theme"/>
-        <!--Auth0 Lock End-->
+        <!--&lt;!&ndash;Auth0 Lock&ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.auth0.android.lock.LockActivity"-->
+        <!--android:label="Classic Lock"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/MyLock.Theme" />-->
+        <!--&lt;!&ndash;Auth0 Lock End&ndash;&gt;-->
 
-        <!--Auth0 PasswordlessLock-->
-        <activity
-            android:name="com.auth0.android.lock.PasswordlessLockActivity"
-            android:label="Passwordless Lock"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyLock.Theme">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <!--&lt;!&ndash;Auth0 PasswordlessLock&ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.auth0.android.lock.PasswordlessLockActivity"-->
+        <!--android:label="Passwordless Lock"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/MyLock.Theme">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <!--<category android:name="android.intent.category.DEFAULT" />-->
+        <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data
-                    android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/${applicationId}/email"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <!--Auth0 PasswordlessLock End-->
+        <!--<data-->
+        <!--android:host="@string/com_auth0_domain"-->
+        <!--android:pathPrefix="/android/${applicationId}/email"-->
+        <!--android:scheme="https" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+        <!--&lt;!&ndash;Auth0 PasswordlessLock End&ndash;&gt;-->
 
-        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
-        <activity
-            android:name="com.auth0.android.lock.CountryCodeActivity"
-            android:theme="@style/Lock.Theme.ActionBar" />
-        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
+        <!--&lt;!&ndash;Auth0 Lock Passwordless SMS Country Code Selection&ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.auth0.android.lock.CountryCodeActivity"-->
+        <!--android:theme="@style/Lock.Theme.ActionBar" />-->
+        <!--&lt;!&ndash;Auth0 Lock Passwordless SMS Country Code Selection&ndash;&gt;-->
 
     </application>
 

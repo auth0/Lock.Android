@@ -20,6 +20,19 @@
                     android:scheme="${auth0Scheme}" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.auth0.android.lock.NextActivity"
+            android:theme="@style/NextTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".views.next.OAuthListActivity"
+            android:parentActivityName=".NextActivity"
+            android:theme="@style/NextTheme" />
     </application>
 
 </manifest>

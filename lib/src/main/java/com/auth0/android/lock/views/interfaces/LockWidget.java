@@ -28,6 +28,7 @@ import android.content.Context;
 
 import com.auth0.android.lock.internal.configuration.Configuration;
 
+
 public interface LockWidget {
 
     Context getContext();

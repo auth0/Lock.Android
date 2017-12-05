@@ -24,6 +24,10 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+>>>>>>> Stashed changes
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
@@ -130,8 +134,13 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connections.get(0), hasType(AuthType.DATABASE));
         assertThat(connections.get(0).getName(), is("Username-Password-Authentication"));
         assertThat(connections.get(0).getStrategy(), is("auth0"));
+<<<<<<< Updated upstream
         assertThat(connections.get(0).valueForKey("forgot_password_url", String.class), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
         assertThat(connections.get(0).valueForKey("signup_url", String.class), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+=======
+        assertThat(connections.get(0).valueForKey("forgot_password_url", String.class), is("https://realmLogin.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat(connections.get(0).valueForKey("signup_url", String.class), is("https://realmLogin.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+>>>>>>> Stashed changes
         assertThat(connections.get(0).showSignUp(), is(true));
         assertThat(connections.get(0).showForgot(), is(true));
         assertThat(connections.get(0).requiresUsername(), is(false));

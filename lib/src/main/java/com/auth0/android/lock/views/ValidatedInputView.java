@@ -56,8 +56,6 @@ import com.auth0.android.lock.views.interfaces.IdentityListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MAX_USERNAME_LENGTH;
-import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MIN_USERNAME_LENGTH;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.EMAIL;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MFA_CODE;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.MOBILE_PHONE;
@@ -68,6 +66,8 @@ import static com.auth0.android.lock.views.ValidatedInputView.DataType.PHONE_NUM
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.TEXT_NAME;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME;
 import static com.auth0.android.lock.views.ValidatedInputView.DataType.USERNAME_OR_EMAIL;
+import static com.auth0.android.lock.views.next.configuration.internal.DatabaseConnection.MAX_USERNAME_LENGTH;
+import static com.auth0.android.lock.views.next.configuration.internal.DatabaseConnection.MIN_USERNAME_LENGTH;
 
 public class ValidatedInputView extends LinearLayout {
 
@@ -325,7 +325,11 @@ public class ValidatedInputView extends LinearLayout {
     }
 
     /**
+     * <<<<<<< Updated upstream
      * Changes the type of input this view will validate.
+     * =======
+     * Changes the type of input this view will isValid.
+     * >>>>>>> Stashed changes
      *
      * @param type a valid DataType
      */

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
+
 public class OAuthLoginEvent {
 
     private final OAuthConnection connection;

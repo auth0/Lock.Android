@@ -12,9 +12,15 @@ import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
+<<<<<<< Updated upstream
 import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.internal.configuration.DatabaseConnection;
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Configuration;
+import com.auth0.android.lock.views.next.configuration.internal.DatabaseConnection;
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+>>>>>>> Stashed changes
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.ClassicLockView;

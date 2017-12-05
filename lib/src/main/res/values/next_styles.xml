@@ -1,0 +1,31 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="NextTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/a0Grey</item>
+        <item name="android:windowBackground">@color/a0White</item>
+        <item name="android:listDivider">@color/a0Grey</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="NextTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/a0Orange</item>
+        <item name="colorPrimaryDark">@color/a0Grey</item>
+        <item name="colorAccent">@color/a0Orange</item>
+    </style>
+
+    <style name="NextTheme.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="NextTheme.Text.Link">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/a0LinkText</item>
+        <item name="android:textSize">@dimen/a0_font_14</item>
+    </style>
+
+</resources>

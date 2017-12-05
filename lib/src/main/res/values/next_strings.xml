@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Lock.vNext</string>
+    <string name="a0_hint_password">Password</string>
+    <string name="a0_hint_email">Email</string>
+    <string name="a0_hint_username">Username</string>
+    <string name="a0_hint_username_or_email">Username or Email</string>
+    <string name="a0_button_forgot_password">Forgot Password?</string>
+    <string name="a0_oauth_login_with">Log in with %s</string>
+    <string name="a0_button_sign_up">Sign Up</string>
+    <string name="a0_dont_have_an_account">Don\'t have an account?</string>
+</resources>

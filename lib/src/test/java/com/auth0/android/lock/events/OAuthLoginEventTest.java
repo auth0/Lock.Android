@@ -1,6 +1,10 @@
 package com.auth0.android.lock.events;
 
+<<<<<<< Updated upstream
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
+=======
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+>>>>>>> Stashed changes
 
 import org.junit.Before;
 import org.junit.Test;

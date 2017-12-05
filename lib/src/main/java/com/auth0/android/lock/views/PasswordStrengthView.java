@@ -178,7 +178,11 @@ public class PasswordStrengthView extends LinearLayout {
     }
 
     /**
+<<<<<<< Updated upstream
      * Sets the current level of Strength that this widget is going to validate.
+=======
+     * Sets the current level of Strength that this widget is going to isValid.
+>>>>>>> Stashed changes
      *
      * @param strength the required strength level.
      */
@@ -190,7 +194,11 @@ public class PasswordStrengthView extends LinearLayout {
     /**
      * Checks that all the requirements are meet.
      *
+<<<<<<< Updated upstream
      * @param password the current password to validate
+=======
+     * @param password the current password to isValid
+>>>>>>> Stashed changes
      * @return whether the given password complies with this password policy or not.
      */
     public boolean isValid(String password) {

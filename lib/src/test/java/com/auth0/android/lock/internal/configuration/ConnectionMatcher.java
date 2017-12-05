@@ -25,6 +25,12 @@
 package com.auth0.android.lock.internal.configuration;
 
 
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.BaseConnection;
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+
+>>>>>>> Stashed changes
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 

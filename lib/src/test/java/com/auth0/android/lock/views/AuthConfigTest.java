@@ -5,7 +5,11 @@ import android.os.Build;
 
 import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
+<<<<<<< Updated upstream
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
+=======
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+>>>>>>> Stashed changes
 
 import org.junit.Assert;
 import org.junit.Before;

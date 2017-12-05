@@ -251,7 +251,11 @@ public class PasswordlessLock {
         }
 
         /**
+<<<<<<< Updated upstream
          * Whether Lock should remember the last used passwordless identity and auto request a sign or not. By default, lock will not remember the last login.
+=======
+         * Whether Lock should remember the last used passwordless identity and auto request a sign or not. By default, lock will not remember the last realmLogin.
+>>>>>>> Stashed changes
          *
          * @return the current Builder instance
          */
@@ -265,7 +269,11 @@ public class PasswordlessLock {
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
          * @return the current Builder instance
+<<<<<<< Updated upstream
          * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
+=======
+         * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform realmLogin.
+>>>>>>> Stashed changes
          */
         @Deprecated
         public Builder useBrowser(boolean useBrowser) {
@@ -347,7 +355,11 @@ public class PasswordlessLock {
         }
 
         /**
+<<<<<<< Updated upstream
          * Locally filters the Auth0 Connections that are shown in the login widgets.
+=======
+         * Locally filters the Auth0 Connections that are shown in the realmLogin widgets.
+>>>>>>> Stashed changes
          *
          * @param connections a non-null List containing the allowed Auth0 Connections.
          * @return the current builder instance

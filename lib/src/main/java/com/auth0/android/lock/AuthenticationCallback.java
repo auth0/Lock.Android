@@ -68,7 +68,11 @@ public abstract class AuthenticationCallback implements LockCallback {
     /**
      * Extracts the Authentication data from the intent data.
      *
+<<<<<<< Updated upstream
      * @param data the intent received at the end of the login process.
+=======
+     * @param data the intent received at the end of the realmLogin process.
+>>>>>>> Stashed changes
      */
     private void parseAuthentication(Intent data) {
         String idToken = data.getStringExtra(Constants.ID_TOKEN_EXTRA);

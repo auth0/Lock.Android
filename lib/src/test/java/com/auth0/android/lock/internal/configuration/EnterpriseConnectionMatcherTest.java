@@ -25,6 +25,11 @@
 package com.auth0.android.lock.internal.configuration;
 
 import com.auth0.android.lock.utils.EnterpriseConnectionMatcher;
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+>>>>>>> Stashed changes
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +43,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< Updated upstream
 import static com.auth0.android.lock.internal.configuration.Connection.newConnectionFor;
+=======
+import static com.auth0.android.lock.views.next.configuration.internal.Connection.newConnectionFor;
+>>>>>>> Stashed changes
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;

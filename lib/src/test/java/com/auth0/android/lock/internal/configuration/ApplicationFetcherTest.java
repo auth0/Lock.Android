@@ -29,6 +29,10 @@ import com.auth0.android.Auth0Exception;
 import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.Auth0AuthenticationCallbackMatcher;
 import com.auth0.android.lock.utils.MockAuthenticationCallback;
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+>>>>>>> Stashed changes
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.OkHttpClient;
 

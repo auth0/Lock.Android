@@ -242,7 +242,11 @@ public class Lock {
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
          * @return the current Builder instance
+<<<<<<< Updated upstream
          * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
+=======
+         * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform realmLogin.
+>>>>>>> Stashed changes
          */
         @Deprecated
         public Builder useBrowser(boolean useBrowser) {
@@ -298,7 +302,11 @@ public class Lock {
         }
 
         /**
+<<<<<<< Updated upstream
          * Locally filters the Auth0 Connections that are shown in the login widgets.
+=======
+         * Locally filters the Auth0 Connections that are shown in the realmLogin widgets.
+>>>>>>> Stashed changes
          *
          * @param connections a non-null List containing the allowed Auth0 Connections.
          * @return the current builder instance
@@ -312,7 +320,11 @@ public class Lock {
          * Username style to use in the Login and Sign Up text fields. Defaults to the Dashboard
          * configuration of "requires_username".
          *
+<<<<<<< Updated upstream
          * @param style a valid UsernameStyle.
+=======
+         * @param style a valid IdentityStyle.
+>>>>>>> Stashed changes
          * @return the current builder instance
          */
         public Builder withUsernameStyle(@UsernameStyle int style) {
@@ -360,7 +372,11 @@ public class Lock {
         /**
          * Whether to show the Log In screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+<<<<<<< Updated upstream
          * @param allow whether to allow or not the login screen.
+=======
+         * @param allow whether to allow or not the realmLogin screen.
+>>>>>>> Stashed changes
          * @return the current builder instance
          */
         public Builder allowLogIn(boolean allow) {
@@ -437,7 +453,11 @@ public class Lock {
         }
 
         /**
+<<<<<<< Updated upstream
          * Whether to login after a successful sign up callback. Defaults to true.
+=======
+         * Whether to realmLogin after a successful sign up callback. Defaults to true.
+>>>>>>> Stashed changes
          *
          * @param login after sign up or not
          * @return the current builder instance

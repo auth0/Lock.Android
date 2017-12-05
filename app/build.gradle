@@ -6,11 +6,11 @@ android {
 
     defaultConfig {
         applicationId "com.auth0.android.lock.app"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "demo"]
+        manifestPlaceholders = [auth0Domain: "lbalmaceda.auth0.com", auth0Scheme: "demo"]
     }
 
     signingConfigs {

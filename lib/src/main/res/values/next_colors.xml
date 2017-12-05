@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+
+    <color name="a0Orange">#eb5424</color>
+    <color name="a0Night">#222222</color>
+    <color name="a0Grey">#e3e5e7</color>
+    <color name="a0Steel">#9b9b9b</color>
+    <color name="a0Dark">#5c666f</color>
+    <color name="a0SuccessAlert">#5fd600</color>
+    <color name="a0ErrorAlert">#ff3e00</color>
+    <color name="a0LinkText">#0093c4</color>
+
+    <!--Below colors are not in the style-guide palette-->
+    <color name="a0White">#ffffff</color>
+    <color name="a0Black">#000000</color>
+    <color name="a0ActiveFocus">#44c7f4</color>
+</resources>

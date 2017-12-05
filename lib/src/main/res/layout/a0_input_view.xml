@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/a0_size_48"
+    android:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/a0_icon"
+        android:layout_width="@dimen/a0_size_16"
+        android:layout_height="@dimen/a0_size_16"
+        android:layout_marginBottom="@dimen/a0_size_16"
+        android:layout_marginLeft="@dimen/a0_size_16"
+        android:layout_marginTop="@dimen/a0_size_16"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_email" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/a0_input"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="@null"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/a0_size_16"
+        android:paddingRight="@dimen/a0_size_16"
+        android:textColor="@color/a0Night"
+        android:textColorHint="@color/a0Steel"
+        android:textSize="@dimen/a0_font_14"
+        tools:text="android@auth0.com" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/a0_show_password_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/a0_size_8"
+        android:padding="@dimen/a0_size_8"
+        android:src="@drawable/ic_view_password" />
+
+</merge>

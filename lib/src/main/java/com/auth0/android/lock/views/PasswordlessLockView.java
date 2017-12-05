@@ -204,7 +204,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
     @Override
     public Configuration getConfiguration() {
-        return configuration;
+        return null;
     }
 
     @Override

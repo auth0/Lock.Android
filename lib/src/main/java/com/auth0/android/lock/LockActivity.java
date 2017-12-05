@@ -61,9 +61,7 @@ import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.events.FetchApplicationEvent;
 import com.auth0.android.lock.events.LockMessageEvent;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.internal.configuration.ApplicationFetcher;
 import com.auth0.android.lock.internal.configuration.Configuration;
-import com.auth0.android.lock.internal.configuration.Connection;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.views.ClassicLockView;
@@ -73,13 +71,11 @@ import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -92,7 +88,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
     private static final int PERMISSION_REQUEST_CODE = 202;
 
-    private ApplicationFetcher applicationFetcher;
     private Configuration configuration;
     private Options options;
     private Handler handler;
@@ -295,15 +290,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onFetchApplicationRequest(FetchApplicationEvent event) {
-        if (applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
-            applicationFetcher.fetch(applicationCallback);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
     public void onLockMessage(final LockMessageEvent event) {
         handler.post(new Runnable() {
             @Override
@@ -438,31 +424,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
-        @Override
-        public void onSuccess(final List<Connection> connections) {
-            configuration = new Configuration(connections, options);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    lockView.configure(configuration);
-                }
-            });
-            applicationFetcher = null;
-        }
-
-        @Override
-        public void onFailure(final AuthenticationException error) {
-            Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
-            applicationFetcher = null;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    lockView.configure(null);
-                }
-            });
-        }
-    };
 
     private AuthCallback authProviderCallback = new AuthCallback() {
         @Override

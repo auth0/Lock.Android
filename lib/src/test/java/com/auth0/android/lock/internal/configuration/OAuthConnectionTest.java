@@ -1,5 +1,11 @@
 package com.auth0.android.lock.internal.configuration;
 
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+import com.auth0.android.lock.views.next.configuration.internal.OAuthConnection;
+
+>>>>>>> Stashed changes
 import org.junit.Test;
 
 import java.util.Arrays;

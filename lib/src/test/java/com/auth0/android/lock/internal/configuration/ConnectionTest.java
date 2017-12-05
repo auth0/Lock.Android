@@ -24,6 +24,11 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+<<<<<<< Updated upstream
+=======
+import com.auth0.android.lock.views.next.configuration.internal.Connection;
+
+>>>>>>> Stashed changes
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -34,7 +39,11 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
+<<<<<<< Updated upstream
 import static com.auth0.android.lock.internal.configuration.Connection.newConnectionFor;
+=======
+import static com.auth0.android.lock.views.next.configuration.internal.Connection.newConnectionFor;
+>>>>>>> Stashed changes
 import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;

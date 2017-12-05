@@ -30,13 +30,12 @@ import android.util.AttributeSet;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
-import com.auth0.android.lock.internal.configuration.DatabaseConnection;
 
 import static com.auth0.android.lock.UsernameStyle.DEFAULT;
 import static com.auth0.android.lock.UsernameStyle.EMAIL;
 import static com.auth0.android.lock.UsernameStyle.USERNAME;
-import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MAX_USERNAME_LENGTH;
-import static com.auth0.android.lock.internal.configuration.DatabaseConnection.MIN_USERNAME_LENGTH;
+import static com.auth0.android.lock.views.next.configuration.internal.DatabaseConnection.MAX_USERNAME_LENGTH;
+import static com.auth0.android.lock.views.next.configuration.internal.DatabaseConnection.MIN_USERNAME_LENGTH;
 
 public class ValidatedUsernameInputView extends ValidatedInputView {
 
@@ -70,7 +69,7 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
      *
      * @param connection used with this widget
      */
-    public void configureFrom(@Nullable DatabaseConnection connection) {
+    public void configureFrom(@Nullable com.auth0.android.lock.internal.configuration.DatabaseConnection connection) {
         if (connection == null) {
             return;
         }

@@ -90,7 +90,11 @@ public class PasswordlessLoginEvent {
      * Creates the ParameterizableRequest that will initiate the Passwordless Authentication flow.
      *
      * @param apiClient      the API Client instance
+<<<<<<< Updated upstream
      * @param connectionName the name of the passwordless connection to request the login with. Only 'sms' and 'email' connections are allowed here.
+=======
+     * @param connectionName the name of the passwordless connection to request the realmLogin with. Only 'sms' and 'email' connections are allowed here.
+>>>>>>> Stashed changes
      * @return the Passwordless code request request.
      */
     public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
@@ -113,7 +117,11 @@ public class PasswordlessLoginEvent {
      *
      * @param apiClient     the API Client instance
      * @param emailOrNumber the email or phone number used on the code request.
+<<<<<<< Updated upstream
      * @return the Passwordless login request.
+=======
+     * @return the Passwordless realmLogin request.
+>>>>>>> Stashed changes
      */
     public AuthenticationRequest getLoginRequest(AuthenticationAPIClient apiClient, String emailOrNumber) {
         Log.d(TAG, String.format("Generating Passwordless Login request for identity %s", emailOrNumber));

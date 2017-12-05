@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/a0_size_48"
+    tools:background="@drawable/bg_action_button"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <TextView
+        android:id="@+id/a0_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/a0_size_16"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:text="login"
+        android:textAllCaps="true"
+        android:textColor="@color/a0White"
+        android:textSize="@dimen/a0_font_14" />
+
+</merge>
