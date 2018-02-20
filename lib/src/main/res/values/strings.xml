@@ -131,6 +131,8 @@
     <string name="com_auth0_lock_enterprise_no_connection_message">THERE WAS NO CONNECTION CONFIGURED FOR THE DOMAIN</string>
     <string name="com_auth0_lock_db_login_error_message">THERE WAS AN ERROR PROCESSING THE SIGN IN</string>
     <string name="com_auth0_lock_db_login_error_invalid_credentials_message">WRONG EMAIL OR PASSWORD</string>
+    <string name="com_auth0_lock_db_login_error_mfa_enroll_required">THE USER HAS NOT ENROLLED MULTIFACTOR AUTHENTICATION</string>
+    <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">THE CODE IS INVALID OR HAS EXPIRED</string>
     <string name="com_auth0_lock_db_login_error_unauthorized_message">USER IS BLOCKED</string>
     <string name="com_auth0_lock_db_sign_up_error_message">THERE WAS AN ERROR PROCESSING THE SIGN UP</string>
     <string name="com_auth0_lock_db_change_password_message_success">WE\'VE JUST SENT YOU AN EMAIL TO RESET YOUR PASSWORD</string>
@@ -142,7 +144,6 @@
     <string name="com_auth0_lock_passwordless_code_request_error_message">THERE WAS AN ERROR SENDING THE CODE</string>
     <string name="com_auth0_lock_passwordless_link_request_error_message">THERE WAS AN ERROR SENDING THE LINK</string>
     <string name="com_auth0_lock_passwordless_login_error_invalid_credentials_message">WRONG IDENTITY OR PASSCODE</string>
-    <string name="com_auth0_lock_db_login_error_invalid_mfa_code_message">THE CODE IS INVALID OR HAS EXPIRED</string>
     <string name="com_auth0_lock_title_mfa_input_code">Two Step Verification</string>
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
 

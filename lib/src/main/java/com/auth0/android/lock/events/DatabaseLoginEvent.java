@@ -32,6 +32,7 @@ public class DatabaseLoginEvent extends DatabaseEvent {
 
     private String password;
     private String verificationCode;
+    private String mfaToken;
 
     public DatabaseLoginEvent(@NonNull String usernameOrEmail, @NonNull String password) {
         super(usernameOrEmail);
@@ -55,5 +56,14 @@ public class DatabaseLoginEvent extends DatabaseEvent {
     @Nullable
     public String getVerificationCode() {
         return verificationCode;
+    }
+
+    public void setMFAToken(@NonNull String mfaToken) {
+        this.mfaToken = mfaToken;
+    }
+
+    @Nullable
+    public String getMFAToken() {
+        return mfaToken;
     }
 }

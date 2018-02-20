@@ -41,4 +41,15 @@ public class DatabaseLoginEventTest {
         event.setVerificationCode("code");
         assertThat(event.getVerificationCode(), is("code"));
     }
+
+    @Test
+    public void shouldNotHaveMFAToken() throws Exception {
+        assertThat(event.getMFAToken(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldSetMFAToken() throws Exception {
+        event.setMFAToken("mfatoken");
+        assertThat(event.getMFAToken(), is("mfatoken"));
+    }
 }

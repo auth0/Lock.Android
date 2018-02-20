@@ -73,7 +73,7 @@ public class LoginErrorMessageBuilderTest {
     public void shouldHaveDefaultMessageIfMultifactorEnrollRequired() throws Exception {
         Mockito.when(exception.isMultifactorEnrollRequired()).thenReturn(true);
         final AuthenticationError error = builder.buildFrom(exception);
-        assertThat(error.getMessageRes(), is(equalTo(R.string.com_auth0_lock_db_login_error_message)));
+        assertThat(error.getMessageRes(), is(equalTo(R.string.com_auth0_lock_db_login_error_mfa_enroll_required)));
     }
 
     @Test

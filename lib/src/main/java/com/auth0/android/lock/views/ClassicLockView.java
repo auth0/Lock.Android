@@ -344,7 +344,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     public void showMFACodeForm(DatabaseLoginEvent event) {
-        MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword());
+        MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword(), event.getMFAToken());
         updateHeaderTitle(R.string.com_auth0_lock_title_mfa_input_code);
         addSubForm(form);
     }
