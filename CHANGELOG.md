@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.8.1](https://github.com/auth0/Lock.Android/tree/2.8.1) (2018-02-21)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.0...2.8.1)
+
+**Changed**
+- Bump SDK version to 1.12.1 [\#452](https://github.com/auth0/Lock.Android/pull/452) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.8.0](https://github.com/auth0/Lock.Android/tree/2.8.0) (2017-10-19)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.7.0...2.8.0)
 **Closed issues**
