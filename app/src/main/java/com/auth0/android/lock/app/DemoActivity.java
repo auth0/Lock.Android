@@ -136,8 +136,8 @@ public class DemoActivity extends AppCompatActivity {
             }
         });
 
-        Button btnShowHostedLoginPage = (Button) findViewById(R.id.btn_show_hosted_login_age);
-        btnShowHostedLoginPage.setOnClickListener(new View.OnClickListener() {
+        Button btnShowUniversalLogin = (Button) findViewById(R.id.btn_show_universal_login);
+        btnShowUniversalLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showWebAuth();
