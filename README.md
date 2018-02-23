@@ -17,7 +17,7 @@ Lock for Android
 
 ## Notes On Embedded Authentication
 
-Since June 2017 new Clients no longer have the **Password Grant Type*** enabled by default. This means that Database Authentication from *untrusted clients* such as a mobile app, require this Grant Type to be enabled. The reasons for this change are listed in this [embedded vs native mobile article](https://auth0.com/docs/tutorials/browser-based-vs-native-experience-on-mobile). Follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property) to learn how to enable the Password Grant Type.
+Since June 2017 new Clients no longer have the **Password Grant Type*** enabled by default. If you are using a Database Connection in Lock then you will need to enable the Password Grant Type, please follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property). The reasons for this change are listed in this [embedded vs native mobile article](https://auth0.com/docs/tutorials/browser-based-vs-native-experience-on-mobile).
 
 
 ## Requirements
@@ -29,7 +29,7 @@ Android API Level 15+ is required in order to use Lock's UI.
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:2.8.0'
+compile 'com.auth0.android:lock:2.8.1'
 ```
 
 ## Usage
