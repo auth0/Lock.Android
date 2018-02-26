@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.8.2](https://github.com/auth0/Lock.Android/tree/2.8.2) (2018-02-26)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.1...2.8.2)
+
+**Fixed**
+- Draw background and borders on programmatically created fields [\#455](https://github.com/auth0/Lock.Android/pull/455) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.8.1](https://github.com/auth0/Lock.Android/tree/2.8.1) (2018-02-21)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.0...2.8.1)
 
