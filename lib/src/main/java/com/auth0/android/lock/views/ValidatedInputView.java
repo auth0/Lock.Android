@@ -134,14 +134,17 @@ public class ValidatedInputView extends LinearLayout {
         showPasswordToggle = (ImageCheckbox) findViewById(R.id.com_auth0_lock_show_password_toggle);
         setOrientation(VERTICAL);
 
-        if (attrs == null || isInEditMode()) {
+        if (isInEditMode()) {
             return;
         }
 
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_ValidatedInput);
-        //noinspection WrongConstant
-        dataType = a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0);
-        a.recycle();
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Lock_ValidatedInput);
+            //noinspection WrongConstant
+            dataType = a.getInt(R.styleable.Lock_ValidatedInput_Auth0_InputDataType, 0);
+            a.recycle();
+        }
+
         createBackground();
 
         setupInputValidation();
