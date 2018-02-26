@@ -423,7 +423,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
-            android:text="Hosted Login"
+            android:text="Universal Login"
             android:textSize="20sp" />
 
         <TextView
@@ -433,11 +433,11 @@
             android:text="Above settings don't apply" />
 
         <Button
-            android:id="@+id/btn_show_hosted_login_age"
+            android:id="@+id/btn_show_universal_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="Show Hosted Login Page" />
+            android:text="Show Login Page" />
 
 
     </LinearLayout>
