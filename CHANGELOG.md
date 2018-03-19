@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.8.3](https://github.com/auth0/Lock.Android/tree/2.8.3) (2018-03-19)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.2...2.8.3)
+
+**Fixed**
+- Disable HTTP 2 protocol [\#458](https://github.com/auth0/Lock.Android/pull/458) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.8.2](https://github.com/auth0/Lock.Android/tree/2.8.2) (2018-02-26)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.1...2.8.2)
 
