@@ -47,6 +47,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.ParameterBuilder;
@@ -68,12 +69,12 @@ import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.internal.OkHttpClientFactory;
 import com.auth0.android.result.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -379,7 +380,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     @Subscribe
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
         if (applicationFetcher == null) {
-            applicationFetcher = new ApplicationFetcher(options.getAccount(), new OkHttpClient());
+            Auth0 account = options.getAccount();
+            OkHttpClient client = new OkHttpClientFactory().createClient(account.isLoggingEnabled(), account.isTLS12Enforced());
+            applicationFetcher = new ApplicationFetcher(account, client);
             applicationFetcher.fetch(applicationCallback);
         }
     }
