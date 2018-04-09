@@ -17,7 +17,7 @@ Lock for Android
 
 ## Notes On Embedded Authentication
 
-Since June 2017 new Clients no longer have the **Password Grant Type*** enabled by default. If you are using a Database Connection in Lock then you will need to enable the Password Grant Type, please follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property). The reasons for this change are listed in this [embedded vs native mobile article](https://auth0.com/docs/tutorials/browser-based-vs-native-experience-on-mobile).
+Since June 2017 new Applications no longer have the **Password Grant Type*** enabled by default. If you are using a Database Connection in Lock then you will need to enable the Password Grant Type, please follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property). The reasons for this change are listed in this [embedded vs native mobile article](https://auth0.com/docs/tutorials/browser-based-vs-native-experience-on-mobile).
 
 
 ## Requirements
@@ -34,13 +34,13 @@ compile 'com.auth0.android:lock:2.8.3'
 
 ## Usage
 
-If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free! Then create a new [Client](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
+If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free! Then create a new [Application](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
 
 ```
 https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
 ```
 
-The *package name* value required in the Callback URL can be found in your app's `build.gradle` file in the `applicationId` property. Both the *domain* and *client id* values can be found at the top of your client's settings. You're going to use them to setup the SDK so let's add them to the `strings.xml` file:
+The *package name* value required in the Callback URL can be found in your app's `build.gradle` file in the `applicationId` property. Both the *domain* and *client id* values can be found at the top of your Application's settings. You're going to use them to setup the SDK so let's add them to the `strings.xml` file:
 
 ```xml
 <resources>
@@ -70,7 +70,7 @@ android {
 }
 ```
 
-The next step is to create an instance of `Auth0` with your client information:
+The next step is to create an instance of `Auth0` with your applications information:
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
@@ -199,7 +199,7 @@ startActivity(lock.newIntent(this));
 
 ### Passwordless & Social authentication
 
-The Passwordless feature requires your client to have the *Resource Owner* Legacy Grant Type enabled. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it. Note that Passwordless authentication *cannot be used* with the [OIDC Conformant Mode](#oidc-conformant-mode) enabled.
+The Passwordless feature requires your Application to have the *Resource Owner* Legacy Grant Type enabled. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it. Note that Passwordless authentication *cannot be used* with the [OIDC Conformant Mode](#oidc-conformant-mode) enabled.
 
 `PasswordlessLockActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
@@ -333,7 +333,7 @@ startActivity(lock.newIntent(this));
 The current default scheme used by the library to generate the Redirect URL for Web Authentication is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html). However, in previous Android versions this may show the intent chooser dialog prompting the user to choose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
 
 1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file by changing the existing scheme to the new one.
-2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) client's settings to match URLs that begin with the new scheme.
+2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Applications's settings to match URLs that begin with the new scheme.
 3. Call `withScheme()` in the Lock.Builder/PasswordlessLock.Builder passing the scheme you want to use.
 
 > The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
