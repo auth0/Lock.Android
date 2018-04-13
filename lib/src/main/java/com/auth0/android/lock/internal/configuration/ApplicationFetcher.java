@@ -57,9 +57,9 @@ public class ApplicationFetcher {
     private final OkHttpClient client;
 
     /**
-     * Helper class to fetch the Application from Auth0 Dashboard.
+     * Helper class to fetch the Application information from Auth0 Dashboard.
      *
-     * @param account the client information to build the request uri.
+     * @param account the Application details to build the request uri.
      * @param client  the OKHttpClient instance to use for the CDN request.
      */
     public ApplicationFetcher(@NonNull Auth0 account, @NonNull OkHttpClient client) {

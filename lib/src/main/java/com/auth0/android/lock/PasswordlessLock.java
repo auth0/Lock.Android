@@ -82,7 +82,7 @@ public class PasswordlessLock {
 
     /**
      * Creates a new Lock.Builder instance with the given account and callback.
-     * Use of Passwordless connections requires your client to have the <b>Resource Owner</b> Legacy Grant Type enabled.
+     * Use of Passwordless connections requires your Application to have the <b>Resource Owner</b> Legacy Grant Type enabled.
      * See <a href="https://auth0.com/docs/clients/client-grant-types">Client Grant Types</a> to learn how to enable it.
      *
      * @param account  details to use against the Auth0 Authentication API.
@@ -98,7 +98,7 @@ public class PasswordlessLock {
      * Creates a new Lock.Builder instance with the given callback. The account information
      * will be retrieved from the String resources file (strings.xml) using
      * the keys 'com_auth0_client_id' and 'com_auth0_domain'.
-     * Use of Passwordless connections requires your client to have the <b>Resource Owner</b> Legacy Grant Type enabled.
+     * Use of Passwordless connections requires your Application to have the <b>Resource Owner</b> Legacy Grant Type enabled.
      * See <a href="https://auth0.com/docs/clients/client-grant-types">Client Grant Types</a> to learn how to enable it.
      *
      * @param callback that will receive the authentication results.

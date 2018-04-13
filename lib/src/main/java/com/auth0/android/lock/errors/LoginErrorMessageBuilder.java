@@ -73,7 +73,7 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
                 description = exception.getDescription();
             }
         } else if (WRONG_CLIENT_TYPE_ERROR.equals(exception.getDescription())) {
-            Log.w("Lock", "The Client Type must be set to 'native' in order to authenticate using Code Grant (PKCE). Please change the type in your Auth0 client's dashboard: https://manage.auth0.com/#/clients");
+            Log.w("Lock", "The Client Type must be set to 'native' in order to authenticate using Code Grant (PKCE). Please change the type in your Auth0 Application's dashboard: https://manage.auth0.com/#/applications");
             messageRes = defaultMessage;
         } else if (TOO_MANY_ATTEMPTS_ERROR.equals(exception.getCode())) {
             messageRes = tooManyAttemptsResource;
