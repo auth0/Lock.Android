@@ -25,15 +25,14 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
+import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.PasswordStrength;
-
 import java.util.regex.Pattern;
-
 
 public class PasswordStrengthView extends LinearLayout {
 
@@ -49,13 +48,14 @@ public class PasswordStrengthView extends LinearLayout {
 
     private final Pattern patternUppercase = Pattern.compile("^.*[A-Z]+.*$");
     private final Pattern patternLowercase = Pattern.compile("^.*[a-z]+.*$");
-    private final Pattern patternSpecial = Pattern.compile("^.*[ !\"#\\$%&'\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\\\\\]\\^_`{\\|}~]+.*$");
+    private final Pattern patternSpecial =
+            Pattern.compile("^.*[ !\"#\\$%&'\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\\\\\]\\^_`{\\|}~]+.*$");
     private final Pattern patternNumeric = Pattern.compile("^.*[0-9]+.*$");
     private final Pattern patternIdentical = Pattern.compile("^.*(?=(.)\\1{" + MAX_IDENTICAL_CHARACTERS + ",}).*$");
 
-    @PasswordStrength
-    private int strength;
+    @PasswordStrength private int strength;
 
+    private TextView mustHave;
     private TextView titleAtLeast;
     private CheckableOptionView optionLength;
     private CheckableOptionView optionIdenticalCharacters;
@@ -65,23 +65,74 @@ public class PasswordStrengthView extends LinearLayout {
     private CheckableOptionView optionSpecialCharacters;
 
     public PasswordStrengthView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
-    private void init() {
+    public PasswordStrengthView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public PasswordStrengthView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        int successTextColor = -1;
+        int normalTextColor = -1;
+        int errorTextColor = -1;
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PasswordStrengthView);
+            successTextColor = a.getResourceId(R.styleable.PasswordStrengthView_Auth0_SuccessTextColor, -1);
+            normalTextColor = a.getResourceId(R.styleable.PasswordStrengthView_Auth0_NormalTextColor, -1);
+            errorTextColor = a.getResourceId(R.styleable.PasswordStrengthView_Auth0_ErrorTextColor, -1);
+            a.recycle();
+        }
+
         inflate(getContext(), R.layout.com_auth0_lock_password_strength, this);
+        mustHave = (TextView) findViewById(R.id.com_auth0_lock_password_strength_title_must_have);
         titleAtLeast = (TextView) findViewById(R.id.com_auth0_lock_password_strength_title_at_least);
 
         optionLength = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_length);
         optionLength.setMandatory(true);
-        optionIdenticalCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_identical_characters);
+        optionIdenticalCharacters =
+                (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_identical_characters);
         optionIdenticalCharacters.setMandatory(true);
         optionIdenticalCharacters.setChecked(true);
         optionLowercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_lowercase);
         optionUppercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_uppercase);
         optionNumeric = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_numeric);
-        optionSpecialCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
+        optionSpecialCharacters =
+                (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
+
+        if (normalTextColor != -1) {
+            mustHave.setTextColor(normalTextColor);
+            titleAtLeast.setTextColor(normalTextColor);
+
+            optionLength.setNormalTextColor(normalTextColor);
+            optionIdenticalCharacters.setNormalTextColor(normalTextColor);
+            optionLowercase.setNormalTextColor(normalTextColor);
+            optionUppercase.setNormalTextColor(normalTextColor);
+            optionNumeric.setNormalTextColor(normalTextColor);
+            optionSpecialCharacters.setNormalTextColor(normalTextColor);
+        }
+        if (successTextColor != -1) {
+            optionLength.setSuccessTextColor(successTextColor);
+            optionIdenticalCharacters.setSuccessTextColor(successTextColor);
+            optionLowercase.setSuccessTextColor(successTextColor);
+            optionUppercase.setSuccessTextColor(successTextColor);
+            optionNumeric.setSuccessTextColor(successTextColor);
+            optionSpecialCharacters.setSuccessTextColor(successTextColor);
+        }
+        if (errorTextColor != -1) {
+            optionLength.setErrorTextColor(errorTextColor);
+            optionIdenticalCharacters.setErrorTextColor(errorTextColor);
+            optionLowercase.setErrorTextColor(errorTextColor);
+            optionUppercase.setErrorTextColor(errorTextColor);
+            optionNumeric.setErrorTextColor(errorTextColor);
+            optionSpecialCharacters.setErrorTextColor(errorTextColor);
+        }
+
         setStrength(PasswordStrength.NONE);
     }
 
@@ -101,14 +152,17 @@ public class PasswordStrengthView extends LinearLayout {
         optionUppercase.setMandatory(strength == PasswordStrength.FAIR);
         optionNumeric.setMandatory(strength == PasswordStrength.FAIR);
 
-        titleAtLeast.setVisibility(strength == PasswordStrength.FAIR || strength == PasswordStrength.LOW ? GONE : VISIBLE);
-        String lengthRequirements = getContext().getResources().getString(R.string.com_auth0_lock_password_strength_chars_length);
+        titleAtLeast.setVisibility(
+                strength == PasswordStrength.FAIR || strength == PasswordStrength.LOW ? GONE : VISIBLE);
+        String lengthRequirements =
+                getContext().getResources().getString(R.string.com_auth0_lock_password_strength_chars_length);
         optionLength.setText(String.format(lengthRequirements, getMinimumLength()));
 
         optionLowercase.setVisibility(strength == PasswordStrength.LOW ? GONE : VISIBLE);
         optionUppercase.setVisibility(strength == PasswordStrength.LOW ? GONE : VISIBLE);
         optionNumeric.setVisibility(strength == PasswordStrength.LOW ? GONE : VISIBLE);
-        optionSpecialCharacters.setVisibility(strength == PasswordStrength.EXCELLENT || strength == PasswordStrength.GOOD ? VISIBLE : GONE);
+        optionSpecialCharacters.setVisibility(
+                strength == PasswordStrength.EXCELLENT || strength == PasswordStrength.GOOD ? VISIBLE : GONE);
         optionIdenticalCharacters.setVisibility(strength == PasswordStrength.EXCELLENT ? VISIBLE : GONE);
     }
 
@@ -202,19 +256,21 @@ public class PasswordStrengthView extends LinearLayout {
         boolean other = true;
         switch (strength) {
             case PasswordStrength.EXCELLENT:
-                boolean atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
+                boolean atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password),
+                        hasNumericCharacters(password), hasSpecialCharacters(password));
                 other = hasIdenticalCharacters(password) && atLeast;
                 break;
             case PasswordStrength.GOOD:
-                other = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
+                other = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password),
+                        hasNumericCharacters(password), hasSpecialCharacters(password));
                 break;
             case PasswordStrength.FAIR:
-                other = allThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password));
+                other = allThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password),
+                        hasNumericCharacters(password));
                 break;
             case PasswordStrength.LOW:
             case PasswordStrength.NONE:
         }
         return length && other;
     }
-
 }
