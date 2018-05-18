@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,6 +40,14 @@ public class CheckableOptionView extends LinearLayout {
 
     private ImageView icon;
     private TextView description;
+
+    private static final int UNDEFINED_TEXT_COLOR = -1;
+    @ColorRes
+    private int successTextColor = UNDEFINED_TEXT_COLOR;
+    @ColorRes
+    private int normalTextColor = UNDEFINED_TEXT_COLOR;
+    @ColorRes
+    private int errorTextColor = UNDEFINED_TEXT_COLOR;
 
     private boolean mandatory;
     private boolean checked;
@@ -77,12 +86,28 @@ public class CheckableOptionView extends LinearLayout {
 
     private void updateStatus() {
         if (checked) {
-            icon.setImageResource(R.drawable.com_auth0_lock_ic_check_success);
-            description.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_checkable_option_success));
+            icon.setImageResource(R.drawable.com_auth0_lock_ic_check_circle_green_24dp);
+            int successTextColor = this.successTextColor != UNDEFINED_TEXT_COLOR ? this.successTextColor : R.color.com_auth0_lock_checkable_option_success;
+            description.setTextColor(ContextCompat.getColor(getContext(), successTextColor));
+
             return;
         }
-        icon.setImageResource(mandatory ? R.drawable.com_auth0_lock_ic_check_error : R.drawable.com_auth0_lock_ic_check_unset);
-        description.setTextColor(ContextCompat.getColor(getContext(), mandatory ? R.color.com_auth0_lock_checkable_option_error : R.color.com_auth0_lock_normal_text));
+        icon.setImageResource(R.drawable.com_auth0_lock_ic_check_unset_24dp);
+        int normalTextColor = this.normalTextColor != UNDEFINED_TEXT_COLOR ? this.normalTextColor : R.color.com_auth0_lock_normal_text;
+        int errorTextColor = this.errorTextColor != UNDEFINED_TEXT_COLOR ? this.errorTextColor : R.color.com_auth0_lock_checkable_option_error;
+        description.setTextColor(ContextCompat.getColor(getContext(), mandatory ? errorTextColor : normalTextColor));
+    }
+
+    public void setSuccessTextColor(@ColorRes int textColor) {
+        this.successTextColor = textColor;
+    }
+
+    public void setNormalTextColor(@ColorRes int textColor) {
+        this.normalTextColor = textColor;
+    }
+
+    public void setErrorTextColor(@ColorRes int textColor) {
+        this.errorTextColor = textColor;
     }
 
     /**

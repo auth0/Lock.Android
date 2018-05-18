@@ -39,9 +39,9 @@
 
     <TextView
         android:id="@+id/com_auth0_lock_checkable_text_description"
-        style="@style/Lock.Theme.Text.PasswordPolicy"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
         android:layout_marginStart="@dimen/com_auth0_lock_widget_with_text_horizontal_padding"
-        android:gravity="center_vertical"
-        tools:text="Option value or description" />
+        tools:text="Option value or description"
+        style="@style/Lock.Theme.Text.PasswordPolicy" />
 </LinearLayout>

@@ -49,4 +49,10 @@
         <attr name="Auth0.Name" format="string|reference" />
         <attr name="Auth0.Logo" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="PasswordStrengthView">
+        <attr name="Auth0.SuccessTextColor" format="color|reference" />
+        <attr name="Auth0.NormalTextColor" format="color|reference" />
+        <attr name="Auth0.ErrorTextColor" format="color|reference" />
+    </declare-styleable>
 </resources>
