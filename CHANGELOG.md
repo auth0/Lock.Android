@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.8.4](https://github.com/auth0/Lock.Android/tree/2.8.4) (2018-07-13)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.3...2.8.4)
+
+**Fixed**
+- Fix WebAuth issues by updating SDK to 1.13.1 [\#465](https://github.com/auth0/Lock.Android/pull/465) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.8.3](https://github.com/auth0/Lock.Android/tree/2.8.3) (2018-03-19)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.2...2.8.3)
 
