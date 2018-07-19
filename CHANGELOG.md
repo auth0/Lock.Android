@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.8.5](https://github.com/auth0/Lock.Android/tree/2.8.5) (2018-07-19)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.4...2.8.5)
+
+**Fixed**
+- Enable MFA support for OIDC conformant clients [\#451](https://github.com/auth0/Lock.Android/pull/451) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.8.4](https://github.com/auth0/Lock.Android/tree/2.8.4) (2018-07-13)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.3...2.8.4)
 
