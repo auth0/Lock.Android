@@ -89,6 +89,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private static final String TAG = LockActivity.class.getSimpleName();
     private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final String KEY_LOGIN_HINT = "login_hint";
+    private static final String KEY_MFA_TOKEN = "mfa_token";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final int WEB_AUTH_REQUEST_CODE = 200;
     private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
@@ -381,13 +382,19 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lockView.showProgress(true);
         lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
-        final HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
-        if (event.getVerificationCode() != null) {
-            parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
+        AuthenticationRequest request;
+        HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
+        if (TextUtils.isEmpty(event.getMFAToken()) || TextUtils.isEmpty(event.getVerificationCode())) {
+            String connection = configuration.getDatabaseConnection().getName();
+            request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection);
+            if (!TextUtils.isEmpty(event.getVerificationCode())) {
+                parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
+            }
+        } else {
+            request = apiClient.loginWithOTP(event.getMFAToken(), event.getVerificationCode());
         }
-        final String connection = configuration.getDatabaseConnection().getName();
-        AuthenticationRequest request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection)
-                .addAuthenticationParameters(parameters);
+
+        request.addAuthenticationParameters(parameters);
         if (options.getScope() != null) {
             request.setScope(options.getScope());
         }
@@ -516,12 +523,20 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                     lockView.showProgress(false);
 
                     final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
-                    if (error.isMultifactorRequired() || error.isMultifactorEnrollRequired()) {
+                    if (error.isMultifactorRequired()) {
+                        String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
+                        if (!TextUtils.isEmpty(mfaToken)) {
+                            lastDatabaseLogin.setMFAToken(mfaToken);
+                        }
                         lockView.showMFACodeForm(lastDatabaseLogin);
                         return;
                     }
                     String message = authError.getMessage(LockActivity.this);
                     showErrorMessage(message);
+                    if (error.isMultifactorTokenInvalid()) {
+                        //The MFA Token has expired. The user needs to log in again. Show the username/password form
+                        onBackPressed();
+                    }
                 }
             });
         }

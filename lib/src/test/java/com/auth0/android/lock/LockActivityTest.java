@@ -97,6 +97,7 @@ public class LockActivityTest {
 
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.login(anyString(), anyString(), anyString())).thenReturn(authRequest);
+        when(client.loginWithOTP(anyString(), anyString())).thenReturn(authRequest);
         when(client.createUser(anyString(), anyString(), anyString())).thenReturn(dbRequest);
         when(client.createUser(anyString(), anyString(), anyString(), anyString())).thenReturn(dbRequest);
         when(client.signUp(anyString(), anyString(), anyString())).thenReturn(signUpRequest);
@@ -167,6 +168,38 @@ public class LockActivityTest {
         assertThat(reqParams, is(notNullValue()));
         assertThat(reqParams, hasEntry("extra", "value"));
         assertThat(reqParams, hasEntry("mfa_code", "123456"));
+    }
+
+    @Test
+    public void shouldCallOIDCDatabaseLoginWithOTPCodeAndMFAToken() throws Exception {
+        Auth0 account = new Auth0("cliendId", "domain");
+        account.setOIDCConformant(true);
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+        DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
+        event.setVerificationCode("123456");
+        event.setMFAToken("mfaToken");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(client).loginWithOTP("mfaToken", "123456");
+        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).setScope("openid user photos");
+        verify(authRequest).setAudience("aud");
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, not(hasKey("mfa_code")));
     }
 
     @Test
