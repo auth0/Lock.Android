@@ -18,6 +18,7 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     private int minUsernameLength;
     private int maxUsernameLength;
     private boolean isCustomDatabase;
+    private boolean allowActiveFlow = true;
 
     private Connection(@NonNull String strategy, Map<String, Object> values) {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
@@ -83,6 +84,7 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         return value != null && value;
     }
 
+    @Override
     @PasswordStrength
     public int getPasswordPolicy() {
         String value = valueForKey("passwordPolicy", String.class);
@@ -133,7 +135,11 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
 
     @Override
     public boolean isActiveFlowEnabled() {
-        return "ad".equals(getStrategy()) || "adfs".equals(getStrategy()) || "waad".equals(getStrategy());
+        return allowActiveFlow && ("ad".equals(getStrategy()) || "adfs".equals(getStrategy()) || "waad".equals(getStrategy()));
+    }
+
+    void disableActiveFlow() {
+        this.allowActiveFlow = false;
     }
 
     @Override

@@ -83,7 +83,12 @@ public class Configuration {
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = allowedConnections != null ? new HashSet<>(allowedConnections) : new HashSet<String>();
         this.defaultDatabaseConnection = filterDatabaseConnections(connections, connectionSet, defaultDatabaseName);
-        this.enterpriseConnections = filterConnections(connections, connectionSet, AuthType.ENTERPRISE);
+
+        List<String> webAuthEnabledConnections = options.getEnterpriseConnectionsUsingWebForm();
+        Set<String> webAuthEnabledConnectionSet = webAuthEnabledConnections != null ? new HashSet<>(webAuthEnabledConnections) : new HashSet<String>();
+        List<OAuthConnection> allEnterprise = filterConnections(connections, connectionSet, AuthType.ENTERPRISE);
+        this.enterpriseConnections = enableWebAuthentication(allEnterprise, webAuthEnabledConnectionSet);
+
         this.passwordlessConnections = filterConnections(connections, connectionSet, AuthType.PASSWORDLESS);
         this.socialConnections = filterConnections(connections, connectionSet, AuthType.SOCIAL);
         parseLocalOptions(options);
@@ -166,6 +171,15 @@ public class Configuration {
         return filtered;
     }
 
+    @NonNull
+    private List<OAuthConnection> enableWebAuthentication(@NonNull List<OAuthConnection> connections, @NonNull Set<String> webAuthEnabledConnections) {
+        for (OAuthConnection c : connections) {
+            if (webAuthEnabledConnections.contains(c.getName())) {
+                ((Connection) c).disableActiveFlow();
+            }
+        }
+        return connections;
+    }
 
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();

@@ -24,8 +24,6 @@
 
 package com.auth0.android.lock.internal.configuration;
 
-import android.util.Log;
-
 import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
@@ -454,8 +452,53 @@ public class ConfigurationTest extends GsonBaseTest {
     @Test
     public void shouldReturnUnfilteredEnterpriseConnections() throws Exception {
         configuration = unfilteredConfig();
-        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(hasConnection("ad", "MyAD"),
-                hasConnection("ad", "mySecondAD"), hasConnection("google-apps", "auth0.com")));
+        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(
+                hasConnection("ad", "MyAD"),
+                hasConnection("ad", "mySecondAD"),
+                hasConnection("google-apps", "auth0.com")
+        ));
+    }
+
+    @Test
+    public void shouldAllowEnterpriseActiveFlowByDefault() throws Exception {
+        configuration = unfilteredConfig();
+        for (OAuthConnection c : configuration.getEnterpriseConnections()) {
+            if (Arrays.asList("ad", "waad", "adfs").contains(c.getStrategy())) {
+                assertThat(c.isActiveFlowEnabled(), is(true));
+            } else {
+                //Strategies not included above should not allow ActiveFlow
+                assertThat(c.isActiveFlowEnabled(), is(false));
+            }
+        }
+    }
+
+    @Test
+    public void shouldDisableEnterpriseActiveFlowOnGivenConnections() throws Exception {
+        List<String> webAuthEnabledConnections = Arrays.asList("MyAD");
+        options.setEnterpriseConnectionsUsingWebForm(webAuthEnabledConnections);
+        configuration = new Configuration(connections, options);
+
+        //Connections include 2 'ad' enterprise connections: "MyAD" and "mySecondAD"
+        //One of them is tell above to use Web Authentication
+        for (OAuthConnection c : configuration.getEnterpriseConnections()) {
+            if (c.getName().equals("mySecondAD")) {
+                assertThat(c.isActiveFlowEnabled(), is(true));
+            } else if (c.getName().equals("MyAD")) {
+                assertThat(c.isActiveFlowEnabled(), is(false));
+            }
+        }
+    }
+
+    @Test
+    public void shouldNotFilterEnterpriseConnectionsByWebAuthEnabled() throws Exception {
+        options.setConnections(Arrays.asList("auth0.com", "MyAD"));
+        options.setEnterpriseConnectionsUsingWebForm(Arrays.asList("mySecondAD", "MyAD"));
+        configuration = new Configuration(connections, options);
+
+        assertThat(configuration.getEnterpriseConnections(), containsInAnyOrder(
+                hasConnection("ad", "MyAD"),
+                hasConnection("google-apps", "auth0.com")
+        ));
     }
 
     @Test
