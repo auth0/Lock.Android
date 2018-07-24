@@ -711,7 +711,6 @@ public class OptionsTest {
         assertThat(options.getTheme(), is(notNullValue()));
         assertThat(options.getAuthenticationParameters(), is(notNullValue()));
         assertThat(options.getAuthStyles(), is(notNullValue()));
-        assertThat(options.getEnterpriseConnectionsUsingWebForm(), is(notNullValue()));
     }
 
 
