@@ -437,6 +437,24 @@ public class Lock {
         }
 
         /**
+         * Set which enterprise connections should use Web Authentication instead of the Username
+         * and Password form.
+         * Enterprise connections based on 'ad', 'adfs' and 'waad' strategies can log their
+         * users in from within the Lock widget using their email and password. This is known as
+         * Active Authentication, and is not supported for MFA enabled identity providers.
+         * By whitelisting the connections here, the Universal Login Page is used instead and the
+         * log in is delegated to the browser application.
+         * Enterprise connections allowed for this client will use Active Authentication by default.
+         *
+         * @param connections the list of enterprise connections that will use Web Authentication.
+         * @return the current builder instance
+         */
+        public Builder enableEnterpriseWebAuthenticationFor(@NonNull List<String> connections) {
+            options.setEnterpriseConnectionsUsingWebForm(connections);
+            return this;
+        }
+
+        /**
          * Whether to login after a successful sign up callback. Defaults to true.
          *
          * @param login after sign up or not
