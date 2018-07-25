@@ -262,18 +262,39 @@ public class ConnectionTest {
         final Connection waad = connectionForStrategy("waad");
 
         assertThat(ad, hasType(AuthType.ENTERPRISE));
+        assertThat(ad.isActiveFlowEnabled(), is(true));
         assertThat(adfs, hasType(AuthType.ENTERPRISE));
+        assertThat(adfs.isActiveFlowEnabled(), is(true));
         assertThat(auth0Adldap, hasType(AuthType.ENTERPRISE));
+        assertThat(auth0Adldap.isActiveFlowEnabled(), is(false));
         assertThat(custom, hasType(AuthType.ENTERPRISE));
+        assertThat(custom.isActiveFlowEnabled(), is(false));
         assertThat(googleApps, hasType(AuthType.ENTERPRISE));
+        assertThat(googleApps.isActiveFlowEnabled(), is(false));
         assertThat(googleOpenid, hasType(AuthType.ENTERPRISE));
+        assertThat(googleOpenid.isActiveFlowEnabled(), is(false));
         assertThat(ip, hasType(AuthType.ENTERPRISE));
+        assertThat(ip.isActiveFlowEnabled(), is(false));
         assertThat(mscrm, hasType(AuthType.ENTERPRISE));
+        assertThat(mscrm.isActiveFlowEnabled(), is(false));
         assertThat(office365, hasType(AuthType.ENTERPRISE));
+        assertThat(office365.isActiveFlowEnabled(), is(false));
         assertThat(pingfederate, hasType(AuthType.ENTERPRISE));
+        assertThat(pingfederate.isActiveFlowEnabled(), is(false));
         assertThat(samlp, hasType(AuthType.ENTERPRISE));
+        assertThat(samlp.isActiveFlowEnabled(), is(false));
         assertThat(sharepoint, hasType(AuthType.ENTERPRISE));
+        assertThat(sharepoint.isActiveFlowEnabled(), is(false));
         assertThat(waad, hasType(AuthType.ENTERPRISE));
+        assertThat(waad.isActiveFlowEnabled(), is(true));
+    }
+
+    @Test
+    public void shouldDisableActiveFlowOnDemand() {
+        final Connection waad = connectionForStrategy("waad");
+        assertThat(waad.isActiveFlowEnabled(), is(true));
+        waad.disableActiveFlow();
+        assertThat(waad.isActiveFlowEnabled(), is(false));
     }
 
     private Connection connectionForStrategy(String connectionName) {
