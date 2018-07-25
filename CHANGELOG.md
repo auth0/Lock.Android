@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.9.0](https://github.com/auth0/Lock.Android/tree/2.9.0) (2018-07-25)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.6...2.9.0)
+
+**Added**
+- Allow to disable 'ActiveAuth' on enterprise Connections [\#471](https://github.com/auth0/Lock.Android/pull/471) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.8.6](https://github.com/auth0/Lock.Android/tree/2.8.6) (2018-07-20)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.5...2.8.6)
 
