@@ -19,6 +19,7 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     private int maxUsernameLength;
     private boolean isCustomDatabase;
     private boolean allowActiveFlow = true;
+    private PasswordComplexity passwordComplexity;
 
     private Connection(@NonNull String strategy, Map<String, Object> values) {
         checkArgument(values != null && values.size() > 0, "Must have at least one value");
@@ -28,6 +29,31 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         this.name = name;
         this.values = values;
         parseUsernameLength();
+        parsePasswordComplexity();
+    }
+
+    private void parsePasswordComplexity() {
+        int policy = PasswordStrength.NONE;
+        String value = valueForKey("passwordPolicy", String.class);
+        if ("excellent".equals(value)) {
+            policy = PasswordStrength.EXCELLENT;
+        }
+        if ("good".equals(value)) {
+            policy = PasswordStrength.GOOD;
+        }
+        if ("fair".equals(value)) {
+            policy = PasswordStrength.FAIR;
+        }
+        if ("low".equals(value)) {
+            policy = PasswordStrength.LOW;
+        }
+
+        final Map<String, Object> complexityOptions = valueForKey("password_complexity_options", Map.class);
+        Integer minLength = null;
+        if (complexityOptions != null && complexityOptions.containsKey("min_length")) {
+            minLength = ((Number) complexityOptions.remove("min_length")).intValue();
+        }
+        passwordComplexity = new PasswordComplexity(policy, minLength);
     }
 
     @Override
@@ -85,22 +111,9 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     }
 
     @Override
-    @PasswordStrength
-    public int getPasswordPolicy() {
-        String value = valueForKey("passwordPolicy", String.class);
-        if ("excellent".equals(value)) {
-            return PasswordStrength.EXCELLENT;
-        }
-        if ("good".equals(value)) {
-            return PasswordStrength.GOOD;
-        }
-        if ("fair".equals(value)) {
-            return PasswordStrength.FAIR;
-        }
-        if ("low".equals(value)) {
-            return PasswordStrength.LOW;
-        }
-        return PasswordStrength.NONE;
+    @NonNull
+    public PasswordComplexity getPasswordComplexity() {
+        return passwordComplexity;
     }
 
     @Override

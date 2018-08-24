@@ -103,7 +103,8 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
         assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(configuration.hasExtraFields(), is(false));
-        assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
+        assertThat(configuration.getPasswordComplexity(), is(notNullValue()));
+        assertThat(configuration.getPasswordComplexity().getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
         assertThat(configuration.useLabeledSubmitButton(), is(true));
         assertThat(configuration.hideMainScreenTitle(), is(false));
@@ -575,7 +576,9 @@ public class ConfigurationTest extends GsonBaseTest {
     public void shouldGetPasswordPolicy() throws Exception {
         options.useDatabaseConnection("with-strength");
         configuration = new Configuration(connections, options);
-        assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
+        PasswordComplexity passwordComplexity = configuration.getPasswordComplexity();
+        assertThat(passwordComplexity, is(notNullValue()));
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
     }
 
     @Test

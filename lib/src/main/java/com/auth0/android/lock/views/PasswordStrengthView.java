@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.lock.R;
+import com.auth0.android.lock.internal.configuration.PasswordComplexity;
 import com.auth0.android.lock.internal.configuration.PasswordStrength;
 
 import java.util.regex.Pattern;
@@ -53,8 +54,7 @@ public class PasswordStrengthView extends LinearLayout {
     private final Pattern patternNumeric = Pattern.compile("^.*[0-9]+.*$");
     private final Pattern patternIdentical = Pattern.compile("^.*(?=(.)\\1{" + MAX_IDENTICAL_CHARACTERS + ",}).*$");
 
-    @PasswordStrength
-    private int strength;
+    private PasswordComplexity complexity;
 
     private TextView titleAtLeast;
     private CheckableOptionView optionLength;
@@ -89,6 +89,7 @@ public class PasswordStrengthView extends LinearLayout {
      * @see "https://auth0.com/docs/connections/database/password-strength"
      */
     private void showPolicy() {
+        int strength = complexity.getPasswordPolicy();
         if (strength == PasswordStrength.NONE) {
             setEnabled(false);
             setVisibility(GONE);
@@ -162,7 +163,11 @@ public class PasswordStrengthView extends LinearLayout {
     }
 
     private int getMinimumLength() {
-        switch (strength) {
+        Integer minLengthOverride = complexity.getMinLengthOverride();
+        if (minLengthOverride != null) {
+            return minLengthOverride;
+        }
+        switch (complexity.getPasswordPolicy()) {
             case PasswordStrength.EXCELLENT:
                 return MIN_LENGTH_EXCELLENT;
             case PasswordStrength.GOOD:
@@ -181,9 +186,20 @@ public class PasswordStrengthView extends LinearLayout {
      * Sets the current level of Strength that this widget is going to validate.
      *
      * @param strength the required strength level.
+     * @deprecated use the {@link #setPasswordComplexity(PasswordComplexity)} method
      */
+    @Deprecated
     public void setStrength(@PasswordStrength int strength) {
-        this.strength = strength;
+        this.setPasswordComplexity(new PasswordComplexity(strength, null));
+    }
+
+    /**
+     * Sets the password complexity options that this widget is going to validate.
+     *
+     * @param complexity the password complexity to require on this widget
+     */
+    public void setPasswordComplexity(PasswordComplexity complexity) {
+        this.complexity = complexity;
         showPolicy();
     }
 
@@ -200,7 +216,7 @@ public class PasswordStrengthView extends LinearLayout {
 
         boolean length = hasMinimumLength(password, getMinimumLength());
         boolean other = true;
-        switch (strength) {
+        switch (complexity.getPasswordPolicy()) {
             case PasswordStrength.EXCELLENT:
                 boolean atLeast = atLeastThree(hasLowercaseCharacters(password), hasUppercaseCharacters(password), hasNumericCharacters(password), hasSpecialCharacters(password));
                 other = hasIdenticalCharacters(password) && atLeast;

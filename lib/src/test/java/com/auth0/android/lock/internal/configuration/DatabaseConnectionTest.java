@@ -7,6 +7,7 @@ import java.util.Map;
 
 import static com.auth0.android.lock.internal.configuration.ConnectionMatcher.hasType;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -79,8 +80,9 @@ public class DatabaseConnectionTest {
         values.put("name", "Username-Password-Authentication");
         values.put("passwordPolicy", "excellent");
         DatabaseConnection connection = connectionFor(values);
-
-        assertThat(connection.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
+        PasswordComplexity passwordComplexity = connection.getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(nullValue()));
     }
 
     @Test
@@ -90,7 +92,9 @@ public class DatabaseConnectionTest {
         values.put("passwordPolicy", "fair");
         DatabaseConnection connection = connectionFor(values);
 
-        assertThat(connection.getPasswordPolicy(), is(PasswordStrength.FAIR));
+        PasswordComplexity passwordComplexity = connection.getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.FAIR));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(nullValue()));
     }
 
     @Test
@@ -100,7 +104,9 @@ public class DatabaseConnectionTest {
         values.put("passwordPolicy", "good");
         DatabaseConnection connection = connectionFor(values);
 
-        assertThat(connection.getPasswordPolicy(), is(PasswordStrength.GOOD));
+        PasswordComplexity passwordComplexity = connection.getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.GOOD));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(nullValue()));
     }
 
     @Test
@@ -110,7 +116,9 @@ public class DatabaseConnectionTest {
         values.put("passwordPolicy", "low");
         DatabaseConnection connection = connectionFor(values);
 
-        assertThat(connection.getPasswordPolicy(), is(PasswordStrength.LOW));
+        PasswordComplexity passwordComplexity = connection.getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.LOW));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(nullValue()));
     }
 
     @Test
@@ -119,7 +127,23 @@ public class DatabaseConnectionTest {
         values.put("name", "Username-Password-Authentication");
         DatabaseConnection connection = connectionFor(values);
 
-        assertThat(connection.getPasswordPolicy(), is(PasswordStrength.NONE));
+        PasswordComplexity passwordComplexity = connection.getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.NONE));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldGetMinPasswordLength() throws Exception {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "Username-Password-Authentication");
+        Map<String, Object> options = new HashMap<>();
+        options.put("min_length", 123);
+        values.put("password_complexity_options", options);
+        DatabaseConnection connection = connectionFor(values);
+
+        PasswordComplexity passwordComplexity = connection.getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.NONE));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(123));
     }
 
     @Test

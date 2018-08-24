@@ -273,9 +273,9 @@ public class Configuration {
         return passwordlessMode;
     }
 
-    @PasswordStrength
-    public int getPasswordPolicy() {
-        return defaultDatabaseConnection == null ? PasswordStrength.NONE : defaultDatabaseConnection.getPasswordPolicy();
+    @NonNull
+    public PasswordComplexity getPasswordComplexity() {
+        return defaultDatabaseConnection == null ? new PasswordComplexity(PasswordStrength.NONE, null) : defaultDatabaseConnection.getPasswordComplexity();
     }
 
     public boolean loginAfterSignUp() {

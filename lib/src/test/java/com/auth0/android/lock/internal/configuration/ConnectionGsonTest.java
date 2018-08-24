@@ -43,12 +43,14 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class ConnectionGsonTest extends GsonBaseTest {
     private static final String STRATEGY = "src/test/resources/strategy.json";
     private static final String ENTERPRISE_CONNECTION = "src/test/resources/enterprise_connection.json";
     private static final String DATABASE_CONNECTION = "src/test/resources/db_connection.json";
+    private static final String DATABASE_CONNECTION_WITH_COMPLEXITY = "src/test/resources/db_connection_with_complexity.json";
     private static final String SOCIAL_CONNECTION = "src/test/resources/social_connection.json";
 
     @Rule
@@ -135,9 +137,27 @@ public class ConnectionGsonTest extends GsonBaseTest {
         assertThat(connections.get(0).showSignUp(), is(true));
         assertThat(connections.get(0).showForgot(), is(true));
         assertThat(connections.get(0).requiresUsername(), is(false));
-        assertThat(connections.get(0).getPasswordPolicy(), is(PasswordStrength.GOOD));
+        PasswordComplexity passwordComplexity = connections.get(0).getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.GOOD));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(nullValue()));
     }
 
+    @Test
+    public void shouldReturnDatabaseWithComplexity() throws Exception {
+        final List<Connection> connections = buildConnectionsFrom(json(DATABASE_CONNECTION_WITH_COMPLEXITY));
+        assertThat(connections.get(0), is(notNullValue()));
+        assertThat(connections.get(0), hasType(AuthType.DATABASE));
+        assertThat(connections.get(0).getName(), is("Username-Password-Authentication"));
+        assertThat(connections.get(0).getStrategy(), is("auth0"));
+        assertThat(connections.get(0).valueForKey("forgot_password_url", String.class), is("https://login.auth0.com/lo/forgot?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat(connections.get(0).valueForKey("signup_url", String.class), is("https://login.auth0.com/lo/signup?wtrealm=urn:auth0:samples:Username-Password-Authentication"));
+        assertThat(connections.get(0).showSignUp(), is(true));
+        assertThat(connections.get(0).showForgot(), is(true));
+        assertThat(connections.get(0).requiresUsername(), is(false));
+        PasswordComplexity passwordComplexity = connections.get(0).getPasswordComplexity();
+        assertThat(passwordComplexity.getPasswordPolicy(), is(PasswordStrength.FAIR));
+        assertThat(passwordComplexity.getMinLengthOverride(), is(12));
+    }
 
     private List<Connection> buildConnectionsFrom(Reader json) throws IOException {
         final TypeToken<List<Connection>> strategyType = new TypeToken<List<Connection>>() {};
