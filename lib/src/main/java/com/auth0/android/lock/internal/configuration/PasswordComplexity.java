@@ -15,7 +15,7 @@ public class PasswordComplexity {
     /**
      * Getter for the Password Policy associated to this connection.
      *
-     * @return The Password Policy level for this connection.
+     * @return the Password Policy level for this connection.
      */
     @PasswordStrength
     public int getPasswordPolicy() {
