@@ -1,17 +1,19 @@
 package com.auth0.android.lock.internal.configuration;
 
+import android.support.annotation.NonNull;
+
 public interface DatabaseConnection extends BaseConnection {
 
     int MIN_USERNAME_LENGTH = 1;
     int MAX_USERNAME_LENGTH = 15;
 
     /**
-     * Getter for the Password Policy associated to this connection.
+     * Getter for the Password Validation settings
      *
-     * @return The Password Policy level for this connection.
+     * @return The Password Validation for this connection.
      */
-    @PasswordStrength
-    int getPasswordPolicy();
+    @NonNull
+    PasswordComplexity getPasswordComplexity();
 
     /**
      * Whether this connection requires username or not.

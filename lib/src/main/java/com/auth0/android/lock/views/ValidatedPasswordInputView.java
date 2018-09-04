@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.auth0.android.lock.internal.configuration.PasswordComplexity;
 import com.auth0.android.lock.internal.configuration.PasswordStrength;
 
 
@@ -53,8 +54,19 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
      * Sets the Password Strength Policy level for this view.
      *
      * @param strength the new Policy level.
+     * @deprecated use {@link #setPasswordComplexity(PasswordComplexity)} method
      */
+    @Deprecated
     public void setPasswordPolicy(@PasswordStrength int strength) {
         strengthView.setStrength(strength);
+    }
+
+    /**
+     * Sets the Password Complexity for this view.
+     *
+     * @param complexity the new Password complexity to use
+     */
+    public void setPasswordComplexity(PasswordComplexity complexity) {
+        strengthView.setPasswordComplexity(complexity);
     }
 }
