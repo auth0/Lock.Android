@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.10.0](https://github.com/auth0/Lock.Android/tree/2.10.0) (2018-09-14)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.9.0...2.10.0)
+
+**Added**
+- Allow to override the password minimum length [\#474](https://github.com/auth0/Lock.Android/pull/474) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.9.0](https://github.com/auth0/Lock.Android/tree/2.9.0) (2018-07-25)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.8.6...2.9.0)
 
