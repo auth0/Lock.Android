@@ -33,6 +33,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
@@ -73,12 +74,14 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     private ProgressBar loadingProgressBar;
 
     private String lastEmailInput;
+    private boolean hasSignupTerms;
 
     public ClassicLockView(Context context, Bus lockBus, Theme lockTheme) {
         super(context);
         this.bus = lockBus;
         this.configuration = null;
         this.lockTheme = lockTheme;
+        this.hasSignupTerms = !TextUtils.isEmpty(context.getString(R.string.com_auth0_lock_sign_up_terms));
         showWaitForConfigurationLayout();
     }
 
@@ -297,7 +300,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     private void showSignUpTerms(boolean show) {
-        bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        bottomBanner.setVisibility(this.hasSignupTerms && show ? VISIBLE : GONE);
     }
 
     /**
@@ -365,7 +368,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     @Override
     public void showBottomBanner(boolean show) {
         if (bottomBanner != null) {
-            bottomBanner.setVisibility(show ? VISIBLE : GONE);
+            bottomBanner.setVisibility(this.hasSignupTerms && show ? VISIBLE : GONE);
         }
     }
 
