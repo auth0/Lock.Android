@@ -1,32 +1,32 @@
-apply plugin: 'com.auth0.gradle.oss-library.android'
+apply plugin: 'com.android.library'
 
 logger.lifecycle("Using version ${version} for ${name}")
 
-oss {
-    name 'Lock.Android'
-    repository 'Lock.Android'
-    organization 'auth0'
-    description 'The easiest way of securing your Android mobile apps with Auth0 & Lock'
-
-    developers {
-        auth0 {
-            displayName = 'Auth0'
-            email = 'oss@auth0.com'
-        }
-        lbalmaceda {
-            displayName = 'Luciano Balmaceda'
-            email = 'luciano.balmaceda@auth0.com'
-        }
-    }
-}
+//oss {
+//    name 'Lock.Android'
+//    repository 'Lock.Android'
+//    organization 'auth0'
+//    description 'The easiest way of securing your Android mobile apps with Auth0 & Lock'
+//
+//    developers {
+//        auth0 {
+//            displayName = 'Auth0'
+//            email = 'oss@auth0.com'
+//        }
+//        lbalmaceda {
+//            displayName = 'Luciano Balmaceda'
+//            email = 'luciano.balmaceda@auth0.com'
+//        }
+//    }
+//}
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 1
         versionName project.version
         consumerProguardFiles '../proguard/proguard-gson.pro', '../proguard/proguard-otto.pro', '../proguard/proguard-lock-2.pro'
@@ -34,19 +34,22 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.google.code.gson:gson:2.8.5'
-    compile 'com.squareup:otto:1.3.8'
-    compile 'com.auth0.android:auth0:1.13.2'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'org.robolectric:robolectric:3.1.2'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    testCompile 'com.squareup.okhttp3:mockwebserver:3.1.2'
-    testCompile 'com.jayway.awaitility:awaitility:1.7.0'
-    testCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:customtabs:28.0.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup:otto:1.3.8'
+    api ("com.auth0.android:auth0:1.13.2") {
+        exclude group: 'com.android.support'
+    }
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation 'org.robolectric:robolectric:3.1.2'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.1.2'
+    testImplementation 'com.jayway.awaitility:awaitility:1.7.0'
+    testImplementation 'com.android.support.test.espresso:espresso-intents:2.2.2'
 }

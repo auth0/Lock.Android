@@ -54,7 +54,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         tabLayout.addTab(tabLayout.newTab()
                 .setCustomView(R.layout.com_auth0_lock_tab)
                 .setText(R.string.com_auth0_lock_mode_sign_up));
-        tabLayout.setOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
     }
 
     public void setSelectedMode(@AuthMode int mode) {
