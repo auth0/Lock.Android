@@ -33,7 +33,7 @@ import com.auth0.android.result.Credentials;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasAuthentication;
@@ -43,8 +43,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 21, manifest = Config.NONE)
 public class AuthenticationCallbackTest {
 
     private MockLockCallback callback;

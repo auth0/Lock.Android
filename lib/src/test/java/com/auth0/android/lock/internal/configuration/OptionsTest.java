@@ -2,11 +2,11 @@ package com.auth0.android.lock.internal.configuration;
 
 import android.os.Build;
 import android.os.Parcel;
-import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.AuthButtonSize;
+import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
@@ -18,7 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 21, manifest = Config.NONE)
 public class OptionsTest {
 
     private static final String CLIENT_ID = "CLIENT_ID";
