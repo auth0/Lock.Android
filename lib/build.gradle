@@ -1,5 +1,5 @@
 plugins {
-    id "com.auth0.gradle.oss-library.android" version "0.7.1"
+    id "com.auth0.gradle.oss-library.android" version "0.7.2"
 }
 
 logger.lifecycle("Using version ${version} for ${name}")
@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup:otto:1.3.8'
-    api ('com.auth0.android:auth0:1.14.0')
+    api 'com.auth0.android:auth0:1.14.1'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
     testImplementation 'org.robolectric:robolectric:3.4.2'
