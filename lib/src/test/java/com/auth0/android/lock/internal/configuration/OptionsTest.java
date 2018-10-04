@@ -90,6 +90,19 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetShowTerms() throws Exception {
+        options.setShowTerms(false);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.showTerms(), is(false));
+        assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
+    }
+
+    @Test
     public void shouldSetPrivacyPolicyURL() throws Exception {
         options.setPrivacyURL("https://valid.url/privacy");
 
@@ -700,6 +713,7 @@ public class OptionsTest {
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
+        assertThat(options.showTerms(), is(true));
         assertThat(options.useLabeledSubmitButton(), is(true));
         assertThat(options.hideMainScreenTitle(), is(false));
         assertThat(options.rememberLastPasswordlessAccount(), is(false));
@@ -726,6 +740,7 @@ public class OptionsTest {
         options.setAllowShowPassword(true);
         options.setClosable(true);
         options.setMustAcceptTerms(true);
+        options.setShowTerms(true);
         options.setAuthButtonSize(AuthButtonSize.BIG);
         options.setLoginAfterSignUp(true);
         options.setUseLabeledSubmitButton(true);
@@ -739,6 +754,7 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
+        assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
@@ -767,6 +783,7 @@ public class OptionsTest {
         options.setAllowForgotPassword(false);
         options.setAllowShowPassword(false);
         options.setMustAcceptTerms(false);
+        options.setShowTerms(false);
         options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
         options.setUseLabeledSubmitButton(false);
@@ -780,6 +797,7 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
+        assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
         assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
