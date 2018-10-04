@@ -568,8 +568,8 @@ public class Lock {
         }
 
         /**
-         * Displays the Privacy Policy and Terms of Service dialog.
-         * Note: The dialog will always be shown if the mustAcceptTerms flag has been enabled.
+         * Displays the Privacy Policy and Terms of Service footer on the Sign Up screen.
+         * Note: The footer will always be shown if the mustAcceptTerms flag has been enabled.
          * The default value is true.
          *
          * @param showTerms whether the Terms of Service are displayed.
