@@ -25,7 +25,6 @@
 package com.auth0.android.lock.internal.configuration;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
@@ -34,16 +33,11 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 
-import com.auth0.android.lock.BuildConfig;
-import com.auth0.android.lock.LockActivity;
 import com.auth0.android.lock.R;
-import com.thoughtworks.xstream.converters.extended.LookAndFeelConverter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -53,7 +47,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config(sdk = 21)
 public class ThemeTest {
 
     @StringRes

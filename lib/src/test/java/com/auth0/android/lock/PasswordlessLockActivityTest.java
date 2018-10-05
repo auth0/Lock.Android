@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
+@Config(sdk = 21, manifest = "AndroidManifest.xml")
 public class PasswordlessLockActivityTest {
 
     private static final int REQ_CODE_WEB_PROVIDER = 200;

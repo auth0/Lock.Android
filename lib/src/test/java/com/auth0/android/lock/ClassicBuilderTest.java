@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -26,7 +25,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = android.support.v7.appcompat.BuildConfig.class, sdk = 23, manifest = Config.NONE)
+@Config(sdk = 23, manifest = Config.NONE)
 public class ClassicBuilderTest {
 
     @Rule

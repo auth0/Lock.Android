@@ -32,6 +32,36 @@ Lock is available both in [Maven Central](http://search.maven.org) and [JCenter]
 compile 'com.auth0.android:lock:2.10.0'
 ```
 
+#### Android SDK Versions Troubleshooting
+Those using this library from version `2.11.0` and up should start targeting latest android SDK versions, as [recommended by Google](https://developer.android.com/distribute/best-practices/develop/target-sdk). Those running into conflicts because of different `com.android.support` libraries versions can choose to use latest release `28.0.0` or exclude the ones required by this library and require a different version in their app's `build.gradle` file as shown below:
+
+
+e.g. if choosing an older version such as `25.4.0`
+
+```groovy
+apply plugin: 'com.android.application'
+
+android {
+    //...
+}
+
+dependencies {
+    implementation ('com.auth0.android:lock:2.10.0'){
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        exclude group: 'com.android.support', module: 'customtabs'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:customtabs:25.4.0'
+    implementation 'com.android.support:support-v4:25.4.0'
+    implementation 'com.android.support:design:25.4.0'
+    implementation 'com.android.support:recyclerview-v7:25.4.0'
+    //...
+}
+```
+
 ## Usage
 
 If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free! Then create a new [Application](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
