@@ -73,6 +73,7 @@ public class Options implements Parcelable {
     private boolean allowShowPassword;
     private boolean loginAfterSignUp;
     private boolean mustAcceptTerms;
+    private boolean showTerms;
     private boolean useLabeledSubmitButton;
     private boolean hideMainScreenTitle;
     private boolean rememberLastPasswordlessLogin;
@@ -101,6 +102,7 @@ public class Options implements Parcelable {
         allowForgotPassword = true;
         allowShowPassword = true;
         loginAfterSignUp = true;
+        showTerms = true;
         useCodePasswordless = true;
         usePKCE = true;
         useLabeledSubmitButton = true;
@@ -123,6 +125,7 @@ public class Options implements Parcelable {
         allowShowPassword = in.readByte() != WITHOUT_DATA;
         loginAfterSignUp = in.readByte() != WITHOUT_DATA;
         mustAcceptTerms = in.readByte() != WITHOUT_DATA;
+        showTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         useLabeledSubmitButton = in.readByte() != WITHOUT_DATA;
         hideMainScreenTitle = in.readByte() != WITHOUT_DATA;
@@ -201,6 +204,7 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (allowShowPassword ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (loginAfterSignUp ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (showTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useLabeledSubmitButton ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (hideMainScreenTitle ? HAS_DATA : WITHOUT_DATA));
@@ -484,6 +488,14 @@ public class Options implements Parcelable {
 
     public boolean mustAcceptTerms() {
         return mustAcceptTerms;
+    }
+
+    public void setShowTerms(boolean showTerms) {
+        this.showTerms = showTerms;
+    }
+
+    public boolean showTerms() {
+        return showTerms;
     }
 
     public void withAuthStyle(@NonNull String connectionName, @StyleRes int style) {

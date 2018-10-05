@@ -105,6 +105,8 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         LayoutParams wrapHeightParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LayoutParams formLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
+        boolean displayTerms = configuration.showTerms() || configuration.mustAcceptTerms();
+
         headerView = new HeaderView(getContext(), lockTheme);
         resetHeaderTitle();
         addView(headerView, wrapHeightParams);
@@ -116,15 +118,17 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         formLayout = new FormLayout(this);
         addView(formLayout, formLayoutParams);
 
-        bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
-        bottomBanner.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSignUpTermsDialog(null);
-            }
-        });
-        bottomBanner.setVisibility(GONE);
-        addView(bottomBanner, wrapHeightParams);
+        if (displayTerms) {
+            bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
+            bottomBanner.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSignUpTermsDialog(null);
+                }
+            });
+            bottomBanner.setVisibility(GONE);
+            addView(bottomBanner, wrapHeightParams);
+        }
 
         actionButton = new ActionButton(getContext(), lockTheme);
         actionButton.setOnClickListener(new OnClickListener() {
@@ -157,7 +161,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         }
 
         if (configuration.getInitialScreen() == InitialScreen.SIGN_UP) {
-            showBottomBanner(true);
+            showBottomBanner(displayTerms);
             updateButtonLabel(R.string.com_auth0_lock_action_sign_up);
         } else if (configuration.allowForgotPassword() && configuration.getInitialScreen() == InitialScreen.FORGOT_PASSWORD) {
             showChangePasswordForm(true);
@@ -297,7 +301,9 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     private void showSignUpTerms(boolean show) {
-        bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        if (bottomBanner != null) {
+            bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        }
     }
 
     /**
