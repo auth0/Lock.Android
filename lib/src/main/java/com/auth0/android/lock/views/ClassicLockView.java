@@ -301,7 +301,9 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     private void showSignUpTerms(boolean show) {
-        bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        if (bottomBanner != null) {
+            bottomBanner.setVisibility(show ? VISIBLE : GONE);
+        }
     }
 
     /**
