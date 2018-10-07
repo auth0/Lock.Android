@@ -85,11 +85,11 @@ In your app/build.gradle file add the **Manifest Placeholders** for the Auth0 Do
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.auth0.samples"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 28
         //...
 
         //---> Add the next line
