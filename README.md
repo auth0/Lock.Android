@@ -106,7 +106,7 @@ The next step is to create an instance of `Auth0` with your applications informa
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
 ```
 
-Alternatively, if you are using _custom domains_ and require to specify a different URL to fetch the Lock widget configuration from, you can use the 3 String constructor:
+Alternatively, if you are using _custom domains_ and are required to specify a different URL to fetch the Lock widget configuration from, you can use the 3 String constructor:
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}", "{THE_CONFIGURATION_DOMAIN}");
