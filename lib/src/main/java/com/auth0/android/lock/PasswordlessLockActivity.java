@@ -547,7 +547,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         public void onFailure(final AuthenticationException exception) {
             final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
             final String message = authError.getMessage(PasswordlessLockActivity.this);
-            ;
             Log.e(TAG, "Failed to authenticate the user: " + message, exception);
             handler.post(new Runnable() {
                 @Override
