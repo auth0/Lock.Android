@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation ('com.auth0.android:lock:2.10.0'){
+    implementation ('com.auth0.android:lock:2.11.0'){
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'customtabs'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -104,6 +104,12 @@ The next step is to create an instance of `Auth0` with your applications informa
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
+```
+
+Alternatively, if you are using _custom domains_ and require to specify a different URL to fetch the Lock widget configuration from, you can use the 3 String constructor:
+
+```java
+Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}", "{THE_CONFIGURATION_DOMAIN}");
 ```
 
 Another way to create it is using the values defined previously in the `string.xml` file, by passing an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
