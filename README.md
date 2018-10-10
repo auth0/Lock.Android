@@ -100,7 +100,7 @@ android {
 }
 ```
 
-The next step is to create an instance of `Auth0` with your applications information:
+The next step is to create an instance of `Auth0` with your application's information:
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
@@ -120,7 +120,7 @@ Auth0 account = new Auth0(context);
 
 ## OIDC Conformant Mode
 
-It is strongly encouraged that Lock be used in OIDC Conformant mode. When this mode is enabled, it will force Lock to use Auth0's current authentication pipeline and will prevent it from reaching legacy endpoints. By default is `false`.
+It is strongly encouraged that Lock should be used in OIDC Conformant mode. When this mode is enabled, it will force Lock to use Auth0's current authentication pipeline and will prevent it from reaching legacy endpoints. By default is `false`.
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
@@ -369,7 +369,7 @@ startActivity(lock.newIntent(this));
 The current default scheme used by the library to generate the Redirect URL for Web Authentication is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html). However, in previous Android versions this may show the intent chooser dialog prompting the user to choose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
 
 1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file by changing the existing scheme to the new one.
-2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Applications's settings to match URLs that begin with the new scheme.
+2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Applications' settings to match URLs that begin with the new scheme.
 3. Call `withScheme()` in the Lock.Builder/PasswordlessLock.Builder passing the scheme you want to use.
 
 > The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
@@ -391,7 +391,7 @@ Auth0 helps you to:
 * Add authentication through more traditional **[username/password databases](https://docs.auth0.com/mysql-connection-tutorial)**.
 * Add support for **[linking different user accounts](https://docs.auth0.com/link-accounts)** with the same user.
 * Support for generating signed [Json Web Tokens](https://docs.auth0.com/jwt) to call your APIs and **flow the user identity** securely.
-* Analytics of how, when and where users are logging in.
+* Analytics on how, when and where users are logging in.
 * Pull data from other sources and add it to the user profile, through [JavaScript rules](https://docs.auth0.com/rules).
 
 ## Create a free account in Auth0
