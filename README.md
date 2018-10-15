@@ -64,7 +64,7 @@ dependencies {
 
 ## Usage
 
-If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free! Then create a new [Application](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
+If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free and will always be! Then create a new [Application](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
 
 ```
 https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
@@ -79,7 +79,7 @@ The *package name* value required in the Callback URL can be found in your app's
 </resources>
 ```
 
-In your app/build.gradle file add the **Manifest Placeholders** for the Auth0 Domain and Auth0 Scheme properties which are going to be used internally by the library to register an **intent-filter**. You can also add the intent-filter manually to the corresponding Lock activity in the Android Manifest as described later.
+It is necessary that in your app/build.gradle file add the **Manifest Placeholders** for the Auth0 Domain and Auth0 Scheme properties which are going to be used internally by the library to register an **intent-filter**. You can also add the intent-filter manually to the corresponding Lock activity in the Android Manifest as described later.
 
 ```groovy
 apply plugin: 'com.android.application'
@@ -100,7 +100,7 @@ android {
 }
 ```
 
-The next step is to create an instance of `Auth0` with your applications information:
+The next step is to create an instance of `Auth0` with your applications information in Oncreate function :
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
