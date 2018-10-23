@@ -112,7 +112,7 @@ Alternatively, if you are using _custom domains_ and are required to specify a d
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}", "{THE_CONFIGURATION_DOMAIN}");
 ```
 
-Another way to create it, is by using the values defined previously in the `string.xml` file, by passing an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
+Another way to create it is by using the values defined previously in the `string.xml` file and passing an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
 
 ```java
 Auth0 account = new Auth0(context);
@@ -151,7 +151,7 @@ Next, add the `LockActivity` inside the `application` tag:
   android:theme="@style/Lock.Theme"/>
 ```
 
-> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make it possible to the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
+> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make it possible for the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
 In case you are using an older version of Lock for **Social** Authentication, the **intent-filter** must be added to the `LockActivity` by you.
 
