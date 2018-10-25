@@ -153,7 +153,7 @@ Next, add the `LockActivity` inside the `application` tag:
 
 > In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make possible to the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
-In case you are using an older version of Lock for **Social** Authentication, the **intent-filter** must be added to the `LockActivity` by you.
+If you are using an older version of Lock for **Social** Authentication, the **intent-filter** must be added to the `LockActivity` by you.
 
 ```xml
 <activity
@@ -227,7 +227,7 @@ public class HomeActivity extends Activity {
 }
 ```
 
-Start `LockActivity` from inside your `Activity`.
+Start `LockActivity` from inside your `Activity`:
 
 ```java
 startActivity(lock.newIntent(this));
@@ -269,11 +269,11 @@ Next, add the `PasswordlessLockActivity` inside the `application` tag:
 </activity>
 ```
 
-The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`.
+The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case it's going to capture calls from `email` passwordless connections. If you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`.
 
 > In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make possible to the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
-In case you are using an older version of Lock for **Social** Authentication, the **data** attribute inside the intent-filter must be added to the `PasswordlessLockActivity` by you.
+If you are using an older version of Lock for **Social** Authentication, the **data** attribute inside the intent-filter must be added to the `PasswordlessLockActivity` by you.
 
 ```xml
 <activity
@@ -387,12 +387,12 @@ As this library depends on `Auth0.Android`, you should keep the files up to date
 
 Auth0 helps you to:
 
-* Add authentication with [multiple authentication sources](https://docs.auth0.com/identityproviders), either social like **Google, Facebook, Microsoft Account, LinkedIn, GitHub, Twitter, Box, Salesforce, among others**, or enterprise identity systems like **Windows Azure AD, Google Apps, Active Directory, ADFS or any SAML Identity Provider**.
+* Add authentication with [multiple authentication sources](https://docs.auth0.com/identityproviders); either social like **Google, Facebook, Microsoft Account, LinkedIn, GitHub, Twitter, Box, Salesforce, among others**, or enterprise identity systems like **Windows Azure AD, Google Apps, Active Directory, ADFS or any SAML Identity Provider**.
 * Add authentication through more traditional **[username/password databases](https://docs.auth0.com/mysql-connection-tutorial)**.
 * Add support for **[linking different user accounts](https://docs.auth0.com/link-accounts)** with the same user.
 * Support for generating signed [Json Web Tokens](https://docs.auth0.com/jwt) to call your APIs and **flow the user identity** securely.
 * Analytics of how, when and where users are logging in.
-* Pull data from other sources and add it to the user profile, through [JavaScript rules](https://docs.auth0.com/rules).
+* Pull data from other sources and add it to the user profile through [JavaScript rules](https://docs.auth0.com/rules).
 
 ## Create a free account in Auth0
 
