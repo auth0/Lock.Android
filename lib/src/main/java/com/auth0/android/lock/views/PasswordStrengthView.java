@@ -38,8 +38,6 @@ import java.util.regex.Pattern;
 
 public class PasswordStrengthView extends LinearLayout {
 
-    private static final String TAG = PasswordStrengthView.class.getSimpleName();
-
     private static final int MAX_IDENTICAL_CHARACTERS = 2;
     private static final int MAX_LENGTH = 128;
     private static final int MIN_LENGTH_EXCELLENT = 10;

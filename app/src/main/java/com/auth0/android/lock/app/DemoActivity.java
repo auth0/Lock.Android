@@ -193,6 +193,7 @@ public class DemoActivity extends AppCompatActivity {
                 builder.setDefaultDatabaseConnection("Username-Password-Authentication");
             }
         }
+
         builder.hideMainScreenTitle(checkboxHideMainScreenTitle.isChecked());
         lock = builder.build(this);
 

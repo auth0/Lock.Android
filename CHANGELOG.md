@@ -1,5 +1,20 @@
 # Change Log
 
+## [2.11.1](https://github.com/auth0/Lock.Android/tree/2.11.1) (2018-10-16)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.11.0...2.11.1)
+
+**Fixed**
+- Handle Tab change manually on ModeSelectionView [\#499](https://github.com/auth0/Lock.Android/pull/499) ([lbalmaceda](https://github.com/lbalmaceda))
+
+## [2.11.0](https://github.com/auth0/Lock.Android/tree/2.11.0) (2018-10-05)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.10.0...2.11.0)
+
+**Added**
+- Added showTerms feature flag [\#487](https://github.com/auth0/Lock.Android/pull/487) ([cocojoe](https://github.com/cocojoe))
+
+**Fixed**
+- Use target SDK 28 and latest Auth0 SDK version [\#484](https://github.com/auth0/Lock.Android/pull/484) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.10.0](https://github.com/auth0/Lock.Android/tree/2.10.0) (2018-09-14)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.9.0...2.10.0)
 

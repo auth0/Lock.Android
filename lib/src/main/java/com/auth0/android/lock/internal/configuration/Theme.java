@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -61,6 +62,7 @@ public class Theme implements Parcelable {
         this.darkPrimaryColor = darkPrimaryColor;
     }
 
+    @SuppressLint("ResourceType")
     private String resolveStringResource(Context context, @StringRes int res, @AttrRes int attrName) {
         if (res > 0) {
             return context.getString(res);
@@ -71,6 +73,7 @@ public class Theme implements Parcelable {
         return context.getString(typedValue.resourceId);
     }
 
+    @SuppressLint("ResourceType")
     @ColorInt
     private int resolveColorResource(Context context, @ColorRes int res, @AttrRes int attrName) {
         if (res > 0) {
@@ -82,6 +85,7 @@ public class Theme implements Parcelable {
         return ContextCompat.getColor(context, typedValue.resourceId);
     }
 
+    @SuppressLint("ResourceType")
     private Drawable resolveDrawableResource(Context context, @DrawableRes int res, @AttrRes int attrName) {
         if (res > 0) {
             return ContextCompat.getDrawable(context, res);

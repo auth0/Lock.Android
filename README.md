@@ -29,7 +29,37 @@ Android API Level 15+ is required in order to use Lock's UI.
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:2.10.0'
+implementation 'com.auth0.android:lock:2.11.1'
+```
+
+#### Android SDK Versions Troubleshooting
+Those using this library from version `2.11.1` and up should start targeting latest android SDK versions, as [recommended by Google](https://developer.android.com/distribute/best-practices/develop/target-sdk). Those running into conflicts because of different `com.android.support` libraries versions can choose to use latest release `28.0.0` or exclude the ones required by this library and require a different version in their app's `build.gradle` file as shown below:
+
+
+e.g. if choosing an older version such as `25.4.0`
+
+```groovy
+apply plugin: 'com.android.application'
+
+android {
+    //...
+}
+
+dependencies {
+    implementation ('com.auth0.android:lock:2.11.1'){
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        exclude group: 'com.android.support', module: 'customtabs'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:customtabs:25.4.0'
+    implementation 'com.android.support:support-v4:25.4.0'
+    implementation 'com.android.support:design:25.4.0'
+    implementation 'com.android.support:recyclerview-v7:25.4.0'
+    //...
+}
 ```
 
 ## Usage
@@ -55,11 +85,11 @@ In your app/build.gradle file add the **Manifest Placeholders** for the Auth0 Do
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.auth0.samples"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 28
         //...
 
         //---> Add the next line
@@ -76,7 +106,13 @@ The next step is to create an instance of `Auth0` with your application's inform
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
 ```
 
-Another way to create it is using the values defined previously in the `string.xml` file, by passing an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
+Alternatively, if you are using _custom domains_ and are required to specify a different URL to fetch the Lock widget configuration from, you can use the 3 String constructor:
+
+```java
+Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}", "{THE_CONFIGURATION_DOMAIN}");
+```
+
+Another way to create it is by using the values defined previously in the `string.xml` file and passing an Android Context. The name of the keys must match the ones listed above or the constructor will throw an exception.
 
 ```java
 Auth0 account = new Auth0(context);
@@ -84,7 +120,7 @@ Auth0 account = new Auth0(context);
 
 ## OIDC Conformant Mode
 
-It is strongly encouraged that Lock be used in OIDC Conformant mode. When this mode is enabled, it will force Lock to use Auth0's current authentication pipeline and will prevent it from reaching legacy endpoints. By default is `false`.
+It is strongly encouraged that Lock be used in OIDC Conformant mode. When this mode is enabled, it will force Lock to use Auth0's current authentication pipeline and will prevent it from reaching legacy endpoints. By default it is `false`.
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
@@ -115,7 +151,7 @@ Next, add the `LockActivity` inside the `application` tag:
   android:theme="@style/Lock.Theme"/>
 ```
 
-> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make possible to the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
+> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `LockActivity` to make it possible for the library to capture a social provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
 In case you are using an older version of Lock for **Social** Authentication, the **intent-filter** must be added to the `LockActivity` by you.
 
@@ -235,7 +271,7 @@ Next, add the `PasswordlessLockActivity` inside the `application` tag:
 
 The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`.
 
-> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make possible to the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
+> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make it possible for the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
 In case you are using an older version of Lock for **Social** Authentication, the **data** attribute inside the intent-filter must be added to the `PasswordlessLockActivity` by you.
 

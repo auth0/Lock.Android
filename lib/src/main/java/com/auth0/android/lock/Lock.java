@@ -568,6 +568,19 @@ public class Lock {
         }
 
         /**
+         * Displays the Privacy Policy and Terms of Service footer on the Sign Up screen.
+         * Note: The footer will always be shown if the mustAcceptTerms flag has been enabled.
+         * The default value is true.
+         *
+         * @param showTerms whether the Terms of Service are displayed.
+         * @return the current builder instance
+         */
+        public Builder setShowTerms(boolean showTerms) {
+            options.setShowTerms(showTerms);
+            return this;
+        }
+
+        /**
          * Sets the Connection Scope to request when performing an Authentication with the given Connection.
          *
          * @param connectionName to which specify the scopes.

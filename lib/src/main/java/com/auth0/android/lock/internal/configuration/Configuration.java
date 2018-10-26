@@ -60,6 +60,7 @@ public class Configuration {
     private boolean allowShowPassword;
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
+    private boolean showTerms;
     private boolean useLabeledSubmitButton;
     private boolean hideMainScreenTitle;
     private boolean passwordlessAutoSubmit;
@@ -186,6 +187,7 @@ public class Configuration {
         socialButtonStyle = options.authButtonSize();
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
+        showTerms = options.showTerms();
         useLabeledSubmitButton = options.useLabeledSubmitButton();
         hideMainScreenTitle = options.hideMainScreenTitle();
         passwordlessAutoSubmit = options.rememberLastPasswordlessAccount();
@@ -311,6 +313,10 @@ public class Configuration {
 
     public boolean mustAcceptTerms() {
         return mustAcceptTerms;
+    }
+
+    public boolean showTerms() {
+        return showTerms;
     }
 
     public boolean useLabeledSubmitButton() {

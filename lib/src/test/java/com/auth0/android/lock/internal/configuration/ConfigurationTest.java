@@ -106,6 +106,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.getPasswordComplexity(), is(notNullValue()));
         assertThat(configuration.getPasswordComplexity().getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
+        assertThat(configuration.showTerms(), is(true));
         assertThat(configuration.useLabeledSubmitButton(), is(true));
         assertThat(configuration.hideMainScreenTitle(), is(false));
         assertThat(configuration.usePasswordlessAutoSubmit(), is(false));
@@ -563,6 +564,13 @@ public class ConfigurationTest extends GsonBaseTest {
         options.setMustAcceptTerms(true);
         configuration = new Configuration(connections, options);
         assertThat(configuration.mustAcceptTerms(), is(true));
+    }
+
+    @Test
+    public void shouldHaveShowTermsDisabled() throws Exception {
+        options.setShowTerms(false);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.showTerms(), is(false));
     }
 
     @Test

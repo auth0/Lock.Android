@@ -26,6 +26,7 @@ package com.auth0.android.lock.utils;
 
 import android.os.Bundle;
 
+import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.views.ValidatedInputView;
@@ -34,7 +35,7 @@ import com.auth0.android.lock.views.ValidatedInputView.DataType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -42,8 +43,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = android.support.v7.appcompat.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 21, manifest = Config.NONE)
 public class CustomFieldTest {
 
     private static final int ICON = R.drawable.com_auth0_lock_ic_email;
