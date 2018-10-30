@@ -33,7 +33,7 @@ implementation 'com.auth0.android:lock:2.11.1'
 ```
 
 #### Android SDK Versions Troubleshooting
-Those using this library from version `2.11.1` and up should start targeting latest android SDK versions, as [recommended by Google](https://developer.android.com/distribute/best-practices/develop/target-sdk). Those running into conflicts because of different `com.android.support` libraries versions can choose to use latest release `28.0.0` or exclude the ones required by this library and require a different version in their app's `build.gradle` file as shown below:
+Those using this library from version `2.11.1` and up should start targeting latest android SDK versions, as [recommended by Google](https://developer.android.com/distribute/best-practices/develop/target-sdk). Those running into conflicts because of different `com.android.support` libraries' versions can choose to use latest release `28.0.0` or exclude the ones required by this library and require a compatible version in their app's `build.gradle` file as shown below:
 
 
 e.g. if choosing an older version such as `25.4.0`
