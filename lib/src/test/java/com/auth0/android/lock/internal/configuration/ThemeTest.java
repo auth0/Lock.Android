@@ -25,6 +25,7 @@
 package com.auth0.android.lock.internal.configuration;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
@@ -35,6 +36,7 @@ import android.util.TypedValue;
 
 import com.auth0.android.lock.R;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +47,7 @@ import org.robolectric.annotation.Config;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 21)
@@ -80,9 +83,11 @@ public class ThemeTest {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
-
-        final Drawable headerLogo = theme.getHeaderLogo(context);
-        assertThat(headerLogo, is(equalTo(ContextCompat.getDrawable(context, getLockThemeResourceId(context, R.attr.Auth0_HeaderLogo)))));
+        Drawable drawable1 = theme.getHeaderLogo(context);
+        Drawable drawable2 = ContextCompat.getDrawable(context, getLockThemeResourceId(context, R.attr.Auth0_HeaderLogo));
+        int d1 = shadowOf(drawable1).getCreatedFromResId();
+        int d2 = shadowOf(drawable2).getCreatedFromResId();
+        Assert.assertThat(d1, is(equalTo(d2)));
     }
 
     @Test
@@ -140,10 +145,11 @@ public class ThemeTest {
     public void shouldResolveCustomHeaderLogo() throws Exception {
         final Theme theme = builder.withHeaderLogo(DRAWABLE_RES).build();
         final Context context = RuntimeEnvironment.application;
-
-        final Drawable headerLogo = theme.getHeaderLogo(context);
-        final Drawable actualLogo = ContextCompat.getDrawable(context, DRAWABLE_RES);
-        assertThat(headerLogo, is(equalTo(actualLogo)));
+        Drawable drawable1 = theme.getHeaderLogo(context);
+        Drawable drawable2 = ContextCompat.getDrawable(context, DRAWABLE_RES);
+        int d1 = shadowOf(drawable1).getCreatedFromResId();
+        int d2 = shadowOf(drawable2).getCreatedFromResId();
+        Assert.assertThat(d1, is(equalTo(d2)));
     }
 
     @Test

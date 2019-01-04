@@ -44,7 +44,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class CustomFieldTest {
 
     private static final int ICON = R.drawable.com_auth0_lock_ic_email;

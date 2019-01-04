@@ -64,7 +64,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class ConfigurationTest extends GsonBaseTest {
 
     private static final String RESTRICTIVE_DATABASE = "RestrictiveDatabase";
