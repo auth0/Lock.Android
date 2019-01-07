@@ -43,7 +43,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class ConnectionTest {
 
     private static final String CONNECTION_NAME = "Username-Password";
