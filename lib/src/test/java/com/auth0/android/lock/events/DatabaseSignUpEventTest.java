@@ -49,7 +49,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class DatabaseSignUpEventTest {
 
     private static final String EMAIL = "email";
