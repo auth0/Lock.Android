@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class PasswordStrengthViewTest {
 
     public static final String PASSWORD_TOO_LONG = "otPtgNsthiK98lw61BEwevHChF87YMNqVZDpvxgAWBESkBL" +

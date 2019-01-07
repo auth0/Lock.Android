@@ -50,7 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class PasswordlessLoginEventTest {
 
     private static final String CONNECTION_NAME = "connectionName";
