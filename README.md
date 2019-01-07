@@ -100,7 +100,7 @@ android {
 }
 ```
 
-The next step is to create an instance of `Auth0` with your applications information:
+The next step is to create an instance of `Auth0` with your application's information:
 
 ```java
 Auth0 account = new Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}");
@@ -366,10 +366,10 @@ startActivity(lock.newIntent(this));
 ```
 
 #### Android App Links - Custom Scheme
-The current default scheme used by the library to generate the Redirect URL for Web Authentication is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html). However, in previous Android versions this may show the intent chooser dialog prompting the user to choose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
+The current default scheme used by the library to generate the Redirect URL for Web Authentication is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html). However, in previous Android versions, this may show the intent chooser dialog prompting the user to choose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
 
 1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file by changing the existing scheme to the new one.
-2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Applications's settings to match URLs that begin with the new scheme.
+2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Application's settings to match URLs that begin with the new scheme.
 3. Call `withScheme()` in the Lock.Builder/PasswordlessLock.Builder passing the scheme you want to use.
 
 > The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
