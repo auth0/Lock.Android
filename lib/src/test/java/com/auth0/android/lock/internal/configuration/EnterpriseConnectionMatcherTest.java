@@ -46,7 +46,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = com.auth0.android.lock.BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class EnterpriseConnectionMatcherTest {
 
     private static final String ENTERPRISE_STRATEGY = "adfs";
