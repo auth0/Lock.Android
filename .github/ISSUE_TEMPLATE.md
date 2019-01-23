@@ -28,9 +28,7 @@ Description of the bug or feature request and why it's a problem. Consider inclu
 Please provide the following:
 
 - Version of the Lock.Android used:
-- Version of the Lock used:
 - Version of the Android used:
-- Versions of Gradle, Android Plugin, Build tools & Android SDK
 - Additional packages that might be affecting your instance:
 
 ### Reproduction
@@ -41,6 +39,5 @@ Please include:
 
 - Phone model used to test
 - Code snippet or sample project that reproduces the bug
-- Log files (redact/remove sensitive information)
-- Application settings (redact/remove sensitive information)
+- Log files or stacktraces (redact/remove sensitive information)
 - Screenshots, if helpful
