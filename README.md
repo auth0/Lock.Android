@@ -180,7 +180,7 @@ In case you are using an older version of Lock for **Social** Authentication, th
 Make sure the Activity's `launchMode` is declared as `singleTask` or the result won't come back in the authentication.
 
 
-Then in any of your Activities, you need to initialize **Lock**. If your `auth0Scheme` value is not `https` you need to use `withScheme()` as shown below.
+Then, in any of your Activities, you need to initialize **Lock**. If your `auth0Scheme` value is not `https` you need to use `withScheme()` as shown below.
 
 ```java
 // This activity will show Lock
@@ -271,7 +271,7 @@ Next, add the `PasswordlessLockActivity` inside the `application` tag:
 
 The `data` attribute of the intent-filter defines which syntax of "Callback URI" your app is going to capture. In the above case, it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` would end in `sms`.
 
-> In versions 2.5.0 or lower of Lock. Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make it possible for the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
+> In versions 2.5.0 or lower of Lock.Android you had to define an **intent-filter** inside the `PasswordlessLockActivity` to make it possible for the library to capture a **Social** provider's authentication result. This intent-filter declaration is no longer required for versions greater than 2.5.0, as it's now done internally by the library for you.
 
 In case you are using an older version of Lock for **Social** Authentication, the **data** attribute inside the intent-filter must be added to the `PasswordlessLockActivity` by you.
 
@@ -312,7 +312,7 @@ When the Passwordless connection is SMS you must also add the `CountryCodeActivi
 ```
 
 
-Then in any of your Activities, you need to initialize **PasswordlessLock**. If your `auth0Scheme` value is not `https` you need to use `withScheme()` as shown below.
+Then, in any of your Activities, you need to initialize **PasswordlessLock**. If your `auth0Scheme` value is not `https` you need to use `withScheme()` as shown below.
 
 ```java
 // This activity will show Lock
@@ -369,7 +369,7 @@ startActivity(lock.newIntent(this));
 The current default scheme used by the library to generate the Redirect URL for Web Authentication is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html). However, in previous Android versions, this may show the intent chooser dialog prompting the user to choose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme so that the OS opens the link directly with your app.
 
 1. Update the `auth0Scheme` Manifest Placeholder value in the `app/build.gradle` file or the Intent Filter definition in the `AndroidManifest.xml` file by changing the existing scheme to the new one.
-2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Applications' settings to match URLs that begin with the new scheme.
+2. Update the Allowed Callback URLs in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) Application's settings to match URLs that begin with the new scheme.
 3. Call `withScheme()` in the Lock.Builder/PasswordlessLock.Builder passing the scheme you want to use.
 
 > The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
