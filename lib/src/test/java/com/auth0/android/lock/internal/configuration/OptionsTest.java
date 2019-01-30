@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class OptionsTest {
 
     private static final String CLIENT_ID = "CLIENT_ID";

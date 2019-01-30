@@ -25,7 +25,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 23, manifest = Config.NONE)
+@Config(sdk = 23)
 public class PasswordlessBuilderTest {
 
     @Rule

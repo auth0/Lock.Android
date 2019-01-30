@@ -3,7 +3,6 @@ package com.auth0.android.lock.views;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
-import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
 
@@ -20,9 +19,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 21, manifest = Config.NONE)
+@Config(sdk = 21)
 public class AuthConfigTest {
 
     private AuthConfig authConfig;
@@ -51,8 +51,11 @@ public class AuthConfigTest {
     @Test
     public void shouldGetLogo() throws Exception {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
-        final Drawable drawable = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_facebook);
-        Assert.assertThat(authConfig.getLogo(RuntimeEnvironment.application), is(equalTo(drawable)));
+        Drawable drawable1 = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_facebook);
+        Drawable drawable2 = authConfig.getLogo(RuntimeEnvironment.application);
+        int d1 = shadowOf(drawable1).getCreatedFromResId();
+        int d2 = shadowOf(drawable2).getCreatedFromResId();
+        Assert.assertThat(d1, is(equalTo(d2)));
     }
 
     @Test
@@ -73,8 +76,11 @@ public class AuthConfigTest {
     public void shouldHaveValidDefaultLogo() throws Exception {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
-        final Drawable drawable = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_facebook);
-        Assert.assertThat(defaultConfig.getLogo(RuntimeEnvironment.application), is(equalTo(drawable)));
+        Drawable drawable1 = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_auth0);
+        Drawable drawable2 = defaultConfig.getLogo(RuntimeEnvironment.application);
+        int d1 = shadowOf(drawable1).getCreatedFromResId();
+        int d2 = shadowOf(drawable2).getCreatedFromResId();
+        Assert.assertThat(d1, is(equalTo(d2)));
     }
 
     @Test

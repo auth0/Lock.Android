@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 21, manifest = "AndroidManifest.xml")
+@Config(sdk = 21)
 public class WebProviderTest {
 
     @Rule
