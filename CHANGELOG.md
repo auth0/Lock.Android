@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.12.0](https://github.com/auth0/Lock.Android/tree/2.12.0) (2019-01-30)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.11.0...2.12.0)
+
+**Changed**
+- Use latest Auth0.Android SDK [\#520](https://github.com/auth0/Lock.Android/pull/520) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.11.1](https://github.com/auth0/Lock.Android/tree/2.11.1) (2018-10-16)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.11.0...2.11.1)
 
