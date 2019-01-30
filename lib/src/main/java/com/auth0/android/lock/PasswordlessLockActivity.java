@@ -381,7 +381,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     public void onFetchApplicationRequest(FetchApplicationEvent event) {
         if (applicationFetcher == null) {
             Auth0 account = options.getAccount();
-            OkHttpClient client = new OkHttpClientFactory().createClient(account.isLoggingEnabled(), account.isTLS12Enforced());
+            OkHttpClient client = new OkHttpClientFactory().createClient(account.isLoggingEnabled(), account.isTLS12Enforced(),
+                    account.getConnectTimeoutInSeconds(), account.getReadTimeoutInSeconds(), account.getWriteTimeoutInSeconds());
             applicationFetcher = new ApplicationFetcher(account, client);
             applicationFetcher.fetch(applicationCallback);
         }
