@@ -141,6 +141,7 @@
     <string name="com_auth0_lock_db_signup_password_already_used_error_message">THE PASSWORD WAS USED PREVIOUSLY</string>
     <string name="com_auth0_lock_db_signup_password_not_strong_error_message">THE PASSWORD IS NOT STRONG ENOUGH</string>
     <string name="com_auth0_lock_db_too_many_attempts_error_message">YOUR ACCOUNT HAS BEEN BLOCKED AFTER MULTIPLE CONSECUTIVE LOGIN ATTEMPTS</string>
+    <string name="com_auth0_lock_db_password_leaked_error_message">THIS PASSWORD WAS FOUND IN A 3RD PARTY DATA BREACH. PLEASE CHANGE YOUR PASSWORD.</string>
     <string name="com_auth0_lock_passwordless_code_request_error_message">THERE WAS AN ERROR SENDING THE CODE</string>
     <string name="com_auth0_lock_passwordless_link_request_error_message">THERE WAS AN ERROR SENDING THE LINK</string>
     <string name="com_auth0_lock_passwordless_login_error_invalid_credentials_message">WRONG IDENTITY OR PASSCODE</string>
