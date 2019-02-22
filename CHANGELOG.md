@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.12.1](https://github.com/auth0/Lock.Android/tree/2.12.1) (2019-02-22)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.12.0...2.12.1)
+
+**Fixed**
+- Parse 'password_leaked' error message [\#522](https://github.com/auth0/Lock.Android/pull/522) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.12.0](https://github.com/auth0/Lock.Android/tree/2.12.0) (2019-01-30)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.11.0...2.12.0)
 
