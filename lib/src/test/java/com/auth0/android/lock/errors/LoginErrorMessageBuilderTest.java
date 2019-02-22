@@ -56,6 +56,13 @@ public class LoginErrorMessageBuilderTest {
     }
 
     @Test
+    public void shouldHaveCustomMessageIfPasswordLeaked() throws Exception {
+        Mockito.when(exception.isPasswordLeaked()).thenReturn(true);
+        final AuthenticationError error = builder.buildFrom(exception);
+        assertThat(error.getMessageRes(), is(equalTo(R.string.com_auth0_lock_db_password_leaked_error_message)));
+    }
+
+    @Test
     public void shouldHaveCustomMessageIfMultifactorCodeInvalid() throws Exception {
         Mockito.when(exception.isMultifactorCodeInvalid()).thenReturn(true);
         final AuthenticationError error = builder.buildFrom(exception);
