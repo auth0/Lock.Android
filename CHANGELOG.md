@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.13.0](https://github.com/auth0/Lock.Android/tree/2.13.0) (2019-04-17)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.12.1...2.13.0)
+
+**Changed**
+- Use auth0.android 1.15.2 [\#526](https://github.com/auth0/Lock.Android/pull/526) ([lbalmaceda](https://github.com/lbalmaceda))
+- Update facebook icon to comply with new branding [\#525](https://github.com/auth0/Lock.Android/pull/525) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.12.1](https://github.com/auth0/Lock.Android/tree/2.12.1) (2019-02-22)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.12.0...2.12.1)
 
