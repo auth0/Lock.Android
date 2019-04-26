@@ -8,7 +8,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ class SocialButton extends RelativeLayout {
 
     private static final int NORMAL_STATE_ALPHA = 230;
     private static final float FOCUSED_STATE_ALPHA = 0.64f;
+    private static final String STRATEGY_GOOGLE_OAUTH2 = "google-oauth2";
 
     private boolean smallSize;
     private ImageView icon;
@@ -73,6 +73,15 @@ class SocialButton extends RelativeLayout {
         final int backgroundColor = config.getBackgroundColor(getContext());
         Drawable touchBackground = getTouchFeedbackBackground(backgroundColor, smallSize ? ViewUtils.Corners.ALL : ViewUtils.Corners.ONLY_RIGHT);
 
+        /*
+         * Branding guidelines command we remove the padding for Google logo.
+         * Since it's the only exception to the rule, handle it this way.
+         *
+         * Source: https://developers.google.com/identity/branding-guidelines
+         */
+        if (STRATEGY_GOOGLE_OAUTH2.equalsIgnoreCase(config.getConnection().getStrategy())) {
+            icon.setPadding(0, 0, 0, 0);
+        }
         icon.setImageDrawable(logo);
         if (smallSize) {
             ViewUtils.setBackground(icon, touchBackground);
