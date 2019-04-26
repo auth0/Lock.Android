@@ -328,9 +328,11 @@ public class Lock {
          *
          * @param style a valid AuthButtonSize.
          * @return the current builder instance
+         * @deprecated Small button style is no longer offered since it is not compliant
+         * to some providers branding guidelines. e.g. google
          */
+        @Deprecated
         public Builder withAuthButtonSize(@AuthButtonSize int style) {
-            options.setAuthButtonSize(style);
             return this;
         }
 

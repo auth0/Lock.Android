@@ -101,7 +101,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
-        assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
+        assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordComplexity(), is(notNullValue()));
         assertThat(configuration.getPasswordComplexity().getPasswordPolicy(), is(PasswordStrength.NONE));

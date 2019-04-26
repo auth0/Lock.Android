@@ -6,7 +6,6 @@ import android.os.Parcel;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.AuthButtonSize;
-import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
@@ -229,7 +228,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseSmallSocialButtonStyle() throws Exception {
+    public void shouldIgnoreSocialButtonStyleConfiguration() throws Exception {
         options.setAuthButtonSize(AuthButtonSize.SMALL);
 
         Parcel parcel = Parcel.obtain();
@@ -237,7 +236,7 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.SMALL)));
+        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
     }
 
@@ -721,7 +720,7 @@ public class OptionsTest {
         assertThat(options.getAudience(), is(nullValue()));
         assertThat(options.getScheme(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
-        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
+        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(options.getTheme(), is(notNullValue()));
         assertThat(options.getAuthenticationParameters(), is(notNullValue()));
         assertThat(options.getAuthStyles(), is(notNullValue()));

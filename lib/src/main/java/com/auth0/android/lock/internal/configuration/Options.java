@@ -64,7 +64,6 @@ public class Options implements Parcelable {
     private boolean useBrowser;
     private boolean usePKCE;
     private boolean closable;
-    private int authButtonSize;
     private int usernameStyle;
     private boolean useCodePasswordless;
     private boolean allowLogIn;
@@ -133,7 +132,6 @@ public class Options implements Parcelable {
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
-        authButtonSize = in.readInt();
         theme = in.readParcelable(Theme.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
@@ -212,7 +210,6 @@ public class Options implements Parcelable {
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
-        dest.writeInt(authButtonSize);
         dest.writeParcelable(theme, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
@@ -335,13 +332,14 @@ public class Options implements Parcelable {
         this.allowLogIn = allowLogIn;
     }
 
+    @Deprecated
     public void setAuthButtonSize(@AuthButtonSize int authButtonSize) {
-        this.authButtonSize = authButtonSize;
     }
 
+    @Deprecated
     @AuthButtonSize
     public int authButtonSize() {
-        return authButtonSize;
+        return AuthButtonSize.BIG;
     }
 
     public boolean allowLogIn() {
