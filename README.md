@@ -29,7 +29,7 @@ Android API Level 15+ is required in order to use Lock's UI.
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-implementation 'com.auth0.android:lock:2.13.0'
+implementation 'com.auth0.android:lock:2.14.0'
 ```
 
 #### Android SDK Versions Troubleshooting
