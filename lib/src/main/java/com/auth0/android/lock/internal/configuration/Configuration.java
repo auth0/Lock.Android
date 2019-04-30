@@ -260,6 +260,7 @@ public class Configuration {
         return initialScreen;
     }
 
+    @Deprecated
     @AuthButtonSize
     public int getSocialButtonStyle() {
         return socialButtonStyle;

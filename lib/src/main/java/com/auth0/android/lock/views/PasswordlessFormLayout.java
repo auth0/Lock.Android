@@ -36,7 +36,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
@@ -71,7 +70,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         boolean showPasswordless = lockWidget.getConfiguration().getPasswordlessConnection() != null;
 
         if (showSocial) {
-            addSocialLayout(showPasswordless);
+            addSocialLayout();
         }
         if (showPasswordless) {
             if (showSocial) {
@@ -86,16 +85,8 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
     }
 
-    private void addSocialLayout(boolean passwordlessAvailable) {
-        int style = lockWidget.getConfiguration().getSocialButtonStyle();
-        boolean fewConnections = lockWidget.getConfiguration().getSocialConnections().size() <= MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS;
-
-        if (style == AuthButtonSize.UNSPECIFIED) {
-            socialLayout = new SocialView(lockWidget, passwordlessAvailable && !fewConnections);
-        } else {
-            socialLayout = new SocialView(lockWidget, style == AuthButtonSize.SMALL);
-        }
-
+    private void addSocialLayout() {
+        socialLayout = new SocialView(lockWidget, true);
         addView(socialLayout);
     }
 
