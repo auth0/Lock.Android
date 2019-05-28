@@ -21,18 +21,18 @@ Please note any links that are not publicly accessible.
 
 Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. This library has unit testing, tests should be added for new logic and functionality and existing tests should complete without errors.
 
-[ ] This change adds unit test coverage
+- [ ] This change adds unit test coverage
 
-[ ] This change adds integration/UI test coverage
+- [ ] This change adds integration/UI test coverage
 
-[ ] This change has been tested on the latest version of the platform/language or why not
+- [ ] This change has been tested on the latest version of the platform/language or why not
 
 ### Checklist
 
-[ ] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+- [ ] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
 
-[ ] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+- [ ] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
 
-[ ] All existing and new tests complete without errors
+- [ ] All existing and new tests complete without errors
 
-[ ] The correct base branch is being used
+- [ ] The correct base branch is being used
