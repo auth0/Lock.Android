@@ -137,7 +137,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void addSocialLayout() {
-        socialLayout = new SocialView(lockWidget, true);
+        socialLayout = new SocialView(lockWidget, false);
         formsHolder.addView(socialLayout);
     }
 

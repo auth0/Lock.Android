@@ -39,7 +39,6 @@ import android.widget.RadioGroup;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.Lock;
@@ -69,7 +68,6 @@ public class DemoActivity extends AppCompatActivity {
     private CheckBox checkboxConnectionsPasswordless;
     private CheckBox checkboxHideMainScreenTitle;
     private RadioGroup groupDefaultDB;
-    private RadioGroup groupSocialStyle;
     private RadioGroup groupUsernameStyle;
     private CheckBox checkboxLoginAfterSignUp;
     private CheckBox checkboxScreenLogIn;
@@ -101,7 +99,6 @@ public class DemoActivity extends AppCompatActivity {
 
         //Advanced
         groupDefaultDB = (RadioGroup) findViewById(R.id.group_default_db);
-        groupSocialStyle = (RadioGroup) findViewById(R.id.group_social_style);
         groupUsernameStyle = (RadioGroup) findViewById(R.id.group_username_style);
         checkboxLoginAfterSignUp = (CheckBox) findViewById(R.id.checkbox_login_after_signup);
 
@@ -159,12 +156,6 @@ public class DemoActivity extends AppCompatActivity {
         builder.useLabeledSubmitButton(groupSubmitMode.getCheckedRadioButtonId() == R.id.radio_use_label);
         builder.loginAfterSignUp(checkboxLoginAfterSignUp.isChecked());
 
-        if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
-            builder.withAuthButtonSize(AuthButtonSize.BIG);
-        } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
-            builder.withAuthButtonSize(AuthButtonSize.SMALL);
-        }
-
         if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_email) {
             builder.withUsernameStyle(UsernameStyle.EMAIL);
         } else if (groupUsernameStyle.getCheckedRadioButtonId() == R.id.radio_username_style_username) {
@@ -205,12 +196,6 @@ public class DemoActivity extends AppCompatActivity {
         final PasswordlessLock.Builder builder = PasswordlessLock.newBuilder(getAccount(), callback);
         builder.withScheme("demo");
         builder.closable(checkboxClosable.isChecked());
-
-        if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_big) {
-            builder.withAuthButtonSize(AuthButtonSize.BIG);
-        } else if (groupSocialStyle.getCheckedRadioButtonId() == R.id.radio_social_style_small) {
-            builder.withAuthButtonSize(AuthButtonSize.SMALL);
-        }
 
         if (groupPasswordlessMode.getCheckedRadioButtonId() == R.id.radio_use_link) {
             builder.useLink();

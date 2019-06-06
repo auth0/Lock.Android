@@ -36,7 +36,6 @@ import android.util.Patterns;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.Auth0Parcelable;
-import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
@@ -330,16 +329,6 @@ public class Options implements Parcelable {
 
     public void setAllowLogIn(boolean allowLogIn) {
         this.allowLogIn = allowLogIn;
-    }
-
-    @Deprecated
-    public void setAuthButtonSize(@AuthButtonSize int authButtonSize) {
-    }
-
-    @Deprecated
-    @AuthButtonSize
-    public int authButtonSize() {
-        return AuthButtonSize.BIG;
     }
 
     public boolean allowLogIn() {

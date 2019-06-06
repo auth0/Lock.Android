@@ -34,9 +34,9 @@ import android.widget.LinearLayout;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.OAuthLoginEvent;
-import com.auth0.android.lock.views.interfaces.LockWidgetOAuth;
 import com.auth0.android.lock.internal.configuration.AuthMode;
 import com.auth0.android.lock.internal.configuration.OAuthConnection;
+import com.auth0.android.lock.views.interfaces.LockWidgetOAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,28 +49,32 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
     private LockWidgetOAuth lockWidget;
     private SocialViewAdapter adapter;
 
+    /**
+     * Creates a new SocialView widget
+     *
+     * @param lockWidget   the main widget context
+     * @param smallButtons Deprecated and no longer used. All SocialView widgets will display using large buttons.
+     */
     public SocialView(LockWidgetOAuth lockWidget, boolean smallButtons) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         Log.v(TAG, "New instance created. Using small buttons: " + smallButtons);
-        init(smallButtons);
+        init();
     }
 
-    private void init(boolean smallButtons) {
+    private void init() {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         RecyclerView recycler = new RecyclerView(getContext());
         List<OAuthConnection> connections = lockWidget.getConfiguration().getSocialConnections();
         adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(connections));
-        adapter.setButtonSize(smallButtons);
         adapter.setCallback(this);
-        final int orientation = smallButtons ? HORIZONTAL : VERTICAL;
-        LayoutManager lm = new GridLayoutManager(getContext(), 1, orientation, false);
+        LayoutManager lm = new GridLayoutManager(getContext(), 1, VERTICAL, false);
         recycler.setLayoutManager(lm);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
         recycler.setOverScrollMode(OVER_SCROLL_NEVER);
-        final SpacesItemDecoration spaceDecoration = new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_social), orientation);
+        final SpacesItemDecoration spaceDecoration = new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_social), VERTICAL);
         recycler.addItemDecoration(spaceDecoration);
         LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(recycler, recyclerParams);

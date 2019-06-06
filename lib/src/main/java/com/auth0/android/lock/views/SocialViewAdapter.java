@@ -41,7 +41,6 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
 
     private final Context context;
     private final List<AuthConfig> authConfigs;
-    private boolean useSmallButtons;
     private OAuthListener callback;
     @AuthMode
     private int buttonMode;
@@ -53,7 +52,7 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = new SocialButton(context, useSmallButtons);
+        View view = new SocialButton(context);
         return new ViewHolder(view);
     }
 
@@ -65,16 +64,6 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     @Override
     public int getItemCount() {
         return authConfigs.size();
-    }
-
-    /**
-     * Sets the size of the buttons this list will hold. Use large buttons if you want it to
-     * scroll vertically, or small buttons if you want it to scroll horizontally.
-     *
-     * @param useSmall whether to use small or large buttons.
-     */
-    public void setButtonSize(boolean useSmall) {
-        this.useSmallButtons = useSmall;
     }
 
     /**

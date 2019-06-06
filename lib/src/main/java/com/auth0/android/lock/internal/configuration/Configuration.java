@@ -29,7 +29,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
-import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
@@ -66,8 +65,6 @@ public class Configuration {
     private boolean passwordlessAutoSubmit;
     @UsernameStyle
     private int usernameStyle;
-    @AuthButtonSize
-    private int socialButtonStyle;
     private boolean loginAfterSignUp;
     @PasswordlessMode
     private int passwordlessMode;
@@ -184,7 +181,6 @@ public class Configuration {
 
     private void parseLocalOptions(Options options) {
         usernameStyle = options.usernameStyle();
-        socialButtonStyle = options.authButtonSize();
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
         showTerms = options.showTerms();
@@ -258,12 +254,6 @@ public class Configuration {
     @InitialScreen
     public int getInitialScreen() {
         return initialScreen;
-    }
-
-    @Deprecated
-    @AuthButtonSize
-    public int getSocialButtonStyle() {
-        return socialButtonStyle;
     }
 
     @UsernameStyle

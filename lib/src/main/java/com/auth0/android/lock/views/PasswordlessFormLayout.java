@@ -44,7 +44,6 @@ import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 public class PasswordlessFormLayout extends LinearLayout implements PasswordlessInputCodeFormView.OnCodeResendListener {
 
     private static final String TAG = PasswordlessFormLayout.class.getSimpleName();
-    private static final int MAX_SOCIAL_BIG_BUTTONS_WITH_PASSWORDLESS = 3;
 
     private final LockWidgetPasswordless lockWidget;
     private SocialView socialLayout;
@@ -86,7 +85,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
     }
 
     private void addSocialLayout() {
-        socialLayout = new SocialView(lockWidget, true);
+        socialLayout = new SocialView(lockWidget, false);
         addView(socialLayout);
     }
 
