@@ -5,7 +5,6 @@ import android.os.Parcel;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
-import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
@@ -212,32 +211,6 @@ public class OptionsTest {
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.rememberLastPasswordlessAccount(), is(true));
         assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
-    }
-
-    @Test
-    public void shouldUseBigSocialButtonStyle() throws Exception {
-        options.setAuthButtonSize(AuthButtonSize.BIG);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.authButtonSize(), is(AuthButtonSize.BIG));
-        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
-    }
-
-    @Test
-    public void shouldIgnoreSocialButtonStyleConfiguration() throws Exception {
-        options.setAuthButtonSize(AuthButtonSize.SMALL);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.BIG)));
-        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
     }
 
     @Test
@@ -720,7 +693,6 @@ public class OptionsTest {
         assertThat(options.getAudience(), is(nullValue()));
         assertThat(options.getScheme(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
-        assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(options.getTheme(), is(notNullValue()));
         assertThat(options.getAuthenticationParameters(), is(notNullValue()));
         assertThat(options.getAuthStyles(), is(notNullValue()));
@@ -740,7 +712,6 @@ public class OptionsTest {
         options.setClosable(true);
         options.setMustAcceptTerms(true);
         options.setShowTerms(true);
-        options.setAuthButtonSize(AuthButtonSize.BIG);
         options.setLoginAfterSignUp(true);
         options.setUseLabeledSubmitButton(true);
         options.setHideMainScreenTitle(true);
@@ -763,7 +734,6 @@ public class OptionsTest {
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.allowShowPassword(), is(equalTo(parceledOptions.allowShowPassword())));
-        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
         assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
@@ -783,7 +753,6 @@ public class OptionsTest {
         options.setAllowShowPassword(false);
         options.setMustAcceptTerms(false);
         options.setShowTerms(false);
-        options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
         options.setUseLabeledSubmitButton(false);
         options.setHideMainScreenTitle(false);
@@ -806,7 +775,6 @@ public class OptionsTest {
         assertThat(options.allowSignUp(), is(equalTo(parceledOptions.allowSignUp())));
         assertThat(options.allowForgotPassword(), is(equalTo(parceledOptions.allowForgotPassword())));
         assertThat(options.allowShowPassword(), is(equalTo(parceledOptions.allowShowPassword())));
-        assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
         assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));

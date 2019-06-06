@@ -24,7 +24,6 @@
 
 package com.auth0.android.lock.internal.configuration;
 
-import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
@@ -101,7 +100,6 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
-        assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordComplexity(), is(notNullValue()));
         assertThat(configuration.getPasswordComplexity().getPasswordPolicy(), is(PasswordStrength.NONE));
@@ -135,7 +133,6 @@ public class ConfigurationTest extends GsonBaseTest {
         options.setAllowShowPassword(false);
         options.setLoginAfterSignUp(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
-        options.setAuthButtonSize(AuthButtonSize.BIG);
         configuration = new Configuration(connections, options);
         assertThat(configuration.isUsernameRequired(), is(false));
         assertThat(configuration.allowLogIn(), is(false));
@@ -144,7 +141,6 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.allowShowPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
-        assertThat(configuration.getSocialButtonStyle(), is(equalTo(AuthButtonSize.BIG)));
         assertThat(configuration.hasExtraFields(), is(false));
     }
 
