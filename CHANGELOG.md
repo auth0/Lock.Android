@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.14.1](https://github.com/auth0/Lock.Android/tree/2.14.1) (2019-06-06)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.14.0...2.14.1)
+
+**Fixed**
+- Remove entirely the small social button style [\#537](https://github.com/auth0/Lock.Android/pull/537) ([lbalmaceda](https://github.com/lbalmaceda))
+- Define custom email regex to validate emails [\#534](https://github.com/auth0/Lock.Android/pull/534) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.14.0](https://github.com/auth0/Lock.Android/tree/2.14.0) (2019-04-30)
 From this release on, the option to display social connections in small styled buttons is no longer available due to branding compliance reasons. All the social connections will now be displayed as large styled buttons.
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.13.0...2.14.0)
