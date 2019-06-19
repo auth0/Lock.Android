@@ -136,7 +136,7 @@
     <string name="com_auth0_lock_db_login_error_unauthorized_message">USER IS BLOCKED</string>
     <string name="com_auth0_lock_db_sign_up_error_message">THERE WAS AN ERROR PROCESSING THE SIGN UP</string>
     <string name="com_auth0_lock_db_change_password_message_success">WE\'VE JUST SENT YOU AN EMAIL TO RESET YOUR PASSWORD</string>
-    <string name="com_auth0_lock_db_message_change_password_error">COULDNT\'t RESET YOUR PASSWORD</string>
+    <string name="com_auth0_lock_db_message_change_password_error">COULDN\'T RESET YOUR PASSWORD</string>
     <string name="com_auth0_lock_db_signup_user_already_exists_error_message">THE USER ALREADY EXISTS</string>
     <string name="com_auth0_lock_db_signup_password_already_used_error_message">THE PASSWORD WAS USED PREVIOUSLY</string>
     <string name="com_auth0_lock_db_signup_password_not_strong_error_message">THE PASSWORD IS NOT STRONG ENOUGH</string>
