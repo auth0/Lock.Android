@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -49,6 +50,7 @@ import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.squareup.otto.Bus;
 
+@SuppressLint("ViewConstructor")
 public class PasswordlessLockView extends LinearLayout implements LockWidgetPasswordless, View.OnClickListener {
 
     private static final String TAG = PasswordlessLockView.class.getSimpleName();
@@ -123,9 +125,9 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
 
     private void showConfigurationMissingLayout(final boolean showRetry) {
         final View errorLayout = LayoutInflater.from(getContext()).inflate(R.layout.com_auth0_lock_error_layout, this, false);
-        TextView tvTitle = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_title);
-        TextView tvError = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_subtitle);
-        TextView tvAction = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_action);
+        TextView tvTitle = errorLayout.findViewById(R.id.com_auth0_lock_error_title);
+        TextView tvError = errorLayout.findViewById(R.id.com_auth0_lock_error_subtitle);
+        TextView tvAction = errorLayout.findViewById(R.id.com_auth0_lock_error_action);
 
         if (showRetry) {
             tvTitle.setText(R.string.com_auth0_lock_recoverable_error_title);

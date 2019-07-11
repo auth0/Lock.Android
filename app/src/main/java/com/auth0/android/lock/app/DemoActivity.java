@@ -78,7 +78,6 @@ public class DemoActivity extends AppCompatActivity {
     private RadioGroup groupInitialScreen;
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -279,7 +278,6 @@ public class DemoActivity extends AppCompatActivity {
      *
      * @param message the text to show.
      */
-    @SuppressWarnings("ConstantConditions")
     private void showResult(String message) {
         Snackbar.make(rootLayout, message, Snackbar.LENGTH_LONG).show();
     }

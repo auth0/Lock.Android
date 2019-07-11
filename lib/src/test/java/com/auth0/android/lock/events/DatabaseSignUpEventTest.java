@@ -59,7 +59,7 @@ public class DatabaseSignUpEventTest {
     private static final String KEY_USER_METADATA = "user_metadata";
 
     @Test
-    public void shouldSetAllValues() throws Exception {
+    public void shouldSetAllValues() {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, USERNAME);
 
         assertThat(event.getEmail(), is(equalTo(EMAIL)));
@@ -68,7 +68,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldSetNullUsername() throws Exception {
+    public void shouldSetNullUsername() {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, null);
 
         assertThat(event.getEmail(), is(equalTo(EMAIL)));
@@ -77,7 +77,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldGetSignUpRequestWithUsername() throws Exception {
+    public void shouldGetSignUpRequestWithUsername() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, USERNAME);
@@ -86,7 +86,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldGetSignUpRequestWithoutUsername() throws Exception {
+    public void shouldGetSignUpRequestWithoutUsername() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, null);
@@ -95,7 +95,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldGetSignUpRequestWithUserMetadata() throws Exception {
+    public void shouldGetSignUpRequestWithUserMetadata() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         final Map<String, String> metadata = createMetadata();
         ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
@@ -118,7 +118,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldGetCreateUserRequestWithUsername() throws Exception {
+    public void shouldGetCreateUserRequestWithUsername() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, USERNAME);
@@ -127,7 +127,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldGetCreateUserRequestWithoutUsername() throws Exception {
+    public void shouldGetCreateUserRequestWithoutUsername() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, null);
@@ -136,7 +136,7 @@ public class DatabaseSignUpEventTest {
     }
 
     @Test
-    public void shouldGetCreateUserRequestWithUserMetadata() throws Exception {
+    public void shouldGetCreateUserRequestWithUserMetadata() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
         final Map<String, String> metadata = createMetadata();
 

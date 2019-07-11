@@ -25,18 +25,17 @@
 package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * TextView that removes the extra padding added in pre Lollipop APIs when
  * using the lineSpacingExtra attribute.
  */
 @SuppressLint("Instantiatable")
-class LineSpacingTextView extends TextView {
+class LineSpacingTextView extends AppCompatTextView {
 
     public LineSpacingTextView(Context context) {
         super(context);
@@ -48,12 +47,6 @@ class LineSpacingTextView extends TextView {
 
     public LineSpacingTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @SuppressWarnings("unused")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public LineSpacingTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override

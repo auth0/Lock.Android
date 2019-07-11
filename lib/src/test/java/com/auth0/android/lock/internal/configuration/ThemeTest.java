@@ -25,7 +25,6 @@
 package com.auth0.android.lock.internal.configuration;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
@@ -64,12 +63,12 @@ public class ThemeTest {
     Theme.Builder builder;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         builder = Theme.newBuilder();
     }
 
     @Test
-    public void shouldResolveDefaultHeaderTitle() throws Exception {
+    public void shouldResolveDefaultHeaderTitle() {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
@@ -79,7 +78,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveDefaultHeaderLogo() throws Exception {
+    public void shouldResolveDefaultHeaderLogo() {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
@@ -91,7 +90,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveDefaultHeaderColor() throws Exception {
+    public void shouldResolveDefaultHeaderColor() {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
@@ -101,7 +100,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveDefaultHeaderTitleColor() throws Exception {
+    public void shouldResolveDefaultHeaderTitleColor() {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
@@ -111,7 +110,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveDefaultPrimaryColor() throws Exception {
+    public void shouldResolveDefaultPrimaryColor() {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
@@ -121,7 +120,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveDefaultDarkPrimaryColor() throws Exception {
+    public void shouldResolveDefaultDarkPrimaryColor() {
         final Theme theme = builder.build();
         final Context context = RuntimeEnvironment.application;
         context.setTheme(R.style.Lock_Theme);
@@ -132,7 +131,7 @@ public class ThemeTest {
 
 
     @Test
-    public void shouldResolveCustomHeaderTitle() throws Exception {
+    public void shouldResolveCustomHeaderTitle() {
         final Theme theme = builder.withHeaderTitle(STRING_RES).build();
         final Context context = RuntimeEnvironment.application;
 
@@ -142,7 +141,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveCustomHeaderLogo() throws Exception {
+    public void shouldResolveCustomHeaderLogo() {
         final Theme theme = builder.withHeaderLogo(DRAWABLE_RES).build();
         final Context context = RuntimeEnvironment.application;
         Drawable drawable1 = theme.getHeaderLogo(context);
@@ -153,7 +152,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveCustomHeaderColor() throws Exception {
+    public void shouldResolveCustomHeaderColor() {
         final Theme theme = builder.withHeaderColor(COLOR_RES).build();
         final Context context = RuntimeEnvironment.application;
 
@@ -163,7 +162,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveCustomHeaderTitleColor() throws Exception {
+    public void shouldResolveCustomHeaderTitleColor() {
         final Theme theme = builder.withHeaderTitleColor(COLOR_RES).build();
         final Context context = RuntimeEnvironment.application;
 
@@ -173,7 +172,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveCustomPrimaryColor() throws Exception {
+    public void shouldResolveCustomPrimaryColor() {
         final Theme theme = builder.withPrimaryColor(COLOR_RES).build();
         final Context context = RuntimeEnvironment.application;
 
@@ -183,7 +182,7 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldResolveCustomDarkPrimaryColor() throws Exception {
+    public void shouldResolveCustomDarkPrimaryColor() {
         final Theme theme = builder.withDarkPrimaryColor(COLOR_RES).build();
         final Context context = RuntimeEnvironment.application;
 
@@ -193,49 +192,49 @@ public class ThemeTest {
     }
 
     @Test
-    public void shouldSetHeaderTitle() throws Exception {
+    public void shouldSetHeaderTitle() {
         final Theme theme = builder.withHeaderTitle(STRING_RES)
                 .build();
         assertThat(theme.getCustomHeaderTitleRes(), is(equalTo(STRING_RES)));
     }
 
     @Test
-    public void shouldSetHeaderLogo() throws Exception {
+    public void shouldSetHeaderLogo() {
         final Theme theme = builder.withHeaderLogo(DRAWABLE_RES)
                 .build();
         assertThat(theme.getCustomHeaderLogoRes(), is(equalTo(DRAWABLE_RES)));
     }
 
     @Test
-    public void shouldSetHeaderColor() throws Exception {
+    public void shouldSetHeaderColor() {
         final Theme theme = builder.withHeaderColor(COLOR_RES)
                 .build();
         assertThat(theme.getCustomHeaderColorRes(), is(equalTo(COLOR_RES)));
     }
 
     @Test
-    public void shouldSetHeaderTitleColor() throws Exception {
+    public void shouldSetHeaderTitleColor() {
         final Theme theme = builder.withHeaderTitleColor(COLOR_RES)
                 .build();
         assertThat(theme.getCustomHeaderTitleColorRes(), is(equalTo(COLOR_RES)));
     }
 
     @Test
-    public void shouldSetPrimaryColor() throws Exception {
+    public void shouldSetPrimaryColor() {
         final Theme theme = builder.withPrimaryColor(COLOR_RES)
                 .build();
         assertThat(theme.getCustomPrimaryColorRes(), is(equalTo(COLOR_RES)));
     }
 
     @Test
-    public void shouldSetDarkPrimaryColor() throws Exception {
+    public void shouldSetDarkPrimaryColor() {
         final Theme theme = builder.withDarkPrimaryColor(COLOR_RES)
                 .build();
         assertThat(theme.getCustomDarkPrimaryColorRes(), is(equalTo(COLOR_RES)));
     }
 
     @Test
-    public void shouldNotHaveCustomValues() throws Exception {
+    public void shouldNotHaveCustomValues() {
         final Theme theme = builder.build();
         assertThat(theme.getCustomHeaderTitleRes(), is(equalTo(NOT_SET_RES)));
         assertThat(theme.getCustomHeaderLogoRes(), is(equalTo(NOT_SET_RES)));

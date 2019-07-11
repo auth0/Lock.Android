@@ -28,7 +28,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -56,7 +55,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     private void init(String email) {
         inflate(getContext(), R.layout.com_auth0_lock_changepwd_form_view, this);
-        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
+        emailInput = findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setText(email);
         emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);

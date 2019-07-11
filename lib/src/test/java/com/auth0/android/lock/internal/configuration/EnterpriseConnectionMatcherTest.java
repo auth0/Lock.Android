@@ -63,7 +63,7 @@ public class EnterpriseConnectionMatcherTest {
     private EnterpriseConnectionMatcher parser;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         List<OAuthConnection> connections = new ArrayList<>();
         OAuthConnection connection = createConnection();
         connections.add(connection);
@@ -71,13 +71,13 @@ public class EnterpriseConnectionMatcherTest {
     }
 
     @Test
-    public void shouldExtractTheUsername() throws Exception {
+    public void shouldExtractTheUsername() {
         String username = parser.extractUsername(SAMPLE_VALID_EMAIL);
         assertThat(username, is(equalTo("username")));
     }
 
     @Test
-    public void shouldParseTheConnection() throws Exception {
+    public void shouldParseTheConnection() {
         OAuthConnection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(notNullValue()));
         assertThat(connection.getName(), is(equalTo(NAME_VALUE)));
@@ -87,25 +87,25 @@ public class EnterpriseConnectionMatcherTest {
     }
 
     @Test
-    public void shouldNotFindAnUnknownDomain() throws Exception {
+    public void shouldNotFindAnUnknownDomain() {
         OAuthConnection connection = parser.parse(SAMPLE_UNKNOWN_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
-    public void shouldReturnTheMainDomain() throws Exception {
+    public void shouldReturnTheMainDomain() {
         OAuthConnection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(parser.domainForConnection(connection), is(equalTo(DOMAIN_VALUE)));
     }
 
     @Test
-    public void shouldFailToGetConnectionIfNotValidDomain() throws Exception {
+    public void shouldFailToGetConnectionIfNotValidDomain() {
         OAuthConnection connection = parser.parse(SAMPLE_INVALID_EMAIL);
         assertThat(connection, is(nullValue()));
     }
 
     @Test
-    public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() throws Exception {
+    public void shouldFailToGetConnectionIfInstantiatedWithEmptyStrategies() {
         EnterpriseConnectionMatcher parser = new EnterpriseConnectionMatcher(new ArrayList<OAuthConnection>());
         OAuthConnection connection = parser.parse(SAMPLE_VALID_EMAIL);
         assertThat(connection, is(nullValue()));

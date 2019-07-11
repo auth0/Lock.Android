@@ -1,5 +1,6 @@
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -30,14 +31,14 @@ public class AuthConfig {
 
     @NonNull
     public String getName(@NonNull Context context) {
-        //noinspection ResourceType
+        @SuppressLint("ResourceType")
         int id = getIdForResource(context, R.attr.Auth0_Name);
         return id != -1 ? context.getString(id) : connection.getStrategy();
     }
 
     @NonNull
     public Drawable getLogo(@NonNull Context context) {
-        //noinspection ResourceType
+        @SuppressLint("ResourceType")
         int id = getIdForResource(context, R.attr.Auth0_Logo);
         if (id == -1) {
             id = R.drawable.com_auth0_lock_ic_social_auth0;
@@ -47,7 +48,7 @@ public class AuthConfig {
 
     @ColorInt
     public int getBackgroundColor(@NonNull Context context) {
-        //noinspection ResourceType
+        @SuppressLint("ResourceType")
         int id = getIdForResource(context, R.attr.Auth0_BackgroundColor);
         if (id == -1) {
             id = R.color.com_auth0_lock_social_unknown;

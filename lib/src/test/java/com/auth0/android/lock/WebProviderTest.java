@@ -52,7 +52,7 @@ public class WebProviderTest {
     private Activity activity;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         activity = spy(Robolectric.buildActivity(Activity.class)
                 .create()
                 .start()
@@ -62,7 +62,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldStart() throws Exception {
+    public void shouldStart() {
         Options options = new Options();
         options.setAccount(new Auth0("clientId", "domain.auth0.com"));
         AuthCallback callback = mock(AuthCallback.class);
@@ -73,7 +73,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldFailWhenBrowserAppIsMissing() throws Exception {
+    public void shouldFailWhenBrowserAppIsMissing() {
         prepareBrowserApp(false);
 
         Options options = new Options();
@@ -89,7 +89,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldStartWithCustomAuthenticationParameters() throws Exception {
+    public void shouldStartWithCustomAuthenticationParameters() {
         Auth0 account = new Auth0("clientId", "domain.auth0.com");
         account.setOIDCConformant(true);
         Options options = new Options();
@@ -125,7 +125,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldStartWithCustomAudience() throws Exception {
+    public void shouldStartWithCustomAudience() {
         Auth0 account = new Auth0("clientId", "domain.auth0.com");
         account.setOIDCConformant(true);
         Options options = new Options();
@@ -155,7 +155,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldStartBrowserWithOptions() throws Exception {
+    public void shouldStartBrowserWithOptions() {
         Auth0 account = new Auth0("clientId", "domain.auth0.com");
         Options options = new Options();
         options.setAccount(account);
@@ -199,7 +199,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldStartWebViewWithOptions() throws Exception {
+    public void shouldStartWebViewWithOptions() {
         Auth0 account = new Auth0("clientId", "domain.auth0.com");
         Options options = new Options();
         options.setAccount(account);
@@ -243,7 +243,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldResumeWithIntent() throws Exception {
+    public void shouldResumeWithIntent() {
         Intent intent = mock(Intent.class);
         Options options = mock(Options.class);
         WebProvider webProvider = new WebProvider(options);
@@ -251,7 +251,7 @@ public class WebProviderTest {
     }
 
     @Test
-    public void shouldResumeWithCodesAndIntent() throws Exception {
+    public void shouldResumeWithCodesAndIntent() {
         Intent intent = mock(Intent.class);
         Options options = mock(Options.class);
         WebProvider webProvider = new WebProvider(options);

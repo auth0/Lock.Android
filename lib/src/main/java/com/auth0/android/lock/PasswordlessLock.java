@@ -169,6 +169,7 @@ public class PasswordlessLock {
     /**
      * Helper Builder to generate the Lock.Options to use on the Auth0 Passwordless Authentication.
      */
+    @SuppressWarnings({"unused", "UnusedReturnValue"})
     public static class Builder {
         private static final String TAG = Builder.class.getSimpleName();
         private Options options;

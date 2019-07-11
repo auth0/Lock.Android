@@ -26,7 +26,7 @@ public class Auth0ParcelableTest {
     private static final String CONFIG_DOMAIN = "https://my-cdn.auth0.com";
 
     @Test
-    public void shouldSaveClientId() throws Exception {
+    public void shouldSaveClientId() {
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
         Parcel parcel = Parcel.obtain();
@@ -39,7 +39,7 @@ public class Auth0ParcelableTest {
     }
 
     @Test
-    public void shouldSaveDomainUrl() throws Exception {
+    public void shouldSaveDomainUrl() {
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
         Parcel parcel = Parcel.obtain();
@@ -52,7 +52,7 @@ public class Auth0ParcelableTest {
     }
 
     @Test
-    public void shouldSaveConfigurationUrl() throws Exception {
+    public void shouldSaveConfigurationUrl() {
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
         Parcel parcel = Parcel.obtain();
@@ -65,7 +65,7 @@ public class Auth0ParcelableTest {
     }
 
     @Test
-    public void shouldSaveTelemetry() throws Exception {
+    public void shouldSaveTelemetry() {
         Telemetry telemetry = new Telemetry("name", "version", "libraryVersion");
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         auth0.setTelemetry(telemetry);
@@ -81,7 +81,7 @@ public class Auth0ParcelableTest {
     }
 
     @Test
-    public void shouldSaveOIDCConformantFlag() throws Exception {
+    public void shouldSaveOIDCConformantFlag() {
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         auth0.setOIDCConformant(true);
         Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
@@ -95,7 +95,7 @@ public class Auth0ParcelableTest {
     }
 
     @Test
-    public void shouldSaveLoggingEnabledFlag() throws Exception {
+    public void shouldSaveLoggingEnabledFlag() {
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
         auth0.setLoggingEnabled(true);
         Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);

@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,7 @@ import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.LayoutManager;
 
+@SuppressLint("ViewConstructor")
 public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthListener {
 
     private static final String TAG = SocialView.class.getSimpleName();

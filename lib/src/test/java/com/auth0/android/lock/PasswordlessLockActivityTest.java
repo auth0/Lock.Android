@@ -23,8 +23,6 @@ import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.request.ParameterizableRequest;
 
-import org.hamcrest.collection.IsEmptyCollection;
-import org.hamcrest.collection.IsMapContaining;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,7 +81,7 @@ public class PasswordlessLockActivityTest {
     PasswordlessLockActivity activity;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         HashMap basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
         connectionScope = new HashMap<>(Collections.singletonMap("my-connection", "the connection scope"));
@@ -110,7 +108,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldFailPasswordlessCodeRequestWithEmailOnNullConnection() throws Exception {
+    public void shouldFailPasswordlessCodeRequestWithEmailOnNullConnection() {
         activity = new PasswordlessLockActivity(configuration, options, lockView, webProvider, "user@domain.com");
 
         when(configuration.getPasswordlessConnection()).thenReturn(null);
@@ -125,7 +123,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldCallPasswordlessCodeRequestWithEmail() throws Exception {
+    public void shouldCallPasswordlessCodeRequestWithEmail() {
         activity = new PasswordlessLockActivity(configuration, options, lockView, webProvider, "user@domain.com");
 
         PasswordlessLoginEvent event = PasswordlessLoginEvent.requestCode(PasswordlessMode.EMAIL_CODE, "email@domain.com");
@@ -140,7 +138,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldDoPasswordlessLoginWithEmail() throws Exception {
+    public void shouldDoPasswordlessLoginWithEmail() {
         activity = new PasswordlessLockActivity(configuration, options, lockView, webProvider, "user@domain.com");
 
         PasswordlessLoginEvent event = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_CODE, "1234");
@@ -163,7 +161,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldFailPasswordlessCodeRequestWithPhoneOnNullConnection() throws Exception {
+    public void shouldFailPasswordlessCodeRequestWithPhoneOnNullConnection() {
         Country country = Mockito.mock(Country.class);
         when(configuration.getPasswordlessConnection()).thenReturn(null);
         PasswordlessLoginEvent event = PasswordlessLoginEvent.requestCode(PasswordlessMode.SMS_CODE, "1234567890", country);
@@ -177,7 +175,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldCallPasswordlessCodeRequestWithPhone() throws Exception {
+    public void shouldCallPasswordlessCodeRequestWithPhone() {
         Country country = Mockito.mock(Country.class);
         when(country.getDialCode()).thenReturn("+54");
         PasswordlessLoginEvent event = PasswordlessLoginEvent.requestCode(PasswordlessMode.SMS_CODE, "1234567890", country);
@@ -192,7 +190,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldDoPasswordlessLoginWithPhone() throws Exception {
+    public void shouldDoPasswordlessLoginWithPhone() {
         activity = new PasswordlessLockActivity(configuration, options, lockView, webProvider, "+541234567890");
 
         PasswordlessLoginEvent event = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_CODE, "1234");
@@ -215,7 +213,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithCustomProvider() throws Exception {
+    public void shouldCallOAuthAuthenticationWithCustomProvider() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
         when(handler.providerFor(anyString(), eq("my-connection"))).thenReturn(customProvider);
@@ -242,7 +240,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() throws Exception {
+    public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
@@ -282,7 +280,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithWebProvider() throws Exception {
+    public void shouldCallOAuthAuthenticationWithWebProvider() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
@@ -299,7 +297,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithWebProviderOnActivityResult() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithWebProviderOnActivityResult() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
@@ -313,7 +311,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithCustomProviderOnActivityResult() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithCustomProviderOnActivityResult() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
         when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
@@ -333,7 +331,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithWebProviderOnNewIntent() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithWebProviderOnNewIntent() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
@@ -347,7 +345,7 @@ public class PasswordlessLockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithCustomProviderOnNewIntent() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithCustomProviderOnNewIntent() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
         when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);

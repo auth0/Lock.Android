@@ -55,6 +55,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 21)
 public class LockActivityTest {
@@ -85,7 +86,7 @@ public class LockActivityTest {
     HashMap connectionScope;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
         connectionScope = new HashMap<>(Collections.singletonMap("custom-connection", "the connection scope"));
@@ -115,7 +116,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldFailDatabaseLoginOnNullConnection() throws Exception {
+    public void shouldFailDatabaseLoginOnNullConnection() {
         when(configuration.getDatabaseConnection()).thenReturn(null);
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
         activity.onDatabaseAuthenticationRequest(event);
@@ -129,7 +130,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallLegacyDatabaseLogin() throws Exception {
+    public void shouldCallLegacyDatabaseLogin() {
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
         activity.onDatabaseAuthenticationRequest(event);
 
@@ -149,7 +150,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallLegacyDatabaseLoginWithVerificationCode() throws Exception {
+    public void shouldCallLegacyDatabaseLoginWithVerificationCode() {
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
         event.setVerificationCode("123456");
         activity.onDatabaseAuthenticationRequest(event);
@@ -171,7 +172,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallOIDCDatabaseLoginWithOTPCodeAndMFAToken() throws Exception {
+    public void shouldCallOIDCDatabaseLoginWithOTPCodeAndMFAToken() {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
@@ -203,7 +204,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallOIDCDatabaseLoginWithCustomAudience() throws Exception {
+    public void shouldCallOIDCDatabaseLoginWithCustomAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
@@ -233,7 +234,7 @@ public class LockActivityTest {
 
 
     @Test
-    public void shouldFailDatabaseSignUpOnNullConnection() throws Exception {
+    public void shouldFailDatabaseSignUpOnNullConnection() {
         when(configuration.getDatabaseConnection()).thenReturn(null);
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
         activity.onDatabaseAuthenticationRequest(event);
@@ -247,7 +248,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseSignUpWithUsername() throws Exception {
+    public void shouldCallDatabaseSignUpWithUsername() {
         when(configuration.loginAfterSignUp()).thenReturn(false);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
@@ -261,7 +262,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabaseSignUp() throws Exception {
+    public void shouldCallDatabaseSignUp() {
         when(configuration.loginAfterSignUp()).thenReturn(false);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", null);
@@ -275,7 +276,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallOIDCDatabaseSignInWithCustomAudience() throws Exception {
+    public void shouldCallOIDCDatabaseSignInWithCustomAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
@@ -307,7 +308,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallLegacyDatabaseSignInWithUsername() throws Exception {
+    public void shouldCallLegacyDatabaseSignInWithUsername() {
         when(configuration.loginAfterSignUp()).thenReturn(true);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
@@ -329,7 +330,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallLegacyDatabaseSignIn() throws Exception {
+    public void shouldCallLegacyDatabaseSignIn() {
         when(configuration.loginAfterSignUp()).thenReturn(true);
 
         DatabaseSignUpEvent event = new DatabaseSignUpEvent("email", "password", null);
@@ -351,7 +352,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldFailDatabasePasswordResetOnNullConnection() throws Exception {
+    public void shouldFailDatabasePasswordResetOnNullConnection() {
         when(configuration.getDatabaseConnection()).thenReturn(null);
         DatabaseChangePasswordEvent event = new DatabaseChangePasswordEvent("email@domain.com");
         activity.onDatabaseAuthenticationRequest(event);
@@ -365,7 +366,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallDatabasePasswordReset() throws Exception {
+    public void shouldCallDatabasePasswordReset() {
         DatabaseChangePasswordEvent event = new DatabaseChangePasswordEvent("email@domain.com");
         activity.onDatabaseAuthenticationRequest(event);
 
@@ -378,7 +379,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallEnterpriseOAuthAuthenticationWithActiveFlow() throws Exception {
+    public void shouldCallEnterpriseOAuthAuthenticationWithActiveFlow() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         when(connection.isActiveFlowEnabled()).thenReturn(true);
@@ -400,7 +401,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithCustomProvider() throws Exception {
+    public void shouldCallOAuthAuthenticationWithCustomProvider() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
         when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
@@ -426,7 +427,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() throws Exception {
+    public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
         account.setOIDCConformant(true);
         Options options = mock(Options.class);
@@ -464,7 +465,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallEnterpriseOAuthAuthenticationWithCustomProvider() throws Exception {
+    public void shouldCallEnterpriseOAuthAuthenticationWithCustomProvider() {
         Auth0 account = new Auth0("cliendId", "domain");
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
@@ -501,7 +502,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallEnterpriseOAuthAuthenticationWithWebProvider() throws Exception {
+    public void shouldCallEnterpriseOAuthAuthenticationWithWebProvider() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         when(connection.isActiveFlowEnabled()).thenReturn(false);
@@ -519,7 +520,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldResumeEnterpriseOAuthAuthenticationWithWebProviderOnActivityResult() throws Exception {
+    public void shouldResumeEnterpriseOAuthAuthenticationWithWebProviderOnActivityResult() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         when(connection.isActiveFlowEnabled()).thenReturn(false);
@@ -534,7 +535,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallOAuthAuthenticationWithWebProvider() throws Exception {
+    public void shouldCallOAuthAuthenticationWithWebProvider() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
@@ -549,7 +550,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithWebProviderOnActivityResult() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithWebProviderOnActivityResult() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
@@ -563,7 +564,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithCustomProviderOnActivityResult() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithCustomProviderOnActivityResult() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
         when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
@@ -583,7 +584,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithWebProviderOnNewIntent() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithWebProviderOnNewIntent() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
@@ -597,7 +598,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldResumeOAuthAuthenticationWithCustomProviderOnNewIntent() throws Exception {
+    public void shouldResumeOAuthAuthenticationWithCustomProviderOnNewIntent() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
         when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
@@ -617,7 +618,7 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldResumeEnterpriseOAuthAuthenticationWithWebProviderOnNewIntent() throws Exception {
+    public void shouldResumeEnterpriseOAuthAuthenticationWithWebProviderOnNewIntent() {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection, "user@domain.com", null);

@@ -29,7 +29,7 @@ public class AuthConfigTest {
     private OAuthConnection connection;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("facebook-prod");
         when(connection.getStrategy()).thenReturn("facebook");
@@ -37,19 +37,19 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void shouldGetConnection() throws Exception {
+    public void shouldGetConnection() {
         Assert.assertThat(authConfig.getConnection(), is(connection));
     }
 
     @Test
-    public void shouldGetName() throws Exception {
+    public void shouldGetName() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         final String string = RuntimeEnvironment.application.getResources().getString(R.string.com_auth0_lock_social_facebook);
         Assert.assertThat(authConfig.getName(RuntimeEnvironment.application), is(equalTo(string)));
     }
 
     @Test
-    public void shouldGetLogo() throws Exception {
+    public void shouldGetLogo() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         Drawable drawable1 = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_facebook);
         Drawable drawable2 = authConfig.getLogo(RuntimeEnvironment.application);
@@ -59,21 +59,21 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void shouldGetBackgroundColor() throws Exception {
+    public void shouldGetBackgroundColor() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         final int color = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_facebook);
         Assert.assertThat(authConfig.getBackgroundColor(RuntimeEnvironment.application), is(equalTo(color)));
     }
 
     @Test
-    public void shouldHaveValidDefaultName() throws Exception {
+    public void shouldHaveValidDefaultName() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
         Assert.assertThat(defaultConfig.getName(RuntimeEnvironment.application), is(equalTo("facebook")));
     }
 
     @Test
-    public void shouldHaveValidDefaultLogo() throws Exception {
+    public void shouldHaveValidDefaultLogo() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
         Drawable drawable1 = RuntimeEnvironment.application.getResources().getDrawable(R.drawable.com_auth0_lock_ic_social_auth0);
@@ -84,7 +84,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void shouldHaveValidDefaultColor() throws Exception {
+    public void shouldHaveValidDefaultColor() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
         AuthConfig defaultConfig = new AuthConfig(connection, R.style.Lock_Theme);
         final int color = RuntimeEnvironment.application.getResources().getColor(R.color.com_auth0_lock_social_unknown);
@@ -92,7 +92,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void shouldGetStyleForStrategy() throws Exception {
+    public void shouldGetStyleForStrategy() {
         Assert.assertThat(AuthConfig.styleForStrategy("amazon"), is(R.style.Lock_Theme_AuthStyle_Amazon));
         Assert.assertThat(AuthConfig.styleForStrategy("aol"), is(R.style.Lock_Theme_AuthStyle_AOL));
         Assert.assertThat(AuthConfig.styleForStrategy("bitbucket"), is(R.style.Lock_Theme_AuthStyle_BitBucket));
@@ -133,7 +133,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void shouldGetDefaultStyleForUnknownStrategy() throws Exception {
+    public void shouldGetDefaultStyleForUnknownStrategy() {
         Assert.assertThat(AuthConfig.styleForStrategy("unknown-strategy"), is(R.style.Lock_Theme_AuthStyle));
     }
 

@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -85,6 +86,7 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
      *
      * @param style to use in this username field
      */
+    @SuppressLint("StringFormatInvalid")
     public void setUsernameStyle(@UsernameStyle int style) {
         if (style == EMAIL || !usernameRequired) {
             setDataType(DataType.EMAIL);

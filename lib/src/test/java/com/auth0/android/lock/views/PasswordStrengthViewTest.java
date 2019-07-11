@@ -2,7 +2,6 @@ package com.auth0.android.lock.views;
 
 import android.app.Activity;
 
-import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.internal.configuration.PasswordComplexity;
 import com.auth0.android.lock.internal.configuration.PasswordStrength;
 
@@ -46,13 +45,13 @@ public class PasswordStrengthViewTest {
     private PasswordStrengthView view;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Activity context = Robolectric.buildActivity(Activity.class).create().get();
         view = new PasswordStrengthView(context);
     }
 
     @Test
-    public void shouldHandlePasswordStrengthNONE() throws Exception {
+    public void shouldHandlePasswordStrengthNONE() {
         view.setStrength(PasswordStrength.NONE);
 
         assertTrue(view.isValid(PASSWORD_NUMERIC));
@@ -80,7 +79,7 @@ public class PasswordStrengthViewTest {
     }
 
     @Test
-    public void shouldHandlePasswordStrengthLOW() throws Exception {
+    public void shouldHandlePasswordStrengthLOW() {
         view.setStrength(PasswordStrength.LOW);
 
         assertTrue(view.isValid(PASSWORD_NUMERIC));
@@ -108,7 +107,7 @@ public class PasswordStrengthViewTest {
     }
 
     @Test
-    public void shouldHandlePasswordStrengthFAIR() throws Exception {
+    public void shouldHandlePasswordStrengthFAIR() {
         view.setStrength(PasswordStrength.FAIR);
 
         assertFalse(view.isValid(PASSWORD_NUMERIC));
@@ -136,7 +135,7 @@ public class PasswordStrengthViewTest {
     }
 
     @Test
-    public void shouldHandlePasswordStrengthGOOD() throws Exception {
+    public void shouldHandlePasswordStrengthGOOD() {
         view.setStrength(PasswordStrength.GOOD);
 
         assertFalse(view.isValid(PASSWORD_NUMERIC));
@@ -164,7 +163,7 @@ public class PasswordStrengthViewTest {
     }
 
     @Test
-    public void shouldHandlePasswordStrengthEXCELLENT() throws Exception {
+    public void shouldHandlePasswordStrengthEXCELLENT() {
         view.setStrength(PasswordStrength.EXCELLENT);
 
         assertFalse(view.isValid(PASSWORD_NUMERIC));
@@ -192,7 +191,7 @@ public class PasswordStrengthViewTest {
     }
 
     @Test
-    public void shouldOverrideMinLength() throws Exception {
+    public void shouldOverrideMinLength() {
         PasswordComplexity passwordComplexity;
 
         // NONE is normally >= 1

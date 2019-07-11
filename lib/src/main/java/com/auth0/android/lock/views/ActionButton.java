@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
@@ -45,6 +46,7 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.Theme;
 
+@SuppressLint("ViewConstructor")
 public class ActionButton extends FrameLayout {
 
     private static final String TAG = ActionButton.class.getSimpleName();
@@ -61,11 +63,11 @@ public class ActionButton extends FrameLayout {
 
     private void init(Theme lockTheme) {
         inflate(getContext(), R.layout.com_auth0_lock_action_button, this);
-        progress = (ProgressBar) findViewById(R.id.com_auth0_lock_progress);
+        progress = findViewById(R.id.com_auth0_lock_progress);
         progress.setVisibility(View.GONE);
-        icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
-        labeledLayout = (LinearLayout) findViewById(R.id.com_auth0_lock_labeled);
-        title = (TextView) findViewById(R.id.com_auth0_lock_title);
+        icon = findViewById(R.id.com_auth0_lock_icon);
+        labeledLayout = findViewById(R.id.com_auth0_lock_labeled);
+        title = findViewById(R.id.com_auth0_lock_title);
 
         ViewUtils.setBackground(icon, generateStateBackground(lockTheme));
         ViewUtils.setBackground(labeledLayout, generateStateBackground(lockTheme));

@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.internal.configuration;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -152,6 +153,7 @@ public class Options implements Parcelable {
         }
         if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
+            @SuppressLint("ParcelClassLoader")
             Bundle mapBundle = in.readBundle();
             authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
         } else {
@@ -171,6 +173,7 @@ public class Options implements Parcelable {
         }
         if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
+            @SuppressLint("ParcelClassLoader")
             Bundle mapBundle = in.readBundle();
             connectionsScope = (HashMap<String, String>) mapBundle.getSerializable(KEY_CONNECTIONS_SCOPE);
         } else {

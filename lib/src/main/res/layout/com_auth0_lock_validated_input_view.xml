@@ -48,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:background="@null"
-            tools:ignore="TextFields"
+            tools:ignore="Autofill,TextFields"
             tools:text="email@domain.com" />
 
         <com.auth0.android.lock.views.ImageCheckbox

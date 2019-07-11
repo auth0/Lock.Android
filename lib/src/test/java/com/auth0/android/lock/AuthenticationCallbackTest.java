@@ -50,7 +50,7 @@ public class AuthenticationCallbackTest {
     private MockLockCallback callback;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         callback = new MockLockCallback();
     }
 
