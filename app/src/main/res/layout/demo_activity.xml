@@ -79,8 +79,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:text="Passwordless" />
 
         <RadioGroup
@@ -130,8 +130,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:text="Allowed Connections" />
 
         <LinearLayout
@@ -200,8 +200,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
                 android:text="Advanced"
                 android:textSize="18sp" />
 
@@ -386,8 +386,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:text="Universal Login"
             android:textSize="20sp" />
 
@@ -401,8 +401,14 @@
             android:id="@+id/btn_show_universal_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:text="Show Login Page" />
+
+        <Button
+            android:id="@+id/btn_clear_session"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Show Logout Page" />
 
 
     </LinearLayout>
