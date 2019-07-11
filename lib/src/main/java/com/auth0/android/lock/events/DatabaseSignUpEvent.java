@@ -34,16 +34,13 @@ import com.auth0.android.authentication.request.DatabaseConnectionRequest;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.result.DatabaseUser;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseSignUpEvent extends DatabaseEvent {
 
-    private static final String KEY_USER_METADATA = "user_metadata";
-
     @NonNull
     private String password;
-    private Map<String, String> extraFields;
+    private Map<String, Object> extraFields;
 
     public DatabaseSignUpEvent(@NonNull String email, @NonNull String password, @Nullable String username) {
         super(email, username);
@@ -55,7 +52,7 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return password;
     }
 
-    public void setExtraFields(@NonNull Map<String, String> customFields) {
+    public void setExtraFields(@NonNull Map<String, Object> customFields) {
         this.extraFields = customFields;
     }
 
@@ -67,9 +64,7 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
             request = apiClient.signUp(getEmail(), getPassword(), connection);
         }
         if (extraFields != null) {
-            Map<String, Object> params = new HashMap<>();
-            params.put(KEY_USER_METADATA, extraFields);
-            request.addSignUpParameters(params);
+            request.addSignUpParameters(extraFields);
         }
         return request;
     }
@@ -82,7 +77,7 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
             request = apiClient.createUser(getEmail(), getPassword(), connection);
         }
         if (extraFields != null) {
-            request.addParameter(KEY_USER_METADATA, extraFields);
+            request.addParameters(extraFields);
         }
         return request;
     }

@@ -37,7 +37,7 @@ import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.hamcrest.Matchers.equalTo;
+import static com.auth0.android.lock.utils.CustomField.Storage;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -51,19 +51,42 @@ public class CustomFieldTest {
     private static final String KEY = "key";
     private static final int HINT = R.string.com_auth0_lock_hint_email;
     private static final String CUSTOM_FIELD_KEY = "custom_field";
+    private static final int STORAGE = Storage.USER_METADATA;
 
     @Test
-    public void testParcelable() {
+    public void shouldCreateWithDefaultValues() throws Exception {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
+        assertThat(field.getIcon(), is(ICON));
+        assertThat(field.getType(), is(TYPE));
+        assertThat(field.getKey(), is(KEY));
+        assertThat(field.getHint(), is(HINT));
+        //Default values
+        assertThat(field.getStorage(), is(Storage.PROFILE_ROOT));
+    }
+
+    @Test
+    public void shouldCreate() throws Exception {
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
+        assertThat(field.getIcon(), is(ICON));
+        assertThat(field.getType(), is(TYPE));
+        assertThat(field.getKey(), is(KEY));
+        assertThat(field.getHint(), is(HINT));
+        assertThat(field.getStorage(), is(STORAGE));
+    }
+
+    @Test
+    public void shouldBeParcelable() throws Exception {
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CUSTOM_FIELD_KEY, field);
 
         CustomField parcelableCustomField = bundle.getParcelable(CUSTOM_FIELD_KEY);
         assertThat(parcelableCustomField, is(notNullValue()));
-        assertThat(parcelableCustomField.getIcon(), is(equalTo(ICON)));
-        assertThat(parcelableCustomField.getType(), is(equalTo(TYPE)));
-        assertThat(parcelableCustomField.getKey(), is(equalTo(KEY)));
-        assertThat(parcelableCustomField.getHint(), is(equalTo(HINT)));
+        assertThat(parcelableCustomField.getIcon(), is(ICON));
+        assertThat(parcelableCustomField.getType(), is(TYPE));
+        assertThat(parcelableCustomField.getKey(), is(KEY));
+        assertThat(parcelableCustomField.getHint(), is(HINT));
+        assertThat(parcelableCustomField.getStorage(), is(STORAGE));
     }
 
     @Test

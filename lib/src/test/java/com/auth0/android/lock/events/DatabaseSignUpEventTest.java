@@ -56,7 +56,6 @@ public class DatabaseSignUpEventTest {
     private static final String PASSWORD = "password";
     private static final String USERNAME = "username";
     private static final String CONNECTION = "connection";
-    private static final String KEY_USER_METADATA = "user_metadata";
 
     @Test
     public void shouldSetAllValues() {
@@ -97,7 +96,7 @@ public class DatabaseSignUpEventTest {
     @Test
     public void shouldGetSignUpRequestWithUserMetadata() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        final Map<String, String> metadata = createMetadata();
+        final Map<String, Object> metadata = createExtraFields();
         ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         SignUpRequest requestMock = mock(SignUpRequest.class);
@@ -138,25 +137,28 @@ public class DatabaseSignUpEventTest {
     @Test
     public void shouldGetCreateUserRequestWithUserMetadata() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        final Map<String, String> metadata = createMetadata();
+        final Map<String, Object> metadata = createExtraFields();
 
         DatabaseConnectionRequest<DatabaseUser, AuthenticationException> requestMock = mock(DatabaseConnectionRequest.class);
         Mockito.when(client.createUser(EMAIL, PASSWORD, CONNECTION)).thenReturn(requestMock);
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(EMAIL, PASSWORD, null);
         event.setExtraFields(metadata);
         event.getCreateUserRequest(client, CONNECTION);
-        Mockito.verify(requestMock).addParameter(KEY_USER_METADATA, metadata);
+        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
+        Mockito.verify(requestMock).addParameters(mapCaptor.capture());
+        assertValidMetadata(mapCaptor.getValue());
 
         DatabaseConnectionRequest<DatabaseUser, AuthenticationException> usernameRequestMock = mock(DatabaseConnectionRequest.class);
         Mockito.when(client.createUser(EMAIL, PASSWORD, USERNAME, CONNECTION)).thenReturn(usernameRequestMock);
         DatabaseSignUpEvent eventUsername = new DatabaseSignUpEvent(EMAIL, PASSWORD, USERNAME);
         eventUsername.setExtraFields(metadata);
         eventUsername.getCreateUserRequest(client, CONNECTION);
-        Mockito.verify(usernameRequestMock).addParameter(KEY_USER_METADATA, metadata);
+        Mockito.verify(usernameRequestMock).addParameters(mapCaptor.capture());
+        assertValidMetadata(mapCaptor.getValue());
     }
 
-    private Map<String, String> createMetadata() {
-        Map<String, String> map = new HashMap<>();
+    private Map<String, Object> createExtraFields() {
+        Map<String, Object> map = new HashMap<>();
         map.put("key", "value");
         map.put("abc", "123");
         return map;
@@ -164,10 +166,8 @@ public class DatabaseSignUpEventTest {
 
     private void assertValidMetadata(Map<String, Object> map) {
         assertThat(map, is(notNullValue()));
-        assertThat(map, IsMapContaining.hasKey("user_metadata"));
-        Map<String, String> resultMetadata = (Map<String, String>) map.get("user_metadata");
-        assertThat(resultMetadata, IsMapContaining.hasEntry("key", "value"));
-        assertThat(resultMetadata, IsMapContaining.hasEntry("abc", "123"));
+        assertThat(map, IsMapContaining.hasEntry("key", (Object) "value"));
+        assertThat(map, IsMapContaining.hasEntry("abc", (Object) "123"));
     }
 
 }

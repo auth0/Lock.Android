@@ -45,7 +45,6 @@ import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,15 +110,6 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         }
     }
 
-    private Map<String, String> getCustomFieldValues() {
-        Map<String, String> map = new HashMap<>();
-        for (CustomField data : lockWidget.getConfiguration().getExtraSignUpFields()) {
-            map.put(data.getKey(), data.findValue(fieldContainer));
-        }
-        Log.d(TAG, "Custom field values are" + map.values().toString());
-
-        return map;
-    }
 
     private LinearLayout.LayoutParams defineFieldParams() {
         int verticalMargin = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
@@ -180,7 +170,10 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         if (validateForm()) {
             DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
             if (displayFewCustomFields) {
-                event.setExtraFields(getCustomFieldValues());
+                List<CustomField> fields = lockWidget.getConfiguration().getExtraSignUpFields();
+                Map<String, Object> extraFields = CustomFieldsFormView.convertFieldsToMap(fields, fieldContainer);
+                Log.d(TAG, "Custom field values are" + extraFields.values().toString());
+                event.setExtraFields(extraFields);
                 return event;
             }
             if (lockWidget.getConfiguration().hasExtraFields()) {

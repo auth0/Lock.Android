@@ -44,6 +44,8 @@ import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_EMAIL;
 import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_NAME;
 import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_NUMBER;
 import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_PHONE_NUMBER;
+import static com.auth0.android.lock.utils.CustomField.Storage.PROFILE_ROOT;
+import static com.auth0.android.lock.utils.CustomField.Storage.USER_METADATA;
 
 public class CustomField implements Parcelable {
 
@@ -56,15 +58,58 @@ public class CustomField implements Parcelable {
         int TYPE_EMAIL = 3;
     }
 
+    /**
+     * Location to store the field into.
+     */
+    @IntDef({PROFILE_ROOT, USER_METADATA})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Storage {
+        /**
+         * Store the field into the user profile root.
+         * The list of attributes that can be added to your root profile is here https://auth0.com/docs/api/management/v2#!/Users/patch_users_by_id.
+         */
+        int PROFILE_ROOT = 0;
+
+        /**
+         * Store the field into the user_metadata object.
+         * The list of attributes that can be added to your root profile is here https://auth0.com/docs/api/management/v2#!/Users/patch_users_by_id.
+         */
+        int USER_METADATA = 1;
+    }
+
     @DrawableRes
-    private int icon;
+    private final int icon;
     @FieldType
     private final int type;
     private final String key;
     @StringRes
     private final int hint;
+    @Storage
+    private final int storage;
 
+
+    /**
+     * Constructor for CustomField instance
+     *
+     * @param icon the icon resource to display next to the field.
+     * @param type the type of input this field will receive. Used to determine the applied validation.
+     * @param key  the key to store this field as.
+     * @param hint the placeholder to display when this field is empty.
+     */
     public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint) {
+        this(icon, type, key, hint, PROFILE_ROOT);
+    }
+
+    /**
+     * Constructor for CustomField instance
+     *
+     * @param icon    the icon resource to display next to the field.
+     * @param type    the type of input this field will receive. Used to determine the applied validation.
+     * @param key     the key to store this field as.
+     * @param hint    the placeholder to display when this field is empty.
+     * @param storage the location to store this value into. Defaults to {@link Storage#USER_METADATA}.
+     */
+    public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint, @Storage int storage) {
         if (key.isEmpty()) {
             throw new IllegalArgumentException("The key cannot be empty!");
         }
@@ -72,6 +117,7 @@ public class CustomField implements Parcelable {
         this.type = type;
         this.key = key;
         this.hint = hint;
+        this.storage = storage;
     }
 
     public void configureField(@NonNull ValidatedInputView field) {
@@ -123,12 +169,17 @@ public class CustomField implements Parcelable {
         return type;
     }
 
+    @Storage
+    public int getStorage() {
+        return storage;
+    }
+
     protected CustomField(Parcel in) {
         icon = in.readInt();
-        //noinspection WrongConstant
         type = in.readInt();
         key = in.readString();
         hint = in.readInt();
+        storage = in.readInt();
     }
 
     @Override
@@ -142,6 +193,7 @@ public class CustomField implements Parcelable {
         dest.writeInt(type);
         dest.writeString(key);
         dest.writeInt(hint);
+        dest.writeInt(storage);
     }
 
     @SuppressWarnings("unused")
