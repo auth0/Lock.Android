@@ -2,9 +2,11 @@ package com.auth0.android.lock.views;
 
 import android.view.ViewGroup;
 
+import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.utils.CustomField;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -12,15 +14,16 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CustomFieldsFormViewTest {
 
     @Test
     public void shouldConvertCustomFieldsToMap() {
+        DatabaseSignUpEvent event = mock(DatabaseSignUpEvent.class);
         ViewGroup container = mock(ViewGroup.class);
 
         //user_metadata attributes
@@ -49,18 +52,22 @@ public class CustomFieldsFormViewTest {
 
 
         //Method under test
-        Map<String, Object> map = CustomFieldsFormView.convertFieldsToMap(list, container);
+        CustomFieldsFormView.setEventRootProfileAttributes(event, list, container);
 
 
         //Assertions
-        assertThat(map, is(notNullValue()));
+        ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
-        assertThat(map, hasKey("user_metadata"));
-        assertThat(map, hasEntry("family_name", (Object) "John"));
-        assertThat(map, hasEntry("nickname", (Object) "Johnnnny"));
+        verify(event).setExtraFields(mapCaptor.capture());
+        Map<String, String> metadataFields = mapCaptor.getValue();
+        assertThat(metadataFields, is(notNullValue()));
+        assertThat(metadataFields, hasEntry("company", "Auth0 INC"));
 
-        Map<String, Object> resultMetadata = (Map<String, Object>) map.get("user_metadata");
-        assertThat(resultMetadata, hasEntry("company", (Object) "Auth0 INC"));
+        verify(event).setRootAttributes(mapCaptor.capture());
+        Map<String, Object> rootAttributes = mapCaptor.getValue();
+        assertThat(rootAttributes, is(notNullValue()));
+        assertThat(rootAttributes, hasEntry("family_name", (Object) "John"));
+        assertThat(rootAttributes, hasEntry("nickname", (Object) "Johnnnny"));
 
     }
 }

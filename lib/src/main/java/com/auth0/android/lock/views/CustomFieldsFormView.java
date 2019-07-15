@@ -49,7 +49,6 @@ import static com.auth0.android.lock.utils.CustomField.Storage;
 
 public class CustomFieldsFormView extends FormView implements TextView.OnEditorActionListener {
 
-    private static final String KEY_USER_METADATA = "user_metadata";
     private static final String TAG = CustomFieldsFormView.class.getSimpleName();
 
     @NonNull
@@ -109,7 +108,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         }
     }
 
-    public static Map<String, Object> convertFieldsToMap(List<CustomField> fields, ViewGroup container) {
+    static void setEventRootProfileAttributes(DatabaseSignUpEvent event, List<CustomField> fields, ViewGroup container) {
         Map<String, Object> rootMap = new HashMap<>();
         Map<String, String> userMetadataMap = new HashMap<>();
 
@@ -121,18 +120,18 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
                 rootMap.put(data.getKey(), value);
             }
         }
-        if (!userMetadataMap.isEmpty()) {
-            rootMap.put(KEY_USER_METADATA, userMetadataMap);
+        if (!rootMap.isEmpty()) {
+            event.setRootAttributes(rootMap);
         }
-        return rootMap;
+        if (!userMetadataMap.isEmpty()) {
+            event.setExtraFields(userMetadataMap);
+        }
     }
 
     @Override
     public Object getActionEvent() {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, password, username);
-        Map<String, Object> extraFields = convertFieldsToMap(fieldsData, fieldContainer);
-        Log.d(TAG, "Custom field values are" + extraFields.values().toString());
-        event.setExtraFields(extraFields);
+        setEventRootProfileAttributes(event, fieldsData, fieldContainer);
         return event;
     }
 

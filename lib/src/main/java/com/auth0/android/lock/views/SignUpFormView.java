@@ -46,7 +46,8 @@ import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.List;
-import java.util.Map;
+
+import static com.auth0.android.lock.views.CustomFieldsFormView.setEventRootProfileAttributes;
 
 public class SignUpFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
@@ -171,9 +172,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
             DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
             if (displayFewCustomFields) {
                 List<CustomField> fields = lockWidget.getConfiguration().getExtraSignUpFields();
-                Map<String, Object> extraFields = CustomFieldsFormView.convertFieldsToMap(fields, fieldContainer);
-                Log.d(TAG, "Custom field values are" + extraFields.values().toString());
-                event.setExtraFields(extraFields);
+                setEventRootProfileAttributes(event, fields, fieldContainer);
                 return event;
             }
             if (lockWidget.getConfiguration().hasExtraFields()) {

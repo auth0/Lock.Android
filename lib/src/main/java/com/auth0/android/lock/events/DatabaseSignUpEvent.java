@@ -34,17 +34,21 @@ import com.auth0.android.authentication.request.DatabaseConnectionRequest;
 import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.result.DatabaseUser;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseSignUpEvent extends DatabaseEvent {
 
+    private static final String KEY_USER_METADATA = "user_metadata";
+
     @NonNull
     private String password;
-    private Map<String, Object> extraFields;
+    private Map<String, Object> rootAttributes;
 
     public DatabaseSignUpEvent(@NonNull String email, @NonNull String password, @Nullable String username) {
         super(email, username);
         this.password = password;
+        this.rootAttributes = new HashMap<>();
     }
 
     @NonNull
@@ -52,9 +56,19 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return password;
     }
 
-    public void setExtraFields(@NonNull Map<String, Object> customFields) {
-        this.extraFields = customFields;
+    public void setRootAttributes(@NonNull Map<String, Object> attributes) {
+        this.rootAttributes.putAll(attributes);
     }
+
+    /**
+     * Set the fields to set as user_metadata
+     *
+     * @param customFields user_metadata fields to set
+     */
+    public void setExtraFields(@NonNull Map<String, String> customFields) {
+        this.rootAttributes.put(KEY_USER_METADATA, customFields);
+    }
+
 
     public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient, String connection) {
         SignUpRequest request;
@@ -63,8 +77,8 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         } else {
             request = apiClient.signUp(getEmail(), getPassword(), connection);
         }
-        if (extraFields != null) {
-            request.addSignUpParameters(extraFields);
+        if (!rootAttributes.isEmpty()) {
+            request.addSignUpParameters(rootAttributes);
         }
         return request;
     }
@@ -76,8 +90,8 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         } else {
             request = apiClient.createUser(getEmail(), getPassword(), connection);
         }
-        if (extraFields != null) {
-            request.addParameters(extraFields);
+        if (!rootAttributes.isEmpty()) {
+            request.addParameters(rootAttributes);
         }
         return request;
     }
