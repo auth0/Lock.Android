@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.Theme;
 
+@SuppressLint("ViewConstructor")
 public class HeaderView extends RelativeLayout {
     private View header;
     private ImageView logo;
@@ -49,8 +51,8 @@ public class HeaderView extends RelativeLayout {
     private void init(Theme lockTheme) {
         inflate(getContext(), R.layout.com_auth0_lock_header, this);
         header = findViewById(R.id.com_auth0_lock_header_background);
-        logo = (ImageView) findViewById(R.id.com_auth0_lock_header_logo);
-        text = (TextView) findViewById(R.id.com_auth0_lock_header_text);
+        logo = findViewById(R.id.com_auth0_lock_header_logo);
+        text = findViewById(R.id.com_auth0_lock_header_text);
         header.setBackgroundColor(lockTheme.getHeaderColor(getContext()));
         logo.setImageDrawable(lockTheme.getHeaderLogo(getContext()));
         text.setText(lockTheme.getHeaderTitle(getContext()));

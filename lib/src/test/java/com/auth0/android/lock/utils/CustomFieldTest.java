@@ -26,7 +26,6 @@ package com.auth0.android.lock.utils;
 
 import android.os.Bundle;
 
-import com.auth0.android.lock.BuildConfig;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.views.ValidatedInputView;
@@ -54,7 +53,7 @@ public class CustomFieldTest {
     private static final String CUSTOM_FIELD_KEY = "custom_field";
 
     @Test
-    public void testParcelable() throws Exception {
+    public void testParcelable() {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CUSTOM_FIELD_KEY, field);

@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,6 +44,7 @@ import static com.auth0.android.lock.internal.configuration.PasswordlessMode.EMA
 import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_CODE;
 import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_LINK;
 
+@SuppressLint("ViewConstructor")
 public class PasswordlessRequestCodeFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessRequestCodeFormView.class.getSimpleName();
@@ -65,10 +67,10 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
 
     private void init(boolean showTitle) {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_request_code_form_view, this);
-        topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
-        passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
+        topMessage = findViewById(R.id.com_auth0_lock_text);
+        passwordlessInput = findViewById(R.id.com_auth0_lock_input_passwordless);
         passwordlessInput.setOnEditorActionListener(this);
-        countryCodeSelector = (CountryCodeSelectorView) findViewById(R.id.com_auth0_lock_country_code_selector);
+        countryCodeSelector = findViewById(R.id.com_auth0_lock_country_code_selector);
         countryCodeSelector.setOnClickListener(this);
 
         selectPasswordlessMode(showTitle);

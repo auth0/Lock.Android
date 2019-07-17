@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -65,6 +66,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
     private String lastEmailInput;
 
+    @SuppressLint("WrongConstant")
     @AuthMode
     private int lastFormMode = -1;
 
@@ -160,6 +162,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
      *
      * @param mode the new DatabaseMode to change to
      */
+    @SuppressLint("WrongConstant")
     private void changeFormMode(@AuthMode int mode) {
         Log.d(TAG, "Mode changed to " + mode);
         if (lastFormMode == mode || !showDatabase && !showEnterprise) {
@@ -281,7 +284,9 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         changeFormMode(mode);
     }
 
+    @SuppressLint("WrongConstant")
     @Override
+    @AuthMode
     public int getSelectedMode() {
         return lastFormMode;
     }

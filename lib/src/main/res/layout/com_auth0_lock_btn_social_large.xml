@@ -31,7 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/com_auth0_lock_icon"

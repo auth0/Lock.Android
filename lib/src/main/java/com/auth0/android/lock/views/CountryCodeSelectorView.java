@@ -74,10 +74,10 @@ public class CountryCodeSelectorView extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_country_code_selector, this);
-        icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
-        chevron = (ImageView) findViewById(R.id.com_auth0_lock_chevron);
-        countryNameTextView = (TextView) findViewById(R.id.com_auth0_lock_country_name);
-        countryCodeTextView = (TextView) findViewById(R.id.com_auth0_lock_country_code);
+        icon = findViewById(R.id.com_auth0_lock_icon);
+        chevron = findViewById(R.id.com_auth0_lock_chevron);
+        countryNameTextView = findViewById(R.id.com_auth0_lock_country_name);
+        countryCodeTextView = findViewById(R.id.com_auth0_lock_country_code);
         outline = findViewById(R.id.com_auth0_lock_outline);
         prepareTask();
         setupBackground();

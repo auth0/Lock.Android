@@ -52,22 +52,20 @@ public class ApplicationAPI {
         return server.takeRequest();
     }
 
-    public ApplicationAPI willReturnValidJSONPResponse() {
-        return willReturnApplicationResponseWithBody("Auth0.setClient({\"id\":\"CLIENTID\",\"tenant\":\"overmind\",\"subscription\":\"free\",\"authorize\":\"https://samples.auth0.com/authorize\",\"callback\":\"http://localhost:3000/\",\"hasAllowedOrigins\":true,\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]});", 200);
+    public void willReturnValidJSONPResponse() {
+        willReturnApplicationResponseWithBody("Auth0.setClient({\"id\":\"CLIENTID\",\"tenant\":\"overmind\",\"subscription\":\"free\",\"authorize\":\"https://samples.auth0.com/authorize\",\"callback\":\"http://localhost:3000/\",\"hasAllowedOrigins\":true,\"strategies\":[{\"name\":\"twitter\",\"connections\":[{\"name\":\"twitter\"}]}]});", 200);
     }
 
-    public ApplicationAPI willReturnInvalidJSONPLengthResponse() {
+    public void willReturnInvalidJSONPLengthResponse() {
         server.enqueue(responseWithJSON("SHORTJSON", 200));
-        return this;
     }
 
-    private ApplicationAPI willReturnApplicationResponseWithBody(String body, int statusCode) {
+    private void willReturnApplicationResponseWithBody(String body, int statusCode) {
         MockResponse response = new MockResponse()
                 .setResponseCode(statusCode)
                 .addHeader("Content-Type", "application/x-javascript")
                 .setBody(body);
         server.enqueue(response);
-        return this;
     }
 
     private MockResponse responseWithJSON(String json, int statusCode) {

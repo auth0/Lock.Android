@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 public class ErrorMessageEventTest {
 
     @Test
-    public void shouldSetMessageResource() throws Exception {
+    public void shouldSetMessageResource() {
         //noinspection ResourceType
         final LockMessageEvent event = new LockMessageEvent(23);
         assertThat(event.getMessageRes(), is(23));

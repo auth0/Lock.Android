@@ -71,7 +71,7 @@
     <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
     <string name="com_auth0_lock_input_error_password">Invalid Password</string>
     <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
-    <string name="com_auth0_lock_input_error_username" formatted="false">Invalid Username. Can only contain between %d to %d alphanumeric characters and \'_\'.</string>
+    <string name="com_auth0_lock_input_error_username" formatted="false" tools:ignore="StringFormatInvalid">Invalid Username. Can only contain between %d to %d alphanumeric characters and \'_\'.</string>
     <string name="com_auth0_lock_input_error_username_empty" formatted="false">Invalid Username</string>
     <string name="com_auth0_lock_input_error_code">Invalid Code</string>
     <string name="com_auth0_lock_input_error_phone_number">Invalid Phone Number</string>
@@ -114,7 +114,7 @@
     <string name="com_auth0_lock_title_passwordless_email">Enter your email address to sign in\n or create an account</string>
     <string name="com_auth0_lock_title_passwordless_sms">Enter your phone to sign in\n or create an account</string>
     <string name="com_auth0_lock_sign_up_terms_dialog_title">Terms &amp; Policy</string>
-    <string name="com_auth0_lock_sign_up_terms_dialog_message" formatted="false"><![CDATA[
+    <string name="com_auth0_lock_sign_up_terms_dialog_message" formatted="false" tools:ignore="StringFormatInvalid"><![CDATA[
     By signing up, you agree to our <a href=\'%s\'>terms of service</a> and <a href=\'%s\'>privacy policy</a>
     ]]></string>
 
@@ -150,7 +150,7 @@
 
     <!-- Password Strength/Policies -->
     <string name="com_auth0_lock_password_strength_identical_chars">No more than 2 identical characters in a row (e.g., "111" not allowed)</string>
-    <string name="com_auth0_lock_password_strength_chars_length" formatted="false">At least %d characters in length</string>
+    <string name="com_auth0_lock_password_strength_chars_length" formatted="false" tools:ignore="StringFormatInvalid">At least %d characters in length</string>
     <string name="com_auth0_lock_password_strength_lowercase_letters">Lower case letters (a-z)</string>
     <string name="com_auth0_lock_password_strength_uppercase_letters">Upper case letters (A-Z)</string>
     <string name="com_auth0_lock_password_strength_numbers">Numbers (i.e. 0–9)</string>

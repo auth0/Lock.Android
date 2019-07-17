@@ -28,7 +28,7 @@ public class PasswordlessIdentityHelperTest {
 
     @SuppressLint("CommitPrefEdits")
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         context = Mockito.mock(Context.class);
         sp = Mockito.mock(SharedPreferences.class);
         editor = Mockito.mock(SharedPreferences.Editor.class);
@@ -39,7 +39,7 @@ public class PasswordlessIdentityHelperTest {
     }
 
     @Test
-    public void shouldSaveIdentity() throws Exception {
+    public void shouldSaveIdentity() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
         helper.saveIdentity("me@auth0.com", null);
 
@@ -49,7 +49,7 @@ public class PasswordlessIdentityHelperTest {
     }
 
     @Test
-    public void shouldSaveIdentityWithCountry() throws Exception {
+    public void shouldSaveIdentityWithCountry() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
         helper.saveIdentity("1234567890", new Country("ar", "54"));
 
@@ -59,7 +59,7 @@ public class PasswordlessIdentityHelperTest {
     }
 
     @Test
-    public void shouldGetSavedIdentity() throws Exception {
+    public void shouldGetSavedIdentity() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
         when(sp.getString(eq("last_passwordless_identity"), anyString())).thenReturn("me@auth0.com");
 
@@ -68,7 +68,7 @@ public class PasswordlessIdentityHelperTest {
     }
 
     @Test
-    public void shouldGetSavedCountry() throws Exception {
+    public void shouldGetSavedCountry() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
         when(sp.getString(eq("last_passwordless_country"), anyString())).thenReturn("ar@54");
 
@@ -79,20 +79,20 @@ public class PasswordlessIdentityHelperTest {
     }
 
     @Test
-    public void shouldNotHaveLoggedInBeforeIfCurrentPasswordlessModeIsDisabled() throws Exception {
+    public void shouldNotHaveLoggedInBeforeIfCurrentPasswordlessModeIsDisabled() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.DISABLED);
         assertThat(helper.hasLoggedInBefore(), is(false));
     }
 
     @Test
-    public void shouldNotHaveLoggedInBeforeIfLastPasswordlessModeIsDisabled() throws Exception {
+    public void shouldNotHaveLoggedInBeforeIfLastPasswordlessModeIsDisabled() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
         when(sp.getInt(eq("last_passwordless_mode"), anyInt())).thenReturn(PasswordlessMode.DISABLED);
         assertThat(helper.hasLoggedInBefore(), is(false));
     }
 
     @Test
-    public void shouldNotHaveLoggedInBeforeOnDifferentConnections() throws Exception {
+    public void shouldNotHaveLoggedInBeforeOnDifferentConnections() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
         when(sp.getInt(eq("last_passwordless_mode"), anyInt())).thenReturn(PasswordlessMode.EMAIL_CODE);
         assertThat(helper.hasLoggedInBefore(), is(false));
@@ -119,7 +119,7 @@ public class PasswordlessIdentityHelperTest {
     }
 
     @Test
-    public void shouldHaveLoggedInBeforeOnSameConnections() throws Exception {
+    public void shouldHaveLoggedInBeforeOnSameConnections() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.EMAIL_CODE);
         when(sp.getInt(eq("last_passwordless_mode"), anyInt())).thenReturn(PasswordlessMode.EMAIL_CODE);
         assertThat(helper.hasLoggedInBefore(), is(true));

@@ -248,6 +248,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:maxLines">1</item>
         <item name="android:imeOptions">actionDone</item>
+        <item name="android:inputType">textAutoCorrect</item>
     </style>
 
     <style name="Lock.Theme.Widget.CountryCodeSelector" parent="Lock.Theme.Widget.Field">

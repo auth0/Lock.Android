@@ -75,17 +75,17 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private void init() {
         Configuration configuration = lockWidget.getConfiguration();
         inflate(getContext(), R.layout.com_auth0_lock_signup_form_view, this);
-        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_custom_fields_container);
+        fieldContainer = findViewById(R.id.com_auth0_lock_custom_fields_container);
 
-        usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
+        usernameInput = findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.configureFrom(configuration.getDatabaseConnection());
         usernameInput.setUsernameStyle(UsernameStyle.USERNAME);
         usernameInput.setOnEditorActionListener(this);
-        emailInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_email);
+        emailInput = findViewById(R.id.com_auth0_lock_input_email);
         emailInput.setDataType(ValidatedInputView.DataType.EMAIL);
         emailInput.setIdentityListener(this);
         emailInput.setOnEditorActionListener(this);
-        passwordInput = (ValidatedPasswordInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput = findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setPasswordComplexity(configuration.getPasswordComplexity());
         passwordInput.setAllowShowPassword(configuration.allowShowPassword());
         passwordInput.setOnEditorActionListener(this);

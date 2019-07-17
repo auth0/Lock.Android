@@ -72,9 +72,9 @@ public class CountryAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.com_auth0_lock_passwordless_item_country_code, parent, false);
         }
 
-        TextView countryNameTextView = (TextView) convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_name_text_view);
+        TextView countryNameTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_name_text_view);
         countryNameTextView.setText(country.getDisplayName());
-        TextView countryCodeTextView = (TextView) convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_text_view);
+        TextView countryCodeTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_text_view);
         countryCodeTextView.setText(country.getDialCode());
         return convertView;
     }

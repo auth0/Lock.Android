@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -35,6 +36,7 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.AuthMode;
 
+@SuppressLint("ViewConstructor")
 public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSelectedListener {
 
     private final ModeSelectedListener callback;
@@ -50,7 +52,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_tab_layout, this);
-        tabLayout = (TabLayout) findViewById(R.id.com_auth0_lock_tab_layout);
+        tabLayout = findViewById(R.id.com_auth0_lock_tab_layout);
 
         firstTabView = inflate(getContext(), R.layout.com_auth0_lock_tab, null);
         secondTabView = inflate(getContext(), R.layout.com_auth0_lock_tab, null);
@@ -88,7 +90,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
     }
 
     private void toggleBoldText(View tabView, boolean bold) {
-        final TextView text = (TextView) tabView.findViewById(android.R.id.text1);
+        final TextView text = tabView.findViewById(android.R.id.text1);
         text.setTypeface(bold ? text.getTypeface() : null, bold ? Typeface.BOLD : Typeface.NORMAL);
     }
 

@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,6 +56,7 @@ import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
+@SuppressLint("ViewConstructor")
 public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     private static final String TAG = ClassicLockView.class.getSimpleName();
@@ -186,9 +188,9 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     private void showConfigurationMissingLayout(final boolean showRetry) {
         final View errorLayout = LayoutInflater.from(getContext()).inflate(R.layout.com_auth0_lock_error_layout, this, false);
-        TextView tvTitle = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_title);
-        TextView tvError = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_subtitle);
-        TextView tvAction = (TextView) errorLayout.findViewById(R.id.com_auth0_lock_error_action);
+        TextView tvTitle = errorLayout.findViewById(R.id.com_auth0_lock_error_title);
+        TextView tvError = errorLayout.findViewById(R.id.com_auth0_lock_error_subtitle);
+        TextView tvAction = errorLayout.findViewById(R.id.com_auth0_lock_error_action);
 
         if (showRetry) {
             tvTitle.setText(R.string.com_auth0_lock_recoverable_error_title);
@@ -312,6 +314,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
      *
      * @param acceptCallback the callback to receive the acceptance. Can be null.
      */
+    @SuppressLint("StringFormatInvalid")
     private void showSignUpTermsDialog(@Nullable DialogInterface.OnClickListener acceptCallback) {
         final String content = getResources().getString(R.string.com_auth0_lock_sign_up_terms_dialog_message, configuration.getTermsURL(), configuration.getPrivacyURL());
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
@@ -325,7 +328,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         }
 
         //the dialog needs to be shown before we can get it's view.
-        final TextView message = (TextView) builder.show().findViewById(android.R.id.message);
+        final TextView message = builder.show().findViewById(android.R.id.message);
         if (message != null) {
             message.setMovementMethod(LinkMovementMethod.getInstance());
         }

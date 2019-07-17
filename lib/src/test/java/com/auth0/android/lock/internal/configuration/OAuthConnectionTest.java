@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 public class OAuthConnectionTest {
 
     @Test
-    public void shouldHaveName() throws Exception {
+    public void shouldHaveName() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
         OAuthConnection connection = Connection.newConnectionFor("strategy", values);
@@ -23,7 +23,7 @@ public class OAuthConnectionTest {
     }
 
     @Test
-    public void shouldHaveStrategy() throws Exception {
+    public void shouldHaveStrategy() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
         OAuthConnection connection = Connection.newConnectionFor("strategy", values);
@@ -31,19 +31,19 @@ public class OAuthConnectionTest {
     }
 
     @Test
-    public void shouldBeSocialType() throws Exception {
+    public void shouldBeSocialType() {
         OAuthConnection connection = connectionForStrategy("facebook");
         assertThat(connection, hasType(AuthType.SOCIAL));
     }
 
     @Test
-    public void shouldBeEnterpriseType() throws Exception {
+    public void shouldBeEnterpriseType() {
         OAuthConnection connection = connectionForStrategy("ad");
         assertThat(connection, hasType(AuthType.ENTERPRISE));
     }
 
     @Test
-    public void shouldReturnDomainNameInSet() throws Exception {
+    public void shouldReturnDomainNameInSet() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
         values.put("domain", "domain.com");
@@ -52,7 +52,7 @@ public class OAuthConnectionTest {
     }
 
     @Test
-    public void shouldReturnAllDomainNamesAsSet() throws Exception {
+    public void shouldReturnAllDomainNamesAsSet() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
         values.put("domain", "domain.com");
@@ -62,7 +62,7 @@ public class OAuthConnectionTest {
     }
 
     @Test
-    public void shouldReturnEmptySetWithNoDomainName() throws Exception {
+    public void shouldReturnEmptySetWithNoDomainName() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "ad");
         OAuthConnection connection = Connection.newConnectionFor("ad", values);
@@ -70,31 +70,31 @@ public class OAuthConnectionTest {
     }
 
     @Test
-    public void shouldHaveResourceOwnerEnabledIfADFS() throws Exception {
+    public void shouldHaveResourceOwnerEnabledIfADFS() {
         OAuthConnection connection = connectionForStrategy("adfs");
         assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
-    public void shouldHaveResourceOwnerEnabledIfWaad() throws Exception {
+    public void shouldHaveResourceOwnerEnabledIfWaad() {
         OAuthConnection connection = connectionForStrategy("waad");
         assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
-    public void shouldHaveResourceOwnerEnabledIfActiveDirectory() throws Exception {
+    public void shouldHaveResourceOwnerEnabledIfActiveDirectory() {
         OAuthConnection connection = connectionForStrategy("ad");
         assertThat(connection.isActiveFlowEnabled(), is(true));
     }
 
     @Test
-    public void shouldNotHaveResourceOwnerEnabledByDefault() throws Exception {
+    public void shouldNotHaveResourceOwnerEnabledByDefault() {
         OAuthConnection connection = connectionForStrategy("strategy");
         assertThat(connection.isActiveFlowEnabled(), is(false));
     }
 
     @Test
-    public void shouldNotHaveResourceOwnerEnabledIfNotADFSWaadOrActiveDirectory() throws Exception {
+    public void shouldNotHaveResourceOwnerEnabledIfNotADFSWaadOrActiveDirectory() {
         OAuthConnection connectionAuth0LDAP = connectionForStrategy("auth0-adldap");
         OAuthConnection connectionCustom = connectionForStrategy("custom");
         OAuthConnection connectionGoogleApps = connectionForStrategy("google-apps");

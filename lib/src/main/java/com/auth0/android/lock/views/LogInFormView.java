@@ -79,18 +79,18 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_login_form_view, this);
         changePasswordBtn = findViewById(R.id.com_auth0_lock_change_password_btn);
-        enterpriseBtn = (SocialButton) findViewById(R.id.com_auth0_lock_enterprise_button);
-        topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
+        enterpriseBtn = findViewById(R.id.com_auth0_lock_enterprise_button);
+        topMessage = findViewById(R.id.com_auth0_lock_text);
         Configuration configuration = lockWidget.getConfiguration();
         domainParser = new EnterpriseConnectionMatcher(configuration.getEnterpriseConnections());
-        usernameInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username);
+        usernameInput = findViewById(R.id.com_auth0_lock_input_username);
         usernameInput.setDataType(DataType.NON_EMPTY_USERNAME);
-        passwordInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_password);
+        passwordInput = findViewById(R.id.com_auth0_lock_input_password);
         passwordInput.setDataType(DataType.PASSWORD);
         passwordInput.setAllowShowPassword(configuration.allowShowPassword());
         passwordInput.setOnEditorActionListener(this);
 
-        emailInput = (ValidatedUsernameInputView) findViewById(R.id.com_auth0_lock_input_username_email);
+        emailInput = findViewById(R.id.com_auth0_lock_input_username_email);
         emailInput.configureFrom(configuration.getDatabaseConnection());
         emailInput.setUsernameStyle(configuration.getUsernameStyle());
         emailInput.setIdentityListener(this);

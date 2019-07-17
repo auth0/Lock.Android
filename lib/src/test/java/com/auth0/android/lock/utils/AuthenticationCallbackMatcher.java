@@ -55,7 +55,6 @@ public class AuthenticationCallbackMatcher extends BaseMatcher<MockLockCallback>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean matches(Object item) {
         MockLockCallback callback = (MockLockCallback) item;
         try {

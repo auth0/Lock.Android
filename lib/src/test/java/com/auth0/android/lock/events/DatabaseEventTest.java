@@ -14,28 +14,28 @@ import static org.junit.Assert.assertThat;
 public class DatabaseEventTest {
 
     @Test
-    public void shouldSetEmailIdentity() throws Exception {
+    public void shouldSetEmailIdentity() {
         final DatabaseEvent event = new DatabaseEvent("email@me.com");
         assertThat(event.getEmail(), is("email@me.com"));
         assertThat(event.getUsername(), is(nullValue()));
     }
 
     @Test
-    public void shouldSetUsernameIdentity() throws Exception {
+    public void shouldSetUsernameIdentity() {
         final DatabaseEvent event = new DatabaseEvent("this_is_me");
         assertThat(event.getEmail(), is(nullValue()));
         assertThat(event.getUsername(), is("this_is_me"));
     }
 
     @Test
-    public void shouldSetUsername() throws Exception {
+    public void shouldSetUsername() {
         final DatabaseEvent event = new DatabaseEvent("email@me.com");
         event.setUsername("this_is_me");
         assertThat(event.getUsername(), is("this_is_me"));
     }
 
     @Test
-    public void shouldSetBothEmailAndUsername() throws Exception {
+    public void shouldSetBothEmailAndUsername() {
         final DatabaseEvent event = new DatabaseEvent("email@me.com", "this_is_me");
         assertThat(event.getEmail(), is("email@me.com"));
         assertThat(event.getUsername(), is("this_is_me"));

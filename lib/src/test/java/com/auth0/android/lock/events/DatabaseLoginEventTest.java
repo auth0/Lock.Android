@@ -17,38 +17,38 @@ public class DatabaseLoginEventTest {
     private DatabaseLoginEvent event;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         event = new DatabaseLoginEvent("username", "password");
     }
 
     @Test
-    public void shouldGetUsername() throws Exception {
+    public void shouldGetUsername() {
         assertThat(event.getUsernameOrEmail(), is("username"));
     }
 
     @Test
-    public void shouldGetPassword() throws Exception {
+    public void shouldGetPassword() {
         assertThat(event.getPassword(), is("password"));
     }
 
     @Test
-    public void shouldNotHaveVerificationCode() throws Exception {
+    public void shouldNotHaveVerificationCode() {
         assertThat(event.getVerificationCode(), is(nullValue()));
     }
 
     @Test
-    public void shouldSetVerificationCode() throws Exception {
+    public void shouldSetVerificationCode() {
         event.setVerificationCode("code");
         assertThat(event.getVerificationCode(), is("code"));
     }
 
     @Test
-    public void shouldNotHaveMFAToken() throws Exception {
+    public void shouldNotHaveMFAToken() {
         assertThat(event.getMFAToken(), is(nullValue()));
     }
 
     @Test
-    public void shouldSetMFAToken() throws Exception {
+    public void shouldSetMFAToken() {
         event.setMFAToken("mfatoken");
         assertThat(event.getMFAToken(), is("mfatoken"));
     }

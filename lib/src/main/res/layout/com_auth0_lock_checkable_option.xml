@@ -28,7 +28,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_checkable_option"
     android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_checkable_option"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:ignore="UseCompoundDrawables">
 
     <ImageView
         android:id="@+id/com_auth0_lock_checkable_text_icon"

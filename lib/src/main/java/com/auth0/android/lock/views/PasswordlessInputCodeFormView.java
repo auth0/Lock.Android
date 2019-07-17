@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -43,6 +44,7 @@ import static com.auth0.android.lock.internal.configuration.PasswordlessMode.EMA
 import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_CODE;
 import static com.auth0.android.lock.internal.configuration.PasswordlessMode.SMS_LINK;
 
+@SuppressLint("ViewConstructor")
 public class PasswordlessInputCodeFormView extends FormView implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = PasswordlessInputCodeFormView.class.getSimpleName();
@@ -74,10 +76,10 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
 
     private void init(String identity) {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_input_code_form_view, this);
-        topMessage = (TextView) findViewById(R.id.com_auth0_lock_text);
-        resendButton = (TextView) findViewById(R.id.com_auth0_lock_resend);
+        topMessage = findViewById(R.id.com_auth0_lock_text);
+        resendButton = findViewById(R.id.com_auth0_lock_resend);
         resendButton.setOnClickListener(this);
-        passwordlessInput = (ValidatedInputView) findViewById(R.id.com_auth0_lock_input_passwordless);
+        passwordlessInput = findViewById(R.id.com_auth0_lock_input_passwordless);
         passwordlessInput.setOnEditorActionListener(this);
 
         selectPasswordlessMode(identity);

@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
 public class PasswordlessConnectionTest {
 
     @Test
-    public void shouldHaveName() throws Exception {
+    public void shouldHaveName() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
         PasswordlessConnection connection = Connection.newConnectionFor("sms", values);
@@ -20,7 +20,7 @@ public class PasswordlessConnectionTest {
     }
 
     @Test
-    public void shouldHaveStrategy() throws Exception {
+    public void shouldHaveStrategy() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "name");
         PasswordlessConnection connection = Connection.newConnectionFor("sms", values);
@@ -28,7 +28,7 @@ public class PasswordlessConnectionTest {
     }
 
     @Test
-    public void shouldBePasswordlessType() throws Exception {
+    public void shouldBePasswordlessType() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", "sms");
         PasswordlessConnection connection = Connection.newConnectionFor("sms", values);

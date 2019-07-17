@@ -39,7 +39,7 @@ public class MockLockCallback extends AuthenticationCallback {
         return new Callable<Credentials>() {
             @Override
             @LockEvent
-            public Credentials call() throws Exception {
+            public Credentials call() {
                 return credentials;
             }
         };
@@ -49,7 +49,7 @@ public class MockLockCallback extends AuthenticationCallback {
         return new Callable<Boolean>() {
             @Override
             @LockEvent
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return canceled;
             }
         };
@@ -58,7 +58,7 @@ public class MockLockCallback extends AuthenticationCallback {
     public Callable<LockException> error() {
         return new Callable<LockException>() {
             @Override
-            public LockException call() throws Exception {
+            public LockException call() {
                 return error;
             }
         };

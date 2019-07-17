@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.LinearLayout;
@@ -69,23 +70,24 @@ public class PasswordStrengthView extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_password_strength, this);
-        titleAtLeast = (TextView) findViewById(R.id.com_auth0_lock_password_strength_title_at_least);
+        titleAtLeast = findViewById(R.id.com_auth0_lock_password_strength_title_at_least);
 
-        optionLength = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_length);
+        optionLength = findViewById(R.id.com_auth0_lock_password_strength_option_length);
         optionLength.setMandatory(true);
-        optionIdenticalCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_identical_characters);
+        optionIdenticalCharacters = findViewById(R.id.com_auth0_lock_password_strength_option_identical_characters);
         optionIdenticalCharacters.setMandatory(true);
         optionIdenticalCharacters.setChecked(true);
-        optionLowercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_lowercase);
-        optionUppercase = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_uppercase);
-        optionNumeric = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_numeric);
-        optionSpecialCharacters = (CheckableOptionView) findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
+        optionLowercase = findViewById(R.id.com_auth0_lock_password_strength_option_lowercase);
+        optionUppercase = findViewById(R.id.com_auth0_lock_password_strength_option_uppercase);
+        optionNumeric = findViewById(R.id.com_auth0_lock_password_strength_option_numeric);
+        optionSpecialCharacters = findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
         setStrength(PasswordStrength.NONE);
     }
 
     /**
      * @see "https://auth0.com/docs/connections/database/password-strength"
      */
+    @SuppressLint("StringFormatInvalid")
     private void showPolicy() {
         int strength = complexity.getPasswordPolicy();
         if (strength == PasswordStrength.NONE) {

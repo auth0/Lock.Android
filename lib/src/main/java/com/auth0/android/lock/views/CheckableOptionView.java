@@ -60,8 +60,8 @@ public class CheckableOptionView extends LinearLayout {
 
     private void init(AttributeSet attrs) {
         final View v = inflate(getContext(), R.layout.com_auth0_lock_checkable_option, this);
-        icon = (ImageView) v.findViewById(R.id.com_auth0_lock_checkable_text_icon);
-        description = (TextView) v.findViewById(R.id.com_auth0_lock_checkable_text_description);
+        icon = v.findViewById(R.id.com_auth0_lock_checkable_text_icon);
+        description = v.findViewById(R.id.com_auth0_lock_checkable_text_description);
 
         if (attrs == null) {
             return;

@@ -32,7 +32,8 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/com_auth0_lock_top_banner_vertical_margin"
-    android:paddingTop="@dimen/com_auth0_lock_top_banner_vertical_margin">
+    android:paddingTop="@dimen/com_auth0_lock_top_banner_vertical_margin"
+    tools:ignore="Overdraw">
 
     <ImageView
         android:layout_width="wrap_content"

@@ -73,7 +73,7 @@ public class ConnectionTest {
     }
 
     @Test
-    public void shouldNotStoreNameInValues() throws Exception {
+    public void shouldNotStoreNameInValues() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", CONNECTION_NAME);
         Connection connection = newConnectionFor("strategy", values);

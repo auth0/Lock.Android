@@ -77,7 +77,7 @@ public class CountryCodeActivity extends AppCompatActivity {
 
     private static final String TAG = CountryCodeActivity.class.getName();
 
-    AsyncTask<String, Void, Map<String, String>> task;
+    static AsyncTask<String, Void, Map<String, String>> task;
 
     ListView listView;
 
@@ -86,7 +86,7 @@ public class CountryCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.com_auth0_lock_passwordless_activity_country_code);
-        final EditText searchText = (EditText) findViewById(R.id.com_auth0_lock_passwordless_sms_search_country);
+        final EditText searchText = findViewById(R.id.com_auth0_lock_passwordless_sms_search_country);
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -128,7 +128,7 @@ public class CountryCodeActivity extends AppCompatActivity {
             }
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
-        listView = (ListView) findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_list);
+        listView = findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

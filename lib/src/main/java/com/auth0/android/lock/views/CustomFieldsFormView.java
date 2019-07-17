@@ -76,7 +76,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
 
     private void init() {
         inflate(getContext(), R.layout.com_auth0_lock_custom_fields_form_view, this);
-        fieldContainer = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
+        fieldContainer = findViewById(R.id.com_auth0_lock_container);
         fieldParams = defineFieldParams();
         addCustomFields();
     }

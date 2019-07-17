@@ -138,7 +138,6 @@ abstract class ViewUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(background);
         } else {
-            //noinspection deprecation
             view.setBackgroundDrawable(background);
         }
     }

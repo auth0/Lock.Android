@@ -136,9 +136,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         webProvider = new WebProvider(options);
 
         setContentView(R.layout.com_auth0_lock_activity_lock_passwordless);
-        passwordlessSuccessCover = (LinearLayout) findViewById(R.id.com_auth0_lock_link_sent_cover);
-        rootView = (ScrollView) findViewById(R.id.com_auth0_lock_content);
-        resultMessage = (TextView) findViewById(R.id.com_auth0_lock_result_message);
+        passwordlessSuccessCover = findViewById(R.id.com_auth0_lock_link_sent_cover);
+        rootView = findViewById(R.id.com_auth0_lock_content);
+        resultMessage = findViewById(R.id.com_auth0_lock_result_message);
         lockView = new PasswordlessLockView(this, lockBus, options.getTheme());
         RelativeLayout.LayoutParams lockViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lockView.setLayoutParams(lockViewParams);
@@ -251,9 +251,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         //Next 2 lines required to avoid focus on the form behind
         rootView.setFocusable(false);
         rootView.setFocusableInTouchMode(false);
-        TextView successMessage = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
+        TextView successMessage = passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_passwordless_message);
         successMessage.setText(String.format(getString(R.string.com_auth0_lock_title_passwordless_link_sent), lastPasswordlessIdentity));
-        TextView gotCodeButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_got_code);
+        TextView gotCodeButton = passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_got_code);
         gotCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,7 +261,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 passwordlessSuccessCover.setVisibility(View.GONE);
             }
         });
-        resendButton = (TextView) passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
+        resendButton = passwordlessSuccessCover.findViewById(R.id.com_auth0_lock_resend);
         resendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

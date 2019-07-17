@@ -50,7 +50,7 @@ public class ApplicationGsonTest extends GsonBaseTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         gson = createGson();
     }
 
