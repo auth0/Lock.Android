@@ -51,21 +51,21 @@ public class CustomFieldTest {
     private static final String KEY = "key";
     private static final int HINT = R.string.com_auth0_lock_hint_email;
     private static final String CUSTOM_FIELD_KEY = "custom_field";
-    private static final int STORAGE = Storage.USER_METADATA;
+    private static final int STORAGE = Storage.PROFILE_ROOT;
 
     @Test
-    public void shouldCreateWithDefaultValues() throws Exception {
+    public void shouldCreateWithDefaultValues() {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
         assertThat(field.getIcon(), is(ICON));
         assertThat(field.getType(), is(TYPE));
         assertThat(field.getKey(), is(KEY));
         assertThat(field.getHint(), is(HINT));
         //Default values
-        assertThat(field.getStorage(), is(Storage.PROFILE_ROOT));
+        assertThat(field.getStorage(), is(Storage.USER_METADATA));
     }
 
     @Test
-    public void shouldCreate() throws Exception {
+    public void shouldCreate()  {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
         assertThat(field.getIcon(), is(ICON));
         assertThat(field.getType(), is(TYPE));
@@ -75,7 +75,7 @@ public class CustomFieldTest {
     }
 
     @Test
-    public void shouldBeParcelable() throws Exception {
+    public void shouldBeParcelable() {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CUSTOM_FIELD_KEY, field);

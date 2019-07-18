@@ -72,7 +72,6 @@ public class CustomField implements Parcelable {
 
         /**
          * Store the field into the user_metadata object.
-         * The list of attributes that can be added to your root profile is here https://auth0.com/docs/api/management/v2#!/Users/patch_users_by_id.
          */
         int USER_METADATA = 1;
     }
@@ -97,7 +96,7 @@ public class CustomField implements Parcelable {
      * @param hint the placeholder to display when this field is empty.
      */
     public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint) {
-        this(icon, type, key, hint, PROFILE_ROOT);
+        this(icon, type, key, hint, USER_METADATA);
     }
 
     /**
