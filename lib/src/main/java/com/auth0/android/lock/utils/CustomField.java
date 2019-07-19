@@ -66,7 +66,7 @@ public class CustomField implements Parcelable {
     public @interface Storage {
         /**
          * Store the field into the user profile root.
-         * The list of attributes that can be added to your root profile is here https://auth0.com/docs/api/management/v2#!/Users/patch_users_by_id.
+         * The list of attributes that can be added to your root profile is here https://auth0.com/docs/api/authentication#signup.
          */
         int PROFILE_ROOT = 0;
 
@@ -111,6 +111,9 @@ public class CustomField implements Parcelable {
     public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint, @Storage int storage) {
         if (key.isEmpty()) {
             throw new IllegalArgumentException("The key cannot be empty!");
+        }
+        if (key.equalsIgnoreCase("user_metadata") && storage == PROFILE_ROOT){
+            throw new IllegalArgumentException("Update the user_metadata root profile attributes by using Storage.USER_METADATA as storage location.");
         }
         this.icon = icon;
         this.type = type;

@@ -31,7 +31,9 @@ import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.views.ValidatedInputView;
 import com.auth0.android.lock.views.ValidatedInputView.DataType;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
@@ -53,6 +55,23 @@ public class CustomFieldTest {
     private static final String CUSTOM_FIELD_KEY = "custom_field";
     private static final int STORAGE = Storage.PROFILE_ROOT;
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void shouldThrowIfKeyIsEmpty() {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The key cannot be empty!");
+        new CustomField(ICON, TYPE, "", HINT, STORAGE);
+    }
+
+    @Test
+    public void shouldThrowIfKeyIsUserMetadataAndStorageIsRoot() {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("Update the user_metadata root profile attributes by using Storage.USER_METADATA as storage location.");
+        new CustomField(ICON, TYPE, "user_metadata", HINT, Storage.PROFILE_ROOT);
+    }
+
     @Test
     public void shouldCreateWithDefaultValues() {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
@@ -65,7 +84,7 @@ public class CustomFieldTest {
     }
 
     @Test
-    public void shouldCreate()  {
+    public void shouldCreate() {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
         assertThat(field.getIcon(), is(ICON));
         assertThat(field.getType(), is(TYPE));
