@@ -89,6 +89,8 @@ public class CustomField implements Parcelable {
 
     /**
      * Constructor for CustomField instance
+     * When this constructor is used the field will be stored under the {@link Storage#USER_METADATA} attribute. 
+     * If you want to change the storage location use the constructor that accepts a {@link Storage} value.
      *
      * @param icon the icon resource to display next to the field.
      * @param type the type of input this field will receive. Used to determine the applied validation.
@@ -106,7 +108,7 @@ public class CustomField implements Parcelable {
      * @param type    the type of input this field will receive. Used to determine the applied validation.
      * @param key     the key to store this field as.
      * @param hint    the placeholder to display when this field is empty.
-     * @param storage the location to store this value into. Defaults to {@link Storage#USER_METADATA}.
+     * @param storage the location to store this value into.
      */
     public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint, @Storage int storage) {
         if (key.isEmpty()) {
