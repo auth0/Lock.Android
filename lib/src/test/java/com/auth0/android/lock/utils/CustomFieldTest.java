@@ -31,13 +31,15 @@ import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.views.ValidatedInputView;
 import com.auth0.android.lock.views.ValidatedInputView.DataType;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.hamcrest.Matchers.equalTo;
+import static com.auth0.android.lock.utils.CustomField.Storage;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -51,19 +53,59 @@ public class CustomFieldTest {
     private static final String KEY = "key";
     private static final int HINT = R.string.com_auth0_lock_hint_email;
     private static final String CUSTOM_FIELD_KEY = "custom_field";
+    private static final int STORAGE = Storage.PROFILE_ROOT;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void testParcelable() {
+    public void shouldThrowIfKeyIsEmpty() {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The key cannot be empty!");
+        new CustomField(ICON, TYPE, "", HINT, STORAGE);
+    }
+
+    @Test
+    public void shouldThrowIfKeyIsUserMetadataAndStorageIsRoot() {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("Update the user_metadata root profile attributes by using Storage.USER_METADATA as storage location.");
+        new CustomField(ICON, TYPE, "user_metadata", HINT, Storage.PROFILE_ROOT);
+    }
+
+    @Test
+    public void shouldCreateWithDefaultValues() {
         CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
+        assertThat(field.getIcon(), is(ICON));
+        assertThat(field.getType(), is(TYPE));
+        assertThat(field.getKey(), is(KEY));
+        assertThat(field.getHint(), is(HINT));
+        //Default values
+        assertThat(field.getStorage(), is(Storage.USER_METADATA));
+    }
+
+    @Test
+    public void shouldCreate() {
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
+        assertThat(field.getIcon(), is(ICON));
+        assertThat(field.getType(), is(TYPE));
+        assertThat(field.getKey(), is(KEY));
+        assertThat(field.getHint(), is(HINT));
+        assertThat(field.getStorage(), is(STORAGE));
+    }
+
+    @Test
+    public void shouldBeParcelable() {
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT, STORAGE);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CUSTOM_FIELD_KEY, field);
 
         CustomField parcelableCustomField = bundle.getParcelable(CUSTOM_FIELD_KEY);
         assertThat(parcelableCustomField, is(notNullValue()));
-        assertThat(parcelableCustomField.getIcon(), is(equalTo(ICON)));
-        assertThat(parcelableCustomField.getType(), is(equalTo(TYPE)));
-        assertThat(parcelableCustomField.getKey(), is(equalTo(KEY)));
-        assertThat(parcelableCustomField.getHint(), is(equalTo(HINT)));
+        assertThat(parcelableCustomField.getIcon(), is(ICON));
+        assertThat(parcelableCustomField.getType(), is(TYPE));
+        assertThat(parcelableCustomField.getKey(), is(KEY));
+        assertThat(parcelableCustomField.getHint(), is(HINT));
+        assertThat(parcelableCustomField.getStorage(), is(STORAGE));
     }
 
     @Test
