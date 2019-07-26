@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.15.0](https://github.com/auth0/Lock.Android/tree/2.15.0) (2019-07-26)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.14.1...2.15.0)
+
+**Added**
+- Add Root Attributes on sign up or user creation [\#543](https://github.com/auth0/Lock.Android/pull/543) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Update username regex to allow special chars [\#544](https://github.com/auth0/Lock.Android/pull/544) ([lbalmaceda](https://github.com/lbalmaceda))
+- Use latest Android Gradle plugin version [\#542](https://github.com/auth0/Lock.Android/pull/542) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix typo in password reset string [\#541](https://github.com/auth0/Lock.Android/pull/541) ([horsejockey](https://github.com/horsejockey))
+- Avoid registering multiple broadcast receiver instances [\#539](https://github.com/auth0/Lock.Android/pull/539) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.14.1](https://github.com/auth0/Lock.Android/tree/2.14.1) (2019-06-06)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.14.0...2.14.1)
 
