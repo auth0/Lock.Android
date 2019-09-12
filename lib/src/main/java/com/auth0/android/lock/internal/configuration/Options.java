@@ -56,6 +56,7 @@ public class Options implements Parcelable {
     private static final int HAS_DATA = 0x01;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
     private static final String KEY_CONNECTIONS_SCOPE = "connectionsScope";
+    private static final String KEY_CUSTOM_USER_METADATA = "withSignUpUserMetadata";
     private static final String SCOPE_KEY = "scope";
     private static final String DEVICE_KEY = "device";
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
@@ -83,6 +84,7 @@ public class Options implements Parcelable {
     private HashMap<String, Object> authenticationParameters;
     private HashMap<String, String> connectionsScope;
     private List<CustomField> customFields;
+    private HashMap<String, String> customSignUpUserMetadata;
     private int initialScreen;
     private Theme theme;
     private String privacyURL;
@@ -109,6 +111,7 @@ public class Options implements Parcelable {
         authStyles = new HashMap<>();
         connectionsScope = new HashMap<>();
         customFields = new ArrayList<>();
+        customSignUpUserMetadata = new HashMap<>();
         theme = Theme.newBuilder().build();
     }
 
@@ -184,6 +187,13 @@ public class Options implements Parcelable {
             in.readList(customFields, CustomField.class.getClassLoader());
         } else {
             customFields = null;
+        }
+        if (in.readByte() == HAS_DATA) {
+            @SuppressLint("ParcelClassLoader")
+            Bundle mapBundle = in.readBundle();
+            customSignUpUserMetadata = (HashMap<String, String>) mapBundle.getSerializable(KEY_CUSTOM_USER_METADATA);
+        } else {
+            customSignUpUserMetadata = null;
         }
     }
 
@@ -261,6 +271,15 @@ public class Options implements Parcelable {
         } else {
             dest.writeByte((byte) (HAS_DATA));
             dest.writeList(customFields);
+        }
+        if (customSignUpUserMetadata == null) {
+            dest.writeByte((byte) (WITHOUT_DATA));
+        } else {
+            dest.writeByte((byte) (HAS_DATA));
+            // FIXME this is something to improve
+            Bundle mapBundle = new Bundle();
+            mapBundle.putSerializable(KEY_CUSTOM_USER_METADATA, customSignUpUserMetadata);
+            dest.writeBundle(mapBundle);
         }
     }
 
@@ -428,6 +447,15 @@ public class Options implements Parcelable {
     @NonNull
     public List<CustomField> getCustomFields() {
         return customFields;
+    }
+
+    @NonNull
+    public HashMap<String, String> getCustomSignUpUserMetadata() {
+        return customSignUpUserMetadata;
+    }
+
+    public void setCustomSignUpUserMetadata(@NonNull HashMap<String, String> customSignUpUserMetadata) {
+        this.customSignUpUserMetadata = customSignUpUserMetadata;
     }
 
     public void setInitialScreen(@InitialScreen int screen) {

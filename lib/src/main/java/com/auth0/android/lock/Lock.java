@@ -492,6 +492,17 @@ public class Lock {
         }
 
         /**
+         * Additional user metadata for Database Sign Up. Empty by default.
+         *
+         * @param userMetadata a non-null Map containing the parameters as Key-Values
+         * @return the current builder instance
+         */
+        public Builder withSignUpUserMetadata(HashMap<String, String> userMetadata) {
+            options.setCustomSignUpUserMetadata(userMetadata);
+            return this;
+        }
+
+        /**
          * Sets the Scope to request when performing the Authentication.
          *
          * @param scope to use in the Authentication.

@@ -413,6 +413,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
+        event.setExtraFields(options.getCustomSignUpUserMetadata());
+
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final String connection = configuration.getDatabaseConnection().getName();
         lockView.showProgress(true);

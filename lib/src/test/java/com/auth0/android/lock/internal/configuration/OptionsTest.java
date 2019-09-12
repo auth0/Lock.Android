@@ -668,6 +668,33 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetUserMetadata() {
+        HashMap<String, String> userMetadata = new HashMap<>();
+        userMetadata.put("key", "value");
+        options.setCustomSignUpUserMetadata(userMetadata);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(parceledOptions.getCustomSignUpUserMetadata(), is(equalTo(options.getCustomSignUpUserMetadata())));
+    }
+
+    @Test
+    public void shouldGetEmptyUserMetadaIfNotSet() {
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getCustomSignUpUserMetadata(), is(notNullValue()));
+        assertThat(options.getCustomSignUpUserMetadata().size(), is(0));
+        assertThat(parceledOptions.getCustomSignUpUserMetadata(), is(notNullValue()));
+        assertThat(parceledOptions.getCustomSignUpUserMetadata().size(), is(0));
+    }
+
+    @Test
     public void shouldSetDefaultValues() {
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
@@ -694,6 +721,7 @@ public class OptionsTest {
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.getTheme(), is(notNullValue()));
         assertThat(options.getAuthenticationParameters(), is(notNullValue()));
+        assertThat(options.getCustomSignUpUserMetadata(), is(notNullValue()));
         assertThat(options.getAuthStyles(), is(notNullValue()));
     }
 
