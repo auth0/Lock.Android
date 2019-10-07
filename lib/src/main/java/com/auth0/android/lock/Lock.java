@@ -487,7 +487,7 @@ public class Lock {
          * @param customFields the custom fields to display in the sign up flow.
          * @return the current builder instance
          */
-        public Builder withSignUpFields(List<SignUpField> customFields) {
+        public Builder withSignUpFields(List<? extends SignUpField> customFields) {
             final List<SignUpField> withoutDuplicates = removeDuplicatedKeys(customFields);
             options.setSignUpFields(withoutDuplicates);
             return this;
@@ -605,7 +605,7 @@ public class Lock {
             return this;
         }
 
-        private List<SignUpField> removeDuplicatedKeys(List<SignUpField> customFields) {
+        private List<SignUpField> removeDuplicatedKeys(List<? extends SignUpField> customFields) {
             int originalSize = customFields.size();
             final List<SignUpField> withoutDuplicates = new ArrayList<>();
 
