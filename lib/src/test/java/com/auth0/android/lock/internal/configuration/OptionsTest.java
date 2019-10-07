@@ -10,6 +10,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
+import com.auth0.android.lock.utils.SignUpField;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -613,8 +614,8 @@ public class OptionsTest {
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(parceledOptions.getSignUpFields(), hasSize(options.getSignUpFields().size()));
         for (int i = 0; i < options.getSignUpFields().size(); i++) {
-            CustomField fieldA = options.getSignUpFields().get(i);
-            CustomField fieldB = parceledOptions.getSignUpFields().get(i);
+            SignUpField fieldA = options.getSignUpFields().get(i);
+            SignUpField fieldB = parceledOptions.getSignUpFields().get(i);
             assertThat(fieldA.getKey(), is(equalTo(fieldB.getKey())));
         }
     }
@@ -799,11 +800,11 @@ public class OptionsTest {
         assertThat(client, is(notNullValue()));
     }
 
-    private List<CustomField> createCustomFields() {
+    private List<SignUpField> createCustomFields() {
         CustomField fieldNumber = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "number", R.string.com_auth0_lock_hint_phone_number);
         CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_NAME, "surname", R.string.com_auth0_lock_hint_username);
 
-        List<CustomField> customFields = new ArrayList<>();
+        List<SignUpField> customFields = new ArrayList<>();
         customFields.add(fieldNumber);
         customFields.add(fieldSurname);
         return customFields;

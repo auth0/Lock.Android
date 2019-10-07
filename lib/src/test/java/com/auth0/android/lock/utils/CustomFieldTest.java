@@ -25,6 +25,8 @@
 package com.auth0.android.lock.utils;
 
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.utils.CustomField.FieldType;
@@ -43,6 +45,8 @@ import static com.auth0.android.lock.utils.CustomField.Storage;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 21)
@@ -109,15 +113,68 @@ public class CustomFieldTest {
     }
 
     @Test
-    public void shouldConfigureTheField() {
+    public void shouldConfigureTheEmailField() {
         ValidatedInputView input = Mockito.mock(ValidatedInputView.class);
 
-        CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
+        CustomField field = new CustomField(ICON, FieldType.TYPE_EMAIL, KEY, HINT);
         field.configureField(input);
 
         Mockito.verify(input).setIcon(ICON);
         Mockito.verify(input).setDataType(DataType.EMAIL);
         Mockito.verify(input).setHint(HINT);
         Mockito.verify(input).setTag(KEY);
+    }
+
+    @Test
+    public void shouldConfigureTheNameField() {
+        ValidatedInputView input = Mockito.mock(ValidatedInputView.class);
+
+        CustomField field = new CustomField(ICON, FieldType.TYPE_NAME, KEY, HINT);
+        field.configureField(input);
+
+        Mockito.verify(input).setIcon(ICON);
+        Mockito.verify(input).setDataType(DataType.TEXT_NAME);
+        Mockito.verify(input).setHint(HINT);
+        Mockito.verify(input).setTag(KEY);
+    }
+
+    @Test
+    public void shouldConfigureThePhoneNumberField() {
+        ValidatedInputView input = Mockito.mock(ValidatedInputView.class);
+
+        CustomField field = new CustomField(ICON, FieldType.TYPE_PHONE_NUMBER, KEY, HINT);
+        field.configureField(input);
+
+        Mockito.verify(input).setIcon(ICON);
+        Mockito.verify(input).setDataType(DataType.PHONE_NUMBER);
+        Mockito.verify(input).setHint(HINT);
+        Mockito.verify(input).setTag(KEY);
+    }
+
+    @Test
+    public void shouldConfigureTheNumberField() {
+        ValidatedInputView input = Mockito.mock(ValidatedInputView.class);
+
+        CustomField field = new CustomField(ICON, FieldType.TYPE_NUMBER, KEY, HINT);
+        field.configureField(input);
+
+        Mockito.verify(input).setIcon(ICON);
+        Mockito.verify(input).setDataType(DataType.NUMBER);
+        Mockito.verify(input).setHint(HINT);
+        Mockito.verify(input).setTag(KEY);
+    }
+
+    @Test
+    public void shouldObtainTheValue() {
+        ViewGroup container = Mockito.mock(LinearLayout.class);
+        ValidatedInputView input = Mockito.mock(ValidatedInputView.class);
+
+        when(input.getText()).thenReturn("user defined value");
+        when(container.findViewWithTag(eq(KEY))).thenReturn(input);
+
+        CustomField field = new CustomField(ICON, TYPE, KEY, HINT);
+        String value = field.findValue(container);
+
+        assertThat(value, is("user defined value"));
     }
 }
