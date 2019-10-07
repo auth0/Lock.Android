@@ -32,6 +32,8 @@ import android.util.Log;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
+import com.auth0.android.lock.utils.HiddenField;
+import com.auth0.android.lock.utils.SignUpField;
 import com.auth0.android.lock.views.AuthConfig;
 
 import java.util.ArrayList;
@@ -73,8 +75,10 @@ public class Configuration {
     private String termsURL;
     private String privacyURL;
     private String supportURL;
-    private List<CustomField> extraSignUpFields;
+    private List<HiddenField> extraHiddenSignUpFields;
+    private List<CustomField> extraVisibleSignUpFields;
     private Map<String, Integer> authStyles;
+    private Object sf;
 
     public Configuration(List<Connection> connections, Options options) {
         List<String> allowedConnections = options.getConnections();
@@ -93,8 +97,13 @@ public class Configuration {
     }
 
     @NonNull
-    public List<CustomField> getExtraSignUpFields() {
-        return extraSignUpFields;
+    public List<CustomField> getVisibleSignUpFields() {
+        return extraVisibleSignUpFields;
+    }
+
+    @NonNull
+    public List<HiddenField> getHiddenSignUpFields() {
+        return extraHiddenSignUpFields;
     }
 
     @Nullable
@@ -189,7 +198,15 @@ public class Configuration {
         passwordlessAutoSubmit = options.rememberLastPasswordlessAccount();
 
         authStyles = options.getAuthStyles();
-        extraSignUpFields = options.getCustomFields();
+        extraHiddenSignUpFields = new ArrayList<>();
+        extraVisibleSignUpFields = new ArrayList<>();
+        for (SignUpField sf : options.getSignUpFields()) {
+            if (sf instanceof HiddenField) {
+                extraHiddenSignUpFields.add((HiddenField) sf);
+            } else {
+                extraVisibleSignUpFields.add((CustomField) sf);
+            }
+        }
 
         if (getDatabaseConnection() != null) {
             allowLogIn = options.allowLogIn();
@@ -273,10 +290,6 @@ public class Configuration {
 
     public boolean loginAfterSignUp() {
         return loginAfterSignUp;
-    }
-
-    public boolean hasExtraFields() {
-        return !extraSignUpFields.isEmpty();
     }
 
     public boolean hasClassicConnections() {

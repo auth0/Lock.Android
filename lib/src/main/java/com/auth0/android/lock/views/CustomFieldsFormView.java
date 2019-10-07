@@ -39,6 +39,7 @@ import android.widget.TextView;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.utils.CustomField;
+import com.auth0.android.lock.utils.HiddenField;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
@@ -58,7 +59,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     @Nullable
     private String username;
     private LockWidgetForm lockWidget;
-    private List<CustomField> fieldsData;
+    private List<CustomField> visibleSignUpFields;
+    private List<HiddenField> hiddenSignUpFields;
     private LinearLayout fieldContainer;
     private LinearLayout.LayoutParams fieldParams;
 
@@ -72,7 +74,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         this.email = email;
         this.username = username;
         this.password = password;
-        this.fieldsData = lockWidget.getConfiguration().getExtraSignUpFields();
+        this.visibleSignUpFields = lockWidget.getConfiguration().getVisibleSignUpFields();
+        this.hiddenSignUpFields = lockWidget.getConfiguration().getHiddenSignUpFields();
         init();
     }
 
@@ -97,9 +100,9 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     }
 
     private void addCustomFields() {
-        Log.d(TAG, String.format("Adding %d custom fields.", fieldsData.size()));
+        Log.d(TAG, String.format("Adding %d custom fields.", visibleSignUpFields.size()));
 
-        for (CustomField data : fieldsData) {
+        for (CustomField data : visibleSignUpFields) {
             ValidatedInputView field = new ValidatedInputView(getContext());
             data.configureField(field);
             field.setLayoutParams(fieldParams);
@@ -108,16 +111,23 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         }
     }
 
-    static void setEventRootProfileAttributes(DatabaseSignUpEvent event, List<CustomField> fields, ViewGroup container) {
+    static void setEventRootProfileAttributes(DatabaseSignUpEvent event, List<CustomField> visibleFields, List<HiddenField> hiddenFields, ViewGroup container) {
         Map<String, Object> rootMap = new HashMap<>();
         Map<String, String> userMetadataMap = new HashMap<>();
 
-        for (CustomField data : fields) {
+        for (CustomField data : visibleFields) {
             String value = data.findValue(container);
             if (data.getStorage() == Storage.USER_METADATA) {
                 userMetadataMap.put(data.getKey(), value);
             } else {
                 rootMap.put(data.getKey(), value);
+            }
+        }
+        for (HiddenField hf : hiddenFields) {
+            if (hf.getStorage() == Storage.USER_METADATA) {
+                userMetadataMap.put(hf.getKey(), hf.getValue());
+            } else {
+                rootMap.put(hf.getKey(), hf.getValue());
             }
         }
         if (!rootMap.isEmpty()) {
@@ -131,7 +141,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     @Override
     public Object getActionEvent() {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, password, username);
-        setEventRootProfileAttributes(event, fieldsData, fieldContainer);
+        setEventRootProfileAttributes(event, visibleSignUpFields, hiddenSignUpFields, fieldContainer);
         return event;
     }
 

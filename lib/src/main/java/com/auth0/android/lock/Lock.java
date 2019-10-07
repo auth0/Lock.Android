@@ -40,8 +40,8 @@ import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.provider.AuthResolver;
-import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.LockException;
+import com.auth0.android.lock.utils.SignUpField;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.util.Telemetry;
 
@@ -479,15 +479,17 @@ public class Lock {
         }
 
         /**
-         * Displays a second screen with the specified custom fields during sign up.
-         * Each field must have a unique key.
+         * Displays the specified custom fields during sign up. If the amount of visible fields
+         * is greater than {@link com.auth0.android.lock.views.SignUpFormView#MAX_FEW_CUSTOM_FIELDS}
+         * they will be shown on a separate screen.
+         * Each field must have a unique key. Fields with repeated keys will be removed.
          *
          * @param customFields the custom fields to display in the sign up flow.
          * @return the current builder instance
          */
-        public Builder withSignUpFields(List<CustomField> customFields) {
-            final List<CustomField> withoutDuplicates = removeDuplicatedKeys(customFields);
-            options.setCustomFields(withoutDuplicates);
+        public Builder withSignUpFields(List<SignUpField> customFields) {
+            final List<SignUpField> withoutDuplicates = removeDuplicatedKeys(customFields);
+            options.setSignUpFields(withoutDuplicates);
             return this;
         }
 
@@ -603,12 +605,12 @@ public class Lock {
             return this;
         }
 
-        private List<CustomField> removeDuplicatedKeys(List<CustomField> customFields) {
+        private List<SignUpField> removeDuplicatedKeys(List<SignUpField> customFields) {
             int originalSize = customFields.size();
-            final List<CustomField> withoutDuplicates = new ArrayList<>();
+            final List<SignUpField> withoutDuplicates = new ArrayList<>();
 
             Set<String> keySet = new HashSet<>();
-            for (CustomField field : customFields) {
+            for (SignUpField field : customFields) {
                 if (!keySet.contains(field.getKey())) {
                     withoutDuplicates.add(field);
                 }

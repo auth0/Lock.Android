@@ -29,6 +29,8 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
+import com.auth0.android.lock.utils.HiddenField;
+import com.auth0.android.lock.utils.SignUpField;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -216,11 +218,11 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldSetExtraSignUpFields() {
-        options.setCustomFields(createCustomFields());
+        options.setSignUpFields(createSignUpFields());
         configuration = new Configuration(connections, options);
 
         assertThat(configuration.hasExtraFields(), is(true));
-        assertThat(configuration.getExtraSignUpFields(), contains(options.getCustomFields().toArray()));
+        assertThat(configuration.getExtraSignUpFields(), contains(options.getSignUpFields().toArray()));
     }
 
     @Test
@@ -608,13 +610,15 @@ public class ConfigurationTest extends GsonBaseTest {
         return new Configuration(connections, options);
     }
 
-    private List<CustomField> createCustomFields() {
+    private List<SignUpField> createSignUpFields() {
         CustomField fieldNumber = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "number", R.string.com_auth0_lock_hint_phone_number);
         CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_NAME, "surname", R.string.com_auth0_lock_hint_username);
+        HiddenField fieldHidden = new HiddenField("referral_id", "0009912BBA", CustomField.Storage.PROFILE_ROOT);
 
-        List<CustomField> customFields = new ArrayList<>();
-        customFields.add(fieldNumber);
-        customFields.add(fieldSurname);
-        return customFields;
+        List<SignUpField> signUpFields = new ArrayList<>();
+        signUpFields.add(fieldNumber);
+        signUpFields.add(fieldSurname);
+        signUpFields.add(fieldHidden);
+        return signUpFields;
     }
 }

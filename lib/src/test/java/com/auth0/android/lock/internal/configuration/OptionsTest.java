@@ -604,17 +604,17 @@ public class OptionsTest {
 
     @Test
     public void shouldSetCustomFields() {
-        options.setCustomFields(createCustomFields());
+        options.setSignUpFields(createCustomFields());
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(parceledOptions.getCustomFields(), hasSize(options.getCustomFields().size()));
-        for (int i = 0; i < options.getCustomFields().size(); i++) {
-            CustomField fieldA = options.getCustomFields().get(i);
-            CustomField fieldB = parceledOptions.getCustomFields().get(i);
+        assertThat(parceledOptions.getSignUpFields(), hasSize(options.getSignUpFields().size()));
+        for (int i = 0; i < options.getSignUpFields().size(); i++) {
+            CustomField fieldA = options.getSignUpFields().get(i);
+            CustomField fieldB = parceledOptions.getSignUpFields().get(i);
             assertThat(fieldA.getKey(), is(equalTo(fieldB.getKey())));
         }
     }
@@ -626,10 +626,10 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getCustomFields(), is(notNullValue()));
-        assertThat(options.getCustomFields().size(), is(0));
-        assertThat(parceledOptions.getCustomFields(), is(notNullValue()));
-        assertThat(parceledOptions.getCustomFields().size(), is(0));
+        assertThat(options.getSignUpFields(), is(notNullValue()));
+        assertThat(options.getSignUpFields().size(), is(0));
+        assertThat(parceledOptions.getSignUpFields(), is(notNullValue()));
+        assertThat(parceledOptions.getSignUpFields().size(), is(0));
     }
 
     @Test
