@@ -65,7 +65,7 @@ public class CustomFieldTest {
     @Test
     public void shouldThrowIfKeyIsEmpty() {
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("The key cannot be empty!");
+        exception.expectMessage("The key cannot be empty.");
         new CustomField(ICON, TYPE, "", HINT, STORAGE);
     }
 

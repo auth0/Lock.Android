@@ -14,7 +14,7 @@ public abstract class SignUpField implements Parcelable {
 
     SignUpField(@NonNull String key, @CustomField.Storage int storage) {
         if (key.isEmpty()) {
-            throw new IllegalArgumentException("The key cannot be empty!");
+            throw new IllegalArgumentException("The key cannot be empty.");
         }
         if (key.equalsIgnoreCase("user_metadata") && storage == PROFILE_ROOT) {
             throw new IllegalArgumentException("Update the user_metadata root profile attributes by using Storage.USER_METADATA as storage location.");
