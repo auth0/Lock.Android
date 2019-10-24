@@ -47,7 +47,7 @@ import static com.auth0.android.lock.utils.CustomField.FieldType.TYPE_PHONE_NUMB
 import static com.auth0.android.lock.utils.CustomField.Storage.PROFILE_ROOT;
 import static com.auth0.android.lock.utils.CustomField.Storage.USER_METADATA;
 
-public class CustomField implements Parcelable {
+public class CustomField extends SignUpField {
 
     @IntDef({TYPE_NAME, TYPE_NUMBER, TYPE_PHONE_NUMBER, TYPE_EMAIL})
     @Retention(RetentionPolicy.SOURCE)
@@ -80,16 +80,12 @@ public class CustomField implements Parcelable {
     private final int icon;
     @FieldType
     private final int type;
-    private final String key;
     @StringRes
     private final int hint;
-    @Storage
-    private final int storage;
-
 
     /**
      * Constructor for CustomField instance
-     * When this constructor is used the field will be stored under the {@link Storage#USER_METADATA} attribute. 
+     * When this constructor is used the field will be stored under the {@link Storage#USER_METADATA} attribute.
      * If you want to change the storage location use the constructor that accepts a {@link Storage} value.
      *
      * @param icon the icon resource to display next to the field.
@@ -111,17 +107,10 @@ public class CustomField implements Parcelable {
      * @param storage the location to store this value into.
      */
     public CustomField(@DrawableRes int icon, @FieldType int type, @NonNull String key, @StringRes int hint, @Storage int storage) {
-        if (key.isEmpty()) {
-            throw new IllegalArgumentException("The key cannot be empty!");
-        }
-        if (key.equalsIgnoreCase("user_metadata") && storage == PROFILE_ROOT){
-            throw new IllegalArgumentException("Update the user_metadata root profile attributes by using Storage.USER_METADATA as storage location.");
-        }
+        super(key, storage);
         this.icon = icon;
         this.type = type;
-        this.key = key;
         this.hint = hint;
-        this.storage = storage;
     }
 
     public void configureField(@NonNull ValidatedInputView field) {
@@ -141,21 +130,17 @@ public class CustomField implements Parcelable {
         }
         field.setHint(hint);
         field.setIcon(icon);
-        field.setTag(key);
+        field.setTag(getKey());
     }
 
     @Nullable
     public String findValue(@NonNull ViewGroup container) {
         String value = null;
-        View view = container.findViewWithTag(key);
+        View view = container.findViewWithTag(getKey());
         if (view != null) {
             value = ((ValidatedInputView) view).getText();
         }
         return value;
-    }
-
-    public String getKey() {
-        return key;
     }
 
     @StringRes
@@ -173,31 +158,19 @@ public class CustomField implements Parcelable {
         return type;
     }
 
-    @Storage
-    public int getStorage() {
-        return storage;
-    }
-
     protected CustomField(Parcel in) {
+        super(in);
         icon = in.readInt();
         type = in.readInt();
-        key = in.readString();
         hint = in.readInt();
-        storage = in.readInt();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeInt(icon);
         dest.writeInt(type);
-        dest.writeString(key);
         dest.writeInt(hint);
-        dest.writeInt(storage);
     }
 
     @SuppressWarnings("unused")

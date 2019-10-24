@@ -10,6 +10,7 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
+import com.auth0.android.lock.utils.SignUpField;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -604,17 +605,17 @@ public class OptionsTest {
 
     @Test
     public void shouldSetCustomFields() {
-        options.setCustomFields(createCustomFields());
+        options.setSignUpFields(createCustomFields());
 
         Parcel parcel = Parcel.obtain();
         options.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(parceledOptions.getCustomFields(), hasSize(options.getCustomFields().size()));
-        for (int i = 0; i < options.getCustomFields().size(); i++) {
-            CustomField fieldA = options.getCustomFields().get(i);
-            CustomField fieldB = parceledOptions.getCustomFields().get(i);
+        assertThat(parceledOptions.getSignUpFields(), hasSize(options.getSignUpFields().size()));
+        for (int i = 0; i < options.getSignUpFields().size(); i++) {
+            SignUpField fieldA = options.getSignUpFields().get(i);
+            SignUpField fieldB = parceledOptions.getSignUpFields().get(i);
             assertThat(fieldA.getKey(), is(equalTo(fieldB.getKey())));
         }
     }
@@ -626,10 +627,10 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.getCustomFields(), is(notNullValue()));
-        assertThat(options.getCustomFields().size(), is(0));
-        assertThat(parceledOptions.getCustomFields(), is(notNullValue()));
-        assertThat(parceledOptions.getCustomFields().size(), is(0));
+        assertThat(options.getSignUpFields(), is(notNullValue()));
+        assertThat(options.getSignUpFields().size(), is(0));
+        assertThat(parceledOptions.getSignUpFields(), is(notNullValue()));
+        assertThat(parceledOptions.getSignUpFields().size(), is(0));
     }
 
     @Test
@@ -799,11 +800,11 @@ public class OptionsTest {
         assertThat(client, is(notNullValue()));
     }
 
-    private List<CustomField> createCustomFields() {
+    private List<SignUpField> createCustomFields() {
         CustomField fieldNumber = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "number", R.string.com_auth0_lock_hint_phone_number);
         CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_NAME, "surname", R.string.com_auth0_lock_hint_username);
 
-        List<CustomField> customFields = new ArrayList<>();
+        List<SignUpField> customFields = new ArrayList<>();
         customFields.add(fieldNumber);
         customFields.add(fieldSurname);
         return customFields;

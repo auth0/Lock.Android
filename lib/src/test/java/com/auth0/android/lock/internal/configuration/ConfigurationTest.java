@@ -29,6 +29,8 @@ import com.auth0.android.lock.R;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
+import com.auth0.android.lock.utils.HiddenField;
+import com.auth0.android.lock.utils.SignUpField;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -100,7 +102,6 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
-        assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordComplexity(), is(notNullValue()));
         assertThat(configuration.getPasswordComplexity().getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
@@ -141,7 +142,6 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.allowShowPassword(), is(false));
         assertThat(configuration.loginAfterSignUp(), is(false));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.USERNAME)));
-        assertThat(configuration.hasExtraFields(), is(false));
     }
 
     @Test
@@ -216,11 +216,17 @@ public class ConfigurationTest extends GsonBaseTest {
 
     @Test
     public void shouldSetExtraSignUpFields() {
-        options.setCustomFields(createCustomFields());
+        List<SignUpField> fields = new ArrayList<>();
+        List<SignUpField> hiddenSignUpFields = createHiddenSignUpFields();
+        List<SignUpField> visibleSignUpFields = createVisibleSignUpFields();
+        fields.addAll(hiddenSignUpFields);
+        fields.addAll(visibleSignUpFields);
+
+        options.setSignUpFields(fields);
         configuration = new Configuration(connections, options);
 
-        assertThat(configuration.hasExtraFields(), is(true));
-        assertThat(configuration.getExtraSignUpFields(), contains(options.getCustomFields().toArray()));
+        assertThat(configuration.getHiddenSignUpFields(), contains(hiddenSignUpFields.toArray()));
+        assertThat(configuration.getVisibleSignUpFields(), contains(visibleSignUpFields.toArray()));
     }
 
     @Test
@@ -608,13 +614,23 @@ public class ConfigurationTest extends GsonBaseTest {
         return new Configuration(connections, options);
     }
 
-    private List<CustomField> createCustomFields() {
+    private List<SignUpField> createVisibleSignUpFields() {
         CustomField fieldNumber = new CustomField(R.drawable.com_auth0_lock_ic_phone, FieldType.TYPE_PHONE_NUMBER, "number", R.string.com_auth0_lock_hint_phone_number);
         CustomField fieldSurname = new CustomField(R.drawable.com_auth0_lock_ic_username, FieldType.TYPE_NAME, "surname", R.string.com_auth0_lock_hint_username);
 
-        List<CustomField> customFields = new ArrayList<>();
-        customFields.add(fieldNumber);
-        customFields.add(fieldSurname);
-        return customFields;
+        List<SignUpField> signUpFields = new ArrayList<>();
+        signUpFields.add(fieldNumber);
+        signUpFields.add(fieldSurname);
+        return signUpFields;
+    }
+
+    private List<SignUpField> createHiddenSignUpFields() {
+        HiddenField fieldHidden1 = new HiddenField("referral_id", "0009912BBA", CustomField.Storage.PROFILE_ROOT);
+        HiddenField fieldHidden2 = new HiddenField("ad_reference", "mmmaba", CustomField.Storage.PROFILE_ROOT);
+
+        List<SignUpField> signUpFields = new ArrayList<>();
+        signUpFields.add(fieldHidden1);
+        signUpFields.add(fieldHidden2);
+        return signUpFields;
     }
 }

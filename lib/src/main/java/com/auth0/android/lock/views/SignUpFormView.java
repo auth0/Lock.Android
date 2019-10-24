@@ -42,6 +42,7 @@ import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.utils.CustomField;
+import com.auth0.android.lock.utils.HiddenField;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -92,9 +93,9 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
 
         usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);
 
-        displayFewCustomFields = lockWidget.getConfiguration().getExtraSignUpFields().size() <= MAX_FEW_CUSTOM_FIELDS;
+        displayFewCustomFields = lockWidget.getConfiguration().getVisibleSignUpFields().size() <= MAX_FEW_CUSTOM_FIELDS;
         if (displayFewCustomFields) {
-            addCustomFields(configuration.getExtraSignUpFields());
+            addCustomFields(configuration.getVisibleSignUpFields());
         }
     }
 
@@ -170,12 +171,13 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     public Object submitForm() {
         if (validateForm()) {
             DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
+            List<CustomField> visibleFields = lockWidget.getConfiguration().getVisibleSignUpFields();
             if (displayFewCustomFields) {
-                List<CustomField> fields = lockWidget.getConfiguration().getExtraSignUpFields();
-                setEventRootProfileAttributes(event, fields, fieldContainer);
+                List<HiddenField> hiddenFields = lockWidget.getConfiguration().getHiddenSignUpFields();
+                setEventRootProfileAttributes(event, visibleFields, hiddenFields, fieldContainer);
                 return event;
             }
-            if (lockWidget.getConfiguration().hasExtraFields()) {
+            if (!visibleFields.isEmpty()) {
                 lockWidget.showCustomFieldsForm(event);
             }
         }

@@ -39,7 +39,7 @@ import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.Auth0Parcelable;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.UsernameStyle;
-import com.auth0.android.lock.utils.CustomField;
+import com.auth0.android.lock.utils.SignUpField;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +82,7 @@ public class Options implements Parcelable {
     private HashMap<String, Integer> authStyles;
     private HashMap<String, Object> authenticationParameters;
     private HashMap<String, String> connectionsScope;
-    private List<CustomField> customFields;
+    private List<SignUpField> signUpFields;
     private int initialScreen;
     private Theme theme;
     private String privacyURL;
@@ -108,7 +108,7 @@ public class Options implements Parcelable {
         authenticationParameters = new HashMap<>();
         authStyles = new HashMap<>();
         connectionsScope = new HashMap<>();
-        customFields = new ArrayList<>();
+        signUpFields = new ArrayList<>();
         theme = Theme.newBuilder().build();
     }
 
@@ -180,10 +180,10 @@ public class Options implements Parcelable {
             connectionsScope = null;
         }
         if (in.readByte() == HAS_DATA) {
-            customFields = new ArrayList<>();
-            in.readList(customFields, CustomField.class.getClassLoader());
+            signUpFields = new ArrayList<>();
+            in.readList(signUpFields, SignUpField.class.getClassLoader());
         } else {
-            customFields = null;
+            signUpFields = null;
         }
     }
 
@@ -256,11 +256,11 @@ public class Options implements Parcelable {
             mapBundle.putSerializable(KEY_CONNECTIONS_SCOPE, connectionsScope);
             dest.writeBundle(mapBundle);
         }
-        if (customFields == null) {
+        if (signUpFields == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
             dest.writeByte((byte) (HAS_DATA));
-            dest.writeList(customFields);
+            dest.writeList(signUpFields);
         }
     }
 
@@ -421,13 +421,13 @@ public class Options implements Parcelable {
         return this.useCodePasswordless;
     }
 
-    public void setCustomFields(@NonNull List<CustomField> customFields) {
-        this.customFields = customFields;
+    public void setSignUpFields(@NonNull List<SignUpField> signUpFields) {
+        this.signUpFields = signUpFields;
     }
 
     @NonNull
-    public List<CustomField> getCustomFields() {
-        return customFields;
+    public List<SignUpField> getSignUpFields() {
+        return signUpFields;
     }
 
     public void setInitialScreen(@InitialScreen int screen) {
