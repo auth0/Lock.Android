@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.16.0](https://github.com/auth0/Lock.Android/tree/2.16.0) (2019-10-24)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.15.0...2.16.0)
+
+**Added**
+- Add hidden extra sign up fields [\#552](https://github.com/auth0/Lock.Android/pull/552) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.15.0](https://github.com/auth0/Lock.Android/tree/2.15.0) (2019-07-26)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.14.1...2.15.0)
 
