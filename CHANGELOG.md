@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.17.0](https://github.com/auth0/Lock.Android/tree/2.17.0) (2019-12-26)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.16.0...2.17.0)
+
+**Added**
+- Improve OIDC Compliance and support new Passwordless [\#558](https://github.com/auth0/Lock.Android/pull/558) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Security**
+- Improve OIDC Compliance and support new Passwordless [\#558](https://github.com/auth0/Lock.Android/pull/558) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.16.0](https://github.com/auth0/Lock.Android/tree/2.16.0) (2019-10-24)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.15.0...2.16.0)
 
