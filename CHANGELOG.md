@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.17.1](https://github.com/auth0/Lock.Android/tree/2.17.1) (2020-01-10)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.17.0...2.17.1)
+
+**Fixed**
+- Bump SDK version and OSS plugin version [\#560](https://github.com/auth0/Lock.Android/pull/560) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.17.0](https://github.com/auth0/Lock.Android/tree/2.17.0) (2019-12-26)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.16.0...2.17.0)
 
