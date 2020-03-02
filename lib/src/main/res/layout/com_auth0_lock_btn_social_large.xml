@@ -43,8 +43,8 @@
         <TextView
             android:id="@+id/com_auth0_lock_text"
             style="@style/Lock.Theme.Text.SocialButton"
-            tools:background="#90FF3333"
-            tools:text="Login with facebook" />
+            tools:background="#FF3333"
+            tools:text="Sign in with App" />
 
     </LinearLayout>
 
