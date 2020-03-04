@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.18.0](https://github.com/auth0/Lock.Android/tree/2.18.0) (2020-03-04)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.17.1...2.18.0)
+
+**Changed**
+- Update Social Button style [\#563](https://github.com/auth0/Lock.Android/pull/563) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.17.1](https://github.com/auth0/Lock.Android/tree/2.17.1) (2020-01-10)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.17.0...2.17.1)
 
