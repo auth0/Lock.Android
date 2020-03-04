@@ -25,7 +25,7 @@
     <color name="com_auth0_lock_social_unknown">#E33B1B</color>
     <color name="com_auth0_lock_social_yahoo">#410093</color>
     <color name="com_auth0_lock_social_linkedin">#0077B5</color>
-    <color name="com_auth0_lock_social_google_oauth2">#4285F4</color>
+    <color name="com_auth0_lock_social_google_oauth2">#FFFFFF</color>
     <color name="com_auth0_lock_social_twitter">#55ACEE</color>
     <color name="com_auth0_lock_social_facebook">#3B5998</color>
     <color name="com_auth0_lock_social_amazon">#FF9900</color>
@@ -60,6 +60,7 @@
     <color name="com_auth0_lock_social_shopify">#96BF48</color>
     <color name="com_auth0_lock_social_dwolla">#F5891F</color>
     <color name="com_auth0_lock_social_text">#FFFFFF</color>
+    <color name="com_auth0_lock_social_text_light">#333333</color>
 
     <color name="com_auth0_lock_validation_error_text">#ff0000</color>
 
@@ -99,5 +100,6 @@
     <color name="com_auth0_lock_input_field_border_focused">#a4000000</color>
     <color name="com_auth0_lock_link_focused">#D8D8D8</color>
     <color name="com_auth0_lock_tab_focused">#F9F9F9</color>
+    <color name="com_auth0_lock_social_light_background_focused">#f0f0f0</color>
 
 </resources>

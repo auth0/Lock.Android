@@ -2,6 +2,7 @@ package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -20,7 +21,6 @@ class SocialButton extends RelativeLayout {
 
     private static final int NORMAL_STATE_ALPHA = 230;
     private static final float FOCUSED_STATE_ALPHA = 0.64f;
-    private static final String STRATEGY_GOOGLE_OAUTH2 = "google-oauth2";
 
     private ImageView icon;
     private TextView title;
@@ -50,9 +50,20 @@ class SocialButton extends RelativeLayout {
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor, @ViewUtils.Corners int corners) {
-        ShapeDrawable normalBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
-        normalBackground.getPaint().setAlpha(NORMAL_STATE_ALPHA);
-        Drawable pressedBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
+        final ShapeDrawable normalBackground;
+        final ShapeDrawable pressedBackground;
+
+        boolean shouldDrawOutline = pressedColor == Color.WHITE;
+        if (shouldDrawOutline) {
+            int outlineColor = getResources().getColor(R.color.com_auth0_lock_social_light_background_focused);
+            normalBackground = ViewUtils.getRoundedOutlineBackground(getResources(), outlineColor);
+            pressedBackground = ViewUtils.getRoundedBackground(this, outlineColor, corners);
+        } else {
+            normalBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
+            pressedBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
+        }
+
+        pressedBackground.getPaint().setAlpha(NORMAL_STATE_ALPHA);
 
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, pressedBackground);
@@ -69,24 +80,19 @@ class SocialButton extends RelativeLayout {
     public void setStyle(AuthConfig config, @AuthMode int mode) {
         final Drawable logo = config.getLogo(getContext());
         final int backgroundColor = config.getBackgroundColor(getContext());
-        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor, ViewUtils.Corners.ONLY_RIGHT);
+        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor, ViewUtils.Corners.ALL);
 
-        /*
-         * Branding guidelines command we remove the padding for Google logo.
-         * Since it's the only exception to the rule, handle it this way.
-         *
-         * Source: https://developers.google.com/identity/branding-guidelines
-         */
-        if (STRATEGY_GOOGLE_OAUTH2.equalsIgnoreCase(config.getConnection().getStrategy())) {
-            icon.setPadding(0, 0, 0, 0);
+        // When background is white, change default text color
+        boolean shouldUseDarkText = backgroundColor == Color.WHITE;
+        if (shouldUseDarkText) {
+            int textColor = getResources().getColor(R.color.com_auth0_lock_social_text_light);
+            title.setTextColor(textColor);
         }
         icon.setImageDrawable(logo);
         final String name = config.getName(getContext());
-        ShapeDrawable leftBackground = ViewUtils.getRoundedBackground(this, backgroundColor, ViewUtils.Corners.ONLY_LEFT);
         final String prefixFormat = getResources().getString(mode == AuthMode.LOG_IN ? R.string.com_auth0_lock_social_log_in : R.string.com_auth0_lock_social_sign_up);
         title.setText(String.format(prefixFormat, name));
-        ViewUtils.setBackground(icon, leftBackground);
-        ViewUtils.setBackground(title, touchBackground);
+        ViewUtils.setBackground(this, touchBackground);
     }
 
 }

@@ -67,7 +67,7 @@
 
     <dimen name="com_auth0_lock_small_clickable_text">15sp</dimen>
     <dimen name="com_auth0_lock_terms_text">15sp</dimen>
-    <dimen name="com_auth0_lock_social_button_text">14sp</dimen>
+    <dimen name="com_auth0_lock_social_button_text">15sp</dimen>
     <dimen name="com_auth0_lock_sso_text">14sp</dimen>
     <dimen name="com_auth0_lock_switcher_text">12sp</dimen>
     <dimen name="com_auth0_lock_field_text">15dp</dimen>
