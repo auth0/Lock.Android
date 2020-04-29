@@ -12,9 +12,4 @@
         android:gravity="center"
         android:textAppearance="@style/Lock.Theme.TextAppearance.Tab" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/com_auth0_lock_widget_tab_strip_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/com_auth0_lock_tab_underline" />
 </RelativeLayout>
