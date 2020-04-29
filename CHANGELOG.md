@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.19.0](https://github.com/auth0/Lock.Android/tree/2.19.0) (2020-04-29)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.18.0...2.19.0)
+
+**Changed**
+- Bump the SDK version to 1.23.0 [\#570](https://github.com/auth0/Lock.Android/pull/570) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fixed material library 1.1.0 tab layout height issue [\#568](https://github.com/auth0/Lock.Android/pull/568) ([ivabra](https://github.com/ivabra))
+
 ## [2.18.0](https://github.com/auth0/Lock.Android/tree/2.18.0) (2020-03-04)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.17.1...2.18.0)
 
