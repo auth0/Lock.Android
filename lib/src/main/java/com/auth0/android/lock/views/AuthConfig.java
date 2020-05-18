@@ -81,6 +81,9 @@ public class AuthConfig {
     public static int styleForStrategy(String strategyName) {
         int style = R.style.Lock_Theme_AuthStyle;
         switch (strategyName) {
+            case "apple":
+                style = R.style.Lock_Theme_AuthStyle_Apple;
+                break;
             case "amazon":
                 style = R.style.Lock_Theme_AuthStyle_Amazon;
                 break;
