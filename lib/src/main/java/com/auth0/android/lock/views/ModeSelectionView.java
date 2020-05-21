@@ -54,15 +54,17 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         inflate(getContext(), R.layout.com_auth0_lock_tab_layout, this);
         tabLayout = findViewById(R.id.com_auth0_lock_tab_layout);
 
-        firstTabView = inflate(getContext(), R.layout.com_auth0_lock_tab, null);
-        secondTabView = inflate(getContext(), R.layout.com_auth0_lock_tab, null);
+        View tabDescription1 = inflate(getContext(), R.layout.com_auth0_lock_tab, null);
+        View tabDescription2 = inflate(getContext(), R.layout.com_auth0_lock_tab, null);
 
         final TabLayout.Tab firstTab = tabLayout.newTab()
-                .setCustomView(firstTabView)
+                .setCustomView(tabDescription1)
                 .setText(R.string.com_auth0_lock_mode_log_in);
         final TabLayout.Tab secondTab = tabLayout.newTab()
-                .setCustomView(secondTabView)
+                .setCustomView(tabDescription2)
                 .setText(R.string.com_auth0_lock_mode_sign_up);
+        firstTabView = (View) tabDescription1.getParent();
+        secondTabView = (View) tabDescription2.getParent();
 
         firstTabView.setOnClickListener(new OnClickListener() {
             @Override
@@ -94,19 +96,16 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         text.setTypeface(bold ? text.getTypeface() : null, bold ? Typeface.BOLD : Typeface.NORMAL);
     }
 
-    @Deprecated
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         //No-Op
     }
 
-    @Deprecated
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
         //No-Op
     }
 
-    @Deprecated
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
         //No-Op
