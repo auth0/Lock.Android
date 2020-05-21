@@ -26,6 +26,7 @@
     <!-- Social Buttons -->
     <string name="com_auth0_lock_social_log_in">Sign in with %s</string>
     <string name="com_auth0_lock_social_sign_up">Sign up with %s</string>
+    <string name="com_auth0_lock_social_apple">Apple</string>
     <string name="com_auth0_lock_social_dropbox">Dropbox</string>
     <string name="com_auth0_lock_social_bitbucket">Bitbucket</string>
     <string name="com_auth0_lock_social_yahoo">Yahoo!</string>
