@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Lock.Theme.AuthStyle.Apple" parent="Lock.Theme.AuthStyle">
+        <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_apple</item>
+        <item name="Auth0.Name">@string/com_auth0_lock_social_apple</item>
+        <item name="Auth0.Logo">@drawable/com_auth0_lock_ic_social_apple</item>
+    </style>
+
     <style name="Lock.Theme.AuthStyle.Dropbox" parent="Lock.Theme.AuthStyle">
         <item name="Auth0.BackgroundColor">@color/com_auth0_lock_social_dropbox</item>
         <item name="Auth0.Name">@string/com_auth0_lock_social_dropbox</item>

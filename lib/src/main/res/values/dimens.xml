@@ -45,7 +45,7 @@
     <dimen name="com_auth0_lock_widget_vertical_margin_field">7dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_field_with_error">3dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_password_strength">10dp</dimen>
-    <dimen name="com_auth0_lock_widget_vertical_margin_social">5dp</dimen>
+    <dimen name="com_auth0_lock_widget_vertical_margin_social">7dp</dimen>
     <dimen name="com_auth0_lock_widget_vertical_margin_passwordless">30dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin_small">9dp</dimen>
     <dimen name="com_auth0_lock_widget_horizontal_margin">25dp</dimen>
