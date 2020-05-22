@@ -54,6 +54,7 @@ import java.util.Map;
 public class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
+    private static final int DEFAULT_VISIBLE_SIGN_UP_FIELDS_THRESHOLD = 2;
     private static final String KEY_AUTHENTICATION_PARAMETERS = "authenticationParameters";
     private static final String KEY_CONNECTIONS_SCOPE = "connectionsScope";
     private static final String SCOPE_KEY = "scope";
@@ -84,6 +85,7 @@ public class Options implements Parcelable {
     private HashMap<String, String> connectionsScope;
     private List<SignUpField> signUpFields;
     private int initialScreen;
+    private int visibleSignUpFieldsthreshold;
     private Theme theme;
     private String privacyURL;
     private String termsURL;
@@ -95,6 +97,7 @@ public class Options implements Parcelable {
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
         initialScreen = InitialScreen.LOG_IN;
+        visibleSignUpFieldsthreshold = DEFAULT_VISIBLE_SIGN_UP_FIELDS_THRESHOLD;
         useBrowser = true;
         allowLogIn = true;
         allowSignUp = true;
@@ -132,6 +135,7 @@ public class Options implements Parcelable {
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
+        visibleSignUpFieldsthreshold = in.readInt();
         theme = in.readParcelable(Theme.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
@@ -212,6 +216,7 @@ public class Options implements Parcelable {
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
+        dest.writeInt(visibleSignUpFieldsthreshold);
         dest.writeParcelable(theme, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
@@ -555,5 +560,13 @@ public class Options implements Parcelable {
     @Nullable
     public String getScheme() {
         return scheme;
+    }
+
+    public void setVisibleSignUpFieldsThreshold(int threshold) {
+        this.visibleSignUpFieldsthreshold = threshold;
+    }
+
+    public int visibleSignUpFieldsThreshold() {
+        return visibleSignUpFieldsthreshold;
     }
 }

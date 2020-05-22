@@ -280,6 +280,19 @@ public class OptionsTest {
     }
 
     @Test
+    public void shouldSetVisibleSignUpFieldsThreshold() {
+        options.setVisibleSignUpFieldsThreshold(9);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.visibleSignUpFieldsThreshold(), is(equalTo(parceledOptions.visibleSignUpFieldsThreshold())));
+        assertThat(options.visibleSignUpFieldsThreshold(), is(9));
+    }
+
+    @Test
     public void shouldChangeInitialScreenToLogIn() {
         options.setInitialScreen(InitialScreen.LOG_IN);
 
@@ -290,6 +303,17 @@ public class OptionsTest {
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
         assertThat(options.initialScreen(), is(InitialScreen.LOG_IN));
+    }
+
+    @Test
+    public void shouldUseDefaultVisibleSignUpFieldThreshold() {
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
+        assertThat(options.initialScreen(), is(2));
     }
 
     @Test
@@ -693,6 +717,7 @@ public class OptionsTest {
         assertThat(options.getAudience(), is(nullValue()));
         assertThat(options.getScheme(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
+        assertThat(options.visibleSignUpFieldsThreshold(), is(equalTo(2)));
         assertThat(options.getTheme(), is(notNullValue()));
         assertThat(options.getAuthenticationParameters(), is(notNullValue()));
         assertThat(options.getAuthStyles(), is(notNullValue()));
