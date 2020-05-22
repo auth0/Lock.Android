@@ -312,8 +312,8 @@ public class OptionsTest {
         parcel.setDataPosition(0);
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
-        assertThat(options.initialScreen(), is(2));
+        assertThat(options.visibleSignUpFieldsThreshold(), is(equalTo(parceledOptions.visibleSignUpFieldsThreshold())));
+        assertThat(options.visibleSignUpFieldsThreshold(), is(2));
     }
 
     @Test
