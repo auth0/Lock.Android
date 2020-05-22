@@ -480,8 +480,8 @@ public class Lock {
 
         /**
          * Displays the specified custom fields during sign up. If the amount of visible fields
-         * is greater than the value set in {@link #withVisibleSignUpFieldsThreshold(int)}, the
-         * remainder will be shown on a separate screen after the user clicks the sign up button.
+         * is greater than the value set in {@link #withVisibleSignUpFieldsThreshold(int)}, all
+         * of them will be shown on a separate screen after the user clicks the sign up button.
          * Each field must have a unique key. Fields with repeated keys will be removed.
          *
          * @param customFields the custom fields to display in the sign up flow.
