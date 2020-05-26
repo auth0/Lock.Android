@@ -480,8 +480,8 @@ public class Lock {
 
         /**
          * Displays the specified custom fields during sign up. If the amount of visible fields
-         * is greater than {@link com.auth0.android.lock.views.SignUpFormView#MAX_FEW_CUSTOM_FIELDS}
-         * they will be shown on a separate screen.
+         * is greater than the value set in {@link #withVisibleSignUpFieldsThreshold(int)}, all
+         * of them will be shown on a separate screen after the user clicks the sign up button.
          * Each field must have a unique key. Fields with repeated keys will be removed.
          *
          * @param customFields the custom fields to display in the sign up flow.
@@ -490,6 +490,20 @@ public class Lock {
         public Builder withSignUpFields(List<? extends SignUpField> customFields) {
             final List<SignUpField> withoutDuplicates = removeDuplicatedKeys(customFields);
             options.setSignUpFields(withoutDuplicates);
+            return this;
+        }
+
+        /**
+         * Defines the threshold at which all of the visible sign-up fields would be shown on
+         * a secondary screen instead of the initial one after clicking the sign-up button.
+         * Has a default value of 2 visible sign-up fields.
+         *
+         * @param threshold the threshold at which all the visible sign-up fields would be
+         *                  shown on a separate screen.
+         * @return the current builder instance
+         */
+        public Builder withVisibleSignUpFieldsThreshold(int threshold) {
+            options.setVisibleSignUpFieldsThreshold(threshold);
             return this;
         }
 

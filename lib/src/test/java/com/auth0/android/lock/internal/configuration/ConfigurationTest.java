@@ -102,6 +102,7 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.loginAfterSignUp(), is(true));
         assertThat(configuration.getUsernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(configuration.getInitialScreen(), is(equalTo(InitialScreen.LOG_IN)));
+        assertThat(configuration.getVisibleSignUpFieldsThreshold(), is(equalTo(2)));
         assertThat(configuration.getPasswordComplexity(), is(notNullValue()));
         assertThat(configuration.getPasswordComplexity().getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
@@ -115,6 +116,13 @@ public class ConfigurationTest extends GsonBaseTest {
     public void shouldGetValidStyleForNotOverriddenStrategy() {
         configuration = new Configuration(connections, options);
         assertThat(configuration.authStyleForConnection("facebook", "facebook-prod"), Matchers.is(R.style.Lock_Theme_AuthStyle_Facebook));
+    }
+
+    @Test
+    public void shouldGetVisibleSignUpFieldsThreshold() {
+        options.setVisibleSignUpFieldsThreshold(6);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.getVisibleSignUpFieldsThreshold(), is(6));
     }
 
     @Test

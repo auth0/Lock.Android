@@ -53,14 +53,13 @@ import static com.auth0.android.lock.views.CustomFieldsFormView.setEventRootProf
 public class SignUpFormView extends FormView implements TextView.OnEditorActionListener, IdentityListener {
 
     private static final String TAG = SignUpFormView.class.getSimpleName();
-    public static final int MAX_FEW_CUSTOM_FIELDS = 2;
 
     private final LockWidgetForm lockWidget;
     private ValidatedUsernameInputView usernameInput;
     private ValidatedInputView emailInput;
     private ValidatedPasswordInputView passwordInput;
     private LinearLayout fieldContainer;
-    private boolean displayFewCustomFields;
+    private boolean displayCustomFieldsHere;
 
     public SignUpFormView(Context context) {
         super(context);
@@ -93,8 +92,8 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
 
         usernameInput.setVisibility(configuration.isUsernameRequired() ? View.VISIBLE : View.GONE);
 
-        displayFewCustomFields = lockWidget.getConfiguration().getVisibleSignUpFields().size() <= MAX_FEW_CUSTOM_FIELDS;
-        if (displayFewCustomFields) {
+        displayCustomFieldsHere = lockWidget.getConfiguration().getVisibleSignUpFields().size() <= configuration.getVisibleSignUpFieldsThreshold();
+        if (displayCustomFieldsHere) {
             addCustomFields(configuration.getVisibleSignUpFields());
         }
     }
@@ -159,7 +158,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         if (passwordInput.getVisibility() == VISIBLE) {
             valid = passwordInput.validate() && valid;
         }
-        for (int i = 0; displayFewCustomFields && i < fieldContainer.getChildCount(); i++) {
+        for (int i = 0; displayCustomFieldsHere && i < fieldContainer.getChildCount(); i++) {
             ValidatedInputView input = (ValidatedInputView) fieldContainer.getChildAt(i);
             valid = input.validate() && valid;
         }
@@ -172,7 +171,7 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         if (validateForm()) {
             DatabaseSignUpEvent event = (DatabaseSignUpEvent) getActionEvent();
             List<CustomField> visibleFields = lockWidget.getConfiguration().getVisibleSignUpFields();
-            if (displayFewCustomFields) {
+            if (displayCustomFieldsHere) {
                 List<HiddenField> hiddenFields = lockWidget.getConfiguration().getHiddenSignUpFields();
                 setEventRootProfileAttributes(event, visibleFields, hiddenFields, fieldContainer);
                 return event;

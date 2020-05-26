@@ -78,7 +78,7 @@ public class Configuration {
     private List<HiddenField> extraHiddenSignUpFields;
     private List<CustomField> extraVisibleSignUpFields;
     private Map<String, Integer> authStyles;
-    private Object sf;
+    private int visibleSignUpFieldsThreshold;
 
     public Configuration(List<Connection> connections, Options options) {
         List<String> allowedConnections = options.getConnections();
@@ -196,6 +196,7 @@ public class Configuration {
         useLabeledSubmitButton = options.useLabeledSubmitButton();
         hideMainScreenTitle = options.hideMainScreenTitle();
         passwordlessAutoSubmit = options.rememberLastPasswordlessAccount();
+        visibleSignUpFieldsThreshold = options.visibleSignUpFieldsThreshold();
 
         authStyles = options.getAuthStyles();
         extraHiddenSignUpFields = new ArrayList<>();
@@ -333,5 +334,9 @@ public class Configuration {
 
     public boolean usePasswordlessAutoSubmit() {
         return passwordlessAutoSubmit;
+    }
+
+    public int getVisibleSignUpFieldsThreshold() {
+        return visibleSignUpFieldsThreshold;
     }
 }

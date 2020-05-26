@@ -43,6 +43,7 @@ import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
 import com.auth0.android.lock.internal.configuration.AuthMode;
+import com.auth0.android.lock.internal.configuration.Configuration;
 import com.auth0.android.lock.views.interfaces.IdentityListener;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
@@ -267,7 +268,8 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
 
         FormView form = (FormView) existingForm;
         Object ev = form.submitForm();
-        if (ev == null || lockWidget.getConfiguration().getVisibleSignUpFields().size() <= SignUpFormView.MAX_FEW_CUSTOM_FIELDS) {
+        Configuration configuration = lockWidget.getConfiguration();
+        if (ev == null || configuration.getVisibleSignUpFields().size() <= configuration.getVisibleSignUpFieldsThreshold()) {
             return ev;
         } else if (existingForm == signUpForm) {
             //User has configured some extra SignUp custom fields.
