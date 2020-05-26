@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.20.0](https://github.com/auth0/Lock.Android/tree/2.20.0) (2020-05-26)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.19.0...2.20.0)
+
+**Added**
+- Allow to change the visible sign-up fields threshold [\#578](https://github.com/auth0/Lock.Android/pull/578) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add social button style for Sign In with Apple [\#575](https://github.com/auth0/Lock.Android/pull/575) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix ModeSelectionView sync issue [\#577](https://github.com/auth0/Lock.Android/pull/577) ([lbalmaceda](https://github.com/lbalmaceda))
+- Center Custom Fields additional form vertically [\#576](https://github.com/auth0/Lock.Android/pull/576) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.19.0](https://github.com/auth0/Lock.Android/tree/2.19.0) (2020-04-29)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.18.0...2.19.0)
 
