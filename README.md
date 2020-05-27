@@ -129,8 +129,6 @@ account.setOIDCConformant(true);
 //Use the account to launch Lock
 ```
 
-Passwordless Lock *cannot be used* with this flag set to `true`. For more information, please see the [OIDC adoption guide](https://auth0.com/docs/api-auth/tutorials/adoption).
-
 
 ### Email/Password, Enterprise & Social authentication
 
@@ -235,7 +233,7 @@ startActivity(lock.newIntent(this));
 
 ### Passwordless & Social authentication
 
-The Passwordless feature requires your Application to have the *Resource Owner* Legacy Grant Type enabled. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it. Note that Passwordless authentication *cannot be used* with the [OIDC Conformant Mode](#oidc-conformant-mode) enabled.
+The Passwordless feature requires your Application to have a specific Grant Type enabled first. If your client has the [OIDC Conformant Mode](#oidc-conformant-mode) enabled, enable the *Passwordless OTP* Grant Type. If the OIDC Conformant mode is disabled, you would need to enable the *Resource Owner* Legacy Grant Type. Check [this article](https://auth0.com/docs/clients/client-grant-types) to learn how to enable it. 
 
 `PasswordlessLockActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
