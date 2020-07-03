@@ -50,13 +50,13 @@ class SocialButton extends RelativeLayout {
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor, @ViewUtils.Corners int corners) {
-        final ShapeDrawable normalBackground;
+        final Drawable normalBackground;
         final ShapeDrawable pressedBackground;
 
         boolean shouldDrawOutline = pressedColor == Color.WHITE;
         if (shouldDrawOutline) {
             int outlineColor = getResources().getColor(R.color.com_auth0_lock_social_light_background_focused);
-            normalBackground = ViewUtils.getRoundedOutlineBackground(getResources(), outlineColor);
+            normalBackground = ViewUtils.getOpaqueRoundedOutlineBackground(getResources(), pressedColor, outlineColor);
             pressedBackground = ViewUtils.getRoundedBackground(this, outlineColor, corners);
         } else {
             normalBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);

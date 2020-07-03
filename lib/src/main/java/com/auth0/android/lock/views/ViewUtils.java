@@ -28,6 +28,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
@@ -113,10 +114,10 @@ abstract class ViewUtils {
     }
 
     /**
-     * Generates a rounded outline drawable with the given background color.
+     * Generates a rounded outline drawable with a transparent background.
      *
      * @param resources the context's current resources.
-     * @param color     the color to use as background.
+     * @param color     the color to use for the outline.
      * @return the rounded drawable.
      */
     static ShapeDrawable getRoundedOutlineBackground(Resources resources, @ColorInt int color) {
@@ -125,6 +126,28 @@ abstract class ViewUtils {
         RoundRectShape rr = new RoundRectShape(new float[]{r, r, r, r, r, r, r, r}, new RectF(t, t, t, t), new float[]{r, r, r, r, r, r, r, r});
         ShapeDrawable drawable = new ShapeDrawable(rr);
         drawable.getPaint().setColor(color);
+        return drawable;
+    }
+
+    /**
+     * Generates a rounded outline drawable with the given background color.
+     *
+     * @param resources       the context's current resources.
+     * @param backgroundColor the color to use for the background.
+     * @param outlineColor    the color to use for the outline
+     * @return the opaque rounded drawable.
+     */
+    static Drawable getOpaqueRoundedOutlineBackground(
+            Resources resources,
+            @ColorInt int backgroundColor,
+            @ColorInt int outlineColor
+    ) {
+        int cornerRadius = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
+        int stroke = resources.getDimensionPixelSize(R.dimen.com_auth0_lock_input_field_stroke_width);
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setCornerRadius(cornerRadius);
+        drawable.setColor(backgroundColor);
+        drawable.setStroke(stroke, outlineColor);
         return drawable;
     }
 
