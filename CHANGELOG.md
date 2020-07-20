@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.21.0](https://github.com/auth0/Lock.Android/tree/2.21.0) (2020-07-20)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.20.0...2.21.0)
+
+**Changed**
+- Bump SDK to version 1.24.0 [\#583](https://github.com/auth0/Lock.Android/pull/583) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Bugfix #581 | Fix social login buttons with white backgrounds [\#582](https://github.com/auth0/Lock.Android/pull/582) ([morganlutz](https://github.com/morganlutz))
+
 ## [2.20.0](https://github.com/auth0/Lock.Android/tree/2.20.0) (2020-05-26)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.19.0...2.20.0)
 
