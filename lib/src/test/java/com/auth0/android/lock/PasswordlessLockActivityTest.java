@@ -20,7 +20,7 @@ import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
-import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.AuthRequest;
 import com.auth0.android.request.ParameterizableRequest;
 
 import org.junit.Before;
@@ -72,7 +72,7 @@ public class PasswordlessLockActivityTest {
     @Mock
     ParameterizableRequest codeRequest;
     @Mock
-    AuthenticationRequest authRequest;
+    AuthRequest authRequest;
     @Mock
     Configuration configuration;
     @Mock
