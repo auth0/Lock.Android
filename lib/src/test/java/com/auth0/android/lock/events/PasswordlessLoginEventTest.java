@@ -29,7 +29,7 @@ import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
-import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.AuthRequest;
 import com.auth0.android.request.ParameterizableRequest;
 
 import org.junit.Assert;
@@ -240,11 +240,11 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldGetValidLoginRequestWhenUsingEmailAndCode() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_CODE, CODE);
-        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
+        AuthRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
 
         Assert.assertThat(resultRequest, notNullValue());
         Assert.assertThat(resultRequest, equalTo(authRequest));
@@ -253,11 +253,11 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldGetValidLoginRequestWhenUsingEmailAndLink() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_LINK, CODE);
-        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
+        AuthRequest resultRequest = emailCodeEvent.getLoginRequest(client, EMAIL);
 
         Assert.assertThat(resultRequest, notNullValue());
         Assert.assertThat(resultRequest, equalTo(authRequest));
@@ -266,11 +266,11 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldGetValidLoginRequestWhenUsingSMSAndCode() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_CODE, CODE);
-        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
+        AuthRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
 
         Assert.assertThat(resultRequest, notNullValue());
         Assert.assertThat(resultRequest, equalTo(authRequest));
@@ -279,11 +279,11 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldGetValidLoginRequestWhenUsingSMSAndLink() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_LINK, CODE);
-        AuthenticationRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
+        AuthRequest resultRequest = emailCodeEvent.getLoginRequest(client, PHONE_NUMBER_WITH_CODE);
 
         Assert.assertThat(resultRequest, notNullValue());
         Assert.assertThat(resultRequest, equalTo(authRequest));
@@ -292,7 +292,7 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldCallApiClientPasswordlessLoginWhenUsingEmailAndCode() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_CODE, CODE);
@@ -305,7 +305,7 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldCallApiClientPasswordlessLoginWhenUsingEmailAndLink() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithEmail(EMAIL, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.EMAIL_LINK, CODE);
@@ -318,7 +318,7 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldCallApiClientPasswordlessLoginWhenUsingSMSAndCode() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_CODE, CODE);
@@ -331,7 +331,7 @@ public class PasswordlessLoginEventTest {
     @Test
     public void shouldCallApiClientPasswordlessLoginWhenUsingSMSAndLink() {
         AuthenticationAPIClient client = mock(AuthenticationAPIClient.class);
-        AuthenticationRequest authRequest = mock(AuthenticationRequest.class);
+        AuthRequest authRequest = mock(AuthRequest.class);
         when(client.loginWithPhoneNumber(PHONE_NUMBER_WITH_CODE, CODE)).thenReturn(authRequest);
 
         PasswordlessLoginEvent emailCodeEvent = PasswordlessLoginEvent.submitCode(PasswordlessMode.SMS_LINK, CODE);

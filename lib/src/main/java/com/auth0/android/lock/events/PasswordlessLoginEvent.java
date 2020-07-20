@@ -33,7 +33,7 @@ import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
-import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.AuthRequest;
 import com.auth0.android.request.ParameterizableRequest;
 
 public class PasswordlessLoginEvent {
@@ -115,7 +115,7 @@ public class PasswordlessLoginEvent {
      * @param emailOrNumber the email or phone number used on the code request.
      * @return the Passwordless login request.
      */
-    public AuthenticationRequest getLoginRequest(AuthenticationAPIClient apiClient, String emailOrNumber) {
+    public AuthRequest getLoginRequest(AuthenticationAPIClient apiClient, String emailOrNumber) {
         Log.d(TAG, String.format("Generating Passwordless Login request for identity %s", emailOrNumber));
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.loginWithEmail(emailOrNumber, getCode());

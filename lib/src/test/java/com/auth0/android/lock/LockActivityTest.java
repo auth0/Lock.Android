@@ -21,7 +21,7 @@ import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
-import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.AuthRequest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class LockActivityTest {
     @Mock
     WebProvider webProvider;
     @Mock
-    AuthenticationRequest authRequest;
+    AuthRequest authRequest;
     @Mock
     SignUpRequest signUpRequest;
     @Mock
