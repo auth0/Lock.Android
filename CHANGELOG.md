@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.21.1](https://github.com/auth0/Lock.Android/tree/2.21.1) (2020-08-05)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.21.0...2.21.1)
+
+**Fixed**
+- Use latest SDK patch [\#587](https://github.com/auth0/Lock.Android/pull/587) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.21.0](https://github.com/auth0/Lock.Android/tree/2.21.0) (2020-07-20)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.20.0...2.21.0)
 
