@@ -122,6 +122,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         this.options = options;
         this.lockView = lockView;
         this.webProvider = webProvider;
+        this.handler = new Handler();
+        this.loginErrorBuilder = new LoginErrorMessageBuilder();
+        this.signUpErrorBuilder = new SignUpErrorMessageBuilder();
     }
 
     @Override
