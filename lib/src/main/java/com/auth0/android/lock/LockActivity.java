@@ -546,16 +546,16 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onFailure(final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
+            final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
+            if (error.isVerificationRequired()) {
+                completeDatabaseAuthenticationOnBrowser();
+                return;
+            }
+
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     lockView.showProgress(false);
-
-                    final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
-                    if (error.isVerificationRequired()) {
-                        completeDatabaseAuthenticationOnBrowser();
-                        return;
-                    }
                     if (error.isMultifactorRequired()) {
                         String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
                         if (!TextUtils.isEmpty(mfaToken)) {

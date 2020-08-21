@@ -36,10 +36,9 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -541,7 +540,7 @@ public class LockActivityTest {
         verify(lockView, never()).showProgress(true);
         verify(customProvider).setParameters(mapCaptor.capture());
         verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
-        AuthResolver.setAuthHandlers(Collections.emptyList());
+        AuthResolver.setAuthHandlers(Collections.<AuthHandler>emptyList());
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
@@ -579,7 +578,7 @@ public class LockActivityTest {
         verify(lockView, never()).showProgress(true);
         verify(customProvider).setParameters(mapCaptor.capture());
         verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
-        AuthResolver.setAuthHandlers(Collections.emptyList());
+        AuthResolver.setAuthHandlers(Collections.<AuthHandler>emptyList());
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
@@ -616,7 +615,7 @@ public class LockActivityTest {
         verify(lockView, never()).showProgress(true);
         verify(customProvider).setParameters(mapCaptor.capture());
         verify(customProvider).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_PERMISSIONS), eq(REQ_CODE_CUSTOM_PROVIDER));
-        AuthResolver.setAuthHandlers(Collections.emptyList());
+        AuthResolver.setAuthHandlers(Collections.<AuthHandler>emptyList());
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
@@ -705,7 +704,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(false);
         verify(customProvider).authorize(REQ_CODE_CUSTOM_PROVIDER, Activity.RESULT_OK, intent);
-        AuthResolver.setAuthHandlers(Collections.emptyList());
+        AuthResolver.setAuthHandlers(Collections.<AuthHandler>emptyList());
     }
 
     @Test
@@ -739,7 +738,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(false);
         verify(customProvider).authorize(intent);
-        AuthResolver.setAuthHandlers(Collections.emptyList());
+        AuthResolver.setAuthHandlers(Collections.<AuthHandler>emptyList());
     }
 
     @Test
