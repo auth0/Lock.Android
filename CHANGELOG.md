@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.22.0](https://github.com/auth0/Lock.Android/tree/2.22.0) (2020-08-25)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.21.1...2.22.0)
+
+**Added**
+- Support bot protection [\#589](https://github.com/auth0/Lock.Android/pull/589) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.21.1](https://github.com/auth0/Lock.Android/tree/2.21.1) (2020-08-05)
 
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.21.0...2.21.1)
