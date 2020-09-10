@@ -57,7 +57,7 @@
     <string name="com_auth0_lock_social_renren">人人</string>
     <string name="com_auth0_lock_social_thecity">The City</string>
     <string name="com_auth0_lock_social_thecity_sandbox">The City (Sandbox)</string>
-    <string name="com_auth0_lock_social_thirtysevensignals">37 Signals</string>
+    <string name="com_auth0_lock_social_thirtysevensignals">Basecamp</string>
     <string name="com_auth0_lock_social_vkontakte">VKontakte</string>
     <string name="com_auth0_lock_social_weibo">新浪微博</string>
     <string name="com_auth0_lock_social_wordpress">WordPress</string>
@@ -72,7 +72,7 @@
     <string name="com_auth0_lock_input_error_email">Invalid Email Address</string>
     <string name="com_auth0_lock_input_error_password">Invalid Password</string>
     <string name="com_auth0_lock_input_error_username_email">Invalid Username or Email Address</string>
-    <string name="com_auth0_lock_input_error_username" formatted="false" tools:ignore="StringFormatInvalid">Invalid Username. Can only contain between %d to %d alphanumeric characters and \'_\'.</string>
+    <string name="com_auth0_lock_input_error_username" formatted="false" tools:ignore="StringFormatInvalid,TypographyQuotes">Invalid Username. Can only contain between %d to %d alphanumeric characters and \'_\'.</string>
     <string name="com_auth0_lock_input_error_username_empty" formatted="false">Invalid Username</string>
     <string name="com_auth0_lock_input_error_code">Invalid Code</string>
     <string name="com_auth0_lock_input_error_phone_number">Invalid Phone Number</string>
@@ -150,7 +150,7 @@
     <string name="com_auth0_lock_description_mfa_input_code">Please enter a verification code from\n your code generator application.</string>
 
     <!-- Password Strength/Policies -->
-    <string name="com_auth0_lock_password_strength_identical_chars">No more than 2 identical characters in a row (e.g., "111" not allowed)</string>
+    <string name="com_auth0_lock_password_strength_identical_chars">No more than 2 identical characters in a row (e.g., “111” not allowed)</string>
     <string name="com_auth0_lock_password_strength_chars_length" formatted="false" tools:ignore="StringFormatInvalid">At least %d characters in length</string>
     <string name="com_auth0_lock_password_strength_lowercase_letters">Lower case letters (a-z)</string>
     <string name="com_auth0_lock_password_strength_uppercase_letters">Upper case letters (A-Z)</string>
