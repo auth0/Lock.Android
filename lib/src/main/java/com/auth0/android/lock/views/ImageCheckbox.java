@@ -3,6 +3,7 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.AccessibilityDelegateCompat;
@@ -29,15 +30,16 @@ public class ImageCheckbox extends AppCompatImageButton implements Checkable {
     private boolean mChecked;
     private OnCheckedChangeListener checkedChangedListener;
 
-    public ImageCheckbox(Context context) {
+    public ImageCheckbox(@NonNull Context context) {
+        //noinspection ConstantConditions
         this(context, null);
     }
 
-    public ImageCheckbox(Context context, AttributeSet attrs) {
+    public ImageCheckbox(@NonNull Context context, @NonNull AttributeSet attrs) {
         this(context, attrs, android.support.v7.appcompat.R.attr.imageButtonStyle);
     }
 
-    public ImageCheckbox(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ImageCheckbox(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         ViewCompat.setAccessibilityDelegate(this, new AccessibilityDelegateCompat() {
@@ -70,6 +72,7 @@ public class ImageCheckbox extends AppCompatImageButton implements Checkable {
         if (mChecked != checked) {
             mChecked = checked;
             refreshDrawableState();
+            //noinspection deprecation
             sendAccessibilityEvent(AccessibilityEventCompat.TYPE_WINDOW_CONTENT_CHANGED);
             if (checkedChangedListener != null) {
                 checkedChangedListener.onCheckedChanged(this, checked);
@@ -87,6 +90,7 @@ public class ImageCheckbox extends AppCompatImageButton implements Checkable {
         setChecked(!mChecked);
     }
 
+    @NonNull
     @Override
     public int[] onCreateDrawableState(int extraSpace) {
         if (mChecked) {

@@ -1,6 +1,7 @@
 package com.auth0.android.lock.views;
 
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,7 +16,7 @@ class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         if (orientation == RecyclerView.HORIZONTAL) {
             outRect.left = space;
             outRect.right = space;

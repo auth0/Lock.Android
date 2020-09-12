@@ -1,5 +1,8 @@
 package com.auth0.android.lock.internal.configuration;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 interface BaseConnection {
 
     /**
@@ -7,6 +10,7 @@ interface BaseConnection {
      *
      * @return the connection name
      */
+    @NonNull
     String getName();
 
     /**
@@ -14,6 +18,7 @@ interface BaseConnection {
      *
      * @return the strategy name
      */
+    @NonNull
     String getStrategy();
 
     /**
@@ -24,6 +29,7 @@ interface BaseConnection {
      * @param <T>    type of value to return
      * @return a value
      */
+    @Nullable
     <T> T valueForKey(String key, Class<T> tClazz);
 
     /**

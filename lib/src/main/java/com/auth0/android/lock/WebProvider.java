@@ -47,6 +47,7 @@ class WebProvider {
             parameters.putAll(extraAuthParameters);
         }
 
+        //noinspection deprecation
         WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
                 .useBrowser(options.useBrowser())
                 .withParameters(parameters)
@@ -68,6 +69,7 @@ class WebProvider {
         if (scheme != null) {
             builder.withScheme(scheme);
         }
+        //noinspection deprecation
         builder.start(activity, callback, requestCode);
     }
 
@@ -90,6 +92,7 @@ class WebProvider {
      * @return true if a result was expected and has a valid format, or false if not
      */
     public boolean resume(int requestCode, int resultCode, Intent intent) {
+        //noinspection deprecation
         return WebAuthProvider.resume(requestCode, resultCode, intent);
     }
 

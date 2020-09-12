@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
@@ -50,6 +51,7 @@ import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetPasswordless;
 import com.squareup.otto.Bus;
 
+@SuppressWarnings("NullableProblems")
 @SuppressLint("ViewConstructor")
 public class PasswordlessLockView extends LinearLayout implements LockWidgetPasswordless, View.OnClickListener {
 
@@ -62,7 +64,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     private ProgressBar loadingProgressBar;
     private HeaderView headerView;
 
-    public PasswordlessLockView(Context context, Bus lockBus, Theme lockTheme) {
+    public PasswordlessLockView(@NonNull Context context, @NonNull Bus lockBus, @NonNull Theme lockTheme) {
         super(context);
         this.bus = lockBus;
         this.lockTheme = lockTheme;
@@ -200,10 +202,11 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
      * for the user to input the valid code.
      */
     @Override
-    public void onPasswordlessCodeSent(String emailOrNumber) {
+    public void onPasswordlessCodeSent(@NonNull String emailOrNumber) {
         formLayout.codeSent(emailOrNumber);
     }
 
+    @NonNull
     @Override
     public Configuration getConfiguration() {
         return configuration;
@@ -215,13 +218,13 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
     }
 
     @Override
-    public void onOAuthLoginRequest(OAuthLoginEvent event) {
+    public void onOAuthLoginRequest(@NonNull OAuthLoginEvent event) {
         Log.d(TAG, "Social login triggered for connection " + event.getConnection());
         bus.post(event);
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(@NonNull View v) {
         Object event = formLayout.onActionPressed();
         if (event != null) {
             bus.post(event);
@@ -240,11 +243,11 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
      * @param country  the selected country iso code (2 chars).
      * @param dialCode the dial code for this country
      */
-    public void onCountryCodeSelected(String country, String dialCode) {
+    public void onCountryCodeSelected(@NonNull String country, @NonNull String dialCode) {
         formLayout.onCountryCodeSelected(country, dialCode);
     }
 
-    public void loadPasswordlessData(String input, @Nullable Country country) {
+    public void loadPasswordlessData(@NonNull String input, @Nullable Country country) {
         formLayout.loadPasswordlessData(input, country);
     }
 }

@@ -25,6 +25,8 @@
 package com.auth0.android.lock.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,9 +43,9 @@ public class CountryAdapter extends BaseAdapter {
 
     private final Filter filter;
     private final Context context;
-    private List<Country> data;
+    List<Country> data;
 
-    public CountryAdapter(Context context, List<Country> countries) {
+    public CountryAdapter(@NonNull Context context, @NonNull List<Country> countries) {
         this.context = context;
         this.data = new ArrayList<>(countries);
         this.filter = new CountryFilter(countries);
@@ -54,6 +56,7 @@ public class CountryAdapter extends BaseAdapter {
         return data.size();
     }
 
+    @Nullable
     @Override
     public Country getItem(int position) {
         return data.get(position);
@@ -64,8 +67,9 @@ public class CountryAdapter extends BaseAdapter {
         return position;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Country country = getItem(position);
 
         if (convertView == null) {
@@ -73,12 +77,14 @@ public class CountryAdapter extends BaseAdapter {
         }
 
         TextView countryNameTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_name_text_view);
+        //noinspection ConstantConditions
         countryNameTextView.setText(country.getDisplayName());
         TextView countryCodeTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_text_view);
         countryCodeTextView.setText(country.getDialCode());
         return convertView;
     }
 
+    @NonNull
     public Filter getFilter() {
         return filter;
     }
@@ -87,7 +93,7 @@ public class CountryAdapter extends BaseAdapter {
 
         private final List<Country> countries;
 
-        private CountryFilter(List<Country> countries) {
+        CountryFilter(List<Country> countries) {
             this.countries = countries;
         }
 

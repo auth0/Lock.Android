@@ -44,5 +44,6 @@
         style="@style/Lock.Theme.Text.Header"
         android:layout_below="@id/com_auth0_lock_header_logo"
         android:layout_marginBottom="@dimen/com_auth0_lock_header_vertical_margin"
+        tools:ignore="SelectableText"
         tools:text="Auth0" />
 </RelativeLayout>

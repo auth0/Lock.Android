@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views.interfaces;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -32,7 +33,7 @@ public interface LockWidgetForm extends LockWidgetOAuth, IdentityListener {
 
     void showChangePasswordForm(boolean show);
 
-    void showCustomFieldsForm(DatabaseSignUpEvent event);
+    void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event);
 
     void showBottomBanner(boolean show);
 

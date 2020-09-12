@@ -33,6 +33,11 @@ android {
         consumerProguardFiles '../proguard/proguard-gson.pro', '../proguard/proguard-otto.pro', '../proguard/proguard-lock-2.pro'
     }
 
+    lintOptions {
+        disable 'ContentDescription', 'SyntheticAccessor'
+        abortOnError true
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true

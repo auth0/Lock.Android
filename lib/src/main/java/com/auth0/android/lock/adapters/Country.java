@@ -29,22 +29,25 @@ import android.support.annotation.NonNull;
 import java.util.Locale;
 
 public class Country implements Comparable<Country> {
-    private String isoCode;
-    private String dialCode;
+    private final String isoCode;
+    private final String dialCode;
 
-    public Country(String isoCode, String dialCode) {
+    public Country(@NonNull String isoCode, @NonNull String dialCode) {
         this.isoCode = isoCode;
         this.dialCode = dialCode;
     }
 
+    @NonNull
     public String getDialCode() {
         return dialCode;
     }
 
+    @NonNull
     public String getIsoCode() {
         return isoCode;
     }
 
+    @NonNull
     public String getDisplayName() {
         Locale locale = new Locale("", isoCode);
         return locale.getDisplayName();

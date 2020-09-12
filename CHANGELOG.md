@@ -734,7 +734,6 @@ As in the previous version, `Lock` can be configured with extra options. Check b
 
 #### Renamed options from v1
 
-- shouldUseWebView: Renamed to `useBrowser`. Whether to use the WebView or the Browser to request calls to the `/authorize` endpoint. Using the Browser has some [restrictions](#some-restrictions).
 - shouldUseEmail: Renamed to `withUsernameStyle`. Defines if it should ask for email only, username only, or both of them. By default, it'll respect the Dashboard configuration of the parameter `requires_username`.
 - isClosable: Renamed to `closable`. Defines if the LockActivity can be closed. By default, it's not closable.
 - setFullscreen: Renamed to `fullscreen`. Defines if the LockActivity it's displayed in fullscreen. By default, it's not fullscreen.

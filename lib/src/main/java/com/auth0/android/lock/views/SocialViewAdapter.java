@@ -51,7 +51,8 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = new SocialButton(context);
         return new ViewHolder(view);
     }
@@ -85,16 +86,16 @@ class SocialViewAdapter extends RecyclerView.Adapter<SocialViewAdapter.ViewHolde
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        SocialButton socialButton;
+        final SocialButton socialButton;
 
-        public ViewHolder(View v) {
+        public ViewHolder(@NonNull View v) {
             super(v);
             socialButton = (SocialButton) v;
             socialButton.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View view) {
+        public void onClick(@NonNull View view) {
             if (callback != null) {
                 final AuthConfig item = authConfigs.get(getAdapterPosition());
                 callback.onAuthenticationRequest(item.getConnection());

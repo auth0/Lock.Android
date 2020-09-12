@@ -12,9 +12,9 @@ import static com.auth0.android.util.CheckHelper.checkArgument;
 
 public class Connection implements BaseConnection, DatabaseConnection, OAuthConnection, PasswordlessConnection {
 
-    private String strategy;
-    private String name;
-    private Map<String, Object> values;
+    private final String strategy;
+    private final String name;
+    private final Map<String, Object> values;
     private int minUsernameLength;
     private int maxUsernameLength;
     private boolean isCustomDatabase;
@@ -48,19 +48,23 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
             policy = PasswordStrength.LOW;
         }
 
+        //noinspection unchecked
         final Map<String, Object> complexityOptions = valueForKey("password_complexity_options", Map.class);
         Integer minLength = null;
         if (complexityOptions != null && complexityOptions.containsKey("min_length")) {
+            //noinspection ConstantConditions
             minLength = ((Number) complexityOptions.remove("min_length")).intValue();
         }
         passwordComplexity = new PasswordComplexity(policy, minLength);
     }
 
+    @NonNull
     @Override
     public String getName() {
         return name;
     }
 
+    @NonNull
     @Override
     public String getStrategy() {
         return strategy;
@@ -156,11 +160,13 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     }
 
     @Override
+    @NonNull
     public Set<String> getDomainSet() {
         Set<String> domains = new HashSet<>();
         String domain = valueForKey("domain", String.class);
         if (domain != null) {
             domains.add(domain.toLowerCase());
+            //noinspection unchecked
             List<String> aliases = valueForKey("domain_aliases", List.class);
             if (aliases != null) {
                 for (String alias : aliases) {
@@ -182,6 +188,7 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         return new Connection(strategy, values);
     }
 
+    @SuppressWarnings("unchecked")
     private void parseUsernameLength() {
         Map<String, Object> validations = valueForKey("validation", Map.class);
         if (validations == null || !validations.containsKey("username")) {
@@ -192,8 +199,9 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         }
 
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
-        minUsernameLength = intValue(usernameValidation.get("min"), 0);
-        maxUsernameLength = intValue(usernameValidation.get("max"), 0);
+        //noinspection ConstantConditions
+        minUsernameLength = intValue(usernameValidation.get("min"));
+        maxUsernameLength = intValue(usernameValidation.get("max"));
         if (minUsernameLength < 1 || maxUsernameLength < 1 || minUsernameLength > maxUsernameLength) {
             minUsernameLength = 1;
             maxUsernameLength = Integer.MAX_VALUE;
@@ -203,18 +211,17 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     /**
      * Will try to get the int value of a given object. If the value cannot be obtained, it will return the default value.
      *
-     * @param object       to get an int from.
-     * @param defaultValue to return if the int value cannot be obtained.
-     * @return the int value of the object or the default value if it cannot be obtained.
+     * @param object to get an int from.
+     * @return the int value of the object or 0 if it cannot be obtained.
      */
-    private int intValue(@Nullable Object object, int defaultValue) {
+    private int intValue(@Nullable Object object) {
         if (object instanceof Number) {
             return ((Number) object).intValue();
         }
         if (object instanceof String) {
             return Integer.parseInt((String) object, 10);
         }
-        return defaultValue;
+        return 0;
     }
 
 }

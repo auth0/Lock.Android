@@ -50,10 +50,10 @@ public class Configuration {
 
     private static final String TAG = Configuration.class.getSimpleName();
 
-    private DatabaseConnection defaultDatabaseConnection;
-    private List<PasswordlessConnection> passwordlessConnections;
-    private List<OAuthConnection> socialConnections;
-    private List<OAuthConnection> enterpriseConnections;
+    private final DatabaseConnection defaultDatabaseConnection;
+    private final List<PasswordlessConnection> passwordlessConnections;
+    private final List<OAuthConnection> socialConnections;
+    private final List<OAuthConnection> enterpriseConnections;
 
     private boolean allowLogIn;
     private boolean allowSignUp;
@@ -80,7 +80,7 @@ public class Configuration {
     private Map<String, Integer> authStyles;
     private int visibleSignUpFieldsThreshold;
 
-    public Configuration(List<Connection> connections, Options options) {
+    public Configuration(@NonNull List<Connection> connections, @NonNull Options options) {
         List<String> allowedConnections = options.getConnections();
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
         Set<String> connectionSet = allowedConnections != null ? new HashSet<>(allowedConnections) : new HashSet<String>();
@@ -163,6 +163,7 @@ public class Configuration {
         return filteredConnections.isEmpty() ? null : filteredConnections.get(0);
     }
 
+    @SuppressWarnings("unchecked")
     @NonNull
     private <T extends BaseConnection> List<T> filterConnections(@NonNull List<Connection> connections, Set<String> allowedConnections, @AuthType int type) {
         if (connections.isEmpty()) {
@@ -201,11 +202,14 @@ public class Configuration {
         authStyles = options.getAuthStyles();
         extraHiddenSignUpFields = new ArrayList<>();
         extraVisibleSignUpFields = new ArrayList<>();
-        for (SignUpField sf : options.getSignUpFields()) {
-            if (sf instanceof HiddenField) {
-                extraHiddenSignUpFields.add((HiddenField) sf);
-            } else {
-                extraVisibleSignUpFields.add((CustomField) sf);
+        boolean hasSignUpFields = options.getSignUpFields() != null;
+        if (hasSignUpFields) {
+            for (SignUpField sf : options.getSignUpFields()) {
+                if (sf instanceof HiddenField) {
+                    extraHiddenSignUpFields.add((HiddenField) sf);
+                } else {
+                    extraVisibleSignUpFields.add((CustomField) sf);
+                }
             }
         }
 
@@ -228,8 +232,9 @@ public class Configuration {
     }
 
     @StyleRes
-    public int authStyleForConnection(String strategy, String connection) {
+    public int authStyleForConnection(@NonNull String strategy, @NonNull String connection) {
         if (authStyles.containsKey(connection)) {
+            //noinspection ConstantConditions
             return authStyles.get(connection);
         }
         return AuthConfig.styleForStrategy(strategy);

@@ -46,7 +46,7 @@ public class DatabaseEvent {
         this.username = username;
     }
 
-    @NonNull
+    @Nullable
     public String getEmail() {
         return email;
     }

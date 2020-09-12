@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -42,12 +43,12 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     private final LockWidgetForm lockWidget;
     private ValidatedInputView emailInput;
 
-    public ChangePasswordFormView(Context context) {
+    public ChangePasswordFormView(@NonNull Context context) {
         super(context);
         lockWidget = null;
     }
 
-    public ChangePasswordFormView(LockWidgetForm lockWidget, String email) {
+    public ChangePasswordFormView(@NonNull LockWidgetForm lockWidget, @Nullable String email) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init(email);
@@ -62,6 +63,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         requestFocus();
     }
 
+    @NonNull
     @Override
     public Object getActionEvent() {
         return new DatabaseChangePasswordEvent(getUsernameOrEmail());
@@ -77,6 +79,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
         return emailInput.validate();
     }
 
+    @Nullable
     @Override
     public Object submitForm() {
         if (validateForm()) {
@@ -88,7 +91,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();
         }
@@ -96,7 +99,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
     }
 
     @Override
-    public void onEmailChanged(String email) {
+    public void onEmailChanged(@NonNull String email) {
         lockWidget.onEmailChanged(email);
     }
 

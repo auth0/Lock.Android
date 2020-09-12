@@ -45,7 +45,7 @@ public abstract class SignUpField implements Parcelable {
 
     @Override
     @CallSuper
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeInt(storage);
     }

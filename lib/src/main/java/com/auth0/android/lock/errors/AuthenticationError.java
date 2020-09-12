@@ -25,14 +25,15 @@
 package com.auth0.android.lock.errors;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 public class AuthenticationError {
 
     @StringRes
-    private int message;
-    private String customMessage;
+    private final int message;
+    private final String customMessage;
 
     public AuthenticationError(@StringRes int message) {
         this(message, null);
@@ -49,7 +50,8 @@ public class AuthenticationError {
      * @param context a valid context.
      * @return the user friendly message
      */
-    public String getMessage(Context context) {
+    @NonNull
+    public String getMessage(@NonNull Context context) {
         if (customMessage != null) {
             return customMessage;
         }

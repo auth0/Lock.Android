@@ -25,13 +25,13 @@ public class HiddenField extends SignUpField {
         return value;
     }
 
-    protected HiddenField(Parcel in) {
+    protected HiddenField(@NonNull Parcel in) {
         super(in);
         value = in.readString();
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(value);
     }

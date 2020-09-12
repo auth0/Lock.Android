@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.views;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,31 +44,27 @@ import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.auth0.android.lock.utils.CustomField.Storage;
 
+@SuppressLint("ViewConstructor")
 public class CustomFieldsFormView extends FormView implements TextView.OnEditorActionListener {
 
     private static final String TAG = CustomFieldsFormView.class.getSimpleName();
 
     @NonNull
-    private String email;
+    private final String email;
     @NonNull
-    private String password;
+    private final String password;
     @Nullable
-    private String username;
-    private LockWidgetForm lockWidget;
-    private List<CustomField> visibleSignUpFields;
-    private List<HiddenField> hiddenSignUpFields;
+    private final String username;
+    private final LockWidgetForm lockWidget;
+    private final List<CustomField> visibleSignUpFields;
+    private final List<HiddenField> hiddenSignUpFields;
     private LinearLayout fieldContainer;
     private LinearLayout.LayoutParams fieldParams;
 
-    public CustomFieldsFormView(Context context) {
-        super(context);
-    }
-
-    public CustomFieldsFormView(LockWidgetForm lockWidget, @NonNull String email, @NonNull String password, @Nullable String username) {
+    public CustomFieldsFormView(@NonNull LockWidgetForm lockWidget, @NonNull String email, @NonNull String password, @Nullable String username) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         this.email = email;
@@ -112,8 +108,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     }
 
     static void setEventRootProfileAttributes(DatabaseSignUpEvent event, List<CustomField> visibleFields, List<HiddenField> hiddenFields, ViewGroup container) {
-        Map<String, Object> rootMap = new HashMap<>();
-        Map<String, String> userMetadataMap = new HashMap<>();
+        HashMap<String, Object> rootMap = new HashMap<>();
+        HashMap<String, String> userMetadataMap = new HashMap<>();
 
         for (CustomField data : visibleFields) {
             String value = data.findValue(container);
@@ -138,6 +134,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         }
     }
 
+    @NonNull
     @Override
     public Object getActionEvent() {
         DatabaseSignUpEvent event = new DatabaseSignUpEvent(email, password, username);
@@ -165,7 +162,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();
         }

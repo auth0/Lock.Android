@@ -34,6 +34,8 @@ import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -109,17 +111,17 @@ public class ValidatedInputView extends LinearLayout {
     @DataType
     private int dataType;
 
-    public ValidatedInputView(Context context) {
+    public ValidatedInputView(@NonNull Context context) {
         super(context);
         init(null);
     }
 
-    public ValidatedInputView(Context context, AttributeSet attrs) {
+    public ValidatedInputView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public ValidatedInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ValidatedInputView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
@@ -193,7 +195,7 @@ public class ValidatedInputView extends LinearLayout {
         input.removeTextChangedListener(inputWatcher);
     }
 
-    private TextWatcher inputWatcher = new TextWatcher() {
+    private final TextWatcher inputWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -225,7 +227,7 @@ public class ValidatedInputView extends LinearLayout {
         }
     };
 
-    private Runnable uiUpdater = new Runnable() {
+    private final Runnable uiUpdater = new Runnable() {
         @Override
         public void run() {
             updateBorder();
@@ -345,6 +347,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @return the DataType associated to this view.
      */
+    @SuppressLint("KotlinPropertyAccess")
     @DataType
     protected int getDataType() {
         return dataType;
@@ -411,6 +414,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @return the current text
      */
+    @NonNull
     public String getText() {
         return input.getText().toString();
     }
@@ -420,7 +424,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @param text the new text to set.
      */
-    public void setText(String text) {
+    public void setText(@Nullable String text) {
         input.setText("");
         if (text != null) {
             input.append(text);
@@ -465,7 +469,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @param error the new error description to set.
      */
-    public void setErrorDescription(String error) {
+    public void setErrorDescription(@Nullable String error) {
         errorDescription.setText(error);
     }
 
@@ -494,7 +498,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @param watcher to add to the EditText.
      */
-    public void addTextChangedListener(TextWatcher watcher) {
+    public void addTextChangedListener(@NonNull TextWatcher watcher) {
         input.addTextChangedListener(watcher);
     }
 
@@ -503,7 +507,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @param listener to set to the EditText.
      */
-    public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
+    public void setOnEditorActionListener(@NonNull TextView.OnEditorActionListener listener) {
         input.setOnEditorActionListener(listener);
     }
 
@@ -512,7 +516,7 @@ public class ValidatedInputView extends LinearLayout {
      *
      * @param listener to set to this view.
      */
-    public void setIdentityListener(IdentityListener listener) {
+    public void setIdentityListener(@NonNull IdentityListener listener) {
         this.identityListener = listener;
     }
 }

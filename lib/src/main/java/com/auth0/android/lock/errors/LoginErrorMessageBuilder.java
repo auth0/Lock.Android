@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.errors;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.util.Log;
 
@@ -46,8 +47,8 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
     private static final int tooManyAttemptsResource = R.string.com_auth0_lock_db_too_many_attempts_error_message;
     private static final int passwordLeakedResource = R.string.com_auth0_lock_db_password_leaked_error_message;
 
-    private int invalidCredentialsResource;
-    private int defaultMessage;
+    private final int invalidCredentialsResource;
+    private final int defaultMessage;
 
     public LoginErrorMessageBuilder(@StringRes int defaultMessage, @StringRes int invalidCredentialsMessage) {
         this.defaultMessage = defaultMessage;
@@ -58,8 +59,9 @@ public class LoginErrorMessageBuilder implements ErrorMessageBuilder<Authenticat
         this(R.string.com_auth0_lock_db_login_error_message, R.string.com_auth0_lock_db_login_error_invalid_credentials_message);
     }
 
+    @NonNull
     @Override
-    public AuthenticationError buildFrom(AuthenticationException exception) {
+    public AuthenticationError buildFrom(@NonNull AuthenticationException exception) {
         int messageRes;
         String description = null;
 

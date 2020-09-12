@@ -26,6 +26,8 @@ package com.auth0.android.lock.utils;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -35,7 +37,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
@@ -43,29 +45,34 @@ public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<Stri
     private static final String TAG = LoadCountriesTask.class.getName();
     public static final String COUNTRIES_JSON_FILE = "com_auth0_lock_passwordless_countries.json";
 
-    private final Context context;
+    private final ThreadLocal<Context> context = new ThreadLocal<>();
 
-    public LoadCountriesTask(Context context) {
-        this.context = context;
+    public LoadCountriesTask(@NonNull Context context) {
+        this.context.set(context);
     }
 
     @Override
-    protected Map<String, String> doInBackground(String... params) {
-        Map<String, String> codes;
+    @NonNull
+    protected Map<String, String> doInBackground(@NonNull String... params) {
+        Map<String, String> codes = Collections.emptyMap();
         final Type mapType = new TypeToken<Map<String, String>>() {
         }.getType();
+        Context ctx = context.get();
+        if (ctx == null) {
+            return codes;
+        }
         try {
-            final Reader reader = new InputStreamReader(context.getAssets().open(params[0]));
+            final Reader reader = new InputStreamReader(ctx.getAssets().open(params[0]));
             codes = new Gson().fromJson(reader, mapType);
             Log.d(TAG, String.format("Loaded %d countries", codes.size()));
         } catch (IOException e) {
-            codes = new HashMap<>();
             Log.e(TAG, "Failed to load the countries list from the JSON file", e);
         }
         return codes;
     }
 
+    @Nullable
     public Context getContext() {
-        return context;
+        return context.get();
     }
 }

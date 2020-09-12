@@ -1,6 +1,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -13,17 +14,17 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
     private PasswordStrengthView strengthView;
     private boolean hasValidInput = true;
 
-    public ValidatedPasswordInputView(Context context) {
+    public ValidatedPasswordInputView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public ValidatedPasswordInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ValidatedPasswordInputView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public ValidatedPasswordInputView(Context context, AttributeSet attrs) {
+    public ValidatedPasswordInputView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -58,6 +59,7 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
      */
     @Deprecated
     public void setPasswordPolicy(@PasswordStrength int strength) {
+        //noinspection deprecation
         strengthView.setStrength(strength);
     }
 
@@ -66,7 +68,7 @@ public class ValidatedPasswordInputView extends ValidatedInputView {
      *
      * @param complexity the new Password complexity to use
      */
-    public void setPasswordComplexity(PasswordComplexity complexity) {
+    public void setPasswordComplexity(@NonNull PasswordComplexity complexity) {
         strengthView.setPasswordComplexity(complexity);
     }
 }

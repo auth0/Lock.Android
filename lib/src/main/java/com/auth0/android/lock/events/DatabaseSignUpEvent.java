@@ -42,8 +42,8 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
     private static final String KEY_USER_METADATA = "user_metadata";
 
     @NonNull
-    private String password;
-    private Map<String, Object> rootAttributes;
+    private final String password;
+    private final Map<String, Object> rootAttributes;
 
     public DatabaseSignUpEvent(@NonNull String email, @NonNull String password, @Nullable String username) {
         super(email, username);
@@ -70,7 +70,9 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
     }
 
 
-    public SignUpRequest getSignUpRequest(AuthenticationAPIClient apiClient, String connection) {
+    @SuppressWarnings("ConstantConditions")
+    @NonNull
+    public SignUpRequest getSignUpRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connection) {
         SignUpRequest request;
         if (getUsername() != null) {
             request = apiClient.signUp(getEmail(), getPassword(), getUsername(), connection);
@@ -83,7 +85,9 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return request;
     }
 
-    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(AuthenticationAPIClient apiClient, String connection) {
+    @SuppressWarnings("ConstantConditions")
+    @NonNull
+    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connection) {
         DatabaseConnectionRequest<DatabaseUser, AuthenticationException> request;
         if (getUsername() != null) {
             request = apiClient.createUser(getEmail(), getPassword(), getUsername(), connection);

@@ -158,7 +158,7 @@ public class CustomField extends SignUpField {
         return type;
     }
 
-    protected CustomField(Parcel in) {
+    protected CustomField(@NonNull Parcel in) {
         super(in);
         icon = in.readInt();
         type = in.readInt();
@@ -166,7 +166,7 @@ public class CustomField extends SignUpField {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(icon);
         dest.writeInt(type);

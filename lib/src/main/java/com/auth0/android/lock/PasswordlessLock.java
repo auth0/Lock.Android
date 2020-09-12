@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -61,12 +62,12 @@ public class PasswordlessLock {
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
-        public void onReceive(Context context, Intent data) {
+        public void onReceive(@NonNull Context context, @NonNull Intent data) {
             processEvent(context, data);
         }
     };
 
-    private PasswordlessLock(Options options, LockCallback callback) {
+    private PasswordlessLock(@NonNull Options options, @NonNull LockCallback callback) {
         this.options = options;
         this.callback = callback;
     }
@@ -76,6 +77,7 @@ public class PasswordlessLock {
      *
      * @return the Lock.Options for this Lock instance.
      */
+    @NonNull
     public Options getOptions() {
         return options;
     }
@@ -89,8 +91,8 @@ public class PasswordlessLock {
      * @param callback that will receive the authentication results.
      * @return a new Lock.Builder instance.
      */
-    @SuppressWarnings("unused")
-    public static Builder newBuilder(@NonNull Auth0 account, @NonNull LockCallback callback) {
+    @NonNull
+    public static Builder newBuilder(@Nullable Auth0 account, @NonNull LockCallback callback) {
         return new PasswordlessLock.Builder(account, callback);
     }
 
@@ -104,9 +106,8 @@ public class PasswordlessLock {
      * @param callback that will receive the authentication results.
      * @return a new Lock.Builder instance.
      */
-    @SuppressWarnings("unused")
+    @NonNull
     public static Builder newBuilder(@NonNull LockCallback callback) {
-        //noinspection ConstantConditions
         return newBuilder(null, callback);
     }
 
@@ -116,8 +117,8 @@ public class PasswordlessLock {
      * @param context a valid Context
      * @return the intent to which the user has to call startActivity or startActivityForResult
      */
-    @SuppressWarnings("unused")
-    public Intent newIntent(Context context) {
+    @NonNull
+    public Intent newIntent(@NonNull Context context) {
         Intent lockIntent = new Intent(context, PasswordlessLockActivity.class);
         lockIntent.putExtra(Constants.OPTIONS_EXTRA, options);
         lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -130,8 +131,7 @@ public class PasswordlessLock {
      *
      * @param context a valid Context
      */
-    @SuppressWarnings("unused")
-    public void onDestroy(Context context) {
+    public void onDestroy(@NonNull Context context) {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
     }
 
@@ -181,10 +181,11 @@ public class PasswordlessLock {
          * @param account  details to use against the Auth0 Authentication API.
          * @param callback that will receive the authentication results.
          */
-        public Builder(Auth0 account, LockCallback callback) {
+        public Builder(@Nullable Auth0 account, @NonNull LockCallback callback) {
             HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
             options = new Options();
+            //noinspection ConstantConditions
             options.setAccount(account);
             options.setAuthenticationParameters(defaultParams);
         }
@@ -196,7 +197,9 @@ public class PasswordlessLock {
          * @param context a valid Context
          * @return a new Lock instance configured as in the Builder.
          */
+        @NonNull
         public PasswordlessLock build(@NonNull Context context) {
+            //noinspection ConstantConditions
             if (options.getAccount() == null) {
                 Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {
@@ -227,6 +230,7 @@ public class PasswordlessLock {
          * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
             options.setHideMainScreenTitle(hideMainScreenTitle);
             return this;
@@ -237,6 +241,7 @@ public class PasswordlessLock {
          *
          * @return the current Builder instance
          */
+        @NonNull
         public Builder useCode() {
             options.setUseCodePasswordless(true);
             return this;
@@ -247,6 +252,7 @@ public class PasswordlessLock {
          *
          * @return the current Builder instance
          */
+        @NonNull
         public Builder useLink() {
             options.setUseCodePasswordless(false);
             return this;
@@ -257,6 +263,7 @@ public class PasswordlessLock {
          *
          * @return the current Builder instance
          */
+        @NonNull
         public Builder rememberLastLogin(boolean remember) {
             options.setRememberLastPasswordlessLogin(remember);
             return this;
@@ -270,7 +277,9 @@ public class PasswordlessLock {
          * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
          */
         @Deprecated
+        @NonNull
         public Builder useBrowser(boolean useBrowser) {
+            //noinspection deprecation
             options.setUseBrowser(useBrowser);
             return this;
         }
@@ -284,7 +293,9 @@ public class PasswordlessLock {
          * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
          */
         @Deprecated
+        @NonNull
         public Builder useImplicitGrant(boolean useImplicitGrant) {
+            //noinspection deprecation
             options.setUsePKCE(!useImplicitGrant);
             return this;
         }
@@ -295,6 +306,7 @@ public class PasswordlessLock {
          * @param closable or not. By default, the LockActivity is not closable.
          * @return the current builder instance
          */
+        @NonNull
         public Builder closable(boolean closable) {
             options.setClosable(closable);
             return this;
@@ -323,6 +335,7 @@ public class PasswordlessLock {
          * to some providers branding guidelines. e.g. google
          */
         @Deprecated
+        @NonNull
         public Builder withAuthButtonSize(@AuthButtonSize int style) {
             return this;
         }
@@ -334,6 +347,7 @@ public class PasswordlessLock {
          * @param style          a valid Style with the Auth0.BackgroundColor, Auth0.Logo and Auth0.Name values defined.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAuthStyle(@NonNull String connectionName, @StyleRes int style) {
             options.withAuthStyle(connectionName, style);
             return this;
@@ -345,6 +359,7 @@ public class PasswordlessLock {
          * @param authenticationParameters a non-null Map containing the parameters as Key-Values
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             return this;
@@ -356,6 +371,7 @@ public class PasswordlessLock {
          * @param connections a non-null List containing the allowed Auth0 Connections.
          * @return the current builder instance
          */
+        @NonNull
         public Builder allowedConnections(@NonNull List<String> connections) {
             options.setConnections(connections);
             return this;
@@ -367,6 +383,7 @@ public class PasswordlessLock {
          * @param handlers that Lock will query for AuthProviders.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAuthHandlers(@NonNull AuthHandler... handlers) {
             AuthResolver.setAuthHandlers(Arrays.asList(handlers));
             return this;
@@ -378,6 +395,7 @@ public class PasswordlessLock {
          * @param scope to use in the Authentication.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withScope(@NonNull String scope) {
             options.withScope(scope);
             return this;
@@ -389,6 +407,7 @@ public class PasswordlessLock {
          * @param audience to use in the Authentication.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAudience(@NonNull String audience) {
             options.withAudience(audience);
             return this;
@@ -400,6 +419,7 @@ public class PasswordlessLock {
          * @param scheme to use in the Web Auth redirect uri.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withScheme(@NonNull String scheme) {
             options.withScheme(scheme);
             return this;
@@ -411,6 +431,7 @@ public class PasswordlessLock {
          * @param url to your support page or where your customers can request assistance. By default no page is set.
          * @return the current builder instance
          */
+        @NonNull
         public Builder setSupportURL(@NonNull String url) {
             options.setSupportURL(url);
             return this;
@@ -423,6 +444,7 @@ public class PasswordlessLock {
          * @param scope          recognized by this specific authentication provider.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withConnectionScope(@NonNull String connectionName, @NonNull String... scope) {
             StringBuilder sb = new StringBuilder();
             for (String s : scope) {

@@ -24,13 +24,14 @@
 
 package com.auth0.android.lock.views.interfaces;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 public interface LockWidgetPasswordless extends LockWidgetOAuth {
 
     void onCountryCodeChangeRequest();
 
-    void onPasswordlessCodeSent(String emailOrNumber);
+    void onPasswordlessCodeSent(@NonNull String emailOrNumber);
 
     /**
      * Change the Header Title to the given value and update the visibility depending on the Contextual Header Title flag.

@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -70,7 +71,7 @@ public class Lock {
         }
     };
 
-    private Lock(Options options, LockCallback callback) {
+    private Lock(@NonNull Options options, @NonNull LockCallback callback) {
         this.options = options;
         this.callback = callback;
     }
@@ -80,6 +81,7 @@ public class Lock {
      *
      * @return the Lock.Options for this Lock instance.
      */
+    @NonNull
     public Options getOptions() {
         return options;
     }
@@ -91,8 +93,8 @@ public class Lock {
      * @param callback that will receive the authentication results.
      * @return a new Lock.Builder instance.
      */
-    @SuppressWarnings("unused")
-    public static Builder newBuilder(@NonNull Auth0 account, @NonNull LockCallback callback) {
+    @NonNull
+    public static Builder newBuilder(@Nullable Auth0 account, @NonNull LockCallback callback) {
         return new Lock.Builder(account, callback);
     }
 
@@ -104,9 +106,8 @@ public class Lock {
      * @param callback that will receive the authentication results.
      * @return a new Lock.Builder instance.
      */
-    @SuppressWarnings("unused")
+    @NonNull
     public static Builder newBuilder(@NonNull LockCallback callback) {
-        //noinspection ConstantConditions
         return newBuilder(null, callback);
     }
 
@@ -116,8 +117,8 @@ public class Lock {
      * @param context a valid Context
      * @return the intent to which the user has to call startActivity or startActivityForResult
      */
-    @SuppressWarnings("unused")
-    public Intent newIntent(Context context) {
+    @NonNull
+    public Intent newIntent(@NonNull Context context) {
         Intent lockIntent = new Intent(context, LockActivity.class);
         lockIntent.putExtra(Constants.OPTIONS_EXTRA, options);
         lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -131,11 +132,11 @@ public class Lock {
      * @param context a valid Context
      */
     @SuppressWarnings("unused")
-    public void onDestroy(Context context) {
+    public void onDestroy(@NonNull Context context) {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
     }
 
-    private void initialize(Context context) {
+    private void initialize(@NonNull Context context) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.AUTHENTICATION_ACTION);
         filter.addAction(Constants.SIGN_UP_ACTION);
@@ -144,13 +145,14 @@ public class Lock {
         LocalBroadcastManager.getInstance(context).registerReceiver(this.receiver, filter);
     }
 
-    private void processEvent(Context context, Intent data) {
+    private void processEvent(@NonNull Context context, @NonNull Intent data) {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
         String action = data.getAction();
+        //noinspection ConstantConditions
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                if (data.getExtras().containsKey(Constants.ERROR_EXTRA)) {
+                if (data.hasExtra(Constants.ERROR_EXTRA)) {
                     callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
                 } else {
                     callback.onEvent(LockEvent.AUTHENTICATION, data);
@@ -186,10 +188,11 @@ public class Lock {
          * @param account  details to use against the Auth0 Authentication API.
          * @param callback that will receive the authentication results.
          */
-        public Builder(Auth0 account, LockCallback callback) {
+        public Builder(@Nullable Auth0 account, @NonNull LockCallback callback) {
             HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
             options = new Options();
+            //noinspection ConstantConditions
             options.setAccount(account);
             options.setAuthenticationParameters(defaultParams);
         }
@@ -201,7 +204,9 @@ public class Lock {
          * @param context a valid Context
          * @return a new Lock instance configured as in the Builder.
          */
+        @NonNull
         public Lock build(@NonNull Context context) {
+            //noinspection ConstantConditions
             if (options.getAccount() == null) {
                 Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {
@@ -247,7 +252,9 @@ public class Lock {
          * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
          */
         @Deprecated
+        @NonNull
         public Builder useBrowser(boolean useBrowser) {
+            //noinspection deprecation
             options.setUseBrowser(useBrowser);
             return this;
         }
@@ -261,7 +268,9 @@ public class Lock {
          * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
          */
         @Deprecated
+        @NonNull
         public Builder useImplicitGrant(boolean useImplicitGrant) {
+            //noinspection deprecation
             options.setUsePKCE(!useImplicitGrant);
             return this;
         }
@@ -272,6 +281,7 @@ public class Lock {
          * @param closable or not. By default, the LockActivity is not closable.
          * @return the current builder instance
          */
+        @NonNull
         public Builder closable(boolean closable) {
             options.setClosable(closable);
             return this;
@@ -294,6 +304,7 @@ public class Lock {
          * @param authenticationParameters a non-null Map containing the parameters as Key-Values
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
             options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             return this;
@@ -305,6 +316,7 @@ public class Lock {
          * @param connections a non-null List containing the allowed Auth0 Connections.
          * @return the current builder instance
          */
+        @NonNull
         public Builder allowedConnections(@NonNull List<String> connections) {
             options.setConnections(connections);
             return this;
@@ -317,6 +329,7 @@ public class Lock {
          * @param style a valid UsernameStyle.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withUsernameStyle(@UsernameStyle int style) {
             options.setUsernameStyle(style);
             return this;
@@ -334,6 +347,7 @@ public class Lock {
          * to some providers branding guidelines. e.g. google
          */
         @Deprecated
+        @NonNull
         public Builder withAuthButtonSize(@AuthButtonSize int style) {
             return this;
         }
@@ -345,6 +359,7 @@ public class Lock {
          * @param style          a valid Style with the Auth0.BackgroundColor, Auth0.Logo and Auth0.Name values defined.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAuthStyle(@NonNull String connectionName, @StyleRes int style) {
             options.withAuthStyle(connectionName, style);
             return this;
@@ -356,6 +371,7 @@ public class Lock {
          * @param screen a valid InitialScreen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder initialScreen(@InitialScreen int screen) {
             options.setInitialScreen(screen);
             return this;
@@ -367,6 +383,7 @@ public class Lock {
          * @param allow whether to allow or not the login screen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder allowLogIn(boolean allow) {
             options.setAllowLogIn(allow);
             return this;
@@ -378,6 +395,7 @@ public class Lock {
          * @param allow whether to allow or not the sign up screen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder allowSignUp(boolean allow) {
             options.setAllowSignUp(allow);
             return this;
@@ -389,6 +407,7 @@ public class Lock {
          * @param allow whether to allow or not the forgot password screen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder allowForgotPassword(boolean allow) {
             options.setAllowForgotPassword(allow);
             return this;
@@ -400,6 +419,7 @@ public class Lock {
          * @param allow whether to allow the user to toggle between showing or hiding the password or not.
          * @return the current builder instance
          */
+        @NonNull
         public Builder allowShowPassword(boolean allow) {
             options.setAllowShowPassword(allow);
             return this;
@@ -412,6 +432,7 @@ public class Lock {
          * @param useLabeledSubmitButton or icon.
          * @return the current builder instance
          */
+        @NonNull
         public Builder useLabeledSubmitButton(boolean useLabeledSubmitButton) {
             options.setUseLabeledSubmitButton(useLabeledSubmitButton);
             return this;
@@ -423,6 +444,7 @@ public class Lock {
          * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
             options.setHideMainScreenTitle(hideMainScreenTitle);
             return this;
@@ -435,7 +457,8 @@ public class Lock {
          * @param connectionName Must exist in the Application configuration on the Dashboard.
          * @return the current builder instance
          */
-        public Builder setDefaultDatabaseConnection(String connectionName) {
+        @NonNull
+        public Builder setDefaultDatabaseConnection(@NonNull String connectionName) {
             options.useDatabaseConnection(connectionName);
             return this;
         }
@@ -451,6 +474,7 @@ public class Lock {
          * @param connections the list of 'ad', 'adfs', or 'waad' enterprise connections that will use Web Authentication instead.
          * @return the current builder instance
          */
+        @NonNull
         public Builder enableEnterpriseWebAuthenticationFor(@NonNull List<String> connections) {
             options.setEnterpriseConnectionsUsingWebForm(connections);
             return this;
@@ -462,6 +486,7 @@ public class Lock {
          * @param login after sign up or not
          * @return the current builder instance
          */
+        @NonNull
         public Builder loginAfterSignUp(boolean login) {
             options.setLoginAfterSignUp(login);
             return this;
@@ -473,6 +498,7 @@ public class Lock {
          * @param handlers that Lock will query for AuthProviders.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAuthHandlers(@NonNull AuthHandler... handlers) {
             AuthResolver.setAuthHandlers(Arrays.asList(handlers));
             return this;
@@ -487,7 +513,8 @@ public class Lock {
          * @param customFields the custom fields to display in the sign up flow.
          * @return the current builder instance
          */
-        public Builder withSignUpFields(List<? extends SignUpField> customFields) {
+        @NonNull
+        public Builder withSignUpFields(@NonNull List<? extends SignUpField> customFields) {
             final List<SignUpField> withoutDuplicates = removeDuplicatedKeys(customFields);
             options.setSignUpFields(withoutDuplicates);
             return this;
@@ -502,6 +529,7 @@ public class Lock {
          *                  shown on a separate screen.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withVisibleSignUpFieldsThreshold(int threshold) {
             options.setVisibleSignUpFieldsThreshold(threshold);
             return this;
@@ -513,6 +541,7 @@ public class Lock {
          * @param scope to use in the Authentication.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withScope(@NonNull String scope) {
             options.withScope(scope);
             return this;
@@ -524,6 +553,7 @@ public class Lock {
          * @param audience to use in the Authentication.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withAudience(@NonNull String audience) {
             options.withAudience(audience);
             return this;
@@ -535,6 +565,7 @@ public class Lock {
          * @param scheme to use in the Web Auth redirect uri.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withScheme(@NonNull String scheme) {
             options.withScheme(scheme);
             return this;
@@ -547,6 +578,7 @@ public class Lock {
          * @param url a valid url to use.
          * @return the current builder instance
          */
+        @NonNull
         public Builder setPrivacyURL(@NonNull String url) {
             options.setPrivacyURL(url);
             return this;
@@ -559,6 +591,7 @@ public class Lock {
          * @param url a valid url to use.
          * @return the current builder instance
          */
+        @NonNull
         public Builder setTermsURL(@NonNull String url) {
             options.setTermsURL(url);
             return this;
@@ -570,6 +603,7 @@ public class Lock {
          * @param url to your support page or where your customers can request assistance. By default no page is set.
          * @return the current builder instance
          */
+        @NonNull
         public Builder setSupportURL(@NonNull String url) {
             options.setSupportURL(url);
             return this;
@@ -582,6 +616,7 @@ public class Lock {
          * @param mustAcceptTerms whether the user needs to accept the terms before sign up or not.
          * @return the current builder instance
          */
+        @NonNull
         public Builder setMustAcceptTerms(boolean mustAcceptTerms) {
             options.setMustAcceptTerms(mustAcceptTerms);
             return this;
@@ -595,6 +630,7 @@ public class Lock {
          * @param showTerms whether the Terms of Service are displayed.
          * @return the current builder instance
          */
+        @NonNull
         public Builder setShowTerms(boolean showTerms) {
             options.setShowTerms(showTerms);
             return this;
@@ -607,6 +643,7 @@ public class Lock {
          * @param scope          recognized by this specific authentication provider.
          * @return the current builder instance
          */
+        @NonNull
         public Builder withConnectionScope(@NonNull String connectionName, @NonNull String... scope) {
             StringBuilder sb = new StringBuilder();
             for (String s : scope) {

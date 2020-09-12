@@ -282,9 +282,9 @@ public class DemoActivity extends AppCompatActivity {
         Snackbar.make(rootLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
-    private LockCallback callback = new AuthenticationCallback() {
+    private final LockCallback callback = new AuthenticationCallback() {
         @Override
-        public void onAuthentication(Credentials credentials) {
+        public void onAuthentication(@NonNull Credentials credentials) {
             showResult("OK > " + credentials.getAccessToken());
         }
 
@@ -294,12 +294,12 @@ public class DemoActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onError(LockException error) {
+        public void onError(@NonNull LockException error) {
             showResult(error.getMessage());
         }
     };
 
-    private AuthCallback loginCallback = new AuthCallback() {
+    private final AuthCallback loginCallback = new AuthCallback() {
         @Override
         public void onFailure(@NonNull Dialog dialog) {
             dialog.show();
@@ -316,9 +316,9 @@ public class DemoActivity extends AppCompatActivity {
         }
     };
 
-    private VoidCallback logoutCallback = new VoidCallback() {
+    private final VoidCallback logoutCallback = new VoidCallback() {
         @Override
-        public void onFailure(Auth0Exception error) {
+        public void onFailure(@NonNull Auth0Exception error) {
             showResult("Log out cancelled");
         }
 

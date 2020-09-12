@@ -1,5 +1,7 @@
 package com.auth0.android.lock.internal.configuration;
 
+import android.support.annotation.NonNull;
+
 import java.util.Set;
 
 public interface OAuthConnection extends BaseConnection {
@@ -16,6 +18,7 @@ public interface OAuthConnection extends BaseConnection {
      *
      * @return a set with all domains configured
      */
+    @NonNull
     Set<String> getDomainSet();
 
 }

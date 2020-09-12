@@ -44,7 +44,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
     private View firstTabView;
     private View secondTabView;
 
-    public ModeSelectionView(Context context, @NonNull ModeSelectedListener listener) {
+    public ModeSelectionView(@NonNull Context context, @NonNull ModeSelectedListener listener) {
         super(context);
         this.callback = listener;
         init();
@@ -85,6 +85,7 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
 
     public void setSelectedMode(@AuthMode int mode) {
         TabLayout.Tab tab = tabLayout.getTabAt(mode);
+        //noinspection ConstantConditions
         tab.select();
         toggleBoldText(firstTabView, mode == AuthMode.LOG_IN);
         toggleBoldText(secondTabView, mode == AuthMode.SIGN_UP);
@@ -97,17 +98,20 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
     }
 
     @Override
-    public void onTabSelected(TabLayout.Tab tab) {
+    @Deprecated
+    public void onTabSelected(@NonNull TabLayout.Tab tab) {
         //No-Op
     }
 
     @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
+    @Deprecated
+    public void onTabUnselected(@NonNull TabLayout.Tab tab) {
         //No-Op
     }
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) {
+    @Deprecated
+    public void onTabReselected(@NonNull TabLayout.Tab tab) {
         //No-Op
     }
 
