@@ -42,7 +42,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
     private final String password;
     private final String mfaToken;
 
-    private LockWidget lockWidget;
+    private final LockWidget lockWidget;
     private ValidatedInputView codeInput;
 
 
@@ -62,6 +62,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
         codeInput.setOnEditorActionListener(this);
     }
 
+    @NonNull
     @Override
     public Object getActionEvent() {
         DatabaseLoginEvent event = new DatabaseLoginEvent(usernameOrEmail, password);
@@ -86,7 +87,7 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();
         }

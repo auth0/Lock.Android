@@ -25,6 +25,7 @@
 package com.auth0.android.lock;
 
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -84,6 +85,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressLint("GoogleAppIndexingApiWarning")
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = LockActivity.class.getSimpleName();
@@ -195,6 +197,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
+            //noinspection deprecation
             if (options.useBrowser() && !launchedAsSingleTask) {
                 Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
                 return false;
@@ -254,7 +257,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         handler.postDelayed(resultMessageHider, RESULT_MESSAGE_DURATION);
     }
 
-    private Runnable resultMessageHider = new Runnable() {
+    private final Runnable resultMessageHider = new Runnable() {
         @Override
         public void run() {
             resultMessage.setVisibility(View.GONE);
@@ -270,7 +273,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case WEB_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
@@ -289,7 +292,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@Nullable Intent intent) {
         lockView.showProgress(false);
         if (webProvider.resume(intent)) {
             return;
@@ -303,7 +306,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onFetchApplicationRequest(FetchApplicationEvent event) {
+    public void onFetchApplicationRequest(@NonNull FetchApplicationEvent event) {
         if (applicationFetcher == null) {
             Auth0 account = options.getAccount();
             OkHttpClient client = new OkHttpClientFactory().createClient(account.isLoggingEnabled(), account.isTLS12Enforced(),
@@ -315,7 +318,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onLockMessage(final LockMessageEvent event) {
+    public void onLockMessage(@NonNull final LockMessageEvent event) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -324,9 +327,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"ConstantConditions"})
     @Subscribe
-    public void onOAuthAuthenticationRequest(OAuthLoginEvent event) {
+    public void onOAuthAuthenticationRequest(@NonNull OAuthLoginEvent event) {
         final String connection = event.getConnection();
 
         if (event.useActiveFlow()) {
@@ -398,9 +401,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         webProvider.start(this, connection, params, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
-    public void onDatabaseAuthenticationRequest(DatabaseLoginEvent event) {
+    public void onDatabaseAuthenticationRequest(@NonNull DatabaseLoginEvent event) {
         if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
@@ -410,6 +412,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         AuthenticationRequest request;
+        //noinspection ConstantConditions
         HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
         if (TextUtils.isEmpty(event.getMFAToken()) || TextUtils.isEmpty(event.getVerificationCode())) {
             String connection = configuration.getDatabaseConnection().getName();
@@ -418,6 +421,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
             }
         } else {
+            //noinspection ConstantConditions
             request = apiClient.loginWithOTP(event.getMFAToken(), event.getVerificationCode());
         }
 
@@ -431,9 +435,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         request.start(authCallback);
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
-    public void onDatabaseAuthenticationRequest(DatabaseSignUpEvent event) {
+    public void onDatabaseAuthenticationRequest(@NonNull DatabaseSignUpEvent event) {
         if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
@@ -445,6 +448,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lastDatabaseSignUp = event;
 
         if (configuration.loginAfterSignUp()) {
+            //noinspection ConstantConditions
             Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
             SignUpRequest request = event.getSignUpRequest(apiClient, connection)
                     .addAuthenticationParameters(authParameters);
@@ -461,9 +465,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
-    public void onDatabaseAuthenticationRequest(DatabaseChangePasswordEvent event) {
+    public void onDatabaseAuthenticationRequest(@NonNull DatabaseChangePasswordEvent event) {
         if (configuration.getDatabaseConnection() == null) {
             Log.w(TAG, "There is no default Database connection to authenticate with");
             return;
@@ -472,14 +475,15 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final String connection = configuration.getDatabaseConnection().getName();
+        //noinspection ConstantConditions
         apiClient.resetPassword(event.getEmail(), connection)
                 .start(changePwdCallback);
     }
 
     //Callbacks
-    private com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
+    private final com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(final List<Connection> connections) {
+        public void onSuccess(@NonNull final List<Connection> connections) {
             configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override
@@ -491,7 +495,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final AuthenticationException error) {
+        public void onFailure(@NonNull final AuthenticationException error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
@@ -503,7 +507,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private AuthCallback authProviderCallback = new AuthCallback() {
+    private final AuthCallback authProviderCallback = new AuthCallback() {
         @Override
         public void onFailure(@NonNull final Dialog dialog) {
             Log.e(TAG, "Failed to authenticate the user. A dialog is going to be shown with more information.");
@@ -517,7 +521,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final AuthenticationException exception) {
+        public void onFailure(@NonNull final AuthenticationException exception) {
             final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
             final String message = authError.getMessage(LockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, exception);
@@ -535,16 +539,16 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private AuthenticationCallback<Credentials> authCallback = new AuthenticationCallback<Credentials>() {
+    private final AuthenticationCallback<Credentials> authCallback = new AuthenticationCallback<Credentials>() {
         @Override
-        public void onSuccess(Credentials credentials) {
+        public void onSuccess(@NonNull Credentials credentials) {
             deliverAuthenticationResult(credentials);
             lastDatabaseLogin = null;
             lastDatabaseSignUp = null;
         }
 
         @Override
-        public void onFailure(final AuthenticationException error) {
+        public void onFailure(@NonNull final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
             final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
             if (error.isVerificationRequired()) {
@@ -559,6 +563,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                     if (error.isMultifactorRequired()) {
                         String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
                         if (!TextUtils.isEmpty(mfaToken)) {
+                            //noinspection ConstantConditions
                             lastDatabaseLogin.setMFAToken(mfaToken);
                         }
                         lockView.showMFACodeForm(lastDatabaseLogin);
@@ -575,9 +580,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private AuthenticationCallback<DatabaseUser> createCallback = new AuthenticationCallback<DatabaseUser>() {
+    private final AuthenticationCallback<DatabaseUser> createCallback = new AuthenticationCallback<DatabaseUser>() {
         @Override
-        public void onSuccess(final DatabaseUser user) {
+        public void onSuccess(@NonNull final DatabaseUser user) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -588,7 +593,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(final AuthenticationException error) {
+        public void onFailure(@NonNull final AuthenticationException error) {
             Log.e(TAG, "Failed to create the user: " + error.getMessage(), error);
             if (error.isVerificationRequired()) {
                 completeDatabaseAuthenticationOnBrowser();
@@ -604,9 +609,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     };
 
-    private AuthenticationCallback<Void> changePwdCallback = new AuthenticationCallback<Void>() {
+    private final AuthenticationCallback<Void> changePwdCallback = new AuthenticationCallback<Void>() {
         @Override
-        public void onSuccess(Void payload) {
+        public void onSuccess(@NonNull Void payload) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -620,7 +625,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(AuthenticationException error) {
+        public void onFailure(@NonNull AuthenticationException error) {
             Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
             handler.post(new Runnable() {
                 @Override

@@ -33,6 +33,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
@@ -96,31 +97,33 @@ public class Theme implements Parcelable {
         return ContextCompat.getDrawable(context, typedValue.resourceId);
     }
 
-    public String getHeaderTitle(Context context) {
+    @NonNull
+    public String getHeaderTitle(@NonNull Context context) {
         return resolveStringResource(context, headerTitle, R.attr.Auth0_HeaderTitle);
     }
 
-    public Drawable getHeaderLogo(Context context) {
+    @NonNull
+    public Drawable getHeaderLogo(@NonNull Context context) {
         return resolveDrawableResource(context, headerLogo, R.attr.Auth0_HeaderLogo);
     }
 
     @ColorInt
-    public int getHeaderColor(Context context) {
+    public int getHeaderColor(@NonNull Context context) {
         return resolveColorResource(context, headerColor, R.attr.Auth0_HeaderBackground);
     }
 
     @ColorInt
-    public int getHeaderTitleColor(Context context) {
+    public int getHeaderTitleColor(@NonNull Context context) {
         return resolveColorResource(context, headerTitleColor, R.attr.Auth0_HeaderTitleColor);
     }
 
     @ColorInt
-    public int getPrimaryColor(Context context) {
+    public int getPrimaryColor(@NonNull Context context) {
         return resolveColorResource(context, primaryColor, R.attr.Auth0_PrimaryColor);
     }
 
     @ColorInt
-    public int getDarkPrimaryColor(Context context) {
+    public int getDarkPrimaryColor(@NonNull Context context) {
         return resolveColorResource(context, darkPrimaryColor, R.attr.Auth0_DarkPrimaryColor);
     }
 
@@ -148,7 +151,7 @@ public class Theme implements Parcelable {
         return darkPrimaryColor;
     }
 
-    protected Theme(Parcel in) {
+    protected Theme(@NonNull Parcel in) {
         headerTitle = in.readInt();
         headerLogo = in.readInt();
         headerColor = in.readInt();
@@ -163,7 +166,7 @@ public class Theme implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(headerTitle);
         dest.writeInt(headerLogo);
         dest.writeInt(headerColor);
@@ -172,7 +175,6 @@ public class Theme implements Parcelable {
         dest.writeInt(darkPrimaryColor);
     }
 
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<Theme> CREATOR = new Parcelable.Creator<Theme>() {
         @Override
         public Theme createFromParcel(Parcel in) {

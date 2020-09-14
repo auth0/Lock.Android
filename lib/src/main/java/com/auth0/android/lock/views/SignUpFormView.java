@@ -61,12 +61,12 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     private LinearLayout fieldContainer;
     private boolean displayCustomFieldsHere;
 
-    public SignUpFormView(Context context) {
+    public SignUpFormView(@NonNull Context context) {
         super(context);
         this.lockWidget = null;
     }
 
-    public SignUpFormView(LockWidgetForm lockWidget) {
+    public SignUpFormView(@NonNull LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -184,20 +184,20 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();
         }
         return false;
     }
 
-    public void setLastEmail(String email) {
+    public void setLastEmail(@Nullable String email) {
         emailInput.setText(email);
         passwordInput.clearInput();
     }
 
     @Override
-    public void onEmailChanged(String email) {
+    public void onEmailChanged(@NonNull String email) {
         lockWidget.onEmailChanged(email);
     }
 

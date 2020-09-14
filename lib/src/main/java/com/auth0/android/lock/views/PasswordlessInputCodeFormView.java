@@ -54,7 +54,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     private final OnCodeResendListener listener;
     private ValidatedInputView passwordlessInput;
     @PasswordlessMode
-    private int passwordlessMode;
+    private final int passwordlessMode;
     private TextView topMessage;
     private TextView resendButton;
 
@@ -65,7 +65,8 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
      * @param listener   a listener to notify when the user clicks "Resend code" button.
      * @param identity   the email or number used to send the passwordless code.
      */
-    public PasswordlessInputCodeFormView(LockWidgetPasswordless lockWidget, @NonNull OnCodeResendListener listener, String identity) {
+    @SuppressLint("LambdaLast")
+    public PasswordlessInputCodeFormView(@NonNull LockWidgetPasswordless lockWidget, @NonNull OnCodeResendListener listener, @NonNull String identity) {
         super(lockWidget.getContext());
         passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
         this.lockWidget = lockWidget;
@@ -74,7 +75,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
         init(identity);
     }
 
-    private void init(String identity) {
+    private void init(@NonNull String identity) {
         inflate(getContext(), R.layout.com_auth0_lock_passwordless_input_code_form_view, this);
         topMessage = findViewById(R.id.com_auth0_lock_text);
         resendButton = findViewById(R.id.com_auth0_lock_resend);
@@ -88,7 +89,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     }
 
 
-    private void selectPasswordlessMode(String identity) {
+    private void selectPasswordlessMode(@NonNull String identity) {
         int sentMessage = 0;
         switch (passwordlessMode) {
             case EMAIL_CODE:
@@ -114,6 +115,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     }
 
 
+    @NonNull
     @Override
     public Object getActionEvent() {
         return PasswordlessLoginEvent.submitCode(passwordlessMode, getInputText());
@@ -142,7 +144,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     };
 
     @Override
-    public void onClick(View v) {
+    public void onClick(@NonNull View v) {
         int id = v.getId();
         if (id == R.id.com_auth0_lock_resend) {
             listener.onCodeNeedToResend();
@@ -150,7 +152,7 @@ public class PasswordlessInputCodeFormView extends FormView implements View.OnCl
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();
         }

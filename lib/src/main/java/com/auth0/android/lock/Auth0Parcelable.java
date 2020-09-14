@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.util.Telemetry;
@@ -38,12 +39,13 @@ public class Auth0Parcelable implements Parcelable {
 
     private static final double WITHOUT_DATA = 0x00;
     private static final double WITH_DATA = 0x01;
-    private Auth0 auth0;
+    private final Auth0 auth0;
 
-    public Auth0Parcelable(Auth0 auth0) {
+    public Auth0Parcelable(@NonNull Auth0 auth0) {
         this.auth0 = auth0;
     }
 
+    @NonNull
     public Auth0 getAuth0() {
         return auth0;
     }
@@ -55,7 +57,7 @@ public class Auth0Parcelable implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(auth0.getClientId());
         dest.writeString(auth0.getDomainUrl());
         dest.writeString(auth0.getConfigurationUrl());
@@ -80,7 +82,8 @@ public class Auth0Parcelable implements Parcelable {
         }
     };
 
-    private Auth0Parcelable(Parcel in) {
+    @SuppressWarnings("ConstantConditions")
+    private Auth0Parcelable(@NonNull Parcel in) {
         String clientId = in.readString();
         String domain = in.readString();
         String configurationDomain = in.readString();

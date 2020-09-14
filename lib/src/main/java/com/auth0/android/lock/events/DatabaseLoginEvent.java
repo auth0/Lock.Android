@@ -30,7 +30,7 @@ import android.support.annotation.Nullable;
 
 public class DatabaseLoginEvent extends DatabaseEvent {
 
-    private String password;
+    private final String password;
     private String verificationCode;
     private String mfaToken;
 
@@ -41,6 +41,7 @@ public class DatabaseLoginEvent extends DatabaseEvent {
 
     @NonNull
     public String getUsernameOrEmail() {
+        //noinspection ConstantConditions
         return getEmail() != null ? getEmail() : getUsername();
     }
 

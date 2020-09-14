@@ -51,6 +51,7 @@ import java.util.Map;
  * <p>
  * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
  */
+@SuppressLint("KotlinPropertyAccess")
 public class Options implements Parcelable {
     private static final int WITHOUT_DATA = 0x00;
     private static final int HAS_DATA = 0x01;
@@ -80,9 +81,9 @@ public class Options implements Parcelable {
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
-    private HashMap<String, Integer> authStyles;
+    private final HashMap<String, Integer> authStyles;
     private HashMap<String, Object> authenticationParameters;
-    private HashMap<String, String> connectionsScope;
+    private final HashMap<String, String> connectionsScope;
     private List<SignUpField> signUpFields;
     private int initialScreen;
     private int visibleSignUpFieldsthreshold;
@@ -115,8 +116,9 @@ public class Options implements Parcelable {
         theme = Theme.newBuilder().build();
     }
 
-    protected Options(Parcel in) {
+    protected Options(@NonNull Parcel in) {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
+        //noinspection ConstantConditions
         account = auth0Parcelable.getAuth0();
         useBrowser = in.readByte() != WITHOUT_DATA;
         usePKCE = in.readByte() != WITHOUT_DATA;
@@ -157,8 +159,8 @@ public class Options implements Parcelable {
         }
         if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
-            @SuppressLint("ParcelClassLoader")
-            Bundle mapBundle = in.readBundle();
+            Bundle mapBundle = in.readBundle(getClass().getClassLoader());
+            //noinspection ConstantConditions
             authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
         } else {
             authenticationParameters = null;
@@ -177,8 +179,8 @@ public class Options implements Parcelable {
         }
         if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
-            @SuppressLint("ParcelClassLoader")
-            Bundle mapBundle = in.readBundle();
+            Bundle mapBundle = in.readBundle(getClass().getClassLoader());
+            //noinspection ConstantConditions
             connectionsScope = (HashMap<String, String>) mapBundle.getSerializable(KEY_CONNECTIONS_SCOPE);
         } else {
             connectionsScope = null;
@@ -197,7 +199,7 @@ public class Options implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeValue(new Auth0Parcelable(account));
         dest.writeByte((byte) (useBrowser ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
@@ -269,7 +271,6 @@ public class Options implements Parcelable {
         }
     }
 
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<Options> CREATOR = new Parcelable.Creator<Options>() {
         @Override
         public Options createFromParcel(Parcel in) {
@@ -282,14 +283,16 @@ public class Options implements Parcelable {
         }
     };
 
+    @NonNull
     public Auth0 getAccount() {
         return account;
     }
 
-    public void setAccount(Auth0 account) {
+    public void setAccount(@NonNull Auth0 account) {
         this.account = account;
     }
 
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public boolean useBrowser() {
         return useBrowser;
@@ -300,10 +303,11 @@ public class Options implements Parcelable {
         this.useBrowser = useBrowser;
     }
 
-    public void withTheme(Theme theme) {
+    public void withTheme(@NonNull Theme theme) {
         this.theme = theme;
     }
 
+    @NonNull
     public Theme getTheme() {
         return theme;
     }
@@ -367,31 +371,34 @@ public class Options implements Parcelable {
         allowShowPassword = allow;
     }
 
+    @Nullable
     public String getDefaultDatabaseConnection() {
         return defaultDatabaseConnection;
     }
 
-    public void useDatabaseConnection(String defaultDatabaseConnection) {
+    public void useDatabaseConnection(@NonNull String defaultDatabaseConnection) {
         this.defaultDatabaseConnection = defaultDatabaseConnection;
     }
 
+    @Nullable
     public List<String> getConnections() {
         return connections;
     }
 
-    public void setConnections(List<String> connections) {
+    public void setConnections(@NonNull List<String> connections) {
         this.connections = connections;
     }
 
+    @Nullable
     public List<String> getEnterpriseConnectionsUsingWebForm() {
         return enterpriseConnectionsUsingWebForm;
     }
 
-    public void setEnterpriseConnectionsUsingWebForm(List<String> enterpriseConnectionsUsingWebForm) {
+    public void setEnterpriseConnectionsUsingWebForm(@NonNull List<String> enterpriseConnectionsUsingWebForm) {
         this.enterpriseConnectionsUsingWebForm = enterpriseConnectionsUsingWebForm;
     }
 
-    @NonNull
+    @Nullable
     public HashMap<String, Object> getAuthenticationParameters() {
         return authenticationParameters;
     }
@@ -414,6 +421,7 @@ public class Options implements Parcelable {
         this.loginAfterSignUp = loginAfterSignUp;
     }
 
+    @NonNull
     public AuthenticationAPIClient getAuthenticationAPIClient() {
         return new AuthenticationAPIClient(account);
     }
@@ -430,7 +438,7 @@ public class Options implements Parcelable {
         this.signUpFields = signUpFields;
     }
 
-    @NonNull
+    @Nullable
     public List<SignUpField> getSignUpFields() {
         return signUpFields;
     }
@@ -451,6 +459,7 @@ public class Options implements Parcelable {
         this.privacyURL = url;
     }
 
+    @Nullable
     public String getPrivacyURL() {
         return privacyURL;
     }
@@ -462,17 +471,19 @@ public class Options implements Parcelable {
         this.termsURL = url;
     }
 
+    @Nullable
     public String getTermsURL() {
         return termsURL;
     }
 
-    public void setSupportURL(String url) {
+    public void setSupportURL(@NonNull String url) {
         if (!Patterns.WEB_URL.matcher(url).matches()) {
             throw new IllegalArgumentException("The given Support URL doesn't have a valid URL format: " + url);
         }
         this.supportURL = url;
     }
 
+    @Nullable
     public String getSupportURL() {
         return supportURL;
     }
@@ -497,7 +508,7 @@ public class Options implements Parcelable {
         authStyles.put(connectionName, style);
     }
 
-    @NonNull
+    @Nullable
     public Map<String, Integer> getAuthStyles() {
         return new HashMap<>(authStyles);
     }
@@ -530,7 +541,7 @@ public class Options implements Parcelable {
         connectionsScope.put(connectionName, scope);
     }
 
-    @NonNull
+    @Nullable
     public Map<String, String> getConnectionsScope() {
         return connectionsScope;
     }

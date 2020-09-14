@@ -43,6 +43,7 @@ public class AuthConfig {
         if (id == -1) {
             id = R.drawable.com_auth0_lock_ic_social_auth0;
         }
+        //noinspection ConstantConditions
         return ContextCompat.getDrawable(context, id);
     }
 
@@ -78,7 +79,7 @@ public class AuthConfig {
      * @return a valid Lock.Theme.AuthStyle
      */
     @StyleRes
-    public static int styleForStrategy(String strategyName) {
+    public static int styleForStrategy(@NonNull String strategyName) {
         int style = R.style.Lock_Theme_AuthStyle;
         switch (strategyName) {
             case "apple":

@@ -44,7 +44,8 @@
             android:id="@+id/com_auth0_lock_text"
             style="@style/Lock.Theme.Text.SocialButton"
             tools:background="#FF3333"
-            tools:text="Sign in with App" />
+            tools:text="Sign in with App"
+            tools:ignore="SelectableText" />
 
     </LinearLayout>
 

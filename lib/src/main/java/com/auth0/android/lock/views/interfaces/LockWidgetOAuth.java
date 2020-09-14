@@ -24,9 +24,11 @@
 
 package com.auth0.android.lock.views.interfaces;
 
+import android.support.annotation.NonNull;
+
 import com.auth0.android.lock.events.OAuthLoginEvent;
 
 public interface LockWidgetOAuth extends LockWidget {
 
-    void onOAuthLoginRequest(OAuthLoginEvent event);
+    void onOAuthLoginRequest(@NonNull OAuthLoginEvent event);
 }

@@ -53,15 +53,18 @@ public class PasswordlessLoginEvent {
         this.country = country;
     }
 
+    @NonNull
     public static PasswordlessLoginEvent requestCode(@PasswordlessMode int mode, @NonNull String email) {
         return new PasswordlessLoginEvent(mode, email, null, null);
     }
 
+    @NonNull
     public static PasswordlessLoginEvent requestCode(@PasswordlessMode int mode, @NonNull String number, @NonNull Country country) {
         String fullNumber = country.getDialCode() + number;
         return new PasswordlessLoginEvent(mode, fullNumber, null, country);
     }
 
+    @NonNull
     public static PasswordlessLoginEvent submitCode(@PasswordlessMode int mode, @NonNull String code) {
         return new PasswordlessLoginEvent(mode, null, code, null);
     }
@@ -93,7 +96,9 @@ public class PasswordlessLoginEvent {
      * @param connectionName the name of the passwordless connection to request the login with. Only 'sms' and 'email' connections are allowed here.
      * @return the Passwordless code request request.
      */
-    public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(AuthenticationAPIClient apiClient, String connectionName) {
+    @SuppressWarnings("ConstantConditions")
+    @NonNull
+    public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connectionName) {
         Log.d(TAG, String.format("Generating Passwordless Code/Link request for connection %s", connectionName));
         ParameterizableRequest<Void, AuthenticationException> request;
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
@@ -115,7 +120,9 @@ public class PasswordlessLoginEvent {
      * @param emailOrNumber the email or phone number used on the code request.
      * @return the Passwordless login request.
      */
-    public AuthRequest getLoginRequest(AuthenticationAPIClient apiClient, String emailOrNumber) {
+    @SuppressWarnings("ConstantConditions")
+    @NonNull
+    public AuthRequest getLoginRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String emailOrNumber) {
         Log.d(TAG, String.format("Generating Passwordless Login request for identity %s", emailOrNumber));
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.loginWithEmail(emailOrNumber, getCode());

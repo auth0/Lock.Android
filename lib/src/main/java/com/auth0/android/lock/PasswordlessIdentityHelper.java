@@ -39,6 +39,7 @@ class PasswordlessIdentityHelper {
                 .apply();
     }
 
+    @Nullable
     public Country getLastCountry() {
         Country country = null;
         String countryInfo = sp.getString(LAST_PASSWORDLESS_COUNTRY_KEY, null);
@@ -50,12 +51,15 @@ class PasswordlessIdentityHelper {
         return country;
     }
 
+    @NonNull
     public String getLastIdentity() {
         String identity = sp.getString(LAST_PASSWORDLESS_IDENTITY_KEY, "");
         Country country = getLastCountry();
+        //noinspection ConstantConditions
         if (country != null && identity.startsWith(country.getDialCode())) {
             identity = identity.substring(country.getDialCode().length());
         }
+        //noinspection ConstantConditions
         return identity;
     }
 

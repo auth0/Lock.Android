@@ -26,6 +26,7 @@ package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
@@ -47,17 +48,17 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
     private boolean usernameRequired;
     private boolean isCustomDatabase;
 
-    public ValidatedUsernameInputView(Context context) {
+    public ValidatedUsernameInputView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public ValidatedUsernameInputView(Context context, AttributeSet attrs) {
+    public ValidatedUsernameInputView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ValidatedUsernameInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ValidatedUsernameInputView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

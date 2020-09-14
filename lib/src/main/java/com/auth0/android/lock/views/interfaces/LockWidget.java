@@ -25,13 +25,16 @@
 package com.auth0.android.lock.views.interfaces;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.auth0.android.lock.internal.configuration.Configuration;
 
 public interface LockWidget {
 
+    @NonNull
     Context getContext();
 
+    @NonNull
     Configuration getConfiguration();
 
     void onFormSubmit();

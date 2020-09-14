@@ -49,7 +49,7 @@ class SocialButton extends RelativeLayout {
         });
     }
 
-    private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor, @ViewUtils.Corners int corners) {
+    private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor) {
         final Drawable normalBackground;
         final ShapeDrawable pressedBackground;
 
@@ -57,10 +57,10 @@ class SocialButton extends RelativeLayout {
         if (shouldDrawOutline) {
             int outlineColor = getResources().getColor(R.color.com_auth0_lock_social_light_background_focused);
             normalBackground = ViewUtils.getOpaqueRoundedOutlineBackground(getResources(), pressedColor, outlineColor);
-            pressedBackground = ViewUtils.getRoundedBackground(this, outlineColor, corners);
+            pressedBackground = ViewUtils.getRoundedBackground(this, outlineColor, ViewUtils.Corners.ALL);
         } else {
-            normalBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
-            pressedBackground = ViewUtils.getRoundedBackground(this, pressedColor, corners);
+            normalBackground = ViewUtils.getRoundedBackground(this, pressedColor, ViewUtils.Corners.ALL);
+            pressedBackground = ViewUtils.getRoundedBackground(this, pressedColor, ViewUtils.Corners.ALL);
         }
 
         pressedBackground.getPaint().setAlpha(NORMAL_STATE_ALPHA);
@@ -80,7 +80,7 @@ class SocialButton extends RelativeLayout {
     public void setStyle(AuthConfig config, @AuthMode int mode) {
         final Drawable logo = config.getLogo(getContext());
         final int backgroundColor = config.getBackgroundColor(getContext());
-        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor, ViewUtils.Corners.ALL);
+        Drawable touchBackground = getTouchFeedbackBackground(backgroundColor);
 
         // When background is white, change default text color
         boolean shouldUseDarkText = backgroundColor == Color.WHITE;

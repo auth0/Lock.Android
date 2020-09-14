@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.errors;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.auth0.android.authentication.AuthenticationException;
@@ -51,8 +52,9 @@ public class SignUpErrorMessageBuilder implements ErrorMessageBuilder<Authentica
         this(R.string.com_auth0_lock_db_sign_up_error_message);
     }
 
+    @NonNull
     @Override
-    public AuthenticationError buildFrom(AuthenticationException exception) {
+    public AuthenticationError buildFrom(@NonNull AuthenticationException exception) {
         int messageRes;
         String description = null;
 

@@ -27,6 +27,7 @@ package com.auth0.android.lock.views;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,7 +64,7 @@ public class PasswordStrengthView extends LinearLayout {
     private CheckableOptionView optionNumeric;
     private CheckableOptionView optionSpecialCharacters;
 
-    public PasswordStrengthView(Context context) {
+    public PasswordStrengthView(@NonNull Context context) {
         super(context);
         init();
     }
@@ -81,6 +82,7 @@ public class PasswordStrengthView extends LinearLayout {
         optionUppercase = findViewById(R.id.com_auth0_lock_password_strength_option_uppercase);
         optionNumeric = findViewById(R.id.com_auth0_lock_password_strength_option_numeric);
         optionSpecialCharacters = findViewById(R.id.com_auth0_lock_password_strength_option_special_characters);
+        //noinspection deprecation
         setStrength(PasswordStrength.NONE);
     }
 
@@ -188,6 +190,7 @@ public class PasswordStrengthView extends LinearLayout {
      * @param strength the required strength level.
      * @deprecated use the {@link #setPasswordComplexity(PasswordComplexity)} method
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public void setStrength(@PasswordStrength int strength) {
         this.setPasswordComplexity(new PasswordComplexity(strength, null));
@@ -198,7 +201,7 @@ public class PasswordStrengthView extends LinearLayout {
      *
      * @param complexity the password complexity to require on this widget
      */
-    public void setPasswordComplexity(PasswordComplexity complexity) {
+    public void setPasswordComplexity(@NonNull PasswordComplexity complexity) {
         this.complexity = complexity;
         showPolicy();
     }
@@ -209,7 +212,7 @@ public class PasswordStrengthView extends LinearLayout {
      * @param password the current password to validate
      * @return whether the given password complies with this password policy or not.
      */
-    public boolean isValid(String password) {
+    public boolean isValid(@Nullable String password) {
         if (password == null) {
             return false;
         }

@@ -43,7 +43,7 @@ public class EnterpriseConnectionMatcher {
     private static final String DOMAIN_ALIASES_KEY = "domain_aliases";
     private static final String AT_SYMBOL = "@";
 
-    private List<OAuthConnection> connections;
+    private final List<OAuthConnection> connections;
 
     public EnterpriseConnectionMatcher(@NonNull List<OAuthConnection> connections) {
         this.connections = new ArrayList<>(connections);
@@ -57,7 +57,7 @@ public class EnterpriseConnectionMatcher {
      * @return a Connection if found, null otherwise.
      */
     @Nullable
-    public OAuthConnection parse(String email) {
+    public OAuthConnection parse(@NonNull String email) {
         String domain = extractDomain(email);
         if (domain == null) {
             return null;
@@ -70,6 +70,7 @@ public class EnterpriseConnectionMatcher {
                 return c;
             }
 
+            //noinspection unchecked
             List<String> aliases = c.valueForKey(DOMAIN_ALIASES_KEY, List.class);
             if (aliases != null) {
                 for (String d : aliases) {
@@ -89,7 +90,7 @@ public class EnterpriseConnectionMatcher {
      * @return the username String if found, an empty String otherwise
      */
     @Nullable
-    public String extractUsername(String email) {
+    public String extractUsername(@NonNull String email) {
         int indexAt = email.indexOf(AT_SYMBOL);
         if (indexAt == -1) {
             return null;
@@ -122,6 +123,7 @@ public class EnterpriseConnectionMatcher {
      * @param connection to extract the domain from
      * @return the main domain.
      */
+    @Nullable
     public String domainForConnection(@NonNull OAuthConnection connection) {
         return connection.valueForKey(DOMAIN_KEY, String.class);
     }

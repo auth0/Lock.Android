@@ -157,7 +157,7 @@ abstract class ViewUtils {
      * @param view       the view to set the background drawable to.
      * @param background the drawable to use as background.
      */
-    static void setBackground(View view, Drawable background) {
+    static void setBackground(@NonNull View view, @Nullable Drawable background) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(background);
         } else {

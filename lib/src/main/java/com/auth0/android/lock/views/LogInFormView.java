@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -65,12 +66,12 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     private boolean corporateSSO;
     private boolean changePasswordEnabled;
 
-    public LogInFormView(Context context) {
+    public LogInFormView(@NonNull Context context) {
         super(context);
         lockWidget = null;
     }
 
-    public LogInFormView(LockWidgetForm lockWidget) {
+    public LogInFormView(@NonNull LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -224,6 +225,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         return null;
     }
 
+    @NonNull
     @Override
     public Object getActionEvent() {
         if (currentConnection != null && currentConnection.isActiveFlowEnabled()) {
@@ -279,20 +281,20 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT && currentConnection != null) {
             lockWidget.onFormSubmit();
         }
         return false;
     }
 
-    public void setLastEmail(String email) {
+    public void setLastEmail(@Nullable String email) {
         emailInput.setText(email);
         passwordInput.clearInput();
     }
 
     @Override
-    public void onEmailChanged(String email) {
+    public void onEmailChanged(@NonNull String email) {
         lockWidget.onEmailChanged(email);
     }
 

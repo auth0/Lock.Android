@@ -25,6 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -52,11 +53,11 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
     private final LockWidgetPasswordless lockWidget;
     private ValidatedInputView passwordlessInput;
     @PasswordlessMode
-    private int passwordlessMode;
+    private final int passwordlessMode;
     private TextView topMessage;
     private CountryCodeSelectorView countryCodeSelector;
 
-    public PasswordlessRequestCodeFormView(LockWidgetPasswordless lockWidget) {
+    public PasswordlessRequestCodeFormView(@NonNull LockWidgetPasswordless lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         passwordlessMode = lockWidget.getConfiguration().getPasswordlessMode();
@@ -108,11 +109,13 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         topMessage.setText(showTitle ? getResources().getString(titleMessage) : null);
     }
 
+    @NonNull
     @Override
     public Object getActionEvent() {
         String emailOrNumber = getInputText();
         if (passwordlessMode == SMS_CODE || passwordlessMode == SMS_LINK) {
             Log.d(TAG, "Starting a SMS Passwordless flow");
+            //noinspection ConstantConditions
             return PasswordlessLoginEvent.requestCode(passwordlessMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
         } else {
             Log.d(TAG, "Starting an Email Passwordless flow");
@@ -120,6 +123,7 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         }
     }
 
+    @SuppressLint("KotlinPropertyAccess")
     private String getInputText() {
         return passwordlessInput.getText().replace(" ", "");
     }
@@ -142,13 +146,13 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
      * @param dialCode the dial code for this country
      */
     @SuppressWarnings("unused")
-    public void onCountryCodeSelected(String isoCode, String dialCode) {
+    public void onCountryCodeSelected(@NonNull String isoCode, @NonNull String dialCode) {
         Country selectedCountry = new Country(isoCode, dialCode);
         countryCodeSelector.setSelectedCountry(selectedCountry);
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(@NonNull View v) {
         int id = v.getId();
         if (id == R.id.com_auth0_lock_country_code_selector) {
             lockWidget.onCountryCodeChangeRequest();
@@ -156,14 +160,14 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(@NonNull TextView v, int actionId, @NonNull KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             lockWidget.onFormSubmit();
         }
         return false;
     }
 
-    public void setInputText(String text) {
+    public void setInputText(@NonNull String text) {
         passwordlessInput.setText(text);
     }
 

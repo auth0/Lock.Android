@@ -56,6 +56,7 @@ import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.views.interfaces.LockWidgetForm;
 import com.squareup.otto.Bus;
 
+@SuppressWarnings("NullableProblems")
 @SuppressLint("ViewConstructor")
 public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
@@ -76,7 +77,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     private String lastEmailInput;
 
-    public ClassicLockView(Context context, Bus lockBus, Theme lockTheme) {
+    public ClassicLockView(@NonNull Context context, @NonNull Bus lockBus, @NonNull Theme lockTheme) {
         super(context);
         this.bus = lockBus;
         this.configuration = null;
@@ -334,6 +335,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
         }
     }
 
+    @NonNull
     @Override
     public Configuration getConfiguration() {
         return configuration;
@@ -345,21 +347,22 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     @Override
-    public void showCustomFieldsForm(DatabaseSignUpEvent event) {
+    public void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
+        //noinspection ConstantConditions
         CustomFieldsFormView form = new CustomFieldsFormView(this, event.getEmail(), event.getPassword(), event.getUsername());
         addSubForm(form);
         updateHeaderTitle(R.string.com_auth0_lock_action_sign_up);
         showSignUpTerms(false);
     }
 
-    public void showMFACodeForm(DatabaseLoginEvent event) {
+    public void showMFACodeForm(@NonNull DatabaseLoginEvent event) {
         MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword(), event.getMFAToken());
         updateHeaderTitle(R.string.com_auth0_lock_title_mfa_input_code);
         addSubForm(form);
     }
 
     @Override
-    public void onOAuthLoginRequest(OAuthLoginEvent event) {
+    public void onOAuthLoginRequest(@NonNull OAuthLoginEvent event) {
         bus.post(event);
     }
 
@@ -386,7 +389,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     @Override
-    public void onEmailChanged(String email) {
+    public void onEmailChanged(@NonNull String email) {
         lastEmailInput = email;
         formLayout.onEmailChanged(email);
     }

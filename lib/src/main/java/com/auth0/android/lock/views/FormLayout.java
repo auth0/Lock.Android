@@ -71,12 +71,12 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     @AuthMode
     private int lastFormMode = -1;
 
-    public FormLayout(Context context) {
+    public FormLayout(@NonNull Context context) {
         super(context);
         lockWidget = null;
     }
 
-    public FormLayout(LockWidgetForm lockWidget) {
+    public FormLayout(@NonNull LockWidgetForm lockWidget) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         init();
@@ -223,6 +223,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.addView(logInForm);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
         removePreviousForm();
 
@@ -294,7 +295,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     @Override
-    public void onEmailChanged(String currentValue) {
+    public void onEmailChanged(@NonNull String currentValue) {
         lastEmailInput = currentValue;
     }
 
