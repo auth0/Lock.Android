@@ -10,12 +10,19 @@ jobs:
     - checkout
     - restore_cache:
         keys:
-        - v1-dep-{{ .Branch }}-
+        - v1-dep-{{ checksum  "lib/build.gradle" }}
     - run: ./gradlew androidDependencies
     - save_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        key: v1-dep-{{ checksum  "lib/build.gradle" }}
         paths:
         - ~/.gradle
         - ~/.android
         - /usr/local/android-sdk-linux/extras
-    - run: ./gradlew clean test --continue --console=plain --max-workers=4
+    - run:
+        name: Run checks
+        command: ./gradlew clean test lint --continue --console=plain --max-workers=4
+    - store_artifacts:
+        path: lib/build/reports
+        destination: reports
+    - store_test_results:
+        path: lib/build/test-results
