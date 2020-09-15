@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.23.0](https://github.com/auth0/Lock.Android/tree/2.23.0) (2020-09-14)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.22.0...2.23.0)
+
+**Having project sync issues after upgrading?**
+This release updates the core SDK to make it compatible with Android 11 new privacy changes. If you run into a build compile issue when importing this version, make sure that you are using the latest patch version of the Android Gradle Plugin. Check the table in the [announcement blogpost](https://android-developers.googleblog.com/2020/07/preparing-your-build-for-package-visibility-in-android-11.html) to learn to what version you should update.
+
+**Changed**
+- Improve compatibility with Kotlin and run Lint on CI [\#596](https://github.com/auth0/Lock.Android/pull/596) ([lbalmaceda](https://github.com/lbalmaceda))
+- Add compatibility with Android 11: Bump SDK version [\#595](https://github.com/auth0/Lock.Android/pull/595) ([lbalmaceda](https://github.com/lbalmaceda))
+- Update "37 Signals" auth style to "Basecamp" [SDK-1944] [\#593](https://github.com/auth0/Lock.Android/pull/593) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.22.0](https://github.com/auth0/Lock.Android/tree/2.22.0) (2020-08-25)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.21.1...2.22.0)
 
