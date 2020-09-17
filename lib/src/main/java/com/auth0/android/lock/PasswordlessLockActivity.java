@@ -459,7 +459,8 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     //Callbacks
     private final com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new com.auth0.android.callback.AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(@NonNull final List<Connection> connections) {
+        public void onSuccess(@Nullable final List<Connection> connections) {
+            //noinspection ConstantConditions
             configuration = new Configuration(connections, options);
             identityHelper = new PasswordlessIdentityHelper(PasswordlessLockActivity.this, configuration.getPasswordlessMode());
             handler.post(new Runnable() {
@@ -487,7 +488,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private final com.auth0.android.callback.AuthenticationCallback<Void> passwordlessCodeCallback = new com.auth0.android.callback.AuthenticationCallback<Void>() {
         @Override
-        public void onSuccess(@NonNull Void payload) {
+        public void onSuccess(@Nullable Void payload) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -515,11 +516,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
     private final com.auth0.android.callback.AuthenticationCallback<Credentials> authCallback = new com.auth0.android.callback.AuthenticationCallback<Credentials>() {
         @Override
-        public void onSuccess(@NonNull Credentials credentials) {
+        public void onSuccess(@Nullable Credentials credentials) {
             if (configuration.usePasswordlessAutoSubmit()) {
                 Log.d(TAG, "Saving passwordless identity for a future log in request.");
                 identityHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
             }
+            //noinspection ConstantConditions
             deliverAuthenticationResult(credentials);
         }
 

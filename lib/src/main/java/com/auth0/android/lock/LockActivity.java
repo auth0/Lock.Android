@@ -483,7 +483,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     //Callbacks
     private final com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
         @Override
-        public void onSuccess(@NonNull final List<Connection> connections) {
+        public void onSuccess(@Nullable final List<Connection> connections) {
+            //noinspection ConstantConditions
             configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override
@@ -541,7 +542,8 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private final AuthenticationCallback<Credentials> authCallback = new AuthenticationCallback<Credentials>() {
         @Override
-        public void onSuccess(@NonNull Credentials credentials) {
+        public void onSuccess(@Nullable Credentials credentials) {
+            //noinspection ConstantConditions
             deliverAuthenticationResult(credentials);
             lastDatabaseLogin = null;
             lastDatabaseSignUp = null;
@@ -582,10 +584,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private final AuthenticationCallback<DatabaseUser> createCallback = new AuthenticationCallback<DatabaseUser>() {
         @Override
-        public void onSuccess(@NonNull final DatabaseUser user) {
+        public void onSuccess(@Nullable final DatabaseUser user) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    //noinspection ConstantConditions
                     deliverSignUpResult(user);
                 }
             });
@@ -611,7 +614,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private final AuthenticationCallback<Void> changePwdCallback = new AuthenticationCallback<Void>() {
         @Override
-        public void onSuccess(@NonNull Void payload) {
+        public void onSuccess(@Nullable Void payload) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
