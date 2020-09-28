@@ -306,7 +306,7 @@ public class DemoActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure(AuthenticationException exception) {
+        public void onFailure(@NonNull AuthenticationException exception) {
             showResult("Failed > " + exception.getDescription());
         }
 
@@ -323,7 +323,7 @@ public class DemoActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(Void payload) {
+        public void onSuccess(@Nullable Void payload) {
             showResult("Logged out!");
         }
     };
