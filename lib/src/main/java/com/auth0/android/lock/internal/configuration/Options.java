@@ -40,6 +40,7 @@ import com.auth0.android.lock.Auth0Parcelable;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.SignUpField;
+import com.auth0.android.provider.CustomTabsOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,6 +89,7 @@ public class Options implements Parcelable {
     private int initialScreen;
     private int visibleSignUpFieldsthreshold;
     private Theme theme;
+    private CustomTabsOptions customTabsOptions;
     private String privacyURL;
     private String termsURL;
     private String supportURL;
@@ -139,6 +141,7 @@ public class Options implements Parcelable {
         initialScreen = in.readInt();
         visibleSignUpFieldsthreshold = in.readInt();
         theme = in.readParcelable(Theme.class.getClassLoader());
+        customTabsOptions = in.readParcelable(CustomTabsOptions.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
         supportURL = in.readString();
@@ -220,6 +223,7 @@ public class Options implements Parcelable {
         dest.writeInt(initialScreen);
         dest.writeInt(visibleSignUpFieldsthreshold);
         dest.writeParcelable(theme, flags);
+        dest.writeParcelable(customTabsOptions, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
         dest.writeString(supportURL);
@@ -579,5 +583,14 @@ public class Options implements Parcelable {
 
     public int visibleSignUpFieldsThreshold() {
         return visibleSignUpFieldsthreshold;
+    }
+
+    public void withCustomTabsOptions(@NonNull CustomTabsOptions customTabsOptions) {
+        this.customTabsOptions = customTabsOptions;
+    }
+
+    @Nullable
+    public CustomTabsOptions getCustomTabsOptions() {
+        return customTabsOptions;
     }
 }

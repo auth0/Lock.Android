@@ -11,6 +11,7 @@ import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.CustomField;
 import com.auth0.android.lock.utils.CustomField.FieldType;
 import com.auth0.android.lock.utils.SignUpField;
+import com.auth0.android.provider.CustomTabsOptions;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -605,6 +606,20 @@ public class OptionsTest {
         assertThat(parceledOptions.getScheme(), is("auth0"));
     }
 
+    @Test
+    public void shouldSetCustomTabsOptions() {
+        CustomTabsOptions ctOptions = CustomTabsOptions.newBuilder().build();
+        options.withCustomTabsOptions(ctOptions);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getCustomTabsOptions(), is(equalTo(ctOptions)));
+        assertThat(parceledOptions.getCustomTabsOptions(), is(notNullValue()));
+    }
+
     @SuppressWarnings("ResourceType")
     @Test
     public void shouldAddAuthStyles() {
@@ -716,6 +731,7 @@ public class OptionsTest {
         assertThat(options.getScope(), is(nullValue()));
         assertThat(options.getAudience(), is(nullValue()));
         assertThat(options.getScheme(), is(nullValue()));
+        assertThat(options.getCustomTabsOptions(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.visibleSignUpFieldsThreshold(), is(equalTo(2)));
         assertThat(options.getTheme(), is(notNullValue()));

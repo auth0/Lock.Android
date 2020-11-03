@@ -1,18 +1,21 @@
 package com.auth0.android.lock;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthenticationActivity;
+import com.auth0.android.provider.CustomTabsOptions;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +27,10 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -33,9 +39,11 @@ import static android.support.test.espresso.intent.matcher.UriMatchers.hasParamW
 import static android.support.test.espresso.intent.matcher.UriMatchers.hasScheme;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.isOneOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.intThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -58,7 +66,7 @@ public class WebProviderTest {
                 .start()
                 .resume()
                 .get());
-        prepareBrowserApp(true);
+        setupBrowserContext(activity, Collections.singletonList("com.auth0.browser"));
     }
 
     @Test
@@ -74,7 +82,7 @@ public class WebProviderTest {
 
     @Test
     public void shouldFailWhenBrowserAppIsMissing() {
-        prepareBrowserApp(false);
+        setupBrowserContext(activity, Collections.<String>emptyList());
 
         Options options = new Options();
         options.setAccount(new Auth0("clientId", "domain.auth0.com"));
@@ -168,6 +176,8 @@ public class WebProviderTest {
         options.withConnectionScope("my-connection", "the connection scope");
         options.setUseBrowser(true);
         options.withScheme("auth0");
+        CustomTabsOptions customTabsOptions = CustomTabsOptions.newBuilder().build();
+        options.withCustomTabsOptions(customTabsOptions);
 
         AuthCallback callback = mock(AuthCallback.class);
         WebProvider webProvider = new WebProvider(options);
@@ -194,6 +204,7 @@ public class WebProviderTest {
         assertThat(authorizeUri, hasParamWithValue("scope", "email profile photos"));
         assertThat(authorizeUri, hasParamWithValue("connection_scope", "the connection scope"));
         assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
+        assertThat(intent.getParcelableExtra("com.auth0.android.EXTRA_CT_OPTIONS"), is(notNullValue()));
         assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", false), is(true));
         assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
@@ -258,21 +269,30 @@ public class WebProviderTest {
         assertThat(webProvider.resume(1, Activity.RESULT_CANCELED, intent), is(false));
     }
 
-
-    private void prepareBrowserApp(boolean isAppInstalled) {
+    /**
+     * Sets up a given context for using browsers.
+     * If the list passed is empty, then no browser packages would be available.
+     */
+    static void setupBrowserContext(@NonNull Context context, @NonNull List<String> browserPackages) {
         PackageManager pm = mock(PackageManager.class);
-        ResolveInfo info = null;
-        if (isAppInstalled) {
-            info = mock(ResolveInfo.class);
-            ApplicationInfo appInfo = mock(ApplicationInfo.class);
-            appInfo.packageName = "com.auth0.test";
-            ActivityInfo actInfo = mock(ActivityInfo.class);
-            actInfo.applicationInfo = appInfo;
-            actInfo.name = "Auth0 Browser";
-            info.activityInfo = actInfo;
+        when(context.getPackageManager()).thenReturn(pm);
+
+        List<ResolveInfo> allBrowsers = new ArrayList<>();
+        for (String browser : browserPackages) {
+            ResolveInfo info = resolveInfoForPackageName(browser);
+            allBrowsers.add(info);
         }
-        when(pm.resolveActivity(any(Intent.class), eq(PackageManager.MATCH_DEFAULT_ONLY))).thenReturn(info);
-        when(activity.getPackageManager()).thenReturn(pm);
+        when(pm.queryIntentActivities(any(Intent.class), intThat(isOneOf(0, PackageManager.MATCH_ALL)))).thenReturn(allBrowsers);
+    }
+
+    private static ResolveInfo resolveInfoForPackageName(@Nullable String packageName) {
+        if (packageName == null) {
+            return null;
+        }
+        ResolveInfo resInfo = mock(ResolveInfo.class);
+        resInfo.activityInfo = new ActivityInfo();
+        resInfo.activityInfo.packageName = packageName;
+        return resInfo;
     }
 
 }
