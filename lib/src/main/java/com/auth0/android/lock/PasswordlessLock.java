@@ -43,6 +43,7 @@ import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.provider.AuthHandler;
+import com.auth0.android.provider.CustomTabsOptions;
 import com.auth0.android.util.Telemetry;
 
 import java.util.Arrays;
@@ -422,6 +423,18 @@ public class PasswordlessLock {
         @NonNull
         public Builder withScheme(@NonNull String scheme) {
             options.withScheme(scheme);
+            return this;
+        }
+
+        /**
+         * Specify style and other additional configuration for when the Web Auth flow is used with Custom Tabs.
+         *
+         * @param customTabsOptions to use in the Web Auth flow.
+         * @return the current builder instance
+         */
+        @NonNull
+        public Builder withCustomTabsOptions(@NonNull CustomTabsOptions customTabsOptions) {
+            options.withCustomTabsOptions(customTabsOptions);
             return this;
         }
 

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.provider.CustomTabsOptions;
 import com.auth0.android.provider.WebAuthProvider;
 
 import java.util.HashMap;
@@ -68,6 +69,10 @@ class WebProvider {
         final String scheme = options.getScheme();
         if (scheme != null) {
             builder.withScheme(scheme);
+        }
+        final CustomTabsOptions customTabsOptions = options.getCustomTabsOptions();
+        if (customTabsOptions != null) {
+            builder.withCustomTabsOptions(customTabsOptions);
         }
         //noinspection deprecation
         builder.start(activity, callback, requestCode);
