@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.24.0](https://github.com/auth0/Lock.Android/tree/2.24.0) (2020-11-05)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.23.0...2.24.0)
+
+**Added**
+- Add custom tabs options to the available Lock settings [SDK-1974] [\#601](https://github.com/auth0/Lock.Android/pull/601) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Bump SDK to fix NPE with Kotlin nullable annotations [\#598](https://github.com/auth0/Lock.Android/pull/598) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.23.0](https://github.com/auth0/Lock.Android/tree/2.23.0) (2020-09-14)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.22.0...2.23.0)
 
