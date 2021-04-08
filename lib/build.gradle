@@ -31,6 +31,8 @@ android {
         versionCode 1
         versionName project.version
         consumerProguardFiles '../proguard/proguard-gson.pro', '../proguard/proguard-otto.pro', '../proguard/proguard-lock-2.pro'
+        // Required since Android Gradle Plugin 4.1 - https://issuetracker.google.com/issues/154275579
+        buildConfigField "String", "VERSION_NAME", "\"$versionName\""
     }
 
     lintOptions {
