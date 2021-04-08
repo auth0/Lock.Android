@@ -1,6 +1,6 @@
 package com.auth0.android.lock.events;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 public class LockMessageEvent {
 

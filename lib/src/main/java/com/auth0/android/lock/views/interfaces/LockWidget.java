@@ -25,7 +25,7 @@
 package com.auth0.android.lock.views.interfaces;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.auth0.android.lock.internal.configuration.Configuration;
 

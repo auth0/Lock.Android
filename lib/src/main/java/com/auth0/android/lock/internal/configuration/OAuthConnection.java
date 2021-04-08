@@ -1,6 +1,6 @@
 package com.auth0.android.lock.internal.configuration;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Set;
 

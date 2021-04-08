@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.StyleRes;
-import android.support.annotation.StyleableRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.StyleRes;
+import androidx.annotation.StyleableRes;
+import androidx.core.content.ContextCompat;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.internal.configuration.OAuthConnection;

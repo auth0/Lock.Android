@@ -2,8 +2,8 @@ package com.auth0.android.lock;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;

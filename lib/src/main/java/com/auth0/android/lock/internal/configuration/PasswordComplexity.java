@@ -1,6 +1,6 @@
 package com.auth0.android.lock.internal.configuration;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class PasswordComplexity {
 
