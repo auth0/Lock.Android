@@ -23,7 +23,7 @@ Since June 2017 new Applications no longer have the **Password Grant Type*** ena
 
 ## Requirements
 
-Android API Level 15+ is required in order to use Lock's UI.
+Android API Level 21+ is required in order to use Lock's UI.
 
 ## Install
 
@@ -89,7 +89,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.auth0.samples"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 28
         //...
 

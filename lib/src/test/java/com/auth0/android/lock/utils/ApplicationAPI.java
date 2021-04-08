@@ -36,6 +36,9 @@ public class ApplicationAPI {
     private MockWebServer server;
 
     public ApplicationAPI() throws IOException {
+        // FIXME: Remove this if migrating to Robolectric 4.4
+        // ref: https://github.com/robolectric/robolectric/issues/5115#issuecomment-593107140
+        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         this.server = new MockWebServer();
         this.server.start();
     }
