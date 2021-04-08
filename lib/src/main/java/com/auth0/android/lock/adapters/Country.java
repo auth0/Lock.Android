@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.adapters;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Locale;
 

@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.views.interfaces;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface IdentityListener {
 

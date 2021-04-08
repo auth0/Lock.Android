@@ -24,8 +24,8 @@
 
 package com.auth0.android.lock.events;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;

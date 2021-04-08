@@ -2,8 +2,8 @@ package com.auth0.android.lock;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.provider.AuthCallback;

@@ -7,8 +7,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationException;
@@ -33,10 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.intent.matcher.UriMatchers.hasHost;
-import static android.support.test.espresso.intent.matcher.UriMatchers.hasParamWithValue;
-import static android.support.test.espresso.intent.matcher.UriMatchers.hasScheme;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.intent.matcher.UriMatchers.hasHost;
+import static androidx.test.espresso.intent.matcher.UriMatchers.hasParamWithValue;
+import static androidx.test.espresso.intent.matcher.UriMatchers.hasScheme;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.isOneOf;

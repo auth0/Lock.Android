@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:id="@+id/com_auth0_lock_space"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

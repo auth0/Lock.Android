@@ -24,7 +24,7 @@
 
 package com.auth0.android.lock.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 public class LockException extends Exception {
