@@ -34,6 +34,7 @@ import org.hamcrest.collection.IsMapContaining;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -46,7 +47,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 
@@ -151,12 +151,12 @@ public class DatabaseSignUpEventTest {
         SignUpRequest signUpRequestMock = mock(SignUpRequest.class);
         Mockito.when(client.signUp(EMAIL, PASSWORD, USERNAME, CONNECTION)).thenReturn(signUpRequestMock);
         event.getSignUpRequest(client, CONNECTION);
-        Mockito.verify(signUpRequestMock, never()).addSignUpParameters(anyMap());
+        Mockito.verify(signUpRequestMock, never()).addSignUpParameters(ArgumentMatchers.<String, Object>anyMap());
 
         SignUpRequest createRequestMock = mock(SignUpRequest.class);
         Mockito.when(client.signUp(EMAIL, PASSWORD, USERNAME, CONNECTION)).thenReturn(createRequestMock);
         event.getCreateUserRequest(client, CONNECTION);
-        Mockito.verify(createRequestMock, never()).addSignUpParameters(anyMap());
+        Mockito.verify(createRequestMock, never()).addSignUpParameters(ArgumentMatchers.<String, Object>anyMap());
     }
 
     @Test
