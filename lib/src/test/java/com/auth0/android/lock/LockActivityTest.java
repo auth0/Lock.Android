@@ -47,6 +47,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.anyString;
@@ -528,7 +529,7 @@ public class LockActivityTest {
     public void shouldCallOAuthAuthenticationWithCustomProvider() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
-        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        when(handler.providerFor((String) isNull(), eq("custom-connection"))).thenReturn(customProvider);
         AuthResolver.setAuthHandlers(Collections.singletonList(handler));
 
         OAuthConnection connection = mock(OAuthConnection.class);
@@ -566,7 +567,7 @@ public class LockActivityTest {
 
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
-        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        when(handler.providerFor((String) isNull(), eq("custom-connection"))).thenReturn(customProvider);
         AuthResolver.setAuthHandlers(Collections.singletonList(handler));
 
         OAuthConnection connection = mock(OAuthConnection.class);
@@ -602,7 +603,7 @@ public class LockActivityTest {
 
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
-        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        when(handler.providerFor((String) isNull(), eq("custom-connection"))).thenReturn(customProvider);
         AuthResolver.setAuthHandlers(Collections.singletonList(handler));
 
         OAuthConnection connection = mock(OAuthConnection.class);
@@ -691,7 +692,7 @@ public class LockActivityTest {
     public void shouldResumeOAuthAuthenticationWithCustomProviderOnActivityResult() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
-        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        when(handler.providerFor((String) isNull(), eq("custom-connection"))).thenReturn(customProvider);
         AuthResolver.setAuthHandlers(Collections.singletonList(handler));
 
         OAuthConnection connection = mock(OAuthConnection.class);
@@ -725,7 +726,7 @@ public class LockActivityTest {
     public void shouldResumeOAuthAuthenticationWithCustomProviderOnNewIntent() {
         AuthProvider customProvider = mock(AuthProvider.class);
         AuthHandler handler = mock(AuthHandler.class);
-        when(handler.providerFor(anyString(), eq("custom-connection"))).thenReturn(customProvider);
+        when(handler.providerFor((String) isNull(), eq("custom-connection"))).thenReturn(customProvider);
         AuthResolver.setAuthHandlers(Collections.singletonList(handler));
 
         OAuthConnection connection = mock(OAuthConnection.class);

@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -35,6 +36,7 @@ public class PasswordlessIdentityHelperTest {
         when(context.getSharedPreferences(eq("Lock"), eq(Context.MODE_PRIVATE))).thenReturn(sp);
         when(sp.edit()).thenReturn(editor);
         when(editor.putString(anyString(), anyString())).thenReturn(editor);
+        when(editor.putString(anyString(), (String) isNull())).thenReturn(editor);
         when(editor.putInt(anyString(), anyInt())).thenReturn(editor);
     }
 
@@ -70,7 +72,7 @@ public class PasswordlessIdentityHelperTest {
     @Test
     public void shouldGetSavedCountry() {
         PasswordlessIdentityHelper helper = new PasswordlessIdentityHelper(context, PasswordlessMode.SMS_CODE);
-        when(sp.getString(eq("last_passwordless_country"), anyString())).thenReturn("ar@54");
+        when(sp.getString(eq("last_passwordless_country"), (String) isNull())).thenReturn("ar@54");
 
         Country country = helper.getLastCountry();
         assertThat(country, is(notNullValue()));

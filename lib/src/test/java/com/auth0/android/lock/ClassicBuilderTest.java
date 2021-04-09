@@ -20,6 +20,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
@@ -80,9 +81,11 @@ public class ClassicBuilderTest {
         Mockito.when(activity.getApplicationContext()).thenReturn(RuntimeEnvironment.application);
         Mockito.when(activity.registerReceiver(any(BroadcastReceiver.class), any(IntentFilter.class))).thenReturn(null);
         Mockito.when(activity.getResources()).thenReturn(resources);
-        Mockito.when(resources.getIdentifier(anyString(), anyString(), anyString())).thenReturn(1);
-        //noinspection ResourceType
-        Mockito.when(activity.getString(1)).thenReturn("asd");
+        Mockito.when(activity.getPackageName()).thenReturn("test.app");
+        Mockito.when(resources.getIdentifier(eq("com_auth0_client_id"), eq("string"), eq("test.app"))).thenReturn(1);
+        Mockito.when(resources.getIdentifier(eq("com_auth0_domain"), eq("string"), eq("test.app"))).thenReturn(2);
+        Mockito.when(activity.getString(1)).thenReturn("clientId");
+        Mockito.when(activity.getString(2)).thenReturn("domain");
 
         Lock.Builder builder = Lock.newBuilder(callback);
         builder.build(activity);
