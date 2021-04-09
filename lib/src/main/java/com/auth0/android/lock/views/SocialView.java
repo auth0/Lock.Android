@@ -25,13 +25,15 @@
 package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.OAuthLoginEvent;
@@ -72,12 +74,12 @@ public class SocialView extends LinearLayout implements SocialViewAdapter.OAuthL
         List<OAuthConnection> connections = lockWidget.getConfiguration().getSocialConnections();
         adapter = new SocialViewAdapter(getContext(), generateAuthConfigs(connections));
         adapter.setCallback(this);
-        LayoutManager lm = new GridLayoutManager(getContext(), 1, VERTICAL, false);
+        LayoutManager lm = new GridLayoutManager(getContext(), 1, GridLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(lm);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
         recycler.setOverScrollMode(OVER_SCROLL_NEVER);
-        final SpacesItemDecoration spaceDecoration = new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_social), VERTICAL);
+        final SpacesItemDecoration spaceDecoration = new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_social), LinearLayoutCompat.VERTICAL);
         recycler.addItemDecoration(spaceDecoration);
         LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(recycler, recyclerParams);
