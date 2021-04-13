@@ -7,7 +7,6 @@ import com.auth0.android.callback.Callback;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
 
-import org.jetbrains.annotations.NotNull;
 
 public class WebCallbackWrapper implements Callback<Credentials, AuthenticationException> {
 
@@ -18,12 +17,12 @@ public class WebCallbackWrapper implements Callback<Credentials, AuthenticationE
     }
 
     @Override
-    public void onFailure(@NotNull AuthenticationException error) {
+    public void onFailure(@NonNull AuthenticationException error) {
         baseCallback.onFailure(error);
     }
 
     @Override
-    public void onSuccess(@NotNull Credentials credentials) {
+    public void onSuccess(@NonNull Credentials credentials) {
         baseCallback.onSuccess(credentials);
     }
 }
