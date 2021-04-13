@@ -26,8 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -35,6 +33,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -108,7 +109,7 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
     }
 
     static void setEventRootProfileAttributes(DatabaseSignUpEvent event, List<CustomField> visibleFields, List<HiddenField> hiddenFields, ViewGroup container) {
-        HashMap<String, Object> rootMap = new HashMap<>();
+        HashMap<String, String> rootMap = new HashMap<>();
         HashMap<String, String> userMetadataMap = new HashMap<>();
 
         for (CustomField data : visibleFields) {

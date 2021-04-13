@@ -45,7 +45,7 @@ import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.lock.utils.SignUpField;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.CustomTabsOptions;
-import com.auth0.android.util.Telemetry;
+import com.auth0.android.util.Auth0UserAgent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -190,12 +190,10 @@ public class Lock {
          * @param callback that will receive the authentication results.
          */
         public Builder(@Nullable Auth0 account, @NonNull LockCallback callback) {
-            HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
             options = new Options();
             //noinspection ConstantConditions
             options.setAccount(account);
-            options.setAuthenticationParameters(defaultParams);
         }
 
         /**
@@ -235,10 +233,8 @@ public class Lock {
 
             Log.v(TAG, "Lock instance created");
 
-            if (options.getAccount().getTelemetry() != null) {
-                Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME));
-                options.getAccount().setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME));
-            }
+            Auth0UserAgent lockUserAgent = new Auth0UserAgent(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME);
+            options.getAccount().setAuth0UserAgent(lockUserAgent);
 
             final Lock lock = new Lock(options, callback);
             lock.initialize(context);
@@ -306,7 +302,7 @@ public class Lock {
          * @return the current builder instance
          */
         @NonNull
-        public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
+        public Builder withAuthenticationParameters(@NonNull Map<String, String> authenticationParameters) {
             options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             return this;
         }
@@ -549,7 +545,7 @@ public class Lock {
         }
 
         /**
-         * Sets the Audience or API Identifier to request access to when performing the Authentication. This only applies if {@link com.auth0.android.Auth0#isOIDCConformant} is true.
+         * Sets the Audience or API Identifier to request access to when performing the Authentication.
          *
          * @param audience to use in the Authentication.
          * @return the current builder instance

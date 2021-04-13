@@ -30,9 +30,10 @@ import androidx.annotation.Nullable;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.authentication.request.DatabaseConnectionRequest;
-import com.auth0.android.authentication.request.SignUpRequest;
+import com.auth0.android.request.Request;
+import com.auth0.android.request.SignUpRequest;
 import com.auth0.android.result.DatabaseUser;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
 
     @NonNull
     private final String password;
-    private final Map<String, Object> rootAttributes;
+    private final Map<String, String> rootAttributes;
 
     public DatabaseSignUpEvent(@NonNull String email, @NonNull String password, @Nullable String username) {
         super(email, username);
@@ -56,7 +57,7 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return password;
     }
 
-    public void setRootAttributes(@NonNull Map<String, Object> attributes) {
+    public void setRootAttributes(@NonNull Map<String, String> attributes) {
         this.rootAttributes.putAll(attributes);
     }
 
@@ -66,7 +67,8 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
      * @param customFields user_metadata fields to set
      */
     public void setExtraFields(@NonNull Map<String, String> customFields) {
-        this.rootAttributes.put(KEY_USER_METADATA, customFields);
+        String metadata = new Gson().toJson(customFields);
+        this.rootAttributes.put(KEY_USER_METADATA, metadata);
     }
 
 
@@ -87,8 +89,8 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
 
     @SuppressWarnings("ConstantConditions")
     @NonNull
-    public DatabaseConnectionRequest<DatabaseUser, AuthenticationException> getCreateUserRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connection) {
-        DatabaseConnectionRequest<DatabaseUser, AuthenticationException> request;
+    public Request<DatabaseUser, AuthenticationException> getCreateUserRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connection) {
+        Request<DatabaseUser, AuthenticationException> request;
         if (getUsername() != null) {
             request = apiClient.createUser(getEmail(), getPassword(), getUsername(), connection);
         } else {

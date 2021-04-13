@@ -24,17 +24,18 @@
 
 package com.auth0.android.lock.events;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.internal.configuration.PasswordlessMode;
-import com.auth0.android.request.AuthRequest;
-import com.auth0.android.request.ParameterizableRequest;
+import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.Request;
 
 public class PasswordlessLoginEvent {
     private static final String TAG = PasswordlessLoginEvent.class.getSimpleName();
@@ -98,9 +99,9 @@ public class PasswordlessLoginEvent {
      */
     @SuppressWarnings("ConstantConditions")
     @NonNull
-    public ParameterizableRequest<Void, AuthenticationException> getCodeRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connectionName) {
+    public Request<Void, AuthenticationException> getCodeRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connectionName) {
         Log.d(TAG, String.format("Generating Passwordless Code/Link request for connection %s", connectionName));
-        ParameterizableRequest<Void, AuthenticationException> request;
+        Request<Void, AuthenticationException> request;
         if (getMode() == PasswordlessMode.EMAIL_CODE) {
             request = apiClient.passwordlessWithEmail(getEmailOrNumber(), PasswordlessType.CODE);
         } else if (getMode() == PasswordlessMode.EMAIL_LINK) {
@@ -122,7 +123,7 @@ public class PasswordlessLoginEvent {
      */
     @SuppressWarnings("ConstantConditions")
     @NonNull
-    public AuthRequest getLoginRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String emailOrNumber) {
+    public AuthenticationRequest getLoginRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String emailOrNumber) {
         Log.d(TAG, String.format("Generating Passwordless Login request for identity %s", emailOrNumber));
         if (getMode() == PasswordlessMode.EMAIL_CODE || getMode() == PasswordlessMode.EMAIL_LINK) {
             return apiClient.loginWithEmail(emailOrNumber, getCode());

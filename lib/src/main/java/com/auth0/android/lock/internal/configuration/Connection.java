@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.auth0.android.util.CheckHelper.checkArgument;
 
 public class Connection implements BaseConnection, DatabaseConnection, OAuthConnection, PasswordlessConnection {
 
@@ -22,9 +21,13 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
     private PasswordComplexity passwordComplexity;
 
     private Connection(@NonNull String strategy, Map<String, Object> values) {
-        checkArgument(values != null && values.size() > 0, "Must have at least one value");
+        if (values == null || values.isEmpty()) {
+            throw new IllegalArgumentException("Must have at least one value");
+        }
         final String name = (String) values.remove("name");
-        checkArgument(name != null, "Must have a non-null name");
+        if (name == null) {
+            throw new IllegalArgumentException("Must have a non-null name");
+        }
         this.strategy = strategy;
         this.name = name;
         this.values = values;

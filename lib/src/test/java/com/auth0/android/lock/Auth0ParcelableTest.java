@@ -3,7 +3,7 @@ package com.auth0.android.lock;
 import android.os.Parcel;
 
 import com.auth0.android.Auth0;
-import com.auth0.android.util.Telemetry;
+import com.auth0.android.util.Auth0UserAgent;
 import com.squareup.okhttp.HttpUrl;
 
 import org.junit.Test;
@@ -65,46 +65,19 @@ public class Auth0ParcelableTest {
     }
 
     @Test
-    public void shouldSaveTelemetry() {
-        Telemetry telemetry = new Telemetry("name", "version", "libraryVersion");
+    public void shouldSaveUserAgent() {
+        Auth0UserAgent userAgent = new Auth0UserAgent("name", "version", "libraryVersion");
         Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
-        auth0.setTelemetry(telemetry);
+        auth0.setAuth0UserAgent(userAgent);
         Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
         Parcel parcel = Parcel.obtain();
         auth0Parcelable.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
 
         Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
-        assertThat(telemetry.getValue(), is(notNullValue()));
-        assertThat(auth0.getTelemetry().getValue(), is(equalTo(telemetry.getValue())));
-        assertThat(parceledAuth0.getAuth0().getTelemetry().getValue(), is(equalTo(telemetry.getValue())));
+        assertThat(userAgent.getValue(), is(notNullValue()));
+        assertThat(auth0.getAuth0UserAgent().getValue(), is(equalTo(userAgent.getValue())));
+        assertThat(parceledAuth0.getAuth0().getAuth0UserAgent().getValue(), is(equalTo(userAgent.getValue())));
     }
 
-    @Test
-    public void shouldSaveOIDCConformantFlag() {
-        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
-        auth0.setOIDCConformant(true);
-        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
-        Parcel parcel = Parcel.obtain();
-        auth0Parcelable.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
-        assertThat(auth0.isOIDCConformant(), is(equalTo(true)));
-        assertThat(parceledAuth0.getAuth0().isOIDCConformant(), is(equalTo(true)));
-    }
-
-    @Test
-    public void shouldSaveLoggingEnabledFlag() {
-        Auth0 auth0 = new Auth0(CLIENT_ID, DOMAIN, CONFIG_DOMAIN);
-        auth0.setLoggingEnabled(true);
-        Auth0Parcelable auth0Parcelable = new Auth0Parcelable(auth0);
-        Parcel parcel = Parcel.obtain();
-        auth0Parcelable.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Auth0Parcelable parceledAuth0 = Auth0Parcelable.CREATOR.createFromParcel(parcel);
-        assertThat(auth0.isLoggingEnabled(), is(equalTo(true)));
-        assertThat(parceledAuth0.getAuth0().isLoggingEnabled(), is(equalTo(true)));
-    }
 }

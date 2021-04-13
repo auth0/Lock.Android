@@ -30,7 +30,6 @@ import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.Auth0AuthenticationCallbackMatcher;
 import com.auth0.android.lock.utils.MockAuthenticationCallback;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -59,8 +58,7 @@ public class ApplicationFetcherTest {
         final Options options = Mockito.mock(Options.class);
         Auth0 account = new Auth0("client_id", mockAPI.getDomain());
         Mockito.when(options.getAccount()).thenReturn(account);
-        OkHttpClient client = new OkHttpClient();
-        appFetcher = new ApplicationFetcher(account, client);
+        appFetcher = new ApplicationFetcher(account);
     }
 
     @After

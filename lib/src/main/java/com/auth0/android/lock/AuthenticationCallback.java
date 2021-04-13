@@ -25,10 +25,13 @@
 package com.auth0.android.lock;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.auth0.android.result.Credentials;
+
+import java.util.Date;
 
 
 /**
@@ -76,8 +79,9 @@ public abstract class AuthenticationCallback implements LockCallback {
         String accessToken = data.getStringExtra(Constants.ACCESS_TOKEN_EXTRA);
         String tokenType = data.getStringExtra(Constants.TOKEN_TYPE_EXTRA);
         String refreshToken = data.getStringExtra(Constants.REFRESH_TOKEN_EXTRA);
-        long expiresIn = data.getLongExtra(Constants.EXPIRES_IN_EXTRA, 0);
-        Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken, expiresIn);
+        Date expiresAt = (Date) data.getSerializableExtra(Constants.EXPIRES_AT_EXTRA);
+        String scope = data.getStringExtra(Constants.SCOPE_EXTRA);
+        Credentials credentials = new Credentials(idToken, accessToken, tokenType, refreshToken, expiresAt, scope);
 
         Log.d(TAG, "User authenticated!");
         onAuthentication(credentials);

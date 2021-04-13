@@ -29,10 +29,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import android.util.Patterns;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
@@ -83,7 +84,7 @@ public class Options implements Parcelable {
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
     private final HashMap<String, Integer> authStyles;
-    private HashMap<String, Object> authenticationParameters;
+    private HashMap<String, String> authenticationParameters;
     private final HashMap<String, String> connectionsScope;
     private List<SignUpField> signUpFields;
     private int initialScreen;
@@ -164,7 +165,7 @@ public class Options implements Parcelable {
             // FIXME this is something to improve
             Bundle mapBundle = in.readBundle(getClass().getClassLoader());
             //noinspection ConstantConditions
-            authenticationParameters = (HashMap<String, Object>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
+            authenticationParameters = (HashMap<String, String>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
         } else {
             authenticationParameters = null;
         }
@@ -403,13 +404,13 @@ public class Options implements Parcelable {
     }
 
     @Nullable
-    public HashMap<String, Object> getAuthenticationParameters() {
+    public HashMap<String, String> getAuthenticationParameters() {
         return authenticationParameters;
     }
 
-    public void setAuthenticationParameters(@NonNull HashMap<String, Object> authenticationParameters) {
-        final String scope = (String) authenticationParameters.get(SCOPE_KEY);
-        final String device = (String) authenticationParameters.get(DEVICE_KEY);
+    public void setAuthenticationParameters(@NonNull HashMap<String, String> authenticationParameters) {
+        final String scope = authenticationParameters.get(SCOPE_KEY);
+        final String device = authenticationParameters.get(DEVICE_KEY);
 
         if (scope != null && scope.contains(SCOPE_OFFLINE_ACCESS) && device == null) {
             authenticationParameters.put(DEVICE_KEY, Build.MODEL);

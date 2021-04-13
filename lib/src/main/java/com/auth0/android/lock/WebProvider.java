@@ -2,13 +2,16 @@ package com.auth0.android.lock;
 
 import android.app.Activity;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.internal.configuration.Options;
-import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.CustomTabsOptions;
 import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.result.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +40,9 @@ class WebProvider {
      * @param connection          to use in the authentication
      * @param extraAuthParameters extra authentication parameters to use along with the provided in the Options instance
      * @param callback            to deliver the authentication result to
-     * @param requestCode         to use in the startActivityForResult request
      */
-    public void start(@NonNull Activity activity, @NonNull String connection, @Nullable Map<String, Object> extraAuthParameters, @NonNull AuthCallback callback, int requestCode) {
-        HashMap<String, Object> parameters;
+    public void start(@NonNull Activity activity, @NonNull String connection, @Nullable Map<String, String> extraAuthParameters, @NonNull Callback<Credentials, AuthenticationException> callback) {
+        HashMap<String, String> parameters;
         if (extraAuthParameters == null) {
             parameters = options.getAuthenticationParameters();
         } else {
@@ -48,9 +50,7 @@ class WebProvider {
             parameters.putAll(extraAuthParameters);
         }
 
-        //noinspection deprecation
-        WebAuthProvider.Builder builder = WebAuthProvider.init(options.getAccount())
-                .useBrowser(options.useBrowser())
+        WebAuthProvider.Builder builder = WebAuthProvider.login(options.getAccount())
                 .withParameters(parameters)
                 .withConnection(connection);
 
@@ -63,7 +63,7 @@ class WebProvider {
             builder.withScope(scope);
         }
         final String audience = options.getAudience();
-        if (audience != null && options.getAccount().isOIDCConformant()) {
+        if (audience != null) {
             builder.withAudience(audience);
         }
         final String scheme = options.getScheme();
@@ -74,8 +74,7 @@ class WebProvider {
         if (customTabsOptions != null) {
             builder.withCustomTabsOptions(customTabsOptions);
         }
-        //noinspection deprecation
-        builder.start(activity, callback, requestCode);
+        builder.start(activity, callback);
     }
 
     /**
@@ -86,19 +85,6 @@ class WebProvider {
      */
     public boolean resume(Intent intent) {
         return WebAuthProvider.resume(intent);
-    }
-
-    /**
-     * Finishes the authentication flow in the WebAuthProvider
-     *
-     * @param requestCode the request code received on the onActivityResult method
-     * @param resultCode  the result code received on the onActivityResult method
-     * @param intent      the intent received in the onActivityResult method.
-     * @return true if a result was expected and has a valid format, or false if not
-     */
-    public boolean resume(int requestCode, int resultCode, Intent intent) {
-        //noinspection deprecation
-        return WebAuthProvider.resume(requestCode, resultCode, intent);
     }
 
 }
