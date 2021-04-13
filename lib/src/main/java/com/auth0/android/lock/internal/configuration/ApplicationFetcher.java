@@ -77,7 +77,7 @@ public class ApplicationFetcher {
         task.execute(callback);
     }
 
-    private static class FetchTask extends AsyncTask<Callback<List<Connection>, Auth0Exception>, Void, List<Connection>> {
+    private static class FetchTask extends AsyncTask<Callback<List<Connection>, Auth0Exception>, Void, Void> {
 
         private final Auth0 account;
 
@@ -86,14 +86,9 @@ public class ApplicationFetcher {
         }
 
         @Override
-        protected List<Connection> doInBackground(Callback<List<Connection>, Auth0Exception>... callbacks) {
+        protected Void doInBackground(Callback<List<Connection>, Auth0Exception>... callbacks) {
             makeApplicationRequest(account, callbacks[0]);
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Connection> connections) {
-            super.onPostExecute(connections);
         }
 
         private void makeApplicationRequest(Auth0 account, Callback<List<Connection>, Auth0Exception> callback) {
