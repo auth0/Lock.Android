@@ -25,13 +25,14 @@
 package com.auth0.android.lock.internal.configuration;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
 import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.callback.AuthenticationCallback;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.request.HttpMethod;
 import com.auth0.android.request.RequestOptions;
 import com.auth0.android.request.ServerResponse;
@@ -71,63 +72,84 @@ public class ApplicationFetcher {
      *
      * @param callback to notify on success/error
      */
-    public void fetch(@NonNull AuthenticationCallback<List<Connection>> callback) {
-        makeApplicationRequest(callback);
+    public void fetch(@NonNull Callback<List<Connection>, Auth0Exception> callback) {
+        FetchTask task = new FetchTask(account);
+        task.execute(callback);
     }
 
-    private void makeApplicationRequest(final AuthenticationCallback<List<Connection>> callback) {
-        Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
-                .appendPath(account.getClientId() + ".js").build();
+    private static class FetchTask extends AsyncTask<Callback<List<Connection>, Auth0Exception>, Void, List<Connection>> {
 
-        try {
-            ServerResponse res = account.getNetworkingClient().load(uri.toString(), new RequestOptions(HttpMethod.GET.INSTANCE));
-            List<Connection> connections = parseJSONP(res.getBody());
-            callback.onSuccess(connections);
-        } catch (IOException e) {
-            Auth0Exception exception = new Auth0Exception("An error occurred while fetching the client information from the CDN.", e);
-            callback.onFailure(new AuthenticationException("Failed to fetch the Application", exception));
-        } catch (Auth0Exception e) {
-            callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
+        private final Auth0 account;
+
+        public FetchTask(Auth0 account) {
+            this.account = account;
         }
-    }
 
-    private List<Connection> parseJSONP(InputStream is) throws Auth0Exception {
-        try {
-            BufferedInputStream bis = new BufferedInputStream(is);
-            ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            for (int result = bis.read(); result != -1; result = bis.read()) {
-                buf.write((byte) result);
+        @Override
+        protected List<Connection> doInBackground(Callback<List<Connection>, Auth0Exception>... callbacks) {
+            makeApplicationRequest(account, callbacks[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Connection> connections) {
+            super.onPostExecute(connections);
+        }
+
+        private void makeApplicationRequest(Auth0 account, Callback<List<Connection>, Auth0Exception> callback) {
+            Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
+                    .appendPath(account.getClientId() + ".js").build();
+
+            try {
+                ServerResponse res = account.getNetworkingClient().load(uri.toString(), new RequestOptions(HttpMethod.GET.INSTANCE));
+                List<Connection> connections = parseJSONP(res.getBody());
+                callback.onSuccess(connections);
+            } catch (IOException e) {
+                Auth0Exception exception = new Auth0Exception("An error occurred while fetching the client information from the CDN.", e);
+                callback.onFailure(new AuthenticationException("Failed to fetch the Application", exception));
+            } catch (Auth0Exception e) {
+                callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
             }
-            String json = buf.toString(Charset.defaultCharset().name());
-            final int length = JSONP_PREFIX.length();
-            if (json.length() < length) {
-                throw new JSONException("Invalid App Info JSONP");
+        }
+
+        private List<Connection> parseJSONP(InputStream is) throws Auth0Exception {
+            try {
+                BufferedInputStream bis = new BufferedInputStream(is);
+                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                for (int result = bis.read(); result != -1; result = bis.read()) {
+                    buf.write((byte) result);
+                }
+                String json = buf.toString(Charset.defaultCharset().name());
+                final int length = JSONP_PREFIX.length();
+                if (json.length() < length) {
+                    throw new JSONException("Invalid App Info JSONP");
+                }
+                json = json.substring(length);
+                JSONTokener tokenizer = new JSONTokener(json);
+                if (!tokenizer.more()) {
+                    throw tokenizer.syntaxError("Invalid App Info JSONP");
+                }
+                Object nextValue = tokenizer.nextValue();
+                if (!(nextValue instanceof JSONObject)) {
+                    tokenizer.back();
+                    throw tokenizer.syntaxError("Invalid JSON value of App Info");
+                }
+                JSONObject jsonObject = (JSONObject) nextValue;
+                Type applicationType = new TypeToken<List<Connection>>() {
+                }.getType();
+                return createGson().fromJson(jsonObject.toString(), applicationType);
+            } catch (IOException | JSONException e) {
+                throw new Auth0Exception("Failed to parse response to request", e);
             }
-            json = json.substring(length);
-            JSONTokener tokenizer = new JSONTokener(json);
-            if (!tokenizer.more()) {
-                throw tokenizer.syntaxError("Invalid App Info JSONP");
-            }
-            Object nextValue = tokenizer.nextValue();
-            if (!(nextValue instanceof JSONObject)) {
-                tokenizer.back();
-                throw tokenizer.syntaxError("Invalid JSON value of App Info");
-            }
-            JSONObject jsonObject = (JSONObject) nextValue;
+        }
+
+        static Gson createGson() {
             Type applicationType = new TypeToken<List<Connection>>() {
             }.getType();
-            return createGson().fromJson(jsonObject.toString(), applicationType);
-        } catch (IOException | JSONException e) {
-            throw new Auth0Exception("Failed to parse response to request", e);
+            return new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .registerTypeAdapter(applicationType, new ApplicationDeserializer())
+                    .create();
         }
-    }
-
-    static Gson createGson() {
-        Type applicationType = new TypeToken<List<Connection>>() {
-        }.getType();
-        return new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(applicationType, new ApplicationDeserializer())
-                .create();
     }
 }

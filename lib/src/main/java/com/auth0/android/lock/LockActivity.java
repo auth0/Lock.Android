@@ -50,10 +50,12 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.Auth0Exception;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.callback.AuthenticationCallback;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
 import com.auth0.android.lock.errors.SignUpErrorMessageBuilder;
@@ -479,7 +481,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     //Callbacks
-    private final com.auth0.android.callback.AuthenticationCallback<List<Connection>> applicationCallback = new AuthenticationCallback<List<Connection>>() {
+    private final Callback<List<Connection>, Auth0Exception> applicationCallback = new Callback<List<Connection>, Auth0Exception>() {
         @Override
         public void onSuccess(@Nullable final List<Connection> connections) {
             //noinspection ConstantConditions
@@ -494,7 +496,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         @Override
-        public void onFailure(@NonNull final AuthenticationException error) {
+        public void onFailure(@NonNull final Auth0Exception error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
             handler.post(new Runnable() {
