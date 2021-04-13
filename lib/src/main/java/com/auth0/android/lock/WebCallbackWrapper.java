@@ -8,7 +8,10 @@ import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
 
 
-public class WebCallbackWrapper implements Callback<Credentials, AuthenticationException> {
+/**
+ * Internal class, meant to wrap a {@link AuthCallback} instance and expose it as a {@link Callback}
+ */
+class WebCallbackWrapper implements Callback<Credentials, AuthenticationException> {
 
     private final AuthCallback baseCallback;
 
