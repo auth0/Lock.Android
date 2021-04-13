@@ -25,46 +25,45 @@
 package com.auth0.android.lock.internal.configuration;
 
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
-import android.util.Log;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.callback.AuthenticationCallback;
+import com.auth0.android.request.HttpMethod;
+import com.auth0.android.request.RequestOptions;
+import com.auth0.android.request.ServerResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class ApplicationFetcher {
 
     private static final String JSONP_PREFIX = "Auth0.setClient(";
-    private static final String TAG = ApplicationFetcher.class.getSimpleName();
 
     private final Auth0 account;
-    private final OkHttpClient client;
 
     /**
      * Helper class to fetch the Application information from Auth0 Dashboard.
      *
      * @param account the Application details to build the request uri.
-     * @param client  the OKHttpClient instance to use for the CDN request.
      */
-    public ApplicationFetcher(@NonNull Auth0 account, @NonNull OkHttpClient client) {
+    public ApplicationFetcher(@NonNull Auth0 account) {
         this.account = account;
-        this.client = client;
     }
 
     /**
@@ -80,38 +79,26 @@ public class ApplicationFetcher {
         Uri uri = Uri.parse(account.getConfigurationUrl()).buildUpon().appendPath("client")
                 .appendPath(account.getClientId() + ".js").build();
 
-        Request req = new Request.Builder()
-                .url(uri.toString())
-                .build();
-
-        client.newCall(req).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, final IOException e) {
-                Log.e(TAG, "Failed to fetch the Application: " + e.getMessage(), e);
-                Auth0Exception exception = new Auth0Exception("Failed to fetch the Application: " + e.getMessage());
-                callback.onFailure(new AuthenticationException("Failed to fetch the Application", exception));
-            }
-
-            @Override
-            public void onResponse(Response response) {
-                List<Connection> connections;
-                try {
-                    connections = parseJSONP(response);
-                } catch (Auth0Exception e) {
-                    Log.e(TAG, "Could not parse Application JSONP: " + e.getMessage());
-                    callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
-                    return;
-                }
-
-                Log.i(TAG, "Application received!");
-                callback.onSuccess(connections);
-            }
-        });
+        try {
+            ServerResponse res = account.getNetworkingClient().load(uri.toString(), new RequestOptions(HttpMethod.GET.INSTANCE));
+            List<Connection> connections = parseJSONP(res.getBody());
+            callback.onSuccess(connections);
+        } catch (IOException e) {
+            Auth0Exception exception = new Auth0Exception("An error occurred while fetching the client information from the CDN.", e);
+            callback.onFailure(new AuthenticationException("Failed to fetch the Application", exception));
+        } catch (Auth0Exception e) {
+            callback.onFailure(new AuthenticationException("Could not parse Application JSONP", e));
+        }
     }
 
-    private List<Connection> parseJSONP(Response response) throws Auth0Exception {
+    private List<Connection> parseJSONP(InputStream is) throws Auth0Exception {
         try {
-            String json = response.body().string();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            for (int result = bis.read(); result != -1; result = bis.read()) {
+                buf.write((byte) result);
+            }
+            String json = buf.toString(Charset.defaultCharset().name());
             final int length = JSONP_PREFIX.length();
             if (json.length() < length) {
                 throw new JSONException("Invalid App Info JSONP");

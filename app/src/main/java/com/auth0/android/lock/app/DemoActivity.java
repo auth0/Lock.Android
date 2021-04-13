@@ -24,12 +24,7 @@
 
 package com.auth0.android.lock.app;
 
-import android.app.Dialog;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,9 +32,13 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.auth0.android.Auth0;
-import com.auth0.android.Auth0Exception;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.Lock;
@@ -47,12 +46,13 @@ import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.PasswordlessLock;
 import com.auth0.android.lock.UsernameStyle;
 import com.auth0.android.lock.utils.LockException;
-import com.auth0.android.provider.AuthCallback;
-import com.auth0.android.provider.VoidCallback;
 import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.request.DefaultClient;
 import com.auth0.android.result.Credentials;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
@@ -228,8 +228,8 @@ public class DemoActivity extends AppCompatActivity {
 
     private Auth0 getAccount() {
         Auth0 account = new Auth0(getString(R.string.com_auth0_client_id), getString(R.string.com_auth0_domain));
-        account.setOIDCConformant(true);
-        account.setLoggingEnabled(true);
+        DefaultClient netClient = new DefaultClient(10, 10, Collections.<String, String>emptyMap(), true);
+        account.setNetworkingClient(netClient);
         return account;
     }
 
@@ -299,12 +299,7 @@ public class DemoActivity extends AppCompatActivity {
         }
     };
 
-    private final AuthCallback loginCallback = new AuthCallback() {
-        @Override
-        public void onFailure(@NonNull Dialog dialog) {
-            dialog.show();
-        }
-
+    private final Callback<Credentials, AuthenticationException> loginCallback = new Callback<Credentials, AuthenticationException>() {
         @Override
         public void onFailure(@NonNull AuthenticationException exception) {
             showResult("Failed > " + exception.getDescription());
@@ -316,9 +311,9 @@ public class DemoActivity extends AppCompatActivity {
         }
     };
 
-    private final VoidCallback logoutCallback = new VoidCallback() {
+    private final Callback<Void, AuthenticationException> logoutCallback = new Callback<Void, AuthenticationException>() {
         @Override
-        public void onFailure(@NonNull Auth0Exception error) {
+        public void onFailure(@NonNull AuthenticationException error) {
             showResult("Log out cancelled");
         }
 

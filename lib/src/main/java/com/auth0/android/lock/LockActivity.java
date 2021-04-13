@@ -32,13 +32,6 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -48,11 +41,18 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.ParameterBuilder;
-import com.auth0.android.authentication.request.SignUpRequest;
 import com.auth0.android.callback.AuthenticationCallback;
 import com.auth0.android.lock.errors.AuthenticationError;
 import com.auth0.android.lock.errors.LoginErrorMessageBuilder;
@@ -73,10 +73,9 @@ import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
-import com.auth0.android.request.internal.OkHttpClientFactory;
+import com.auth0.android.request.SignUpRequest;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -224,7 +223,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, credentials.getAccessToken());
         intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, credentials.getRefreshToken());
         intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
-        intent.putExtra(Constants.EXPIRES_IN_EXTRA, credentials.getExpiresIn());
+        intent.putExtra(Constants.EXPIRES_AT_EXTRA, credentials.getExpiresAt());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
@@ -277,7 +276,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         switch (requestCode) {
             case WEB_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
-                webProvider.resume(requestCode, resultCode, data);
+                webProvider.resume(data);
                 break;
             case CUSTOM_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
@@ -309,9 +308,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     public void onFetchApplicationRequest(@NonNull FetchApplicationEvent event) {
         if (applicationFetcher == null) {
             Auth0 account = options.getAccount();
-            OkHttpClient client = new OkHttpClientFactory().createClient(account.isLoggingEnabled(), account.isTLS12Enforced(),
-                    account.getConnectTimeoutInSeconds(), account.getReadTimeoutInSeconds(), account.getWriteTimeoutInSeconds());
-            applicationFetcher = new ApplicationFetcher(account, client);
+            applicationFetcher = new ApplicationFetcher(account);
             applicationFetcher.fetch(applicationCallback);
         }
     }
@@ -336,12 +333,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             lockView.showProgress(true);
             Log.d(TAG, "Using the /ro endpoint for this OAuth Login Request");
             AuthenticationRequest request = options.getAuthenticationAPIClient()
-                    .login(event.getUsername(), event.getPassword(), connection)
-                    .addAuthenticationParameters(options.getAuthenticationParameters());
+                    .login(event.getUsername(), event.getPassword(), connection);
+            request.addParameters(options.getAuthenticationParameters());
             if (options.getScope() != null) {
                 request.setScope(options.getScope());
             }
-            if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
+            if (options.getAudience() != null) {
                 request.setAudience(options.getAudience());
             }
             request.start(authCallback);
@@ -351,7 +348,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         Log.v(TAG, "Looking for a provider to use /authorize with the connection " + connection);
         currentProvider = AuthResolver.providerFor(event.getStrategy(), connection);
         if (currentProvider != null) {
-            HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
+            Map<String, Object> authParameters = new HashMap<>();
+            for (Map.Entry<String, String> e : options.getAuthenticationParameters().entrySet()) {
+                authParameters.put(e.getKey(), e.getValue());
+            }
             final String connectionScope = options.getConnectionsScope().get(connection);
             if (connectionScope != null) {
                 authParameters.put(Constants.CONNECTION_SCOPE_KEY, connectionScope);
@@ -361,7 +361,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 authParameters.put(ParameterBuilder.SCOPE_KEY, scope);
             }
             final String audience = options.getAudience();
-            if (audience != null && options.getAccount().isOIDCConformant()) {
+            if (audience != null) {
                 authParameters.put(ParameterBuilder.AUDIENCE_KEY, audience);
             }
             if (!TextUtils.isEmpty(event.getUsername())) {
@@ -372,12 +372,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
-        Map<String, Object> extraAuthParameters = null;
+        Map<String, String> extraAuthParameters = null;
         if (!TextUtils.isEmpty(event.getUsername())) {
-            extraAuthParameters = Collections.singletonMap(KEY_LOGIN_HINT, (Object) event.getUsername());
+            extraAuthParameters = Collections.singletonMap(KEY_LOGIN_HINT, event.getUsername());
         }
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        webProvider.start(this, connection, extraAuthParameters, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, connection, extraAuthParameters, new WebCallbackWrapper(authProviderCallback));
     }
 
     private void completeDatabaseAuthenticationOnBrowser() {
@@ -394,11 +394,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             loginHint = lastDatabaseLogin.getUsernameOrEmail();
             screenHint = "login";
         }
-        HashMap<String, Object> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         params.put(KEY_LOGIN_HINT, loginHint);
         params.put(KEY_SCREEN_HINT, screenHint);
 
-        webProvider.start(this, connection, params, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, connection, params, new WebCallbackWrapper(authProviderCallback));
     }
 
     @Subscribe
@@ -412,8 +412,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lastDatabaseLogin = event;
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         AuthenticationRequest request;
-        //noinspection ConstantConditions
-        HashMap<String, Object> parameters = new HashMap<>(options.getAuthenticationParameters());
+        Map<String, String> parameters = new HashMap<>(options.getAuthenticationParameters());
         if (TextUtils.isEmpty(event.getMFAToken()) || TextUtils.isEmpty(event.getVerificationCode())) {
             String connection = configuration.getDatabaseConnection().getName();
             request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection);
@@ -425,11 +424,11 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             request = apiClient.loginWithOTP(event.getMFAToken(), event.getVerificationCode());
         }
 
-        request.addAuthenticationParameters(parameters);
+        request.addParameters(parameters);
         if (options.getScope() != null) {
             request.setScope(options.getScope());
         }
-        if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
+        if (options.getAudience() != null) {
             request.setAudience(options.getAudience());
         }
         request.start(authCallback);
@@ -449,13 +448,12 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         if (configuration.loginAfterSignUp()) {
             //noinspection ConstantConditions
-            Map<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
             SignUpRequest request = event.getSignUpRequest(apiClient, connection)
-                    .addAuthenticationParameters(authParameters);
+                    .addParameters(options.getAuthenticationParameters());
             if (options.getScope() != null) {
                 request.setScope(options.getScope());
             }
-            if (options.getAudience() != null && options.getAccount().isOIDCConformant()) {
+            if (options.getAudience() != null) {
                 request.setAudience(options.getAudience());
             }
             request.start(authCallback);

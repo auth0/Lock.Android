@@ -32,13 +32,6 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +40,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
@@ -70,14 +71,13 @@ import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
-import com.auth0.android.request.internal.OkHttpClientFactory;
 import com.auth0.android.result.Credentials;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("GoogleAppIndexingApiWarning")
 public class PasswordlessLockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -228,7 +228,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         intent.putExtra(Constants.ACCESS_TOKEN_EXTRA, credentials.getAccessToken());
         intent.putExtra(Constants.REFRESH_TOKEN_EXTRA, credentials.getRefreshToken());
         intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
-        intent.putExtra(Constants.EXPIRES_IN_EXTRA, credentials.getExpiresIn());
+        intent.putExtra(Constants.EXPIRES_AT_EXTRA, credentials.getExpiresAt());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
@@ -320,7 +320,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 break;
             case WEB_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
-                webProvider.resume(requestCode, resultCode, data);
+                webProvider.resume(data);
                 break;
             case CUSTOM_AUTH_REQUEST_CODE:
                 lockView.showProgress(false);
@@ -384,9 +384,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     public void onFetchApplicationRequest(@NonNull FetchApplicationEvent event) {
         if (applicationFetcher == null) {
             Auth0 account = options.getAccount();
-            OkHttpClient client = new OkHttpClientFactory().createClient(account.isLoggingEnabled(), account.isTLS12Enforced(),
-                    account.getConnectTimeoutInSeconds(), account.getReadTimeoutInSeconds(), account.getWriteTimeoutInSeconds());
-            applicationFetcher = new ApplicationFetcher(account, client);
+            applicationFetcher = new ApplicationFetcher(account);
             applicationFetcher.fetch(applicationCallback);
         }
     }
@@ -411,8 +409,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         String connectionName = configuration.getPasswordlessConnection().getName();
         if (event.getCode() != null) {
             AuthenticationRequest request = event.getLoginRequest(apiClient, lastPasswordlessIdentity)
-                    .addAuthenticationParameters(options.getAuthenticationParameters())
                     .setConnection(connectionName);
+            request.addParameters(options.getAuthenticationParameters())
+                    .addParameter("connection", connectionName);
             if (options.getScope() != null) {
                 request.setScope(options.getScope());
             }
@@ -434,7 +433,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         Log.v(TAG, "Looking for a provider to use with the connection " + event.getConnection());
         currentProvider = AuthResolver.providerFor(event.getStrategy(), event.getConnection());
         if (currentProvider != null) {
-            HashMap<String, Object> authParameters = new HashMap<>(options.getAuthenticationParameters());
+            Map<String, Object> authParameters = new HashMap<>();
+            for (Map.Entry<String, String> e : options.getAuthenticationParameters().entrySet()) {
+                authParameters.put(e.getKey(), e.getValue());
+            }
             final String connectionScope = options.getConnectionsScope().get(event.getConnection());
             if (connectionScope != null) {
                 authParameters.put(Constants.CONNECTION_SCOPE_KEY, connectionScope);
@@ -444,7 +446,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 authParameters.put(ParameterBuilder.SCOPE_KEY, scope);
             }
             final String audience = options.getAudience();
-            if (audience != null && options.getAccount().isOIDCConformant()) {
+            if (audience != null) {
                 authParameters.put(ParameterBuilder.AUDIENCE_KEY, audience);
             }
             currentProvider.setParameters(authParameters);
@@ -453,7 +455,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
 
         Log.d(TAG, "Couldn't find an specific provider, using the default: " + WebAuthProvider.class.getSimpleName());
-        webProvider.start(this, event.getConnection(), null, authProviderCallback, WEB_AUTH_REQUEST_CODE);
+        webProvider.start(this, event.getConnection(), null, new WebCallbackWrapper(authProviderCallback));
     }
 
     //Callbacks

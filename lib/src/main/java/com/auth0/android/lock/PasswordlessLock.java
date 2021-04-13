@@ -28,15 +28,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 
 import com.auth0.android.Auth0;
-import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.Theme;
@@ -44,7 +44,7 @@ import com.auth0.android.lock.provider.AuthResolver;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.CustomTabsOptions;
-import com.auth0.android.util.Telemetry;
+import com.auth0.android.util.Auth0UserAgent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -183,12 +183,10 @@ public class PasswordlessLock {
          * @param callback that will receive the authentication results.
          */
         public Builder(@Nullable Auth0 account, @NonNull LockCallback callback) {
-            HashMap<String, Object> defaultParams = new HashMap<>(ParameterBuilder.newAuthenticationBuilder().setDevice(Build.MODEL).asDictionary());
             this.callback = callback;
             options = new Options();
             //noinspection ConstantConditions
             options.setAccount(account);
-            options.setAuthenticationParameters(defaultParams);
         }
 
         /**
@@ -215,10 +213,8 @@ public class PasswordlessLock {
             }
             Log.v(TAG, "PasswordlessLock instance created");
 
-            if (options.getAccount().getTelemetry() != null) {
-                Log.v(TAG, String.format("Using Telemetry %s (%s) and Library %s", Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME));
-                options.getAccount().setTelemetry(new Telemetry(Constants.LIBRARY_NAME, com.auth0.android.lock.BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME));
-            }
+            Auth0UserAgent lockUserAgent = new Auth0UserAgent(Constants.LIBRARY_NAME, BuildConfig.VERSION_NAME, com.auth0.android.auth0.BuildConfig.VERSION_NAME);
+            options.getAccount().setAuth0UserAgent(lockUserAgent);
 
             final PasswordlessLock lock = new PasswordlessLock(options, callback);
             lock.initialize(context);
@@ -361,7 +357,7 @@ public class PasswordlessLock {
          * @return the current builder instance
          */
         @NonNull
-        public Builder withAuthenticationParameters(@NonNull Map<String, Object> authenticationParameters) {
+        public Builder withAuthenticationParameters(@NonNull Map<String, String> authenticationParameters) {
             options.setAuthenticationParameters(new HashMap<>(authenticationParameters));
             return this;
         }
