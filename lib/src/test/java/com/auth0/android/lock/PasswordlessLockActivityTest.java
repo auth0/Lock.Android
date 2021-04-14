@@ -7,6 +7,7 @@ import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.PasswordlessType;
 import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.OAuthLoginEvent;
 import com.auth0.android.lock.events.PasswordlessLoginEvent;
@@ -20,8 +21,8 @@ import com.auth0.android.lock.views.PasswordlessLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
-import com.auth0.android.request.AuthRequest;
-import com.auth0.android.request.ParameterizableRequest;
+import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.Request;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,9 +71,9 @@ public class PasswordlessLockActivityTest {
     @Mock
     WebProvider webProvider;
     @Mock
-    ParameterizableRequest codeRequest;
+    Request codeRequest;
     @Mock
-    AuthRequest authRequest;
+    AuthenticationRequest authRequest;
     @Mock
     Configuration configuration;
     @Mock
@@ -96,8 +97,8 @@ public class PasswordlessLockActivityTest {
         when(client.loginWithEmail(anyString(), anyString())).thenReturn(authRequest);
         when(client.loginWithPhoneNumber(anyString(), anyString())).thenReturn(authRequest);
         when(codeRequest.addParameters(anyMapOf(String.class, Object.class))).thenReturn(codeRequest);
-        when(codeRequest.addParameter(anyString(), any(Object.class))).thenReturn(codeRequest);
-        when(authRequest.addAuthenticationParameters(anyMapOf(String.class, Object.class))).thenReturn(authRequest);
+        when(codeRequest.addParameter(anyString(), any(String.class))).thenReturn(codeRequest);
+        when(authRequest.addParameters(anyMapOf(String.class, String.class))).thenReturn(authRequest);
         when(authRequest.setConnection(anyString())).thenReturn(authRequest);
 
         PasswordlessConnection connection = mock(PasswordlessConnection.class);
@@ -149,7 +150,7 @@ public class PasswordlessLockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).loginWithEmail(eq("user@domain.com"), eq("1234"));
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).setConnection(eq("connection"));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).start(any(BaseCallback.class));
@@ -201,7 +202,7 @@ public class PasswordlessLockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).loginWithPhoneNumber(eq("+541234567890"), eq("1234"));
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).setConnection(eq("connection"));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).start(any(BaseCallback.class));
@@ -242,7 +243,6 @@ public class PasswordlessLockActivityTest {
     @Test
     public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -290,7 +290,7 @@ public class PasswordlessLockActivityTest {
         verify(lockView, never()).showProgress(eq(true));
 
         ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(Callback.class));
 
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(nullValue()));
@@ -307,7 +307,7 @@ public class PasswordlessLockActivityTest {
         activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(eq(REQ_CODE_WEB_PROVIDER), eq(Activity.RESULT_OK), eq(intent));
+        verify(webProvider).resume(eq(intent));
     }
 
     @Test

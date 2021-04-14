@@ -28,7 +28,9 @@ import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
 import com.auth0.android.lock.utils.ApplicationAPI;
 import com.auth0.android.lock.utils.Auth0AuthenticationCallbackMatcher;
+import com.auth0.android.lock.utils.CallbackMatcher;
 import com.auth0.android.lock.utils.MockAuthenticationCallback;
+import com.auth0.android.lock.utils.MockCallback;
 import com.google.gson.reflect.TypeToken;
 
 import org.hamcrest.CoreMatchers;
@@ -69,23 +71,25 @@ public class ApplicationFetcherTest {
     @Test
     public void shouldReturnApplicationOnValidJSONPResponse() throws Exception {
         mockAPI.willReturnValidJSONPResponse();
-        final MockAuthenticationCallback<List<Connection>> callback = new MockAuthenticationCallback<>();
+        final MockCallback<List<Connection>, Auth0Exception> callback = new MockCallback<>();
         appFetcher.fetch(callback);
         mockAPI.takeRequest();
 
         TypeToken<List<Connection>> applicationType = new TypeToken<List<Connection>>(){};
-        assertThat(callback, Auth0AuthenticationCallbackMatcher.hasPayloadOfType(applicationType));
+        TypeToken<Auth0Exception> errorType = new TypeToken<Auth0Exception>() {};
+        assertThat(callback, CallbackMatcher.hasPayloadOfType(applicationType, errorType));
     }
 
     @Test
     public void shouldReturnExceptionOnInvalidJSONPResponse() throws Exception {
         mockAPI.willReturnInvalidJSONPLengthResponse();
-        final MockAuthenticationCallback<List<Connection>> callback = new MockAuthenticationCallback<>();
+        final MockCallback<List<Connection>, Auth0Exception> callback = new MockCallback<>();
         appFetcher.fetch(callback);
         mockAPI.takeRequest();
 
         TypeToken<List<Connection>> applicationType = new TypeToken<List<Connection>>(){};
-        assertThat(callback, Auth0AuthenticationCallbackMatcher.hasNoPayloadOfType(applicationType));
+        TypeToken<Auth0Exception> errorType = new TypeToken<Auth0Exception>() {};
+        assertThat(callback, CallbackMatcher.hasNoPayloadOfType(applicationType, errorType));
         assertThat(callback.getError(), CoreMatchers.instanceOf(Auth0Exception.class));
         assertThat(callback.getError().getCause().getCause().getMessage(), CoreMatchers.containsString("Invalid App Info JSONP"));
     }

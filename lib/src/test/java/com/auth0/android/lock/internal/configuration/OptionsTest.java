@@ -674,7 +674,7 @@ public class OptionsTest {
 
     @Test
     public void shouldSetDeviceParameterIfUsingOfflineAccessScope() {
-        HashMap<String, Object> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
         options.setAuthenticationParameters(params);
 
@@ -691,7 +691,7 @@ public class OptionsTest {
 
     @Test
     public void shouldNotOverrideDeviceParameterIfAlreadySet() {
-        HashMap<String, Object> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         params.put(SCOPE_KEY, SCOPE_OPENID_OFFLINE_ACCESS);
         params.put(DEVICE_KEY, "my_device 2016");
         options.setAuthenticationParameters(params);
@@ -823,14 +823,10 @@ public class OptionsTest {
     }
 
 
-    private HashMap<String, Object> createAuthenticationParameters(int innerIntParam) {
-        HashMap<String, Object> authenticationParameters = new HashMap<>();
+    private HashMap<String, String> createAuthenticationParameters(int innerIntParam) {
+        HashMap<String, String> authenticationParameters = new HashMap<>();
         authenticationParameters.put("key_param_string", "value_param_string");
-        authenticationParameters.put("key_param_int", 123456);
-        HashMap<String, Object> otherParameters = new HashMap<>();
-        otherParameters.put("key_other_param_string", "value_other_param_string");
-        otherParameters.put("key_other_param_int", innerIntParam);
-        authenticationParameters.put("key_param_map", otherParameters);
+        authenticationParameters.put("key_param_int", "123456");
         return authenticationParameters;
     }
 

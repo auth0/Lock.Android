@@ -13,10 +13,11 @@ import androidx.annotation.Nullable;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.internal.configuration.Options;
-import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthenticationActivity;
 import com.auth0.android.provider.CustomTabsOptions;
+import com.auth0.android.result.Credentials;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,10 +75,10 @@ public class WebProviderTest {
     public void shouldStart() {
         Options options = new Options();
         options.setAccount(new Auth0("clientId", "domain.auth0.com"));
-        AuthCallback callback = mock(AuthCallback.class);
+        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
         WebProvider webProvider = new WebProvider(options);
 
-        webProvider.start(activity, "my-connection", null, callback, 123);
+        webProvider.start(activity, "my-connection", null, callback);
         verify(callback, never()).onFailure(any(AuthenticationException.class));
     }
 
@@ -87,9 +88,9 @@ public class WebProviderTest {
 
         Options options = new Options();
         options.setAccount(new Auth0("clientId", "domain.auth0.com"));
-        AuthCallback callback = mock(AuthCallback.class);
+        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
         WebProvider webProvider = new WebProvider(options);
-        webProvider.start(activity, "my-connection", null, callback, 123);
+        webProvider.start(activity, "my-connection", null, callback);
 
         ArgumentCaptor<AuthenticationException> exceptionCaptor = ArgumentCaptor.forClass(AuthenticationException.class);
         verify(callback).onFailure(exceptionCaptor.capture());
@@ -100,21 +101,20 @@ public class WebProviderTest {
     @Test
     public void shouldStartWithCustomAuthenticationParameters() {
         Auth0 account = new Auth0("clientId", "domain.auth0.com");
-        account.setOIDCConformant(true);
         Options options = new Options();
         options.setAccount(account);
 
         options.setUseBrowser(true);
         options.withAudience("https://me.auth0.com/myapi");
 
-        AuthCallback callback = mock(AuthCallback.class);
+        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
         WebProvider webProvider = new WebProvider(options);
 
-        Map<String, Object> parameters = new HashMap<>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("custom-param-1", "value-1");
         parameters.put("custom-param-2", "value-2");
 
-        webProvider.start(activity, "my-connection", parameters, callback, 123);
+        webProvider.start(activity, "my-connection", parameters, callback);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
         verify(callback, never()).onFailure(any(AuthenticationException.class));
@@ -136,17 +136,16 @@ public class WebProviderTest {
     @Test
     public void shouldStartWithCustomAudience() {
         Auth0 account = new Auth0("clientId", "domain.auth0.com");
-        account.setOIDCConformant(true);
         Options options = new Options();
         options.setAccount(account);
 
         options.setUseBrowser(true);
         options.withAudience("https://me.auth0.com/myapi");
 
-        AuthCallback callback = mock(AuthCallback.class);
+        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
         WebProvider webProvider = new WebProvider(options);
 
-        webProvider.start(activity, "my-connection", null, callback, 123);
+        webProvider.start(activity, "my-connection", null, callback);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
         verify(callback, never()).onFailure(any(AuthenticationException.class));
@@ -169,7 +168,7 @@ public class WebProviderTest {
         Options options = new Options();
         options.setAccount(account);
 
-        HashMap<String, Object> parameters = new HashMap<>();
+        HashMap<String, String> parameters = new HashMap<>();
         parameters.put("custom-param-1", "value-1");
         parameters.put("custom-param-2", "value-2");
         options.setAuthenticationParameters(parameters);
@@ -180,10 +179,10 @@ public class WebProviderTest {
         CustomTabsOptions customTabsOptions = CustomTabsOptions.newBuilder().build();
         options.withCustomTabsOptions(customTabsOptions);
 
-        AuthCallback callback = mock(AuthCallback.class);
+        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
         WebProvider webProvider = new WebProvider(options);
 
-        webProvider.start(activity, "my-connection", null, callback, 123);
+        webProvider.start(activity, "my-connection", null, callback);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivity(intentCaptor.capture());
         verify(callback, never()).onFailure(any(AuthenticationException.class));
@@ -216,7 +215,7 @@ public class WebProviderTest {
         Options options = new Options();
         options.setAccount(account);
 
-        HashMap<String, Object> parameters = new HashMap<>();
+        HashMap<String, String> parameters = new HashMap<>();
         parameters.put("custom-param-1", "value-1");
         parameters.put("custom-param-2", "value-2");
         options.setAuthenticationParameters(parameters);
@@ -225,10 +224,10 @@ public class WebProviderTest {
         options.setUseBrowser(false);
         options.withScheme("auth0");
 
-        AuthCallback callback = mock(AuthCallback.class);
+        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
         WebProvider webProvider = new WebProvider(options);
 
-        webProvider.start(activity, "my-connection", null, callback, 123);
+        webProvider.start(activity, "my-connection", null, callback);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         verify(activity).startActivityForResult(intentCaptor.capture(), eq(123));
         verify(callback, never()).onFailure(any(AuthenticationException.class));
@@ -267,7 +266,7 @@ public class WebProviderTest {
         Intent intent = mock(Intent.class);
         Options options = mock(Options.class);
         WebProvider webProvider = new WebProvider(options);
-        assertThat(webProvider.resume(1, Activity.RESULT_CANCELED, intent), is(false));
+        assertThat(webProvider.resume(intent), is(false));
     }
 
     /**

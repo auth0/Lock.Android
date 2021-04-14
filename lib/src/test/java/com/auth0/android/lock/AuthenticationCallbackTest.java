@@ -36,6 +36,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Date;
+
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasAuthentication;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasNoError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.isCanceled;
@@ -73,7 +75,8 @@ public class AuthenticationCallbackTest {
         assertThat(callback.getCredentials().getIdToken(), equalTo(credentials.getIdToken()));
         assertThat(callback.getCredentials().getRefreshToken(), equalTo(credentials.getRefreshToken()));
         assertThat(callback.getCredentials().getType(), equalTo(credentials.getType()));
-        assertThat(callback.getCredentials().getExpiresIn(), equalTo(credentials.getExpiresIn()));
+        assertThat(callback.getCredentials().getExpiresAt(), equalTo(credentials.getExpiresAt()));
+        assertThat(callback.getCredentials().getScope(), equalTo(credentials.getScope()));
         assertThat(callback, hasNoError());
     }
 
@@ -112,7 +115,8 @@ public class AuthenticationCallbackTest {
         i.putExtra(Constants.ACCESS_TOKEN_EXTRA, "accessToken");
         i.putExtra(Constants.TOKEN_TYPE_EXTRA, "tokenType");
         i.putExtra(Constants.REFRESH_TOKEN_EXTRA, "refreshToken");
-        i.putExtra(Constants.EXPIRES_IN_EXTRA, 86000);
+        i.putExtra(Constants.EXPIRES_AT_EXTRA, new Date());
+        i.putExtra(Constants.SCOPE_EXTRA, "openid profile");
         return i;
     }
 
@@ -121,9 +125,10 @@ public class AuthenticationCallbackTest {
         String accessToken = data.getStringExtra(Constants.ACCESS_TOKEN_EXTRA);
         String tokenType = data.getStringExtra(Constants.TOKEN_TYPE_EXTRA);
         String refreshToken = data.getStringExtra(Constants.REFRESH_TOKEN_EXTRA);
-        long expiresIn = data.getLongExtra(Constants.EXPIRES_IN_EXTRA, 0);
+        Date expiresAt = (Date) data.getSerializableExtra(Constants.EXPIRES_AT_EXTRA);
+        String scope = data.getStringExtra(Constants.SCOPE_EXTRA);
 
-        return new Credentials(idToken, accessToken, tokenType, refreshToken, expiresIn);
+        return new Credentials(idToken, accessToken, tokenType, refreshToken, expiresAt, scope);
     }
 
 }

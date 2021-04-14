@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
@@ -75,6 +76,16 @@ public class ApplicationFetcher {
     public void fetch(@NonNull Callback<List<Connection>, Auth0Exception> callback) {
         FetchTask task = new FetchTask(account);
         task.execute(callback);
+    }
+
+    @VisibleForTesting
+    static Gson createGson() {
+        Type applicationType = new TypeToken<List<Connection>>() {
+        }.getType();
+        return new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(applicationType, new ApplicationDeserializer())
+                .create();
     }
 
     private static class FetchTask extends AsyncTask<Callback<List<Connection>, Auth0Exception>, Void, Void> {
@@ -136,15 +147,6 @@ public class ApplicationFetcher {
             } catch (IOException | JSONException e) {
                 throw new Auth0Exception("Failed to parse response to request", e);
             }
-        }
-
-        static Gson createGson() {
-            Type applicationType = new TypeToken<List<Connection>>() {
-            }.getType();
-            return new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .registerTypeAdapter(applicationType, new ApplicationDeserializer())
-                    .create();
         }
     }
 }
