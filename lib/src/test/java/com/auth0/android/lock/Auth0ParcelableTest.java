@@ -4,12 +4,13 @@ import android.os.Parcel;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.util.Auth0UserAgent;
-import com.squareup.okhttp.HttpUrl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
+import okhttp3.HttpUrl;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;

@@ -25,23 +25,25 @@
 package com.auth0.android.lock.utils;
 
 
+import androidx.annotation.NonNull;
+
 import com.auth0.android.Auth0Exception;
-import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.callback.Callback;
 
 import java.util.concurrent.Callable;
 
-public class MockBaseCallback<T, U extends Auth0Exception> implements BaseCallback<T, U> {
+public class MockCallback<T, U extends Auth0Exception> implements Callback<T, U> {
 
     private T payload;
     private U error;
 
     @Override
-    public void onSuccess(T payload) {
+    public void onSuccess(@NonNull T payload) {
         this.payload = payload;
     }
 
     @Override
-    public void onFailure(U error) {
+    public void onFailure(@NonNull U error) {
         this.error = error;
     }
 

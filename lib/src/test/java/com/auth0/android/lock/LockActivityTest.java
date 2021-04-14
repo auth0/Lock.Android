@@ -6,9 +6,7 @@ import android.content.Intent;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
-import com.auth0.android.authentication.request.DatabaseConnectionRequest;
-import com.auth0.android.authentication.request.SignUpRequest;
-import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.events.DatabaseChangePasswordEvent;
 import com.auth0.android.lock.events.DatabaseLoginEvent;
 import com.auth0.android.lock.events.DatabaseSignUpEvent;
@@ -23,8 +21,11 @@ import com.auth0.android.lock.views.ClassicLockView;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.AuthProvider;
-import com.auth0.android.request.AuthRequest;
+import com.auth0.android.request.AuthenticationRequest;
+import com.auth0.android.request.Request;
+import com.auth0.android.request.SignUpRequest;
 import com.auth0.android.result.Credentials;
+import com.auth0.android.result.DatabaseUser;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,17 +76,21 @@ public class LockActivityTest {
     @Mock
     WebProvider webProvider;
     @Mock
-    AuthRequest authRequest;
+    AuthenticationRequest authRequest;
     @Mock
     SignUpRequest signUpRequest;
     @Mock
-    DatabaseConnectionRequest dbRequest;
+    Request<DatabaseUser, AuthenticationException> dbRequest;
+    @Mock
+    Request<Void, AuthenticationException> voidRequest;
     @Mock
     ClassicLockView lockView;
     @Captor
     ArgumentCaptor<Map> mapCaptor;
     @Captor
-    ArgumentCaptor<BaseCallback<Credentials, AuthenticationException>> callbackCaptor;
+    ArgumentCaptor<Callback<Credentials, AuthenticationException>> callbackCaptor;
+    @Captor
+    ArgumentCaptor<Callback<DatabaseUser, AuthenticationException>> dbCallbackCaptor;
     Configuration configuration;
     LockActivity activity;
     HashMap basicParameters;
@@ -109,10 +114,10 @@ public class LockActivityTest {
         when(client.createUser(anyString(), anyString(), anyString(), anyString())).thenReturn(dbRequest);
         when(client.signUp(anyString(), anyString(), anyString())).thenReturn(signUpRequest);
         when(client.signUp(anyString(), anyString(), anyString(), anyString())).thenReturn(signUpRequest);
-        when(client.resetPassword(anyString(), anyString())).thenReturn(dbRequest);
-        when(authRequest.addAuthenticationParameters(anyMapOf(String.class, Object.class))).thenReturn(authRequest);
-        when(signUpRequest.addAuthenticationParameters(anyMapOf(String.class, Object.class))).thenReturn(signUpRequest);
-        when(dbRequest.addParameters(anyMapOf(String.class, Object.class))).thenReturn(dbRequest);
+        when(client.resetPassword(anyString(), anyString())).thenReturn(voidRequest);
+        when(authRequest.addParameters(anyMapOf(String.class, String.class))).thenReturn(authRequest);
+        when(signUpRequest.addParameters(anyMapOf(String.class, String.class))).thenReturn(signUpRequest);
+        when(dbRequest.addParameters(anyMapOf(String.class, String.class))).thenReturn(dbRequest);
 
         DatabaseConnection connection = mock(DatabaseConnection.class);
         when(connection.getName()).thenReturn("connection");
@@ -130,8 +135,8 @@ public class LockActivityTest {
 
         verify(lockView, never()).showProgress(true);
         verify(options, never()).getAuthenticationAPIClient();
-        verify(authRequest, never()).addAuthenticationParameters(anyMapOf(String.class, Object.class));
-        verify(authRequest, never()).start(any(BaseCallback.class));
+        verify(authRequest, never()).addParameters(anyMapOf(String.class, String.class));
+        verify(authRequest, never()).start(any(Callback.class));
         verify(client, never()).login(anyString(), anyString(), anyString());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -145,8 +150,8 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).login("username", "password", "connection");
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).addParameters(mapCaptor.capture());
+        verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -166,8 +171,8 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).login("username", "password", "connection");
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).addParameters(mapCaptor.capture());
+        verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -181,7 +186,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallOIDCDatabaseLoginWithOTPCodeAndMFAToken() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -198,8 +202,8 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).loginWithOTP("mfaToken", "123456");
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).addParameters(mapCaptor.capture());
+        verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -213,7 +217,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallDatabaseLoginThatWillRequireVerification() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -228,13 +231,13 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).login("john@doe.com", "123456", "connection");
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).start(callbackCaptor.capture());
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
-        BaseCallback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
+        Callback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
         AuthenticationException flaggedRequestErr = mock(AuthenticationException.class);
         when(flaggedRequestErr.isVerificationRequired()).thenReturn(true);
         callback.onFailure(flaggedRequestErr);
@@ -242,7 +245,7 @@ public class LockActivityTest {
         Map<String, String> firstAuthValues = mapCaptor.getValue();
         assertThat(firstAuthValues, hasEntry("extra", "value"));
 
-        verify(webProvider).start(eq(activity), eq("connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("connection"), mapCaptor.capture(), any(Callback.class));
 
         Map<String, String> secondAuthValues = mapCaptor.getValue();
         assertThat(secondAuthValues, hasEntry("login_hint", "john@doe.com"));
@@ -252,7 +255,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallDatabaseSignUpThatWillRequireVerification() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -272,11 +274,11 @@ public class LockActivityTest {
         verify(client).signUp("john@doe.com", "123456", "johncito", "connection");
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
-        verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(signUpRequest).addParameters(mapCaptor.capture());
         verify(signUpRequest).start(callbackCaptor.capture());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
-        BaseCallback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
+        Callback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
         AuthenticationException flaggedRequestErr = mock(AuthenticationException.class);
         when(flaggedRequestErr.isVerificationRequired()).thenReturn(true);
         callback.onFailure(flaggedRequestErr);
@@ -284,7 +286,7 @@ public class LockActivityTest {
         Map<String, String> firstAuthValues = mapCaptor.getValue();
         assertThat(firstAuthValues, hasEntry("extra", "value"));
 
-        verify(webProvider).start(eq(activity), eq("connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("connection"), mapCaptor.capture(), any(Callback.class));
 
         Map<String, String> secondAuthValues = mapCaptor.getValue();
         assertThat(secondAuthValues, hasEntry("login_hint", "john@doe.com"));
@@ -294,7 +296,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallDatabaseCreateUserThatWillRequireVerification() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -313,15 +314,15 @@ public class LockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(client).createUser("john@doe.com", "123456", "johncito", "connection");
         verifyZeroInteractions(authRequest);
-        verify(dbRequest).start(callbackCaptor.capture());
+        verify(dbRequest).start(dbCallbackCaptor.capture());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
-        BaseCallback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
+        Callback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
         AuthenticationException flaggedRequestErr = mock(AuthenticationException.class);
         when(flaggedRequestErr.isVerificationRequired()).thenReturn(true);
         callback.onFailure(flaggedRequestErr);
 
-        verify(webProvider).start(eq(activity), eq("connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("connection"), mapCaptor.capture(), any(Callback.class));
 
         Map<String, String> extraAuthValues = mapCaptor.getValue();
         assertThat(extraAuthValues, hasEntry("login_hint", "john@doe.com"));
@@ -331,7 +332,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallOIDCDatabaseLoginWithCustomAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -346,10 +346,10 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(client).login("username", "password", "connection");
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
+        verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).setScope("openid user photos");
         verify(authRequest).setAudience("aud");
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).start(any(Callback.class));
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -366,8 +366,8 @@ public class LockActivityTest {
 
         verify(lockView, never()).showProgress(true);
         verify(options, never()).getAuthenticationAPIClient();
-        verify(dbRequest, never()).start(any(BaseCallback.class));
-        verify(authRequest, never()).addAuthenticationParameters(anyMapOf(String.class, Object.class));
+        verify(dbRequest, never()).start(any(Callback.class));
+        verify(authRequest, never()).addParameters(anyMapOf(String.class, String.class));
         verify(client, never()).login(anyString(), anyString(), anyString());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -381,7 +381,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(dbRequest).start(any(BaseCallback.class));
+        verify(dbRequest).start(any(Callback.class));
         verify(client).createUser("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -395,7 +395,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(dbRequest).start(any(BaseCallback.class));
+        verify(dbRequest).start(any(Callback.class));
         verify(client).createUser("email@domain.com", "password", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -403,7 +403,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallOIDCDatabaseSignInWithCustomAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -420,8 +419,8 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).addParameters(mapCaptor.capture());
+        verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
         verify(client).signUp("email@domain.com", "password", "username", "connection");
@@ -442,8 +441,8 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).addParameters(mapCaptor.capture());
+        verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
         verify(client).signUp("email@domain.com", "password", "username", "connection");
@@ -464,8 +463,8 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(signUpRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(signUpRequest).start(any(BaseCallback.class));
+        verify(signUpRequest).addParameters(mapCaptor.capture());
+        verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest, never()).setAudience("aud");
         verify(client).signUp("email", "password", "connection");
@@ -484,8 +483,8 @@ public class LockActivityTest {
 
         verify(lockView, never()).showProgress(true);
         verify(options, never()).getAuthenticationAPIClient();
-        verify(dbRequest, never()).start(any(BaseCallback.class));
-        verify(authRequest, never()).addAuthenticationParameters(anyMapOf(String.class, Object.class));
+        verify(dbRequest, never()).start(any(Callback.class));
+        verify(authRequest, never()).addParameters(anyMapOf(String.class, String.class));
         verify(client, never()).resetPassword(anyString(), anyString());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -498,7 +497,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest, never()).addParameters(any(Map.class));
-        verify(dbRequest).start(any(BaseCallback.class));
+        verify(dbRequest).start(any(Callback.class));
         verify(client).resetPassword("email@domain.com", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -514,8 +513,8 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(authRequest).addAuthenticationParameters(mapCaptor.capture());
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).addParameters(mapCaptor.capture());
+        verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
         verify(authRequest, never()).setAudience("aud");
         verify(client).login("email@domain.com", "password", "my-connection");
@@ -554,7 +553,6 @@ public class LockActivityTest {
     @Test
     public void shouldCallOAuthAuthenticationWithCustomProviderAndAudience() {
         Auth0 account = new Auth0("cliendId", "domain");
-        account.setOIDCConformant(true);
         Options options = mock(Options.class);
         when(options.getAccount()).thenReturn(account);
         when(options.getAuthenticationAPIClient()).thenReturn(client);
@@ -636,7 +634,7 @@ public class LockActivityTest {
         activity.onOAuthAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(true);
-        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(Callback.class));
 
         Map<String, String> extraParams = mapCaptor.getValue();
         assertThat(extraParams, is(notNullValue()));
@@ -656,7 +654,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
+        verify(webProvider).resume(intent);
     }
 
     @Test
@@ -668,7 +666,7 @@ public class LockActivityTest {
         activity.onOAuthAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(true);
-        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
+        verify(webProvider).start(eq(activity), eq("my-connection"), mapCaptor.capture(), any(Callback.class));
 
         Map<String, String> extraParams = mapCaptor.getValue();
         assertThat(extraParams, is(nullValue()));
@@ -685,7 +683,7 @@ public class LockActivityTest {
         activity.onActivityResult(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
 
         verify(lockView).showProgress(false);
-        verify(webProvider).resume(REQ_CODE_WEB_PROVIDER, Activity.RESULT_OK, intent);
+        verify(webProvider).resume(intent);
     }
 
     @Test
