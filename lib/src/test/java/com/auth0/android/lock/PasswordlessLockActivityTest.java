@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.PasswordlessType;
-import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.callback.Callback;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.events.OAuthLoginEvent;
@@ -83,7 +82,7 @@ public class PasswordlessLockActivityTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         HashMap basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
         connectionScope = new HashMap<>(Collections.singletonMap("my-connection", "the connection scope"));
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
@@ -118,7 +117,7 @@ public class PasswordlessLockActivityTest {
 
         verify(lockView, never()).showProgress(true);
         verify(options, never()).getAuthenticationAPIClient();
-        verify(authRequest, never()).start(any(BaseCallback.class));
+        verify(authRequest, never()).start(any(Callback.class));
         verify(client, never()).passwordlessWithEmail(anyString(), eq(PasswordlessType.CODE));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
     }
@@ -134,7 +133,7 @@ public class PasswordlessLockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(client).passwordlessWithEmail(eq("email@domain.com"), eq(PasswordlessType.CODE));
         verify(codeRequest).addParameter(eq("connection"), eq("connection"));
-        verify(codeRequest).start(any(BaseCallback.class));
+        verify(codeRequest).start(any(Callback.class));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
     }
 
@@ -153,7 +152,7 @@ public class PasswordlessLockActivityTest {
         verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).setConnection(eq("connection"));
         verify(authRequest).setScope("openid user photos");
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).start(any(Callback.class));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -170,7 +169,7 @@ public class PasswordlessLockActivityTest {
 
         verify(lockView, never()).showProgress(true);
         verify(options, never()).getAuthenticationAPIClient();
-        verify(authRequest, never()).start(any(BaseCallback.class));
+        verify(authRequest, never()).start(any(Callback.class));
         verify(client, never()).passwordlessWithSMS(anyString(), eq(PasswordlessType.CODE));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
     }
@@ -186,7 +185,7 @@ public class PasswordlessLockActivityTest {
         verify(options).getAuthenticationAPIClient();
         verify(client).passwordlessWithSMS(eq("+541234567890"), eq(PasswordlessType.CODE));
         verify(codeRequest).addParameter(eq("connection"), eq("connection"));
-        verify(codeRequest).start(any(BaseCallback.class));
+        verify(codeRequest).start(any(Callback.class));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
     }
 
@@ -205,7 +204,7 @@ public class PasswordlessLockActivityTest {
         verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).setConnection(eq("connection"));
         verify(authRequest).setScope("openid user photos");
-        verify(authRequest).start(any(BaseCallback.class));
+        verify(authRequest).start(any(Callback.class));
         verify(configuration, atLeastOnce()).getPasswordlessConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();

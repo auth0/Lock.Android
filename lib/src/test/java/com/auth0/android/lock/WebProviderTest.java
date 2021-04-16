@@ -201,68 +201,14 @@ public class WebProviderTest {
         assertThat(authorizeUri, hasParamWithValue("connection", "my-connection"));
         assertThat(authorizeUri, hasParamWithValue("custom-param-1", "value-1"));
         assertThat(authorizeUri, hasParamWithValue("custom-param-2", "value-2"));
-        assertThat(authorizeUri, hasParamWithValue("scope", "email profile photos"));
+        assertThat(authorizeUri, hasParamWithValue("scope", "email profile photos openid"));
         assertThat(authorizeUri, hasParamWithValue("connection_scope", "the connection scope"));
-        assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
         assertThat(intent.getParcelableExtra("com.auth0.android.EXTRA_CT_OPTIONS"), is(notNullValue()));
-        assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", false), is(true));
-        assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
-    }
-
-    @Test
-    public void shouldStartWebViewWithOptions() {
-        Auth0 account = new Auth0("clientId", "domain.auth0.com");
-        Options options = new Options();
-        options.setAccount(account);
-
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("custom-param-1", "value-1");
-        parameters.put("custom-param-2", "value-2");
-        options.setAuthenticationParameters(parameters);
-        options.withScope("email profile photos");
-        options.withConnectionScope("my-connection", "the connection scope");
-        options.setUseBrowser(false);
-        options.withScheme("auth0");
-
-        Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
-        WebProvider webProvider = new WebProvider(options);
-
-        webProvider.start(activity, "my-connection", null, callback);
-        ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
-        verify(activity).startActivityForResult(intentCaptor.capture(), eq(123));
-        verify(callback, never()).onFailure(any(AuthenticationException.class));
-
-        Intent intent = intentCaptor.getValue();
-        assertThat(intent, is(notNullValue()));
-        assertThat(intent.hasExtra("com.auth0.android.EXTRA_AUTHORIZE_URI"), is(true));
-        Uri authorizeUri = intent.getParcelableExtra("com.auth0.android.EXTRA_AUTHORIZE_URI");
-
-        assertThat(authorizeUri.getQueryParameter("redirect_uri"), is(notNullValue()));
-        Uri redirectUri = Uri.parse(authorizeUri.getQueryParameter("redirect_uri"));
-        assertThat(redirectUri, hasScheme("auth0"));
-
-        assertThat(authorizeUri, hasHost("domain.auth0.com"));
-        assertThat(authorizeUri, hasParamWithValue("client_id", "clientId"));
-        assertThat(authorizeUri, hasParamWithValue("connection", "my-connection"));
-        assertThat(authorizeUri, hasParamWithValue("custom-param-1", "value-1"));
-        assertThat(authorizeUri, hasParamWithValue("custom-param-2", "value-2"));
-        assertThat(authorizeUri, hasParamWithValue("scope", "email profile photos"));
-        assertThat(authorizeUri, hasParamWithValue("connection_scope", "the connection scope"));
-        assertThat(intent.hasExtra("com.auth0.android.EXTRA_USE_BROWSER"), is(true));
-        assertThat(intent.getBooleanExtra("com.auth0.android.EXTRA_USE_BROWSER", true), is(false));
         assertThat(intent, hasComponent(AuthenticationActivity.class.getName()));
     }
 
     @Test
     public void shouldResumeWithIntent() {
-        Intent intent = mock(Intent.class);
-        Options options = mock(Options.class);
-        WebProvider webProvider = new WebProvider(options);
-        assertThat(webProvider.resume(intent), is(false));
-    }
-
-    @Test
-    public void shouldResumeWithCodesAndIntent() {
         Intent intent = mock(Intent.class);
         Options options = mock(Options.class);
         WebProvider webProvider = new WebProvider(options);

@@ -98,7 +98,7 @@ public class LockActivityTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         basicParameters = new HashMap<>(Collections.singletonMap("extra", "value"));
         connectionScope = new HashMap<>(Collections.singletonMap("custom-connection", "the connection scope"));
         when(options.getAccount()).thenReturn(new Auth0("cliendId", "domain"));
@@ -153,7 +153,7 @@ public class LockActivityTest {
         verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
-        verify(authRequest, never()).setAudience("aud");
+        verify(authRequest).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -174,7 +174,7 @@ public class LockActivityTest {
         verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
-        verify(authRequest, never()).setAudience("aud");
+        verify(authRequest).setAudience("aud");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -317,7 +317,7 @@ public class LockActivityTest {
         verify(dbRequest).start(dbCallbackCaptor.capture());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
-        Callback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
+        Callback<DatabaseUser, AuthenticationException> callback = dbCallbackCaptor.getValue();
         AuthenticationException flaggedRequestErr = mock(AuthenticationException.class);
         when(flaggedRequestErr.isVerificationRequired()).thenReturn(true);
         callback.onFailure(flaggedRequestErr);
@@ -444,7 +444,7 @@ public class LockActivityTest {
         verify(signUpRequest).addParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
-        verify(signUpRequest, never()).setAudience("aud");
+        verify(signUpRequest).setAudience("aud");
         verify(client).signUp("email@domain.com", "password", "username", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
@@ -466,7 +466,7 @@ public class LockActivityTest {
         verify(signUpRequest).addParameters(mapCaptor.capture());
         verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
-        verify(signUpRequest, never()).setAudience("aud");
+        verify(signUpRequest).setAudience("aud");
         verify(client).signUp("email", "password", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
@@ -496,8 +496,8 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(dbRequest, never()).addParameters(any(Map.class));
-        verify(dbRequest).start(any(Callback.class));
+        verify(voidRequest, never()).addParameters(any(Map.class));
+        verify(voidRequest).start(any(Callback.class));
         verify(client).resetPassword("email@domain.com", "connection");
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
@@ -516,7 +516,7 @@ public class LockActivityTest {
         verify(authRequest).addParameters(mapCaptor.capture());
         verify(authRequest).start(any(Callback.class));
         verify(authRequest).setScope("openid user photos");
-        verify(authRequest, never()).setAudience("aud");
+        verify(authRequest).setAudience("aud");
         verify(client).login("email@domain.com", "password", "my-connection");
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -547,7 +547,7 @@ public class LockActivityTest {
         assertThat(reqParams, hasEntry("extra", "value"));
         assertThat(reqParams, hasEntry("scope", "openid user photos"));
         assertThat(reqParams, hasEntry("connection_scope", "the connection scope"));
-        assertThat(reqParams, not(hasKey("audience")));
+        assertThat(reqParams, hasKey("audience"));
     }
 
     @Test
