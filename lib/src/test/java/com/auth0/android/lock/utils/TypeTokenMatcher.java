@@ -11,7 +11,7 @@ public class TypeTokenMatcher<T> extends BaseMatcher<T> {
 
     private TypeTokenMatcher(TypeToken<T> typeToken, boolean shouldBeNull) {
         this.typeToken = typeToken;
-        this.shouldBeNull=shouldBeNull;
+        this.shouldBeNull = shouldBeNull;
     }
 
     public static <T> TypeTokenMatcher<T> isA(TypeToken<T> typeToken) {
@@ -29,7 +29,7 @@ public class TypeTokenMatcher<T> extends BaseMatcher<T> {
 
     @Override
     public boolean matches(Object item) {
-        if (shouldBeNull){
+        if (shouldBeNull) {
             return item == null;
         }
         return item != null && typeToken.getRawType().isAssignableFrom(item.getClass());

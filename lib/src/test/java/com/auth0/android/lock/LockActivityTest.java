@@ -27,6 +27,7 @@ import com.auth0.android.request.SignUpRequest;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -41,13 +43,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
@@ -111,9 +118,11 @@ public class LockActivityTest {
         when(client.login(anyString(), anyString(), anyString())).thenReturn(authRequest);
         when(client.loginWithOTP(anyString(), anyString())).thenReturn(authRequest);
         when(client.createUser(anyString(), anyString(), anyString())).thenReturn(dbRequest);
-        when(client.createUser(anyString(), anyString(), anyString(), anyString())).thenReturn(dbRequest);
+        when(client.createUser(anyString(), anyString(), any(), anyString())).thenReturn(dbRequest);
+        when(client.createUser(anyString(), anyString(), any(), anyString(), anyMap())).thenReturn(dbRequest);
         when(client.signUp(anyString(), anyString(), anyString())).thenReturn(signUpRequest);
-        when(client.signUp(anyString(), anyString(), anyString(), anyString())).thenReturn(signUpRequest);
+        when(client.signUp(anyString(), anyString(), any(), anyString())).thenReturn(signUpRequest);
+        when(client.signUp(anyString(), anyString(), any(), anyString(), anyMap())).thenReturn(signUpRequest);
         when(client.resetPassword(anyString(), anyString())).thenReturn(voidRequest);
         when(authRequest.addParameters(anyMapOf(String.class, String.class))).thenReturn(authRequest);
         when(signUpRequest.addParameters(anyMapOf(String.class, String.class))).thenReturn(signUpRequest);
@@ -271,7 +280,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).signUp("john@doe.com", "123456", "johncito", "connection");
+        verify(client).signUp("john@doe.com", "123456", "johncito", "connection", Collections.emptyMap());
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
         verify(signUpRequest).addParameters(mapCaptor.capture());
@@ -312,7 +321,7 @@ public class LockActivityTest {
 
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
-        verify(client).createUser("john@doe.com", "123456", "johncito", "connection");
+        verify(client).createUser("john@doe.com", "123456", "johncito", "connection", Collections.emptyMap());
         verifyZeroInteractions(authRequest);
         verify(dbRequest).start(dbCallbackCaptor.capture());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
@@ -382,7 +391,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest).start(any(Callback.class));
-        verify(client).createUser("email@domain.com", "password", "username", "connection");
+        verify(client).createUser("email@domain.com", "password", "username", "connection", Collections.emptyMap());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -396,7 +405,7 @@ public class LockActivityTest {
         verify(lockView).showProgress(true);
         verify(options).getAuthenticationAPIClient();
         verify(dbRequest).start(any(Callback.class));
-        verify(client).createUser("email@domain.com", "password", "connection");
+        verify(client).createUser("email@domain.com", "password", null, "connection", Collections.emptyMap());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
     }
 
@@ -423,7 +432,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
-        verify(client).signUp("email@domain.com", "password", "username", "connection");
+        verify(client).signUp("email@domain.com", "password", "username", "connection", Collections.emptyMap());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -445,7 +454,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
-        verify(client).signUp("email@domain.com", "password", "username", "connection");
+        verify(client).signUp("email@domain.com", "password", "username", "connection", Collections.emptyMap());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
@@ -467,7 +476,7 @@ public class LockActivityTest {
         verify(signUpRequest).start(any(Callback.class));
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
-        verify(client).signUp("email", "password", "connection");
+        verify(client).signUp("email", "password", null, "connection", Collections.emptyMap());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
