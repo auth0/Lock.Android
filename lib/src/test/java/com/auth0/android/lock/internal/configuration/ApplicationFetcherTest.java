@@ -27,10 +27,9 @@ package com.auth0.android.lock.internal.configuration;
 import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
 import com.auth0.android.lock.utils.ApplicationAPI;
-import com.auth0.android.lock.utils.Auth0AuthenticationCallbackMatcher;
 import com.auth0.android.lock.utils.CallbackMatcher;
-import com.auth0.android.lock.utils.MockAuthenticationCallback;
 import com.auth0.android.lock.utils.MockCallback;
+import com.auth0.android.lock.utils.SSLTestUtils;
 import com.google.gson.reflect.TypeToken;
 
 import org.hamcrest.CoreMatchers;
@@ -55,10 +54,12 @@ public class ApplicationFetcherTest {
 
     @Before
     public void setUp() throws Exception {
-        mockAPI = new ApplicationAPI();
+        SSLTestUtils sslUtils = new SSLTestUtils();
+        mockAPI = new ApplicationAPI(sslUtils);
 
         final Options options = Mockito.mock(Options.class);
         Auth0 account = new Auth0("client_id", mockAPI.getDomain());
+        account.setNetworkingClient(sslUtils.testClient);
         Mockito.when(options.getAccount()).thenReturn(account);
         appFetcher = new ApplicationFetcher(account);
     }
@@ -89,7 +90,7 @@ public class ApplicationFetcherTest {
 
         TypeToken<List<Connection>> applicationType = new TypeToken<List<Connection>>(){};
         TypeToken<Auth0Exception> errorType = new TypeToken<Auth0Exception>() {};
-        assertThat(callback, CallbackMatcher.hasNoPayloadOfType(applicationType, errorType));
+        assertThat(callback, CallbackMatcher.hasErrorOfType(applicationType, errorType));
         assertThat(callback.getError(), CoreMatchers.instanceOf(Auth0Exception.class));
         assertThat(callback.getError().getCause().getCause().getMessage(), CoreMatchers.containsString("Invalid App Info JSONP"));
     }

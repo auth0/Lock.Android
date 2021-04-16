@@ -34,11 +34,9 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 import static com.jayway.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 
 public class CallbackMatcher<T, U extends Auth0Exception> extends BaseMatcher<MockCallback<T, U>> {
     private final Matcher<T> payloadMatcher;
@@ -73,7 +71,11 @@ public class CallbackMatcher<T, U extends Auth0Exception> extends BaseMatcher<Mo
     }
 
     public static <T, U extends Auth0Exception> Matcher<MockCallback<T, U>> hasPayloadOfType(TypeToken<T> tType, TypeToken<U> uType) {
-        return new CallbackMatcher<>(allOf(notNullValue(), TypeTokenMatcher.isA(tType)), allOf(nullValue(), TypeTokenMatcher.isA(uType)));
+        return new CallbackMatcher<>(TypeTokenMatcher.isA(tType), TypeTokenMatcher.isNull(uType));
+    }
+
+    public static <T, U extends Auth0Exception> Matcher<MockCallback<T, U>> hasErrorOfType(TypeToken<T> tType, TypeToken<U> uType) {
+        return new CallbackMatcher<>(TypeTokenMatcher.isNull(tType), TypeTokenMatcher.isA(uType));
     }
 
     public static <T, U extends Auth0Exception> Matcher<MockCallback<T, U>> hasPayload(T payload, Class<U> uClazz) {
@@ -85,7 +87,7 @@ public class CallbackMatcher<T, U extends Auth0Exception> extends BaseMatcher<Mo
     }
 
     public static <T, U extends Auth0Exception> Matcher<MockCallback<T, U>> hasNoPayloadOfType(TypeToken<T> tType, TypeToken<U> uType) {
-        return new CallbackMatcher<>(allOf(nullValue(), TypeTokenMatcher.isA(tType)), allOf(notNullValue(), not(TypeTokenMatcher.isA(uType))));
+        return new CallbackMatcher<>(TypeTokenMatcher.isNull(tType), not(TypeTokenMatcher.isA(uType)));
     }
 
     public static <U extends Auth0Exception> Matcher<MockCallback<Void, U>> hasNoError(Class<U> uClazz) {

@@ -27,7 +27,7 @@ public class LoginErrorMessageBuilderTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         builder = new LoginErrorMessageBuilder();
     }
 
