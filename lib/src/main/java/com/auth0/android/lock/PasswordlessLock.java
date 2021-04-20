@@ -306,23 +306,6 @@ public class PasswordlessLock {
         }
 
         /**
-         * Auth Button size to use when Social connections are available. If Social
-         * is the only connection type it will default to the BIG size. If Database or
-         * Enterprise are present and there's only one Social connection, the button will use the
-         * BIG size. In the rest of the cases, it will use SMALL size.
-         *
-         * @param style a valid AuthButtonSize.
-         * @return the current builder instance
-         * @deprecated Small button style is no longer offered since it is not compliant
-         * to some providers branding guidelines. e.g. google
-         */
-        @Deprecated
-        @NonNull
-        public Builder withAuthButtonSize(@AuthButtonSize int style) {
-            return this;
-        }
-
-        /**
          * Authentication Style to use with the given strategy or connection name. It will override any lock defaults.
          *
          * @param connectionName to use this style with
