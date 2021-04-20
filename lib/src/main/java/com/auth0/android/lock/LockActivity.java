@@ -115,7 +115,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private DatabaseLoginEvent lastDatabaseLogin;
     private DatabaseSignUpEvent lastDatabaseSignUp;
 
-    @SuppressWarnings("unused")
     public LockActivity() {
     }
 
@@ -296,7 +295,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         super.onNewIntent(intent);
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(@NonNull FetchApplicationEvent event) {
         if (applicationFetcher == null) {
@@ -306,7 +304,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
     public void onLockMessage(@NonNull final LockMessageEvent event) {
         handler.post(new Runnable() {
@@ -317,7 +314,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    @SuppressWarnings({"ConstantConditions"})
     @Subscribe
     public void onOAuthAuthenticationRequest(@NonNull OAuthLoginEvent event) {
         final String connection = event.getConnection();
@@ -375,7 +371,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     private void completeDatabaseAuthenticationOnBrowser() {
         //DBConnection checked for nullability before the API call
-        @SuppressWarnings("ConstantConditions")
         String connection = configuration.getDatabaseConnection().getName();
 
         String loginHint = null;
@@ -413,7 +408,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
             }
         } else {
-            //noinspection ConstantConditions
             request = apiClient.loginWithOTP(event.getMFAToken(), event.getVerificationCode());
         }
 
@@ -440,7 +434,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lastDatabaseSignUp = event;
 
         if (configuration.loginAfterSignUp()) {
-            //noinspection ConstantConditions
             SignUpRequest request = event.getSignUpRequest(apiClient, connection)
                     .addParameters(options.getAuthenticationParameters());
             if (options.getScope() != null) {
@@ -466,7 +459,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         lockView.showProgress(true);
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         final String connection = configuration.getDatabaseConnection().getName();
-        //noinspection ConstantConditions
         apiClient.resetPassword(event.getEmail(), connection)
                 .start(changePwdCallback);
     }
@@ -475,7 +467,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private final Callback<List<Connection>, Auth0Exception> applicationCallback = new Callback<List<Connection>, Auth0Exception>() {
         @Override
         public void onSuccess(@Nullable final List<Connection> connections) {
-            //noinspection ConstantConditions
             configuration = new Configuration(connections, options);
             handler.post(new Runnable() {
                 @Override
@@ -534,7 +525,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private final AuthenticationCallback<Credentials> authCallback = new AuthenticationCallback<Credentials>() {
         @Override
         public void onSuccess(@Nullable Credentials credentials) {
-            //noinspection ConstantConditions
             deliverAuthenticationResult(credentials);
             lastDatabaseLogin = null;
             lastDatabaseSignUp = null;
@@ -556,7 +546,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                     if (error.isMultifactorRequired()) {
                         String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
                         if (!TextUtils.isEmpty(mfaToken)) {
-                            //noinspection ConstantConditions
                             lastDatabaseLogin.setMFAToken(mfaToken);
                         }
                         lockView.showMFACodeForm(lastDatabaseLogin);
@@ -579,7 +568,6 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    //noinspection ConstantConditions
                     deliverSignUpResult(user);
                 }
             });

@@ -55,7 +55,6 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         final Map<String, Object> complexityOptions = valueForKey("password_complexity_options", Map.class);
         Integer minLength = null;
         if (complexityOptions != null && complexityOptions.containsKey("min_length")) {
-            //noinspection ConstantConditions
             minLength = ((Number) complexityOptions.remove("min_length")).intValue();
         }
         passwordComplexity = new PasswordComplexity(policy, minLength);
@@ -202,7 +201,6 @@ public class Connection implements BaseConnection, DatabaseConnection, OAuthConn
         }
 
         final Map<String, Object> usernameValidation = (Map<String, Object>) validations.get("username");
-        //noinspection ConstantConditions
         minUsernameLength = intValue(usernameValidation.get("min"));
         maxUsernameLength = intValue(usernameValidation.get("max"));
         if (minUsernameLength < 1 || maxUsernameLength < 1 || minUsernameLength > maxUsernameLength) {

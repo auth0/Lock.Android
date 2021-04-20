@@ -72,7 +72,6 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
     }
 
 
-    @SuppressWarnings("ConstantConditions")
     @NonNull
     public SignUpRequest getSignUpRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connection) {
         SignUpRequest request = apiClient.signUp(getEmail(), getPassword(), getUsername(), connection, userMetadata);
@@ -82,7 +81,6 @@ public class DatabaseSignUpEvent extends DatabaseEvent {
         return request;
     }
 
-    @SuppressWarnings("ConstantConditions")
     @NonNull
     public Request<DatabaseUser, AuthenticationException> getCreateUserRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connection) {
         Request<DatabaseUser, AuthenticationException> request = apiClient.createUser(getEmail(), getPassword(), getUsername(), connection, userMetadata);

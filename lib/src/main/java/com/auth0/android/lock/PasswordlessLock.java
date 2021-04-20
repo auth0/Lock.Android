@@ -170,11 +170,11 @@ public class PasswordlessLock {
     /**
      * Helper Builder to generate the Lock.Options to use on the Auth0 Passwordless Authentication.
      */
-    @SuppressWarnings({"unused", "UnusedReturnValue"})
+    @SuppressWarnings({"UnusedReturnValue"})
     public static class Builder {
         private static final String TAG = Builder.class.getSimpleName();
-        private Options options;
-        private LockCallback callback;
+        private final Options options;
+        private final LockCallback callback;
 
         /**
          * Creates a new Lock.Builder instance with the given account and callback.
@@ -185,7 +185,6 @@ public class PasswordlessLock {
         public Builder(@Nullable Auth0 account, @NonNull LockCallback callback) {
             this.callback = callback;
             options = new Options();
-            //noinspection ConstantConditions
             options.setAccount(account);
         }
 
@@ -198,7 +197,6 @@ public class PasswordlessLock {
          */
         @NonNull
         public PasswordlessLock build(@NonNull Context context) {
-            //noinspection ConstantConditions
             if (options.getAccount() == null) {
                 Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {

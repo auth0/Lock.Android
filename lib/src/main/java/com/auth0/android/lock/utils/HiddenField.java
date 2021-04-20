@@ -36,7 +36,6 @@ public class HiddenField extends SignUpField {
         dest.writeString(value);
     }
 
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<HiddenField> CREATOR = new Parcelable.Creator<HiddenField>() {
         @Override
         public HiddenField createFromParcel(Parcel in) {

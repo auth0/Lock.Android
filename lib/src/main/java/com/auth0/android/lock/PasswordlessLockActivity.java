@@ -113,7 +113,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private LoginErrorMessageBuilder loginErrorBuilder;
     private PasswordlessIdentityHelper identityHelper;
 
-    @SuppressWarnings("unused")
     public PasswordlessLockActivity() {
     }
 
@@ -371,7 +370,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
     public void onFetchApplicationRequest(@NonNull FetchApplicationEvent event) {
         if (applicationFetcher == null) {
@@ -381,14 +379,12 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         }
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
     public void onCountryCodeChangeRequest(@NonNull CountryCodeChangeEvent event) {
         Intent intent = new Intent(this, CountryCodeActivity.class);
         startActivityForResult(intent, COUNTRY_CODE_REQUEST_CODE);
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
     public void onPasswordlessAuthenticationRequest(@NonNull PasswordlessLoginEvent event) {
         if (configuration.getPasswordlessConnection() == null) {
@@ -417,7 +413,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 .start(passwordlessCodeCallback);
     }
 
-    @SuppressWarnings("unused")
     @Subscribe
     public void onOAuthAuthenticationRequest(@NonNull OAuthLoginEvent event) {
         lastPasswordlessIdentity = null;
@@ -454,7 +449,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
     private final Callback<List<Connection>, Auth0Exception> applicationCallback = new Callback<List<Connection>, Auth0Exception>() {
         @Override
         public void onSuccess(@Nullable final List<Connection> connections) {
-            //noinspection ConstantConditions
             configuration = new Configuration(connections, options);
             identityHelper = new PasswordlessIdentityHelper(PasswordlessLockActivity.this, configuration.getPasswordlessMode());
             handler.post(new Runnable() {
@@ -515,7 +509,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
                 Log.d(TAG, "Saving passwordless identity for a future log in request.");
                 identityHelper.saveIdentity(lastPasswordlessIdentity, lastPasswordlessCountry);
             }
-            //noinspection ConstantConditions
             deliverAuthenticationResult(credentials);
         }
 

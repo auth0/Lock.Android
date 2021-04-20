@@ -31,7 +31,6 @@ public class ImageCheckbox extends AppCompatImageButton implements Checkable {
     private OnCheckedChangeListener checkedChangedListener;
 
     public ImageCheckbox(@NonNull Context context) {
-        //noinspection ConstantConditions
         this(context, null);
     }
 

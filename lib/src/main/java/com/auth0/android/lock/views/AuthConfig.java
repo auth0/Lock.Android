@@ -43,7 +43,6 @@ public class AuthConfig {
         if (id == -1) {
             id = R.drawable.com_auth0_lock_ic_social_auth0;
         }
-        //noinspection ConstantConditions
         return ContextCompat.getDrawable(context, id);
     }
 

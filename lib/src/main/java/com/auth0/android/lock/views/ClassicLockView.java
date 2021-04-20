@@ -348,7 +348,6 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
     @Override
     public void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
-        //noinspection ConstantConditions
         CustomFieldsFormView form = new CustomFieldsFormView(this, event.getEmail(), event.getPassword(), event.getUsername());
         addSubForm(form);
         updateHeaderTitle(R.string.com_auth0_lock_action_sign_up);
