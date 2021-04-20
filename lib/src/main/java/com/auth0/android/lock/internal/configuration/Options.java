@@ -65,7 +65,6 @@ public class Options implements Parcelable {
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
 
     private Auth0 account;
-    private boolean useBrowser;
     private boolean usePKCE;
     private boolean closable;
     private int usernameStyle;
@@ -102,7 +101,6 @@ public class Options implements Parcelable {
         usernameStyle = UsernameStyle.DEFAULT;
         initialScreen = InitialScreen.LOG_IN;
         visibleSignUpFieldsthreshold = DEFAULT_VISIBLE_SIGN_UP_FIELDS_THRESHOLD;
-        useBrowser = true;
         allowLogIn = true;
         allowSignUp = true;
         allowForgotPassword = true;
@@ -123,7 +121,6 @@ public class Options implements Parcelable {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         //noinspection ConstantConditions
         account = auth0Parcelable.getAuth0();
-        useBrowser = in.readByte() != WITHOUT_DATA;
         usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         allowLogIn = in.readByte() != WITHOUT_DATA;
@@ -205,7 +202,6 @@ public class Options implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeValue(new Auth0Parcelable(account));
-        dest.writeByte((byte) (useBrowser ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowLogIn ? HAS_DATA : WITHOUT_DATA));
@@ -295,17 +291,6 @@ public class Options implements Parcelable {
 
     public void setAccount(@NonNull Auth0 account) {
         this.account = account;
-    }
-
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    @Deprecated
-    public boolean useBrowser() {
-        return useBrowser;
-    }
-
-    @Deprecated
-    public void setUseBrowser(boolean useBrowser) {
-        this.useBrowser = useBrowser;
     }
 
     public void withTheme(@NonNull Theme theme) {

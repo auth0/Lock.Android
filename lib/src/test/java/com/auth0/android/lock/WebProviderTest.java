@@ -44,7 +44,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.isOneOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -104,7 +103,6 @@ public class WebProviderTest {
         Options options = new Options();
         options.setAccount(account);
 
-        options.setUseBrowser(true);
         options.withAudience("https://me.auth0.com/myapi");
 
         Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
@@ -139,7 +137,6 @@ public class WebProviderTest {
         Options options = new Options();
         options.setAccount(account);
 
-        options.setUseBrowser(true);
         options.withAudience("https://me.auth0.com/myapi");
 
         Callback<Credentials, AuthenticationException> callback = mock(Callback.class);
@@ -174,7 +171,6 @@ public class WebProviderTest {
         options.setAuthenticationParameters(parameters);
         options.withScope("email profile photos");
         options.withConnectionScope("my-connection", "the connection scope");
-        options.setUseBrowser(true);
         options.withScheme("auth0");
         CustomTabsOptions customTabsOptions = CustomTabsOptions.newBuilder().build();
         options.withCustomTabsOptions(customTabsOptions);
