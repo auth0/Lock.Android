@@ -123,35 +123,22 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
 
         if (displayTerms) {
             bottomBanner = inflate(getContext(), R.layout.com_auth0_lock_terms_layout, null);
-            bottomBanner.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showSignUpTermsDialog(null);
-                }
-            });
+            bottomBanner.setOnClickListener(v -> showSignUpTermsDialog(null));
             bottomBanner.setVisibility(GONE);
             addView(bottomBanner, wrapHeightParams);
         }
 
         actionButton = new ActionButton(getContext(), lockTheme);
-        actionButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Object event = subForm != null ? subForm.submitForm() : formLayout.onActionPressed();
-                if (event == null) {
-                    return;
-                }
-                if (!configuration.mustAcceptTerms() || !(event instanceof DatabaseSignUpEvent)) {
-                    bus.post(event);
-                    return;
-                }
-                showSignUpTermsDialog(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        bus.post(event);
-                    }
-                });
+        actionButton.setOnClickListener(v -> {
+            final Object event = subForm != null ? subForm.submitForm() : formLayout.onActionPressed();
+            if (event == null) {
+                return;
             }
+            if (!configuration.mustAcceptTerms() || !(event instanceof DatabaseSignUpEvent)) {
+                bus.post(event);
+                return;
+            }
+            showSignUpTermsDialog((dialog, which) -> bus.post(event));
         });
         actionButton.showLabel(configuration.useLabeledSubmitButton() || configuration.hideMainScreenTitle());
         addView(actionButton, wrapHeightParams);
@@ -197,13 +184,10 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
             tvTitle.setText(R.string.com_auth0_lock_recoverable_error_title);
             tvError.setText(R.string.com_auth0_lock_recoverable_error_subtitle);
             tvAction.setText(R.string.com_auth0_lock_recoverable_error_action);
-            tvAction.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bus.post(new FetchApplicationEvent());
-                    removeView(errorLayout);
-                    showWaitForConfigurationLayout();
-                }
+            tvAction.setOnClickListener(v -> {
+                bus.post(new FetchApplicationEvent());
+                removeView(errorLayout);
+                showWaitForConfigurationLayout();
             });
         } else if (configuration.getSupportURL() == null) {
             tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
@@ -213,12 +197,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
             tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
             tvError.setText(R.string.com_auth0_lock_unrecoverable_error_subtitle);
             tvAction.setText(R.string.com_auth0_lock_unrecoverable_error_action);
-            tvAction.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(configuration.getSupportURL())));
-                }
-            });
+            tvAction.setOnClickListener(v -> getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(configuration.getSupportURL()))));
         }
         addView(errorLayout);
     }

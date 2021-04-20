@@ -55,12 +55,7 @@ public class ImageCheckbox extends AppCompatImageButton implements Checkable {
                 info.setChecked(isChecked());
             }
         });
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle();
-            }
-        });
+        setOnClickListener(v -> toggle());
         ViewUtils.setBackground(this, null);
         focusedBackground = ContextCompat.getDrawable(getContext(), R.drawable.com_auth0_lock_link_background);
     }

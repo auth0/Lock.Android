@@ -83,11 +83,11 @@ public class Configuration {
     public Configuration(@NonNull List<Connection> connections, @NonNull Options options) {
         List<String> allowedConnections = options.getConnections();
         String defaultDatabaseName = options.getDefaultDatabaseConnection();
-        Set<String> connectionSet = allowedConnections != null ? new HashSet<>(allowedConnections) : new HashSet<String>();
+        Set<String> connectionSet = allowedConnections != null ? new HashSet<>(allowedConnections) : new HashSet<>();
         this.defaultDatabaseConnection = filterDatabaseConnections(connections, connectionSet, defaultDatabaseName);
 
         List<String> webAuthEnabledConnections = options.getEnterpriseConnectionsUsingWebForm();
-        Set<String> webAuthEnabledConnectionSet = webAuthEnabledConnections != null ? new HashSet<>(webAuthEnabledConnections) : new HashSet<String>();
+        Set<String> webAuthEnabledConnectionSet = webAuthEnabledConnections != null ? new HashSet<>(webAuthEnabledConnections) : new HashSet<>();
         List<OAuthConnection> allEnterprise = filterConnections(connections, connectionSet, AuthType.ENTERPRISE);
         this.enterpriseConnections = enableWebAuthentication(allEnterprise, webAuthEnabledConnectionSet);
 

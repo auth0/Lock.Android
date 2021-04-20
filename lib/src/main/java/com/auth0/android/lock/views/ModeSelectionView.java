@@ -66,18 +66,8 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         firstTabView = (View) tabDescription1.getParent();
         secondTabView = (View) tabDescription2.getParent();
 
-        firstTabView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setSelectedMode(AuthMode.LOG_IN);
-            }
-        });
-        secondTabView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setSelectedMode(AuthMode.SIGN_UP);
-            }
-        });
+        firstTabView.setOnClickListener(view -> setSelectedMode(AuthMode.LOG_IN));
+        secondTabView.setOnClickListener(view -> setSelectedMode(AuthMode.SIGN_UP));
 
         tabLayout.addTab(firstTab);
         tabLayout.addTab(secondTab);

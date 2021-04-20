@@ -31,7 +31,6 @@
         android:id="@+id/com_auth0_lock_icon"
         style="@style/Lock.Theme.Widget.Icon"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         tools:ignore="MissingPrefix"
         tools:src="@drawable/com_auth0_lock_ic_email" />
 
@@ -39,8 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toEndOf="@+id/com_auth0_lock_icon"
-        android:layout_toRightOf="@+id/com_auth0_lock_icon">
+        android:layout_toEndOf="@+id/com_auth0_lock_icon">
 
         <EditText
             android:id="@+id/com_auth0_lock_input"

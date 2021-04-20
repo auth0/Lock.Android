@@ -155,31 +155,23 @@ public class ValidatedInputView extends LinearLayout {
         updateBorder();
 
         setNextFocusRightId(R.id.com_auth0_lock_show_password_toggle);
-        showPasswordToggle.setOnCheckedChangeListener(new ImageCheckbox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(ImageButton view, boolean isChecked) {
-                if (dataType != PASSWORD) {
-                    return;
-                }
-                String passwordValue = input.getText().toString();
-                if (isChecked) {
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    view.setImageResource(R.drawable.com_auth0_lock_ic_password_visible);
-                } else {
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    input.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    view.setImageResource(R.drawable.com_auth0_lock_ic_password_hidden);
-                }
-                setText(passwordValue);
-                input.setTypeface(Typeface.DEFAULT);
+        showPasswordToggle.setOnCheckedChangeListener((view, isChecked) -> {
+            if (dataType != PASSWORD) {
+                return;
             }
-        });
-        input.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                updateBorder();
+            String passwordValue = input.getText().toString();
+            if (isChecked) {
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                view.setImageResource(R.drawable.com_auth0_lock_ic_password_visible);
+            } else {
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                view.setImageResource(R.drawable.com_auth0_lock_ic_password_hidden);
             }
+            setText(passwordValue);
+            input.setTypeface(Typeface.DEFAULT);
         });
+        input.setOnFocusChangeListener((v, hasFocus) -> updateBorder());
     }
 
     @Override
@@ -226,12 +218,7 @@ public class ValidatedInputView extends LinearLayout {
         }
     };
 
-    private final Runnable uiUpdater = new Runnable() {
-        @Override
-        public void run() {
-            updateBorder();
-        }
-    };
+    private final Runnable uiUpdater = this::updateBorder;
 
     @SuppressLint("StringFormatInvalid")
     private void setupInputValidation() {

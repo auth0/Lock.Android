@@ -305,12 +305,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Subscribe
     public void onLockMessage(@NonNull final LockMessageEvent event) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                showErrorMessage(getString(event.getMessageRes()));
-            }
-        });
+        handler.post(() -> showErrorMessage(getString(event.getMessageRes())));
     }
 
     @Subscribe
@@ -467,12 +462,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onSuccess(@Nullable final List<Connection> connections) {
             configuration = new Configuration(connections, options);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    lockView.configure(configuration);
-                }
-            });
+            handler.post(() -> lockView.configure(configuration));
             applicationFetcher = null;
         }
 
@@ -480,12 +470,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         public void onFailure(@NonNull final Auth0Exception error) {
             Log.e(TAG, "Failed to fetch the application: " + error.getMessage(), error);
             applicationFetcher = null;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    lockView.configure(null);
-                }
-            });
+            handler.post(() -> lockView.configure(null));
         }
     };
 
@@ -494,12 +479,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         public void onFailure(@NonNull final Dialog dialog) {
             Log.e(TAG, "Failed to authenticate the user. A dialog is going to be shown with more information.");
             dialog.show();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.show();
-                }
-            });
+            handler.post(dialog::show);
         }
 
         @Override
@@ -507,12 +487,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
             final String message = authError.getMessage(LockActivity.this);
             Log.e(TAG, "Failed to authenticate the user: " + message, exception);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    showErrorMessage(message);
-                }
-            });
+            handler.post(() -> showErrorMessage(message));
         }
 
         @Override
@@ -538,24 +513,21 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 return;
             }
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    lockView.showProgress(false);
-                    if (error.isMultifactorRequired()) {
-                        String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
-                        if (!TextUtils.isEmpty(mfaToken)) {
-                            lastDatabaseLogin.setMFAToken(mfaToken);
-                        }
-                        lockView.showMFACodeForm(lastDatabaseLogin);
-                        return;
+            handler.post(() -> {
+                lockView.showProgress(false);
+                if (error.isMultifactorRequired()) {
+                    String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
+                    if (!TextUtils.isEmpty(mfaToken)) {
+                        lastDatabaseLogin.setMFAToken(mfaToken);
                     }
-                    String message = authError.getMessage(LockActivity.this);
-                    showErrorMessage(message);
-                    if (error.isMultifactorTokenInvalid()) {
-                        //The MFA Token has expired. The user needs to log in again. Show the username/password form
-                        onBackPressed();
-                    }
+                    lockView.showMFACodeForm(lastDatabaseLogin);
+                    return;
+                }
+                String message = authError.getMessage(LockActivity.this);
+                showErrorMessage(message);
+                if (error.isMultifactorTokenInvalid()) {
+                    //The MFA Token has expired. The user needs to log in again. Show the username/password form
+                    onBackPressed();
                 }
             });
         }
@@ -564,12 +536,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private final AuthenticationCallback<DatabaseUser> createCallback = new AuthenticationCallback<DatabaseUser>() {
         @Override
         public void onSuccess(@Nullable final DatabaseUser user) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    deliverSignUpResult(user);
-                }
-            });
+            handler.post(() -> deliverSignUpResult(user));
             lastDatabaseSignUp = null;
         }
 
@@ -580,12 +547,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 completeDatabaseAuthenticationOnBrowser();
                 return;
             }
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    String message = signUpErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
-                    showErrorMessage(message);
-                }
+            handler.post(() -> {
+                String message = signUpErrorBuilder.buildFrom(error).getMessage(LockActivity.this);
+                showErrorMessage(message);
             });
         }
     };
@@ -593,13 +557,10 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
     private final AuthenticationCallback<Void> changePwdCallback = new AuthenticationCallback<Void>() {
         @Override
         public void onSuccess(@Nullable Void payload) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
-                    if (options.allowLogIn() || options.allowSignUp()) {
-                        lockView.showChangePasswordForm(false);
-                    }
+            handler.post(() -> {
+                showSuccessMessage(getString(R.string.com_auth0_lock_db_change_password_message_success));
+                if (options.allowLogIn() || options.allowSignUp()) {
+                    lockView.showChangePasswordForm(false);
                 }
             });
 
@@ -608,12 +569,9 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onFailure(@NonNull AuthenticationException error) {
             Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error).getMessage(LockActivity.this);
-                    showErrorMessage(message);
-                }
+            handler.post(() -> {
+                String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error).getMessage(LockActivity.this);
+                showErrorMessage(message);
             });
         }
     };
