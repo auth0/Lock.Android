@@ -19,14 +19,14 @@
         android:layout_marginBottom="@dimen/com_auth0_lock_widget_vertical_margin_error_title"
         android:src="@drawable/com_auth0_lock_load_error" />
 
-    <com.auth0.android.lock.views.LineSpacingTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/com_auth0_lock_error_title"
         style="@style/Lock.Theme.Text.Title.Error"
         android:layout_below="@+id/com_auth0_lock_space"
         tools:text="@string/com_auth0_lock_unrecoverable_error_title" />
 
 
-    <com.auth0.android.lock.views.LineSpacingTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/com_auth0_lock_error_subtitle"
         style="@style/Lock.Theme.Text.Subtitle.Error"
         android:layout_below="@+id/com_auth0_lock_error_title"
