@@ -50,7 +50,7 @@ public class PasswordStrengthView extends LinearLayout {
 
     private final Pattern patternUppercase = Pattern.compile("^.*[A-Z]+.*$");
     private final Pattern patternLowercase = Pattern.compile("^.*[a-z]+.*$");
-    private final Pattern patternSpecial = Pattern.compile("^.*[ !\"#\\$%&'\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\\\\\]\\^_`{\\|}~]+.*$");
+    private final Pattern patternSpecial = Pattern.compile("^.*[ !\"#$%&'()*+,-./:;<=>?@\\[\\\\\\]^_`{|}~]+.*$");
     private final Pattern patternNumeric = Pattern.compile("^.*[0-9]+.*$");
     private final Pattern patternIdentical = Pattern.compile("^.*(?=(.)\\1{" + MAX_IDENTICAL_CHARACTERS + ",}).*$");
 
