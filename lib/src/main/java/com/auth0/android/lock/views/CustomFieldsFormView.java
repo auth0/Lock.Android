@@ -89,10 +89,8 @@ public class CustomFieldsFormView extends FormView implements TextView.OnEditorA
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.setMargins(horizontalMargin, verticalMargin / 2, horizontalMargin, verticalMargin / 2);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.setMarginStart(horizontalMargin);
-            params.setMarginEnd(horizontalMargin);
-        }
+        params.setMarginStart(horizontalMargin);
+        params.setMarginEnd(horizontalMargin);
         return params;
     }
 

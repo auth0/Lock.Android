@@ -26,7 +26,6 @@ package com.auth0.android.lock.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -104,9 +103,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.setOrientation(LinearLayout.VERTICAL);
         formsHolder.setGravity(Gravity.CENTER);
         formsHolder.setPadding(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            formsHolder.setPaddingRelative(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-        }
+        formsHolder.setPaddingRelative(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
         LayoutParams holderParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         holderParams.addRule(BELOW, R.id.com_auth0_lock_form_selector);
         holderParams.addRule(CENTER_VERTICAL);
@@ -153,9 +150,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         orSeparatorMessage.setGravity(Gravity.CENTER);
         int verticalPadding = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         orSeparatorMessage.setPadding(0, verticalPadding, 0, verticalPadding);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            orSeparatorMessage.setPaddingRelative(0, verticalPadding, 0, verticalPadding);
-        }
+        orSeparatorMessage.setPaddingRelative(0, verticalPadding, 0, verticalPadding);
         formsHolder.addView(orSeparatorMessage, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 

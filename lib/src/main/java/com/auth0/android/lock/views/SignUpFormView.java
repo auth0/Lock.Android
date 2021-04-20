@@ -117,10 +117,8 @@ public class SignUpFormView extends FormView implements TextView.OnEditorActionL
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.setMargins(0, verticalMargin, 0, 0);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.setMarginStart(0);
-            params.setMarginEnd(0);
-        }
+        params.setMarginStart(0);
+        params.setMarginEnd(0);
         return params;
     }
 
