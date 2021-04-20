@@ -50,6 +50,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/com_auth0_lock_text</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="Lock.Theme.TextAppearance.Tab" parent="TextAppearance.AppCompat.Button">
@@ -61,6 +62,7 @@
     <style name="Lock.Theme.Text.PasswordPolicy">
         <item name="android:textSize">@dimen/com_auth0_lock_field_error_text</item>
         <item name="android:layout_gravity">start</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="Lock.Theme.Text.ValidationError">
@@ -72,6 +74,7 @@
         <item name="android:layout_marginTop">
             @dimen/com_auth0_lock_widget_vertical_margin_field_with_error
         </item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="Lock.Theme.Text.Terms">
@@ -87,6 +90,9 @@
         </item>
         <item name="android:textColor">@color/com_auth0_lock_sso_text</item>
         <item name="android:textSize">@dimen/com_auth0_lock_sso_text</item>
+        <item name="android:layout_marginStart">
+            @dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
     </style>
 
     <style name="Lock.Theme.Text.ListItem">
@@ -95,6 +101,9 @@
         </item>
         <item name="android:layout_height">@dimen/com_auth0_lock_list_item_height</item>
         <item name="android:textSize">@dimen/com_auth0_lock_list_item_text</item>
+        <item name="android:layout_marginStart">
+            @dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
     </style>
 
     <style name="Lock.Theme.Text.Link">
@@ -113,6 +122,10 @@
         <item name="android:textSize">@dimen/com_auth0_lock_subtitle_error_text</item>
         <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginStart">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_widget_horizontal_margin
         </item>
     </style>
 
@@ -141,6 +154,10 @@
         <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
         </item>
+        <item name="android:layout_marginStart">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
     </style>
 
     <style name="Lock.Theme.Text.Title.Error">
@@ -148,6 +165,10 @@
         <item name="android:textColor">@color/com_auth0_lock_passwordless_link_sent_text</item>
         <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginStart">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_widget_horizontal_margin
         </item>
     </style>
 
@@ -159,6 +180,10 @@
         <item name="android:textSize">@dimen/com_auth0_lock_subtitle_error_text</item>
         <item name="android:layout_marginLeft">@dimen/com_auth0_lock_widget_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginStart">@dimen/com_auth0_lock_widget_horizontal_margin
+        </item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_widget_horizontal_margin
         </item>
     </style>
 
@@ -176,6 +201,13 @@
         <item name="android:textSize">@dimen/com_auth0_lock_social_button_text</item>
         <item name="android:textColor">@color/com_auth0_lock_social_text</item>
         <item name="android:layout_gravity">start</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingEnd">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="Lock.Theme.Text.ResultMessage">
@@ -220,6 +252,8 @@
         </item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">false</item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_widget_horizontal_margin_small
+        </item>
     </style>
 
     <style name="Lock.Theme.Widget.Field" parent="Lock.Theme.Text">
@@ -237,6 +271,13 @@
         </item>
         <item name="android:layout_gravity">start</item>
         <item name="android:textSize">@dimen/com_auth0_lock_field_text</item>
+        <item name="android:paddingStart">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingEnd">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:layout_marginEnd">@dimen/com_auth0_lock_input_field_stroke_width</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="Lock.Theme.Widget.Field.Search">
@@ -257,6 +298,9 @@
         <item name="android:layout_marginRight">0dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
     </style>
 
     <style name="Lock.Theme.Widget.CountryCodeSelector.CountryName">
@@ -265,6 +309,8 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
         <item name="android:paddingLeft">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingStart">@dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
     </style>
 
@@ -277,6 +323,12 @@
             @dimen/com_auth0_lock_widget_small_margin
         </item>
         <item name="android:paddingRight">
+            @dimen/com_auth0_lock_widget_with_text_horizontal_padding
+        </item>
+        <item name="android:paddingStart">
+            @dimen/com_auth0_lock_widget_small_margin
+        </item>
+        <item name="android:paddingEnd">
             @dimen/com_auth0_lock_widget_with_text_horizontal_padding
         </item>
     </style>
@@ -299,6 +351,8 @@
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/com_auth0_lock_labeled_submit_button_text</item>
         <item name="android:textColor">@color/com_auth0_lock_social_text</item>
+        <item name="android:paddingEnd">@dimen/com_auth0_lock_widget_small_margin
+        </item>
     </style>
 
     <style name="Lock.Theme.Text.LinkSent">
