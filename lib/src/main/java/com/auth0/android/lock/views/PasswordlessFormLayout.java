@@ -81,9 +81,7 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         }
         final int verticalPadding = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         setPadding(0, verticalPadding, 0, verticalPadding);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            setPaddingRelative(0, verticalPadding, 0, verticalPadding);
-        }
+        setPaddingRelative(0, verticalPadding, 0, verticalPadding);
     }
 
     private void addSocialLayout() {
@@ -106,10 +104,8 @@ public class PasswordlessFormLayout extends LinearLayout implements Passwordless
         int verticalPadding = getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_vertical_margin_field);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, verticalPadding, 0, verticalPadding);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.setMarginStart(0);
-            params.setMarginEnd(0);
-        }
+        params.setMarginStart(0);
+        params.setMarginEnd(0);
         addView(orSeparatorMessage, params);
     }
 
