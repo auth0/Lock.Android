@@ -88,12 +88,10 @@ abstract class ViewUtils {
     static ShapeDrawable getRoundedBackground(@NonNull View view, @ColorInt int color, @Corners int corners) {
         int r = view.getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
         float[] outerR = new float[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            boolean languageRTL = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL;
-            if (languageRTL) {
-                //noinspection WrongConstant
-                corners = -corners;
-            }
+        boolean languageRTL = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL;
+        if (languageRTL) {
+            //noinspection WrongConstant
+            corners = -corners;
         }
         switch (corners) {
             case ONLY_LEFT:
@@ -158,11 +156,7 @@ abstract class ViewUtils {
      * @param background the drawable to use as background.
      */
     static void setBackground(@NonNull View view, @Nullable Drawable background) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackground(background);
-        } else {
-            view.setBackgroundDrawable(background);
-        }
+        view.setBackground(background);
     }
 
     /**
