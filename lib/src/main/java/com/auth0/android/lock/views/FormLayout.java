@@ -29,6 +29,7 @@ import android.content.Context;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -145,7 +146,7 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
     }
 
     private void addSeparator() {
-        orSeparatorMessage = new LineSpacingTextView(getContext());
+        orSeparatorMessage = new AppCompatTextView(getContext());
         orSeparatorMessage.setText(R.string.com_auth0_lock_forms_separator);
         orSeparatorMessage.setTextColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_text));
         orSeparatorMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.com_auth0_lock_title_text));

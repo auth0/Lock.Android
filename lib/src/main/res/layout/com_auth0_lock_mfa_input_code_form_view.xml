@@ -36,7 +36,7 @@
     android:paddingStart="@dimen/com_auth0_lock_widget_horizontal_margin"
     android:paddingTop="@dimen/com_auth0_lock_widget_vertical_margin_field">
 
-    <com.auth0.android.lock.views.LineSpacingTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/com_auth0_lock_text"
         style="@style/Lock.Theme.Text.Subtitle.ResetPassword"
         android:text="@string/com_auth0_lock_description_mfa_input_code"

@@ -33,7 +33,7 @@
     android:paddingBottom="@dimen/com_auth0_lock_bottom_banner_vertical_margin"
     android:paddingTop="@dimen/com_auth0_lock_bottom_banner_vertical_margin">
 
-    <com.auth0.android.lock.views.LineSpacingTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/Lock.Theme.Text.Terms"
         android:text="@string/com_auth0_lock_sign_up_terms" />
 
