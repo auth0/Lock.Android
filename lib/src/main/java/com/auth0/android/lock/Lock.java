@@ -28,15 +28,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.auth0.android.Auth0;
-import com.auth0.android.authentication.ParameterBuilder;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.Theme;
@@ -239,21 +238,6 @@ public class Lock {
             final Lock lock = new Lock(options, callback);
             lock.initialize(context);
             return lock;
-        }
-
-        /**
-         * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
-         *
-         * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
-         * @return the current Builder instance
-         * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
-         */
-        @Deprecated
-        @NonNull
-        public Builder useBrowser(boolean useBrowser) {
-            //noinspection deprecation
-            options.setUseBrowser(useBrowser);
-            return this;
         }
 
         /**

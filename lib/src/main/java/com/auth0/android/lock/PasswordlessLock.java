@@ -267,21 +267,6 @@ public class PasswordlessLock {
         }
 
         /**
-         * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
-         *
-         * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
-         * @return the current Builder instance
-         * @deprecated This method has been deprecated since Google is no longer supporting WebViews to perform login.
-         */
-        @Deprecated
-        @NonNull
-        public Builder useBrowser(boolean useBrowser) {
-            //noinspection deprecation
-            options.setUseBrowser(useBrowser);
-            return this;
-        }
-
-        /**
          * Whether to use implicit grant or code grant when performing calls to /authorize. This only affects passive authentication.
          * Default is {@code false}
          *

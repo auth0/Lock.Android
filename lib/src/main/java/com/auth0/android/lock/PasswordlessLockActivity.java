@@ -194,16 +194,6 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             Log.e(TAG, "You're not allowed to start Lock with startActivityForResult.");
             return false;
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            //TODO: Document this case for users on <= KITKAT, as they will not receive this warning.
-            boolean launchedAsSingleTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
-            //noinspection deprecation
-            if (options.useBrowser() && !launchedAsSingleTask) {
-                Log.e(TAG, "Please, check that you have specified launchMode 'singleTask' in the AndroidManifest.");
-                return false;
-            }
-        }
-
         return true;
     }
 

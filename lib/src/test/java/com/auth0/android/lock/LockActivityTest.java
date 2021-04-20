@@ -639,7 +639,6 @@ public class LockActivityTest {
         when(connection.getName()).thenReturn("my-connection");
         when(connection.isActiveFlowEnabled()).thenReturn(false);
         OAuthLoginEvent event = new OAuthLoginEvent(connection, "user@domain.com", null);
-        when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(true);
@@ -671,7 +670,6 @@ public class LockActivityTest {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
-        when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(true);

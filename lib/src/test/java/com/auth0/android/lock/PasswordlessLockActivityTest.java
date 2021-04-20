@@ -283,7 +283,6 @@ public class PasswordlessLockActivityTest {
         OAuthConnection connection = mock(OAuthConnection.class);
         when(connection.getName()).thenReturn("my-connection");
         OAuthLoginEvent event = new OAuthLoginEvent(connection);
-        when(options.useBrowser()).thenReturn(true);
         activity.onOAuthAuthenticationRequest(event);
 
         verify(lockView, never()).showProgress(eq(true));

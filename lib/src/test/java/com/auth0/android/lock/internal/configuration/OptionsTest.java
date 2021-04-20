@@ -162,19 +162,6 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseWebView() {
-        options.setUseBrowser(false);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.useBrowser(), is(false));
-        assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
-    }
-
-    @Test
     public void shouldUseLabeledSubmitButton() {
         options.setUseLabeledSubmitButton(true);
 
@@ -715,7 +702,6 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options, is(not(parceledOptions))); //assure correct Parcelable object testing
-        assertThat(options.useBrowser(), is(true));
         assertThat(options.usePKCE(), is(true));
         assertThat(options.allowLogIn(), is(true));
         assertThat(options.allowSignUp(), is(true));
@@ -742,7 +728,6 @@ public class OptionsTest {
 
     @Test
     public void shouldSetAllTrueFields() {
-        options.setUseBrowser(true);
         options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
         options.setInitialScreen(InitialScreen.LOG_IN);
@@ -767,7 +752,6 @@ public class OptionsTest {
         assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
         assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
-        assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
@@ -784,7 +768,6 @@ public class OptionsTest {
     @Test
     public void shouldSetAllFalseFields() {
         options.setClosable(false);
-        options.setUseBrowser(false);
         options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setInitialScreen(InitialScreen.SIGN_UP);
@@ -808,7 +791,6 @@ public class OptionsTest {
         assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
         assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
-        assertThat(options.useBrowser(), is(equalTo(parceledOptions.useBrowser())));
         assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
