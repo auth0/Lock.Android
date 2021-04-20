@@ -173,7 +173,6 @@ public class CustomField extends SignUpField {
         dest.writeInt(hint);
     }
 
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<CustomField> CREATOR = new Parcelable.Creator<CustomField>() {
         @Override
         public CustomField createFromParcel(Parcel in) {

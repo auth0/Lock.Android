@@ -219,7 +219,6 @@ public class FormLayout extends RelativeLayout implements ModeSelectionView.Mode
         formsHolder.addView(logInForm);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void showCustomFieldsForm(@NonNull DatabaseSignUpEvent event) {
         removePreviousForm();
 

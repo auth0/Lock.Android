@@ -41,7 +41,6 @@ public class DatabaseLoginEvent extends DatabaseEvent {
 
     @NonNull
     public String getUsernameOrEmail() {
-        //noinspection ConstantConditions
         return getEmail() != null ? getEmail() : getUsername();
     }
 

@@ -79,7 +79,6 @@ public class Auth0Parcelable implements Parcelable {
         }
     };
 
-    @SuppressWarnings("ConstantConditions")
     private Auth0Parcelable(@NonNull Parcel in) {
         String clientId = in.readString();
         String domain = in.readString();

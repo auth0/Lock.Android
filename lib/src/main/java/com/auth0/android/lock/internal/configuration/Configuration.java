@@ -234,7 +234,6 @@ public class Configuration {
     @StyleRes
     public int authStyleForConnection(@NonNull String strategy, @NonNull String connection) {
         if (authStyles.containsKey(connection)) {
-            //noinspection ConstantConditions
             return authStyles.get(connection);
         }
         return AuthConfig.styleForStrategy(strategy);

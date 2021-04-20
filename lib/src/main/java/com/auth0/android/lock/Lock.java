@@ -131,7 +131,6 @@ public class Lock {
      *
      * @param context a valid Context
      */
-    @SuppressWarnings("unused")
     public void onDestroy(@NonNull Context context) {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
     }
@@ -148,7 +147,6 @@ public class Lock {
     private void processEvent(@NonNull Context context, @NonNull Intent data) {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
         String action = data.getAction();
-        //noinspection ConstantConditions
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
@@ -176,11 +174,11 @@ public class Lock {
     /**
      * Helper Builder to generate the Lock.Options to use on the Auth0 Authentication.
      */
-    @SuppressWarnings({"unused", "UnusedReturnValue"})
+    @SuppressWarnings({"UnusedReturnValue"})
     public static class Builder {
         private static final String TAG = Builder.class.getSimpleName();
-        private Options options;
-        private LockCallback callback;
+        private final Options options;
+        private final LockCallback callback;
 
         /**
          * Creates a new Lock.Builder instance with the given account and callback.
@@ -191,7 +189,6 @@ public class Lock {
         public Builder(@Nullable Auth0 account, @NonNull LockCallback callback) {
             this.callback = callback;
             options = new Options();
-            //noinspection ConstantConditions
             options.setAccount(account);
         }
 
@@ -204,7 +201,6 @@ public class Lock {
          */
         @NonNull
         public Lock build(@NonNull Context context) {
-            //noinspection ConstantConditions
             if (options.getAccount() == null) {
                 Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {

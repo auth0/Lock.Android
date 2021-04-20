@@ -115,7 +115,6 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
         String emailOrNumber = getInputText();
         if (passwordlessMode == SMS_CODE || passwordlessMode == SMS_LINK) {
             Log.d(TAG, "Starting a SMS Passwordless flow");
-            //noinspection ConstantConditions
             return PasswordlessLoginEvent.requestCode(passwordlessMode, emailOrNumber, countryCodeSelector.getSelectedCountry());
         } else {
             Log.d(TAG, "Starting an Email Passwordless flow");
@@ -145,7 +144,6 @@ public class PasswordlessRequestCodeFormView extends FormView implements View.On
      * @param isoCode  the selected country iso code (2 chars).
      * @param dialCode the dial code for this country
      */
-    @SuppressWarnings("unused")
     public void onCountryCodeSelected(@NonNull String isoCode, @NonNull String dialCode) {
         Country selectedCountry = new Country(isoCode, dialCode);
         countryCodeSelector.setSelectedCountry(selectedCountry);

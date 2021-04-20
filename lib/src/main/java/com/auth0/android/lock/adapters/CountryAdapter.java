@@ -77,7 +77,6 @@ public class CountryAdapter extends BaseAdapter {
         }
 
         TextView countryNameTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_name_text_view);
-        //noinspection ConstantConditions
         countryNameTextView.setText(country.getDisplayName());
         TextView countryCodeTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_text_view);
         countryCodeTextView.setText(country.getDialCode());

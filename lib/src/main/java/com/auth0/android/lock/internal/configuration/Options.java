@@ -117,7 +117,6 @@ public class Options implements Parcelable {
 
     protected Options(@NonNull Parcel in) {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
-        //noinspection ConstantConditions
         account = auth0Parcelable.getAuth0();
         closable = in.readByte() != WITHOUT_DATA;
         allowLogIn = in.readByte() != WITHOUT_DATA;
@@ -158,7 +157,6 @@ public class Options implements Parcelable {
         if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
             Bundle mapBundle = in.readBundle(getClass().getClassLoader());
-            //noinspection ConstantConditions
             authenticationParameters = (HashMap<String, String>) mapBundle.getSerializable(KEY_AUTHENTICATION_PARAMETERS);
         } else {
             authenticationParameters = null;
@@ -178,7 +176,6 @@ public class Options implements Parcelable {
         if (in.readByte() == HAS_DATA) {
             // FIXME this is something to improve
             Bundle mapBundle = in.readBundle(getClass().getClassLoader());
-            //noinspection ConstantConditions
             connectionsScope = (HashMap<String, String>) mapBundle.getSerializable(KEY_CONNECTIONS_SCOPE);
         } else {
             connectionsScope = null;

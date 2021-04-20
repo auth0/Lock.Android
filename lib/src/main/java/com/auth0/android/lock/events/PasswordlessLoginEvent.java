@@ -97,7 +97,6 @@ public class PasswordlessLoginEvent {
      * @param connectionName the name of the passwordless connection to request the login with. Only 'sms' and 'email' connections are allowed here.
      * @return the Passwordless code request request.
      */
-    @SuppressWarnings("ConstantConditions")
     @NonNull
     public Request<Void, AuthenticationException> getCodeRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String connectionName) {
         Log.d(TAG, String.format("Generating Passwordless Code/Link request for connection %s", connectionName));
@@ -121,7 +120,6 @@ public class PasswordlessLoginEvent {
      * @param emailOrNumber the email or phone number used on the code request.
      * @return the Passwordless login request.
      */
-    @SuppressWarnings("ConstantConditions")
     @NonNull
     public AuthenticationRequest getLoginRequest(@NonNull AuthenticationAPIClient apiClient, @NonNull String emailOrNumber) {
         Log.d(TAG, String.format("Generating Passwordless Login request for identity %s", emailOrNumber));

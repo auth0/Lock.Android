@@ -85,7 +85,6 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
 
     public void setSelectedMode(@AuthMode int mode) {
         TabLayout.Tab tab = tabLayout.getTabAt(mode);
-        //noinspection ConstantConditions
         tab.select();
         toggleBoldText(firstTabView, mode == AuthMode.LOG_IN);
         toggleBoldText(secondTabView, mode == AuthMode.SIGN_UP);
