@@ -25,7 +25,7 @@
 package com.auth0.android.lock.views;
 
 import android.content.Context;
-import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
