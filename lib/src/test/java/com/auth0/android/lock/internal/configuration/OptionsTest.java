@@ -202,46 +202,6 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldHavePKCEEnabledByDefault() {
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.usePKCE(), is(parceledOptions.usePKCE()));
-        assertThat(options.usePKCE(), is(true));
-        assertThat(parceledOptions.usePKCE(), is(true));
-    }
-
-    @Test
-    public void shouldEnablePKCE() {
-        options.setUsePKCE(true);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.usePKCE(), is(parceledOptions.usePKCE()));
-        assertThat(options.usePKCE(), is(true));
-        assertThat(parceledOptions.usePKCE(), is(true));
-    }
-
-    @Test
-    public void shouldDisablePKCE() {
-        options.setUsePKCE(false);
-
-        Parcel parcel = Parcel.obtain();
-        options.writeToParcel(parcel, 0);
-        parcel.setDataPosition(0);
-
-        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
-        assertThat(options.usePKCE(), is(parceledOptions.usePKCE()));
-        assertThat(options.usePKCE(), is(false));
-        assertThat(parceledOptions.usePKCE(), is(false));
-    }
-
-    @Test
     public void shouldBeClosable() {
         options.setClosable(true);
 
@@ -702,7 +662,6 @@ public class OptionsTest {
 
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options, is(not(parceledOptions))); //assure correct Parcelable object testing
-        assertThat(options.usePKCE(), is(true));
         assertThat(options.allowLogIn(), is(true));
         assertThat(options.allowSignUp(), is(true));
         assertThat(options.allowForgotPassword(), is(true));
@@ -728,7 +687,6 @@ public class OptionsTest {
 
     @Test
     public void shouldSetAllTrueFields() {
-        options.setUsePKCE(true);
         options.setUsernameStyle(UsernameStyle.EMAIL);
         options.setInitialScreen(InitialScreen.LOG_IN);
         options.setAllowLogIn(true);
@@ -752,7 +710,6 @@ public class OptionsTest {
         assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
         assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
-        assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));
@@ -768,7 +725,6 @@ public class OptionsTest {
     @Test
     public void shouldSetAllFalseFields() {
         options.setClosable(false);
-        options.setUsePKCE(false);
         options.setUsernameStyle(UsernameStyle.USERNAME);
         options.setInitialScreen(InitialScreen.SIGN_UP);
         options.setAllowLogIn(false);
@@ -791,7 +747,6 @@ public class OptionsTest {
         assertThat(options.mustAcceptTerms(), is(equalTo(parceledOptions.mustAcceptTerms())));
         assertThat(options.showTerms(), is(equalTo(parceledOptions.showTerms())));
         assertThat(options.isClosable(), is(equalTo(parceledOptions.isClosable())));
-        assertThat(options.usePKCE(), is(equalTo(parceledOptions.usePKCE())));
         assertThat(options.usernameStyle(), is(equalTo(parceledOptions.usernameStyle())));
         assertThat(options.initialScreen(), is(equalTo(parceledOptions.initialScreen())));
         assertThat(options.allowLogIn(), is(equalTo(parceledOptions.allowLogIn())));

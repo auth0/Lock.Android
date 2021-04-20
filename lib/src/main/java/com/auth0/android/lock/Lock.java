@@ -241,22 +241,6 @@ public class Lock {
         }
 
         /**
-         * Whether to use implicit grant or code grant when performing calls to /authorize. This only affects passive authentication.
-         * Default is {@code false}
-         *
-         * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
-         * @return the current Builder instance
-         * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
-         */
-        @Deprecated
-        @NonNull
-        public Builder useImplicitGrant(boolean useImplicitGrant) {
-            //noinspection deprecation
-            options.setUsePKCE(!useImplicitGrant);
-            return this;
-        }
-
-        /**
          * Whether the LockActivity can be closed when pressing the Back key or not.
          *
          * @param closable or not. By default, the LockActivity is not closable.

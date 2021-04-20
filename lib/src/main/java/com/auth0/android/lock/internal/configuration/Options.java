@@ -65,7 +65,6 @@ public class Options implements Parcelable {
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
 
     private Auth0 account;
-    private boolean usePKCE;
     private boolean closable;
     private int usernameStyle;
     private boolean useCodePasswordless;
@@ -108,7 +107,6 @@ public class Options implements Parcelable {
         loginAfterSignUp = true;
         showTerms = true;
         useCodePasswordless = true;
-        usePKCE = true;
         useLabeledSubmitButton = true;
         authenticationParameters = new HashMap<>();
         authStyles = new HashMap<>();
@@ -121,7 +119,6 @@ public class Options implements Parcelable {
         Auth0Parcelable auth0Parcelable = (Auth0Parcelable) in.readValue(Auth0Parcelable.class.getClassLoader());
         //noinspection ConstantConditions
         account = auth0Parcelable.getAuth0();
-        usePKCE = in.readByte() != WITHOUT_DATA;
         closable = in.readByte() != WITHOUT_DATA;
         allowLogIn = in.readByte() != WITHOUT_DATA;
         allowSignUp = in.readByte() != WITHOUT_DATA;
@@ -202,7 +199,6 @@ public class Options implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeValue(new Auth0Parcelable(account));
-        dest.writeByte((byte) (usePKCE ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (closable ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowLogIn ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (allowSignUp ? HAS_DATA : WITHOUT_DATA));
@@ -300,16 +296,6 @@ public class Options implements Parcelable {
     @NonNull
     public Theme getTheme() {
         return theme;
-    }
-
-    @Deprecated
-    public boolean usePKCE() {
-        return usePKCE;
-    }
-
-    @Deprecated
-    public void setUsePKCE(boolean usePKCE) {
-        this.usePKCE = usePKCE;
     }
 
     public boolean isClosable() {

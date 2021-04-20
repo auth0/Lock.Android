@@ -28,13 +28,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import android.util.Log;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.lock.LockCallback.LockEvent;
@@ -263,22 +262,6 @@ public class PasswordlessLock {
         @NonNull
         public Builder rememberLastLogin(boolean remember) {
             options.setRememberLastPasswordlessLogin(remember);
-            return this;
-        }
-
-        /**
-         * Whether to use implicit grant or code grant when performing calls to /authorize. This only affects passive authentication.
-         * Default is {@code false}
-         *
-         * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
-         * @return the current Builder instance
-         * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
-         */
-        @Deprecated
-        @NonNull
-        public Builder useImplicitGrant(boolean useImplicitGrant) {
-            //noinspection deprecation
-            options.setUsePKCE(!useImplicitGrant);
             return this;
         }
 
