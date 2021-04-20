@@ -99,12 +99,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         fallbackToDatabase = configuration.getDatabaseConnection() != null;
         changePasswordEnabled = fallbackToDatabase && configuration.allowForgotPassword();
         changePasswordBtn.setVisibility(changePasswordEnabled ? VISIBLE : GONE);
-        changePasswordBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lockWidget.showChangePasswordForm(true);
-            }
-        });
+        changePasswordBtn.setOnClickListener(v -> lockWidget.showChangePasswordForm(true));
         boolean socialAvailable = !configuration.getSocialConnections().isEmpty();
         boolean singleEnterprise = configuration.getEnterpriseConnections().size() == 1;
         if (!fallbackToDatabase && !socialAvailable && singleEnterprise) {
@@ -157,12 +152,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         final AuthConfig authConfig = new AuthConfig(connection, strategyStyle);
         enterpriseBtn.setStyle(authConfig, AuthMode.LOG_IN);
         enterpriseBtn.setVisibility(View.VISIBLE);
-        enterpriseBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection));
-            }
-        });
+        enterpriseBtn.setOnClickListener(v -> lockWidget.onOAuthLoginRequest(new OAuthLoginEvent(connection)));
         topMessage.setText(R.string.com_auth0_lock_action_single_login_with_corporate);
         topMessage.setVisibility(View.VISIBLE);
         emailInput.setVisibility(GONE);

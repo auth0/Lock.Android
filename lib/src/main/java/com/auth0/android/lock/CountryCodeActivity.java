@@ -128,16 +128,13 @@ public class CountryCodeActivity extends AppCompatActivity {
         };
         task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
         listView = findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Country country = (Country) parent.getItemAtPosition(position);
-                Intent data = new Intent();
-                data.putExtra(COUNTRY_CODE_EXTRA, country.getIsoCode());
-                data.putExtra(COUNTRY_DIAL_CODE_EXTRA, country.getDialCode());
-                setResult(RESULT_OK, data);
-                finish();
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Country country = (Country) parent.getItemAtPosition(position);
+            Intent data = new Intent();
+            data.putExtra(COUNTRY_CODE_EXTRA, country.getIsoCode());
+            data.putExtra(COUNTRY_DIAL_CODE_EXTRA, country.getDialCode());
+            setResult(RESULT_OK, data);
+            finish();
         });
     }
 

@@ -96,8 +96,9 @@ public class ApplicationFetcher {
             this.account = account;
         }
 
+        @SafeVarargs
         @Override
-        protected Void doInBackground(Callback<List<Connection>, Auth0Exception>... callbacks) {
+        protected final Void doInBackground(Callback<List<Connection>, Auth0Exception>... callbacks) {
             makeApplicationRequest(account, callbacks[0]);
             return null;
         }

@@ -82,12 +82,7 @@ public class CountryCodeSelectorView extends LinearLayout {
         outline = findViewById(R.id.com_auth0_lock_outline);
         prepareTask();
         setupBackground();
-        setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                ViewUtils.setBackground(outline, hasFocus ? focusedBackground : normalBackground);
-            }
-        });
+        setOnFocusChangeListener((v, hasFocus) -> ViewUtils.setBackground(outline, hasFocus ? focusedBackground : normalBackground));
     }
 
     private void setupBackground() {

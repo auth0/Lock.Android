@@ -133,13 +133,10 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
             tvTitle.setText(R.string.com_auth0_lock_recoverable_error_title);
             tvError.setText(R.string.com_auth0_lock_recoverable_error_subtitle);
             tvAction.setText(R.string.com_auth0_lock_recoverable_error_action);
-            tvAction.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bus.post(new FetchApplicationEvent());
-                    removeView(errorLayout);
-                    showWaitForConfigurationLayout();
-                }
+            tvAction.setOnClickListener(v -> {
+                bus.post(new FetchApplicationEvent());
+                removeView(errorLayout);
+                showWaitForConfigurationLayout();
             });
         } else if (configuration.getSupportURL() == null) {
             tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
@@ -149,12 +146,7 @@ public class PasswordlessLockView extends LinearLayout implements LockWidgetPass
             tvTitle.setText(R.string.com_auth0_lock_unrecoverable_error_title);
             tvError.setText(R.string.com_auth0_lock_unrecoverable_error_subtitle);
             tvAction.setText(R.string.com_auth0_lock_unrecoverable_error_action);
-            tvAction.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(configuration.getSupportURL())));
-                }
-            });
+            tvAction.setOnClickListener(v -> getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(configuration.getSupportURL()))));
         }
         addView(errorLayout);
     }

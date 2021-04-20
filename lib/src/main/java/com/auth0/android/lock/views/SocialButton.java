@@ -40,12 +40,7 @@ class SocialButton extends RelativeLayout {
         title = findViewById(R.id.com_auth0_lock_text);
         setFocusableInTouchMode(false);
         setFocusable(true);
-        setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                v.setAlpha(hasFocus ? FOCUSED_STATE_ALPHA : 1f);
-            }
-        });
+        setOnFocusChangeListener((v, hasFocus) -> v.setAlpha(hasFocus ? FOCUSED_STATE_ALPHA : 1f));
     }
 
     private StateListDrawable getTouchFeedbackBackground(@ColorInt int pressedColor) {
