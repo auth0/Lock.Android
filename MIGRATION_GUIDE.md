@@ -2,19 +2,19 @@
 This guide will help you migrate Lock.Android from version v2.x.x to version v3.x.x. 
 
 ## About this release
-The new version makes use of the latest Auth0.Android SDK, bringing improvements like:
+The new version makes use of the latest Auth0.Android SDK, bringing improvements such as:
  - Open ID Connect compliant practices.
  - ID token verification for Web Authentication flows.
  - A new customizable networking stack.
  
- Some of these features were already available but only enforced when the "OIDC" flag was explicitly enabled.  
+ Some of these features were previously available, but only enforced when the "OIDC" flag was explicitly enabled.  
 
 ## New requirements
-Using the latest core SDK comes with new constraints. Your android application will need to:
+Using the latest core SDK comes with new constraints. Your Android application will need to:
 - Require a minimum Android version of 21 and above.
 - Target Java version 8 and above.
 
-Here’s what you need in build.gradle to target Java 8 byte code for Android and Kotlin plugins respectively.
+Here’s what you need in build.gradle to target Java 8 byte code for the Android and Kotlin plugins respectively.
 
 ```groovy
 android {
