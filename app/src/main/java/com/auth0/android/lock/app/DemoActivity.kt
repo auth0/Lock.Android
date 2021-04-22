@@ -39,7 +39,6 @@ import com.auth0.android.provider.WebAuthProvider.login
 import com.auth0.android.provider.WebAuthProvider.logout
 import com.auth0.android.result.Credentials
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
 
 class DemoActivity : AppCompatActivity() {
 
