@@ -137,12 +137,14 @@ public class Lock {
     }
 
     private void initialize(@NonNull Context context) {
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
+        lbm.unregisterReceiver(this.receiver);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.AUTHENTICATION_ACTION);
         filter.addAction(Constants.SIGN_UP_ACTION);
         filter.addAction(Constants.CANCELED_ACTION);
         filter.addAction(Constants.INVALID_CONFIGURATION_ACTION);
-        LocalBroadcastManager.getInstance(context).registerReceiver(this.receiver, filter);
+        lbm.registerReceiver(this.receiver, filter);
     }
 
     private void processEvent(@NonNull Context context, @NonNull Intent data) {
