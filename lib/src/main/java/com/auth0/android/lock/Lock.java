@@ -68,7 +68,7 @@ public class Lock {
 
         @Override
         public void onReceive(Context context, Intent data) {
-            processEvent(context, data);
+            processEvent(data);
         }
     };
 
@@ -147,8 +147,7 @@ public class Lock {
         lbm.registerReceiver(this.receiver, filter);
     }
 
-    private void processEvent(@NonNull Context context, @NonNull Intent data) {
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
+    private void processEvent(@NonNull Intent data) {
         String action = data.getAction();
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:

@@ -64,7 +64,7 @@ public class PasswordlessLock {
 
         @Override
         public void onReceive(@NonNull Context context, @NonNull Intent data) {
-            processEvent(context, data);
+            processEvent(data);
         }
     };
 
@@ -146,8 +146,7 @@ public class PasswordlessLock {
         lbm.registerReceiver(this.receiver, filter);
     }
 
-    private void processEvent(Context context, Intent data) {
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
+    private void processEvent(Intent data) {
         String action = data.getAction();
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
