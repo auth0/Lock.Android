@@ -502,7 +502,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onFailure(@NonNull final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
-            if (error.isRuleError()) {
+            if (error.isRuleError() || error.isAccessDenied()) {
                 deliverAuthenticationError(error);
                 return;
             }
@@ -520,7 +520,7 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onFailure(@NonNull final AuthenticationException exception) {
             Log.e(TAG, "Failed to authenticate the user: " + exception.getCode(), exception);
-            if (exception.isRuleError()) {
+            if (exception.isRuleError() || exception.isAccessDenied()) {
                 deliverAuthenticationError(exception);
                 return;
             }
