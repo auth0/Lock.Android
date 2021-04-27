@@ -493,7 +493,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onFailure(@NonNull final AuthenticationException exception) {
             Log.e(TAG, "Failed to authenticate the user: " + exception.getCode(), exception);
-            if (exception.isRuleError()) {
+            if (exception.isRuleError() || exception.isAccessDenied()) {
                 deliverAuthenticationError(exception);
                 return;
             }
@@ -519,7 +519,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         @Override
         public void onFailure(@NonNull final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getCode(), error);
-            if (error.isRuleError()) {
+            if (error.isRuleError() || error.isAccessDenied()) {
                 deliverAuthenticationError(error);
                 return;
             }
