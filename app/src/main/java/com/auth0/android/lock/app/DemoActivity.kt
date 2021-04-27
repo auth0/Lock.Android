@@ -162,6 +162,10 @@ class DemoActivity : AppCompatActivity() {
             }
         }
 
+        // For demo purposes because options change dynamically, we release the resources of Lock here.
+        // In a real app, you will have a single instance and release its resources in Activity#OnDestroy.
+        lock?.onDestroy(this)
+        // Create a new instance with the updated configuration
         lock = builder.build(this)
         startActivity(lock!!.newIntent(this))
     }
@@ -179,6 +183,10 @@ class DemoActivity : AppCompatActivity() {
             builder.useCode()
         }
 
+        // For demo purposes because options change dynamically, we release the resources of Lock here.
+        // In a real app, you will have a single instance and release its resources in Activity#OnDestroy.
+        passwordlessLock?.onDestroy(this)
+        // Create a new instance with the updated configuration
         passwordlessLock = builder.build(this)
         startActivity(passwordlessLock!!.newIntent(this))
     }
