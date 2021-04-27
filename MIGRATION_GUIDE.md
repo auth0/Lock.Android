@@ -71,4 +71,42 @@ The core SDK has been updated to the version 2+. Since this is exposed as an API
 
 ## Changes in behavior
 
+### Lock lifecycle
+
+The widget registers a Broadcast Listener to expect and handle the different lifecycle events. The listener is registered as soon as a new instance of `Lock` or `PasswordlessLock` is created with the corresponding Builder class, and the listener is unregistered when the `onDestroy` method is invoked. Forgetting to call this method would retain unnecessary resources after the authentication is complete and the widget is no longer required, or cause the callback to receive duplicated calls. 
+
+In case you are not currently calling it, make sure to update your code adding the `lock?.onDestroy(this)` call.
+
+```kotlin
+class MyActivity : AppCompatActivity() {
+
+  private var lock: Lock? = null
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    
+    val account = Auth0(this)
+    // Create a reusable Lock instance
+    lock = Lock.newBuilder(account, callback)
+      // Customize Lock
+      // .withScheme("myapp")
+      .build(this)
+  }
+
+  private fun launchLock() {
+    // Invoke as many times as needed
+    val intent = lock!!.newIntent(this)
+    startActivity(intent)
+  }
+ 
+  override fun onDestroy() {
+      super.onDestroy()
+      // Release Lock resources
+      lock?.onDestroy(this)
+  }
+}
+```
+
+### Non-recoverable errors
+
 The `LockCallback` will get its `onError` method invoked when an [Auth0 Rule](https://auth0.com/docs/rules) returns an `Error` or `UnauthorizedError`. This was previously handled internally by Lock, causing it to display an orange toast with a generic failure message. From this release on, if you are using Auth0 Rules and throwing custom errors, you should obtain the _cause_ of the exception and read the code or description values to understand what went wrong.  
