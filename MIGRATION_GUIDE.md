@@ -68,3 +68,7 @@ Continue reading for the detail of classes and methods that were impacted.
 ### Changes to the underlying SDK
 
 The core SDK has been updated to the version 2+. Since this is exposed as an API scoped dependency, if you were using any of the classes or methods that changed in the new major release (e.g. the `WebAuthProvider` class), you might need to update your code. Follow the [Auth0.Android Migration Guide](https://github.com/auth0/Auth0.Android/blob/main/V2_MIGRATION_GUIDE.md) to assess the impact. 
+
+## Changes in behavior
+
+The `LockCallback` will get its `onError` method invoked when an [Auth0 Rule](https://auth0.com/docs/rules) returns an `Error` or `UnauthorizedError`. This was previously handled internally by Lock, causing it to display an orange toast with a generic failure message. From this release on, if you are using Auth0 Rules and throwing custom errors, you should obtain the _cause_ of the exception and read the code or description values to understand what went wrong.  
