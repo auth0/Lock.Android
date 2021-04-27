@@ -36,6 +36,7 @@ import androidx.annotation.StyleRes;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.Theme;
@@ -149,8 +150,8 @@ public class PasswordlessLock {
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                if (data.getExtras().containsKey(Constants.ERROR_EXTRA)) {
-                    callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
+                if (data.hasExtra(Constants.EXCEPTION_EXTRA)) {
+                    callback.onError(new LockException((AuthenticationException) data.getSerializableExtra(Constants.EXCEPTION_EXTRA)));
                 } else {
                     callback.onEvent(LockEvent.AUTHENTICATION, data);
                 }

@@ -26,6 +26,7 @@ package com.auth0.android.lock;
 
 import android.content.Intent;
 
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.utils.MockLockCallback;
 import com.auth0.android.result.Credentials;
@@ -39,6 +40,7 @@ import org.robolectric.annotation.Config;
 import java.util.Date;
 
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasAuthentication;
+import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.hasNoError;
 import static com.auth0.android.lock.utils.AuthenticationCallbackMatcher.isCanceled;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -78,6 +80,16 @@ public class AuthenticationCallbackTest {
         assertThat(callback.getCredentials().getExpiresAt(), equalTo(credentials.getExpiresAt()));
         assertThat(callback.getCredentials().getScope(), equalTo(credentials.getScope()));
         assertThat(callback, hasNoError());
+    }
+
+    @Test
+    public void shouldReturnAuthenticationError() {
+        Intent data = new Intent();
+        AuthenticationException error = new AuthenticationException("err_code", "err description");
+        data.putExtra(Constants.EXCEPTION_EXTRA, error);
+        callback.onEvent(LockEvent.AUTHENTICATION, data);
+
+        assertThat(callback, hasError());
     }
 
     @Test
