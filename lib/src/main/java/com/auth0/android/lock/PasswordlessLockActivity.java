@@ -224,6 +224,14 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         finish();
     }
 
+    private void deliverAuthenticationError(AuthenticationException exception) {
+        Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
+        intent.putExtra(Constants.EXCEPTION_EXTRA, exception);
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        finish();
+    }
+
     private void showErrorMessage(String message) {
         resultMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.com_auth0_lock_result_message_error_background));
         resultMessage.setVisibility(View.VISIBLE);
@@ -494,6 +502,10 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         @Override
         public void onFailure(@NonNull final AuthenticationException error) {
             Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
+            if (error.isRuleError()) {
+                deliverAuthenticationError(error);
+                return;
+            }
             handler.post(() -> showErrorMessage(loginErrorBuilder.buildFrom(error).getMessage(PasswordlessLockActivity.this)));
         }
     };
@@ -507,9 +519,13 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
 
         @Override
         public void onFailure(@NonNull final AuthenticationException exception) {
+            Log.e(TAG, "Failed to authenticate the user: " + exception.getCode(), exception);
+            if (exception.isRuleError()) {
+                deliverAuthenticationError(exception);
+                return;
+            }
             final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
             final String message = authError.getMessage(PasswordlessLockActivity.this);
-            Log.e(TAG, "Failed to authenticate the user: " + message, exception);
             handler.post(() -> showErrorMessage(message));
         }
 

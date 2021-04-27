@@ -26,10 +26,17 @@ package com.auth0.android.lock.utils;
 
 import androidx.annotation.NonNull;
 
+import com.auth0.android.authentication.AuthenticationException;
+
 
 public class LockException extends Exception {
 
     public LockException(@NonNull String message) {
         super(message);
     }
+
+    public LockException(@NonNull AuthenticationException exception) {
+        super(exception);
+    }
+
 }

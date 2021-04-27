@@ -220,6 +220,14 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         finish();
     }
 
+    private void deliverAuthenticationError(AuthenticationException exception) {
+        Intent intent = new Intent(Constants.AUTHENTICATION_ACTION);
+        intent.putExtra(Constants.EXCEPTION_EXTRA, exception);
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        finish();
+    }
+
     private void deliverSignUpResult(DatabaseUser result) {
         Intent intent = new Intent(Constants.SIGN_UP_ACTION);
         intent.putExtra(Constants.EMAIL_EXTRA, result.getEmail());
@@ -484,9 +492,13 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(@NonNull final AuthenticationException exception) {
+            Log.e(TAG, "Failed to authenticate the user: " + exception.getCode(), exception);
+            if (exception.isRuleError()) {
+                deliverAuthenticationError(exception);
+                return;
+            }
             final AuthenticationError authError = loginErrorBuilder.buildFrom(exception);
             final String message = authError.getMessage(LockActivity.this);
-            Log.e(TAG, "Failed to authenticate the user: " + message, exception);
             handler.post(() -> showErrorMessage(message));
         }
 
@@ -506,12 +518,16 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(@NonNull final AuthenticationException error) {
-            Log.e(TAG, "Failed to authenticate the user: " + error.getMessage(), error);
-            final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
+            Log.e(TAG, "Failed to authenticate the user: " + error.getCode(), error);
+            if (error.isRuleError()) {
+                deliverAuthenticationError(error);
+                return;
+            }
             if (error.isVerificationRequired()) {
                 completeDatabaseAuthenticationOnBrowser();
                 return;
             }
+            final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
 
             handler.post(() -> {
                 lockView.showProgress(false);
@@ -542,7 +558,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(@NonNull final AuthenticationException error) {
-            Log.e(TAG, "Failed to create the user: " + error.getMessage(), error);
+            Log.e(TAG, "Failed to create the user: " + error.getCode(), error);
             if (error.isVerificationRequired()) {
                 completeDatabaseAuthenticationOnBrowser();
                 return;
@@ -568,7 +584,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         @Override
         public void onFailure(@NonNull AuthenticationException error) {
-            Log.e(TAG, "Failed to reset the user password: " + error.getMessage(), error);
+            Log.e(TAG, "Failed to reset the user password: " + error.getCode(), error);
             handler.post(() -> {
                 String message = new AuthenticationError(R.string.com_auth0_lock_db_message_change_password_error).getMessage(LockActivity.this);
                 showErrorMessage(message);

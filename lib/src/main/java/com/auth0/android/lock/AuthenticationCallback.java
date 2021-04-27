@@ -29,6 +29,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.result.Credentials;
 
 import java.util.Date;
@@ -75,6 +77,11 @@ public abstract class AuthenticationCallback implements LockCallback {
      * @param data the intent received at the end of the login process.
      */
     private void parseAuthentication(Intent data) {
+        if (data.hasExtra(Constants.EXCEPTION_EXTRA)) {
+            AuthenticationException error = (AuthenticationException) data.getSerializableExtra(Constants.EXCEPTION_EXTRA);
+            onError(new LockException(error));
+            return;
+        }
         String idToken = data.getStringExtra(Constants.ID_TOKEN_EXTRA);
         String accessToken = data.getStringExtra(Constants.ACCESS_TOKEN_EXTRA);
         String tokenType = data.getStringExtra(Constants.TOKEN_TYPE_EXTRA);
