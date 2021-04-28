@@ -101,11 +101,11 @@ Next, add the `LockActivity` inside the `application` tag:
 
 ```xml
 <activity
-  android:name="com.auth0.android.lock.LockActivity"
-  android:label="@string/app_name"
-  android:launchMode="singleTask"
-  android:screenOrientation="portrait"
-  android:theme="@style/Lock.Theme"/>
+    android:name="com.auth0.android.lock.LockActivity"
+    android:label="@string/app_name"
+    android:launchMode="singleTask"
+    android:screenOrientation="portrait"
+    android:theme="@style/Lock.Theme"/>
 ```
 
 Make sure the Activity's `launchMode` is declared as `singleTask` or the authentication result won't come back into your application.
@@ -117,37 +117,37 @@ Then, in any of your Activities, you need to initialize **Lock** and handle the 
 // This activity will show Lock
 class MyActivity : AppCompatActivity() {
 
-  private var lock: Lock? = null
+    private var lock: Lock? = null
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     
-    val account = Auth0(this)
-    // Instantiate Lock once
-    lock = Lock.newBuilder(account, callback)
-      // Customize Lock
-      .build(this)
-  }
-
-  override fun onDestroy() {
-      super.onDestroy()
-      // Important! Release Lock and its resources
-      lock?.onDestroy(this)
-  }
-
-  private val callback = object : AuthenticationCallback() {
-       override fun onAuthentication(credentials: Credentials) {
+        val account = Auth0(this)
+        // Instantiate Lock once
+        lock = Lock.newBuilder(account, callback)
+            // Customize Lock
+            .build(this)
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        // Important! Release Lock and its resources
+        lock?.onDestroy(this)
+    }
+    
+    private val callback = object : AuthenticationCallback() {
+        override fun onAuthentication(credentials: Credentials) {
             // Authenticated
-       }
-
-       override fun onCanceled() {
+        }
+        
+        override fun onCanceled() {
             // User pressed back and closed Lock
-       }
-
-       override fun onError(error: LockException) {
+        }
+        
+        override fun onError(error: LockException) {
             // An exception occurred
-       }
-  }
+        }
+    }
 }
 ```
 
@@ -174,22 +174,21 @@ Next, add the `PasswordlessLockActivity` inside the `application` tag. Note that
 
 ```xml
 <activity
-  android:name="com.auth0.android.lock.PasswordlessLockActivity"
-  android:label="@string/app_name"
-  android:launchMode="singleTask"
-  android:screenOrientation="portrait"
-  android:theme="@style/Lock.Theme">
+    android:name="com.auth0.android.lock.PasswordlessLockActivity"
+    android:label="@string/app_name"
+    android:launchMode="singleTask"
+    android:screenOrientation="portrait"
+    android:theme="@style/Lock.Theme">
     <intent-filter>
-      <action android:name="android.intent.action.VIEW" />
-
-      <category android:name="android.intent.category.DEFAULT" />
-      <category android:name="android.intent.category.BROWSABLE" />
-
-      <data
+        <action android:name="android.intent.action.VIEW" />
+        
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        
+        <data
         android:host="@string/com_auth0_domain"
         android:pathPrefix="/android/${applicationId}/email"
         android:scheme="https" />
-
     </intent-filter>
 </activity>
 ```
@@ -202,8 +201,8 @@ When the Passwordless connection is SMS you must also add the `CountryCodeActivi
 
 ```xml
 <activity
-  android:name="com.auth0.android.lock.CountryCodeActivity"
-  android:theme="@style/Lock.Theme.ActionBar" />
+    android:name="com.auth0.android.lock.CountryCodeActivity"
+    android:theme="@style/Lock.Theme.ActionBar" />
 ```
 
 
@@ -212,38 +211,38 @@ Then, in any of your Activities, you need to initialize **PasswordlessLock** and
 ```kotlin
 // This activity will show PasswordlessLock
 class MyActivity : AppCompatActivity() {
-
-  private var lock: PasswordlessLock? = null
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
     
-    val account = Auth0(this)
-    // Instantiate Lock once
-    lock = PasswordlessLock.newBuilder(account, callback)
-        // Customize Lock
-        .build(this)
-  }
-
-  override fun onDestroy() {
-      super.onDestroy()
-      // Important! Release Lock and its resources
-      lock?.onDestroy(this)
-  }
-
-  private val callback = object : AuthenticationCallback() {
-       override fun onAuthentication(credentials: Credentials) {
+    private var lock: PasswordlessLock? = null
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    
+        val account = Auth0(this)
+        // Instantiate Lock once
+        lock = PasswordlessLock.newBuilder(account, callback)
+            // Customize Lock
+            .build(this)
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        // Important! Release Lock and its resources
+        lock?.onDestroy(this)
+    }
+    
+    private val callback = object : AuthenticationCallback() {
+        override fun onAuthentication(credentials: Credentials) {
             // Authenticated
-       }
-
-       override fun onCanceled() {
+        }
+        
+        override fun onCanceled() {
             // User pressed back and closed Lock
-       }
-
-       override fun onError(error: LockException) {
+        }
+        
+        override fun onError(error: LockException) {
             // An exception occurred
-       }
-  }
+        }
+    }
 }
 ```
 
@@ -266,14 +265,14 @@ newBuilder(account, callback)
     .withScope('new-scope') // Changes the scope to be requested on authentication
     .withAudience('my-api') // Changes the audience to be requested on authentication
     .withScheme('myapp') // Changes the scheme part used to generate the Callback URL (more below)
-
+    
     // Lock specific options
     .initialScreen(InitialScreen.SIGN_UP) // Allows to choose the screen to be displayed first 
     .allowLogIn(false) // Disables the Log In screen
     .allowSignUp(false) // Disables the Sign Up screen
     .allowForgotPassword(false) // Disables the Change Password screen
     .setDefaultDatabaseConnection('my-connection') // When multiple are available, select one
-
+    
     // PasswordlessLock specific options
     .useCode(true)  // Requests to receive a OTP that will need to be filled in your android app to authenticate the user
     .useLink(false) // Requests to receive a link that will open your android app to authenticate the user
