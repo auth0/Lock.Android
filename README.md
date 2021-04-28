@@ -123,14 +123,15 @@ class MyActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     
     val account = Auth0(this)
+    // Instantiate Lock once
     lock = Lock.newBuilder(account, callback)
       // Customize Lock
-      // .withScheme("myapp")
       .build(this)
   }
 
   override fun onDestroy() {
       super.onDestroy()
+      // Important! Release Lock and its resources
       lock?.onDestroy(this)
   }
 
@@ -218,14 +219,15 @@ class MyActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     
     val account = Auth0(this)
+    // Instantiate Lock once
     lock = PasswordlessLock.newBuilder(account, callback)
-      // Customize Lock
-      // .withScheme("myapp")
-      .build(this)
+        // Customize Lock
+        .build(this)
   }
 
   override fun onDestroy() {
       super.onDestroy()
+      // Important! Release Lock and its resources
       lock?.onDestroy(this)
   }
 
@@ -249,6 +251,36 @@ To start `PasswordlessLockActivity` from inside your `Activity`, create a new in
 
 ```kotlin
 startActivity(lock.newIntent(this))
+```
+
+### Customizing the widget
+
+When using the `Builder` to instantiate the widget, you can pass different options to customize how it will behave. Some options are only available for **Lock** or **PasswordlessLock**. Below you will find a few of them. You can always explore all the available options with your IDE's auto-complete shortcut. Check the Javadocs to understand the default values.
+
+
+```kotlin
+// Create a new builder from Lock or LockPasswordless classes
+newBuilder(account, callback)
+    // Shared options
+    .closable(true) // Allows the widget to be closed with the back button
+    .withScope('new-scope') // Changes the scope to be requested on authentication
+    .withAudience('my-api') // Changes the audience to be requested on authentication
+    .withScheme('myapp') // Changes the scheme part used to generate the Callback URL (more below)
+
+    // Lock specific options
+    .initialScreen(InitialScreen.SIGN_UP) // Allows to choose the screen to be displayed first 
+    .allowLogIn(false) // Disables the Log In screen
+    .allowSignUp(false) // Disables the Sign Up screen
+    .allowForgotPassword(false) // Disables the Change Password screen
+    .setDefaultDatabaseConnection('my-connection') // When multiple are available, select one
+
+    // PasswordlessLock specific options
+    .useCode(true)  // Requests to receive a OTP that will need to be filled in your android app to authenticate the user
+    .useLink(false) // Requests to receive a link that will open your android app to authenticate the user
+    .rememberLastLogin(true) // Saves the email or phone number to avoid re-typing it in the future
+    
+    // Build the instance
+    .build(this)
 ```
 
 #### Android App Links - Custom Scheme
