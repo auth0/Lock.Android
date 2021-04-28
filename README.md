@@ -70,7 +70,7 @@ android {
 }
 ```
 
-The next step is to create an instance of `Auth0` with your application's information. The easiest way to create it is by using the values defined previously in the `string.xml` file and passing an Android Context. For this to work, you must have defined the string resources using the same keys as listed above.
+The next step is to create an instance of `Auth0` with your application's information. The easiest way to create it is by using the values defined previously in the `strings.xml` file and passing an Android Context. For this to work, you must have defined the string resources using the same keys as listed above.
 
 ```kotlin
 val account = Auth0(context)
@@ -111,7 +111,7 @@ Next, add the `LockActivity` inside the `application` tag:
 Make sure the Activity's `launchMode` is declared as `singleTask` or the authentication result won't come back into your application.
 
 
-Then, in any of your Activities, you need to initialize **Lock** and handle the release of its resources appropriately after you're doing using it. 
+Then, in any of your Activities, you need to initialize **Lock** and handle the release of its resources appropriately after you're done using it. 
 
 ```kotlin
 // This activity will show Lock
