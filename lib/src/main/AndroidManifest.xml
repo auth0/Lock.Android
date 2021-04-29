@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
+        <!--Auth0 WebAuthProvider-->
         <activity
             android:name="com.auth0.android.provider.RedirectActivity"
             tools:node="replace">
@@ -20,6 +21,46 @@
                     android:scheme="${auth0Scheme}" />
             </intent-filter>
         </activity>
+        <!--Auth0 WebAuthProvider End-->
+
+        <!--Auth0 Lock-->
+        <activity
+            android:name="com.auth0.android.lock.LockActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Lock.Theme"/>
+        <!--Auth0 Lock End-->
+
+        <!--Auth0 PasswordlessLock-->
+        <activity
+            android:name="com.auth0.android.lock.PasswordlessLockActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Lock.Theme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="${auth0Domain}"
+                    android:pathPrefix="/android/${applicationId}/email"
+                    android:scheme="${auth0Scheme}" />
+
+                <data
+                    android:host="${auth0Domain}"
+                    android:pathPrefix="/android/${applicationId}/sms"
+                    android:scheme="${auth0Scheme}" />
+            </intent-filter>
+        </activity>
+        <!--Auth0 PasswordlessLock End-->
+
+        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
+        <activity
+            android:name="com.auth0.android.lock.CountryCodeActivity"
+            android:theme="@style/Lock.Theme.ActionBar" />
+        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
     </application>
 
 </manifest>

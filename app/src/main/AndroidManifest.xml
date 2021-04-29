@@ -2,64 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.auth0.android.lock.app">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup">
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name=".DemoActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--Auth0 Lock-->
-        <activity
-            android:name="com.auth0.android.lock.LockActivity"
-            android:label="Classic Lock"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyLock.Theme"/>
-        <!--Auth0 Lock End-->
-
-        <!--Auth0 PasswordlessLock-->
-        <activity
-            android:name="com.auth0.android.lock.PasswordlessLockActivity"
-            android:label="Passwordless Lock"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyLock.Theme">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <!--suppress AndroidDomInspection -->
-                <data
-                    android:host="@string/com_auth0_domain"
-                    android:pathPrefix="/android/${applicationId}/email"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <!--Auth0 PasswordlessLock End-->
-
-        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
-        <activity
-            android:name="com.auth0.android.lock.CountryCodeActivity"
-            android:theme="@style/Lock.Theme.ActionBar" />
-        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
 
     </application>
 
