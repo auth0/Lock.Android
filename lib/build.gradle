@@ -51,6 +51,13 @@ android {
         }
     }
 
+    unitTestVariants.all {
+        it.mergedFlavor.manifestPlaceholders += [
+            auth0Domain: "johndoe.auth0.com",
+            auth0Scheme: "test"
+        ]
+    }
+
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
