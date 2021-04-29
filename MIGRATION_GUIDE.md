@@ -6,6 +6,7 @@ The new version makes use of the latest Auth0.Android SDK, bringing improvements
  - Open ID Connect compliant practices.
  - ID token verification for Web Authentication flows.
  - A new customizable networking stack.
+ - Simpler Android app set up.
  
  Some of these features were previously available, but only enforced when the "OIDC" flag was explicitly enabled.  
 
@@ -37,6 +38,15 @@ As part of removing legacy APIs or authentication flows no longer recommended fo
 - Authentication API methods categorized as Legacy in the [API docs](https://auth0.com/docs/api/authentication).
 
 Continue reading for the detail of classes and methods that were impacted.
+
+## Changes to the AndroidManifest file
+In the previous version you had to declare the Lock activities you planned to use. These activities are now declared internally by the library with intent filters configured using the Manifest Placeholders that you provide for the Domain and Scheme. The Manifest Merger tool will process these and include them as part of your Android application. 
+
+If your `AndroidManifest.xml` file includes declarations for `LockActivity`, `PasswordlessLockActivity` or `CountryCodeActivity`, you should remove them to avoid duplicated intent filter declarations.
+
+If you are using a custom style for the theme or need to override the intent-filter declarations in any of these activities, you will have to declare an activity with the same component name and annotate it with `tools:node="replace"`.
+
+Find details about the merging rules that will be used in the [Android Manifest Merger article](https://developer.android.com/studio/build/manifest-merge).
 
 ### Removed classes
 - `VoidCallback` is no longer available. Please, use `Callback<Void, AuthenticationException>` instead.
