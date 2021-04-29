@@ -30,15 +30,6 @@ android {
 }
 ```
 
-## Changes to the Public API
-As part of removing legacy APIs or authentication flows no longer recommended for mobile clients, the following features are no longer available:
-
-- Web Authentication flow using a WebView component instead of an external Browser. Please refer to [this blog post](https://auth0.com/blog/google-blocks-oauth-requests-from-embedded-browsers/) for additional information.
-- Web Authentication flow using a response type other than "code".
-- Authentication API methods categorized as Legacy in the [API docs](https://auth0.com/docs/api/authentication).
-
-Continue reading for the detail of classes and methods that were impacted.
-
 ## Changes to the AndroidManifest file
 In the previous version you had to declare the Lock activities you planned to use. These activities are now declared internally by the library with intent filters configured using the Manifest Placeholders that you provide for the Domain and Scheme. The Manifest Merger tool will process these and include them as part of your Android application. 
 
@@ -48,10 +39,62 @@ If you are using a custom style for the theme or need to override the intent-fil
 
 Find details about the merging rules that will be used in the [Android Manifest Merger article](https://developer.android.com/studio/build/manifest-merge).
 
+## Changes to the Public API
+As part of removing legacy APIs or authentication flows no longer recommended for mobile clients, the following features are no longer available:
+
+- Web Authentication flow using a WebView component instead of an external Browser. Please refer to [this blog post](https://auth0.com/blog/google-blocks-oauth-requests-from-embedded-browsers/) for additional information.
+- Web Authentication flow using a response type other than "code".
+- Authentication API methods categorized as Legacy in the [API docs](https://auth0.com/docs/api/authentication).
+
+Continue reading for the detail of classes and methods that were impacted.
+
+### Updated Callbacks
+The widget requires a callback to receive the results in. The interface for this is `LockCallback`, which takes either an event or an error. The `onError` method got updated to receive an `AuthenticationException` instead of `LockException`. This change will help developers extract the *code* and *description* of the error and understand better what went wrong and how to recover from it.
+
+The change impacts the abstract subclass `AuthenticationCallback`. Additionally, this class no longer has an `onCanceled` method. If you need to handle this scenario you have two options:
+- Implement `LockCallback` and handle the different event types, checking for `LockEvent.CANCELED`.
+- Implement `AuthenticationCallback` and check the received exception using the `AuthenticationException#isCanceled()` method.
+
+```kotlin
+// Before
+val callback: LockCallback = object : AuthenticationCallback() {
+    override fun onAuthentication(credentials: Credentials) {
+        // Authenticated
+    }
+
+    override fun onCanceled() {
+        // Canceled
+    }
+
+    override fun onError(error: LockException) {
+        // Another error. Check code & description.
+    }
+}
+
+// After
+val callback: LockCallback = object : AuthenticationCallback() {
+    override fun onAuthentication(credentials: Credentials) {
+        // Authenticated
+    }
+
+    override fun onError(error: AuthenticationException) {
+        if (error.isCanceled) {
+            // Canceled
+        } else {
+            // Another error. Check code & description.
+        }
+    }
+}
+```
+
 ### Removed classes
 - `VoidCallback` is no longer available. Please, use `Callback<Void, AuthenticationException>` instead.
+- `LockException` is no longer available. This impacts the `LockCallback` and `AuthenticationCallback` classes. Please, use `AuthenticationException` instead.
 
 ### Removed methods
+
+#### From class `AuthenticationCallback`
+- Removed `public void onCanceled()`. Instead, an exception will be raised through the `public void onError(AuthenticationException)` method. Check for this scenario using the `AuthenticationException#isCanceled()` method.
 
 #### From class `Lock.Builder`
 - Removed `public Builder useBrowser(boolean)`. The library will always use a third party browser app instead of a Web View to authenticate. No replacement is available.

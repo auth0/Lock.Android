@@ -143,11 +143,7 @@ class MyActivity : AppCompatActivity() {
             // Authenticated
         }
         
-        override fun onCanceled() {
-            // User pressed back and closed Lock
-        }
-        
-        override fun onError(error: LockException) {
+        override fun onError(error: AuthenticationException) {
             // An exception occurred
         }
     }
@@ -195,11 +191,7 @@ class MyActivity : AppCompatActivity() {
             // Authenticated
         }
         
-        override fun onCanceled() {
-            // User pressed back and closed Lock
-        }
-        
-        override fun onError(error: LockException) {
+        override fun onError(error: AuthenticationException) {
             // An exception occurred
         }
     }
