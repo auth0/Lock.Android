@@ -26,6 +26,7 @@ package com.auth0.android.lock.utils;
 
 import androidx.annotation.NonNull;
 
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.lock.AuthenticationCallback;
 import com.auth0.android.result.Credentials;
 
@@ -34,36 +35,18 @@ import java.util.concurrent.Callable;
 public class MockLockCallback extends AuthenticationCallback {
 
     private Credentials credentials;
-    private boolean canceled;
-    private LockException error;
+    private AuthenticationException error;
 
     public Callable<Credentials> authentication() {
-        return new Callable<Credentials>() {
-            @Override
-            @LockEvent
-            public Credentials call() {
-                return credentials;
-            }
-        };
+        return () -> credentials;
     }
 
     public Callable<Boolean> canceled() {
-        return new Callable<Boolean>() {
-            @Override
-            @LockEvent
-            public Boolean call() {
-                return canceled;
-            }
-        };
+        return () -> error != null && error.isCanceled();
     }
 
-    public Callable<LockException> error() {
-        return new Callable<LockException>() {
-            @Override
-            public LockException call() {
-                return error;
-            }
-        };
+    public Callable<AuthenticationException> error() {
+        return () -> error;
     }
 
     @Override
@@ -72,12 +55,7 @@ public class MockLockCallback extends AuthenticationCallback {
     }
 
     @Override
-    public void onCanceled() {
-        this.canceled = true;
-    }
-
-    @Override
-    public void onError(@NonNull LockException error) {
+    public void onError(@NonNull AuthenticationException error) {
         this.error = error;
     }
 
@@ -85,7 +63,7 @@ public class MockLockCallback extends AuthenticationCallback {
         return this.credentials;
     }
 
-    public LockException getError() {
+    public AuthenticationException getError() {
         return error;
     }
 }

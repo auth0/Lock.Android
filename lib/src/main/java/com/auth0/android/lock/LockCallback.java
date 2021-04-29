@@ -25,10 +25,11 @@
 package com.auth0.android.lock;
 
 import android.content.Intent;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
-import com.auth0.android.lock.utils.LockException;
+import com.auth0.android.authentication.AuthenticationException;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -68,5 +69,5 @@ public interface LockCallback {
      *
      * @param error describing what happened.
      */
-    void onError(@NonNull LockException error);
+    void onError(@NonNull AuthenticationException error);
 }

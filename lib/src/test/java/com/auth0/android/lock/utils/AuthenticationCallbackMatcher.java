@@ -74,7 +74,7 @@ public class AuthenticationCallbackMatcher extends BaseMatcher<MockLockCallback>
     }
 
     public static AuthenticationCallbackMatcher isCanceled() {
-        return new AuthenticationCallbackMatcher(is(nullValue(Credentials.class)), equalTo(true), is(nullValue(Throwable.class)));
+        return new AuthenticationCallbackMatcher(is(nullValue(Credentials.class)), equalTo(true), is(notNullValue(Throwable.class)));
     }
 
     public static AuthenticationCallbackMatcher hasAuthentication() {
@@ -82,7 +82,7 @@ public class AuthenticationCallbackMatcher extends BaseMatcher<MockLockCallback>
     }
 
     public static AuthenticationCallbackMatcher hasError() {
-        return new AuthenticationCallbackMatcher(is(nullValue(Credentials.class)), equalTo(false), is(notNullValue(Throwable.class)));
+        return new AuthenticationCallbackMatcher(is(nullValue(Credentials.class)), any(Boolean.class), is(notNullValue(Throwable.class)));
     }
 
     public static AuthenticationCallbackMatcher hasNoError() {

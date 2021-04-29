@@ -41,7 +41,6 @@ import com.auth0.android.lock.LockCallback.LockEvent;
 import com.auth0.android.lock.internal.configuration.Options;
 import com.auth0.android.lock.internal.configuration.Theme;
 import com.auth0.android.lock.provider.AuthResolver;
-import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.provider.AuthHandler;
 import com.auth0.android.provider.CustomTabsOptions;
 import com.auth0.android.util.Auth0UserAgent;
@@ -146,16 +145,16 @@ public class PasswordlessLock {
         lbm.registerReceiver(this.receiver, filter);
     }
 
-    private void processEvent(Intent data) {
+    private void processEvent(@NonNull Intent data) {
+        if (data.hasExtra(Constants.EXCEPTION_EXTRA)) {
+            callback.onError((AuthenticationException) data.getSerializableExtra(Constants.EXCEPTION_EXTRA));
+            return;
+        }
         String action = data.getAction();
         switch (action) {
             case Constants.AUTHENTICATION_ACTION:
                 Log.v(TAG, "AUTHENTICATION action received in our BroadcastReceiver");
-                if (data.hasExtra(Constants.EXCEPTION_EXTRA)) {
-                    callback.onError(new LockException((AuthenticationException) data.getSerializableExtra(Constants.EXCEPTION_EXTRA)));
-                } else {
-                    callback.onEvent(LockEvent.AUTHENTICATION, data);
-                }
+                callback.onEvent(LockEvent.AUTHENTICATION, data);
                 break;
             case Constants.CANCELED_ACTION:
                 Log.v(TAG, "CANCELED action received in our BroadcastReceiver");
@@ -163,7 +162,7 @@ public class PasswordlessLock {
                 break;
             case Constants.INVALID_CONFIGURATION_ACTION:
                 Log.v(TAG, "INVALID_CONFIGURATION_ACTION action received in our BroadcastReceiver");
-                callback.onError(new LockException(data.getStringExtra(Constants.ERROR_EXTRA)));
+                callback.onError(new AuthenticationException("a0.invalid_configuration", data.getStringExtra(Constants.ERROR_EXTRA)));
                 break;
         }
     }
