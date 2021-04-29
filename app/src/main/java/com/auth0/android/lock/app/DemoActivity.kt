@@ -34,7 +34,6 @@ import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.callback.Callback
 import com.auth0.android.lock.*
-import com.auth0.android.lock.utils.LockException
 import com.auth0.android.provider.WebAuthProvider.login
 import com.auth0.android.provider.WebAuthProvider.logout
 import com.auth0.android.result.Credentials
@@ -238,12 +237,12 @@ class DemoActivity : AppCompatActivity() {
             showResult("OK > " + credentials.accessToken)
         }
 
-        override fun onCanceled() {
-            showResult("User pressed back.")
-        }
-
-        override fun onError(error: LockException) {
-            showResult(error.message.orEmpty())
+        override fun onError(error: AuthenticationException) {
+            if (error.isCanceled) {
+                showResult("User pressed back.")
+            } else {
+                showResult(error.getDescription())
+            }
         }
     }
     private val loginCallback: Callback<Credentials, AuthenticationException> = object : Callback<Credentials, AuthenticationException> {

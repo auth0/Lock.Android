@@ -98,7 +98,7 @@ public class AuthenticationCallbackTest {
         callback.onEvent(LockEvent.CANCELED, data);
 
         assertThat(callback, isCanceled());
-        assertThat(callback, hasNoError());
+        assertThat(callback, hasError());
     }
 
     @Test
