@@ -22,7 +22,22 @@ Since June 2017 new Applications no longer have the **Password Grant Type** enab
 
 ## Requirements
 
-Android API Level 21+ is required in order to use Lock's UI.
+Android API Level 21+ & Java version 8 or above is required in order to use Lock's UI.
+
+Here’s what you need in build.gradle to target Java 8 byte code for the Android and Kotlin plugins respectively.
+
+```groovy
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+```
 
 ## Install
 
@@ -40,6 +55,14 @@ If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account,
 https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
 ```
 
+If you plan to use Passwordless authentication with SMS or Email connections, the Callback URL you will register looks like this:
+
+```
+https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/sms
+// or
+https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/email
+``` 
+
 The *package name* value required in the Callback URL can be found in your app's `build.gradle` file in the `applicationId` property. Both the *domain* and *client id* values can be found at the top of your Auth0 Application's settings. You're going to use them to setup the SDK. It's good practice to add them to the `strings.xml` file as string resources that you can reference later from the code. This guide will follow that practice.
 
 ```xml
@@ -49,7 +72,7 @@ The *package name* value required in the Callback URL can be found in your app's
 </resources>
 ```
 
-In your `app/build.gradle` file add the **Manifest Placeholders** for the Auth0 Domain and Auth0 Scheme properties, which are going to be used internally by the library to register an **intent-filter** that will capture the authentication result.
+In your `app/build.gradle` file add the **Manifest Placeholders** for the Auth0 Domain and Auth0 Scheme properties, which are going to be used internally by the library to declare the Lock activities and register **intent-filters** that will capture the authentication result.
 
 ```groovy
 apply plugin: 'com.android.application'
@@ -91,27 +114,7 @@ val account = Auth0("{YOUR_AUTH0_CLIENT_ID}", "{YOUR_AUTH0_DOMAIN}", "{THE_CONFI
 
 ### Email/Password, Enterprise & Social authentication
 
-Modify the `AndroidManifest.xml` file, to include the Internet permission:
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-```
-
-Next, add the `LockActivity` inside the `application` tag:
-
-```xml
-<activity
-    android:name="com.auth0.android.lock.LockActivity"
-    android:label="@string/app_name"
-    android:launchMode="singleTask"
-    android:screenOrientation="portrait"
-    android:theme="@style/Lock.Theme"/>
-```
-
-Make sure the Activity's `launchMode` is declared as `singleTask` or the authentication result won't come back into your application.
-
-
-Then, in any of your Activities, you need to initialize **Lock** and handle the release of its resources appropriately after you're done using it. 
+Initialize **Lock** and handle the release of its resources appropriately after you're done using it. 
 
 ```kotlin
 // This activity will show Lock
@@ -151,7 +154,7 @@ class MyActivity : AppCompatActivity() {
 }
 ```
 
-To start `LockActivity` from inside your `Activity`, create a new intent and launch it.
+Start `LockActivity` from inside your `Activity`. For this, create a new intent from the Lock instance and launch it.
 
 ```kotlin
 startActivity(lock.newIntent(this))
@@ -163,50 +166,7 @@ The Passwordless feature requires your Application to have the *Passwordless OTP
 
 `PasswordlessLockActivity` authenticates users by sending them an Email or SMS (similar to how WhatsApp authenticates you). In order to be able to authenticate the user, your application must have the SMS/Email connection enabled and configured in your [dashboard](https://manage.auth0.com/#/connections/passwordless).
 
-
-Modify the `AndroidManifest.xml` file, to include the Internet permission:
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-```
-
-Next, add the `PasswordlessLockActivity` inside the `application` tag. Note that this time, you must define an intent-filter that matches the passwordless callback URL:
-
-```xml
-<activity
-    android:name="com.auth0.android.lock.PasswordlessLockActivity"
-    android:label="@string/app_name"
-    android:launchMode="singleTask"
-    android:screenOrientation="portrait"
-    android:theme="@style/Lock.Theme">
-    <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-        
-        <data
-        android:host="@string/com_auth0_domain"
-        android:pathPrefix="/android/${applicationId}/email"
-        android:scheme="https" />
-    </intent-filter>
-</activity>
-```
-
-The `data` attribute of the intent-filter defines which format of "Callback URL" your app is going to capture. In the above case, it's going to capture calls from `email` passwordless connections. In case you're using the `sms` passwordless connection, the `pathPrefix` should end in `sms` instead.
-
-Make sure the Activity's `launchMode` is declared as `singleTask` or the result won't come back in the authentication.
-
-When the Passwordless connection is SMS you must also add the `CountryCodeActivity` to allow the user to change the **Country Code** prefix of the phone number.
-
-```xml
-<activity
-    android:name="com.auth0.android.lock.CountryCodeActivity"
-    android:theme="@style/Lock.Theme.ActionBar" />
-```
-
-
-Then, in any of your Activities, you need to initialize **PasswordlessLock** and handle the release of its resources appropriately after you're doing using it. 
+Initialize **PasswordlessLock** and handle the release of its resources appropriately after you're doing using it. 
 
 ```kotlin
 // This activity will show PasswordlessLock
@@ -246,7 +206,7 @@ class MyActivity : AppCompatActivity() {
 }
 ```
 
-To start `PasswordlessLockActivity` from inside your `Activity`, create a new intent and launch it.
+Start `PasswordlessLockActivity` from inside your `Activity`. For this, create a new intent and launch it.
 
 ```kotlin
 startActivity(lock.newIntent(this))
