@@ -20,7 +20,7 @@ jobs:
         - /usr/local/android-sdk-linux/extras
     - run:
         name: Run checks
-        command: ./gradlew clean test lint --continue --console=plain --max-workers=4
+        command: ./gradlew clean test lint --continue --console=plain --max-workers=3
     - store_artifacts:
         path: lib/build/reports
         destination: reports
