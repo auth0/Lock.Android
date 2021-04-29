@@ -8,16 +8,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyLock.Theme" parent="Lock.Theme" />
-
-    <!-- Change to this Theme if you want to customize attrs -->
-    <style name="MyLock.Theme.Customized">
-        <item name="Auth0.HeaderTitle">@string/com_auth0_domain</item>
-        <item name="Auth0.HeaderTitleColor">@android:color/holo_orange_light</item>
-        <item name="Auth0.HeaderLogo">@mipmap/ic_launcher</item>
-        <item name="Auth0.HeaderBackground">@android:color/holo_red_light</item>
-        <item name="Auth0.DarkPrimaryColor">@android:color/holo_blue_dark</item>
-        <item name="Auth0.PrimaryColor">@android:color/holo_blue_light</item>
-    </style>
-
 </resources>
