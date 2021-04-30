@@ -55,14 +55,6 @@ If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account,
 https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/callback
 ```
 
-If you plan to use Passwordless authentication with SMS or Email connections, the Callback URL you will register looks like this:
-
-```
-https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/sms
-// or
-https://{YOUR_AUTH0_DOMAIN}/android/{YOUR_APP_PACKAGE_NAME}/email
-``` 
-
 The *package name* value required in the Callback URL can be found in your app's `build.gradle` file in the `applicationId` property. Both the *domain* and *client id* values can be found at the top of your Auth0 Application's settings. You're going to use them to setup the SDK. It's good practice to add them to the `strings.xml` file as string resources that you can reference later from the code. This guide will follow that practice.
 
 ```xml
