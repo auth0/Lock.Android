@@ -517,7 +517,9 @@ public class Lock {
         }
 
         /**
-         * Specify a custom Scheme for the redirect url used to send the Web Auth results. Default redirect url scheme is 'https'.
+         * Specify a custom Scheme for the redirect URL used when executing a Web Authentication flow
+         * via the Universal Login page.
+         * Default redirect url scheme is 'https'.
          *
          * @param scheme to use in the Web Auth redirect uri.
          * @return the current builder instance
