@@ -46,12 +46,12 @@
                 <data
                     android:host="${auth0Domain}"
                     android:pathPrefix="/android/${applicationId}/email"
-                    android:scheme="${auth0Scheme}" />
+                    android:scheme="https" />
 
                 <data
                     android:host="${auth0Domain}"
                     android:pathPrefix="/android/${applicationId}/sms"
-                    android:scheme="${auth0Scheme}" />
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <!--Auth0 PasswordlessLock End-->
