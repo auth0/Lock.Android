@@ -9,8 +9,8 @@
         <activity
             android:name="com.auth0.android.provider.RedirectActivity"
             tools:node="replace">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -37,8 +37,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Lock.Theme">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
