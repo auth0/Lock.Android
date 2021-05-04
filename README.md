@@ -14,11 +14,12 @@ Lock for Android
 * Provides support for **Social Providers** (Facebook, Twitter, etc.), **Enterprise Providers** (AD, LDAP, etc.) and **Username & Password**.
 * Provides Passwordless authentication using **SMS** and **Email**.
 
+## Users from Lock.Android v2
+If you are migrating from the previous major version of this library, make sure to check out the [Migration Guide](MIGRATION_GUIDE.md) we prepared for you.
 
 ## Notes On Embedded Authentication
 
 Since June 2017 new Applications no longer have the **Password Grant Type** enabled by default. If you are using a Database Connection in Lock then you will need to enable the Password Grant Type, please follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property). The reasons for this change are listed in this [embedded vs native mobile article](https://auth0.com/docs/tutorials/browser-based-vs-native-experience-on-mobile).
-
 
 ## Requirements
 
