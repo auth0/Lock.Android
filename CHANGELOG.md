@@ -1,5 +1,38 @@
 # Change Log
 
+## [3.0.0](https://github.com/auth0/Lock.Android/tree/3.0.0) (2021-05-04)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/2.23.0...3.0.0)
+**Closed issues**
+- AuthenticationCallback methods are only called the first time I login [\#607](https://github.com/auth0/Lock.Android/issues/607)
+- UnauthorizedErrors are not received in lock widget callbacks [\#606](https://github.com/auth0/Lock.Android/issues/606)
+
+**Added**
+- Add migration guide [SDK-2430] [\#615](https://github.com/auth0/Lock.Android/pull/615) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Changed**
+- Drop Jetifier plugin usage [\#624](https://github.com/auth0/Lock.Android/pull/624) ([lbalmaceda](https://github.com/lbalmaceda))
+- Enable AppLinks in the declared intent filters [\#622](https://github.com/auth0/Lock.Android/pull/622) ([lbalmaceda](https://github.com/lbalmaceda))
+- Simplify library set up by declaring activities internally [\#620](https://github.com/auth0/Lock.Android/pull/620) ([lbalmaceda](https://github.com/lbalmaceda))
+- Refactor broadcast receiver usage [\#619](https://github.com/auth0/Lock.Android/pull/619) ([lbalmaceda](https://github.com/lbalmaceda))
+- Raise Unauthorized and Access Denied errors through callback [SDK-2480] [\#618](https://github.com/auth0/Lock.Android/pull/618) ([lbalmaceda](https://github.com/lbalmaceda))
+- Update readme [\#617](https://github.com/auth0/Lock.Android/pull/617) ([lbalmaceda](https://github.com/lbalmaceda))
+- Migrate sample app to use Kotlin [SDK-2431] [\#616](https://github.com/auth0/Lock.Android/pull/616) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Removed**
+- Remove support for changing the Social Button style  [SDK-2430] [\#614](https://github.com/auth0/Lock.Android/pull/614) ([lbalmaceda](https://github.com/lbalmaceda))
+- Remove support for Implicit Authentication flow [SDK-2430] [\#613](https://github.com/auth0/Lock.Android/pull/613) ([lbalmaceda](https://github.com/lbalmaceda))
+- Remove WebView component support [SDK-2430] [\#612](https://github.com/auth0/Lock.Android/pull/612) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Fix filtering by Country name [SDK-2546] [\#623](https://github.com/auth0/Lock.Android/pull/623) ([lbalmaceda](https://github.com/lbalmaceda))
+- Run lint and fix inspection results [\#611](https://github.com/auth0/Lock.Android/pull/611) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Breaking changes**
+- Update LockCallback and AuthenticationCallback [SDK-2480] [\#621](https://github.com/auth0/Lock.Android/pull/621) ([lbalmaceda](https://github.com/lbalmaceda))
+- Use Auth0.Android v2 [SDK-2429] [\#610](https://github.com/auth0/Lock.Android/pull/610) ([lbalmaceda](https://github.com/lbalmaceda))
+- Migrate to AndroidX [\#609](https://github.com/auth0/Lock.Android/pull/609) ([lbalmaceda](https://github.com/lbalmaceda))
+- Bump the minimum required android version [SDK-2427] [\#608](https://github.com/auth0/Lock.Android/pull/608) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [2.23.0](https://github.com/auth0/Lock.Android/tree/2.23.0) (2020-09-14)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.22.0...2.23.0)
 
