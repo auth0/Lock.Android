@@ -27,9 +27,6 @@ package com.auth0.android.lock.views;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -37,13 +34,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.auth0.android.lock.R;
 import com.auth0.android.lock.adapters.Country;
 import com.auth0.android.lock.utils.LoadCountriesTask;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class CountryCodeSelectorView extends LinearLayout {
     private static final String TAG = CountryCodeSelectorView.class.getSimpleName();
@@ -97,27 +97,25 @@ public class CountryCodeSelectorView extends LinearLayout {
     }
 
     private void prepareTask() {
-        task = new LoadCountriesTask(getContext()) {
+        task = new LoadCountriesTask() {
             @Override
-            protected void onPostExecute(Map<String, String> result) {
+            protected void onPostExecute(List<Country> result) {
                 task = null;
                 String defaultCountry = Locale.getDefault().getCountry();
-                Country country = new Country(getContext().getString(R.string.com_auth0_lock_default_country_name_fallback), getContext().getString(R.string.com_auth0_lock_default_country_code_fallback));
-                if (result != null) {
-                    final ArrayList<String> names = new ArrayList<>(result.keySet());
-                    for (String name : names) {
-                        if (name.equalsIgnoreCase(defaultCountry)) {
-                            country = new Country(name, result.get(name));
-                            break;
-                        }
+                Country selectedCountry = new Country(getContext().getString(R.string.com_auth0_lock_default_country_name_fallback), getContext().getString(R.string.com_auth0_lock_default_country_code_fallback));
+
+                for (Country c : result) {
+                    if (c.getDisplayName().equalsIgnoreCase(defaultCountry)) {
+                        selectedCountry = c;
+                        break;
                     }
                 }
-                if (selectedCountry == null) {
-                    setSelectedCountry(country);
+                if (CountryCodeSelectorView.this.selectedCountry == null) {
+                    setSelectedCountry(selectedCountry);
                 }
             }
         };
-        task.execute(LoadCountriesTask.COUNTRIES_JSON_FILE);
+        task.execute(getContext());
     }
 
     /**
