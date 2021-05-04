@@ -112,7 +112,7 @@ Initialize **Lock** and handle the release of its resources appropriately after 
 // This activity will show Lock
 class MyActivity : AppCompatActivity() {
 
-    private var lock: Lock? = null
+    private lateinit var lock: Lock
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,7 +127,7 @@ class MyActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // Important! Release Lock and its resources
-        lock?.onDestroy(this)
+        lock.onDestroy(this)
     }
     
     private val callback = object : AuthenticationCallback() {
@@ -160,7 +160,7 @@ Initialize **PasswordlessLock** and handle the release of its resources appropri
 // This activity will show PasswordlessLock
 class MyActivity : AppCompatActivity() {
     
-    private var lock: PasswordlessLock? = null
+    private lateinit var lock: PasswordlessLock
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,7 +175,7 @@ class MyActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // Important! Release Lock and its resources
-        lock?.onDestroy(this)
+        lock.onDestroy(this)
     }
     
     private val callback = object : AuthenticationCallback() {

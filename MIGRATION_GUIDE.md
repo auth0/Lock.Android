@@ -133,7 +133,7 @@ In case you are not currently calling it, make sure to update your code adding t
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
-  private var lock: Lock? = null
+  private lateinit var lock: Lock
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -148,14 +148,14 @@ class MyActivity : AppCompatActivity() {
 
   private fun launchLock() {
     // Invoke as many times as needed
-    val intent = lock!!.newIntent(this)
+    val intent = lock.newIntent(this)
     startActivity(intent)
   }
  
   override fun onDestroy() {
       super.onDestroy()
       // Release Lock resources
-      lock?.onDestroy(this)
+      lock.onDestroy(this)
   }
 }
 ```
