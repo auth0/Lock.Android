@@ -26,10 +26,11 @@ package com.auth0.android.lock.utils;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.auth0.android.lock.adapters.Country;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,42 +38,36 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-public abstract class LoadCountriesTask extends AsyncTask<String, Void, Map<String, String>> {
+public abstract class LoadCountriesTask extends AsyncTask<Context, Void, List<Country>> {
 
     private static final String TAG = LoadCountriesTask.class.getName();
-    public static final String COUNTRIES_JSON_FILE = "com_auth0_lock_passwordless_countries.json";
-
-    private final ThreadLocal<Context> context = new ThreadLocal<>();
-
-    public LoadCountriesTask(@NonNull Context context) {
-        this.context.set(context);
-    }
+    private static final String COUNTRIES_JSON_FILE = "com_auth0_lock_passwordless_countries.json";
 
     @Override
     @NonNull
-    protected Map<String, String> doInBackground(@NonNull String... params) {
-        Map<String, String> codes = Collections.emptyMap();
+    protected List<Country> doInBackground(@NonNull Context... params) {
         final Type mapType = new TypeToken<Map<String, String>>() {
         }.getType();
-        Context ctx = context.get();
-        if (ctx == null) {
-            return codes;
-        }
+        Map<String, String> codes = Collections.emptyMap();
         try {
-            final Reader reader = new InputStreamReader(ctx.getAssets().open(params[0]));
+            final Reader reader = new InputStreamReader(params[0].getAssets().open(COUNTRIES_JSON_FILE));
             codes = new Gson().fromJson(reader, mapType);
             Log.d(TAG, String.format("Loaded %d countries", codes.size()));
         } catch (IOException e) {
             Log.e(TAG, "Failed to load the countries list from the JSON file", e);
         }
-        return codes;
+        final ArrayList<String> names = new ArrayList<>(codes.keySet());
+        Collections.sort(names);
+        List<Country> countries = new ArrayList<>(names.size());
+        for (String name : names) {
+            countries.add(new Country(name, codes.get(name)));
+        }
+        return countries;
     }
 
-    @Nullable
-    public Context getContext() {
-        return context.get();
-    }
 }

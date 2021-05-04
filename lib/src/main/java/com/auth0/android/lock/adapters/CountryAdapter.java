@@ -25,14 +25,15 @@
 package com.auth0.android.lock.adapters;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.auth0.android.lock.R;
 
@@ -41,25 +42,29 @@ import java.util.List;
 
 public class CountryAdapter extends BaseAdapter {
 
-    private final Filter filter;
+    private final CountryFilter filter;
     private final Context context;
-    List<Country> data;
+    protected @NonNull
+    List<Country> allData;
+    protected @NonNull
+    List<Country> filteredData;
 
     public CountryAdapter(@NonNull Context context, @NonNull List<Country> countries) {
         this.context = context;
-        this.data = new ArrayList<>(countries);
-        this.filter = new CountryFilter(countries);
+        this.allData = countries;
+        this.filteredData = countries;
+        this.filter = new CountryFilter();
     }
 
     @Override
     public int getCount() {
-        return data.size();
+        return filteredData.size();
     }
 
     @Nullable
     @Override
     public Country getItem(int position) {
-        return data.get(position);
+        return filteredData.get(position);
     }
 
     @Override
@@ -70,15 +75,14 @@ public class CountryAdapter extends BaseAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Country country = getItem(position);
-
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.com_auth0_lock_passwordless_item_country_code, parent, false);
         }
 
         TextView countryNameTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_name_text_view);
-        countryNameTextView.setText(country.getDisplayName());
         TextView countryCodeTextView = convertView.findViewById(R.id.com_auth0_lock_passwordless_sms_country_code_text_view);
+        Country country = getItem(position);
+        countryNameTextView.setText(country.getDisplayName());
         countryCodeTextView.setText(country.getDialCode());
         return convertView;
     }
@@ -90,19 +94,13 @@ public class CountryAdapter extends BaseAdapter {
 
     private class CountryFilter extends Filter {
 
-        private final List<Country> countries;
-
-        CountryFilter(List<Country> countries) {
-            this.countries = countries;
-        }
-
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            String filter = constraint.toString().toLowerCase();
+            String search = constraint.toString().toLowerCase();
             FilterResults results = new FilterResults();
-            List<Country> filtered = new ArrayList<>(countries.size());
-            for (Country country : countries) {
-                if (country.getDisplayName().toLowerCase().contains(filter) || country.getIsoCode().toLowerCase().contains(filter)) {
+            List<Country> filtered = new ArrayList<>();
+            for (Country country : allData) {
+                if (country.getDisplayName().toLowerCase().contains(search) || country.getIsoCode().toLowerCase().contains(search)) {
                     filtered.add(country);
                 }
             }
@@ -114,12 +112,8 @@ public class CountryAdapter extends BaseAdapter {
         @Override
         @SuppressWarnings("unchecked")
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            data = (List<Country>) results.values;
-            if (results.count > 0) {
-                notifyDataSetChanged();
-            } else {
-                notifyDataSetInvalidated();
-            }
+            filteredData = (List<Country>) results.values;
+            notifyDataSetChanged();
         }
     }
 }
