@@ -6,6 +6,14 @@ Lock for Android
 [![Download](https://api.bintray.com/packages/auth0/android/lock/images/download.svg)](https://bintray.com/auth0/android/lock/_latestVersion)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fauth0%2FLock.Android.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fauth0%2FLock.Android?ref=badge_shield)
 
+---
+
+**Version 3.0.0 of this SDK is available!**
+
+Check out the [Get Started article](https://auth0.com/docs/libraries/lock-android) or the [source code](https://github.com/auth0/Lock.Android). Version 2 will continue to receive Bug & Security fixes until 5th November 2021. After that date, only version 3 will be supported.
+
+---
+
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
 ## Key features
