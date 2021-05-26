@@ -174,10 +174,10 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         boolean usingDatabase = currentConnection == null && fallbackToDatabase;
         boolean usingOAuthEnterprise = currentConnection != null && !currentConnection.isActiveFlowEnabled();
         if (usingDatabase || usingOAuthEnterprise) {
-            return emailInput.getText();
+            return emailInput.getText().trim();
         } else {
             //Using RO: we get the Username from the "second screen".
-            return usernameInput.getText();
+            return usernameInput.getText().trim();
         }
     }
 
