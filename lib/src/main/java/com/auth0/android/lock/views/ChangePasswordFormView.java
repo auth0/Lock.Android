@@ -71,7 +71,7 @@ public class ChangePasswordFormView extends FormView implements TextView.OnEdito
 
     @NonNull
     private String getUsernameOrEmail() {
-        return emailInput.getText();
+        return emailInput.getText().trim();
     }
 
     @Override
