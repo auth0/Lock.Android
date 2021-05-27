@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.0.1](https://github.com/auth0/Lock.Android/tree/3.0.1) (2021-05-27)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/3.0.0...3.0.1)
+
+**Fixed**
+- Trim username and email input to avoid NPE [\#628](https://github.com/auth0/Lock.Android/pull/628) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [3.0.0](https://github.com/auth0/Lock.Android/tree/3.0.0) (2021-05-04)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/2.23.0...3.0.0)
 **Closed issues**

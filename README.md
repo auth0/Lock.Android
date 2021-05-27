@@ -45,7 +45,7 @@ android {
 Lock is available in [Maven Central](http://search.maven.org). To start using *Lock* add this line to the dependencies of your `build.gradle` file:
 
 ```groovy
-implementation 'com.auth0.android:lock:3.0.0'
+implementation 'com.auth0.android:lock:3.0.1'
 ```
 
 ## Usage
