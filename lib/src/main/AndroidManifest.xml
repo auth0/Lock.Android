@@ -8,6 +8,7 @@
         <!--Auth0 WebAuthProvider-->
         <activity
             android:name="com.auth0.android.provider.RedirectActivity"
+            android:exported="true"
             tools:node="replace">
             <intent-filter android:autoVerify="true">
             <action android:name="android.intent.action.VIEW" />
@@ -26,6 +27,7 @@
         <!--Auth0 Lock-->
         <activity
             android:name="com.auth0.android.lock.LockActivity"
+            android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Lock.Theme"/>
@@ -34,6 +36,7 @@
         <!--Auth0 PasswordlessLock-->
         <activity
             android:name="com.auth0.android.lock.PasswordlessLockActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Lock.Theme">
@@ -59,6 +62,7 @@
         <!--Auth0 Lock Passwordless SMS Country Code Selection-->
         <activity
             android:name="com.auth0.android.lock.CountryCodeActivity"
+            android:exported="false"
             android:theme="@style/Lock.Theme.ActionBar" />
         <!--Auth0 Lock Passwordless SMS Country Code Selection-->
     </application>
