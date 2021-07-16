@@ -41,17 +41,21 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
     private final String usernameOrEmail;
     private final String password;
     private final String mfaToken;
+    private final String mfaChallengeType;
+    private final String mfaOOBCode;
 
     private final LockWidget lockWidget;
     private ValidatedInputView codeInput;
 
 
-    public MFACodeFormView(@NonNull LockWidget lockWidget, @Nullable String usernameOrEmail, @Nullable String password, @Nullable String mfaToken) {
+    public MFACodeFormView(@NonNull LockWidget lockWidget, @Nullable String usernameOrEmail, @Nullable String password, @Nullable String mfaToken, @Nullable String mfaChallengeType, @Nullable String mfaOOBCode) {
         super(lockWidget.getContext());
         this.lockWidget = lockWidget;
         this.usernameOrEmail = usernameOrEmail;
         this.password = password;
         this.mfaToken = mfaToken;
+        this.mfaChallengeType = mfaChallengeType;
+        this.mfaOOBCode = mfaOOBCode;
         init();
     }
 
@@ -66,8 +70,10 @@ public class MFACodeFormView extends FormView implements TextView.OnEditorAction
     @Override
     public Object getActionEvent() {
         DatabaseLoginEvent event = new DatabaseLoginEvent(usernameOrEmail, password);
-        event.setVerificationCode(getInputText());
-        event.setMFAToken(mfaToken);
+        event.setMultifactorOTP(getInputText());
+        event.setMultifactorToken(mfaToken);
+        event.setMultifactorChallengeType(mfaChallengeType);
+        event.setMultifactorOOBCode(mfaOOBCode);
         return event;
     }
 

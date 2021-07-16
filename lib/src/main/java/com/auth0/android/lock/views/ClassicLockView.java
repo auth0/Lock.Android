@@ -29,10 +29,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -43,6 +39,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
@@ -334,7 +335,7 @@ public class ClassicLockView extends LinearLayout implements LockWidgetForm {
     }
 
     public void showMFACodeForm(@NonNull DatabaseLoginEvent event) {
-        MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword(), event.getMFAToken());
+        MFACodeFormView form = new MFACodeFormView(this, event.getUsernameOrEmail(), event.getPassword(), event.getMultifactorToken(), event.getMultifactorChallengeType(), event.getMultifactorOOBCode());
         updateHeaderTitle(R.string.com_auth0_lock_title_mfa_input_code);
         addSubForm(form);
     }

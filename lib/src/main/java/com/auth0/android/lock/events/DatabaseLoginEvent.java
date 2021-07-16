@@ -31,8 +31,10 @@ import androidx.annotation.Nullable;
 public class DatabaseLoginEvent extends DatabaseEvent {
 
     private final String password;
-    private String verificationCode;
+    private String mfaOTP;
+    private String mfaOOBCode;
     private String mfaToken;
+    private String mfaChallengeType;
 
     public DatabaseLoginEvent(@NonNull String usernameOrEmail, @NonNull String password) {
         super(usernameOrEmail);
@@ -49,21 +51,39 @@ public class DatabaseLoginEvent extends DatabaseEvent {
         return password;
     }
 
-    public void setVerificationCode(@NonNull String code) {
-        this.verificationCode = code;
+    public void setMultifactorOTP(@NonNull String code) {
+        this.mfaOTP = code;
     }
 
     @Nullable
-    public String getVerificationCode() {
-        return verificationCode;
+    public String getMultifactorOTP() {
+        return mfaOTP;
     }
 
-    public void setMFAToken(@NonNull String mfaToken) {
+    public void setMultifactorOOBCode(@Nullable String code) {
+        this.mfaOOBCode = code;
+    }
+
+    @Nullable
+    public String getMultifactorOOBCode() {
+        return mfaOOBCode;
+    }
+
+    public void setMultifactorToken(@NonNull String mfaToken) {
         this.mfaToken = mfaToken;
     }
 
     @Nullable
-    public String getMFAToken() {
+    public String getMultifactorToken() {
         return mfaToken;
+    }
+
+    public void setMultifactorChallengeType(@NonNull String challengeType) {
+        this.mfaChallengeType = challengeType;
+    }
+
+    @Nullable
+    public String getMultifactorChallengeType() {
+        return mfaChallengeType;
     }
 }

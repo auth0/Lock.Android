@@ -7,8 +7,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 21)
@@ -32,24 +32,46 @@ public class DatabaseLoginEventTest {
     }
 
     @Test
-    public void shouldNotHaveVerificationCode() {
-        assertThat(event.getVerificationCode(), is(nullValue()));
+    public void shouldNotHaveOTP() {
+        assertThat(event.getMultifactorOTP(), is(nullValue()));
     }
 
     @Test
-    public void shouldSetVerificationCode() {
-        event.setVerificationCode("code");
-        assertThat(event.getVerificationCode(), is("code"));
+    public void shouldSetOTP() {
+        event.setMultifactorOTP("otp");
+        assertThat(event.getMultifactorOTP(), is("otp"));
+    }
+
+    @Test
+    public void shouldNotHaveOOBCode() {
+        assertThat(event.getMultifactorOOBCode(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldSetOOBCode() {
+        event.setMultifactorOTP("oob");
+        assertThat(event.getMultifactorOOBCode(), is("oob"));
     }
 
     @Test
     public void shouldNotHaveMFAToken() {
-        assertThat(event.getMFAToken(), is(nullValue()));
+        assertThat(event.getMultifactorToken(), is(nullValue()));
     }
 
     @Test
     public void shouldSetMFAToken() {
-        event.setMFAToken("mfatoken");
-        assertThat(event.getMFAToken(), is("mfatoken"));
+        event.setMultifactorToken("mfa-challenge");
+        assertThat(event.getMultifactorToken(), is("mfa-challenge"));
+    }
+
+    @Test
+    public void shouldNotHaveMFAChallengeType() {
+        assertThat(event.getMultifactorChallengeType(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldSetMFAChallengeType() {
+        event.setMultifactorChallengeType("mfa-challenge");
+        assertThat(event.getMultifactorChallengeType(), is("mfa-challenge"));
     }
 }
