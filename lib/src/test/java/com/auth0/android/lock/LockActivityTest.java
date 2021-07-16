@@ -27,7 +27,6 @@ import com.auth0.android.request.SignUpRequest;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +34,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.hamcrest.MockitoHamcrest;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -43,15 +41,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -173,7 +167,7 @@ public class LockActivityTest {
     @Test
     public void shouldCallLegacyDatabaseLoginWithVerificationCode() {
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
-        event.setVerificationCode("123456");
+        event.setMultifactorOTP("123456");
         activity.onDatabaseAuthenticationRequest(event);
 
 
@@ -204,8 +198,8 @@ public class LockActivityTest {
         LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
 
         DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
-        event.setVerificationCode("123456");
-        event.setMFAToken("mfaToken");
+        event.setMultifactorOTP("123456");
+        event.setMultifactorToken("mfaToken");
         activity.onDatabaseAuthenticationRequest(event);
 
         verify(lockView).showProgress(true);

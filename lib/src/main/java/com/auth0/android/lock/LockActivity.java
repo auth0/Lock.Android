@@ -75,6 +75,7 @@ import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.request.SignUpRequest;
+import com.auth0.android.result.Challenge;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
 import com.squareup.otto.Bus;
@@ -89,10 +90,10 @@ import java.util.Map;
 public class LockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = LockActivity.class.getSimpleName();
-    private static final String KEY_VERIFICATION_CODE = "mfa_code";
     private static final String KEY_LOGIN_HINT = "login_hint";
     private static final String KEY_SCREEN_HINT = "screen_hint";
     private static final String KEY_MFA_TOKEN = "mfa_token";
+    private static final String MFA_CHALLENGE_TYPE_OOB = "oob";
     private static final long RESULT_MESSAGE_DURATION = 3000;
     private static final int WEB_AUTH_REQUEST_CODE = 200;
     private static final int CUSTOM_AUTH_REQUEST_CODE = 201;
@@ -235,6 +236,33 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
+    }
+
+    private void requestMFAChallenge(String mfaToken) {
+        lastDatabaseLogin.setMultifactorToken(mfaToken);
+        AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
+        apiClient.multifactorChallenge(mfaToken, null, null)
+                .start(new Callback<Challenge, AuthenticationException>() {
+                    @Override
+                    public void onSuccess(@NonNull Challenge challenge) {
+                        lastDatabaseLogin.setMultifactorChallengeType(challenge.getChallengeType());
+                        lastDatabaseLogin.setMultifactorOOBCode(challenge.getOobCode());
+                        handler.post(() -> {
+                            lockView.showProgress(false);
+                            lockView.showMFACodeForm(lastDatabaseLogin);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull AuthenticationException ignored) {
+                        // Ignore error:
+                        // Lock will fallback to completing the authentication using OTP MFA.
+                        handler.post(() -> {
+                            lockView.showProgress(false);
+                            lockView.showMFACodeForm(lastDatabaseLogin);
+                        });
+                    }
+                });
     }
 
     private void showSuccessMessage(String message) {
@@ -403,14 +431,16 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
         AuthenticationAPIClient apiClient = options.getAuthenticationAPIClient();
         AuthenticationRequest request;
         Map<String, String> parameters = new HashMap<>(options.getAuthenticationParameters());
-        if (TextUtils.isEmpty(event.getMFAToken()) || TextUtils.isEmpty(event.getVerificationCode())) {
+        if (TextUtils.isEmpty(event.getMultifactorToken())) {
+            // regular database authentication
             String connection = configuration.getDatabaseConnection().getName();
             request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection);
-            if (!TextUtils.isEmpty(event.getVerificationCode())) {
-                parameters.put(KEY_VERIFICATION_CODE, event.getVerificationCode());
-            }
+        } else if (MFA_CHALLENGE_TYPE_OOB.equals(lastDatabaseLogin.getMultifactorChallengeType())) {
+            // oob multi-factor authentication
+            request = apiClient.loginWithOOB(event.getMultifactorToken(), event.getMultifactorOOBCode(), null);
         } else {
-            request = apiClient.loginWithOTP(event.getMFAToken(), event.getVerificationCode());
+            // otp multi-factor authentication
+            request = apiClient.loginWithOTP(event.getMultifactorToken(), event.getMultifactorOTP());
         }
 
         request.addParameters(parameters);
@@ -527,25 +557,21 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
                 completeDatabaseAuthenticationOnBrowser();
                 return;
             }
-            final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
 
-            handler.post(() -> {
-                lockView.showProgress(false);
-                if (error.isMultifactorRequired()) {
-                    String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
-                    if (!TextUtils.isEmpty(mfaToken)) {
-                        lastDatabaseLogin.setMFAToken(mfaToken);
-                    }
-                    lockView.showMFACodeForm(lastDatabaseLogin);
-                    return;
-                }
-                String message = authError.getMessage(LockActivity.this);
-                showErrorMessage(message);
-                if (error.isMultifactorTokenInvalid()) {
-                    //The MFA Token has expired. The user needs to log in again. Show the username/password form
-                    onBackPressed();
-                }
-            });
+            if (error.isMultifactorRequired()) {
+                String mfaToken = (String) error.getValue(KEY_MFA_TOKEN);
+                requestMFAChallenge(mfaToken);
+                return;
+            }
+
+            if (error.isMultifactorTokenInvalid()) {
+                //The MFA Token has expired. The user needs to log in again. Show the username/password form
+                onBackPressed();
+            }
+
+            final AuthenticationError authError = loginErrorBuilder.buildFrom(error);
+            String message = authError.getMessage(LockActivity.this);
+            handler.post(() -> showErrorMessage(message));
         }
     };
 
@@ -591,6 +617,5 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             });
         }
     };
-
 
 }
