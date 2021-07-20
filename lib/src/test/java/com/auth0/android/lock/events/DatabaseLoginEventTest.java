@@ -49,7 +49,7 @@ public class DatabaseLoginEventTest {
 
     @Test
     public void shouldSetOOBCode() {
-        event.setMultifactorOTP("oob");
+        event.setMultifactorOOBCode("oob");
         assertThat(event.getMultifactorOOBCode(), is("oob"));
     }
 

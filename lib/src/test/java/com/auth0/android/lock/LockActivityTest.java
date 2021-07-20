@@ -24,6 +24,7 @@ import com.auth0.android.provider.AuthProvider;
 import com.auth0.android.request.AuthenticationRequest;
 import com.auth0.android.request.Request;
 import com.auth0.android.request.SignUpRequest;
+import com.auth0.android.result.Challenge;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.DatabaseUser;
 
@@ -41,13 +42,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.os.Looper.getMainLooper;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.any;
@@ -61,6 +63,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
+import static org.robolectric.Shadows.shadowOf;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 @RunWith(RobolectricTestRunner.class)
@@ -83,6 +86,8 @@ public class LockActivityTest {
     @Mock
     Request<DatabaseUser, AuthenticationException> dbRequest;
     @Mock
+    Request<Challenge, AuthenticationException> challengeRequest;
+    @Mock
     Request<Void, AuthenticationException> voidRequest;
     @Mock
     ClassicLockView lockView;
@@ -90,6 +95,10 @@ public class LockActivityTest {
     ArgumentCaptor<Map> mapCaptor;
     @Captor
     ArgumentCaptor<Callback<Credentials, AuthenticationException>> callbackCaptor;
+    @Captor
+    ArgumentCaptor<Callback<Challenge, AuthenticationException>> challengeCallbackCaptor;
+    @Captor
+    ArgumentCaptor<DatabaseLoginEvent> dbEventCaptor;
     @Captor
     ArgumentCaptor<Callback<DatabaseUser, AuthenticationException>> dbCallbackCaptor;
     Configuration configuration;
@@ -111,6 +120,8 @@ public class LockActivityTest {
         when(options.getAuthenticationParameters()).thenReturn(basicParameters);
         when(client.login(anyString(), anyString(), anyString())).thenReturn(authRequest);
         when(client.loginWithOTP(anyString(), anyString())).thenReturn(authRequest);
+        when(client.loginWithOOB(anyString(), anyString(), anyString())).thenReturn(authRequest);
+        when(client.multifactorChallenge(anyString(), any(), any())).thenReturn(challengeRequest);
         when(client.createUser(anyString(), anyString(), anyString())).thenReturn(dbRequest);
         when(client.createUser(anyString(), anyString(), any(), anyString())).thenReturn(dbRequest);
         when(client.createUser(anyString(), anyString(), any(), anyString(), anyMap())).thenReturn(dbRequest);
@@ -145,48 +156,6 @@ public class LockActivityTest {
     }
 
     @Test
-    public void shouldCallLegacyDatabaseLogin() {
-        DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
-        activity.onDatabaseAuthenticationRequest(event);
-
-
-        verify(lockView).showProgress(true);
-        verify(options).getAuthenticationAPIClient();
-        verify(client).login("username", "password", "connection");
-        verify(authRequest).addParameters(mapCaptor.capture());
-        verify(authRequest).start(any(Callback.class));
-        verify(authRequest).setScope("openid user photos");
-        verify(authRequest).setAudience("aud");
-        verify(configuration, atLeastOnce()).getDatabaseConnection();
-
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
-    }
-
-    @Test
-    public void shouldCallLegacyDatabaseLoginWithVerificationCode() {
-        DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
-        event.setMultifactorOTP("123456");
-        activity.onDatabaseAuthenticationRequest(event);
-
-
-        verify(lockView).showProgress(true);
-        verify(options).getAuthenticationAPIClient();
-        verify(client).login("username", "password", "connection");
-        verify(authRequest).addParameters(mapCaptor.capture());
-        verify(authRequest).start(any(Callback.class));
-        verify(authRequest).setScope("openid user photos");
-        verify(authRequest).setAudience("aud");
-        verify(configuration, atLeastOnce()).getDatabaseConnection();
-
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
-        assertThat(reqParams, hasEntry("mfa_code", "123456"));
-    }
-
-    @Test
     public void shouldCallOIDCDatabaseLoginWithOTPCodeAndMFAToken() {
         Auth0 account = new Auth0("cliendId", "domain");
         Options options = mock(Options.class);
@@ -215,6 +184,124 @@ public class LockActivityTest {
         assertThat(reqParams, is(notNullValue()));
         assertThat(reqParams, hasEntry("extra", "value"));
         assertThat(reqParams, not(hasKey("mfa_code")));
+    }
+
+    @Test
+    public void shouldCallOIDCDatabaseLoginWithOOBCodeAndMFAToken() {
+        Auth0 account = new Auth0("cliendId", "domain");
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+        when(options.getScope()).thenReturn("openid user photos");
+        when(options.getAudience()).thenReturn("aud");
+        when(options.getAuthenticationParameters()).thenReturn(basicParameters);
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+
+        DatabaseLoginEvent event = new DatabaseLoginEvent("username", "password");
+        event.setMultifactorOTP("123456");
+        event.setMultifactorOOBCode("abcdef");
+        event.setMultifactorToken("mfaToken");
+        event.setMultifactorChallengeType("oob");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(client).loginWithOOB("mfaToken", "abcdef", "123456");
+        verify(authRequest).addParameters(mapCaptor.capture());
+        verify(authRequest).start(any(Callback.class));
+        verify(authRequest).setScope("openid user photos");
+        verify(authRequest).setAudience("aud");
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+
+        Map<String, String> reqParams = mapCaptor.getValue();
+        assertThat(reqParams, is(notNullValue()));
+        assertThat(reqParams, hasEntry("extra", "value"));
+        assertThat(reqParams, not(hasKey("mfa_code")));
+    }
+
+    @Test
+    public void shouldSuccessfullyRequestMFAChallengeWhenMFAIsRequired() {
+        Auth0 account = new Auth0("cliendId", "domain");
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+        DatabaseLoginEvent event = new DatabaseLoginEvent("john@doe.com", "123456");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(client).login("john@doe.com", "123456", "connection");
+        verify(authRequest).start(callbackCaptor.capture());
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+
+        Callback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
+        AuthenticationException mfaRequiredErr = mock(AuthenticationException.class);
+        when(mfaRequiredErr.isMultifactorRequired()).thenReturn(true);
+        when(mfaRequiredErr.getValue("mfa_token")).thenReturn("mfaToken");
+        callback.onFailure(mfaRequiredErr);
+
+        verify(client).multifactorChallenge(eq("mfaToken"), isNull(), isNull());
+        verify(challengeRequest).start(challengeCallbackCaptor.capture());
+
+        assertThat(challengeCallbackCaptor.getValue(), is(notNullValue()));
+        Challenge challenge = new Challenge("oob", "abcdef", "prompt");
+        // Trigger success callback
+        challengeCallbackCaptor.getValue().onSuccess(challenge);
+
+        shadowOf(getMainLooper()).idle();
+        verify(lockView).showProgress(false);
+        verify(lockView).showMFACodeForm(dbEventCaptor.capture());
+
+        DatabaseLoginEvent mfaEvent = dbEventCaptor.getValue();
+        assertThat(mfaEvent, is(notNullValue()));
+        assertThat(mfaEvent.getMultifactorOOBCode(), is("abcdef"));
+        assertThat(mfaEvent.getMultifactorChallengeType(), is("oob"));
+        assertThat(mfaEvent.getMultifactorToken(), is("mfaToken"));
+        assertThat(mfaEvent.getMultifactorOTP(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldFailToRequestMFAChallengeWhenMFAIsRequired() {
+        Auth0 account = new Auth0("cliendId", "domain");
+        Options options = mock(Options.class);
+        when(options.getAccount()).thenReturn(account);
+        when(options.getAuthenticationAPIClient()).thenReturn(client);
+
+        LockActivity activity = new LockActivity(configuration, options, lockView, webProvider);
+        DatabaseLoginEvent event = new DatabaseLoginEvent("john@doe.com", "123456");
+        activity.onDatabaseAuthenticationRequest(event);
+
+        verify(lockView).showProgress(true);
+        verify(options).getAuthenticationAPIClient();
+        verify(client).login("john@doe.com", "123456", "connection");
+        verify(authRequest).start(callbackCaptor.capture());
+        verify(configuration, atLeastOnce()).getDatabaseConnection();
+
+        Callback<Credentials, AuthenticationException> callback = callbackCaptor.getValue();
+        AuthenticationException mfaRequiredErr = mock(AuthenticationException.class);
+        when(mfaRequiredErr.isMultifactorRequired()).thenReturn(true);
+        when(mfaRequiredErr.getValue("mfa_token")).thenReturn("mfaToken");
+        callback.onFailure(mfaRequiredErr);
+
+        verify(client).multifactorChallenge(eq("mfaToken"), isNull(), isNull());
+        verify(challengeRequest).start(challengeCallbackCaptor.capture());
+
+        assertThat(challengeCallbackCaptor.getValue(), is(notNullValue()));
+        // Trigger failure callback
+        challengeCallbackCaptor.getValue().onFailure(mock(AuthenticationException.class));
+
+        shadowOf(getMainLooper()).idle();
+        verify(lockView).showProgress(false);
+        verify(lockView).showMFACodeForm(dbEventCaptor.capture());
+
+        DatabaseLoginEvent mfaEvent = dbEventCaptor.getValue();
+        assertThat(mfaEvent, is(notNullValue()));
+        assertThat(mfaEvent.getMultifactorOOBCode(), is(nullValue()));
+        assertThat(mfaEvent.getMultifactorChallengeType(), is(nullValue()));
+        assertThat(mfaEvent.getMultifactorToken(), is("mfaToken"));
+        assertThat(mfaEvent.getMultifactorOTP(), is(nullValue()));
     }
 
     @Test
@@ -427,50 +514,6 @@ public class LockActivityTest {
         verify(signUpRequest).setScope("openid user photos");
         verify(signUpRequest).setAudience("aud");
         verify(client).signUp("email@domain.com", "password", "username", "connection", Collections.emptyMap());
-        verify(configuration, atLeastOnce()).getDatabaseConnection();
-
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
-    }
-
-    @Test
-    public void shouldCallLegacyDatabaseSignInWithUsername() {
-        when(configuration.loginAfterSignUp()).thenReturn(true);
-
-        DatabaseSignUpEvent event = new DatabaseSignUpEvent("email@domain.com", "password", "username");
-        activity.onDatabaseAuthenticationRequest(event);
-
-
-        verify(lockView).showProgress(true);
-        verify(options).getAuthenticationAPIClient();
-        verify(signUpRequest).addParameters(mapCaptor.capture());
-        verify(signUpRequest).start(any(Callback.class));
-        verify(signUpRequest).setScope("openid user photos");
-        verify(signUpRequest).setAudience("aud");
-        verify(client).signUp("email@domain.com", "password", "username", "connection", Collections.emptyMap());
-        verify(configuration, atLeastOnce()).getDatabaseConnection();
-
-        Map<String, String> reqParams = mapCaptor.getValue();
-        assertThat(reqParams, is(notNullValue()));
-        assertThat(reqParams, hasEntry("extra", "value"));
-    }
-
-    @Test
-    public void shouldCallLegacyDatabaseSignIn() {
-        when(configuration.loginAfterSignUp()).thenReturn(true);
-
-        DatabaseSignUpEvent event = new DatabaseSignUpEvent("email", "password", null);
-        activity.onDatabaseAuthenticationRequest(event);
-
-
-        verify(lockView).showProgress(true);
-        verify(options).getAuthenticationAPIClient();
-        verify(signUpRequest).addParameters(mapCaptor.capture());
-        verify(signUpRequest).start(any(Callback.class));
-        verify(signUpRequest).setScope("openid user photos");
-        verify(signUpRequest).setAudience("aud");
-        verify(client).signUp("email", "password", null, "connection", Collections.emptyMap());
         verify(configuration, atLeastOnce()).getDatabaseConnection();
 
         Map<String, String> reqParams = mapCaptor.getValue();
