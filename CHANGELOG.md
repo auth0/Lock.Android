@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.1.0](https://github.com/auth0/Lock.Android/tree/3.1.0) (2021-07-20)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/3.0.0...3.1.0)
+
+**Added**
+- Add support for OOB multi-factor authentication [\#632](https://github.com/auth0/Lock.Android/pull/632) ([lbalmaceda](https://github.com/lbalmaceda))
+
+**Fixed**
+- Update AndroidManifest.xml for Android 12 support [\#631](https://github.com/auth0/Lock.Android/pull/631) ([VincentJoshuaET](https://github.com/VincentJoshuaET))
+
 ## [3.0.1](https://github.com/auth0/Lock.Android/tree/3.0.1) (2021-05-27)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/3.0.0...3.0.1)
 
