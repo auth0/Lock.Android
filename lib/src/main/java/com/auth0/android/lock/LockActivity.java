@@ -437,7 +437,7 @@ public class LockActivity extends AppCompatActivity implements ActivityCompat.On
             request = apiClient.login(event.getUsernameOrEmail(), event.getPassword(), connection);
         } else if (MFA_CHALLENGE_TYPE_OOB.equals(lastDatabaseLogin.getMultifactorChallengeType())) {
             // oob multi-factor authentication
-            request = apiClient.loginWithOOB(event.getMultifactorToken(), event.getMultifactorOOBCode(), null);
+            request = apiClient.loginWithOOB(event.getMultifactorToken(), event.getMultifactorOOBCode(), event.getMultifactorOTP());
         } else {
             // otp multi-factor authentication
             request = apiClient.loginWithOTP(event.getMultifactorToken(), event.getMultifactorOTP());
