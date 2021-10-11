@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.2.0](https://github.com/auth0/Lock.Android/tree/3.2.0) (2021-10-11)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/3.1.0...3.2.0)
+
+**Changed**
+- update dependencies and sdk [\#636](https://github.com/auth0/Lock.Android/pull/636) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [3.1.0](https://github.com/auth0/Lock.Android/tree/3.1.0) (2021-07-20)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/3.0.0...3.1.0)
 
