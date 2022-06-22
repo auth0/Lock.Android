@@ -404,6 +404,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
             if (options.getScope() != null) {
                 request.setScope(options.getScope());
             }
+            if (options.getAudience() != null) {
+                request.setAudience(options.getAudience());
+            }
             request.start(authCallback);
             return;
         }
