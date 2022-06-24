@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.2.1](https://github.com/auth0/Lock.Android/tree/3.2.1) (2022-06-24)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/3.2.0...3.2.1)
+
+**Fixed**
+- Fixing bug where custom audience was not being set in [\#645](https://github.com/auth0/Lock.Android/pull/645) ([Blake-Carrier](https://github.com/Blake-Carrier))
+
+**Security**
+- Bump GSON dependency to 2.8.9 [\#639](https://github.com/auth0/Lock.Android/pull/639) ([evansims](https://github.com/evansims))
+
 ## [3.2.0](https://github.com/auth0/Lock.Android/tree/3.2.0) (2021-10-11)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/3.1.0...3.2.0)
 
