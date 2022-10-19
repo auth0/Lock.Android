@@ -3,25 +3,17 @@ Lock for Android
 [![CircleCI](https://circleci.com/gh/auth0/Lock.Android.svg?style=shield)](https://circleci.com/gh/auth0/Lock.Android)
 [![License](https://img.shields.io/dub/l/vibe-d.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0.android%22%20AND%20a%3A%22lock%22)
-[![Download](https://api.bintray.com/packages/auth0/android/lock/images/download.svg)](https://bintray.com/auth0/android/lock/_latestVersion)
 
-[Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
+📚 [Documentation](#documentation) • 🚀 [Getting Started](#getting-started) • ⏭️ [Next Steps](#next-steps) • 💬 [Feedback](#feedback)
 
-## Key features
+## Documentation
 
-* **Integrates** your Android app with **Auth0**.
-* Provides a **beautiful native UI** to log your users in.
-* Provides support for **Social Providers** (Facebook, Twitter, etc.), **Enterprise Providers** (AD, LDAP, etc.) and **Username & Password**.
-* Provides Passwordless authentication using **SMS** and **Email**.
+- [Docs Site](https://auth0.com/docs/libraries/lock-android)
+- [API Reference](https://javadoc.io/doc/com.auth0.android/lock/latest/index.html)
 
-## Users from Lock.Android v2
-If you are migrating from the previous major version of this library, make sure to check out the [Migration Guide](MIGRATION_GUIDE.md) we prepared for you.
+## Getting Started
 
-## Notes On Embedded Authentication
-
-Since June 2017 new Applications no longer have the **Password Grant Type** enabled by default. If you are using a Database Connection in Lock then you will need to enable the Password Grant Type, please follow [this guide](https://auth0.com/docs/clients/client-grant-types#how-to-edit-the-client-grant_types-property). The reasons for this change are listed in this [embedded vs native mobile article](https://auth0.com/docs/tutorials/browser-based-vs-native-experience-on-mobile).
-
-## Requirements
+### Requirements
 
 Android API Level 21+ & Java version 8 or above is required in order to use Lock's UI.
 
@@ -40,7 +32,7 @@ android {
 }
 ```
 
-## Install
+### Installation
 
 Lock is available in [Maven Central](http://search.maven.org). To start using *Lock* add this line to the dependencies of your `build.gradle` file:
 
@@ -48,7 +40,7 @@ Lock is available in [Maven Central](http://search.maven.org). To start using *L
 implementation 'com.auth0.android:lock:3.2.1'
 ```
 
-## Usage
+## Next Steps
 
 If you haven't done yet, go to [Auth0](https://auth0.com) and create an Account, it's free! Then create a new [Application](https://manage.auth0.com/#/applications) of type *Native* and add a URL in *Allowed Callback URLs* with the following format:
 
@@ -245,30 +237,30 @@ By default you should at least use the following files:
 
 As this library depends on `Auth0.Android`, you should keep the files up to date with the proguard rules defined in the SDK [repository](https://github.com/auth0/Auth0.Android).
 
-## What is Auth0?
+## Feedback
 
-Auth0 helps you to:
+### Contributing
 
-* Add authentication with [multiple authentication sources](https://docs.auth0.com/identityproviders), either social like **Google, Facebook, Microsoft Account, LinkedIn, GitHub, Twitter, Box, Salesforce, among others**, or enterprise identity systems like **Windows Azure AD, Google Apps, Active Directory, ADFS or any SAML Identity Provider**.
-* Add authentication through more traditional **[username/password databases](https://docs.auth0.com/mysql-connection-tutorial)**.
-* Add support for **[linking different user accounts](https://docs.auth0.com/link-accounts)** with the same user.
-* Support for generating signed [Json Web Tokens](https://docs.auth0.com/jwt) to call your APIs and **flow the user identity** securely.
-* Analytics of how, when and where users are logging in.
-* Pull data from other sources and add it to the user profile, through [JavaScript rules](https://docs.auth0.com/rules).
+We appreciate feedback and contribution to this repo! Before you get started, please see the following:
 
-## Create a free account in Auth0
+- [Auth0's general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+- [Auth0's code of conduct guidelines](https://github.com/auth0/Lock.Android/blob/main/CODE-OF-CONDUCT.md)
 
-1. Go to [Auth0](https://auth0.com) and click Sign Up.
-2. Use Google, GitHub or Microsoft Account to login.
+### Raise an issue
+To provide feedback or report a bug, [please raise an issue on our issue tracker](https://github.com/auth0/Lock.Android/issues).
 
-## Issue Reporting
+### Vulnerability Reporting
+Please do not report security vulnerabilities on the public Github issue tracker. The [Responsible Disclosure Program](https://auth0.com/whitehat) details the procedure for disclosing security issues.
 
-If you have found a bug or if you have a feature request, please report them at this repository issues section. Please do not report security vulnerabilities on the public GitHub issue tracker. The [Responsible Disclosure Program](https://auth0.com/whitehat) details the procedure for disclosing security issues.
+---
 
-## Author
-
-[Auth0](https://auth0.com)
-
-## License
-
-This project is licensed under the MIT license. See the [LICENSE](LICENSE.md) file for more info.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="./assets/auth0_brand_light.png"   width="150">
+    <source media="(prefers-color-scheme: dark)" srcset="./assets/auth0_brand_dark.png" width="150">
+    <img alt="Auth0 Logo" src="./assets/auth0_brand_light.png" width="150">
+  </picture>
+</p>
+<p align="center">Auth0 is an easy to implement, adaptable authentication and authorization platform. To learn more checkout <a href="https://auth0.com/why-auth0">Why Auth0?</a></p>
+<p align="center">
+This project is licensed under the MIT license. See the <a href="./LICENSE"> LICENSE</a> file for more info.</p>
