@@ -8,7 +8,7 @@
 
 ## Documentation
 
-- [Examples](https://github.com/auth0/auth0.android/blob/main/EXAMPLES.md)
+- [Examples](https://github.com/auth0/Lock.android/blob/main/EXAMPLES.md)
 - [Docs Site](https://auth0.com/docs/libraries/lock-android)
 - [API Reference](https://javadoc.io/doc/com.auth0.android/lock/latest/index.html)
 
