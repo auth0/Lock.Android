@@ -1,5 +1,5 @@
-Lock for Android
-============
+![Lock for Android](https://cdn.auth0.com/website/sdks/banners/lock-android-banner.png)
+
 [![CircleCI](https://circleci.com/gh/auth0/Lock.Android.svg?style=shield)](https://circleci.com/gh/auth0/Lock.Android)
 [![License](https://img.shields.io/dub/l/vibe-d.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0.android%22%20AND%20a%3A%22lock%22)
