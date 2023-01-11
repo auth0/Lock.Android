@@ -1,3 +1,8 @@
+> **Note**
+> As part of our ongoing commitment to best security practices, we have rotated the signing keys used to sign previous releases of this SDK. As a result, new patch builds have been released using the new signing key. Please upgrade at your earliest convenience.
+>
+> While this change won't affect most developers, if you have implemented a dependency signature validation step in your build process, you may notice a warning that past releases can't be verified. This is expected, and a result of the key rotation process. Updating to the latest version will resolve this for you.
+
 ![Lock for Android](https://cdn.auth0.com/website/sdks/banners/lock-android-banner.png)
 
 [![CircleCI](https://circleci.com/gh/auth0/Lock.Android.svg?style=shield)](https://circleci.com/gh/auth0/Lock.Android)
@@ -38,7 +43,7 @@ android {
 Lock is available in [Maven Central](http://search.maven.org). To start using *Lock* add this line to the dependencies of your `build.gradle` file:
 
 ```groovy
-implementation 'com.auth0.android:lock:3.2.1'
+implementation 'com.auth0.android:lock:3.2.2'
 ```
 
 ## Next Steps

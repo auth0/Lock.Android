@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.2.1](https://github.com/auth0/Lock.Android/tree/3.2.2) (2023-01-11)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/3.2.1...3.2.2)
+
+This patch release does not contain any functional changes, but is being released using an updated signing key for verification as part of our commitment to best security practices.
+Please review [the README note for additional details.](https://github.com/auth0/Lock.Android/blob/main/README.md)
+
+**Security**
+- Bump Auth0.Android dependency to 2.8.1 [\#652](https://github.com/auth0/Lock.Android/pull/652) ([poovamraj](https://github.com/poovamraj))
+
 ## [3.2.1](https://github.com/auth0/Lock.Android/tree/3.2.1) (2022-06-24)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/3.2.0...3.2.1)
 
