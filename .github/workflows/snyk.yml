@@ -45,7 +45,7 @@ jobs:
       - uses: ./.github/actions/setup
 
       - run: |
-          curl --compressed https://static.snyk.io/cli/latest/snyk-alpine -o snyk
+          curl --compressed https://static.snyk.io/cli/latest/snyk-linux -o snyk
           chmod +x ./snyk
 
       - run: snyk
