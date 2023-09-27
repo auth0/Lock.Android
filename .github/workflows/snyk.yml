@@ -42,9 +42,20 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
-      - uses: snyk/actions/gradle-jdk11@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
+      - uses: ./.github/actions/setup
+
+      - run: |
+          curl --compressed https://static.snyk.io/cli/latest/snyk-alpine -o snyk
+          chmod +x ./snyk
+          mv ./snyk /usr/local/bin/
+
+      - run: snyk
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          ANDROID_HOME: $HOME/.android
-          ANDROID_SDK_ROOT: $HOME/.android-sdk
-          ANDROID_SDK_HOME: $HOME/.android-sdk
+
+      # - uses: snyk/actions/gradle-jdk11@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
+      #   env:
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      #     ANDROID_HOME: $HOME/.android
+      #     ANDROID_SDK_ROOT: $HOME/.android-sdk
+      #     ANDROID_SDK_HOME: $HOME/.android-sdk
