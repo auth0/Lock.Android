@@ -44,9 +44,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - run: |
-          curl --compressed https://static.snyk.io/cli/latest/snyk-linux -o snyk
-          chmod +x ./snyk
+      - run: npm install snyk -g
 
       - run: snyk
         env:
