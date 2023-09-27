@@ -42,8 +42,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
-      - uses: ./.github/actions/setup
-
       - run: npm install snyk -g
 
       - run: snyk test
