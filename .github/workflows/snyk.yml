@@ -50,6 +50,6 @@ jobs:
 
       - run: echo $ANDROID_SDK_ROOT
 
-      - uses: snyk/actions/gradle-jdk11@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
+      - uses: snyk/actions/gradle@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
