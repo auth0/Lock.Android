@@ -43,7 +43,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
       - uses: ./.github/actions/setup
+        with:
+          java: 11.0.20-tem
 
-      - uses: snyk/actions/gradle@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
+      - uses: snyk/actions/gradle-jdk11@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
