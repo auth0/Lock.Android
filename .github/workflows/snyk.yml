@@ -42,11 +42,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
-      - uses: ./.github/actions/setup
+      - run: npm install snyk -g
 
-      # Ensure JAVA_HOME environment variable is available for Snyk to use:
-      - run: sdk use java "$(sdk current java | tail -1 | awk -F'. ' ' { print $NF } ')" > /dev/null 2>&1
-
-      - uses: snyk/actions@b98d498629f1c368650224d6d212bf7dfa89e4bf # pin@0.4.0
+      - run: snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
