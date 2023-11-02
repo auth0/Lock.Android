@@ -1,5 +1,5 @@
 plugins {
-    id "com.auth0.gradle.oss-library.android" version "0.15.1"
+    id "com.auth0.gradle.oss-library.android" version "0.18.0"
 }
 
 logger.lifecycle("Using version ${version} for ${name}")
@@ -23,11 +23,11 @@ oss {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName project.version
         consumerProguardFiles '../proguard/proguard-gson.pro', '../proguard/proguard-otto.pro', '../proguard/proguard-lock-2.pro'
@@ -76,9 +76,9 @@ dependencies {
     testImplementation 'org.hamcrest:hamcrest-library:2.2'
     testImplementation 'org.robolectric:robolectric:4.4'
     testImplementation 'org.mockito:mockito-core:3.7.7'
-    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
-    testImplementation 'com.squareup.okhttp3:okhttp-tls:4.12.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+    testImplementation 'com.squareup.okhttp3:okhttp-tls:4.10.0'
     testImplementation 'com.jayway.awaitility:awaitility:1.7.0'
     testImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
 }
