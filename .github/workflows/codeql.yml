@@ -46,6 +46,10 @@ jobs:
 
       - uses: ./.github/actions/setup
 
+      - run: ./gradlew clean assemble -PisSnapshot=false
+
+      - run: ./gradlew exportVersion -PisSnapshot=false
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
