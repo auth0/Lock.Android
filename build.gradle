@@ -10,8 +10,6 @@ buildscript {
         google()
     }
     dependencies {
-        // AGP 4.2.2 breaks 'unitTestVariants' usage
-        // See: https://github.com/openid/AppAuth-Android/issues/707
         classpath 'com.android.tools.build:gradle:4.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }

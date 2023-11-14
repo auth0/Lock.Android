@@ -1,0 +1,35 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.auth0.android.lock">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <!--Auth0 WebAuthProvider-->
+        <activity
+            android:name="com.auth0.android.provider.RedirectActivity"
+            tools:node="remove">
+        </activity>
+        <!--Auth0 WebAuthProvider End-->
+
+        <!--Auth0 Lock-->
+        <activity
+            android:name="com.auth0.android.lock.LockActivity"
+            tools:node="remove"/>
+        <!--Auth0 Lock End-->
+
+        <!--Auth0 PasswordlessLock-->
+        <activity
+            android:name="com.auth0.android.lock.PasswordlessLockActivity"
+            tools:node="remove">
+        </activity>
+        <!--Auth0 PasswordlessLock End-->
+
+        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
+        <activity
+            android:name="com.auth0.android.lock.CountryCodeActivity"
+            tools:node="remove"/>
+        <!--Auth0 Lock Passwordless SMS Country Code Selection-->
+    </application>
+
+</manifest>
