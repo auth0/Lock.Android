@@ -4,11 +4,15 @@ plugins {
 
 logger.lifecycle("Using version ${version} for ${name}")
 
+def signingKey = findProperty('signingKey')
+def signingKeyPwd = findProperty('signingPassword')
+
 oss {
     name 'Lock.Android'
     repository 'Lock.Android'
     organization 'auth0'
     description 'The easiest way of securing your Android mobile apps with Auth0 & Lock'
+    skipAssertSigningConfiguration true
 
     developers {
         auth0 {
@@ -20,6 +24,10 @@ oss {
             email = 'luciano.balmaceda@auth0.com'
         }
     }
+}
+
+signing {
+    useInMemoryPgpKeys(signingKey, signingKeyPwd)
 }
 
 android {
