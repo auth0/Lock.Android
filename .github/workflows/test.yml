@@ -29,4 +29,4 @@ jobs:
 
       - run: ./gradlew clean test lint --continue --console=plain --max-workers=3
 
-      - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # pin@3.1.4
+      - uses: codecov/codecov-action@985343d70564a82044c1b7fcb84c2fa05405c1a2 # pin@5.0.4
