@@ -1,3 +1,5 @@
+[![Open in Deepnote](https://deepnote.com/buttons/open-in-deepnote.svg)](https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fauth0%2FLock.Android)
+
 > **Note**
 > As part of our ongoing commitment to best security practices, we have rotated the signing keys used to sign previous releases of this SDK. As a result, new patch builds have been released using the new signing key. Please upgrade at your earliest convenience.
 >
