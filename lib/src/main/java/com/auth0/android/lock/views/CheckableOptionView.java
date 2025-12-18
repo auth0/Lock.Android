@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import androidx.annotation.NonNull;
@@ -69,6 +70,7 @@ public class CheckableOptionView extends LinearLayout {
         }
 
         int[] set = {android.R.attr.text};
+        @SuppressLint("ResourceType")
         TypedArray a = getContext().obtainStyledAttributes(attrs, set);
         CharSequence text = a.getText(0);
         a.recycle();

@@ -24,6 +24,7 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.RectF;
@@ -85,6 +86,7 @@ abstract class ViewUtils {
      * @param corners the rounded corners this drawable will have. Can be one of ONLY_LEFT, ONLY_RIGHT, ALL
      * @return the rounded drawable.
      */
+    @SuppressLint("WrongConstant")
     static ShapeDrawable getRoundedBackground(@NonNull View view, @ColorInt int color, @Corners int corners) {
         int r = view.getResources().getDimensionPixelSize(R.dimen.com_auth0_lock_widget_corner_radius);
         float[] outerR = new float[0];
@@ -101,6 +103,7 @@ abstract class ViewUtils {
                 outerR = new float[]{0, 0, r, r, r, r, 0, 0};
                 break;
             case ALL:
+            default:
                 outerR = new float[]{r, r, r, r, r, r, r, r};
                 break;
         }
