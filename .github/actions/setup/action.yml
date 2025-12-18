@@ -5,30 +5,22 @@ inputs:
   java:
     description: The Java version to use
     required: false
-    default: 11.0.29-tem
-  gradle:
-    description: The Gradle version to use
-    required: false
-    default: 6.7.1
-  kotlin:
-    description: The Kotlin version to use
-    required: false
-    default: 1.6.21
+    default: '11'
 
 runs:
   using: composite
 
   steps:
-    - run: |
-        curl -s "https://get.sdkman.io" | bash
-        source "/home/runner/.sdkman/bin/sdkman-init.sh"
-        sdk list java
-        sdk install java ${{ inputs.java }} && sdk default java ${{ inputs.java }}
-        sdk install gradle ${{ inputs.gradle }} && sdk default gradle ${{ inputs.gradle }}
-        sdk install kotlin ${{ inputs.kotlin }} && sdk default kotlin ${{ inputs.kotlin }}
-      shell: bash
+    - name: Set up JDK
+      uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # pin@4.8.0
+      with:
+        java-version: ${{ inputs.java }}
+        distribution: 'temurin'
+
+    - uses: gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4 # pin@1.1.0
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # pin@4.4.4
 
     - run: ./gradlew androidDependencies
       shell: bash
-
-    - uses: gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4 # pin@1.1.0
