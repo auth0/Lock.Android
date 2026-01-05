@@ -211,7 +211,7 @@ public class LogInFormView extends FormView implements TextView.OnEditorActionLi
         corporateSSO = true;
         usernameInput.clearFocus();
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+        imm.hideSoftInputFromWindow(getWindowToken(), 0);
         return null;
     }
 
