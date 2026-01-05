@@ -16,7 +16,7 @@ runs:
       env:
         JAVA_VERSION : ${{ inputs.java }}
       with:
-        java-version: $JAVA_VERSION
+        java-version: ${{ env.JAVA_VERSION }}
         distribution: 'temurin'
 
     - uses: gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4 # pin@1.1.0
