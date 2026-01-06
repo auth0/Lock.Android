@@ -29,16 +29,30 @@ runs:
         curl -s "https://get.sdkman.io" | bash
         source "/home/runner/.sdkman/bin/sdkman-init.sh"
         sdk list java
-        sdk install java ${{ inputs.java-version }} && sdk default java ${{ inputs.java-version }}
+        sdk install java "$JAVA_VERSION" && sdk default java "$JAVA_VERSION"
+      env:
+        JAVA_VERSION: ${{ inputs.java-version }}
 
     - uses: gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4 # pin@1.1.0
 
     - name: Publish Java
       shell: bash
       if: inputs.is-android == 'false'
-      run: ./gradlew clean assemble sign publishMavenJavaPublicationToMavenRepository -PisSnapshot=false -Pversion="${{ inputs.version }}" -PossrhUsername="${{ inputs.ossr-username }}" -PossrhPassword="${{ inputs.ossr-password }}" -PsigningKey="${{ inputs.signing-key }}" -PsigningPassword="${{ inputs.signing-password }}"
+      run: ./gradlew clean assemble sign publishMavenJavaPublicationToMavenRepository -PisSnapshot=false -Pversion="$VERSION" -PossrhUsername="$OSSR_USERNAME" -PossrhPassword="$OSSR_PASSWORD" -PsigningKey="$SIGNING_KEY" -PsigningPassword="$SIGNING_PASSWORD"
+      env:
+        VERSION: ${{ inputs.version }}
+        OSSR_USERNAME: ${{ inputs.ossr-username }}
+        OSSR_PASSWORD: ${{ inputs.ossr-password }}
+        SIGNING_KEY: ${{ inputs.signing-key }}
+        SIGNING_PASSWORD: ${{ inputs.signing-password }}
 
     - name: Publish Android
       shell: bash
       if: inputs.is-android == 'true'
-      run: ./gradlew clean assemble sign publishAndroidLibraryPublicationToMavenRepository -PisSnapshot=false -Pversion="${{ inputs.version }}" -PossrhUsername="${{ inputs.ossr-username }}" -PossrhPassword="${{ inputs.ossr-password }}" -PsigningKey="${{ inputs.signing-key }}" -PsigningPassword="${{ inputs.signing-password }}"
+      run: ./gradlew clean assemble sign publishAndroidLibraryPublicationToMavenRepository -PisSnapshot=false -Pversion="$VERSION" -PossrhUsername="$OSSR_USERNAME" -PossrhPassword="$OSSR_PASSWORD" -PsigningKey="$SIGNING_KEY" -PsigningPassword="$SIGNING_PASSWORD"
+      env:
+        VERSION: ${{ inputs.version }}
+        OSSR_USERNAME: ${{ inputs.ossr-username }}
+        OSSR_PASSWORD: ${{ inputs.ossr-password }}
+        SIGNING_KEY: ${{ inputs.signing-key }}
+        SIGNING_PASSWORD: ${{ inputs.signing-password }}
