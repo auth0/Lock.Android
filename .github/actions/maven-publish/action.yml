@@ -36,5 +36,5 @@ runs:
       env:
         MAVEN_USERNAME: ${{ inputs.ossr-username }}
         MAVEN_PASSWORD: ${{ inputs.ossr-token }}
-        SIGNING_KEY: ${{ inputs.signing-key}}
-        SIGNING_PASSWORD: ${{ inputs.signing-password}}
+        SIGNING_KEY: ${{ inputs.signing-key }}
+        SIGNING_PASSWORD: ${{ inputs.signing-password }}
