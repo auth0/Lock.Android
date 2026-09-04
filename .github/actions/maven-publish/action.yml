@@ -1,58 +1,40 @@
 name: Publish release to Java
 
 inputs:
+  java-version:
+    required: true
   ossr-username:
     required: true
-  ossr-password:
+  ossr-token:
     required: true
   signing-key:
     required: true
   signing-password:
     required: true
-  java-version:
-    required: true
-  is-android:
-    required: true
-  version:
-    required: true
+
 
 runs:
   using: composite
 
   steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # pin@v4.4.0
 
-    - name: Setup Java
+    - name: Set up Java
+      uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # pin@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ inputs.java-version }}
+        cache: 'gradle'
+
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # pin@v5
+
+    - name: Publish Android/Java Packages to Maven
       shell: bash
-      run: |
-        curl -s "https://get.sdkman.io" | bash
-        source "/home/runner/.sdkman/bin/sdkman-init.sh"
-        sdk list java
-        sdk install java "$JAVA_VERSION" && sdk default java "$JAVA_VERSION"
+      run: ./gradlew publishToSonatype closeSonatypeStagingRepository -PisSnapshot=false --stacktrace
       env:
-        JAVA_VERSION: ${{ inputs.java-version }}
-
-    - uses: gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4 # pin@1.1.0
-
-    - name: Publish Java
-      shell: bash
-      if: inputs.is-android == 'false'
-      run: ./gradlew clean assemble sign publishMavenJavaPublicationToMavenRepository -PisSnapshot=false -Pversion="$VERSION" -PossrhUsername="$OSSR_USERNAME" -PossrhPassword="$OSSR_PASSWORD" -PsigningKey="$SIGNING_KEY" -PsigningPassword="$SIGNING_PASSWORD"
-      env:
-        VERSION: ${{ inputs.version }}
-        OSSR_USERNAME: ${{ inputs.ossr-username }}
-        OSSR_PASSWORD: ${{ inputs.ossr-password }}
-        SIGNING_KEY: ${{ inputs.signing-key }}
-        SIGNING_PASSWORD: ${{ inputs.signing-password }}
-
-    - name: Publish Android
-      shell: bash
-      if: inputs.is-android == 'true'
-      run: ./gradlew clean assemble sign publishAndroidLibraryPublicationToMavenRepository -PisSnapshot=false -Pversion="$VERSION" -PossrhUsername="$OSSR_USERNAME" -PossrhPassword="$OSSR_PASSWORD" -PsigningKey="$SIGNING_KEY" -PsigningPassword="$SIGNING_PASSWORD"
-      env:
-        VERSION: ${{ inputs.version }}
-        OSSR_USERNAME: ${{ inputs.ossr-username }}
-        OSSR_PASSWORD: ${{ inputs.ossr-password }}
+        MAVEN_USERNAME: ${{ inputs.ossr-username }}
+        MAVEN_PASSWORD: ${{ inputs.ossr-token }}
         SIGNING_KEY: ${{ inputs.signing-key }}
         SIGNING_PASSWORD: ${{ inputs.signing-password }}

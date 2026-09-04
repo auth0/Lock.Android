@@ -1,6 +1,6 @@
 {
   "files": {
-    "auth0/build.gradle": [],
+    "lib/build.gradle": [],
     ".version": [],
     "README.md": []
   },
