@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.2.3](https://github.com/auth0/Lock.Android/tree/3.2.3) (2026-09-04)
+[Full Changelog](https://github.com/auth0/Lock.Android/compare/3.2.2...3.2.3)
+
+**Fixed**
+- fix(security): substitute vulnerable bcprov/bcpkix-jdk15on with jdk18… [\#702](https://github.com/auth0/Lock.Android/pull/702) ([utkrishtsahu](https://github.com/utkrishtsahu))
+
 ## [3.2.1](https://github.com/auth0/Lock.Android/tree/3.2.2) (2023-01-11)
 [Full Changelog](https://github.com/auth0/Lock.Android/compare/3.2.1...3.2.2)
 
